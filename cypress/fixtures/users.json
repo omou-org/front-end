@@ -26,5 +26,14 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
+    },
+    "instructor": {
+        "__typename": "InstructorType",
+        "user": {
+            "__typename": "UserType",
+            "id": 5,
+            "firstName": "Daniel",
+            "lastName": "Huang"
+        }
     }
 }

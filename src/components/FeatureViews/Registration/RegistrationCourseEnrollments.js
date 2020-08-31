@@ -135,11 +135,11 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity}) => {
             </div>
             <Table>
                 {TableToolbar}
-                <TableBody>
+                <TableBody data-cy="enrollment-list">
                     {
                         enrollments.map((enrollment, index) =>
                             <CourseEnrollmentRow
-                                data-cy={`enrollment-${index}`}
+                                testingIndex={index}
                                 key={enrollment.id}
                                 enrollment={enrollment}
                                 deleteEnrollment={deleteEnrollment}

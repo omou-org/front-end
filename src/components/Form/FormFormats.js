@@ -1,6 +1,5 @@
 import * as types from "actions/actionTypes";
-import {createTutoringDetails, submitRegistration} from
-    "../OmouComponents/RegistrationUtils";
+import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 import {instance} from "actions/apiActions";
 import React from "react";
 import {FORM_ERROR} from "final-form";
@@ -343,8 +342,8 @@ const GET_CATEGORIES = gql`
     }
 `;
 
-const GET_COURSES = gql`
-    query GetCourses {
+const GET_BASIC_COURSES = gql`
+    query GetBasicCourses {
       courses {
         title
         id
@@ -1334,7 +1333,7 @@ export default {
                         "name": "class",
                         "label": "Class",
                         "component": <Fields.DataSelect name="Classes" optionsMap={openCourseMap}
-                                                        request={GET_COURSES}/>,
+                                                        request={GET_BASIC_COURSES}/>,
                         "validator": Yup.mixed(),
                     },
                 ],

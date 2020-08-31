@@ -1,13 +1,80 @@
 describe("Admin Registers an upcoming class", () => {
 	before(() => {
-		cy.visit("registration");
-		cy.login('maggie@summit.com', 'password');
+		// sessionStorage.setItem("registrations","");
+		cy.fixture("course_and_registration.json")
+			.then(({
+					   course,
+					   courses,
+					   enrolledCourses,
+					   coursesToRegister,
+					   studentsAndEnrollments
+				   }) => {
+				const courseResponse = {"data": {"courses": courses,}};
+				const parentUserInfo = {
+					"__typename": "UserType",
+					"email": "pwan007@yahoo.com",
+					"firstName": "Paula",
+					"lastName": "Wan",
+					"id": 2
+				};
+				cy.mockGraphQL({
+					"CourseList": {
+						"response": courseResponse,
+					},
+					"GetParents": {
+						"response": {
+							"data": {
+								"accountSearch": {
+									"__typename": "AccountSearchResults",
+									"results": [
+										{
+											"__typename": "ParentType",
+											"user": parentUserInfo,
+											"studentList": ["11", "12"]
+										}
+									]
+								}
+							}
+						},
+						"test": ({query}) => {
+							expect(query).to.be.a('string');
+						}
+					},
+					"ParentFetch": {
+						"response": {
+							"data": {
+								"parent": {
+									"__typename": "ParentType",
+									user: parentUserInfo,
+								}
+							}
+						}
+					},
+					"GetStudents": {
+						"response": {
+							"data": studentsAndEnrollments
+						}
+					}
+					// "GetBasicCourses": {
+					// 	"response": courseResponse,
+					// },
+					// "GetCoursesToRegister":{
+					// 	"response": coursesToRegister,
+					// }
+				});
+				cy.visitAuthenticated('registration');
+			});
 	});
 
 	it("Loads registration page with courses", () => {
-		cy.get("[data-cy=registration-heading]").contains("Registration Catalog");
-		cy.get("[data-cy=classes-table]").find('tr').should(($tr) => {
-			expect($tr).to.have.length.least(1);
+		cy.fixture("course_and_registration.json").then((data) => {
+			console.log(data, "this is a test");
+			cy.get("[data-cy=registration-heading]")
+				.contains("Registration Catalog");
+			cy.get("[data-cy=classes-table]")
+				.find('tr').should(($tr) => {
+				expect($tr).to.have.length.least(1);
+			});
 		});
 	})
 
@@ -18,7 +85,7 @@ describe("Admin Registers an upcoming class", () => {
 
 	it("Sets the parent", () => {
 		cy.get("[data-cy=select-parent]").click();
-		cy.get("[data-cy=select-parent-input]").fastType("Kel");
+		cy.get("[data-cy=select-parent-input]").fastType("Pau");
 		cy.get("[data-cy=parent-option]").first().click();
 		cy.get("[data-cy=set-parent-action]").click();
 		cy.get("[data-cy=current-parent]").should('exist');
@@ -39,7 +106,7 @@ describe("Admin Registers an upcoming class", () => {
 		cy.get("[data-cy=quick-register-class]").should('not.exist');
 		cy.get("[data-cy=register-class]").should('not.exist');
 		cy.get("[data-cy=select-parent]").click();
-		cy.get("[data-cy=select-parent-input]").fastType("Kel");
+		cy.get("[data-cy=select-parent-input]").fastType("Pau");
 		cy.get("[data-cy=parent-option]").first().click();
 		cy.get("[data-cy=set-parent-action]").click();
 	});
@@ -57,7 +124,7 @@ describe("Admin Registers an upcoming class", () => {
 	it("Registers a class through the form", () => {
 		cy.get("[data-cy=register-class]").click();
 		cy.get("[data-cy=student-student-select]").click();
-		cy.get("[data-value=3]").click();
+		cy.get("[data-value=11]").click();
 		cy.get("[data-cy=student-nextButton]").click();
 		cy.get("[data-cy=student_info-nextButton]").click();
 		cy.get("[data-cy=course-class]").click();
@@ -139,6 +206,6 @@ describe("Admin Registers an upcoming class", () => {
 
 	it("New Enrollment in Course Registration Page", () => {
 		cy.get("[data-cy=course-1]").click();
-
+		cy.get("[data-cy=enrollment-list]").find('tr').should('have.length', 1);
 	});
 })

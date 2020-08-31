@@ -17,7 +17,7 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContentText from "@material-ui/core/DialogContentText";
 
-export default function CourseEnrollmentRow({enrollment: {id, student, course}, deleteEnrollment}) {
+export default function CourseEnrollmentRow({enrollment: {id, student, course}, deleteEnrollment, testingIndex}) {
 
 	const [studentMenuAnchorEl, setStudentMenuAnchorEl] = useState(null);
 	const [unenroll, setUnenroll] = useState(false);
@@ -48,7 +48,7 @@ export default function CourseEnrollmentRow({enrollment: {id, student, course}, 
 	);
 
 	return (<>
-		<TableRow key={id}>
+		<TableRow key={id} data-cy={`enrollment-${testingIndex}`}>
 			<TableCell className="bold">
 				<Link className="no-underline"
 					  to={`/accounts/student/${student.user.id}`}>

@@ -1,0 +1,395 @@
+{
+  "courses": [
+    {
+      "endTime": "11:00:00",
+      "endDate": "2020-10-16",
+      "startTime": "10:00:00",
+      "startDate": "2020-04-30",
+      "title": "Honors Biology Prep",
+      "courseType": "CLASS",
+      "instructor": {
+        "user": {
+          "id": "5",
+          "firstName": "Daniel",
+          "lastName": "Huang",
+          "__typename": "UserType"
+        },
+        "__typename": "InstructorType"
+      },
+      "totalTuition": 250,
+      "maxCapacity": 6,
+      "academicLevel": "MIDDLE_LVL",
+      "courseCategory": {
+        "id": "1",
+        "name": "Biology",
+        "__typename": "CourseCategoryType"
+      },
+      "id": "1",
+      "enrollmentSet": [],
+      "__typename": "CourseType"
+    },
+    {
+      "endTime": "11:00:00",
+      "endDate": "2020-10-17",
+      "startTime": "10:00:00",
+      "startDate": "2020-05-01",
+      "title": "AP Computer Science",
+      "courseType": "CLASS",
+      "enrollmentSet": [],
+      "instructor": {
+        "user": {
+          "id": 6,
+          "firstName": "Jerry",
+          "lastName": "Li",
+          "__typename": "UserType"
+        },
+        "__typename": "InstructorType"
+      },
+      "totalTuition": 250,
+      "academicLevel": "HIGH_LVL",
+      "maxCapacity": 10,
+      "courseCategory": {
+        "id": 1,
+        "name": "Math",
+        "__typename": "CourseCategoryType"
+      },
+      "id": 2,
+      "__typename": "CourseType"
+    }
+  ],
+  "course": {
+    "endDate": "2020-10-16",
+    "startDate": "2020-04-30",
+    "title": "Honors Biology Prep",
+    "courseType": "class",
+    "description": "This is a course to help students prepare for Honors Biology prep course. This will be using the Honors Biology 4th Edition textbook and companion workbook.",
+    "instructor": {
+      "user": {
+        "id": 5,
+        "firstName": "Daniel",
+        "lastName": "Huang"
+      }
+    },
+    "hourlyTuition": 50,
+    "room": 1,
+    "dayOfWeek": "thursday",
+    "maxCapacity": 6,
+    "courseCategory": {
+      "id": 1,
+      "name": "Biology",
+      "description": "Any subjects related to Biology classes"
+    },
+    "isConfirmed": true,
+    "id": 1
+  },
+  "enrolledCourses": [
+    {
+      "endDate": "2020-10-16",
+      "startDate": "2020-04-30",
+      "title": "Honors Biology Prep",
+      "courseType": "class",
+      "description": "This is a course to help students prepare for Honors Biology prep course. This will be using the Honors Biology 4th Edition textbook and companion workbook.",
+      "instructor": {
+        "user": {
+          "id": 5,
+          "firstName": "Daniel",
+          "lastName": "Huang"
+        }
+      },
+      "hourlyTuition": 50,
+      "room": 1,
+      "dayOfWeek": "thursday",
+      "maxCapacity": 6,
+      "courseCategory": {
+        "id": 1,
+        "name": "Biology",
+        "description": "Any subjects related to Biology classes"
+      },
+      "isConfirmed": true,
+      "id": 1,
+      "enrollmentSet": [
+        {
+          "primaryParent": {
+            "user": {
+              "firstName": "Paula",
+              "lastName": "Wan",
+              "email": "pwan007@yahoo.com",
+              "id": 2
+            },
+            "phoneNumber": "9253418562"
+          },
+          "user": {
+            "firstName": "James",
+            "lastName": "Wan",
+            "email": "jwanCoolCool@gmail.com",
+            "id": 11
+          },
+          "school": {
+            "id": 1,
+            "name": "Foothill High School",
+            "district": "Pleasanton Unified School District",
+            "zipcode": "94588"
+          },
+          "id": 1,
+          "course": {
+            "id": 1,
+            "title": "Honors Biology Prep"
+          }
+        },
+        {
+          "primaryParent": {
+            "user": {
+              "firstName": "Paula",
+              "lastName": "Wan",
+              "email": "pwan007@yahoo.com",
+              "id": 2
+            },
+            "phoneNumber": "9253418562"
+          },
+          "user": {
+            "firstName": "Jane",
+            "lastName": "Wan",
+            "email": "jwanCoolCool@gmail.com",
+            "id": 12
+          },
+          "school": {
+            "id": 1,
+            "name": "Foothill High School",
+            "district": "Pleasanton Unified School District",
+            "zipcode": "94588"
+          },
+          "id": 2,
+          "course": {
+            "id": 1,
+            "title": "Honors Biology Prep"
+          }
+        }
+      ]
+    },
+    {
+      "endDate": "2020-10-17",
+      "startDate": "2020-04-31",
+      "title": "AP Computer Science",
+      "courseType": "class",
+      "description": "This is a course to help students prepare for AP Computer Science. This will be using the Leet Code textbook and companion workbook.",
+      "instructor": {
+        "user": {
+          "id": 6,
+          "firstName": "Jerry",
+          "lastName": "Li"
+        }
+      },
+      "hourlyTuition": 70,
+      "room": 2,
+      "dayOfWeek": "thursday",
+      "maxCapacity": 10,
+      "courseCategory": {
+        "id": 1,
+        "name": "Math",
+        "description": "Any course related to math as described by CA curriculum"
+      },
+      "isConfirmed": true,
+      "id": 2
+    }
+  ],
+  "coursesToRegister": {
+    "userInfos": [
+      {
+        "firstName": "James",
+        "lastName": "Wan",
+        "email": "jwanCoolCool@gmail.com",
+        "id": 11
+      },
+      {
+        "firstName": "Jane",
+        "lastName": "Wan",
+        "email": "janePowerGirl@gmail.com",
+        "id": 12
+      }
+    ],
+    "courses": [
+      {
+        "endDate": "2020-10-16",
+        "startDate": "2020-04-30",
+        "title": "Honors Biology Prep",
+        "courseType": "class",
+        "description": "This is a course to help students prepare for Honors Biology prep course. This will be using the Honors Biology 4th Edition textbook and companion workbook.",
+        "instructor": {
+          "user": {
+            "id": 5,
+            "firstName": "Daniel",
+            "lastName": "Huang"
+          }
+        },
+        "hourlyTuition": 50,
+        "room": 1,
+        "dayOfWeek": "thursday",
+        "maxCapacity": 6,
+        "courseCategory": {
+          "id": 1,
+          "name": "Biology",
+          "description": "Any subjects related to Biology classes"
+        },
+        "isConfirmed": true,
+        "id": 1
+      },
+      {
+        "endDate": "2020-10-17",
+        "startDate": "2020-04-31",
+        "title": "AP Computer Science",
+        "courseType": "class",
+        "description": "This is a course to help students prepare for AP Computer Science. This will be using the Leet Code textbook and companion workbook.",
+        "instructor": {
+          "user": {
+            "id": 6,
+            "firstName": "Jerry",
+            "lastName": "Li"
+          }
+        },
+        "hourlyTuition": 70,
+        "room": 2,
+        "dayOfWeek": "thursday",
+        "maxCapacity": 10,
+        "courseCategory": {
+          "id": 1,
+          "name": "Math",
+          "description": "Any course related to math as described by CA curriculum"
+        },
+        "isConfirmed": true,
+        "id": 2
+      }
+    ]
+  },
+  "siblingDiffCourseEnrollments": [
+    {
+      "student": {
+        "primaryParent": {
+          "user": {
+            "firstName": "Paula",
+            "lastName": "Wan",
+            "email": "pwan007@yahoo.com",
+            "id": 2
+          },
+          "phoneNumber": "9253418562"
+        },
+        "user": {
+          "firstName": "James",
+          "lastName": "Wan",
+          "email": "jwanCoolCool@gmail.com",
+          "id": 11
+        },
+        "school": {
+          "id": 1,
+          "name": "Foothill High School",
+          "district": "Pleasanton Unified School District",
+          "zipcode": "94588"
+        },
+        "id": 1,
+        "course": {
+          "id": 1,
+          "title": "Honors Biology Prep"
+        }
+      }
+    },
+    {
+      "student": {
+        "primaryParent": {
+          "user": {
+            "firstName": "Paula",
+            "lastName": "Wan",
+            "email": "pwan007@yahoo.com",
+            "id": 2
+          },
+          "phoneNumber": "9253418562"
+        },
+        "user": {
+          "firstName": "Jane",
+          "lastName": "Wan",
+          "email": "janePowerGirl@gmail.com",
+          "id": 12
+        },
+        "school": {
+          "id": 1,
+          "name": "Harvest Park Middle School",
+          "district": "Pleasanton Unified School District",
+          "zipcode": "94588"
+        },
+        "id": 2,
+        "course": {
+          "id": 2,
+          "title": "AP Computer Science"
+        }
+      }
+    }
+  ],
+  "enrollment": {
+    "student": {
+      "primaryParent": {
+        "user": {
+          "firstName": "Paula",
+          "lastName": "Wan",
+          "email": "pwan007@yahoo.com",
+          "id": 2
+        },
+        "phoneNumber": "9253418562"
+      },
+      "user": {
+        "firstName": "James",
+        "lastName": "Wan",
+        "email": "jwanCoolCool@gmail.com",
+        "id": 11
+      },
+      "school": {
+        "id": 1,
+        "name": "Foothill High School",
+        "district": "Pleasanton Unified School District",
+        "zipcode": "94588"
+      },
+      "id": 1,
+      "course": {
+        "id": 1,
+        "title": "Honors Biology Prep"
+      }
+    }
+  },
+  "studentsAndEnrollments": {
+    "userInfos": [
+      {
+        "user": {
+          "__typename": "UserType",
+          "firstName": "James",
+          "lastName": "Wan",
+          "id": 11
+        },
+        "__typename": "StudentType"
+      },
+      {
+        "user": {
+          "__typename": "UserType",
+          "firstName": "Jane",
+          "lastName": "Wan",
+          "id": 12
+        },
+        "__typename": "StudentType"
+      }
+    ],
+    "enrollments": [
+      {
+        "__typename": "EnrollmentType",
+        "id": 1,
+        "course": {
+          "__typename": "CourseType",
+          "id": 1
+        }
+      },
+      {
+        "__typename": "EnrollmentType",
+        "id": 2,
+        "course": {
+          "__typename": "CourseType",
+          "id": 2
+        }
+      }
+    ]
+  }
+}
