@@ -114,7 +114,7 @@ const Scheduler = (props) => {
             Object.values(sessionList).filter(({ course }) =>
                 course && courses[course])
                 .map((session) => {
-                    const instructorName = instructors[session.instructor].name
+                    const instructorName = instructors[session.instructor]?.name
                         || "";
                     return {
                         "color": colorizer(instructorName),
