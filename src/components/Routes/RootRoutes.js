@@ -1,7 +1,7 @@
 // React Imports
-import {Redirect, Route, Switch} from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // Local Component Imports
 import Accounts from "../FeatureViews/Accounts/Accounts";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
@@ -21,14 +21,15 @@ import FormPage from "../Form/FormPage";
 import RegistrationCourse from "../FeatureViews/Registration/RegistrationCourse";
 import ResetPassword from "../Authentication/ResetPassword";
 import Scheduler from "../FeatureViews/Scheduler/Scheduler";
+import { SchedulerV3 } from "../FeatureViews/Scheduler/SchedulerV3"
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 
-import {resetSubmitStatus} from "actions/registrationActions";
-import {USER_TYPES} from "utils";
+import { resetSubmitStatus } from "actions/registrationActions";
+import { USER_TYPES } from "utils";
 import RegistrationForm from "../FeatureViews/Registration/RegistrationForm";
 import RegistrationCartContainer from "../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer";
 import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
@@ -38,7 +39,7 @@ import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
-    const AuthUser = useSelector(({auth}) => auth);
+    const AuthUser = useSelector(({ auth }) => auth);
     dispatch(resetSubmitStatus());
 
     return (
@@ -54,37 +55,37 @@ export const RootRoutes = () => {
                 <ResetPassword isSet />
             </Route>
             <Route path="/login">
-                <LoginPage/>
+                <LoginPage />
             </Route>
             <Route path="/new/:type?">
-                <NewAccount/>
+                <NewAccount />
             </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
                 {
                     {
-                        [USER_TYPES.receptionist]: <DashboardSwitch/>,
-                        [USER_TYPES.admin]: <DashboardSwitch/>,
-                        [USER_TYPES.parent]: <Scheduler/>,
-                        [USER_TYPES.instructor]: <Scheduler/>,
+                        [USER_TYPES.receptionist]: <DashboardSwitch />,
+                        [USER_TYPES.admin]: <DashboardSwitch />,
+                        [USER_TYPES.parent]: <Scheduler />,
+                        [USER_TYPES.instructor]: <Scheduler />,
                     }[AuthUser.accountType]
                 }
 
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                                path="/registration"
-                                users={[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.parent]}
+                path="/registration"
+                users={[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.parent]}
             >
-                <Registration/>
+                <Registration />
             </AuthenticatedRoute>
 
             {/* Scheduler Routes */}
             <AuthenticatedRoute exact path="/scheduler">
-                <Scheduler/>
+                <SchedulerV3 />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
-                <SessionView/>
+                <SessionView />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit">
                 <EditSessionView />
@@ -148,16 +149,16 @@ export const RootRoutes = () => {
 
             {/* Parent Routes */}
             <AuthenticatedRoute path="/my-payments/:view?/:paymentId?"
-                                users={[USER_TYPES.parent]}
+                users={[USER_TYPES.parent]}
             >
-                <ManagePayments/>
+                <ManagePayments />
             </AuthenticatedRoute>
 
             {/* Admin Routes */}
             <AuthenticatedRoute exact
-                                path="/adminportal/:view?/:type?/:id?/:edit?"
-                                users={[USER_TYPES.admin]}>
-                <AdminPortal/>
+                path="/adminportal/:view?/:type?/:id?/:edit?"
+                users={[USER_TYPES.admin]}>
+                <AdminPortal />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/form/:type/:id?"
                 users={[USER_TYPES.admin, USER_TYPES.parent]}>
@@ -165,15 +166,15 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
 
             {/* Course Management Routes */}
-            <AuthenticatedRoute 
-            path="/coursemanagement"
-            exact
+            <AuthenticatedRoute
+                path="/coursemanagement"
+                exact
             >
                 <CourseManagementContainer />
             </AuthenticatedRoute>
 
-            <AuthenticatedRoute 
-           path="/coursemanagement/class/:id?"
+            <AuthenticatedRoute
+                path="/coursemanagement/class/:id?"
             >
                 <CourseClasses />
             </AuthenticatedRoute>
