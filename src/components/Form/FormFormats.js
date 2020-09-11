@@ -69,7 +69,7 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 
 const instructorSelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={userMap}
-        request={SEARCH_INSTRUCTORS} />
+        request={SEARCH_INSTRUCTORS} noOptionsText={"No instructors available"}/>
 );
 
 
