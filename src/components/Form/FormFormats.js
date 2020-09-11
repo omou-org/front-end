@@ -364,7 +364,7 @@ const GET_COURSES = gql`
 
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={userMap}
-                       request={SEARCH_PARENTS}/>
+                       request={SEARCH_PARENTS} noOptionsText={"No parents available"}/>
 );
 
 const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
@@ -387,7 +387,7 @@ const categoryMap = ({courseCategories}) => courseCategories
 
 const categorySelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={categoryMap}
-                       request={GET_CATEGORIES}/>
+                       request={GET_CATEGORIES} noOptionsText={"No categories available"}/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -405,7 +405,7 @@ const GET_SCHOOLS = gql`
 
 const schoolSelect = (name) => (
     <Fields.DataSelect name={name} optionsMap={schoolMap}
-        request={GET_SCHOOLS} />
+        request={GET_SCHOOLS} noOptionsText={"No schools available"}/>
 );
 
 const GET_USER_TYPE = gql`
