@@ -51,7 +51,6 @@ export const Autocomplete = ({ name, options, ...props }) => {
 };
 
 export const DataSelect = ({ request, optionsMap, name, ...props }) => {
-    console.log(props);
     const [query, setQuery] = useState();
 
     const handleQueryChange = useCallback((_, newQuery) => {
