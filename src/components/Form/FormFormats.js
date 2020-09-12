@@ -170,7 +170,7 @@ export const ACADEMIC_LVL_FIELD = {
         "name": "phoneNumber",
         "label": "Phone Number",
         "component": <Fields.TextField />,
-        "validator": Yup.string().matches(/\d{3}-?\d{3}-?\d{4}?/u,
+        "validator": Yup.string().matches(/(^\d{3}[- ]?\d{3}[- ]?\d{4}?$)|(^[(]\d{3}[)][- ]?\d{3}[- ]?\d{4}?$)/u,
             "Invalid phone number"),
     },
     POSITIVE_NUMBER_FIELD = {
