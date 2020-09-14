@@ -11,6 +11,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
+import TableFooter from '@material-ui/core/TableFooter';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TeachingLogEntry from "./TeachingLogEntry";
@@ -89,6 +90,15 @@ const useStyles = makeStyles({
 	},
 	slHeadCell: {
 		color: 'white',
+	},
+	slBody: {
+		overflow: 'auto',
+		maxHeight: 105,
+		border: 'solid 1px rgba(224, 224, 224, 1)'
+	},
+	slFooter: {
+		tableLayout: 'fixed',
+		backgroundColor: 'pink'
 	},
 	calendarPickerRoot: {}
 });
@@ -269,11 +279,27 @@ export default function TeachingLogContainer() {
 								</TableCell>
 							</TableRow>
 						</TableHead>
-						<TableBody>
-							{
-								sessions.length > 0 && summaryLog.map(({title, hours, grade, courseId}) =>
-									<SummaryEntry key={courseId} title={title} hours={hours} grade={grade}/>)
-							}
+					</Table >
+					<div className = {classes.slBody} >
+						<Table>
+							<TableBody>
+								{
+									sessions.length > 0 && summaryLog.map(({title, hours, grade, courseId}) =>
+										<SummaryEntry key={courseId} title={title} hours={hours} grade={grade}/>
+									)
+								
+								}
+
+<TableCell>
+            test - <span style={{fontStyle: "italic", fontWeight: 300}}>test</span>
+        </TableCell>
+							
+							</TableBody>
+						</Table>
+					</div>
+					<div className = {classes.slFooter}>
+						<Table className = {classes.slFooter}>
+							<TableHead>
 							<TableRow>
 								<TableCell>
 									<b>Total Hours</b>
@@ -281,9 +307,10 @@ export default function TeachingLogContainer() {
 								<TableCell>
 									{sessions.length > 0 && summaryLog.reduce((acc, course) => (acc.hours + course.hours))}
 								</TableCell>
-							</TableRow>
-						</TableBody>
-					</Table>
+							</TableRow>	
+							</TableHead>
+						</Table>
+						</div>
 				</Grid>
 			</Grid>
 			<Grid item xs={12}>
