@@ -68,8 +68,10 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 }));
 
 const instructorSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={userMap}
-        request={SEARCH_INSTRUCTORS} noOptionsText="No instructors available"/>
+    <Fields.DataSelect name={name} 
+                       optionsMap={userMap}
+                       request={SEARCH_INSTRUCTORS} 
+                       noOptionsText="No instructors available"/>
 );
 
 
@@ -363,8 +365,10 @@ const GET_COURSES = gql`
 `;
 
 const parentSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={userMap}
-                       request={SEARCH_PARENTS} noOptionsText="No parents available"/>
+    <Fields.DataSelect name={name} 
+                       optionsMap={userMap}
+                       request={SEARCH_PARENTS} 
+                       noOptionsText="No parents available"/>
 );
 
 const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
@@ -386,8 +390,10 @@ const categoryMap = ({courseCategories}) => courseCategories
     }));
 
 const categorySelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={categoryMap}
-                       request={GET_CATEGORIES} noOptionsText="No categories available"/>
+    <Fields.DataSelect name={name} 
+                       optionsMap={categoryMap}
+                       request={GET_CATEGORIES} 
+                       noOptionsText="No categories available"/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -404,8 +410,10 @@ const GET_SCHOOLS = gql`
     }`;
 
 const schoolSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={schoolMap}
-        request={GET_SCHOOLS} noOptionsText="No schools available"/>
+    <Fields.DataSelect name={name} 
+                       optionsMap={schoolMap}
+                       request={GET_SCHOOLS} 
+                       noOptionsText="No schools available"/>
 );
 
 const GET_USER_TYPE = gql`
@@ -1333,8 +1341,10 @@ export default {
                     {
                         "name": "class",
                         "label": "Class",
-                        "component": <Fields.DataSelect name="Classes" optionsMap={openCourseMap}
-                                                        request={GET_COURSES} noOptionsText="No classes available"/>,
+                        "component": <Fields.DataSelect name="Classes" 
+                                                        optionsMap={openCourseMap}
+                                                        request={GET_COURSES} 
+                                                        noOptionsText="No classes available"/>,
                         "validator": Yup.mixed(),
                     },
                 ],
