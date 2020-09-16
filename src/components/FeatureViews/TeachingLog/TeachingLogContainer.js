@@ -11,7 +11,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import TableHead from "@material-ui/core/TableHead";
-import TableFooter from '@material-ui/core/TableFooter';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TeachingLogEntry from "./TeachingLogEntry";
@@ -83,22 +82,34 @@ const useStyles = makeStyles({
 		marginBottom: '6px;'
 	},
 	summaryLogRoot: {
-		border: 'solid 1px rgba(224, 224, 224, 1)',
+		// border: 'solid 1px rgba(224, 224, 224, 1)',
 	},
 	slHead: {
 		backgroundColor: omouBlue,
 	},
 	slHeadCell: {
 		color: 'white',
+		// marginRight: 30
+	},
+	slHeadCellHours: {
+		color: 'white',
+		paddingLeft: 280
+	},
+	TableCell: {
+		borderBottom: 'none'
 	},
 	slBody: {
-		overflow: 'auto',
-		maxHeight: 105,
+        overflow: 'auto',
+		maxHeight: 110,
+		borderLeft: 'solid 1px rgba(224, 224, 224, 1)',
+		borderRight: 'solid 1px rgba(224, 224, 224, 1)',
+    },
+	slFooter: {
 		border: 'solid 1px rgba(224, 224, 224, 1)'
 	},
-	slFooter: {
-		tableLayout: 'fixed',
-		backgroundColor: 'pink'
+	TotalHoursNumber: {
+		paddingRight: 40,
+		textAlign: 'right'
 	},
 	calendarPickerRoot: {}
 });
@@ -202,6 +213,11 @@ export default function TeachingLogContainer() {
 		.format("MMDD")}-${moment(state[0].endDate).format("MMDD")}_${moment(state[0].endDate)
 		.format("YYYY")}_log.csv`;
 
+	summaryLog.reduce((acc, course) => {
+		console.log(acc, course);
+		return acc + course.hours
+	},0)
+
 	return (<BackgroundPaper>
 		<Grid container direction="row" spacing={4}>
 			<Grid item container justify="space-between">
@@ -274,43 +290,34 @@ export default function TeachingLogContainer() {
 								<TableCell className={classes.slHeadCell}>
 									Course Title
 								</TableCell>
-								<TableCell className={classes.slHeadCell}>
-									Total Hours
+								<TableCell className={classes.slHeadCellHours}>
+									Hours
 								</TableCell>
 							</TableRow>
 						</TableHead>
 					</Table >
 					<div className = {classes.slBody} >
-						<Table>
-							<TableBody>
+						<Table>					
+							<TableBody className = {classes.slBody}>
 								{
 									sessions.length > 0 && summaryLog.map(({title, hours, grade, courseId}) =>
-										<SummaryEntry key={courseId} title={title} hours={hours} grade={grade}/>
-									)
-								
+										<SummaryEntry key={courseId} title={title} hours={hours} grade={grade}/>)
 								}
-
-<TableCell>
-            test - <span style={{fontStyle: "italic", fontWeight: 300}}>test</span>
-        </TableCell>
-							
 							</TableBody>
 						</Table>
 					</div>
-					<div className = {classes.slFooter}>
-						<Table className = {classes.slFooter}>
-							<TableHead>
+					<Table className = {classes.slFooter}>
+						<TableBody>
 							<TableRow>
 								<TableCell>
 									<b>Total Hours</b>
 								</TableCell>
-								<TableCell>
-									{sessions.length > 0 && summaryLog.reduce((acc, course) => (acc.hours + course.hours))}
+								<TableCell className = {classes.TotalHoursNumber}>
+									<b>{sessions.length > 0 && summaryLog.reduce((acc, course) => (acc + course.hours), 0)}</b>
 								</TableCell>
-							</TableRow>	
-							</TableHead>
-						</Table>
-						</div>
+							</TableRow>
+						</TableBody>
+					</Table>
 				</Grid>
 			</Grid>
 			<Grid item xs={12}>

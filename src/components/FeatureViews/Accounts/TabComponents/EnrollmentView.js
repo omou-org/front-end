@@ -159,7 +159,7 @@ const CourseSessionStatus = () => {
     // either doesn't exist or only has notes defined
     if (
         !enrollment ||
-        Object.keys(enrollment).length <= 1 ||
+        Object.keys(enrollment).length <= 1 || 
         hooks.isLoading(
             courseStatus,
             enrollmentStatus,
@@ -219,6 +219,7 @@ const CourseSessionStatus = () => {
                         <Grid container spacing={1}>
                             {sessions.length !== 0 ?
                                 sessions.map((session) => {
+                                    console.log(session)
                                     const {
                                         date,
                                         startTime,
@@ -227,17 +228,16 @@ const CourseSessionStatus = () => {
                                         id,
                                         course_id,
                                         instructor,
-                                    } = sessionDataParse(session);
+                                    } = 
+                                    
+                                    sessionDataParse(session);
+                                    console.log(session);
                                     return (
                                         <Grid className="accounts-table-row"
                                             component={Link}
                                             item
                                             key={id}
-                                            to={
-                                                course.course_type === "tutoring"
-                                                    ? `/scheduler/view-session/${course_id}/${id}/${instructor}`
-                                                    : `/registration/course/${course_id}`
-                                            }
+                                            to={`/scheduler/view-session/${course_id}/${id}/${instructor}`}
                                             xs={12}>
                                             <Paper className={`session-info
                                                 ${highlightSession && " active"}
