@@ -68,8 +68,10 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 }));
 
 const instructorSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={userMap}
-        request={SEARCH_INSTRUCTORS} />
+    <Fields.DataSelect name={name} 
+                       optionsMap={userMap}
+                       request={SEARCH_INSTRUCTORS} 
+                       noOptionsText="No instructors available"/>
 );
 
 
@@ -170,7 +172,7 @@ export const ACADEMIC_LVL_FIELD = {
         "name": "phoneNumber",
         "label": "Phone Number",
         "component": <Fields.TextField />,
-        "validator": Yup.string().matches(/\d{3}-?\d{3}-?\d{4}?/u,
+        "validator": Yup.string().matches(/(^\d{3}[- ]?\d{3}[- ]?\d{4}?$)|(^[(]\d{3}[)][- ]?\d{3}[- ]?\d{4}?$)/u,
             "Invalid phone number"),
     },
     POSITIVE_NUMBER_FIELD = {
@@ -363,8 +365,10 @@ const GET_COURSES = gql`
 `;
 
 const parentSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={userMap}
-                       request={SEARCH_PARENTS}/>
+    <Fields.DataSelect name={name} 
+                       optionsMap={userMap}
+                       request={SEARCH_PARENTS} 
+                       noOptionsText="No parents available"/>
 );
 
 const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
@@ -386,8 +390,10 @@ const categoryMap = ({courseCategories}) => courseCategories
     }));
 
 const categorySelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={categoryMap}
-                       request={GET_CATEGORIES}/>
+    <Fields.DataSelect name={name} 
+                       optionsMap={categoryMap}
+                       request={GET_CATEGORIES} 
+                       noOptionsText="No categories available"/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -404,8 +410,10 @@ const GET_SCHOOLS = gql`
     }`;
 
 const schoolSelect = (name) => (
-    <Fields.DataSelect name={name} optionsMap={schoolMap}
-        request={GET_SCHOOLS} />
+    <Fields.DataSelect name={name} 
+                       optionsMap={schoolMap}
+                       request={GET_SCHOOLS} 
+                       noOptionsText="No schools available"/>
 );
 
 const GET_USER_TYPE = gql`
@@ -1333,8 +1341,10 @@ export default {
                     {
                         "name": "class",
                         "label": "Class",
-                        "component": <Fields.DataSelect name="Classes" optionsMap={openCourseMap}
-                                                        request={GET_COURSES}/>,
+                        "component": <Fields.DataSelect name="Classes" 
+                                                        optionsMap={openCourseMap}
+                                                        request={GET_COURSES} 
+                                                        noOptionsText="No classes available"/>,
                         "validator": Yup.mixed(),
                     },
                 ],
