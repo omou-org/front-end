@@ -544,6 +544,8 @@ export default {
                 }
               }`;
             try {
+                console.log(id)
+                console.log(instructor)
                 await client.mutate({
                     "mutation": CREATE_INSTRUCTOR,
                     "variables": {
@@ -1414,6 +1416,7 @@ export default {
 `;
 
             const {basicInfo, experience} = formData;
+            console.log(basicInfo)
 
             const modifiedData = {
                 "basicInfo": {
