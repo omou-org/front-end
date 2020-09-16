@@ -82,21 +82,17 @@ const useStyles = makeStyles({
 		marginBottom: '6px;'
 	},
 	summaryLogRoot: {
-		// border: 'solid 1px rgba(224, 224, 224, 1)',
+		border: 'solid 1px rgba(224, 224, 224, 1)',
 	},
 	slHead: {
 		backgroundColor: omouBlue,
 	},
 	slHeadCell: {
 		color: 'white',
-		// marginRight: 30
 	},
 	slHeadCellHours: {
 		color: 'white',
-		paddingLeft: 280
-	},
-	TableCell: {
-		borderBottom: 'none'
+		paddingLeft: 200
 	},
 	slBody: {
         overflow: 'auto',
@@ -212,11 +208,6 @@ export default function TeachingLogContainer() {
 	const fileName = `${AuthUser.user.firstName}${AuthUser.user.lastName}_${moment(state[0].startDate)
 		.format("MMDD")}-${moment(state[0].endDate).format("MMDD")}_${moment(state[0].endDate)
 		.format("YYYY")}_log.csv`;
-
-	summaryLog.reduce((acc, course) => {
-		console.log(acc, course);
-		return acc + course.hours
-	},0)
 
 	return (<BackgroundPaper>
 		<Grid container direction="row" spacing={4}>

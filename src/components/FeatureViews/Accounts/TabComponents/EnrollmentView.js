@@ -219,7 +219,6 @@ const CourseSessionStatus = () => {
                         <Grid container spacing={1}>
                             {sessions.length !== 0 ?
                                 sessions.map((session) => {
-                                    console.log(session)
                                     const {
                                         date,
                                         startTime,
@@ -231,7 +230,6 @@ const CourseSessionStatus = () => {
                                     } = 
                                     
                                     sessionDataParse(session);
-                                    console.log(session);
                                     return (
                                         <Grid className="accounts-table-row"
                                             component={Link}
