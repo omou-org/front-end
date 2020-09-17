@@ -23,11 +23,11 @@ const useStyles = makeStyles({
 export const AddItemButton = ({ children, ...rest }) => {
   const { addNewItemStyles } = useStyles({ ...rest });
   return (
-    /* 
-    There's a div here because ...
-    */
+// When passing in a component prop here, it'll ignore height and width unless a div is placed within the Box here.
     <Box {...rest}>
-      <div className={addNewItemStyles}>{children}</div>
+      <div className={addNewItemStyles}>
+        {children}
+      </div>
     </Box>
   );
 };
