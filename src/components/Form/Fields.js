@@ -67,14 +67,16 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     );
 
     const options = data ? optionsMap(data) : [];
-
+    
     return (
         <Fields.Autocomplete getOptionLabel={getLabel}
             loading={loading}
             name={name}
             onInputChange={handleQueryChange}
             options={options}
-            renderOption={renderOption} {...props} />
+            renderOption={renderOption} 
+            {...props} 
+            />
     );
 };
 

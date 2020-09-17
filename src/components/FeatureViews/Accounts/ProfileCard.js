@@ -1,4 +1,4 @@
-import React, {useCallback} from "react";
+import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
@@ -9,23 +9,24 @@ import Chip from "@material-ui/core/Chip";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden/Hidden";
-import {Link} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 import "./Accounts.scss";
-import {addDashes} from "./accountUtils";
-import {capitalizeString} from "utils";
-import {ReactComponent as IDIcon} from "components/identifier.svg";
+import { addDashes } from "./accountUtils";
+import { capitalizeString } from "utils";
+import { ReactComponent as IDIcon } from "components/identifier.svg";
 import UserAvatar from "./UserAvatar";
-import {useMutation} from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
 const useStyles = makeStyles({
     "linkUnderline": {
         "textDecoration": "none",
     },
+
 });
 
 const INVITE_STUDENT = gql`
@@ -36,7 +37,7 @@ const INVITE_STUDENT = gql`
         }
     }`;
 
-const ProfileCard = ({user, route, studentInvite = false}) => {
+const ProfileCard = ({ user, route, studentInvite = false }) => {
     const [invite] = useMutation(INVITE_STUDENT, {
         "ignoreResults": true,
     });
@@ -53,17 +54,16 @@ const ProfileCard = ({user, route, studentInvite = false}) => {
     return (
         <Grid item sm={6} xs={12}>
             {user && (
-                    <Card className="ProfileCard">
-                        <Grid container>
-                    <Link className={classes.linkUnderline} to={route}>
+                <Card className="ProfileCard">
+                    <Grid container>
+                        <NavLink className={classes.linkUnderline} to={route}>
                             <Grid component={Hidden} item md={4} xsDown>
                                 <UserAvatar fontSize={30} margin="20px"
                                     name={user.name} size="7vw" />
                             </Grid>
-                </Link>
-
-                            <Grid item md={8} xs={12}>
-                            <Link className={classes.linkUnderline} to={route}>
+                        </NavLink>
+                        <Grid item md={8} xs={12}>
+                            <NavLink className={classes.linkUnderline} to={route}>
                                 <CardContent className="text">
                                     <Typography align="left" component="h2"
                                         gutterBottom variant="h6">
@@ -71,8 +71,8 @@ const ProfileCard = ({user, route, studentInvite = false}) => {
                                     </Typography>
                                     <Typography align="left" component="p">
                                         <Chip
-                                            className={`userLabel ${user.role}`}
-                                            label={capitalizeString(user.role)} />
+                                            className={`userLabel ${user.accountType}`}
+                                            label={capitalizeString(user.accountType)} />
                                     </Typography>
                                     <Typography>
                                         <Grid className="card-content" container>
@@ -80,38 +80,38 @@ const ProfileCard = ({user, route, studentInvite = false}) => {
                                                 <IDIcon height={22} width={22} />
                                             </Grid>
                                             <Grid align="left" item md={9} xs={10}>
-                                                #{user.user_id}
+                                                #{user.user.id}
                                             </Grid>
                                             <Grid align="left" item md={3} xs={2}>
                                                 <PhoneIcon />
                                             </Grid>
                                             <Grid align="left" item md={9} xs={10}>
-                                                {addDashes(user.phone_number)}
+                                                {addDashes(user.phoneNumber)}
                                             </Grid>
                                             <Grid align="left" item md={3} xs={2}>
                                                 <EmailIcon />
                                             </Grid>
                                             <Grid align="left" item md={9} xs={10}>
-                                                {user.email}
+                                                {user.user.email}
                                             </Grid>
                                         </Grid>
                                     </Typography>
                                 </CardContent>
-                </Link>
+                            </NavLink>
                             {studentInvite &&
-                                    <CardActions>
-                                        <Button>
-                                            <Link to={`/form/student/${user.user_id}`}>
-                                                Edit
-                                            </Link>
+                                <CardActions>
+                                    <Button>
+                                        <NavLink to={`/form/student/${user.user.id}`}>
+                                            Edit
+                                            </NavLink>
+                                    </Button>
+                                    <Button onClick={inviteStudent}>
+                                        Invite
                                         </Button>
-                                        <Button onClick={inviteStudent}>
-                                            Invite
-                                        </Button>
-                                    </CardActions>}
-                            </Grid>
+                                </CardActions>}
                         </Grid>
-                    </Card>
+                    </Grid>
+                </Card>
             )}
         </Grid>
     );
