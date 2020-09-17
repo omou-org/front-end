@@ -1093,7 +1093,7 @@ export default {
 }
             `;
 
-            const {courseInfo, tuition} = formData;
+            const { courseInfo, tuition } = formData;
             const modifiedData = {
                 "courseInfo": {
                     ...courseInfo,
