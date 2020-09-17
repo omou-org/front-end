@@ -143,7 +143,12 @@ export default function CreateOOOForm() {
     return (
         <OOOContext.Provider value={{ OOOFormState, updateOOOFormState }}>
             <Grid container direction="row">
-                {/* <Grid item>
+                {/* 
+                
+                We need to comment this out because the final design is a step feature. I believe we are waiting
+                 for an api to check if there will be schedule conflicts with the instructors OOO and their working hours. 
+                
+                <Grid item>
 				<Stepper style={{width: "100%", backgroundColor: "transparent"}}>
 					{
 				steps.map((label) => {
@@ -177,8 +182,8 @@ export default function CreateOOOForm() {
                     {submitted ? (
                         <OOOConfirmation handleClose={handleClose} />
                     ) : (
-                        <SubmitNotice ref={SubmitNoticeChild} />
-                    )}
+                            <SubmitNotice ref={SubmitNoticeChild} />
+                        )}
                 </Grid>
 
                 <Grid
