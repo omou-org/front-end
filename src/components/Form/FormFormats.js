@@ -203,42 +203,11 @@ export const ACADEMIC_LVL_FIELD = {
         "component": <Fields.TextField textInputProps={{"fullWidth": false}} />,
         "validator": Yup.string().matches(/^\d{5}(?:[-\s]\d{4})?$/u,
             "Invalid zipcode"),
-    },
-    SUBJECT_FIELD = {
-        "name": "experience.subjects",
-        "label": "Subjects Tutor Can Teach",
-        "component": <Fields.TextField />,
-        "validator": Yup.string()
-                     .required()
-                     .length(3),
-    },
-    EXPERIENCE_FIELD = {
-        "name": "experience.experience",
-        "label": "Years of Experience",
-        "component": <Fields.TextField />,
-        "validator": Yup.number()
-                     .required()
-                     .min(1),
-    },
-    BIOGRAPHY_FIELD = {
-        "name": "experience.biography",
-        "label": "Background",
-        "component": <Fields.TextField />,
-        "validator": Yup.string()
-                     .length(6)
-    },
-    LANGUAGE_FIELD = {
-        "name": "experience.language",
-        "label": "Languages",
-        "component": <Fields.TextField />,
-        "validator": Yup.string()
-                     .length(3)
-    }
-
-
+    };
+    
 const INSTRUCTOR_FIELDS = {
-    "name": "instructor",
-    "label": "Instructor Information",
+    "name": "basicInfo",
+    "label": "Basic Information",
     "fields": [
         ...NAME_FIELDS,
         EMAIL_FIELD,
@@ -249,12 +218,8 @@ const INSTRUCTOR_FIELDS = {
         ZIPCODE_FIELD,
         STATE_FIELD,
         BIRTH_DATE_FIELD,
-        SUBJECT_FIELD,
-        EXPERIENCE_FIELD,
-        BIOGRAPHY_FIELD,
-        LANGUAGE_FIELD,
     ],
-}
+};
 
 const PARENT_FIELDS = {
     "name": "parent",
@@ -472,96 +437,6 @@ const GET_USER_TYPE = gql`
     }`;
 
 export default {
-    "instructor": {
-        "title": "Instructor",
-        "form": [INSTRUCTOR_FIELDS],
-        "load": async (id) => {
-            const GET_INSTRUCTOR = gql`
-            query getInstructor($id: ID!) {
-                __typename
-                instructor(userId: $id) {
-                  user {
-                    firstName
-                    lastName
-                    email
-                  }
-                  experience
-                  address
-                  city
-                  birthDate
-                  gender
-                  phoneNumber
-                  state
-                  zipcode
-                  subjects {
-                    name
-                  }
-                  language
-                  biography
-                }
-              }
-              `;
-
-            try {
-                const {"data": {instructor}} = await client.query({
-                    "query": GET_INSTRUCTOR,
-                    "variables": {id},
-                });
-                return {
-                    "instructor": {
-                        ...instructor.user,
-                        ...instructor,
-                    },
-                };
-            } catch (error) {
-                return null;
-            }
-        },
-        "submit": async ({instructor}, id) => {
-            const CREATE_INSTRUCTOR = gql`
-            mutation EditInstructor(
-                $firstName: String!, $lastName: String!, $email: String!,
-                $password: String, $id: ID, $address: String,
-                $biography: String, $birthDate: Date, $phoneNumber: String, 
-                $city: String, $state: String, $zipcode: String,
-                $language: String, $gender: String, experience: Number!,
-                $subjects: String
-            ) {
-                __typename
-                createInstructor(user: {firstName: "", lastName: "", password: "", id: "", email: ""}, 
-                                 address: $address, 
-                                 biography: $biography, 
-                                 birthDate: $birthDate, 
-                                 phoneNumber: $phoneNumber, 
-                                 city: $city, 
-                                 zipcode: $zipcode, 
-                                 state: $state, 
-                                 language: $language, 
-                                 gender: $gender, 
-                                 experience: $experience, 
-                                 subjects: $subjects) {
-                  created
-                }
-              }`;
-            try {
-                console.log(id)
-                console.log(instructor)
-                await client.mutate({
-                    "mutation": CREATE_INSTRUCTOR,
-                    "variables": {
-                        ...instructor,
-                        "birthDate": parseDate(instructor.birthDate),
-                        id,
-                        "password": "",
-                    },
-                });
-            } catch (error) {
-                return {
-                    [FORM_ERROR]: error,
-                };
-            }
-        },
-    },
     "student": {
         "title": {
             "create": "Add Student",
@@ -1255,21 +1130,7 @@ export default {
     "instructor": {
         "title": "Instructor",
         "form": [
-            {
-                "name": "basicInfo",
-                "label": "Basic Information",
-                "fields": [
-                    ...NAME_FIELDS,
-                    EMAIL_FIELD,
-                    PHONE_NUMBER_FIELD,
-                    GENDER_FIELD,
-                    ADDRESS_FIELD,
-                    CITY_FIELD,
-                    ZIPCODE_FIELD,
-                    STATE_FIELD,
-                    BIRTH_DATE_FIELD,
-                ],
-            },
+            INSTRUCTOR_FIELDS,
             {
                 "name": "experience",
                 "label": "Experience",
@@ -1348,7 +1209,7 @@ export default {
                         "city": instructor.city,
                         "zipcode": instructor.zipcode,
                         "state": instructor.state,
-                        "birthDate": instructor.birthDate,
+                        "birthDate": moment(instructor.birthDate, "YYYY-MM-DD"),
                     },
                     "experience": {
                         "subjects": instructor.subjects.map(({name, id}) => ({
@@ -1366,7 +1227,9 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_INSTRUCTOR = gql`
-            mutation CreateInstructor($firstName: String!,
+            mutation CreateInstructor(
+            $id: ID,
+            $firstName: String!,
             $lastName: String!,
             $email: String,
             $phoneNumber: String,
@@ -1379,13 +1242,15 @@ export default {
             $biography: String,
             $language: String,
             $birthDate: Date,
-            $zipcode: String) {
+            $zipcode: String,
+            ) {
                 createInstructor(
                 user: {
                     firstName: $firstName,
                     lastName: $lastName,
                     email: $email,
-                    password: "abcdefgh"
+                    password: "abcdefg",
+                    id: $id
                 },
                 address: $address,
                 biography: $biography,
@@ -1397,15 +1262,16 @@ export default {
                 phoneNumber: $phoneNumber,
                 subjects: $subjects,
                 state: $state,
-                zipcode: $zipcode) {
+                zipcode: $zipcode
+                ) {
+                    created
                     instructor {
-                    user {
-                        id
-                    }
-                    }
+                        user {
+                          id
+                        }
+                      }
                 }
-            }
-            `;
+            }`;
 
             const INVITE_INSTRUCTOR = gql`
             mutation MyMutation($email:String!) {
@@ -1414,9 +1280,7 @@ export default {
   }
 }
 `;
-
-            const {basicInfo, experience} = formData;
-            console.log(basicInfo)
+            const { basicInfo, experience } = formData;
 
             const modifiedData = {
                 "basicInfo": {
@@ -1430,14 +1294,22 @@ export default {
                 },
             };
 
+            const instructorMutationVariable = Object.values(modifiedData)
+            .reduce((obj, section) => {
+                return ({
+                ...obj,
+                ...section,
+            })
+        }, {});
+
             try {
                 await client.mutate({
                     "mutation": CREATE_INSTRUCTOR,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": {
+                        ...instructorMutationVariable,
+                        id,
+                    }
+
                 });
             } catch (error) {
                 return {
