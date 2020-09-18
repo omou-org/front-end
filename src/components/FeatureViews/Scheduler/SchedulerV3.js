@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
-import DateRangeOutlinedIcon from '@material-ui/icons/DateRangeOutlined';
-import FormatListBulletedOutlinedIcon from '@material-ui/icons/FormatListBulletedOutlined';
-import FilterListOutlinedIcon from '@material-ui/icons/FilterListOutlined';
-import ChevronLeftOutlined from "@material-ui/icons/ChevronLeftOutlined";
-import ChevronRightOutlined from "@material-ui/icons/ChevronRightOutlined";
-import { makeStyles, Grid, IconButton, Button, FormControl, Select, MenuItem, Typography } from "@material-ui/core"
+import React, { useState } from "react";
+import { makeStyles, Grid, Typography } from "@material-ui/core"
 import moment from 'moment';
 import { Calendar, momentLocalizer, } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import { BootstrapInput, handleToolTip, sessionArray } from "./SchedulerUtils";
+
 import CustomPopever from "./CalendarPopover"
-import TodayIcon from "@material-ui/icons/Today";
-import Tooltip from "@material-ui/core/Tooltip";
 
+import { CustomToolbar } from "./CalendarToolbar"
+import { useSelector } from "react-redux";
 
-
+import { useSessionStorage } from "../../../utils"
 const useStyles = makeStyles({
     root: {
 
@@ -67,207 +62,44 @@ const eventStyleGetter = (event) => ({
 });
 
 
-const CustomToolbar = (toolbar) => {
-    const [classType, setClassType] = useState("");
-    const [viewState, setViewState] = useState('month');
-    // create prev state 
-    // create courseFilter
-    // instructorFilter
-    // timeShift
-    // viewOption
+
+
+
+export const SchedulerV3 = () => {
+
     const prevState =
         JSON.parse(sessionStorage.getItem('schedulerState')) || {};
-    const [courseFilter, setCourseFilter] = useState(prevState.courseFilter);
-    const [timeShift, setTimeShift] = useState(prevState.timeShift)
-    const [viewOption, setViewOption] = useState(prevState.viewOption || toolbar.view)
-    const [courseType, setCourseType] = useState(prevState.courseType);
 
-
-    const classes = useStyles()
-
-    const handleCourseTypeChange = () => {
-        //Needs to handle when we change views from all, tutor and class
-    }
-
-    const changeView = (value) => {
-        toolbar.onView(value)
-        setViewOption(value)
-    }
-
-    const handleFilterChange = ({ target }) => {
-        toolbar.onView(target.value);
-        changeView(target.value)
-    }
-    const goToBack = () => {
-        toolbar.date.setMonth(toolbar.date.getMonth() - 1);
-        toolbar.onNavigate('PREV');
-    };
-
-    const goToNext = () => {
-
-        toolbar.date.setMonth(toolbar.date.getMonth() + 1);
-        toolbar.onNavigate('NEXT');
-    };
-
-    const goToToday = () => {
-        const now = new Date();
-        toolbar.date.setMonth(now.getMonth());
-        toolbar.date.setYear(now.getFullYear());
-        toolbar.onNavigate('CURRENT');
-    };
+    const sessions = useSelector((state) => state.Calendar.CourseSessions.sessions || []);
+    const [view, setView] = useState("day")
+    const [timeShift, setTimeShift] = useSessionStorage("timeShift", prevState.timeShift || 0)
+    const [timeFrame, setTimeFrame] = useSessionStorage("timeFrame", prevState.viewOption || "day")
+    const [viewOption, setViewOption] = useSessionStorage("viewOption", 'tutoring');
 
 
 
-    const label = () => {
+    const currentSession = sessions.map(({ course: { instructor, ...courseValues }, endDatetime, startDatetime, id }) => {
+        let instructorName = `${instructor.user.firstName} ${instructor.user.lastName}`;
+        return {
+            "color": colorizer(instructorName),
+            "courseID": courseValues.id,
+            "description": courseValues.description,
+            "end": moment(endDatetime).toDate(),
+            "id": id,
+            "instructor": instructorName,
+            "instructor_id": instructor.user.id,
+            "isConfirmed": courseValues.isConfirmed,
+            "resourceId": courseValues
+                ? courseValues.room
+                : 1,
+            "start": moment(startDatetime).toDate(),
+            "title": courseValues.title,
+            "type": courseValues.courseType,
 
-        return (
-            <span>{toolbar.label}</span>
-        );
-    };
-
-
-
-    useEffect(() => {
-        sessionStorage.setItem('schedulerState', JSON.stringify({
-            courseFilter,
-            timeShift,
-            viewOption,
-            courseType,
-
-        }))
-    }, [courseFilter, timeShift, viewOption, courseType])
-
-
-
-    return (
-
-        <Grid
-            container
-            direction="row"
-            className={classes.toolbarContainer}>
-            <Grid
-                className="scheduler-header"
-                container
-                item xs={4}>
-                <Grid item >
-                    <IconButton
-                        onClick={() => changeView('month')}
-                    >
-                        <DateRangeOutlinedIcon />
-                    </IconButton>
-
-                </Grid>
-                <Grid item >
-                    <IconButton
-                        onClick={() => changeView('agenda')}
-                    >
-                        <FormatListBulletedOutlinedIcon /></IconButton>
-                </Grid>
+        }
+    })
 
 
-                <Grid item xs={6}>
-                    <FormControl className="filter-select">
-                        <Select input={
-                            <BootstrapInput id="filter-calendar-type"
-                                name="courseFilter" />
-                        }
-                            MenuProps={{
-                                "classes": {
-                                    "paper": classes.dropdownStyle,
-                                },
-                            }}
-                            // onChange={handleCourseTypeChange}
-                            value={courseType}>
-                            <MenuItem value="all">All</MenuItem>
-                            <MenuItem value="class">
-                                Class
-										</MenuItem>
-                            <MenuItem value="tutoring">
-                                Tutoring
-										</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
-
-            <Grid
-                item
-                xs={4}
-                container
-                direction="row"
-                justify="center"
-                alignItems="center"
-            >
-                <Grid item>
-                    <IconButton aria-label="prev-month"
-                        className="prev-month" onClick={goToBack}>
-                        <ChevronLeftOutlined />
-                    </IconButton>
-                </Grid>
-                <Grid item>
-                    <Typography variant="h6">
-                        {label()}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <IconButton aria-label="next-month"
-                        className="next-month" onClick={goToNext}>
-                        <ChevronRightOutlined />
-                    </IconButton>
-                </Grid>
-            </Grid>
-
-            <Grid item xs={2} />
-            <Grid item xs={2}>
-                <Grid className="scheduler-header-last" container
-                    direction="row" justify="flex-end">
-                    <Grid item xs={3}>
-                        <Tooltip title="Go to Today">
-                            <IconButton aria-label="current-date-button"
-                                className="current-date-button"
-                                onClick={goToToday}>
-                                <TodayIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </Grid>
-                    <Grid item xs={9}>
-                        <FormControl className="filter-select">
-                            <Select input={
-                                <BootstrapInput id="filter-calendar-type"
-                                    name="courseFilter" />
-                            }
-                                MenuProps={{
-                                    "classes": {
-                                        "paper": classes.dropdownStyle,
-                                    },
-                                }}
-                                onChange={handleFilterChange}
-                                value={viewOption}
-                            >
-                                <MenuItem value="day">
-                                    Day
-										</MenuItem>
-                                <MenuItem value="week">
-                                    Week
-										</MenuItem>
-                                <MenuItem value="month">
-                                    Month
-										</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-            </Grid>
-
-
-        </Grid >
-    );
-};
-
-
-
-
-export const SchedulerV3 = (props) => {
 
     const classes = useStyles()
     return (
@@ -282,10 +114,14 @@ export const SchedulerV3 = (props) => {
                     <Calendar
                         popup
                         localizer={localizer}
-                        events={[]}
+                        defaultView={view}
+                        events={[...currentSession]}
                         startAccessor="start"
                         endAccessor="end"
                         style={{ height: 600 }}
+                        onNavigate={date => {
+
+                        }}
                         eventPropGetter={eventStyleGetter}
                         components={{
                             toolbar: CustomToolbar,

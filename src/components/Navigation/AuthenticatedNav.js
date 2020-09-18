@@ -37,6 +37,7 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
     const handleLogout = useCallback(() => {
         closeRegistrationCart();
         dispatch(logout());
+        sessionStorage.clear();
         history.push("/login");
     }, [dispatch, history]);
 
@@ -53,7 +54,7 @@ const AuthenticatedNav = ({ toggleDrawer }) => {
                     {!isMobileSearching && (
                         <>
                             <Hidden lgUp>
-                                <IconButton aria-label="Open Drawer" style={{color:"white"}}
+                                <IconButton aria-label="Open Drawer" style={{ color: "white" }}
                                     onClick={handleDrawerToggle}>
                                     <MenuIcon />
                                 </IconButton>

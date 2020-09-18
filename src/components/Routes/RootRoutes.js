@@ -67,8 +67,8 @@ export const RootRoutes = () => {
                     {
                         [USER_TYPES.receptionist]: <DashboardSwitch />,
                         [USER_TYPES.admin]: <DashboardSwitch />,
-                        [USER_TYPES.parent]: <Scheduler />,
-                        [USER_TYPES.instructor]: <Scheduler />,
+                        [USER_TYPES.parent]: <SchedulerV3 />,
+                        [USER_TYPES.instructor]: <SchedulerV3 />,
                     }[AuthUser.accountType]
                 }
 

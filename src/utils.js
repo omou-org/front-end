@@ -1,6 +1,6 @@
-import {instance} from "actions/apiActions";
-import {useCallback, useState} from "react";
-import {useHistory} from "react-router-dom";
+import { instance } from "actions/apiActions";
+import { useCallback, useState } from "react";
+import { useHistory } from "react-router-dom";
 import moment from "moment";
 
 export const USER_TYPES = {
@@ -64,7 +64,7 @@ export const dateFormatter = (date) =>
     new Date(date.replace(/-/gu, "/")).toDateString()
         .substr(3);
 
-export const courseDateFormat = ({schedule, is_confirmed}) => ({
+export const courseDateFormat = ({ schedule, is_confirmed }) => ({
     "days": DayConverter[new Date(schedule.start_date).getDay()],
     "end_date": dateFormatter(schedule.end_date),
     "end_time": new Date(`2020-01-01${schedule.end_time}`).toLocaleTimeString(
@@ -98,7 +98,7 @@ export const courseDataParser = (course) => {
         "day": "numeric",
     };
 
-    const {schedule, status, tuition, course_id} = course;
+    const { schedule, status, tuition, course_id } = course;
     const DaysString = schedule.days;
 
     const endDate = new Date(schedule.end_date + schedule.end_time),
@@ -145,14 +145,14 @@ export const sessionPaymentStatus = (session, enrollment) => {
 
     if (
         sessionIsBeforeLastPaidSession &&
-      !thereIsPartiallyPaidSession &&
-      classSessionNotBeforeFirstPayment
+        !thereIsPartiallyPaidSession &&
+        classSessionNotBeforeFirstPayment
     ) {
         return "Paid";
     } else if (
         sessionIsLastPaidSession &&
-      thereIsPartiallyPaidSession &&
-      thereIsPartiallyPaidSession
+        thereIsPartiallyPaidSession &&
+        thereIsPartiallyPaidSession
     ) {
         return "Partial";
     } else if (!classSessionNotBeforeFirstPayment) {
@@ -242,19 +242,19 @@ export const gradeOptions = [
 ];
 
 export const gradeLvl = (gradelevel) => {
-    switch(gradelevel) {
-      case "ELEMENTARY_LVL":
-        return "Elementary School";
-      case "MIDDLE_LVL": 
-        return "Middle School";
-      case "HIGH_LVL":
-        return "High School";
-      case "COLLEGE_LVL":
-        return "College";
-      default:
-        return;
+    switch (gradelevel) {
+        case "ELEMENTARY_LVL":
+            return "Elementary School";
+        case "MIDDLE_LVL":
+            return "Middle School";
+        case "HIGH_LVL":
+            return "High School";
+        case "COLLEGE_LVL":
+            return "College";
+        default:
+            return;
     }
-  }
+}
 
 /**
  * Converts a time of day to a backend-friendly format
@@ -366,7 +366,7 @@ export const upcomingSession = (sessions, courseID) =>
     sessions.filter((session) => session.course == courseID)
         .sort((sessionA, sessionB) =>
             new Date(sessionA.start_datetime) - new Date(sessionB.start_datetime))
-        .find(({start_datetime}) => new Date(start_datetime) > Date.now());
+        .find(({ start_datetime }) => new Date(start_datetime) > Date.now());
 
 /**
  * @description calculate amount paid towards enrollment
@@ -375,8 +375,8 @@ export const upcomingSession = (sessions, courseID) =>
  * @returns "Amount paid per enrollment"
  */
 export const tuitionAmount = (courseObject, numSessions) => {
-    const {schedule, hourly_tuition} = courseObject;
-    const {end_time, start_date, start_time} = schedule;
+    const { schedule, hourly_tuition } = courseObject;
+    const { end_time, start_date, start_time } = schedule;
     const HOUR = 36e5;
 
     // Turns string object into Date string
@@ -394,7 +394,7 @@ export const tuitionAmount = (courseObject, numSessions) => {
  * @returns "Amount paid"
  * */
 export const getTuitionAmount = (courseObject, numSessions) => {
-    const {startTime, endTime, hourlyTuition} = courseObject;
+    const { startTime, endTime, hourlyTuition } = courseObject;
     const duration = moment.duration(moment("2020-01-01T" + endTime).diff(moment("2020-01-01T" + startTime))).asHours();
     return (hourlyTuition * duration * numSessions).toFixed(2);
 };
@@ -427,7 +427,7 @@ export const uniques = (array) => array.filter(
  * Returns full name given a user object
  * @param {Object} user
  */
-export const fullName = ({firstName, lastName}) => `${firstName} ${lastName}`;
+export const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
 
 /**
  * Returns if 2 arrays are the same
@@ -548,18 +548,18 @@ export function deepEqual(object1, object2) {
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
 
-	if (keys1.length !== keys2.length) {
-		return false;
-	}
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
 
-	for (const key of keys1) {
-		const val1 = object1[key];
-		const val2 = object2[key];
-		const areObjects = isObject(val1) && isObject(val2);
-		if (
-			areObjects && !deepEqual(val1, val2) ||
-			!areObjects && val1 !== val2
-		) {
+    for (const key of keys1) {
+        const val1 = object1[key];
+        const val2 = object2[key];
+        const areObjects = isObject(val1) && isObject(val2);
+        if (
+            areObjects && !deepEqual(val1, val2) ||
+            !areObjects && val1 !== val2
+        ) {
             return false;
         }
     }
@@ -575,6 +575,7 @@ function isObject(object) {
 export function useSessionStorage(key, initialValue) {
     // State to store our value
     // Pass initial state function to useState so logic is only executed once
+
     const [storedValue, setStoredValue] = useState(() => {
         try {
             // Get from local storage by key

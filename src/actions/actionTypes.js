@@ -305,3 +305,7 @@ export const GET_GIF_SUCCESS = "GET_GIF_SUCCESS";
 export const GET_GIF_FAIL = "GET_GIF_FAIL";
 
 export const SET_CREDENTIALS = "SET_CREDENTIALS";
+
+
+
+export const GET_CALENDAR_EVENTS = 'GET_CALENDAR_EVENTS';

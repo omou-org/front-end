@@ -39,6 +39,7 @@ export default function CustomPopover({ children }) {
                 <Typography >{moment(children._owner.memoizedProps.event.start).format('LLLL')}</Typography>
                 <Typography>Instructor : {children._owner.memoizedProps.event.instructor}</Typography>
                 <Typography> Room : {children._owner.memoizedProps.event.room}</Typography>
+                <Typography>Type : {children._owner.memoizedProps.event.type}</Typography>
 
             </Grid>
 
