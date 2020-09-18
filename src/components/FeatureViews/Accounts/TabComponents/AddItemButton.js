@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import { PropTypes } from 'prop-types';
 
 const useStyles = makeStyles({
   addNewItemStyles: ({ height, width }) => ({
@@ -31,3 +32,14 @@ export const AddItemButton = ({ children, ...rest }) => {
     </Box>
   );
 };
+
+AddItemButton.propTypes={
+  height: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  width: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+}

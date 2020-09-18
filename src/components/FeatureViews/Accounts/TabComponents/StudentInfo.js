@@ -62,11 +62,13 @@ const StudentInfo = () => {
       data?.parent.studentPrimaryParent
         .concat(data?.parent.studentSecondaryParent)
         .map(({ user, phoneNumber }) => ({
-          email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
-          phone_number: phoneNumber,
-          role: 'student',
-          user_id: user.id,
+          "name": `${user.firstName} ${user.lastName}`,
+          "phoneNumber": phoneNumber,
+          "accountType": "student",
+          "user": {
+              "id":user.id,
+              "email": user.email,
+          }
         })),
     [data]
   );
@@ -99,7 +101,7 @@ const StudentInfo = () => {
       <Grid item sm={6} xs={12}>
         <AddItemButton
           height={240}
-          width={460}
+          width='inherit'
           component={Link}
           to={`/form/add_student/${accountID}`}
         >
