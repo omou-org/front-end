@@ -15,6 +15,7 @@ import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { fullName, gradeOptions } from "../../../utils";
+import { useSelector } from "react-redux";
 import moment from "moment";
 import theme, {
   highlightColor,
@@ -122,33 +123,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
-const GET_COURSES = gql`
-  query getCourses {
-    courses {
-      dayOfWeek
-      endDate
-      endTime
-      title
-      startTime
-      academicLevel
-      startDate
-      instructor {
-        user {
-          firstName
-          lastName
-          id
-        }
-      }
-      courseCategory {
-        id
-        name
-      }
-      courseId
-      id
-    }
-  }
-`;
 
 const ClassListItem = ({
   title,
@@ -305,13 +279,77 @@ const CourseManagementContainer = () => {
   const [gradeFilterValue, setGradeFilterValue] = useState("");
   const [subectFilterValue, setSubjectFilterValue] = useState("");
   const [instructorsFilterValue, setInstructorFilterValue] = useState("");
+  const { email, accountType } = useSelector(({ auth }) => auth) || [];
+  console.log(email);
+  console.log(accountType);
+
+  const queryParser = (userType) =>
+    ({
+      ADMIN: "AdminType",
+      INSTRUCTOR: "InstructorType",
+      PARENT: "ParentType",
+      STUDENT: "StudentType",
+    }[userType]);
+
+  const GET_COURSES = gql`
+  query getCourses ${accountType === "PARENT" ? '($email: String = "")' : ""} {
+    courses {
+      dayOfWeek
+      endDate
+      endTime
+      title
+      startTime
+      academicLevel
+      startDate
+      instructor {
+        user {
+          firstName
+          lastName
+          id
+        }
+      }
+      courseCategory {
+        id
+        name
+      }
+      courseId
+      id
+      enrollmentSet {
+        student {
+          user {
+            id
+          }
+        }
+      }
+    }
+  ${
+      accountType === "PARENT" ? 
+  `parent(email: $email) {
+     studentList
+   }` 
+   : ""
+    }
+    enrollments {
+      student {
+        user {
+          id
+        }
+      }
+    }
+  }
+`;
 
   const handleChange = (event) => setSortByDate(event.target.value);
 
-  const { data, loading, error } = useQuery(GET_COURSES);
+  const { data, loading, error } = useQuery(GET_COURSES, {
+    variables: {
+      email
+    }
+  });
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
+  console.log(data)
 
   const createFilteredListFromCourses = (filterCondition) =>
     data.courses.reduce(
@@ -347,6 +385,31 @@ const CourseManagementContainer = () => {
           class_name: sortDescOrder(firstEl.title, secondEl.title),
         }[sortByDate])
     );
+
+  // const parentCourseDisplay = data.courses.map(x => x.enrollmentSet).filter(y => {
+  //   return y.length > 0
+  // });
+
+  const checkValidStudentEnrollment = data.courses.reduce((accum, current) => {
+    if(current.enrollmentSet.length > 0) {
+      accum.push(current)
+    }
+    return accum
+  }, [])
+  
+  const comparison = (studentList, enrollmentArray) => {
+      if (queryParser(accountType) === "ParentType") {
+        for (const studentId of enrollmentArray) {
+          return studentList?.includes(studentId.student.user.id);
+        }
+      } else {
+        return true;
+      }
+    };
+
+    // console.log(parentCourseDisplay);
+    console.log(checkValidStudentEnrollment);
+    // console.log(comparison(data.parent?.studentList, data.enrollments))
 
   return (
     <Grid item xs={12}>
@@ -431,6 +494,30 @@ const CourseManagementContainer = () => {
             />
           </Grid>
         </Paper>
+        {/* {defaultCourseDisplay.map(
+          ({
+            title,
+            dayOfWeek,
+            endDate,
+            endTime,
+            startTime,
+            startDate,
+            instructor,
+            id,
+          }) => (
+            <ClassListItem
+              title={title}
+              day={dayOfWeek}
+              endDate={endDate}
+              endTime={endTime}
+              startTime={startTime}
+              startDate={startDate}
+              instructor={instructor}
+              id={id}
+              key={title}
+            />
+          )
+        )} */}
         {defaultCourseDisplay.map(
           ({
             title,

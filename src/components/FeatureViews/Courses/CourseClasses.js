@@ -190,6 +190,8 @@ const CourseClasses = () => {
   if (getAnnouncements.error)
     return console.error(getAnnouncements.error.message);
 
+    console.log(data)
+    
   const {
     academicLevel,
     description,
