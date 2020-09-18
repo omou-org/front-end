@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, { useCallback, useState } from "react";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -8,14 +8,14 @@ import TimeAvailabilityContainer from "./TimeAvailabilityContainer";
 import RequestOutOfOfficeContainer from "./RequestOutOfOfficeContainer";
 import Box from "@material-ui/core/Box";
 
-function TabPanel({children, value, index, ...other}) {
+function TabPanel({ children, value, index, ...other }) {
 	return (
 		<div
 			role="tabpanel"
 			hidden={value !== index}
 			id={`simple-tabpanel-${index}`}
 			aria-labelledby={`simple-tab-${index}`}
-			style={{width: "100%"}}
+			style={{ width: "100%" }}
 			{...other}
 		>
 			{value === index && (
@@ -47,20 +47,20 @@ export default function AvailabilityContainer() {
 						onChange={handleChangeTab}
 						aria-label="Instructor availability tabs"
 					>
-						<Tab label="Time Availability"/>
-						<Tab label="Course Availability" disabled/>
-						<Tab label="Request Out of Office"/>
+						<Tab label="Time Availability" />
+						<Tab label="Course Availability" disabled />
+						<Tab label="Request Out of Office" data-cy='request-OOO-tab' />
 					</Tabs>
 				</Grid>
 				<Grid item container xs={12}>
 					<TabPanel value={tab} index={0}>
-						<TimeAvailabilityContainer/>
+						<TimeAvailabilityContainer />
 					</TabPanel>
 					<TabPanel value={tab} index={1}>
 						TBD
 					</TabPanel>
-					<TabPanel value={tab} index={2}>
-						<RequestOutOfOfficeContainer/>
+					<TabPanel value={tab} index={2} >
+						<RequestOutOfOfficeContainer />
 					</TabPanel>
 				</Grid>
 			</Grid>

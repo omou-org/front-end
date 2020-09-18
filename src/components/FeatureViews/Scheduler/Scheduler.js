@@ -469,6 +469,7 @@ const Scheduler = (props) => {
                     </Grid>
                 </Grid>
                 <Grid className="omou-calendar" item xs={12}>
+
                     <FullCalendar
                         contentHeight="400"
                         defaultView="timeGridDay"
@@ -480,7 +481,10 @@ const Scheduler = (props) => {
                         events={[...calendarEvents, ...OOOEvents]}
                         header={false}
                         minTime="07:00:00"
+
+
                         aspectRatio="2"
+
                         nowIndicator
                         plugins={[
                             dayGridPlugin,
