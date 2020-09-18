@@ -1301,7 +1301,7 @@ export default {
                 ...section,
             })
         }, {});
-
+        console.log(instructorMutationVariable)
             try {
                 await client.mutate({
                     "mutation": CREATE_INSTRUCTOR,

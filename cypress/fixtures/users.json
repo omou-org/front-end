@@ -26,5 +26,30 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
+    },
+    "instructor": {
+        "address": "123 Main St",
+        "biography": "Taught at Cal Poly Pomona for several years, now I'm teaching here for fun.",
+        "birthDate": "1989-06-05",
+        "city": "San Gabriel",
+        "experience": 5,
+        "gender": "MALE",
+        "language": "English",
+        "phoneNumber": "9253418562",
+        "state": "CA",
+        "subjects": [{
+            "name": "Math",
+            "id": 1,
+            "__typename": "CourseCategoryType"
+        }],
+        "user": {
+            "__typename": "UserType",
+            "email": "paulwuus1000@hotmail.com",
+            "firstName": "Paul",
+            "lastName": "Wu",
+            "id": 3
+        },
+        "zipcode": "91820",
+        "__typename": "InstructorType"
     }
 }
