@@ -51,5 +51,30 @@
         },
         "zipcode": "91820",
         "__typename": "InstructorType"
+    },
+    "instructor2": {
+        "address": "456 Main St",
+        "biography": "Omou is awesome!",
+        "birthDate": "1989-06-05",
+        "city": "San Gabriel",
+        "experience": 10,
+        "gender": "MALE",
+        "language": "Cantonese, English, French",
+        "phoneNumber": "92534458562",
+        "state": "CA",
+        "subjects": [{
+            "name": "Biology",
+            "id": 2,
+            "__typename": "CourseCategoryType"
+        }],
+        "user": {
+            "__typename": "UserType",
+            "email": "paulwuus1000@hotmail.com",
+            "firstName": "Paul",
+            "lastName": "Wu",
+            "id": 3
+        },
+        "zipcode": "91820",
+        "__typename": "InstructorType"
     }
 }
