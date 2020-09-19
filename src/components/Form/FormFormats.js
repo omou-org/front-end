@@ -493,7 +493,7 @@ export default {
                         "query": GET_NAME,
                         "variables": {id},
                     });
-
+                    console.log(parent)
                     return {
                         "student": {
                             "primaryParent": {
@@ -529,6 +529,7 @@ export default {
                             firstName
                             lastName
                             email
+                            id
                         }
                     }
                 }`;
@@ -536,6 +537,8 @@ export default {
                         "query": GET_INFO,
                         "variables": {id},
                     });
+
+                    console.log(student)
                     
                     const modifiedData = {
                         ...student,

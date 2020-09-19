@@ -12,7 +12,9 @@ describe("Fills out form", () => {
                     },
                     "test": (variables) => {
                         Object.entries(variables).forEach(([key, value]) => {
-                            if (!["phoneNumber", "id", "user", "password"].includes(key)) {
+                            console.log(key)
+                            console.log(value)
+                            if (!["phoneNumber", "id", "user", "primaryParent"].includes(key)) {
                                 expect(student[key] || student?.user[key]).equals(value);
                             }
                         });
@@ -24,8 +26,7 @@ describe("Fills out form", () => {
                             student
                         },
                     },
-                    "test": (x) => {
-                        console.log(x)
+                    "test": ({id}) => {
                         expect(id).equals(student.user.id.toString(), "Check ID passed");
                     },
                 },
