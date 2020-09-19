@@ -536,7 +536,7 @@ export default {
                         "query": GET_INFO,
                         "variables": {id},
                     });
-
+                    
                     const modifiedData = {
                         ...student,
                         "firstName": student.user.firstName,
