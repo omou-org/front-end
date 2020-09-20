@@ -32,6 +32,7 @@ import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
 import {fullName, USER_TYPES} from "utils";
+import AccessControlComponent from "../../OmouComponents/AccessControlComponent.js";
 
 export const GET_COURSE_DETAILS = gql`
 	query CourseDetails($courseId: ID!){
@@ -201,46 +202,50 @@ const RegistrationCourse = () => {
 				<Typography align="left" className="description text">
 					{description}
 				</Typography>
-				<Tabs
-					className="registration-course-tabs"
-					indicatorColor="primary"
-					onChange={handleTabChange}
-					value={activeTab}
-				>
-					<Tab
-						label={
-							<>
-								<RegistrationIcon className="NoteIcon"/> Registration
-							</>
-						}
+				<AccessControlComponent
+								permittedAccountTypes={[USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.receptionist]}
+						>
+					<Tabs
+						className="registration-course-tabs"
+						indicatorColor="primary"
+						onChange={handleTabChange}
+						value={activeTab}
+					>
+						<Tab
+							label={
+								<>
+									<RegistrationIcon className="NoteIcon"/> Registration
+								</>
+							}
+							/>
+						<Tab
+							label={
+								hasImportantNotes ? (
+									<>
+										<Avatar className="notificationCourse"/>
+										<NoteIcon className="TabIcon"/> Notes
+									</>
+								) : (
+									<>
+										<NoteIcon className="NoteIcon"/> Notes
+									</>
+								)
+							}
 						/>
-					<Tab
-						label={
-							hasImportantNotes ? (
-								<>
-									<Avatar className="notificationCourse"/>
-									<NoteIcon className="TabIcon"/> Notes
-								</>
-							) : (
-								<>
-									<NoteIcon className="NoteIcon"/> Notes
-								</>
-							)
-						}
-					/>
-				</Tabs>
-				{activeTab === 0 && (
-					<RegistrationCourseEnrollments
-						courseID={courseID}
-						maxCapacity={maxCapacity}
-						courseTitle={title}
-					/>
-				)}
-				{activeTab === 1 && (
-					<div className="notes-container">
-						<Notes ownerID={courseID} ownerType="course"/>
-					</div>
-				)}
+					</Tabs>
+					{activeTab === 0 && (
+						<RegistrationCourseEnrollments
+							courseID={courseID}
+							maxCapacity={maxCapacity}
+							courseTitle={title}
+						/>
+					)}
+					{activeTab === 1 && (
+						<div className="notes-container">
+							<Notes ownerID={courseID} ownerType="course"/>
+						</div>
+					)}
+				</AccessControlComponent>
 			</Paper>
 		</Grid>
 	);
