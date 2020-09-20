@@ -198,7 +198,10 @@ const Accounts = () => {
                         </TableCell>
                         <TableCell>
                             <Tooltip title={row.user.email}>
-                                <span>{row.user.email.substr(0, 20)}</span>
+                                <span>
+                                    {row.user.email.substr(0, 20)}
+                                    {(row.user.email.length > 21) && "..."}
+                                </span>
                             </Tooltip>
                         </TableCell>
                         <TableCell>{addDashes(row.phoneNumber)}</TableCell>
