@@ -48,5 +48,16 @@
             "__typename": "UserType"
         },
         "zipcode": "91801"
+    },
+    "getAccountType": {
+        "accountType": "STUDENT",
+        "user": {
+            "email": "test@test.com",
+            "firstName": "Aaron",
+            "id": 1,
+            "lastName": "Ao",
+            "__typename":"UserType"
+        },
+        "__typename": "StudentType"
     }
 }
