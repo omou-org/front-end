@@ -76,5 +76,9 @@
         },
         "zipcode": "91820",
         "__typename": "InstructorType"
+    },
+    "inviteInstructorConfirmation": {
+        "status": "failed",
+        "__typename": "InviteInstructor"
     }
 }
