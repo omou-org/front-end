@@ -10,6 +10,7 @@ const FormPage = () => {
     const {type, id} = useParams();
     const {form, load, submit, title} = Forms?.[type] || {};
     const [initialData, setInitialData] = useState();
+    console.log(initialData)
     const onSubmit =
         useCallback((formData) => submit(formData, id), [id, submit]);
 

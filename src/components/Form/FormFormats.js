@@ -824,13 +824,16 @@ export default {
                 ...obj,
                 ...section,
             }), {});
-
+            
+            const userUuid = `${adminMutationVariable.firstName.charAt(0).toLowerCase()}${adminMutationVariable.lastName}`
+            
             try {
                 await client.mutate({
                     "mutation": CREATE_ADMIN,
                     "variables": {
                         ...adminMutationVariable,
-                        id
+                        id,
+                        userUuid
                     }
                 });
             } catch (error) {
