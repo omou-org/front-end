@@ -123,7 +123,6 @@ const Accounts = () => {
         if (!data) {
             return [];
         }
-        console.log(data)
         let newUsersList = [];
         switch (tabIndex) {
             case 1:

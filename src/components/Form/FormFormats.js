@@ -768,7 +768,6 @@ export default {
             }
         },
         "submit": async (formData, id) => {
-            console.log(id)
             const CREATE_ADMIN = gql`
             mutation CreateAdmin(
                 $address: String,
