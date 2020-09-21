@@ -12,6 +12,7 @@ import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import MaskedInput from "react-text-mask";
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
     return this.test('unique', message, function (list) {
@@ -171,7 +172,7 @@ export const ACADEMIC_LVL_FIELD = {
     PHONE_NUMBER_FIELD = {
         "name": "phoneNumber",
         "label": "Phone Number",
-        "component": <Fields.TextField />,
+        "component": <Fields.PhoneInputPicker/>, //<Fields.TextField />,
         "validator": Yup.string().matches(/(^\d{3}[- ]?\d{3}[- ]?\d{4}?$)|(^[(]\d{3}[)][- ]?\d{3}[- ]?\d{4}?$)/u,
             "Invalid phone number"),
     },
