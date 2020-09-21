@@ -479,7 +479,6 @@ export default {
                     "query": GET_USER_TYPE,
                     "variables": {id},
                 });
-                console.log(userInfo)
                 if (userInfo.accountType === "PARENT") {
                     const GET_NAME = gql`
                 query GetName($id: ID!) {
@@ -494,7 +493,6 @@ export default {
                         "query": GET_NAME,
                         "variables": {id},
                     });
-                    console.log(parent)
                     return {
                         "student": {
                             "primaryParent": {
@@ -538,8 +536,6 @@ export default {
                         "query": GET_INFO,
                         "variables": {id},
                     });
-
-                    console.log(student)
                     
                     const modifiedData = {
                         ...student,
@@ -555,7 +551,6 @@ export default {
                             "value": student.primaryParent.user.id,
                         },
                     };
-                    console.log(modifiedData);
                     // delete modifiedData.pr;
                     delete modifiedData.user;
 
@@ -570,7 +565,8 @@ export default {
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!,
+            mutation AddStudent(
+            $firstName: String!,
             $email: String,
             $lastName: String!,
             $address: String,
