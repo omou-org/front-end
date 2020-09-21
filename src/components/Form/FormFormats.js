@@ -479,6 +479,7 @@ export default {
                     "query": GET_USER_TYPE,
                     "variables": {id},
                 });
+                console.log(userInfo)
                 if (userInfo.accountType === "PARENT") {
                     const GET_NAME = gql`
                 query GetName($id: ID!) {
@@ -554,6 +555,7 @@ export default {
                             "value": student.primaryParent.user.id,
                         },
                     };
+                    console.log(modifiedData);
                     // delete modifiedData.pr;
                     delete modifiedData.user;
 

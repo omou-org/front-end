@@ -1,6 +1,6 @@
 describe("Fills out form", () => {
     before(() => {
-        cy.fixture("users.json").then(({ student, getAccountType }) => {
+        cy.fixture("users.json").then(({ student, userInfo }) => {
             cy.mockGraphQL({
                 "AddStudent": {
                     "response": {
@@ -21,11 +21,11 @@ describe("Fills out form", () => {
                 "GET_USER_TYPE": {
                     "response": {
                         "data": {
-                            getAccountType
+                            userInfo
                         },
                     },
                     "test": ({id}) => {
-                        expect(id).equals(getAccountType.user.id.toString(), "Check ID passed");
+                        expect(id).equals(student.user.id.toString(), "Check ID passed");
                     }
                 },
                 "GetInfo": {

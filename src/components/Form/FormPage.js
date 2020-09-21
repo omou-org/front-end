@@ -12,7 +12,7 @@ const FormPage = () => {
     const [initialData, setInitialData] = useState();
     const onSubmit =
         useCallback((formData) => submit(formData, id), [id, submit]);
-
+    console.log(initialData);
     useEffect(() => {
         if (id) {
             let abort = false;
@@ -50,7 +50,7 @@ const FormPage = () => {
     if (!form || (id && initialData === null)) {
         return <Redirect to="/PageNotFound" />;
     }
-
+    
     return (
         <BackgroundPaper>
             <BackButton />
