@@ -63,6 +63,7 @@ const QUERY_USERS = gql`
         }
          admins(adminType: $adminType) {
             adminType
+            userUuid
             user {
                 ...SimpleUser
                 email
@@ -132,8 +133,7 @@ const Accounts = () => {
                 newUsersList = data.students;
                 break;
             case 3:
-                // TODO: receptionist
-                newUsersList = data.admins.filter(admin => admin.adminType === USER_TYPES.receptionist && admin);
+                newUsersList = data.admins.filter(admin => admin.adminType === USER_TYPES.receptionist);
                 break;
             case 4:
                 newUsersList = data.parents;
@@ -142,6 +142,7 @@ const Accounts = () => {
                 newUsersList = Object.values(data).flat();
         }
         return newUsersList
+            .filter(user => user.adminType !== "OWNER")
             .map((user) => ({
                 ...user,
                 "accountType": user.accountType.toLowerCase(),

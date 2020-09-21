@@ -26,5 +26,24 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
+    },
+    "receptionist": {
+        "address": "742 los robles ave",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "testing@test.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "xLin",
+        "zipcode": "91801",
+        "__typename": "AdminType"
     }
 }
