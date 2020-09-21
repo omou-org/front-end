@@ -57,10 +57,10 @@
         "biography": "Omou is awesome!",
         "birthDate": "1989-06-05",
         "city": "San Gabriel",
-        "experience": 10,
+        "experience": "10",
         "gender": "MALE",
         "language": "Cantonese, English, French",
-        "phoneNumber": "92534458562",
+        "phoneNumber": "9253458562",
         "state": "CA",
         "subjects": [{
             "name": "Biology",

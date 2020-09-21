@@ -1,6 +1,6 @@
 describe("Fills out form", () => {
     before(() => {
-        cy.fixture("users.json").then(({instructor}) => {
+        cy.fixture("users.json").then(({instructor, instructor2, inviteInstructorConfirmation}) => {
             cy.mockGraphQL({
                 "CreateInstructor": {
                     "response": {
@@ -12,10 +12,19 @@ describe("Fills out form", () => {
                     },
                     "test": (variables) => {
                         Object.entries(variables).forEach(([key, value]) => {
-                            if (!["phoneNumber", "id", "user", "password"].includes(key)) {
-                                expect(instructor[key] || instructor?.user[key]).equals(value);
+                            if (!["phoneNumber", "id", "user", "password", "subjects", "language"].includes(key)) {
+                                expect(instructor2[key] || instructor2?.user[key]).equals(value);
                             }
                         });
+                    },
+                },
+                "MyMutation": {
+                    "response": {
+                        "data": {
+                            "inviteInstructor": {
+                                inviteInstructorConfirmation
+                            }
+                        }
                     },
                 },
                 "GetInstructor": {
@@ -109,4 +118,13 @@ describe("Fills out form", () => {
                 .should("be.enabled")
         });
     });
+
+    it("Properly submits", () => {
+        cy.fixture("users.json").then(({ instructor2 }) => {
+            cy.get("[data-cy=submitButton]")
+                .click()
+            cy.contains("submitted");
+            cy.contains(instructor2.user.firstName)
+        })
+    })
 });
