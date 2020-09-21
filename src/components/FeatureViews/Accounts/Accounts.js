@@ -36,7 +36,7 @@ import secondaryTheme from "../../../theme/secondaryTheme";
 import NewUser from "@material-ui/icons/PersonAdd";
 
 const QUERY_USERS = gql`
-    query UserQuery {
+    query UserQuery($adminType: String) {
         students {
             user {
                 ...SimpleUser
@@ -54,6 +54,15 @@ const QUERY_USERS = gql`
             phoneNumber
         }
         instructors {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+         admins(adminType: $adminType) {
+            adminType
             user {
                 ...SimpleUser
                 email
@@ -114,6 +123,7 @@ const Accounts = () => {
         if (!data) {
             return [];
         }
+        console.log(data)
         let newUsersList = [];
         switch (tabIndex) {
             case 1:
@@ -124,7 +134,7 @@ const Accounts = () => {
                 break;
             case 3:
                 // TODO: receptionist
-                newUsersList = [];
+                newUsersList = data.admins.filter(admin => admin.adminType === USER_TYPES.receptionist && admin);
                 break;
             case 4:
                 newUsersList = data.parents;

@@ -768,14 +768,16 @@ export default {
             }
         },
         "submit": async (formData, id) => {
+            console.log(id)
             const CREATE_ADMIN = gql`
             mutation CreateAdmin(
                 $address: String,
-                $adminType: AdminTypeEnum,
+                $adminType: AdminTypeEnum!,
                 $birthDate: Date,
                 $city: String,
                 $gender: GenderEnum,
                 $phoneNumber: String,
+                $id: ID,
                 $state: String,
                 $email: String,
                 $firstName: String!,
@@ -786,7 +788,8 @@ export default {
                 createAdmin(
                     user: {
                         firstName: $firstName, lastName: $lastName,
-                        password: $password, email: $email
+                        password: $password, email: $email,
+                        id: $id,
                     },
                     address: $address,
                     adminType: $adminType,
@@ -816,14 +819,20 @@ export default {
                     "birthDate": parseDate(formData.user.birthDate),
                 },
             };
+
+            const adminMutationVariable = Object.values(modifiedData)
+            .reduce((obj, section) => ({
+                ...obj,
+                ...section,
+            }), {});
+
             try {
                 await client.mutate({
                     "mutation": CREATE_ADMIN,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": {
+                        ...adminMutationVariable,
+                        id
+                    }
                 });
             } catch (error) {
                 return {
