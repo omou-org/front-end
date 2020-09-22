@@ -27,7 +27,7 @@
         "state": "CA",
         "zipcode": "94566"
     },
-    "instructor": {
+    "original_instructor_data": {
         "address": "123 Main St",
         "biography": "Taught at Cal Poly Pomona for several years, now I'm teaching here for fun.",
         "birthDate": "1989-06-05",
@@ -52,7 +52,7 @@
         "zipcode": "91820",
         "__typename": "InstructorType"
     },
-    "instructor2": {
+    "updated_instructor_data": {
         "address": "456 Main St",
         "biography": "Omou is awesome!",
         "birthDate": "1989-06-05",
@@ -77,7 +77,7 @@
         "zipcode": "91820",
         "__typename": "InstructorType"
     },
-    "inviteInstructorConfirmation": {
+    "inviteInstructorConfirmationResponse": {
         "status": "failed",
         "__typename": "InviteInstructor"
     }
