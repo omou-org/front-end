@@ -45,7 +45,7 @@ export const PhoneNumberInput = (props) =>
     <PhoneInput 
         {...props}
         country="US"/>
-export const MaskedPhoneInput = (props) => 
+const MaskedPhoneInput = (props) => 
     <MaskedInput mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
                  placeholderChar={'\u2000'} 
                  showMask={false}
