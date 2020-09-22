@@ -1,4 +1,4 @@
-describe("Fills out form", () => {
+describe("Fills out form with mock data of receptionist from our user.json file, view our form to see if the data is inputed properly, edit our form with edited data, and submits our form", () => {
     before(() => {
         cy.fixture("users.json").then(({ receptionist }) => {
             cy.mockGraphQL({
@@ -36,7 +36,7 @@ describe("Fills out form", () => {
         });
     });
 
-    it("Loads data properly for first form", () => {
+    it("Loads our mock data properly into the receptionist information form section for receptionist", () => {
         cy.fixture("users.json").then(({ receptionist }) => {
             cy.get("[data-cy=login-firstName-input]")
                 .should("have.value", receptionist.user.firstName);
@@ -49,7 +49,7 @@ describe("Fills out form", () => {
         });
     });
 
-    it("Can enter data properly for first form", () => {
+    it("Can enter data from the user properly into the first form, while checking if bad info is entered the submit button should be disabled", () => {
         cy.fixture("users.json").then(({ receptionist }) => {
             cy.get("[data-cy=login-firstName-input]")
                 .clear()
@@ -106,7 +106,7 @@ describe("Fills out form", () => {
         });
     });
 
-    it("Properly submits", () => {
+    it("Properly submits the receptionist form and displays the results page", () => {
         cy.fixture("users.json").then(({ receptionist }) => {
             cy.get("[data-cy=submitButton]").click();
             cy.contains("submitted");
