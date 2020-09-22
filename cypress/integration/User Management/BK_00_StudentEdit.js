@@ -1,6 +1,6 @@
-describe("Fills out form with mock data of students from our user.json file", () => {
+describe("Fills out form with mock data of students from our user.json file, view our form to see if the data is inputed properly, edit our form with edited data, and submits our form", () => {
     before(() => {
-        cy.fixture("users.json").then(({ student, userInfo }) => {
+        cy.fixture("users.json").then(({ student, accountType }) => {
             cy.mockGraphQL({
                 "AddStudent": {
                     "response": {
@@ -21,7 +21,7 @@ describe("Fills out form with mock data of students from our user.json file", ()
                 "GET_USER_TYPE": {
                     "response": {
                         "data": {
-                            userInfo
+                            "userInfo": accountType
                         },
                     },
                     "test": ({id}) => {
@@ -43,7 +43,7 @@ describe("Fills out form with mock data of students from our user.json file", ()
         });
     });
 
-    it("Loads data properly", () => {
+    it("Loads our mock data properly into the student information form section for students", () => {
         cy.fixture("users.json").then(({ student }) => {
             cy.get("[data-cy=student-firstName-input]")
                 .should("have.value", student.user.firstName);
@@ -54,7 +54,7 @@ describe("Fills out form with mock data of students from our user.json file", ()
         });
     });
 
-    it("Can enter data properly", () => {
+    it("Can enter data from the user properly into the first form, while checking if bad info is entered the submit button should be disabled", () => {
         cy.fixture("users.json").then(({ student }) => {
             cy.get("[data-cy=student-firstName-input]").clear();
             cy.get("[data-cy=student-firstName-input]").fastType("0");
@@ -65,7 +65,7 @@ describe("Fills out form with mock data of students from our user.json file", ()
         });
     });
 
-    it("Properly submits", () => {
+    it("Properly submits the instructor form and displays the results page", () => {
         cy.fixture("users.json").then(({ student }) => {
             cy.get("[data-cy=submitButton]").click();
             cy.contains("submitted");

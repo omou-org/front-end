@@ -49,7 +49,7 @@
         },
         "zipcode": "91801"
     },
-    "userInfo": {
+    "accountType": {
         "accountType": "STUDENT",
         "__typename": "StudentType"
     }
