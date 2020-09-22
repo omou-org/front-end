@@ -1,4 +1,4 @@
-describe("Fills out form with mock data from our user.json file", () => {
+describe("Fills out form with mock data of instructor from our user.json file, view our form to see if the data is inputed properly, edit our form with edited data, and submits our form", () => {
     before(() => {
         cy.fixture("users.json").then(({original_instructor_data, updated_instructor_data, inviteInstructorConfirmationResponse}) => {
             cy.mockGraphQL({
