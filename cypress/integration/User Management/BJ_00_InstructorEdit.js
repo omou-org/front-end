@@ -1,4 +1,4 @@
-describe("Fills out form", () => {
+describe("Fills out form with mock data from our user.json file", () => {
     before(() => {
         cy.fixture("users.json").then(({original_instructor_data, updated_instructor_data, inviteInstructorConfirmationResponse}) => {
             cy.mockGraphQL({
@@ -42,7 +42,7 @@ describe("Fills out form", () => {
         });
     });
 
-    it("Loads data properly into the first form", () => {
+    it("Loads our mock data properly into the basic information form section for instructors", () => {
         cy.fixture("users.json").then(({original_instructor_data}) => {
             cy.get("[data-cy=basicInfo-firstName-input]")
                 .should("have.value", original_instructor_data.user.firstName);
