@@ -1274,7 +1274,7 @@ export default {
             `;
 
             const INVITE_INSTRUCTOR = gql`
-            mutation MyMutation($email:String!) {
+            mutation InviteInstructor($email:String!) {
   inviteInstructor(email: $email) {
     status
   }
