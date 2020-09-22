@@ -65,7 +65,7 @@ describe("Fills out form with mock data of students from our user.json file, vie
         });
     });
 
-    it("Properly submits the instructor form and displays the results page", () => {
+    it("Properly submits the student form and displays the results page", () => {
         cy.fixture("users.json").then(({ student }) => {
             cy.get("[data-cy=submitButton]").click();
             cy.contains("submitted");
