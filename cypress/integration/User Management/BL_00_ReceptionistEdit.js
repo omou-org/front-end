@@ -36,7 +36,7 @@ describe("Fills out form with mock data of receptionist from our user.json file,
         });
     });
 
-    it("Loads our mock data properly into the receptionist information form section for receptionist", () => {
+    it("Loads our mock data properly into the login details form section for receptionist", () => {
         cy.fixture("users.json").then(({ receptionist }) => {
             cy.get("[data-cy=login-firstName-input]")
                 .should("have.value", receptionist.user.firstName);
@@ -69,14 +69,14 @@ describe("Fills out form with mock data of receptionist from our user.json file,
                 .clear()
                 .fastType("test1234")
                 .should("have.value", "test1234");
-            cy.get("[data-cy=login-nextButton")
-                .should("be.enabled")
-                .click();
         });
     });
 
-    it("Loads data properly for second form", () => {
+    it("Properly goes to the next section of the form called User Information and checks for data in stubs to load properly on the second form", () => {
         cy.fixture("users.json").then(({ receptionist }) => {
+            cy.get("[data-cy=login-nextButton")
+                .should("be.enabled")
+                .click();
             cy.get("[data-cy=user-adminType-select]")
                 .siblings()
                 .should("have.value", receptionist.adminType);
@@ -89,8 +89,20 @@ describe("Fills out form with mock data of receptionist from our user.json file,
         });
     });
 
-    it("Can enter data properly for second form", () => {
+    it("Should verify if the data from the user on form 1 still persists if we accidently click the back button", () => {
+            cy.get("[data-cy=backButton]")
+                .should("be.enabled")
+                .click();
+            cy.get("[data-cy=login-password-input]")
+                .should("have.value", "test1234");
+    });
+
+
+    it("Can enter data properly into the User Information form and go back to and from the first form with all data intact", () => {
         cy.fixture("users.json").then(({ receptionist }) => {
+            cy.get("[data-cy=login-nextButton]")
+                .should("be.enabled")
+                .click();   
             cy.get("[data-cy=user-phoneNumber-input]")
                 .clear()
                 .should("be.empty")
