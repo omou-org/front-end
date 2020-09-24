@@ -101,7 +101,7 @@ export const SchoolShow = (props) => (
 
 export const SchoolEdit = (props) => (
   <Edit {...props}>
-    <SimpleForm>
+    <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
       <TextInput source="name" />
       <TextInput source="zipcode" />
       <TextInput source="district" />
@@ -225,7 +225,7 @@ export const TuitionShow = (props) => (
 
 export const TuitionEdit = (props) => (
   <Edit  {...props}>
-    <SimpleForm>
+    <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"
