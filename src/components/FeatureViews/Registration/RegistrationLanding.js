@@ -84,6 +84,7 @@ const RegistrationLanding = () => {
         "instructor": [],
         "subject": [],
     });
+    const [sortType, setSortType] = useState(null);
 
     useEffect(() => {
         if (currentParent) {
@@ -110,7 +111,6 @@ const RegistrationLanding = () => {
     }
 
     const {courses} = data;
-
 
     const instructorOptions = distinctObjectArray(
         Object.values(courses)
@@ -145,6 +145,23 @@ const RegistrationLanding = () => {
                     return courses;
             }
         }, Object.values(courses));
+    
+    const sortedCourses = filteredCourses.sort((a,b) => {
+        switch (sortType) {
+            case "title":
+                if (a.title > b.title) return 1;
+                if (a.title < b.title) return -1;
+                return 0;
+            case "seatsLeft":
+                return (b.maxCapacity - b.enrollmentSet.id) - (a.maxCapacity - a.enrollmentSet.id);
+            default:
+                return b.startDate - a.startDate;
+        }
+    })
+
+    const handleSortChange = (inputValue) => {
+        setSortType(inputValue.value)
+    }
 
     const handleFilterChange = (filterType) => (filters) => {
         setCourseFilters((prevFilters) => ({
@@ -219,11 +236,26 @@ const RegistrationLanding = () => {
                         <Grid item md={4} xs={12}>
                             {renderFilter("grade")}
                         </Grid>
+                        <Grid item md={4} xs={12}>
+                            <SearchSelect
+                                className="sort-options"
+                                closeMenuOnSelect={true}
+                                components={{ClearIndicator}}
+                                onChange={handleSortChange}
+                                options={[
+                                    {value: 'seatsLeft', label: 'Sort by: Seats Left'},
+                                    {value: 'title', label: 'Sort by: Course Name'}
+                                ]}
+                                placeholder={'Sort by'}
+                                styles={customStyles}
+                                value={sortType}
+                            />
+                        </Grid>
                     </Hidden> 
                 </Grid>
             )}
             <Grid item className="registration-table" container spacing={5}>
-                <CourseList filteredCourses={filteredCourses}/>
+                <CourseList filteredCourses={sortedCourses}/>
                 {/*{view === 0 ?*/}
                 {/*    <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/> :*/}
                 {/*    <TutoringList />}*/}
