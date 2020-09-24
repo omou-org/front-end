@@ -173,7 +173,7 @@ const discountModifiers = (fields) => [
   ),
   (props) => (
     <Edit {...props}>
-      <SimpleForm>
+      <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
         {discountEditFields}
         {fields}
       </SimpleForm>
