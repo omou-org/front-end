@@ -1,14 +1,4 @@
 {
-    "student": {
-        "id": 2,
-        "first_name": "James",
-        "last_name": "Wan",
-        "gender": "male",
-        "grade": 11,
-        "birth_date": "12-07-2002",
-        "school": "Foothill High School",
-        "phone_number": "925-731-0499"
-    },
     "parent": {
         "__typename": "ParentType",
         "user": {
@@ -26,5 +16,62 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
+    },
+    "student": {
+        "__typename": "StudentType",
+        "address": "543 W. Crazy Vista Ave",
+        "birthDate": "2002-12-12",
+        "city": "Alhambra",
+        "gender": "MALE",
+        "grade": 12,
+        "phoneNumber": "6262846535",
+        "primaryParent": {
+            "user": {
+                "firstName": "John",
+                "id": 5,
+                "lastName": "Oliver",
+                "__typename": "UserType"
+            },
+            "__typename": "ParentType"
+        },
+        "school": {
+            "id": 1,
+            "name": "Alhambra High School",
+            "__typename": "SchoolType"
+    },
+        "state": "CA",
+        "user": {
+            "email": "test@test.com",
+            "firstName": "Aaron",
+            "lastName": "Ao",
+            "id": 1,
+            "__typename": "UserType"
+        },
+        "zipcode": "91801"
+    },
+    "original_instructor_data": {
+        "address": "123 Main St",
+        "biography": "Taught at Cal Poly Pomona for several years, now I'm teaching here for fun.",
+        "birthDate": "1989-06-05",
+        "city": "San Gabriel",
+        "experience": 5,
+        "gender": "MALE",
+        "language": "English",
+        "phoneNumber": "9253418562",
+        "state": "CA",
+        "subjects": [{
+            "name": "Math",
+            "id": 1,
+            "__typename": "CourseCategoryType"
+        }],
+        "user": {
+            "__typename": "UserType",
+            "email": "paulwuus1000@hotmail.com",
+            "firstName": "Paul",
+            "lastName": "Wu",
+            "id": 3
+        },
+        "zipcode": "91820",
+        "__typename": "InstructorType"
     }
 }

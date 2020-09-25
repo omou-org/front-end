@@ -1,0 +1,292 @@
+{
+  "AllCourses": [
+    {
+      "dayOfWeek": "SUNDAY",
+      "endDate": "2020-10-14",
+      "endTime": "16:15:00",
+      "title": "Math",
+      "startTime": "15:15:00",
+      "academicLevel": "ELEMENTARY_LVL",
+      "startDate": "2020-06-12",
+      "instructor": {
+        "user": {
+          "firstName": "Paul",
+          "lastName": "Wu",
+          "id": 3,
+          "__typename": "UserType"
+        },
+        "__typename": "InstructorType"
+      },
+      "courseCategory": {
+        "id": 1,
+        "name": "Math",
+        "__typename": "CourseCategoryType"
+      },
+      "courseId": "",
+      "id": 1,
+      "__typename": "CourseType"
+    },
+    {
+        "dayOfWeek": "SUNDAY",
+        "endDate": "2020-10-14",
+        "endTime": "16:15:00",
+        "title": "Science",
+        "startTime": "15:15:00",
+        "academicLevel": "ELEMENTARY_LVL",
+        "startDate": "2020-06-12",
+        "instructor": {
+          "user": {
+            "firstName": "Paul",
+            "lastName": "Wu",
+            "id": 3,
+            "__typename": "UserType"
+          },
+          "__typename": "InstructorType"
+        },
+        "courseCategory": {
+          "id": 2,
+          "name": "Science",
+          "__typename": "CourseCategoryType"
+        },
+        "courseId": "",
+        "id": 2,
+        "__typename": "CourseType"
+      },
+      {
+        "dayOfWeek": "SUNDAY",
+        "endDate": "2020-6-14",
+        "endTime": "16:15:00",
+        "title": "Poly Sci",
+        "startTime": "15:15:00",
+        "academicLevel": "ELEMENTARY_LVL",
+        "startDate": "2020-04-12",
+        "instructor": {
+          "user": {
+            "firstName": "Paul",
+            "lastName": "Wu",
+            "id": 3,
+            "__typename": "UserType"
+          },
+          "__typename": "InstructorType"
+        },
+        "courseCategory": {
+          "id": 3,
+          "name": "Poly Sci",
+          "__typename": "CourseCategoryType"
+        },
+        "courseId": "",
+        "id": 3,
+        "__typename": "CourseType"
+      }
+  ],
+  "MathCourse":  {
+    "academicLevel": "COLLEGE_LVL",
+    "courseCategory": {
+      "name": "Math",
+      "id": "1",
+      "__typename": "CourseCategoryType"
+    },
+    "title": "Biology 101",
+    "startTime": "09:15:00",
+    "startDate": "2020-06-15",
+    "endTime": "11:15:00",
+    "endDate": "2020-10-15",
+    "dayOfWeek": "MONDAY",
+    "description": null,
+    "instructor": {
+      "user": {
+        "firstName": "Daniel",
+        "lastName": "Huang",
+        "__typename": "UserType"
+      },
+      "__typename": "InstructorType"
+    },
+    "enrollmentSet": [
+      {
+        "student": {
+          "user": {
+            "firstName": "Theodosia",
+            "id": "33",
+            "lastName": "Burr",
+            "__typename": "UserType"
+          },
+          "primaryParent": {
+            "user": {
+              "lastName": "Burr",
+              "firstName": "Aaron",
+              "email": "aaron@burr.com",
+              "id": "32",
+              "__typename": "UserType"
+            },
+            "accountType": "PARENT",
+            "__typename": "ParentType"
+          },
+          "__typename": "StudentType"
+        },
+        "__typename": "EnrollmentType"
+      },
+      {
+        "student": {
+          "user": {
+            "firstName": "Steven",
+            "id": "5",
+            "lastName": "Colbert",
+            "__typename": "UserType"
+          },
+          "primaryParent": {
+            "user": {
+              "lastName": "Mann",
+              "firstName": "Janet",
+              "email": "janet12@mann.com",
+              "id": "2",
+              "__typename": "UserType"
+            },
+            "accountType": "PARENT",
+            "__typename": "ParentType"
+          },
+          "__typename": "StudentType"
+        },
+        "__typename": "EnrollmentType"
+      },
+      {
+        "student": {
+          "user": {
+            "firstName": "Wilson",
+            "id": "34",
+            "lastName": "Lam",
+            "__typename": "UserType"
+          },
+          "primaryParent": {
+            "user": {
+              "lastName": "Mann",
+              "firstName": "Janet",
+              "email": "janet12@mann.com",
+              "id": "2",
+              "__typename": "UserType"
+            },
+            "accountType": "PARENT",
+            "__typename": "ParentType"
+          },
+          "__typename": "StudentType"
+        },
+        "__typename": "EnrollmentType"
+      },
+      {
+        "student": {
+          "user": {
+            "firstName": "Philip",
+            "id": "35",
+            "lastName": "Hamilton",
+            "__typename": "UserType"
+          },
+          "primaryParent": {
+            "user": {
+              "lastName": "Hamilton",
+              "firstName": "Alexander",
+              "email": "a.ham@test.com",
+              "id": "14",
+              "__typename": "UserType"
+            },
+            "accountType": "PARENT",
+            "__typename": "ParentType"
+          },
+          "__typename": "StudentType"
+        },
+        "__typename": "EnrollmentType"
+      }
+    ],
+    "sessionSet": [
+      {
+        "startDatetime": "2020-06-15T16:15:00+00:00",
+        "id": "11",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-06-22T16:15:00+00:00",
+        "id": "12",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-06-29T16:15:00+00:00",
+        "id": "13",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-06T16:15:00+00:00",
+        "id": "14",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-13T16:15:00+00:00",
+        "id": "15",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-20T16:15:00+00:00",
+        "id": "16",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-27T16:15:00+00:00",
+        "id": "17",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-03T16:15:00+00:00",
+        "id": "18",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-10T16:15:00+00:00",
+        "id": "19",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-17T16:15:00+00:00",
+        "id": "20",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-24T16:15:00+00:00",
+        "id": "21",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-31T16:15:00+00:00",
+        "id": "22",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-07T16:15:00+00:00",
+        "id": "23",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-14T16:15:00+00:00",
+        "id": "24",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-21T16:15:00+00:00",
+        "id": "25",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-28T16:15:00+00:00",
+        "id": "26",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-10-05T16:15:00+00:00",
+        "id": "27",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-10-12T16:15:00+00:00",
+        "id": "28",
+        "__typename": "SessionType"
+      }
+    ],
+    "__typename": "CourseType"
+  }
+}
