@@ -69,6 +69,40 @@ const theme = createMuiTheme({
             "text": {
                 "color": "black",
             },
+            "contained" : {
+              "color": "#FFFFFF",
+              "backgroundColor": "#289FC3",
+              "border": "2px solid #289FC3",
+              "boxSizing": "border-box",
+              "borderRadius": "5px",
+              "&:hover": {
+                "backgroundColor": "#289FC3",
+                "opacity": "80%"
+              },
+              "&:active": {
+                "backgroundColor": "#289FC3",
+                "opacity": "60%"
+              },
+              "&:disabled": {
+                "backgroundColor": "#289FC3",
+                "opacity": "20%",
+              }
+            },
+            "outlined" : {
+              "color": "#289FC3",
+              "backgroundColor": "#FFFFFF",
+              "border": "2px solid #C4C4C4",
+              "boxSizing": "border-box",
+              "border-radius": "5px",
+              "&:hover": {
+                "backgroundColor": "#FFFFFF",
+                "opacity": "80%"
+              },
+              "&:active": {
+                "backgroundColor": "#FFFFFF",
+                "opacity": "60%"
+              }
+            },
 			containedPrimary: {
 				color: "#FFFFFF", 
 			}
