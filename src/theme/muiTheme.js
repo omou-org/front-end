@@ -35,6 +35,23 @@ const theme = createMuiTheme({
     "colors": {
         "black": "#000000",
         "darkGray": "#666666",
+        "darkBlue": "#1F82A1",
+        "omouBlue": "#43B5D9",
+        "skyBlue": "#EBFAFF",
+        "white": "#FFFFFF",
+        "goth": "#000000",
+        "charcoal": "#333333",
+        "slateGrey": "#666666",
+        "gloom": "#999999",
+        "cloudy": "#C4C4C4",
+        "lightGrey": "#D3D3D3",/*listed same as cloudy on Figma*/
+        /* component specific */
+        "buttonBlue": "#289FC3",
+        "backgroundGrey": "#FAFAFA",
+        "statusGreen": "#6CE086",
+        "statusYellow": "#FFDD59",
+        "statusRed": "#FF6766",
+
     },
 	"typography": {
 		subtitle2: {
