@@ -131,7 +131,7 @@ const Dashboard = () => {
     return(
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
-                <Badge label="Hello" variant="warning"/>
+                <Badge label="Hello" type="informationOutline"/>
                 <Grid container justify="space-around">
                     <Grid item xs={9} >
                         <Typography variant="h4" className="dashboard-greeting">

@@ -1,7 +1,7 @@
 import React from "react";
 
 import Chip from "@material-ui/core/Chip";
-import theme from "../../../theme/muiTheme"
+import theme from "../../../theme/muiTheme";
 import { makeStyles } from "@material-ui/core";
 
 const calculateWidth = (label, type) => {
@@ -9,40 +9,44 @@ const calculateWidth = (label, type) => {
 }
 
 const useStyles = makeStyles(theme => ({
-    status: {
-
-    },
     positive: {
-
+        backgroundColor: theme.colors.statusGreen
     },
     warning: {
-        
+        backgroundColor: theme.colors.statusYellow
     },
     negative: {
 
+        backgroundColor: theme.colors.statusRed
     },
     active: {
-
+        backgroundColor: theme.colors.statusGreen
     },
     past: {
-
+        backgroundColor: theme.colors.gloom
     },
     new: {
-
-    },
-    user: {
-
-    },
-    type: {
-
+        backgroundColor: theme.colors.omouBlue
     },
     informationContained: {
-
+        backgroundColor: theme.colors.darkBlue
     },
     informationOutline: {
-
+        backgroundColor: theme.colors.white,
+        color: theme.colors.buttonBlue,
+        borderStyle: "solid",
+        borderWidth: "1px",
+        borderColor: theme.colors.buttonBlue
+    },
+    userType: {
+        backgroundColor: theme.colors.white
+    },
+    round: {
+        width: "24px",
+        borderRadius: "25%"
     }
 }))
+
 /**
  * 
  * 
@@ -54,11 +58,10 @@ const useStyles = makeStyles(theme => ({
   })); 
  */
 
-const Badge = (props) => {
+const Badge = ({type, ...rest}) => {
     const classes = useStyles(theme);
-    console.log(classes);
 
-    return <Chip className={classes.warning} {...props}/>
+    return <Chip className={classes[type]} {...rest}/>
 }
 
 export default Badge;
@@ -69,6 +72,7 @@ export default Badge;
  * Expected prop list
  * type = user, status, round
  * label = text on badge
+ * 
  * 
  * 
  */

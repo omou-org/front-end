@@ -129,6 +129,7 @@ const theme = createMuiTheme({
         MuiChip: {
           root: {
             height: "24px",  
+            borderRadius: "2px"
           }
         },
         "MuiDrawer": {
