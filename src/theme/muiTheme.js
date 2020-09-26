@@ -35,6 +35,23 @@ const theme = createMuiTheme({
     "colors": {
         "black": "#000000",
         "darkGray": "#666666",
+        "darkBlue": "#1F82A1",
+        "omouBlue": "#43B5D9",
+        "skyBlue": "#EBFAFF",
+        "white": "#FFFFFF",
+        "goth": "#000000",
+        "charcoal": "#333333",
+        "slateGrey": "#666666",
+        "gloom": "#999999",
+        "cloudy": "#C4C4C4",
+        "lightGrey": "#D3D3D3",/*listed same as cloudy on Figma*/
+        /* component specific */
+        "buttonBlue": "#289FC3",
+        "backgroundGrey": "#FAFAFA",
+        "statusGreen": "#6CE086",
+        "statusYellow": "#FFDD59",
+        "statusRed": "#FF6766",
+
     },
 	"typography": {
 		subtitle2: {
@@ -54,11 +71,40 @@ const theme = createMuiTheme({
             variantMapping: {
                 subtitle1: 'h5',
             },
-            h1: defaultFontProps,
-            h2: defaultFontProps,
-            h3: defaultFontProps,
-            h4: defaultFontProps,
-            h5: defaultFontProps,
+            h1: {
+              fontSize: '36px',
+              fontWeight: 'bold',
+              fontFamily: 'Roboto Slab',
+              lineHeight: '48px',
+              color: '#000000'
+            },
+            h2: {
+              fontSize: '32px',
+              fontWeight: 'bold',
+              fontFamily: 'Roboto',
+              lineHeight: '40px',
+              color: '#666666'
+            },
+            h3: {
+              fontSize: '20px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '32px',
+              color: '#000000'
+            },
+            h4: {
+              fontSize: '14px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+            },
+            h5: {
+              fontSize: '14px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+              textTransform: 'uppercase'
+            },
             subtitle1: {
                 fontSize: '20px',
                 fontWeight: '300',
