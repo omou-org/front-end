@@ -80,6 +80,11 @@ const theme = createMuiTheme({
                 "marginTop": "4px",
             },
         },
+        MuiChip: {
+          root: {
+            height: "24px",  
+          }
+        },
         "MuiDrawer": {
             "paperAnchorLeft": {
                 "zIndex": 1,

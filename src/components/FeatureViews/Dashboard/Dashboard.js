@@ -17,6 +17,7 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
 import {makeStyles} from "@material-ui/styles";
+import Badge from "../../OmouComponents/ThemedComponents/Badge";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -130,6 +131,7 @@ const Dashboard = () => {
     return(
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
+                <Badge label="Hello" variant="warning"/>
                 <Grid container justify="space-around">
                     <Grid item xs={9} >
                         <Typography variant="h4" className="dashboard-greeting">
