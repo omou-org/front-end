@@ -54,11 +54,40 @@ const theme = createMuiTheme({
             variantMapping: {
                 subtitle1: 'h5',
             },
-            h1: defaultFontProps,
-            h2: defaultFontProps,
-            h3: defaultFontProps,
-            h4: defaultFontProps,
-            h5: defaultFontProps,
+            h1: {
+              fontSize: '36px',
+              fontWeight: 'bold',
+              fontFamily: 'Roboto Slab',
+              lineHeight: '48px',
+              color: '#000000'
+            },
+            h2: {
+              fontSize: '32px',
+              fontWeight: 'bold',
+              fontFamily: 'Roboto',
+              lineHeight: '40px',
+              color: '#666666'
+            },
+            h3: {
+              fontSize: '20px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '32px',
+              color: '#000000'
+            },
+            h4: {
+              fontSize: '14px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+            },
+            h5: {
+              fontSize: '14px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+              textTransform: 'uppercase'
+            },
             subtitle1: {
                 fontSize: '20px',
                 fontWeight: '300',
