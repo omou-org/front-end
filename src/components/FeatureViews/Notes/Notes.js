@@ -646,8 +646,6 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                 </Grid>
                     
                 ))}
-                
-
             </Grid>
         )
 };

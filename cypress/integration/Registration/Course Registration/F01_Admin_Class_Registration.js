@@ -9,13 +9,20 @@ describe("Admin Registers an upcoming class", () => {
 					   coursesToRegister,
 					   studentsAndEnrollments
 				   }) => {
-				const courseResponse = {"data": {"courses": courses,}};
+				const courseResponse = {"data": {"courses": courses}};
 				const parentUserInfo = {
 					"__typename": "UserType",
 					"email": "pwan007@yahoo.com",
 					"firstName": "Paula",
 					"lastName": "Wan",
 					"id": 2
+				};
+				const studentUserInfo = {
+					"id": 11,
+					"first_name": "James",
+					"last_name": "Wan",
+					"email": "james.wan@gmail.com",
+					"__typename": "UserType"
 				};
 				cy.mockGraphQL({
 					"CourseList": {
@@ -54,13 +61,25 @@ describe("Admin Registers an upcoming class", () => {
 						"response": {
 							"data": studentsAndEnrollments
 						}
+					},
+					"GetCourse": {
+						"response": {"data": {"course": course}}
+					},
+					"StudentFetch": {
+						"response": {
+							"data": {
+								"student": {
+									"__typename": "StudentType",
+									user: studentUserInfo,
+								}
+							}
+						}
+					},
+					"GetCoursesToRegister": {
+						"response": {
+							"data": coursesToRegister
+						},
 					}
-					// "GetBasicCourses": {
-					// 	"response": courseResponse,
-					// },
-					// "GetCoursesToRegister":{
-					// 	"response": coursesToRegister,
-					// }
 				});
 				cy.visitAuthenticated('registration');
 			});
@@ -141,7 +160,7 @@ describe("Admin Registers an upcoming class", () => {
 	it("Does not register a class twice for the same student through the form", () => {
 		cy.get("[data-cy=register-class]").click();
 		cy.get("[data-cy=student-student-select]").click();
-		cy.get("[data-value=3]").click();
+		cy.get("[data-value=11]").click();
 		cy.get("[data-cy=student-nextButton]").click();
 		cy.get("[data-cy=student_info-nextButton]").click();
 		cy.get("[data-cy=course-class]").click();

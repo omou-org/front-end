@@ -1,13 +1,17 @@
 {
     "student": {
-        "id": 2,
-        "first_name": "James",
-        "last_name": "Wan",
-        "gender": "male",
+        "user": {
+            "id": 11,
+            "first_name": "James",
+            "last_name": "Wan",
+            "email": "james.wan@gmail.com",
+            "__typename": "UserType"
+        },
         "grade": 11,
         "birth_date": "12-07-2002",
         "school": "Foothill High School",
-        "phone_number": "925-731-0499"
+        "phone_number": "925-731-0499",
+        "__typename": "StudentType"
     },
     "parent": {
         "__typename": "ParentType",

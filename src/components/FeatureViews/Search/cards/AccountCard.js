@@ -82,8 +82,6 @@ const AccountCard = ({accountType, userID, isLoading}) => {
         "variables": {userID},
     });
 
-    console.log(data);
-
     if (isLoading || loading) {
         return (
             <Card style={{"height": "130px"}}>
