@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ProfileCard from '../ProfileCard';
 import { useQuery } from '@apollo/react-hooks';
 import { useSelector } from 'react-redux';
-import { AddItemButton } from './AddItemButton';
+import { AddItemButton } from '../../../OmouComponents/AddItemButton';
 import { PropTypes } from 'prop-types';
 
 const useStyles = makeStyles({

@@ -21,11 +21,11 @@ const useStyles = makeStyles({
   }),
 });
 
-export const AddItemButton = ({ children, ...rest }) => {
-  const { addNewItemStyles } = useStyles({ ...rest });
+export const AddItemButton = ({ children, ...buttonComponentProps }) => {
+  const { addNewItemStyles } = useStyles({ ...buttonComponentProps });
   return (
 // When passing in a component prop here, it'll ignore height and width unless a div is placed within the Box here.
-    <Box {...rest}>
+    <Box {...buttonComponentProps}>
       <div className={addNewItemStyles}>
         {children}
       </div>
@@ -37,7 +37,7 @@ AddItemButton.propTypes={
   height: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
-  ]),
+  ]).isRequired,
   width: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number

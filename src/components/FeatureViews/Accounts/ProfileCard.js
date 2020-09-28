@@ -50,8 +50,6 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
         });
     }, [invite, user]);
 
-    console.log(user);
-
     const classes = useStyles();
     return (
         <Grid item sm={6} xs={12}>
