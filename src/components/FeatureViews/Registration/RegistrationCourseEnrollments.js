@@ -3,6 +3,13 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -23,6 +30,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 
 import "theme/theme.scss";
 import "./registration.scss";
@@ -64,7 +72,7 @@ const TableToolbar = (
     <TableHead>
         <TableRow>
             {["Student", "Parent", "Phone", "Upcoming Status", ""].map((heading) => (
-                <TableCell align="left" key={heading} padding="default">
+                <TableCell align="left" color="color" key={heading} padding="default">
                     {heading}
                 </TableCell>
             ))}
@@ -124,6 +132,10 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
         [dispatch, unenroll.enrollment]
     );
 
+    const toggleExpanded = () => {
+
+    }
+
     if (loading) {
         return <Loading />
     }
@@ -149,12 +161,23 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                     variant="buffer" />
             </div>
             <Table>
+                
                 {TableToolbar}
+            </Table>
+            <Table>
                 <TableBody>
                     {enrollments.map(({ student, id }) => {
                         const { primaryParent } = student;
                         return (
                             <Fragment key={student.user.id}>
+                            <Accordion>
+
+                                <AccordionSummary
+                                    expandIcon="⬇️"
+                                    aria-controls="panel1a-content"
+                                    
+                                >
+
                                 <TableRow>
                                     <TableCell className="bold">
                                         <Link className="no-underline"
@@ -203,38 +226,50 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                                     Unenroll
                                                 </MenuItem>
                                             </Menu>
-                                            {/* <span>
-                                               {expanded[studentID]
-                                                   ? <UpArrow onClick={toggleExpanded(studentID)} />
-                                                   : <DownArrow onClick={toggleExpanded(studentID)} />
+                                            <span>
+                                               {expanded[student.user.id]
+                                                //    ? <ArrowDropUpIcon onClick={toggleExpanded(student.user.id)} />
+                                                //    : <ArrowDropDownIcon onClick={toggleExpanded(student.user.id)} />
+                                                   ? <ArrowDropUpIcon  />
+                                                   : <ArrowDropDownIcon />
                                                }
-                                            </span> */}
+                                            </span>
                                         </div>
                                     </TableCell>
                                 </TableRow>
-                                {/*{expanded[studentID] && (*/}
-                                {/*    <TableRow align="left">*/}
-                                {/*        <TableCell colSpan={5}>*/}
-                                {/*            <Paper elevation={2} square>*/}
-                                {/*                <Typography className="expanded-container">*/}
-                                {/*                    <span className="expanded-text">*/}
-                                {/*                        <b>School</b>: {student.school}*/}
-                                {/*                        <br />*/}
-                                {/*                    </span>*/}
-                                {/*                    <span className="expanded-text">*/}
-                                {/*                        <b>School Teacher</b>:{" "}*/}
-                                {/*                        {notes["Current Instructor in School"]}*/}
-                                {/*                        <br />*/}
-                                {/*                    </span>*/}
-                                {/*                    <span className="expanded-text">*/}
-                                {/*                        <b>Textbook:</b> {notes["Textbook Used"]}*/}
-                                {/*                        <br />*/}
-                                {/*                    </span>*/}
-                                {/*                </Typography>*/}
-                                {/*            </Paper>*/}
-                                {/*        </TableCell>*/}
-                                {/*    </TableRow>*/}
-                                {/*)}*/}
+                                </AccordionSummary>
+                                
+                                <AccordionDetails>
+                                    <Typography>
+                                    <b>School</b>: {student.school}
+                                    </Typography>
+                                </AccordionDetails>
+
+                                {/* {expanded[student.user.id] && (
+                                   <TableRow align="left">
+                                        <TableCell colSpan={5}>
+                                            <Paper elevation={2} square>
+                                               <Typography className="expanded-container">
+                                                   <span className="expanded-text">
+                                                       <b>School</b>: {student.school}
+                                                      <br />
+                                                </span>
+                                                  <span className="expanded-text">
+                                                        <b>School Teacher</b>:{" "} */}
+                                                       {/* {notes["Current Instructor in School"]} */}
+                                                       {/* <br />
+                                                   </span>
+                                                    <span className="expanded-text">
+                                                        <b>Textbook:</b>  */}
+                                                        {/* {notes["Textbook Used"]} */}
+                                                        {/* <br />
+                                                   </span>
+                                               </Typography>
+                                            </Paper>
+                                        </TableCell>
+                                   </TableRow>
+                                )} */}
+                                </Accordion>
                             </Fragment>
                         );
                     })}
