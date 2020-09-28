@@ -5,7 +5,7 @@ import theme from "../../../theme/muiTheme";
 import { makeStyles } from "@material-ui/core";
 
 const calculateWidth = (label, type) => {
-
+    
 }
 
 const useStyles = makeStyles(theme => ({
