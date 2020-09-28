@@ -129,10 +129,6 @@ const theme = createMuiTheme({
                 "backgroundColor": "#289FC3",
                 "opacity": "60%"
               },
-              "&:disabled": {
-                "backgroundColor": "#289FC3",
-                "opacity": "20%",
-              }
             },
             "outlined" : {
               "color": "#289FC3",
@@ -142,13 +138,20 @@ const theme = createMuiTheme({
               "border-radius": "5px",
               "&:hover": {
                 "backgroundColor": "#FFFFFF",
-                "opacity": "80%"
+                "opacity": "90%"
               },
               "&:active": {
                 "backgroundColor": "#FFFFFF",
-                "opacity": "60%"
-              }
+                "opacity": "70%"
+              },
+              "&:disabled": {
+                "border": "2px solid #999999",
+                "backgroundColor": "#C4C4C4",
+                "color": "#999999",
+                "opacity": "80%"
+              },
             },
+            
 			containedPrimary: {
 				color: "#FFFFFF", 
 			}

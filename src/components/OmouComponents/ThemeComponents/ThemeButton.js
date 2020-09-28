@@ -10,6 +10,14 @@ import { makeStyles } from '@material-ui/core/styles';
 //     },
 //   }));
 
+// const useStyles = makeStyles ({
+//     button: {
+//         "&$disabled": {
+//           color: "red"
+//         }
+//       },
+//   });
+
 const buttonWidth = (label) => {
     let buttonWidth;
        if (label.length < 6) {
@@ -19,17 +27,17 @@ const buttonWidth = (label) => {
        } else if (label.length >= 11 && label.length <= 16) {
            buttonWidth = 144
        }
-       console.log(buttonWidth)
        return buttonWidth;
    };
 
-export const ThemeButton = ({ label, variant, }) => {
+export const ThemeButton = ({ label, variant, disabled}) => {
     // const classes= useStyles(label);
     return (
         <Button
         style={{width: buttonWidth(label)}}
-        // className={classes.root}
-        variant={variant}>
+        variant={variant}
+        disabled = {disabled ? true : undefined}
+        >
             {label}
         </Button>
     )
@@ -37,4 +45,5 @@ export const ThemeButton = ({ label, variant, }) => {
 
 ThemeButton.propTypes = {
     label: PropTypes.string.isRequired,
+    variant: PropTypes.string,
 }
