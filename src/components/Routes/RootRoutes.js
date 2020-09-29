@@ -26,6 +26,7 @@ import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
+import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -179,6 +180,13 @@ export const RootRoutes = () => {
            path="/coursemanagement/class/:id?"
             >
                 <CourseClasses />
+            </AuthenticatedRoute>
+
+            {/* Demos */}
+            <AuthenticatedRoute
+                path="/demos/badge"
+            >
+                <BadgeDemo/>
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">

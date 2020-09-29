@@ -1,7 +1,7 @@
 import React from "react";
 
 import Chip from "@material-ui/core/Chip";
-import theme from "../../../theme/muiTheme";
+import theme from "../../muiTheme";
 import { makeStyles, Typography } from "@material-ui/core";
 
 const calculateWidth = (label, type, isRound = false) => {
@@ -74,7 +74,7 @@ const useStyles = makeStyles(({colors}) => ({
   })); 
  */
 
-const Badge = ({label, type, isRound, ...rest}) => {
+const LabelBadge = ({label, type, isRound, ...rest}) => {
     const classes = useStyles(theme);
 
     return <Chip 
@@ -84,7 +84,7 @@ const Badge = ({label, type, isRound, ...rest}) => {
                 {...rest}/>
 }
 
-export default Badge;
+export default LabelBadge;
 //LabelBadge.propTypes
 
 /**
