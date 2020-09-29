@@ -132,6 +132,10 @@ const Dashboard = () => {
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
                 <Grid item xs={3}>
                     <ThemeButton variant='contained' label={`contained`}></ThemeButton>
                 </Grid>
@@ -141,6 +145,10 @@ const Dashboard = () => {
                 <Grid item xs={3}>
                     <ThemeButton  variant = 'outlined' label={`disabled`} disabled></ThemeButton>
                 </Grid>
+<<<<<<< Updated upstream
+=======
+                
+>>>>>>> Stashed changes
                     <Grid item xs={9} >
                         <Typography variant="h4" className="dashboard-greeting">
                             Hello {firstName}!
