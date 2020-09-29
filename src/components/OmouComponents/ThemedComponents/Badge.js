@@ -4,8 +4,19 @@ import Chip from "@material-ui/core/Chip";
 import theme from "../../../theme/muiTheme";
 import { makeStyles } from "@material-ui/core";
 
-const calculateWidth = (label, type) => {
+const calculateWidth = (label, type, isRound = false) => {
+    let minWidth;
+    if (isRound) {
+        return "24px";
+    } else if (type === "informationContained" ||
+               type === "informationOutline" ||
+               type === "userType") {
+        minWidth = 96;
+    } else {
+        minWidth = 72;
+    }
     
+    return minWidth;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -58,7 +69,7 @@ const useStyles = makeStyles(theme => ({
   })); 
  */
 
-const Badge = ({type, ...rest}) => {
+const Badge = ({type, isRound, ...rest}) => {
     const classes = useStyles(theme);
 
     return <Chip className={classes[type]} {...rest}/>
