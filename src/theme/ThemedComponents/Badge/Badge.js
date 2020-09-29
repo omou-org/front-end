@@ -14,6 +14,9 @@ const calculateWidth = (label, type, isRound = false) => {
         minWidth = 96;
     } else {
         minWidth = 72;
+        if (label.length > 7) {
+            minWidth += Math.ceil(((label.length - 7) / 2)) * 8;
+        }
     }
     
     return minWidth;
