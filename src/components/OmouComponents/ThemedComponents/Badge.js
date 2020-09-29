@@ -2,7 +2,7 @@ import React from "react";
 
 import Chip from "@material-ui/core/Chip";
 import theme from "../../../theme/muiTheme";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
 
 const calculateWidth = (label, type, isRound = false) => {
     let minWidth;
@@ -19,42 +19,44 @@ const calculateWidth = (label, type, isRound = false) => {
     return minWidth;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(({colors}) => ({
     positive: {
-        backgroundColor: theme.colors.statusGreen
+        backgroundColor: colors.statusGreen
     },
     warning: {
-        backgroundColor: theme.colors.statusYellow
+        backgroundColor: colors.statusYellow
     },
     negative: {
 
-        backgroundColor: theme.colors.statusRed
+        backgroundColor: colors.statusRed
     },
     active: {
-        backgroundColor: theme.colors.statusGreen
+        backgroundColor: colors.statusGreen
     },
     past: {
-        backgroundColor: theme.colors.gloom
+        backgroundColor: colors.gloom
     },
     new: {
-        backgroundColor: theme.colors.omouBlue
+        backgroundColor: colors.omouBlue
     },
     informationContained: {
-        backgroundColor: theme.colors.darkBlue
+        backgroundColor: colors.darkBlue,
+        color: colors.white
     },
     informationOutline: {
-        backgroundColor: theme.colors.white,
-        color: theme.colors.buttonBlue,
+        backgroundColor: colors.white,
+        color: colors.buttonBlue,
         borderStyle: "solid",
         borderWidth: "1px",
-        borderColor: theme.colors.buttonBlue
+        borderColor: colors.buttonBlue
     },
     userType: {
-        backgroundColor: theme.colors.white
+        backgroundColor: colors.white
     },
     round: {
         width: "24px",
-        borderRadius: "25%"
+        borderRadius: "12px",
+        
     }
 }))
 
@@ -64,22 +66,26 @@ const useStyles = makeStyles(theme => ({
  * const useStyles = makeStyles(theme => ({
     root: props => ({
       backgroundColor: props.backgroundColor,
-      color: theme.color,
+      color: color,
     }),
   })); 
  */
 
-const Badge = ({type, isRound, ...rest}) => {
+const Badge = ({label, type, isRound, ...rest}) => {
     const classes = useStyles(theme);
 
-    return <Chip className={classes[type]} {...rest}/>
+    return <Chip 
+                label={<Typography className={classes[type]} component="body1">{label}</Typography>} 
+                className={`${classes[type]} ${isRound ? classes.round : ""}`} 
+                style={{width:calculateWidth(label, type, isRound)}} 
+                {...rest}/>
 }
 
 export default Badge;
 //LabelBadge.propTypes
 
 /**
- * 
+ * classes[type]
  * Expected prop list
  * type = user, status, round
  * label = text on badge

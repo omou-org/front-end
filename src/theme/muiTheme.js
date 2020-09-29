@@ -155,7 +155,8 @@ const theme = createMuiTheme({
             borderRadius: "2px",
             paddingRight: "12px",
             paddingLeft: "12px"
-          }
+          },
+          
         },
         "MuiDrawer": {
             "paperAnchorLeft": {

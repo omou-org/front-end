@@ -131,7 +131,11 @@ const Dashboard = () => {
     return(
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
-                <Badge label="Hello" type="informationOutline"/>
+                <Badge label="English" type="informationOutline"/><br/>
+                <Badge label="SAT Preparation" type="informationContained"/><br/>
+                <Badge label="Present" type="positive"/><br/>
+                <Badge label="Negative" type="negative"/><br/>
+                <Badge label="1" type="warning" isRound={true}/>
                 <Grid container justify="space-around">
                     <Grid item xs={9} >
                         <Typography variant="h4" className="dashboard-greeting">
