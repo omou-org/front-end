@@ -75,7 +75,7 @@ const Badge = ({label, type, isRound, ...rest}) => {
     const classes = useStyles(theme);
 
     return <Chip 
-                label={<Typography className={classes[type]} component="body1">{label}</Typography>} 
+                label={<Typography component="body1">{label}</Typography>} 
                 className={`${classes[type]} ${isRound ? classes.round : ""}`} 
                 style={{width:calculateWidth(label, type, isRound)}} 
                 {...rest}/>
