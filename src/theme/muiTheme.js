@@ -53,6 +53,14 @@ const theme = createMuiTheme({
         "statusRed": "#FF6766",
 
     },
+    a: {
+      color: "#1F82A1",
+      fontSize: '12px',
+      fontWeight: 'medium',
+      fontFamily: 'Roboto',
+      lineHeight: '16px',
+      textDecorationLine: 'underline'
+    },
 	"typography": {
 		subtitle2: {
 			fontWeight: 500,
@@ -104,6 +112,21 @@ const theme = createMuiTheme({
               fontFamily: 'Roboto',
               lineHeight: '16px',
               textTransform: 'uppercase'
+            },
+            body1: {
+              fontSize: '12px',
+              fontWeight: 'regular',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+              color: '#000000'
+            },
+            //Body(Bolded)
+            body2: {
+              fontSize: '12px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+              color: '#000000'
             },
             subtitle1: {
                 fontSize: '20px',
