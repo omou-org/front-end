@@ -149,6 +149,18 @@ const theme = createMuiTheme({
                 "marginTop": "4px",
             },
         },
+        MuiChip: {
+          root: {
+            height: "24px",  
+            borderRadius: "2px",
+            paddingRight: "12px",
+            paddingLeft: "12px"
+          },
+          label: {
+            paddingRight: "0px",
+            paddingLeft: "0px"
+          }
+        },
         "MuiDrawer": {
             "paperAnchorLeft": {
                 "zIndex": 1,
