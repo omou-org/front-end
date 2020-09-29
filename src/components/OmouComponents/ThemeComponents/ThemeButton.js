@@ -2,21 +2,6 @@ import React from 'react'
 import theme from '../../../theme/muiTheme';
 import { PropTypes } from 'prop-types';
 import Button from "@material-ui/core/Button";
-import { makeStyles } from '@material-ui/core/styles';
-
-// const useStyles = makeStyles(label => ({
-//     root: {
-//         width: buttonWidth(label)
-//     },
-//   }));
-
-// const useStyles = makeStyles ({
-//     button: {
-//         "&$disabled": {
-//           color: "red"
-//         }
-//       },
-//   });
 
 const buttonWidth = (label) => {
     let buttonWidth;
@@ -31,7 +16,6 @@ const buttonWidth = (label) => {
    };
 
 export const ThemeButton = ({ label, variant, disabled}) => {
-    // const classes= useStyles(label);
     return (
         <Button
         style={{width: buttonWidth(label)}}

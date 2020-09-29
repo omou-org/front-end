@@ -132,7 +132,7 @@ const Dashboard = () => {
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
-                {/* <Grid item xs={3}>
+                <Grid item xs={3}>
                     <ThemeButton variant='contained' label={`contained`}></ThemeButton>
                 </Grid>
                 <Grid item xs={3}>
@@ -140,7 +140,7 @@ const Dashboard = () => {
                 </Grid>
                 <Grid item xs={3}>
                     <ThemeButton  variant = 'outlined' label={`disabled`} disabled></ThemeButton>
-                </Grid> */}
+                </Grid>
                     <Grid item xs={9} >
                         <Typography variant="h4" className="dashboard-greeting">
                             Hello {firstName}!
