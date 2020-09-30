@@ -71,7 +71,7 @@ export const GET_ENROLLMENT_DETAILS = gql`
 const TableToolbar = (
     <TableHead>
         <TableRow>
-            {["Student", "Parent", "Phone", "Upcoming Status", ""].map((heading) => (
+            {["Student", "Parent", "Phone", "", "", "", "", ""].map((heading) => (
                 <TableCell align="left" color="color" key={heading} padding="default">
                     {heading}
                 </TableCell>
@@ -132,9 +132,6 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
         [dispatch, unenroll.enrollment]
     );
 
-    const toggleExpanded = () => {
-
-    }
 
     if (loading) {
         return <Loading />
@@ -146,6 +143,9 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
     }
 
     const { enrollments } = data;
+    console.log("THIS IS ENROLLMENTS")
+    console.log(enrollments)
+    console.log(enrollments[0].student.school)
 
     return (
         <>
@@ -170,28 +170,29 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                         const { primaryParent } = student;
                         return (
                             <Fragment key={student.user.id}>
-                            <Accordion>
+                            <Accordion className="no-border">
 
                                 <AccordionSummary
                                     expandIcon="⬇️"
                                     aria-controls="panel1a-content"
+                                    className = "no-border"
                                     
                                 >
 
-                                <TableRow>
-                                    <TableCell className="bold">
+                                <TableRow className = "no-border">
+                                    <TableCell className="bold accordion-spacing">
                                         <Link className="no-underline"
                                             to={`/accounts/student/${student.user.id}`}>
                                             {fullName(student.user)}
                                         </Link>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className ="accordion-spacing">
                                         <Link className="no-underline"
                                             to={`/accounts/parent/${primaryParent.user.id}`}>
                                             {fullName(primaryParent.user)}
                                         </Link>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="accordion-spacing actions-accordion-spacing">
                                         {addDashes(primaryParent.phoneNumber)}
                                     </TableCell>
                                     <TableCell>
@@ -226,22 +227,31 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                                     Unenroll
                                                 </MenuItem>
                                             </Menu>
-                                            <span>
+                                            {/* <span>
                                                {expanded[student.user.id]
-                                                //    ? <ArrowDropUpIcon onClick={toggleExpanded(student.user.id)} />
-                                                //    : <ArrowDropDownIcon onClick={toggleExpanded(student.user.id)} />
+                                                   ? <ArrowDropUpIcon onClick={toggleExpanded(student.user.id)} />
+                                                   : <ArrowDropDownIcon onClick={toggleExpanded(student.user.id)} />
                                                    ? <ArrowDropUpIcon  />
                                                    : <ArrowDropDownIcon />
                                                }
-                                            </span>
+                                            </span> */}
                                         </div>
                                     </TableCell>
                                 </TableRow>
                                 </AccordionSummary>
                                 
-                                <AccordionDetails>
-                                    <Typography>
-                                    <b>School</b>: {student.school}
+                                <AccordionDetails className="accordion-notes-border">
+                                    <Typography className="accordion-notes">
+                                    <p>
+                                        <b>School:</b> {student.school} 
+                                    </p>
+                                    <p>
+                                        <b>School Teacher:</b> {student.user.id} 
+                                    </p>
+                                    <p>
+                                        <b>Textbook used:</b> {student.school} 
+                                    </p>
+
                                     </Typography>
                                 </AccordionDetails>
 
