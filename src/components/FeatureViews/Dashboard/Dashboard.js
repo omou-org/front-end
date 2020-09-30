@@ -17,7 +17,7 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
 import {makeStyles} from "@material-ui/styles";
-import { ThemeButton } from '../../OmouComponents/ThemeComponents/ThemeButton';
+import { ThemeButton } from '../../../theme/ThemedComponents/Button/ThemeButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -132,23 +132,6 @@ const Dashboard = () => {
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
-                <Grid item xs={3}>
-                    <ThemeButton variant='contained' label={`contained`}></ThemeButton>
-                </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton variant='outlined' label={`outlined`}></ThemeButton>
-                </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton  variant = 'outlined' label={`disabled`} disabled></ThemeButton>
-                </Grid>
-<<<<<<< Updated upstream
-=======
-                
->>>>>>> Stashed changes
                     <Grid item xs={9} >
                         <Typography variant="h4" className="dashboard-greeting">
                             Hello {firstName}!

@@ -144,13 +144,22 @@ const theme = createMuiTheme({
               "border": "2px solid #289FC3",
               "boxSizing": "border-box",
               "borderRadius": "5px",
+              "overflow": "hidden",
+              "white-space": "nowrap",
+              "text-overflow": "ellipsis",
               "&:hover": {
                 "backgroundColor": "#289FC3",
-                "opacity": "80%"
+                "opacity": "80%",
+                "border": "rgba(40, 159, 195, 0.8)",
+                // "-webkit-background-clip": "padding-box", 
+                // "background-clip": "padding-box"
               },
               "&:active": {
                 "backgroundColor": "#289FC3",
-                "opacity": "60%"
+                "opacity": "60%",
+                "border": "rgba(40, 159, 195, 0.6)",
+                // "-webkit-background-clip": "padding-box", 
+                // "background-clip": "padding-box"
               },
             },
             "outlined" : {
@@ -159,6 +168,9 @@ const theme = createMuiTheme({
               "border": "2px solid #C4C4C4",
               "boxSizing": "border-box",
               "border-radius": "5px",
+              "overflow": "hidden",
+              "white-space": "nowrap",
+              "text-overflow": "ellipsis",
               "&:hover": {
                 "backgroundColor": "#FFFFFF",
                 "opacity": "90%"

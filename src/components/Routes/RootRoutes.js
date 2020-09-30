@@ -27,6 +27,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
+import ButtonDemo from '../../theme/ThemedComponents/ButtonDemo';
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -36,8 +37,6 @@ import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
-
-import { ThemeButton } from '../OmouComponents/ThemeComponents/ThemeButton';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -187,6 +186,12 @@ export const RootRoutes = () => {
                 path="/demos/badge"
             >
                 <BadgeDemo/>
+            </AuthenticatedRoute>
+
+            <AuthenticatedRoute
+                path="/demos/button"
+            >
+               <ButtonDemo />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
