@@ -49,19 +49,19 @@ const TypographyDemo = () => {
             This is h5:
             <p>
             <Typography variant="h5">
-                You're doing great!
+                you are doing great
             </Typography>
             </p>
             This is body1:
             <p>
             <Typography variant="body1">
-                You're doing great!
+                Look at this paragraph! Such a normal paragraph.
             </Typography>
             </p>
             This is body2:
             <p>
             <Typography variant="body2">
-                You're doing great!
+                Look at this paragraph! Such a bolded paragraph!
             </Typography>
             </p>
             This is an a variant:
