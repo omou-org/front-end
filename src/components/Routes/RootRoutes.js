@@ -182,24 +182,24 @@ export const RootRoutes = () => {
                 <CourseClasses />
             </AuthenticatedRoute>
 
-            {/* Demos */}
-            <AuthenticatedRoute
+            {/* Dahl Design Migration Demos */}
+            <Route
                 path="/demos/badge"
             >
                 <BadgeDemo/>
-            </AuthenticatedRoute>
+            </Route>
 
-            <AuthenticatedRoute
+            <Route
                 path="/demos/typography"
             >
                  <TypographyDemo />
-            </AuthenticatedRoute>
+            </Route>
 
-            <AuthenticatedRoute
+            <Route
                 path="/demos/button"
             >
                <ButtonDemo />
-            </AuthenticatedRoute>
+            </Route>
 
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
