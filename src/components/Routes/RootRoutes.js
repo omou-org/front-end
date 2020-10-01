@@ -27,7 +27,11 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
+<<<<<<< HEAD
 import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
+=======
+import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
+>>>>>>> dahlButtons
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -61,6 +65,7 @@ export const RootRoutes = () => {
             <Route path="/new/:type?">
                 <NewAccount/>
             </Route>
+
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
@@ -190,14 +195,19 @@ export const RootRoutes = () => {
             <AuthenticatedRoute
                 path="/demos/typography"
             >
-                <TypographyDemo />
+                 <TypographyDemo />
+            </AuthenticatedRoute>
+            
+            <AuthenticatedRoute
+                path="/demos/button"
+            >
+               <ButtonDemo />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
             </AuthenticatedRoute>
             <Redirect to="/PageNotFound" />
-
 
 
         </Switch>

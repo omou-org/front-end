@@ -149,6 +149,55 @@ const theme = createMuiTheme({
             "text": {
                 "color": "black",
             },
+            "contained" : {
+              "color": "#FFFFFF",
+              "backgroundColor": "#289FC3",
+              "border": "2px solid #289FC3",
+              "boxSizing": "border-box",
+              "borderRadius": "5px",
+              "overflow": "hidden",
+              "white-space": "nowrap",
+              "text-overflow": "ellipsis",
+              "&:hover": {
+                "backgroundColor": "#289FC3",
+                "opacity": "80%",
+                "border": "rgba(40, 159, 195, 0.8)",
+                // "-webkit-background-clip": "padding-box", 
+                // "background-clip": "padding-box"
+              },
+              "&:active": {
+                "backgroundColor": "#289FC3",
+                "opacity": "60%",
+                "border": "rgba(40, 159, 195, 0.6)",
+                // "-webkit-background-clip": "padding-box", 
+                // "background-clip": "padding-box"
+              },
+            },
+            "outlined" : {
+              "color": "#289FC3",
+              "backgroundColor": "#FFFFFF",
+              "border": "2px solid #C4C4C4",
+              "boxSizing": "border-box",
+              "border-radius": "5px",
+              "overflow": "hidden",
+              "white-space": "nowrap",
+              "text-overflow": "ellipsis",
+              "&:hover": {
+                "backgroundColor": "#FFFFFF",
+                "opacity": "90%"
+              },
+              "&:active": {
+                "backgroundColor": "#FFFFFF",
+                "opacity": "70%"
+              },
+              "&:disabled": {
+                "border": "2px solid #999999",
+                "backgroundColor": "#C4C4C4",
+                "color": "#999999",
+                "opacity": "80%"
+              },
+            },
+            
 			containedPrimary: {
 				color: "#FFFFFF", 
 			}
