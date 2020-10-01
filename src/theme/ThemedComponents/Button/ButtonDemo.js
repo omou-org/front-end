@@ -1,8 +1,8 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid';
-import { ThemeButton } from './Button/ThemeButton';
+import { ThemeButton } from './ThemeButton';
 import { Typography } from '@material-ui/core';
-import BackgroundPaper from '../../components/OmouComponents/BackgroundPaper';
+import BackgroundPaper from '../../../components/OmouComponents/BackgroundPaper';
 
 
 

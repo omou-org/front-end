@@ -27,7 +27,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
-import ButtonDemo from '../../theme/ThemedComponents/ButtonDemo';
+import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
