@@ -66,7 +66,39 @@ export const GET_ENROLLMENT_DETAILS = gql`
             id
          }
 	}
-	`;
+    `;
+    
+    // export const GET_ENROLLMENT_DETAILS = gql`
+	// query EnrollmentDetails($courseId: ID!){
+	// 	enrollments(courseId: $courseId) {
+    //         student {
+    //           primaryParent {
+    //             user {
+    //               firstName
+    //               lastName
+    //               email
+    //               id
+    //             }
+    //             phoneNumber
+    //           }
+    //           user {
+    //             firstName
+    //             lastName
+    //             email
+    //             id
+    //           }
+    //           school {
+    //             name
+    //           }
+    //         }
+    //         StudentSchoolInfo {
+    //             textbook
+    //             teacher
+    //         }
+    //         id
+    //      }
+	// }
+	// `;
 
 const TableToolbar = (
     <TableHead>
@@ -166,6 +198,7 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
             </Table>
             <Table>
                 <TableBody>
+                    {/* {enrollments.map(({ student, id, StudentSchoolInfo}))} */}
                     {enrollments.map(({ student, id }) => {
                         const { primaryParent } = student;
                         return (
@@ -173,7 +206,7 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                             <Accordion className="no-border">
 
                                 <AccordionSummary
-                                    expandIcon="⬇️"
+                                    expandIcon="⬇"
                                     aria-controls="panel1a-content"
                                     className = "no-border"
                                     
@@ -192,7 +225,7 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                             {fullName(primaryParent.user)}
                                         </Link>
                                     </TableCell>
-                                    <TableCell className="accordion-spacing actions-accordion-spacing">
+                                    <TableCell className="actions-accordion-spacing">
                                         {addDashes(primaryParent.phoneNumber)}
                                     </TableCell>
                                     <TableCell>
@@ -247,9 +280,11 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                     </p>
                                     <p>
                                         <b>School Teacher:</b> {student.user.id} 
+                                        {/* <b>School Teacher:</b> {StudentSchoolInfo.textbook} */}
                                     </p>
                                     <p>
                                         <b>Textbook used:</b> {student.school} 
+                                        {/* <b>Textbook used:</b> {StudentSchoolInfo.teacher}  */}
                                     </p>
 
                                     </Typography>
