@@ -39,3 +39,5 @@ awsconfiguration.json
 # cypress evidence
 cypress/videos/
 cypress/screenshots/
+
+/.vscode/*

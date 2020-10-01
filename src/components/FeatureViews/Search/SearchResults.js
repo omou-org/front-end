@@ -82,8 +82,8 @@ const SearchResults = () => {
     const searchParams = useSearchParams();
     const filter = searchParams.get("filter"),
         query = searchParams.get("query"),
-        sort = searchParams.get("sort");
-    const profile = searchParams.get("profile")?.toUpperCase()
+        sort = searchParams.get("sort"),
+        profile = searchParams.get("profile")?.toUpperCase();
     const accountQuery = useQuery(ACCOUNT_SEARCH, {
         "variables": {
             "grade": searchParams.get("grade"),
