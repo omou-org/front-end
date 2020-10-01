@@ -110,9 +110,11 @@ const theme = createMuiTheme({
             h5: {
               fontSize: '14px',
               fontWeight: '500',
+              fontStyle: 'normal',
               fontFamily: 'Roboto',
               lineHeight: '16px',
-              textTransform: 'uppercase'
+              fontVariant: 'small-caps',
+              fontFeatureSettings: '"cpsp" on'
             },
             body1: {
               fontSize: '12px',
@@ -124,7 +126,6 @@ const theme = createMuiTheme({
             //Body(Bolded)
             body2: {
               fontSize: '12px',
-              // fontWeight: 'bold',
               fontWeight: '500',
               fontFamily: 'Roboto',
               lineHeight: '16px',
