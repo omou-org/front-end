@@ -27,6 +27,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
+import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -184,6 +185,12 @@ export const RootRoutes = () => {
                 path="/demos/badge"
             >
                 <BadgeDemo/>
+            </AuthenticatedRoute>
+
+            <AuthenticatedRoute
+                path="/demos/typography"
+            >
+                <TypographyDemo />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">

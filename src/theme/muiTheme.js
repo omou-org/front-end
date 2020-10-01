@@ -54,7 +54,8 @@ const theme = createMuiTheme({
 
     },
     a: {
-      color: "#1F82A1",
+      // color: "#1F82A1",
+      color: 'purple',
       fontSize: '12px',
       fontWeight: 'medium',
       fontFamily: 'Roboto',
@@ -123,7 +124,7 @@ const theme = createMuiTheme({
             //Body(Bolded)
             body2: {
               fontSize: '12px',
-              fontWeight: 'medium',
+              fontWeight: 'bold',
               fontFamily: 'Roboto',
               lineHeight: '16px',
               color: '#000000'
@@ -132,6 +133,14 @@ const theme = createMuiTheme({
                 fontSize: '20px',
                 fontWeight: '300',
                 fontFamily: 'Roboto',
+            },
+            a: {
+              color: "#1F82A1",
+              fontSize: '12px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+              textDecorationLine: 'underline'
             },
         },
         "MuiButton": {
