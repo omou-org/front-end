@@ -40,4 +40,4 @@ awsconfiguration.json
 cypress/videos/
 cypress/screenshots/
 
-/.vscode/*
+.vscode/
