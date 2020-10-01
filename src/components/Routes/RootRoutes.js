@@ -62,6 +62,25 @@ export const RootRoutes = () => {
             <Route path="/new/:type?">
                 <NewAccount/>
             </Route>
+            
+            {/* Dahl Design Migration Demos */}
+            <Route
+                path="/demos/badge"
+            >
+                <BadgeDemo/>
+            </Route>
+
+            <Route
+                path="/demos/typography"
+            >
+                 <TypographyDemo />
+            </Route>
+
+            <Route
+                path="/demos/button"
+            >
+               <ButtonDemo />
+            </Route>
 
 
             {/* Main Feature Views */}
@@ -181,25 +200,6 @@ export const RootRoutes = () => {
             >
                 <CourseClasses />
             </AuthenticatedRoute>
-
-            {/* Dahl Design Migration Demos */}
-            <Route
-                path="/demos/badge"
-            >
-                <BadgeDemo/>
-            </Route>
-
-            <Route
-                path="/demos/typography"
-            >
-                 <TypographyDemo />
-            </Route>
-
-            <Route
-                path="/demos/button"
-            >
-               <ButtonDemo />
-            </Route>
 
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
