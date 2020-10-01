@@ -162,6 +162,11 @@ const Accounts = () => {
         setViewToggle(view);
     }, []);
 
+    const MAX_EMAIL_LENGTH = 21;
+    const isOverMaxEmailLength = (emailLength) => {
+        return emailLength > MAX_EMAIL_LENGTH
+    }
+
     const classes = useStyles();
     const tableView = useMemo(() => (<ThemeProvider theme={theme}>
         <ThemeProvider theme={secondaryTheme}>
@@ -200,7 +205,7 @@ const Accounts = () => {
                             <Tooltip title={row.user.email}>
                                 <span>
                                     {row.user.email.substr(0, 20)}
-                                    {(row.user.email.length > 21) && "..."}
+                                    {isOverMaxEmailLength(row.user.email.length) && "..."}
                                 </span>
                             </Tooltip>
                         </TableCell>
