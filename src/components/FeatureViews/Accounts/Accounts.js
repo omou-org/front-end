@@ -163,9 +163,7 @@ const Accounts = () => {
     }, []);
 
     const MAX_EMAIL_LENGTH = 21;
-    const isOverMaxEmailLength = (emailLength) => {
-        return emailLength > MAX_EMAIL_LENGTH
-    }
+    const isOverMaxEmailLength = (emailLength) => emailLength > MAX_EMAIL_LENGTH;
 
     const classes = useStyles();
     const tableView = useMemo(() => (<ThemeProvider theme={theme}>
