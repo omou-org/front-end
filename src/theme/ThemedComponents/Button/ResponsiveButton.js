@@ -18,30 +18,30 @@ const buttonWidth = (label) => {
        return buttonWidth;
    };
 
-export const ThemeButton = ({ label, variant, disabled, hasIcon}) => {
+export const ResponsiveButton = ({ label, variant, disabled, icon}) => {
     return (
         <Button
         style={{width: buttonWidth(label)}}
         variant={variant}
-        disabled = {disabled ? true : undefined}
+        disabled
         >
-            {hasIcon && label === 'back' 
-            ? <Grid container>
-				<BackArrow style={{transform: 'scale(0.6)'}} />
-            </Grid> 
-            : hasIcon && label === 'register'
-            ? <Grid container>
-                <AddIcon style={{transform: 'scale(0.7)'}} />
-            </Grid> :
-            null
-            }
+        {/* {hasIcon && label === 'back' 
+        ? <Grid container>
+			<BackArrow style={{transform: 'scale(0.6)'}} />
+        </Grid> 
+        : hasIcon && label !== 'back'
+        ? <Grid container>
+            <AddIcon style={{transform: 'scale(0.7)'}} />
+        </Grid> :
+        null
+        } */}
 
             {label}
         </Button>
     )
 }
 
-ThemeButton.propTypes = {
+ResponsiveButton.propTypes = {
     label: PropTypes.string.isRequired,
     variant: PropTypes.string,
 }
