@@ -9,15 +9,22 @@ import { ResponsiveButton } from './ResponsiveButton';
 const ButtonDemo = () => {
     return (
         <BackgroundPaper>
-        <Grid container>
+        <Grid container spacing={6}>
             <Grid 
             container 
             direction="row"
             justify="center"
             alignItems="center"
-            spacing={3} 
+            spacing={2} 
             item 
             xs={6}>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>standard length outlined buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'> &lt; 6 characters</Typography>
+                </Grid>
+
                 <Grid item xs={3}>
                     <ResponsiveButton variant='outlined' label='save' />
                 </Grid>
@@ -31,6 +38,14 @@ const ButtonDemo = () => {
                     <ResponsiveButton variant='outlined' label='ok' />
                 </Grid>
 
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>medium length outlined buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'>7-10 characters</Typography>
+                </Grid>
+
+
                 <Grid item xs={4}>
                     <ResponsiveButton variant='outlined' label='reschedule' />
                 </Grid>
@@ -41,6 +56,13 @@ const ButtonDemo = () => {
                     <ResponsiveButton variant='outlined' label='unenroll' />
                 </Grid>
 
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>long length outlined buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'>11-16 characters</Typography>
+                </Grid>
+
                 <Grid item xs={4}>
                     <ResponsiveButton variant='outlined' label='set password' />
                 </Grid>
@@ -49,6 +71,10 @@ const ButtonDemo = () => {
                 </Grid>
                 <Grid item xs={4}>
                     <ResponsiveButton variant='outlined' label='learn more' />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>buttons with icons</Typography>
                 </Grid>
 
                 <Grid item xs={6}>
@@ -64,9 +90,17 @@ const ButtonDemo = () => {
             direction="row"
             justify="center"
             alignItems="center"
-            spacing={3} 
+            // spacing={3}
+
             item 
             xs={6}>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>standard length contained buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'> &lt; 6 characters</Typography>
+                </Grid>
+
                 <Grid item xs={3}>
                     <ResponsiveButton variant='contained' label='save' />
                 </Grid>
@@ -80,6 +114,13 @@ const ButtonDemo = () => {
                     <ResponsiveButton variant='contained' label='ok' />
                 </Grid>
 
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>medium length contained buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'> 7-10 characters</Typography>
+                </Grid>
+
                 <Grid item xs={4}>
                     <ResponsiveButton variant='contained' label='reschedule' />
                 </Grid>
@@ -88,6 +129,13 @@ const ButtonDemo = () => {
                 </Grid>
                 <Grid item xs={4}>
                     <ResponsiveButton variant='contained' label='unenroll' />
+                </Grid>
+
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>long length contained buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'> 11-16 characters</Typography>
                 </Grid>
 
                 <Grid item xs={4}>
@@ -100,11 +148,18 @@ const ButtonDemo = () => {
                     <ResponsiveButton variant='contained' label='learn more' />
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={12}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>buttons with icons</Typography>
+                </Grid>
+
+                <Grid item xs={4}>
                     <ResponsiveButton variant='contained' label='back' hasIcon/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <ResponsiveButton variant='contained' label='register' hasIcon/>
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='register' hasIcon disabled/>
                 </Grid>
             </Grid>
 

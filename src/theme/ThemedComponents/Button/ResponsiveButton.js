@@ -21,9 +21,12 @@ const buttonWidth = (label) => {
 export const ResponsiveButton = ({ label, variant, disabled, icon}) => {
     return (
         <Button
-        style={{width: buttonWidth(label)}}
+        style={{
+            width: buttonWidth(label),
+            border: disabled ? "2px solid #DBD7D7" : ""
+        }}
         variant={variant}
-        disabled
+        disabled={disabled}
         >
         {/* {hasIcon && label === 'back' 
         ? <Grid container>
@@ -35,7 +38,6 @@ export const ResponsiveButton = ({ label, variant, disabled, icon}) => {
         </Grid> :
         null
         } */}
-
             {label}
         </Button>
     )

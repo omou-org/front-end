@@ -196,8 +196,7 @@ const theme = createMuiTheme({
                 "color": "#999999",
                 "opacity": "80%"
               },
-            },
-            
+            },   
 			containedPrimary: {
 				color: "#FFFFFF", 
 			}
