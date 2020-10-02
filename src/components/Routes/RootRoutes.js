@@ -36,6 +36,8 @@ import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContain
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 
+import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
+
 export const RootRoutes = () => {
     const dispatch = useDispatch();
     const AuthUser = useSelector(({auth}) => auth);
@@ -59,6 +61,12 @@ export const RootRoutes = () => {
             <Route path="/new/:type?">
                 <NewAccount/>
             </Route>
+
+            {/* Route for Testing AddItemButton */}
+            <Route path="/AddItemButtonTest">
+                <AddItemButtonTestDemo />
+            </Route>
+            
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
@@ -184,6 +192,7 @@ export const RootRoutes = () => {
             <Redirect to="/PageNotFound" />
 
 
+            
 
         </Switch>
     );
