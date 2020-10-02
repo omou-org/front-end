@@ -27,6 +27,7 @@ import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
+import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
 import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 
 import {resetSubmitStatus} from "actions/registrationActions";
@@ -60,6 +61,25 @@ export const RootRoutes = () => {
             </Route>
             <Route path="/new/:type?">
                 <NewAccount/>
+            </Route>
+            
+            {/* Dahl Design Migration Demos */}
+            <Route
+                path="/demos/badge"
+            >
+                <BadgeDemo/>
+            </Route>
+
+            <Route
+                path="/demos/typography"
+            >
+                 <TypographyDemo />
+            </Route>
+
+            <Route
+                path="/demos/button"
+            >
+               <ButtonDemo />
             </Route>
 
 
@@ -179,19 +199,6 @@ export const RootRoutes = () => {
            path="/coursemanagement/class/:id?"
             >
                 <CourseClasses />
-            </AuthenticatedRoute>
-
-            {/* Demos */}
-            <AuthenticatedRoute
-                path="/demos/badge"
-            >
-                <BadgeDemo/>
-            </AuthenticatedRoute>
-
-            <AuthenticatedRoute
-                path="/demos/button"
-            >
-               <ButtonDemo />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">

@@ -54,7 +54,8 @@ const theme = createMuiTheme({
 
     },
     a: {
-      color: "#1F82A1",
+      // color: "#1F82A1",
+      color: 'purple',
       fontSize: '12px',
       fontWeight: 'medium',
       fontFamily: 'Roboto',
@@ -95,27 +96,29 @@ const theme = createMuiTheme({
             },
             h3: {
               fontSize: '20px',
-              fontWeight: 'medium',
+              fontWeight: '500',
               fontFamily: 'Roboto',
               lineHeight: '32px',
               color: '#000000'
             },
             h4: {
               fontSize: '14px',
-              fontWeight: 'medium',
+              fontWeight: '500',
               fontFamily: 'Roboto',
               lineHeight: '16px',
             },
             h5: {
               fontSize: '14px',
-              fontWeight: 'medium',
+              fontWeight: '500',
+              fontStyle: 'normal',
               fontFamily: 'Roboto',
               lineHeight: '16px',
-              textTransform: 'uppercase'
+              fontVariant: 'small-caps',
+              fontFeatureSettings: '"cpsp" on'
             },
             body1: {
               fontSize: '12px',
-              fontWeight: 'regular',
+              fontWeight: '400',
               fontFamily: 'Roboto',
               lineHeight: '16px',
               color: '#000000'
@@ -123,7 +126,7 @@ const theme = createMuiTheme({
             //Body(Bolded)
             body2: {
               fontSize: '12px',
-              fontWeight: 'medium',
+              fontWeight: '500',
               fontFamily: 'Roboto',
               lineHeight: '16px',
               color: '#000000'
@@ -132,6 +135,14 @@ const theme = createMuiTheme({
                 fontSize: '20px',
                 fontWeight: '300',
                 fontFamily: 'Roboto',
+            },
+            a: {
+              color: "#1F82A1",
+              fontSize: '12px',
+              fontWeight: 'medium',
+              fontFamily: 'Roboto',
+              lineHeight: '16px',
+              textDecorationLine: 'underline'
             },
         },
         "MuiButton": {
