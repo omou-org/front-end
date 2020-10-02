@@ -241,6 +241,21 @@ export const gradeOptions = [
     },
 ];
 
+export const gradeLvl = (gradelevel) => {
+    switch(gradelevel) {
+      case "ELEMENTARY_LVL":
+        return "Elementary School";
+      case "MIDDLE_LVL": 
+        return "Middle School";
+      case "HIGH_LVL":
+        return "High School";
+      case "COLLEGE_LVL":
+        return "College";
+      default:
+        return;
+    }
+  }
+
 /**
  * Converts a time of day to a backend-friendly format
  * @param {Date} time Time of day to convert
@@ -328,6 +343,18 @@ export const durationStringToNum = {
     "2 Hours": 2,
 };
 
+/** 
+ * @description returns the the time sorted from least to greatest
+ * @param {String} firstTimeObject - first object with time key to use in sorted logic for initial comparison
+ * @param {String} secondTimeObject - second object with time key to use in sorted logic to compare against initial value
+ * @returns {Object} "Sorted object based on time"
+*/
+
+export const sortTime = (firstTimeObject, secondTimeObject) => {
+    if (moment(firstTimeObject).isBefore(moment(secondTimeObject))) return 1
+    if (moment(firstTimeObject).isAfter(moment(secondTimeObject))) return -1
+    return 0
+};
 /**
  * @description returns the upcoming session from a list of sessions
  * @param {Array} sessions - list of sessions to search through
@@ -372,8 +399,8 @@ export const getTuitionAmount = (courseObject, numSessions) => {
     return (hourlyTuition * duration * numSessions).toFixed(2);
 };
 
-export const initials = (first, last) =>
-    first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase();
+export const initials = (first, last) => first && last ?
+    first.charAt(0).toUpperCase() + last.charAt(0).toUpperCase() : "";
 
 export const useGoToRoute = () => {
     const history = useHistory();
@@ -468,7 +495,7 @@ export const checkTimeSegmentOverlap = (timeSegments) => {
         const nextStartTime = setCurrentDate(timeSegments[i + 1][0]);
 
         if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
-            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with 
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with
 				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
         }
     }
@@ -503,7 +530,7 @@ export const listTimeSegmentOverlaps = (timeSegments) => {
         const nextStartTime = moment(timeSegments[i + 1][0]);
 
         if (currentEndTime > nextStartTime || nextStartTime === currentStartTime) {
-            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with 
+            return `Whoops. ${timeSegmentString(timeSegments[i])} has a conflict with
 				${timeSegmentString(timeSegments[i + 1])}! Please correct it.`;
         }
     }
@@ -556,7 +583,7 @@ export function useSessionStorage(key, initialValue) {
             return item ? JSON.parse(item) : initialValue;
         } catch (error) {
             // If error also return initialValue
-            console.log(error);
+            console.error(error);
             return initialValue;
         }
     });
@@ -574,7 +601,7 @@ export function useSessionStorage(key, initialValue) {
             window.sessionStorage.setItem(key, JSON.stringify(valueToStore));
         } catch (error) {
             // A more advanced implementation would handle the error case
-            console.log(error);
+            console.error(error);
         }
     };
 

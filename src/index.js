@@ -14,18 +14,21 @@ import {HttpLink} from "apollo-link-http";
 import {onError} from "apollo-link-error";
 import {ApolloLink} from "apollo-link";
 
+
 import {ApolloProvider} from "@apollo/react-hooks";
 import {setContext} from "apollo-link-context";
 
 import {setToken} from "actions/authActions";
+
 
 const store = createStore(
     rootReducer,
     composeWithDevTools(applyMiddleware(thunk)),
 );
 
+
 const httpLink = ApolloLink.from([
-    onError(({graphQLErrors, networkError}) => {
+    onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
             console.error("[GraphQL Error(s)]", graphQLErrors);
         }
@@ -38,8 +41,8 @@ const httpLink = ApolloLink.from([
     }),
 ]);
 
-const authLink = setContext((_, {headers}) => {
-    const {token} = store.getState().auth;
+const authLink = setContext((_, { headers }) => {
+    const { token } = store.getState().auth;
     return {
         "headers": {
             "Authorization": token ? `JWT ${token}` : "",
@@ -65,17 +68,16 @@ ReactDOM.render(
     <Provider store={store}>
         <ApolloProvider client={client}>
             <BrowserRouter>
-                <App />
+                <App/>
             </BrowserRouter>
         </ApolloProvider>
+
     </Provider>,
     document.getElementById("root"),
 );
 
-// expose store when run in Cypress
-if (window.Cypress) {
-    window.store = store;
-}
+// expose store
+window.store = store;
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

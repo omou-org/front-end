@@ -1,15 +1,22 @@
 import React, {useCallback, useState} from "react";
+import gql from "graphql-tag";
 import {makeStyles} from "@material-ui/core/styles";
 import useAuthStyles from "./styles";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import {useSelector} from "react-redux";
+import {useSearchParams} from "actions/hooks";
 
-import {Link, useHistory, Redirect} from "react-router-dom";
+import {Link, Redirect, useHistory} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import PasswordInput from "./PasswordInput";
+import {PasswordInput} from "../Form/Fields";
 import Typography from "@material-ui/core/Typography";
 
+import Loading from "components/OmouComponents/Loading";
+
+import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
+import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
+import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
 
 const useStyles = makeStyles((theme) => ({
     "email": {},
@@ -25,12 +32,31 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ResetPassword = () => {
+const GET_EMAIL = gql`
+    query GetEmail($token:String) {
+        emailFromToken(token: $token)
+    }`;
+
+const RESET_PASSWORD = gql`
+    mutation ResetPassword($password: String!, $token: String!, $isStudent: Boolean, $isInstructor: Boolean) {
+        resetPassword(newPassword: $password, token: $token, setInstructor: $isInstructor, setStudent: $isStudent) {
+            status
+        }
+    }`;
+
+const ResetPassword = ({isSet}) => {
+    const params = useSearchParams();
+    const resetToken = params.get("token");
+    const isStudent = Boolean(params.get("student"));
+    const isInstructor = Boolean(params.get("instructor"));
     const history = useHistory();
     const [password, setPassword] = useState("");
-    const [submitted, setSubmitted] = useState(false);
-    const email = "nelson@summit.com";
+    const emailStatus = useQuery(GET_EMAIL, {"variables": {"token": resetToken}});
+    const email = emailStatus.data?.emailFromToken;
+    const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
     const {token} = useSelector(({auth}) => auth);
+
+    const label = isSet ? "Set" : "Reset";
 
     const handlePasswordInput = useCallback(({target}) => {
         setPassword(target.value);
@@ -38,9 +64,15 @@ const ResetPassword = () => {
 
     const handleSubmit = useCallback((event) => {
         event.preventDefault();
-        // TODO: reset password
-        setSubmitted(true);
-    }, []);
+        resetPassword({
+            "variables": {
+                isInstructor,
+                isStudent,
+                password,
+                "token": resetToken,
+            },
+        });
+    }, [password, resetPassword, resetToken, isStudent, isInstructor]);
 
     const classes = {
         ...useAuthStyles(),
@@ -55,54 +87,79 @@ const ResetPassword = () => {
         }
     }
 
+    if (emailStatus.loading) {
+        return <Loading />;
+    }
+
+    const success = resetStatus.data?.resetPassword.status === "success";
+    const error = resetStatus.data?.resetPassword.status === "failed";
+
     return (
-        <Paper className={classes.root}>
-            <Typography align="left" className={classes.header} color="primary">
-                {submitted ? "reset successful!" : "reset password"}
-            </Typography>
-            <Typography align="left" className={classes.info}>
-                {submitted ?
-                    "You can now log in with your new password." :
-                    <>Reset password for <span className={email}>{email}</span></>}
-            </Typography>
-            {submitted ?
-                <Button className={classes.primaryButton} color="primary"
-                    component={Link} data-cy="return" to={{
-                        "pathname": "/login",
-                        "state": {email},
-                    }} variant="contained">
-                    Back to login
-                </Button> :
-                <form onSubmit={handleSubmit}>
-                    <PasswordInput fullWidth
-                        inputProps={{"data-cy": "passwordField"}}
-                        label="new password" margin="normal"
-                        onChange={handlePasswordInput} value={password} />
-                    <Typography align="left" className={classes.requirements}
-                        variant="body2">
-                        Password requirements...
-                    </Typography>
-                    <Grid alignItems="center" container justify="space-evenly">
-                        <Grid item>
-                            <Button className={classes.primaryButton}
-                                color="primary" data-cy="reset"
-                                disabled={!password}
-                                type="submit" variant="contained">
-                                Reset Password
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button className={classes.secondaryButton}
-                                component={Link} data-cy="return" to={{
-                                    "pathname": "/login",
-                                    "state": {email},
-                                }} variant="outlined">
-                                Back to login
-                            </Button>
-                        </Grid>
+        <div>
+            <Ellipse1 className="ellipse1" />
+            <Ellipse2 className="ellipse2" />
+            <Picture1 className="picture1" />
+            <div className="logo">
+                <Typography className="title">
+                    omou
+                </Typography>
+            </div>
+            <div className="Login">
+                <Grid className="resetPassword" container>
+                    <Grid item md={6} />
+                    <Grid item md={6}>
+                        <Typography className="welcomeText">
+                            {success ? `${label} successful!` : `${label} password`}
+                        </Typography>
+                        {emailStatus?.error ?
+                            <Typography className={classes.info}>
+                                Invalid token.
+                            </Typography> :
+                            <>
+                                <Typography className={classes.info}>
+                                    {success ?
+                                        "You can now log in with your new password." :
+                                        <>{label} password for <span className={email}>{email}</span></>}
+                                </Typography>
+                                {success ?
+                                    <Button className={classes.primaryButton} color="primary"
+                                        component={Link} data-cy="return" to={{
+                                            "pathname": "/login",
+                                            "state": {email},
+                                        }} variant="contained">
+                                        Back to login
+                                    </Button> :
+                                    <form onSubmit={handleSubmit}>
+                                        <PasswordInput autoComplete="current-password"
+                                            className="TextField"
+                                            error={error}
+                                            inputProps={{"data-cy": "passwordField"}}
+                                            isField={false} label="Password"
+                                            onChange={handlePasswordInput}
+                                            value={password} />
+                                        <Grid className="buttonContainer" container item>
+                                            <Grid item md={2} />
+                                            <Grid item md={4} >
+                                                <Button className="createAccountButton" data-cy="reset" type="submit">
+                                                    {label.toUpperCase()} PASSWORD
+                                                </Button>
+                                            </Grid>
+                                            <Grid item md={4}>
+                                                <Button className="signInButton" component={Link} to={{
+                                                    "pathname": "/login",
+                                                    "state": {email},
+                                                }}>
+                                                    BACK TO LOGIN
+                                                </Button>
+                                            </Grid>
+                                            <Grid item md={2} />
+                                        </Grid>
+                                    </form>}
+                            </>}
                     </Grid>
-                </form>}
-        </Paper>
+                </Grid>
+            </div>
+        </div>
     );
 };
 

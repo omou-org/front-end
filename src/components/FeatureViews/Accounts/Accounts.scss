@@ -42,10 +42,12 @@
       white-space: nowrap;
       right: -20%;
       margin-left: 5px;
+      width: 8rem;
 
       &.active {
         border: solid 2px $primaryColor !important;
         color: $primaryColor;
+        background-color: #EBFAFF;
       }
     }
   }
@@ -248,9 +250,12 @@
 }
 
 .ProfileCard {
+  text-decoration:none;
   cursor: pointer;
 }
 
 .avatar {
   color: white;
 }
+
+a { color:black; }

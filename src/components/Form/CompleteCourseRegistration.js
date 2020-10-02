@@ -1,47 +1,47 @@
 import React from "react";
-import {NavLink, withRouter} from "react-router-dom";
-import {useSelector} from "react-redux";
-import {Paper, Tooltip, Typography} from "@material-ui/core";
+import { NavLink, withRouter } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Paper, Tooltip, Typography } from "@material-ui/core";
 import AccountCard from "../FeatureViews/Search/cards/AccountCard";
 import Grid from "@material-ui/core/Grid";
 import * as hooks from "../../actions/hooks";
 import Loading from "../OmouComponents/Loading";
-import {stringToColor} from "../FeatureViews/Accounts/accountUtils";
+import { stringToColor } from "../FeatureViews/Accounts/accountUtils";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 
 export function CompleteCourseRegistration({
-                                             registeredCourseForm,
-                                             courseType,
-                                           }) {
-  const students = useSelector(({Users}) => Users.StudentList);
-  const instructors = useSelector(({Users}) => Users.InstructorList);
-  const courses = useSelector(({Course}) => Course.NewCourseList);
+  registeredCourseForm,
+  courseType,
+}) {
+  const students = useSelector(({ Users }) => Users.StudentList);
+  const instructors = useSelector(({ Users }) => Users.InstructorList);
+  const courses = useSelector(({ Course }) => Course.NewCourseList);
 
   let studentID = registeredCourseForm.student_id;
   const course_id = registeredCourseForm.course_id;
   const courseStatus = hooks.useCourse(
-      typeof course_id !== "string" && course_id
+    typeof course_id !== "string" && course_id
   );
   const instructorID = {
     course: courses[course_id] && courses[course_id].instructor_id,
     tutoring:
-        registeredCourseForm.new_course &&
-        registeredCourseForm.new_course.instructor,
+      registeredCourseForm.new_course &&
+      registeredCourseForm.new_course.instructor,
     small_group: courses[course_id] && courses[course_id].instructor_id,
   }[courseType];
   const instructorStatus = hooks.useInstructor(
-      courses[course_id] && instructorID
+    courses[course_id] && instructorID
   );
 
   const studentStatus = hooks.useStudent(studentID);
 
   if (
-      hooks.isLoading(instructorStatus) ||
-      hooks.isLoading(courseStatus) ||
-      hooks.isLoading(studentStatus)
+    hooks.isLoading(instructorStatus) ||
+    hooks.isLoading(courseStatus) ||
+    hooks.isLoading(studentStatus)
   ) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   const styles = (username) => ({
@@ -85,100 +85,100 @@ export function CompleteCourseRegistration({
   };
 
   return (
-      <>
-        <Paper elevation={2} className={"paper course-receipt"}>
-          <Grid container>
-            <Grid item xs={6}>
-              <Grid
-                  container
-                  direction="column"
-                  justify="flex-start"
-                  alignItems="flex-start"
-              >
-                <div className="course-info">
-                  <Grid item>
-                    <Typography align={"left"} variant="h4">
-                      {course.title}
+    <>
+      <Paper elevation={2} className={"paper course-receipt"}>
+        <Grid container>
+          <Grid item xs={6}>
+            <Grid
+              container
+              direction="column"
+              justify="flex-start"
+              alignItems="flex-start"
+            >
+              <div className="course-info">
+                <Grid item>
+                  <Typography align={"left"} variant="h4">
+                    {course.title}
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography className={"course-receipt-label"} align={"left"}>
+                    Date
                     </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography className={"course-receipt-label"} align={"left"}>
-                      Date
-                    </Typography>
-                    <Typography align={"left"}>
-                      {`${dateString(course.schedule.start_date)} - ${dateString(
-                          course.schedule.end_date
-                      )}`}{" "}
-                      <br/>
-                      {`${timeString(course.schedule.start_time)} - ${timeString(
-                          course.schedule.end_time
-                      )}`}
-                    </Typography>
-                  </Grid>
+                  <Typography align={"left"}>
+                    {`${dateString(course.schedule.start_date)} - ${dateString(
+                      course.schedule.end_date
+                    )}`}{" "}
+                    <br />
+                    {`${timeString(course.schedule.start_time)} - ${timeString(
+                      course.schedule.end_time
+                    )}`}
+                  </Typography>
+                </Grid>
 
-                  <Grid item>
-                    <Typography className={"course-receipt-label"} align={"left"}>
-                      Instructor
+                <Grid item>
+                  <Typography className={"course-receipt-label"} align={"left"}>
+                    Instructor
                     </Typography>
-                    <NavLink
-                        to={`/accounts/instructor/${instructor.user_id}`}
-                        style={{textDecoration: "none"}}
+                  <NavLink
+                    to={`/accounts/instructor/${instructor.user_id}`}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Tooltip
+                      title={instructor.name}
+                      aria-label="Instructor Name"
                     >
-                      <Tooltip
-                          title={instructor.name}
-                          aria-label="Instructor Name"
-                      >
-                        <Avatar style={styles(instructor.name)}>
-                          {instructor.name.match(/\b(\w)/g).join("")}
-                        </Avatar>
-                      </Tooltip>
-                    </NavLink>
-                  </Grid>
-                </div>
-              </Grid>
+                      <Avatar style={styles(instructor.name)}>
+                        {instructor.name.match(/\b(\w)/g).join("")}
+                      </Avatar>
+                    </Tooltip>
+                  </NavLink>
+                </Grid>
+              </div>
             </Grid>
-            <Grid item xs={6}>
-              <Grid
-                  container
-                  direction="column"
-                  justify="flex-end"
-                  alignItems="center"
-              >
-                <Grid item xs={8}>
-                  <AccountCard user={student}/>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <Grid container direction={"row"} justify={"flex-end"}>
-                <Grid item>
-                  <Button className={"button"}>Add Sessions</Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                      component={NavLink}
-                      to={"/registration"}
-                      className={"button"}
-                  >
-                    Register More
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                      component={NavLink}
-                      to={"/registration/cart"}
-                      variant="contained"
-                      color="primary"
-                      style={{color: "white"}}
-                  >
-                    Checkout
-                  </Button>
-                </Grid>
+          </Grid>
+          <Grid item xs={6}>
+            <Grid
+              container
+              direction="column"
+              justify="flex-end"
+              alignItems="center"
+            >
+              <Grid item xs={8}>
+                <AccountCard user={student} />
               </Grid>
             </Grid>
           </Grid>
-        </Paper>
-      </>
+          <Grid item xs={12}>
+            <Grid container direction={"row"} justify={"flex-end"}>
+              <Grid item>
+                <Button className={"button"}>Add Sessions</Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  component={NavLink}
+                  to={"/registration"}
+                  className={"button"}
+                >
+                  Register More
+                  </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  component={NavLink}
+                  to={"/registration/cart"}
+                  variant="contained"
+                  color="primary"
+                  style={{ color: "white" }}
+                >
+                  Checkout
+                  </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Paper>
+    </>
   );
 }
 

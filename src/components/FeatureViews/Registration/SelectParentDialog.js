@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
+import React, {useCallback, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
@@ -9,16 +9,14 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
 
-import {closeRegistration, setRegisteringParent,} from "actions/registrationActions";
+import * as types from "actions/actionTypes";
 import AccountCard from "../Search/cards/AccountCard";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import gql from "graphql-tag";
 import {useLazyQuery} from "@apollo/react-hooks";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {closeRegistrationCart, getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -38,59 +36,65 @@ query GetParents($query: String!) {
 }
 `;
 
+export const GET_REGISTRATION_CART = gql`
+query GetRegisteringCart($parent: ID!) {
+  registrationCart(parentId: $parent) {
+    registrationPreferences
+  }
+}`
+
 const SelectParentDialog = ({onClose, open}) => {
 	const dispatch = useDispatch();
 	const [parent, setParent] = useState(null);
 	const [inputValue, setInputValue] = useState('');
 	const [searching, setSearching] = useState(false);
-	const {currentParent, ...registrationCartState} = getRegistrationCart();
+	const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
+	const [getSavedParentCart, getSavedParentCartResult] = useLazyQuery(GET_REGISTRATION_CART, {
+		onCompleted: (data) => {
+			const savedParentCart = data.registrationCart.registrationPreferences;
+			if (savedParentCart !== "") {
+				const studentRegistration = JSON.parse(getSavedParentCartResult.data?.registrationCart?.registrationPreferences);
+				dispatch({
+					type: types.INIT_COURSE_REGISTRATION,
+					payload: studentRegistration,
+				});
+			}
+		},
+		skip: !currentParent,
+	});
 
 	const [
 		getParents,
 		{loading, data}
 	] = useLazyQuery(GET_PARENTS_QUERY);
 
-	useEffect(() => {
-		if (!currentParent) {
-			dispatch(
-				setRegisteringParent(
-					JSON.parse(sessionStorage.getItem("registrations"))?.currentParent
-				)
-			);
-		}
-	}, [currentParent, dispatch]);
-
 	const handleClose = useCallback(() => {
 		// if there's something in the input
 		if (parent) {
 			const registeringParent = parent;
 
-			dispatch(setRegisteringParent(registeringParent));
-			sessionStorage.setItem("registrations", JSON.stringify({
-				currentParent: parent,
-			}));
-
-			// Add students to redux once the registered parent has been set
-			// TODO: redo registration flow
-			// registeringParent.student_list.forEach((studentID) => {
-			// 	fetchStudents(studentID)(dispatch);
-			// });
-			sessionStorage.setItem(
-				"CurrentParent",
-				JSON.stringify(registeringParent)
-			);
+			dispatch({
+				type: types.SET_PARENT,
+				payload: registeringParent,
+			});
+			getSavedParentCart({
+				variables: {
+					parent: registeringParent.user.id,
+				}
+			});
 		}
 		// close the dialogue
-		onClose();
+		onClose(!!parent);
 	}, [parent, dispatch, onClose]);
 
 	const handleExitParent = useCallback(
 		(event) => {
 			event.preventDefault();
 			setParent(null);
-			dispatch(setRegisteringParent(null));
-			dispatch(closeRegistration());
-			closeRegistrationCart();
+			dispatch({
+				type: types.CLOSE_COURSE_REGISTRATION,
+				payload: {},
+			})
 			onClose();
 		},
 		[dispatch, handleClose]
@@ -151,6 +155,7 @@ const SelectParentDialog = ({onClose, open}) => {
 						className={`select-parent-search-wrapper ${searching && "active"}`}
 					>
 						<Autocomplete
+							data-cy="select-parent-input"
 							loading={loading}
 							options={options}
 							selectOnFocus
@@ -158,6 +163,9 @@ const SelectParentDialog = ({onClose, open}) => {
 							onChange={handleOnChange}
 							onInputChange={handleOnInputChange}
 							getOptionLabel={option => option.label}
+							renderOption={(option) => (<div data-cy={`parent-option`}>
+								{option.label}
+							</div>)}
 							renderInput={SelectParentInput}
 							inputValue={inputValue}
 							noOptionsText="We haven't found a parent yet"
@@ -167,22 +175,19 @@ const SelectParentDialog = ({onClose, open}) => {
 				)}
 			</DialogContent>
 			<DialogActions>
-				{currentParent ? (
-					<>
-						<Button onClick={handleExitParent}>Exit Parent</Button>
-						<span>
-              <Button
-				  component={NavLinkNoDup}
-				  disabled={numToCheckout === 0}
-				  to="/registration/cart"
-              >
-                Checkout {numToCheckout} Courses
-              </Button>
-            </span>
-					</>
-				) : (
-					<Button onClick={handleClose}>Set Parent</Button>
-				)}
+				{currentParent ?
+					<Button
+						onClick={handleExitParent}
+						data-cy="exit-parent-action"
+					>
+						Exit Parent
+					</Button>
+					: <Button
+						data-cy="set-parent-action"
+						onClick={handleClose}>
+						Set Parent
+					</Button>
+				}
 			</DialogActions>
 		</Dialog>
 	);
