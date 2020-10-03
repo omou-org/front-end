@@ -17,9 +17,9 @@
         "state": "CA",
         "zipcode": "94566"
     },
-    "student": {
+    "original_student_data": {
         "__typename": "StudentType",
-        "address": "543 W. Crazy Vista Ave",
+        "address": "543 W. Linda Vista Ave",
         "birthDate": "2002-12-12",
         "city": "Alhambra",
         "gender": "MALE",
@@ -41,7 +41,7 @@
     },
         "state": "CA",
         "user": {
-            "email": "test@test.com",
+            "email": "Aaron@Ao.com",
             "firstName": "Aaron",
             "lastName": "Ao",
             "id": 1,
@@ -52,5 +52,37 @@
     "accountType": {
         "accountType": "STUDENT",
         "__typename": "StudentType"
+    },
+    "updated_student_data": {
+        "__typename": "StudentType",
+        "address": "543 W. Santa Anita Ave",
+        "birthDate": "2002-12-12",
+        "city": "Temple City",
+        "gender": "MALE",
+        "grade": 12,
+        "phoneNumber": "6262846535",
+        "primaryParent": {
+            "user": {
+                "firstName": "John",
+                "id": 5,
+                "lastName": "Oliver",
+                "__typename": "UserType"
+            },
+            "__typename": "ParentType"
+        },
+        "school": {
+            "id": 1,
+            "name": "Alhambra High School",
+            "__typename": "SchoolType"
+    },
+        "state": "CA",
+        "user": {
+            "email": "Aaron@Ao.com",
+            "firstName": "Aaron",
+            "lastName": "Ao",
+            "id": 1,
+            "__typename": "UserType"
+        },
+        "zipcode": "91801"
     }
 }
