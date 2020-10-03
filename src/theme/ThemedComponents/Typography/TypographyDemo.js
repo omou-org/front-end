@@ -23,45 +23,38 @@ const TypographyDemo = () => {
     return (
         <Paper>
             <p>
-                This is h1:
             <Typography variant="h1">
-                Hello OMOU!
+                Heading 1
             </Typography>
             </p>
-            This is h2:
             <p>
             <Typography variant="h2">
-                How's it going?
+                Heading 2
             </Typography>
             </p>
-            This is h3:
             <p>
             <Typography variant="h3">
-                It's been a crazy time.
+                Heading 3
             </Typography>
             </p>
-            This is h4:
             <p>
             <Typography variant="h4">
-               But look at what you've accomplished!
+               Heading 4
             </Typography>
             </p>
-            This is h5:
             <p>
             <Typography variant="h5">
-                you are doing great
+                heading 5
             </Typography>
             </p>
-            This is body1:
             <p>
             <Typography variant="body1">
-                Look at this paragraph! Such a normal paragraph.
+                Body(Default)
             </Typography>
             </p>
-            This is body2:
             <p>
             <Typography variant="body2">
-                Look at this paragraph! Such a bolded paragraph!
+                Body (Bolded)
             </Typography>
             </p>
             This is an a variant:
