@@ -79,6 +79,30 @@ describe("Admin Registers an upcoming class", () => {
 						"response": {
 							"data": coursesToRegister
 						},
+						"test": (variables) => {
+							console.log(variables);
+						}
+					},
+					"GetPriceQuote": {
+						"response": {
+							"data": {
+								"priceQuote": {
+									subTotal: 100,
+									priceAdjustment: 0,
+									accountBalance: 0,
+									total: 100,
+									discounts: [],
+									__typename: "PriceQuoteType"
+								}
+							}
+						}
+					},
+					"GetParentEnrollments": {
+						"response": {
+							"data": {
+								"enrollments": []
+							}
+						}
 					}
 				});
 				cy.visitAuthenticated('registration');
@@ -175,9 +199,12 @@ describe("Admin Registers an upcoming class", () => {
 	});
 
 	it("Loads registration cart", () => {
-		cy.get("[data-cy=registration-cart]").click();
-		cy.waitFor("[data-cy=payment-title]");
-		cy.get("[data-cy=payment-title]").should('exist');
+		cy.fixture("course_and_registration.json")
+			.then((data) => {
+				cy.get("[data-cy=registration-cart]").click();
+				cy.waitFor("[data-cy=payment-title]");
+				cy.get("[data-cy=payment-title]").should('exist');
+			});
 	});
 
 	it("Validates number of sessions entered", () => {

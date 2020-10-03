@@ -1341,6 +1341,7 @@ export default {
         ],
 		"submit": (formData) => {
             const {dispatch} = window.store;
+            console.log(formData);
             dispatch({
                 type: types.ADD_CLASS_REGISTRATION,
                 payload: {

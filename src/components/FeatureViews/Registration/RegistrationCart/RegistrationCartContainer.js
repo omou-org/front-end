@@ -207,7 +207,7 @@ export default function RegistrationCartContainer() {
 								.map(([studentId, registration]) =>
 									<StudentRegistrationEntry
 										key={studentId}
-										student={studentData.find(student => student.user.id === studentId)}
+										student={studentData.find(student => student.user.id == studentId)}
 										registrationList={registration}
 									/>)
 						}

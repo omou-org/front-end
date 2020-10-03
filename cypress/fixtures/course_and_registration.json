@@ -210,6 +210,8 @@
     ],
     "courses": [
       {
+        "startTime": "15:00:00",
+        "endTime": "16:00:00",
         "endDate": "2020-10-16",
         "startDate": "2020-04-30",
         "title": "Honors Biology Prep",
@@ -234,6 +236,8 @@
         "__typename": "CourseType"
       },
       {
+        "startTime": "15:00:00",
+        "endTime": "16:00:00",
         "endDate": "2020-10-17",
         "startDate": "2020-04-31",
         "title": "AP Computer Science",
