@@ -27,8 +27,8 @@
         "state": "CA",
         "zipcode": "94566"
     },
-    "receptionist": {
-        "address": "742 los robles ave",
+    "original_receptionist_data": {
+        "address": "742 Los Robles Ave.",
         "adminType": "RECEPTIONIST",
         "birthDate": "1987-12-30",
         "city": "Pasadena",
@@ -36,7 +36,7 @@
         "phoneNumber": "2358476213",
         "state": "CA",
         "user": {
-            "email": "testing@test.com",
+            "email": "Ross@Gellar.com",
             "firstName": "Ross",
             "id": 9,
             "lastName": "Gellar",
@@ -44,6 +44,25 @@
         },
         "userUuid": "rGellar",
         "zipcode": "91801",
+        "__typename": "AdminType"
+    },
+    "updated_receptionist_data": {
+        "address": "342 Los Robles Ave.",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "DrRoss@Gellar.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "rGellar",
+        "zipcode": "91003",
         "__typename": "AdminType"
     }
 }
