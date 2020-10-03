@@ -100,7 +100,57 @@ describe("Admin Registers an upcoming class", () => {
 					"GetParentEnrollments": {
 						"response": {
 							"data": {
-								"enrollments": []
+								"enrollments": [],
+								"__typename": "Query"
+							}
+						}
+					},
+					"CreatePayment": {
+						"response": {
+							"data": {
+								id: "1",
+								accountBalance: "0",
+								createdAt: "10-02-2020T13:00:00",
+								discountTotal: "0",
+								enrollments: [
+									{
+										course: {
+											"startTime": "15:00:00",
+											"endTime": "16:00:00",
+											"endDate": "2020-10-16",
+											"startDate": "2020-04-30",
+											"title": "Honors Biology Prep",
+											"instructor": {
+												"user": {
+													"id": 5,
+													"firstName": "Daniel",
+													"lastName": "Huang",
+													"__typename": "UserType"
+												},
+												"__typename": "InstructorType"
+											},
+											"hourlyTuition": 50,
+											"courseCategory": {
+												"id": 1,
+												"name": "Biology",
+												"__typename": "CourseCategoryType"
+											},
+											"id": "1",
+											"courseId": "",
+											"__typename": "CourseType"
+										},
+										"student": {
+											primaryParent: {
+												user: parentUserInfo,
+												phoneNumber: "111-123-1234"
+											},
+											user: studentUserInfo,
+											school: {
+												name: "Union High School"
+											}
+										}
+									}
+								]
 							}
 						}
 					}

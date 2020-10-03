@@ -77,6 +77,7 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
           startDate
           instructor {
             user {
+			  id
               lastName
               firstName
             }
@@ -389,6 +390,7 @@ export default function PaymentBoard() {
 
 	const handlePayment = async () => {
 		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
+		console.log(enrollmentResponse);
 		const {data: {enrollments}} = enrollmentResponse;
 		const isSameEnrollment = ({enrollment, course, student}) =>
 			(enrollment.student.user.id === student && enrollment.course.id === course);

@@ -1341,14 +1341,13 @@ export default {
         ],
 		"submit": (formData) => {
             const {dispatch} = window.store;
-            console.log(formData);
             dispatch({
                 type: types.ADD_CLASS_REGISTRATION,
                 payload: {
                     courseId: formData.course.class.value,
                     studentId: formData.student.student,
                 }
-            })
+            });
         }
     },
     "tutoring-registration": {
