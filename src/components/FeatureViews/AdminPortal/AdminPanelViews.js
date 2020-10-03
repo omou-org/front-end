@@ -2,11 +2,30 @@ import * as React from "react";
 import {
   BooleanField, BooleanInput, Create, Datagrid, DateField, DateInput, Edit,
   List, NumberField, NumberInput, SelectField, SelectInput, Show, SimpleForm,
-  SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions
+  SimpleShowLayout, TextField, TextInput, ReferenceInput, CardActions, CreateButton,
+  Toolbar, SaveButton
 } from "react-admin";
 
+export const CreateAction = (props) => (
+  <CardActions>
+    <CreateButton />
+  </CardActions>
+);
+
+export const NoDeleteEditAction = (props) => (
+  <Toolbar {...props}>
+    <SaveButton
+      label="save"
+      redirect="show"
+      submitOnEnter={true} />
+  </Toolbar>
+)
+
+
 export const CategoryList = (props) => (
-  <List {...props}>
+  <List {...props}
+  actions={<CreateAction />} 
+  bulkActionButtons={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
@@ -26,7 +45,7 @@ export const CategoryCreate = (props) => (
 
 export const CategoryEdit = (props) => (
   <Edit {...props}>
-    <SimpleForm>
+    <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
       <TextInput source="name" />
       <TextInput source="description" />
     </SimpleForm>
@@ -45,7 +64,11 @@ export const CategoryShow = (props) => (
 
 // Schools
 export const SchoolList = (props) => (
-  <List {...props}>
+  <List 
+    {...props}
+    actions={<CreateAction />} 
+    bulkActionButtons={false}
+  >
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="name" />
@@ -78,7 +101,7 @@ export const SchoolShow = (props) => (
 
 export const SchoolEdit = (props) => (
   <Edit {...props}>
-    <SimpleForm>
+    <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
       <TextInput source="name" />
       <TextInput source="zipcode" />
       <TextInput source="district" />
@@ -119,7 +142,10 @@ const discountEditFields = [
 
 const discountDisplays = (fields) => [
   (props) => (
-    <List {...props}>
+    <List     
+      {...props}
+      actions={<CreateAction />} 
+      bulkActionButtons={false}>
       <Datagrid rowClick="edit">
         {discountShowFields}
         {fields}
@@ -147,7 +173,7 @@ const discountModifiers = (fields) => [
   ),
   (props) => (
     <Edit {...props}>
-      <SimpleForm>
+      <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
         {discountEditFields}
         {fields}
       </SimpleForm>
@@ -169,7 +195,10 @@ const courseTypes = [
 ];
 
 export const TuitionList = (props) => (
-  <List bulkActionButtons={false} {...props}>
+  <List     
+    {...props}
+    actions={<CreateAction />} 
+    bulkActionButtons={false}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
 
@@ -196,7 +225,7 @@ export const TuitionShow = (props) => (
 
 export const TuitionEdit = (props) => (
   <Edit  {...props}>
-    <SimpleForm>
+    <SimpleForm toolbar={<NoDeleteEditAction />} redirect="show">
       <SelectInput source="academicLevel" choices={academicLevelChoices} />
       <ReferenceInput
         label="Course category"
