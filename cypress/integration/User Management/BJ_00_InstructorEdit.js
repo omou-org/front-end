@@ -1,4 +1,4 @@
-describe("Fills out form with mock data of instructor from our user.json file, view our form to see if the data is inputed properly, edit our form with edited data, and submits our form", () => {
+describe("As an admin, edit existing instructor account", () => {
     before(() => {
         cy.fixture("users.json").then(({original_instructor_data, updated_instructor_data, inviteInstructorConfirmationResponse}) => {
             cy.mockGraphQL({
@@ -42,7 +42,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
         });
     });
 
-    it("Loads our mock data properly into the basic information form section for instructors", () => {
+    it("Loads instructor data into basic information section of form", () => {
         cy.fixture("users.json").then(({original_instructor_data}) => {
             cy.get("[data-cy=basicInfo-firstName-input]")
                 .should("have.value", original_instructor_data.user.firstName);
@@ -54,7 +54,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
         });
     });
 
-    it("Can enter data from the user properly into the first form", () => {
+    it("Edit instructor data in basic information section of first form", () => {
         cy.fixture("users.json").then(({updated_instructor_data}) => {
             cy.get("[data-cy=basicInfo-phoneNumber-input]")
                 .clear()
@@ -70,7 +70,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
         }); 
     });
 
-    it("Properly goes to the next experience section of the form and checks for data in stubs to load properly on the second form", () => {
+    it("Loads instructor data into next experience section of the form", () => {
         cy.fixture("users.json").then(({original_instructor_data}) => {
             cy.get("[data-cy=basicInfo-nextButton]").click();
             cy.get("[data-cy=experience-subjects]")
@@ -78,7 +78,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
                 .find("span")
                 .first()
                 .should("have.text", original_instructor_data.subjects[0].name);
-            cy.get("[data-cy=experience-experience-input")
+            cy.get("[data-cy=experience-experience-input]")
                 .should("have.value", original_instructor_data.experience);
             cy.get("[data-cy=experience-biography-input]")
                 .should("have.value", original_instructor_data.biography);
@@ -88,7 +88,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
         });
     });
 
-    it("Should verify if the data from the user on form 1 still persists if we accidently click the back button", () => {
+    it("Verifies data from the user on form 1 persists if back button is clicked", () => {
         cy.fixture("users.json").then(({updated_instructor_data}) => {
             cy.get("[data-cy=backButton]")
                 .should("be.enabled")
@@ -101,7 +101,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
         }); 
     });
 
-    it("Can enter data properly into the second form and go back to and from the first form with all data intact", () => {
+    it("Edit instructor data in next experience section of second form ", () => {
         cy.fixture("users.json").then(({updated_instructor_data}) => {
             cy.get("[data-cy=backButton]")
                 .should("be.enabled")
@@ -132,7 +132,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
         });
     });
 
-    it("Should verify if the data from the user on form 1 still persists if we accidently click the back button", () => {
+    it("Verifies data from the user on form 2 persists if back button is clicked", () => {
         cy.fixture("users.json").then(({updated_instructor_data}) => {
             cy.get("[data-cy=backButton]")
                 .should("be.enabled")
@@ -142,20 +142,6 @@ describe("Fills out form with mock data of instructor from our user.json file, v
             cy.get("[data-cy=basicInfo-nextButton]")
                 .should("be.enabled")
                 .click();   
-        }); 
-    });
-
-    it("Should simulate a miss click on the back button", () => {
-            cy.get("[data-cy=backButton]")
-                .should("be.enabled")
-                .click();
-            cy.get("[data-cy=basicInfo-nextButton]")
-                .should("be.enabled")
-                .click();   
-    });
-
-    it("Should verify if the data from the user on form 1 still persists if we accidently click the back button", () => {
-        cy.fixture("users.json").then(({updated_instructor_data}) => {
             cy.get("[data-cy=experience-experience-input")
                 .should("have.value", updated_instructor_data.experience);
             cy.get("[data-cy=experience-biography-input")
@@ -165,7 +151,7 @@ describe("Fills out form with mock data of instructor from our user.json file, v
         }); 
     });
 
-    it("Properly submits the instructor form and displays the results page", () => {
+    it("Submits the instructor form and displays the results page", () => {
         cy.fixture("users.json").then(({ updated_instructor_data }) => {
             cy.get("[data-cy=submitButton]")
                 .click();
