@@ -4,24 +4,6 @@ import Chip from "@material-ui/core/Chip";
 import theme from "../../muiTheme";
 import { makeStyles, Typography } from "@material-ui/core";
 
-const calculateWidth = (label, type, isRound = false) => {
-    let minWidth;
-    if (isRound) {
-        return "24px";
-    } else if (type === "informationContained" ||
-               type === "informationOutline" ||
-               type === "userType") {
-        minWidth = 96;
-    } else {
-        minWidth = 72;
-        if (label.length > 7) {
-            minWidth += Math.ceil(((label.length - 7) / 2)) * 8;
-        }
-    }
-    
-    return minWidth;
-}
-
 const useStyles = makeStyles(({colors}) => ({
     positive: {
         backgroundColor: colors.statusGreen
@@ -74,24 +56,81 @@ const useStyles = makeStyles(({colors}) => ({
   })); 
  */
 
-const LabelBadge = ({label, type, isRound, ...rest}) => {
-    const classes = useStyles(theme);
-
+const OmouBadge = ({label, type, ...rest}) => {
     return <Chip 
                 label={<Typography component="body1">{label}</Typography>} 
-                className={`${classes[type]} ${isRound ? classes.round : ""}`} 
-                style={{width:calculateWidth(label, type, isRound)}} 
                 {...rest}/>
 }
 
-export default LabelBadge;
+export const LabelBadge = ({label, type, ...rest}) => {
+    const classes = useStyles(theme);
+
+    const badgeType = {
+        "userType": {},
+        "information": {
+            labelComponent: "body1",
+            labelColor: "white"
+        },
+        "list": {
+            badgeMinWidth: "72px",
+            labelComponent: "body2",
+            labelColor: "white" //Will replace once Palette is ready 
+        }
+    }
+
+    const badgeStyle = badgeType[type];
+
+    return <Chip 
+                style={{minWidth: "96px"}}
+                label={<Typography 
+                                variant={badgeStyle.labelComponent}
+                                style={{color: badgeStyle.labelColor}}
+                        >
+                            {label}
+                        </Typography>} 
+                {...rest}/>
+}
+
+
 //LabelBadge.propTypes
+
+const StatusBadge = () => {
+    return 
+}
+
+// export const LabelBadge = ({label, type, ...rest}) => {
+//     const classes = useStyles(theme);
+
+//     const badgeType = {
+//         "default": {},
+//         "table": {},
+//         "list": {
+//             badgeMinWidth: "72px",
+//             labelComponent: "body2",
+//             labelColor: "white" //Will replace once Palette is ready 
+//         },
+//         "round": {}
+//     }
+
+//     const badgeStyle = badgeType[type];
+
+//     return <Chip 
+//                 style={{minWidth: badgeStyle.badgeMinWidth}}
+//                 label={<Typography 
+//                                 variant={badgeStyle.labelComponent}
+//                                 style={{color: badgeStyle.labelColor}}
+//                         >
+//                             {label}
+//                         </Typography>} 
+//                 {...rest}/>
+// }
 
 /**
  * classes[type]
  * Expected prop list
- * type = user, status, round
+ * type = default, tables, lists, round
  * label = text on badge
+ * variant (outlined or not)
  * 
  * 
  * 

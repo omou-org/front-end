@@ -27,6 +27,7 @@ const theme = createMuiTheme({
     "palette": {
         "primary": {"main": omouBlue},
         "secondary": {"main": "#a6a6a6"},
+        "warning": {"main": "#FFDD59"},
         "background": {
             "main": neutralBackgroundColor,
             "default": neutralBackgroundColor,
