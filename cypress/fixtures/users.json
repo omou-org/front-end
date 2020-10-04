@@ -26,5 +26,15 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
+    },
+    "admin": {
+        "__typename": "AdminType",
+        "user": {
+            "__typename": "UserType",
+            "email": "maggie@summit.com",
+            "firstName": "maggie",
+            "lastName": "Huang",
+            "id": 1
+        }
     }
 }
