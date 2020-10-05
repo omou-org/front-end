@@ -171,7 +171,6 @@ export default function TeachingLogContainer() {
 			courses[session.courseId] = true;
 			return true;
 		}) : [];
-	console.log(summaryLog)
 
 	const teachingLogCSVData = sessions.length > 0 ? sessions.map(({title, endDatetime, startDatetime, id}) => ({
 		id: id,
