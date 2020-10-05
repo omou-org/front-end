@@ -144,8 +144,12 @@ const LoginPage = () => {
                         }} className="TextField"
                             error={hasError}
                             fullWidth
+                            data-cy="textField"
                             helperText={hasError ? "Sorry, we couldn't find a user for that email." : " "}
                             inputProps={{ "data-cy": "emailField" }}
+                            FormHelperTextProps={{
+                                "data-cy":"helperText"
+                              }}
                             margin="normal"
                             onChange={handleTextInput(setEmail)}
                             placeholder="E-Mail"
