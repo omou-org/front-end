@@ -52,7 +52,7 @@ const userTabs = {
 		{
 			icon: <BioIcon className="TabIcon"/>,
 			tab_heading: "Bio",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.parent],
 			tab_id: 2,
 		},
 		{
@@ -147,7 +147,6 @@ const UserProfile = () => {
 
 	const fetchStatus = useUser(accountID, accountType);
 	const AuthUser = useSelector(({auth}) => auth);
-
 	useAccountNotes(accountID, accountType);
 	const user = useMemo(() => {
 		switch (accountType) {
@@ -234,6 +233,9 @@ const UserProfile = () => {
 								/>
 						))}
 				</Tabs>
+				{console.log(displayTabs
+						.filter((tab) =>
+							console.log((tab.access_permissions))))}
 				<ComponentViewer
 					inView={displayTabs
 						.filter((tab) =>
