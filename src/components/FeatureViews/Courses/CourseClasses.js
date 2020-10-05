@@ -309,6 +309,7 @@ const CourseClasses = () => {
               variant="body1"
               align="left"
               className={classes.dataFontDate}
+              data-cy="instructor-name"
             >{`${firstName} ${lastName}`}
             </Typography>
           </Grid>
@@ -376,22 +377,22 @@ const CourseClasses = () => {
                 </Toolbar>
                 <Divider classes={{ root: classes.dividerColor }} />
               <Grid container>
-                <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
+                <TabPanel index={0} value={index} backgroundColor="#FFFFFF" data-cy="description">
                   <ClassInfo description={description} />
                 </TabPanel>
-                <TabPanel index={1} value={index}>
+                <TabPanel index={1} value={index} data-cy="announcements">
                   <Announcements
                     announcementsData={getAnnouncements.data.announcements}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={2} value={index}>
+                <TabPanel index={2} value={index} data-cy="class-enrollment">
                   <ClassEnrollmentList
                     enrollmentList={enrollmentSet}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={3} value={index}>
+                <TabPanel index={3} value={index} data-cy="class-session">
                   <ClassSessionContainer
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}
