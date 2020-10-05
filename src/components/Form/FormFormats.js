@@ -206,6 +206,22 @@ export const ACADEMIC_LVL_FIELD = {
         "validator": Yup.string().matches(/^\d{5}(?:[-\s]\d{4})?$/u,
             "Invalid zipcode"),
     };
+    
+const INSTRUCTOR_FIELDS = {
+    "name": "basicInfo",
+    "label": "Basic Information",
+    "fields": [
+        ...NAME_FIELDS,
+        EMAIL_FIELD,
+        PHONE_NUMBER_FIELD,
+        GENDER_FIELD,
+        ADDRESS_FIELD,
+        CITY_FIELD,
+        ZIPCODE_FIELD,
+        STATE_FIELD,
+        BIRTH_DATE_FIELD,
+    ],
+};
 
 const PARENT_FIELDS = {
     "name": "parent",
@@ -1085,7 +1101,7 @@ export default {
 }
             `;
 
-            const {courseInfo, tuition} = formData;
+            const { courseInfo, tuition } = formData;
             const modifiedData = {
                 "courseInfo": {
                     ...courseInfo,
@@ -1122,21 +1138,7 @@ export default {
     "instructor": {
         "title": "Instructor",
         "form": [
-            {
-                "name": "basicInfo",
-                "label": "Basic Information",
-                "fields": [
-                    ...NAME_FIELDS,
-                    EMAIL_FIELD,
-                    PHONE_NUMBER_FIELD,
-                    GENDER_FIELD,
-                    ADDRESS_FIELD,
-                    CITY_FIELD,
-                    ZIPCODE_FIELD,
-                    STATE_FIELD,
-                    BIRTH_DATE_FIELD,
-                ],
-            },
+            INSTRUCTOR_FIELDS,
             {
                 "name": "experience",
                 "label": "Experience",
@@ -1215,7 +1217,7 @@ export default {
                         "city": instructor.city,
                         "zipcode": instructor.zipcode,
                         "state": instructor.state,
-                        "birthDate": instructor.birthDate,
+                        "birthDate": moment(instructor.birthDate, "YYYY-MM-DD"),
                     },
                     "experience": {
                         "subjects": instructor.subjects.map(({name, id}) => ({
@@ -1233,7 +1235,9 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_INSTRUCTOR = gql`
-            mutation CreateInstructor($firstName: String!,
+            mutation CreateInstructor(
+            $id: ID,
+            $firstName: String!,
             $lastName: String!,
             $email: String,
             $phoneNumber: String,
@@ -1246,13 +1250,15 @@ export default {
             $biography: String,
             $language: String,
             $birthDate: Date,
-            $zipcode: String) {
+            $zipcode: String,
+            ) {
                 createInstructor(
                 user: {
                     firstName: $firstName,
                     lastName: $lastName,
                     email: $email,
-                    password: "abcdefgh"
+                    password: "abcdefg",
+                    id: $id
                 },
                 address: $address,
                 biography: $biography,
@@ -1264,25 +1270,25 @@ export default {
                 phoneNumber: $phoneNumber,
                 subjects: $subjects,
                 state: $state,
-                zipcode: $zipcode) {
+                zipcode: $zipcode
+                ) {
+                    created
                     instructor {
-                    user {
-                        id
-                    }
-                    }
+                        user {
+                          id
+                        }
+                      }
                 }
-            }
-            `;
+            }`;
 
             const INVITE_INSTRUCTOR = gql`
-            mutation MyMutation($email:String!) {
+            mutation InviteInstructor($email:String!) {
   inviteInstructor(email: $email) {
     status
   }
 }
 `;
-
-            const {basicInfo, experience} = formData;
+            const { basicInfo, experience } = formData;
 
             const modifiedData = {
                 "basicInfo": {
@@ -1296,14 +1302,21 @@ export default {
                 },
             };
 
+            const instructorMutationVariable = Object.values(modifiedData)
+            .reduce((obj, section) => {
+                return ({
+                ...obj,
+                ...section,
+            })
+        }, {});
             try {
                 await client.mutate({
                     "mutation": CREATE_INSTRUCTOR,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": {
+                        ...instructorMutationVariable,
+                        id,
+                    }
+
                 });
             } catch (error) {
                 return {

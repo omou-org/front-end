@@ -86,6 +86,7 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
     const { data, loading, error } = useQuery(GET_ENROLLMENT_DETAILS, {
         variables: { courseId: courseID }
     });
+    
 
     // TODO: need to update when Session queries are live
     // const sessionStatus = useSessions("month", 0)
