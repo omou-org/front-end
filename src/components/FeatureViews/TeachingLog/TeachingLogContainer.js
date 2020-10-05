@@ -171,6 +171,7 @@ export default function TeachingLogContainer() {
 			courses[session.courseId] = true;
 			return true;
 		}) : [];
+	console.log(summaryLog)
 
 	const teachingLogCSVData = sessions.length > 0 ? sessions.map(({title, endDatetime, startDatetime, id}) => ({
 		id: id,
@@ -280,9 +281,10 @@ export default function TeachingLogContainer() {
 								</TableCell>
 								<TableCell>
 									{sessions.length > 0 && 
-									summaryLog.reduce((acc, course) => (acc.hours + course.hours)) === Number.NaN 
+									summaryLog.reduce((totalHours, course) => totalHours + course.hours, 0) === Number.NaN
 									? "Error"
-									: summaryLog.reduce((acc, course) => (acc.hours + course.hours)) }
+									: summaryLog.reduce((totalHours, course) => totalHours + course.hours, 0)
+									}
 								</TableCell>
 							</TableRow>
 						</TableBody>
