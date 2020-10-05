@@ -82,5 +82,28 @@
             "lastName": "Wu"
         },
         "__typename": "InstructorType"
+    },
+    "instructorData": {
+        "address": "123 Main St",
+        "biography": "Taught at Cal Poly Pomona for several years, now I'm teaching here for fun.",
+        "birthDate": "1989-06-05",
+        "city": "San Gabriel",
+        "created_at": "2020-08-23T19:17:18.729916Z",
+        "experience": 5,
+        "gender": "MALE",
+        "language": "English",
+        "phoneNumber": "9253418562",
+        "state": "CA",
+        "subject": [2],
+        "updated_at": "2020-08-23T19:17:18.735918Z",
+        "user": {
+            "email": "paulwuus1000@hotmail.com",
+            "firstName": "Paul",
+            "id": 3,
+            "is_staff": false,
+            "lastName": "Wu"
+        },
+        "user_uuid": null,
+        "zipcode": "91820"
     }
 }
