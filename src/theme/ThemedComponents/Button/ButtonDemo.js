@@ -1,61 +1,87 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid';
-import { ThemeButton } from './ThemeButton';
 import { Typography } from '@material-ui/core';
 import BackgroundPaper from '../../../components/OmouComponents/BackgroundPaper';
+import { ResponsiveButton } from './ResponsiveButton';
 
 
 
 const ButtonDemo = () => {
     return (
         <BackgroundPaper>
-        <Grid container>
+        <Grid container spacing={6}>
             <Grid 
             container 
             direction="row"
             justify="center"
             alignItems="center"
-            spacing={3} 
+            spacing={2} 
             item 
             xs={6}>
-                <Grid item xs={3}>
-                    <ThemeButton variant='outlined' label='save' />
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>standard length outlined buttons</Typography>
                 </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton variant='outlined' label='delete' />
-                </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton variant='outlined' label='pay' />
-                </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton variant='outlined' label='ok' />
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'> &lt; 6 characters</Typography>
                 </Grid>
 
-                <Grid item xs={4}>
-                    <ThemeButton variant='outlined' label='reschedule' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='outlined' label='save' />
                 </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='outlined' label='unregister' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='outlined' label='delete' />
                 </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='outlined' label='unenroll' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='outlined' label='pay' />
                 </Grid>
-
-                <Grid item xs={4}>
-                    <ThemeButton variant='outlined' label='set password' />
-                </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='outlined' label='reset password' />
-                </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='outlined' label='learn more' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='outlined' label='ok' />
                 </Grid>
 
                 <Grid item xs={6}>
-                    <ThemeButton variant='outlined' label='back' hasIcon/>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>medium length outlined buttons</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <ThemeButton variant='outlined' label='register' hasIcon/>
+                    <Typography variant='h4' align='right'>7-10 characters</Typography>
+                </Grid>
+
+
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='reschedule' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='unregister' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='unenroll' />
+                </Grid>
+
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>long length outlined buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'>11-16 characters</Typography>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='set password' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='reset password' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='learn more' />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>buttons with icons</Typography>
+                </Grid>
+
+                <Grid item xs={6}>
+                    <ResponsiveButton variant='outlined' label='back' hasIcon/>
+                </Grid>
+                <Grid item xs={6}>
+                    <ResponsiveButton variant='outlined' label='register' hasIcon/>
                 </Grid>
             </Grid>
 
@@ -64,47 +90,76 @@ const ButtonDemo = () => {
             direction="row"
             justify="center"
             alignItems="center"
-            spacing={3} 
+            // spacing={3}
+
             item 
             xs={6}>
-                <Grid item xs={3}>
-                    <ThemeButton variant='contained' label='save' />
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>standard length contained buttons</Typography>
                 </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton variant='contained' label='delete' />
-                </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton variant='contained' label='pay' />
-                </Grid>
-                <Grid item xs={3}>
-                    <ThemeButton variant='contained' label='ok' />
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'> &lt; 6 characters</Typography>
                 </Grid>
 
-                <Grid item xs={4}>
-                    <ThemeButton variant='contained' label='reschedule' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='contained' label='save' />
                 </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='contained' label='unregister' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='contained' label='delete' />
                 </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='contained' label='unenroll' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='contained' label='pay' />
                 </Grid>
-
-                <Grid item xs={4}>
-                    <ThemeButton variant='contained' label='set password' />
-                </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='contained' label='reset password' />
-                </Grid>
-                <Grid item xs={4}>
-                    <ThemeButton variant='contained' label='learn more' />
+                <Grid item xs={3}>
+                    <ResponsiveButton variant='contained' label='ok' />
                 </Grid>
 
                 <Grid item xs={6}>
-                    <ThemeButton variant='contained' label='back' hasIcon/>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>medium length contained buttons</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <ThemeButton variant='contained' label='register' hasIcon/>
+                    <Typography variant='h4' align='right'> 7-10 characters</Typography>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='reschedule' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='unregister' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='unenroll' />
+                </Grid>
+
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>long length contained buttons</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography variant='h4' align='right'> 11-16 characters</Typography>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='set password' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='reset password' />
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='learn more' />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>buttons with icons</Typography>
+                </Grid>
+
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='back' hasIcon/>
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='register' hasIcon/>
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='contained' label='register' hasIcon disabled/>
                 </Grid>
             </Grid>
 
