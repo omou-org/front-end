@@ -73,5 +73,14 @@
         },
         "zipcode": "91820",
         "__typename": "InstructorType"
+    },
+    "parant_view_instructor_data": {
+        "user": {
+            "__typename": "UserType",
+            "email": "paulwuus1000@hotmail.com",
+            "firstName": "Paul",
+            "lastName": "Wu"
+        },
+        "__typename": "InstructorType"
     }
 }

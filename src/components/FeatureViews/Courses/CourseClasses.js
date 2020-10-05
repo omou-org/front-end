@@ -78,10 +78,10 @@ const CourseClasses = () => {
   const classes = useStyles();
   const [index, setIndex] = useState(0);
   const tabs = [
-    { label: "About Course" },
-    { label: "Announcements" },
-    { label: "Student Enrolled" },
-    { label: "Sessions" },
+    { label: "About Course", "data-cy": "description" },
+    { label: "Announcements", "data-cy": "announcements" },
+    { label: "Student Enrolled", "data-cy": "student-enrollment" },
+    { label: "Sessions", "data-cy": "sessions" },
   ];
 
   const { email, accountType } = useSelector(({ auth }) => auth) || [];
@@ -112,6 +112,7 @@ const CourseClasses = () => {
         instructor {
           user {
             firstName
+            id
             lastName
           }
         }
@@ -377,22 +378,22 @@ const CourseClasses = () => {
                 </Toolbar>
                 <Divider classes={{ root: classes.dividerColor }} />
               <Grid container>
-                <TabPanel index={0} value={index} backgroundColor="#FFFFFF" data-cy="description">
+                <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
                   <ClassInfo description={description} />
                 </TabPanel>
-                <TabPanel index={1} value={index} data-cy="announcements">
+                <TabPanel index={1} value={index}>
                   <Announcements
                     announcementsData={getAnnouncements.data.announcements}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={2} value={index} data-cy="class-enrollment">
+                <TabPanel index={2} value={index}>
                   <ClassEnrollmentList
                     enrollmentList={enrollmentSet}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={3} value={index} data-cy="class-session">
+                <TabPanel index={3} value={index}>
                   <ClassSessionContainer
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}

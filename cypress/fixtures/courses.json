@@ -97,6 +97,7 @@
     "instructor": {
       "user": {
         "firstName": "Paul",
+        "id": 3,
         "lastName": "Wu",
         "__typename": "UserType"
       },

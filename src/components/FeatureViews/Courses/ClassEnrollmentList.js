@@ -85,6 +85,7 @@ const ClassEnrollmentList = ({
         component={Link}
         to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
         style={{ textDecoration: "none", fontWeight: 700 }}
+        data-cy="student-cell"
       >
         {fullStudentName}
       </TableCell>
@@ -92,15 +93,17 @@ const ClassEnrollmentList = ({
         component={Link}
         to={`/accounts/${parentAccountType.toLowerCase()}/${parentId}`}
         style={{ textDecoration: "none" }}
+        data-cy="parent-cell"
       >
         {concatFullParentName}
       </TableCell>
-      <TableCell>{phoneNumber}</TableCell>
+      <TableCell data-cy="phone-number">{phoneNumber}</TableCell>
       <TableCell align="right" padding="none" size="small">
         <Button
           aria-controls="simple-menu"
           aria-haspopup="true"
           onClick={handleClick}
+          data-cy="mail-button"
         >
           <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
         </Button>
@@ -141,6 +144,7 @@ const ClassEnrollmentList = ({
         padding="none"
         size="small"
         className={classes.icon}
+        data-cy="chat-button"
       >
         <Button disabled>
           <ChatOutlinedIcon style={{ color: "rgb(112,105,110)" }} />
@@ -151,6 +155,7 @@ const ClassEnrollmentList = ({
         padding="none"
         size="small"
         className={classes.carrot}
+        data-cy="expand-button"
       >
         <Button>
           <ExpandMoreIcon style={{ color: omouBlue }} fontSize="large" />
