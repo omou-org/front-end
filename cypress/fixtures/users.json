@@ -35,6 +35,13 @@
             "firstName": "maggie",
             "lastName": "Huang",
             "id": 1
-        }
+        },
+        "gender": "FEMALE",
+        "phoneNumber": "1112223333",
+        "birthDate": "1965-11-15",
+        "address": "1234 Peak Rd",
+        "city": "Mountain View",
+        "state": "CA",
+        "zipcode": "55555"
     }
 }
