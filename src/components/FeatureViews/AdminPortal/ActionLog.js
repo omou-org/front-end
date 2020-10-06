@@ -123,7 +123,7 @@ const ActionLog = () => {
     });
     const adminOptions = ["Owner", "Receptionist", "Assistant"];
     const actionOptions = ["Add", "Edit", "Delete"]
-    const objectOptions = ["Student", "Admin", "Parent", "Instructor", "Payment", "Registration", "Tutoring", "Course", "Discount", "Price Rules"]
+    const objectOptions = ["Student", "Admin", "Parent", "Instructor", "Payment", "Registration", "Course", "Discount", "PriceRule"]
 
     if (loading) return <Loading />;
     // if (error) return <div>error</div>;
