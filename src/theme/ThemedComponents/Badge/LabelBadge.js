@@ -1,137 +1,128 @@
 import React from "react";
-
 import Chip from "@material-ui/core/Chip";
 import theme from "../../muiTheme";
-import { makeStyles, Typography } from "@material-ui/core";
-
-const useStyles = makeStyles(({colors}) => ({
-    positive: {
-        backgroundColor: colors.statusGreen
-    },
-    warning: {
-        backgroundColor: colors.statusYellow
-    },
-    negative: {
-
-        backgroundColor: colors.statusRed
-    },
-    active: {
-        backgroundColor: colors.statusGreen
-    },
-    past: {
-        backgroundColor: colors.gloom
-    },
-    new: {
-        backgroundColor: colors.omouBlue
-    },
-    informationContained: {
-        backgroundColor: colors.darkBlue,
-        color: colors.white
-    },
-    informationOutline: {
-        backgroundColor: colors.white,
-        color: colors.buttonBlue,
-        borderStyle: "solid",
-        borderWidth: "1px",
-        borderColor: colors.buttonBlue
-    },
-    userType: {
-        backgroundColor: colors.white
-    },
-    round: {
-        width: "24px",
-        borderRadius: "12px",
-        
-    }
-}))
-
-/**
- * 
- * 
- * const useStyles = makeStyles(theme => ({
-    root: props => ({
-      backgroundColor: props.backgroundColor,
-      color: color,
-    }),
-  })); 
- */
-
-const OmouBadge = ({label, type, ...rest}) => {
-    return <Chip 
-                label={<Typography component="body1">{label}</Typography>} 
-                {...rest}/>
-}
+import { Typography } from "@material-ui/core";
+import PropTypes from "prop-types";
 
 export const LabelBadge = ({label, type, ...rest}) => {
-    const classes = useStyles(theme);
+    const colors = theme.colors;
+
+    const badgeCategory = {
+        "labelBadge": {
+            chipMinWidth: "96px",
+            labelComponent: "body1",
+        },
+        "statusBadge": {
+            chipMinWidth: "72px",
+            labelComponent: "body2",
+        },
+        "statusRound": {
+            chipMinWidth: "24px",
+            borderRadius: "24px",
+            paddingRight: "0px",
+            paddingLeft: "0px",
+            labelColor: colors.white,
+            labelComponent: "body2",
+        }
+    }
 
     const badgeType = {
-        "userType": {},
-        "information": {
-            labelComponent: "body1",
-            labelColor: "white"
+        "user-outline": {
+            labelColor: colors.slateGrey,
+            chipColor: colors.white,
+            chipVariant: "outlined",
+            chipBorder: colors.slateGrey,
+            ...badgeCategory.labelBadge
         },
-        "list": {
-            badgeMinWidth: "72px",
-            labelComponent: "body2",
-            labelColor: "white" //Will replace once Palette is ready 
-        }
+        "info": {
+            labelColor: colors.white,
+            chipColor: colors.darkBlue,
+            ...badgeCategory.labelBadge
+        },
+        "info-outline": {
+            labelColor: colors.darkBlue,
+            chipColor: colors.white,
+            chipVariant: "outlined",
+            chipBorder: colors.darkBlue,
+            ...badgeCategory.labelBadge
+        },
+        "status-positive": {
+            chipColor: colors.statusGreen,
+            ...badgeCategory.statusBadge,
+        },
+        "status-warning": {
+            chipColor: colors.statusYellow,
+            ...badgeCategory.statusBadge,
+        },
+        "status-negative": {
+            chipColor: colors.statusRed,
+            ...badgeCategory.statusBadge,
+        },
+        "status-active": {
+            chipColor: colors.statusGreen,
+            labelColor: colors.white,
+            ...badgeCategory.statusBadge,
+        },
+        "status-past": {
+            chipColor: colors.gloom,
+            labelColor: colors.white,
+            ...badgeCategory.statusBadge,
+        },
+        "status-new": {
+            chipColor: colors.omouBlue,
+            labelColor: colors.white,
+            ...badgeCategory.statusBadge,
+        },
+        "round-positive": {
+            chipColor: colors.statusGreen,
+            ...badgeCategory.statusRound,
+        },
+        "round-warning": {
+            chipColor: colors.statusYellow,
+            ...badgeCategory.statusRound,
+        },
+        "round-negative": {
+            chipColor: colors.statusRed,
+            ...badgeCategory.statusRound,
+        },
     }
 
     const badgeStyle = badgeType[type];
 
     return <Chip 
-                style={{minWidth: "96px"}}
+                variant={badgeStyle.chipVariant}
+                style={{
+                    minWidth: badgeStyle.chipMinWidth, 
+                    backgroundColor: badgeStyle.chipColor, 
+                    borderColor: badgeStyle.chipBorder, 
+                    borderRadius: badgeStyle.borderRadius,
+                    paddingRight: badgeStyle.paddingRight,
+                    paddingLeft: badgeStyle.paddingLeft,
+                }}
                 label={<Typography 
                                 variant={badgeStyle.labelComponent}
                                 style={{color: badgeStyle.labelColor}}
                         >
                             {label}
-                        </Typography>} 
+                        </Typography>
+                } 
                 {...rest}/>
 }
 
-
-//LabelBadge.propTypes
-
-const StatusBadge = () => {
-    return 
+LabelBadge.propTypes = {
+    label: PropTypes.string.isRequired,
+    type: PropTypes.oneOf([
+                            "user-outline",
+                            "info",
+                            "info-outline",
+                            "status-positive",
+                            "status-warning",
+                            "status-negative",
+                            "status-active",
+                            "status-past",
+                            "status-new",
+                            "round-positive",
+                            "round-warning",
+                            "round-negative"
+                        ]).isRequired,
 }
-
-// export const LabelBadge = ({label, type, ...rest}) => {
-//     const classes = useStyles(theme);
-
-//     const badgeType = {
-//         "default": {},
-//         "table": {},
-//         "list": {
-//             badgeMinWidth: "72px",
-//             labelComponent: "body2",
-//             labelColor: "white" //Will replace once Palette is ready 
-//         },
-//         "round": {}
-//     }
-
-//     const badgeStyle = badgeType[type];
-
-//     return <Chip 
-//                 style={{minWidth: badgeStyle.badgeMinWidth}}
-//                 label={<Typography 
-//                                 variant={badgeStyle.labelComponent}
-//                                 style={{color: badgeStyle.labelColor}}
-//                         >
-//                             {label}
-//                         </Typography>} 
-//                 {...rest}/>
-// }
-
-/**
- * classes[type]
- * Expected prop list
- * type = default, tables, lists, round
- * label = text on badge
- * variant (outlined or not)
- * 
- * 
- * 
- */
