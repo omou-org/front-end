@@ -25,7 +25,7 @@ export const AddItemButton = ({ children, ...buttonComponentProps }) => {
   const { addNewItemStyles } = useStyles({ ...buttonComponentProps });
   return (
 // When passing in a component prop here, it'll ignore height and width unless a div is placed within the Box here.
-    <Box {...buttonComponentProps}>
+    <Box {...buttonComponentProps} data-cy="AddItemButton">
       <div className={addNewItemStyles}>
         {children}
       </div>

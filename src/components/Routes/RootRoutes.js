@@ -63,7 +63,7 @@ export const RootRoutes = () => {
             </Route>
 
             {/* Route for Testing AddItemButton */}
-            <Route path="/AddItemButtonTest">
+            <Route path="/AddItemButton">
                 <AddItemButtonTestDemo />
             </Route>
             
