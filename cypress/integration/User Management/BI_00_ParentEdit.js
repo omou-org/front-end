@@ -1,6 +1,6 @@
 describe("Fills out form", () => {
     before(() => {
-        cy.fixture("users.json").then(({parent}) => {
+        cy.fixture("users.json").then(({ parent }) => {
             cy.mockGraphQL({
                 "CreateParentAccount": {
                     "response": {
@@ -27,7 +27,7 @@ describe("Fills out form", () => {
                             },
                         },
                     },
-                    "test": ({id}) => {
+                    "test": ({ id }) => {
                         expect(id).equals(parent.user.id.toString(), "Check ID passed");
                     },
                 },
@@ -37,7 +37,7 @@ describe("Fills out form", () => {
     });
 
     it("Loads data properly", () => {
-        cy.fixture("users.json").then(({parent}) => {
+        cy.fixture("users.json").then(({ parent }) => {
             cy.get("[data-cy=parent-firstName-input]")
                 .should("have.value", parent.user.firstName);
             cy.get("[data-cy=parent-address-input]")
@@ -48,7 +48,7 @@ describe("Fills out form", () => {
     });
 
     it("Can enter data properly", () => {
-        cy.fixture("users.json").then(({parent}) => {
+        cy.fixture("users.json").then(({ parent }) => {
             cy.get("[data-cy=parent-phoneNumber-input]").fastType("0");
             cy.get("[data-cy=submitButton]").should("be.disabled");
             cy.get("[data-cy=parent-phoneNumber-input]").clear();
@@ -58,7 +58,7 @@ describe("Fills out form", () => {
     });
 
     it("Properly submits", () => {
-        cy.fixture("users.json").then(({parent}) => {
+        cy.fixture("users.json").then(({ parent }) => {
             cy.get("[data-cy=submitButton]").click();
             cy.contains("submitted");
             cy.contains(parent.phoneNumber);

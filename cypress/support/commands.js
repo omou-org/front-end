@@ -27,7 +27,7 @@ const isStub = (wrappedMethod) =>
 
 let originalFetch;
 
-const getFetchStub = (win, {as, callsFake}) => {
+const getFetchStub = (win, { as, callsFake }) => {
     let stub = win.fetch;
     if (!isStub(win.fetch)) {
         originalFetch = win.fetch;
@@ -43,11 +43,11 @@ const getFetchStub = (win, {as, callsFake}) => {
 */
 Cypress.Commands.add("mockGraphQL", (operationMocks) => {
     const fetchGraphQL = (path, options, ...rest) => {
-        const {body} = options;
+        const { body } = options;
         try {
-            const {operationName, variables} = JSON.parse(body);
+            const { operationName, variables } = JSON.parse(body);
             if (operationMocks.hasOwnProperty(operationName)) {
-                const {test, response} = operationMocks[operationName];
+                const { test, response } = operationMocks[operationName];
                 if (typeof test === "function") {
                     test(variables);
                 }
@@ -160,9 +160,9 @@ Cypress.Commands.add("signUpAdminAndLogin", (userType, options = {}) => {
     const user = types[userType];
 
     cy.request({
-        "url": `${BASE_TEST_URL }/graphql`,
+        "url": `${BASE_TEST_URL}/graphql`,
         "method": "POST",
-        "body": {"query": user},
+        "body": { "query": user },
     })
         .its("body")
         .its("data")
@@ -179,7 +179,7 @@ Cypress.Commands.add("signUpAdminAndLogin", (userType, options = {}) => {
             `;
 
             cy.request({
-                "url": `${BASE_TEST_URL }/graphql`,
+                "url": `${BASE_TEST_URL}/graphql`,
                 "method": "POST",
                 "body": {
                     "query": newUserLogins,
@@ -200,7 +200,7 @@ Cypress.Commands.add("signUpAdminAndLogin", (userType, options = {}) => {
                             "type": "LOGIN_SUCCESSFUL",
                             "payload": {
                                 "response": {
-                                    "data": {token},
+                                    "data": { token },
                                 },
                                 "savePassword": true,
                             },
@@ -225,7 +225,7 @@ Cypress.Commands.add("login", (username, password) => {
             `;
 
     cy.request({
-        "url": `${BASE_TEST_URL }/graphql`,
+        "url": `${BASE_TEST_URL}/graphql`,
         "method": "POST",
         "body": {
             "query": newUserLogins,
@@ -238,11 +238,11 @@ Cypress.Commands.add("login", (username, password) => {
         .its("body")
         .its("data")
         .then((query) => {
-            const {token} = query.tokenAuth;
+            const { token } = query.tokenAuth;
             cy.request({
-                "url": `${BASE_TEST_URL }/graphql`,
+                "url": `${BASE_TEST_URL}/graphql`,
                 "method": "POST",
-                "headers": {"Authorization": `JWT ${token}`},
+                "headers": { "Authorization": `JWT ${token}` },
                 "body": {
                     "query": `
                     query GetAccountType($username: String!) {
@@ -260,13 +260,13 @@ Cypress.Commands.add("login", (username, password) => {
                         }
                     }
                     `,
-                    "variables": {username},
+                    "variables": { username },
                 },
             }).its("body")
                 .its("data")
                 .then((userInfo) => {
                     localStorage.setItem("token", token);
-                    const {accountType, user, phoneNumber} = userInfo.userInfo;
+                    const { accountType, user, phoneNumber } = userInfo.userInfo;
                     // dispatch to redux/local storage
                     cy
                         .window()
@@ -293,7 +293,7 @@ Cypress.Commands.add("login", (username, password) => {
  */
 Cypress.Commands.add("findDropdown", (element, text) => {
     cy.get(element).type(text || "");
-    cy.focused().type("{downarrow}{enter}", {"force": true});
+    cy.focused().type("{downarrow}{enter}", { "force": true });
 });
 
 /**
