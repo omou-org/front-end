@@ -137,24 +137,24 @@ const ColorsDemo = () => {
                     <Grid container direction="column">
                         <Grid item>
                             <ColorBox
-                                bgcolor="#6CE086"
+                                bgcolor={theme.palette.success.main}
                             />
                             <Typography>Success</Typography>
-                            <Typography>#6CE086</Typography>
+                            <Typography>{theme.palette.success.main}</Typography>
                         </Grid>
                         <Grid item>
                             <ColorBox
-                                bgcolor="#FFDD59"
+                                bgcolor={theme.palette.warning.main}
                             />
                             <Typography>Warning</Typography>
-                            <Typography>#FFDD59</Typography>
+                            <Typography>{theme.palette.warning.main}</Typography>
                         </Grid>
                         <Grid item>
                             <ColorBox
-                                bgcolor="#FF6766"
+                                bgcolor={theme.palette.error.main}
                             />
                             <Typography>Error</Typography>
-                            <Typography>#FF6766</Typography>
+                            <Typography>{theme.palette.error.main}</Typography>
                         </Grid>
                     </Grid>
                 </Grid>
