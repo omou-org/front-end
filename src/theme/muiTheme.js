@@ -53,15 +53,6 @@ const theme = createMuiTheme({
         "statusRed": "#FF6766",
 
     },
-    a: {
-      // color: "#1F82A1",
-      color: 'purple',
-      fontSize: '12px',
-      fontWeight: 'medium',
-      fontFamily: 'Roboto',
-      lineHeight: '16px',
-      textDecorationLine: 'underline'
-    },
 	"typography": {
 		subtitle2: {
 			fontWeight: 500,
@@ -136,14 +127,15 @@ const theme = createMuiTheme({
                 fontWeight: '300',
                 fontFamily: 'Roboto',
             },
-            a: {
-              color: "#1F82A1",
+            caption: {
               fontSize: '12px',
-              fontWeight: 'medium',
+              fontWeight: '500',
               fontFamily: 'Roboto',
               lineHeight: '16px',
-              textDecorationLine: 'underline'
-            },
+              // color: '#1F82A1',
+              color: 'pink',
+              textDecoration: 'underline'
+            }
         },
         "MuiButton": {
             "text": {
@@ -184,6 +176,15 @@ const theme = createMuiTheme({
         },
         "paper": {
             "background": "#FAFAFA",
+        },
+        'Link': {
+          fontSize: '12px',
+          fontWeight: '500',
+          fontFamily: 'Roboto',
+          lineHeight: '16px',
+          // color: '#1F82A1',
+          color: 'pink',
+          textDecoration: 'underline'
         },
         "MuiMenuItem": {
             "root": {

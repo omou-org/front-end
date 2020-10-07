@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography";
 // import LabelBadge from "./LabelBadge";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from '@material-ui/core/styles';
+import {Link} from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,8 +66,11 @@ const TypographyDemo = () => {
             </p>
             This is an a tag:
             <p>
-            <a href="www.google.com">What's happening here</a>
+            <Link href="#" color="palette.primary.main">
+                Body (Links)
+            </Link>
             </p>
+
         </Paper>
     )
 }
