@@ -16,7 +16,6 @@ function rand() {
 }
 
 
-
 function getModalStyle() {
     const top = 50 + rand();
     const left = 50 + rand();
@@ -68,11 +67,9 @@ const IdleLogout = () => {
         history.push("/login");
     }, [dispatch, history]);
 
-    let timeout = 10000; //1080000;
-    const modalTimeout = 5000 //120000;
-    const [modalRemaining, setModalRemaining] = useState(timeout - 2000);
-    const [logoutRemaining, setLogoutRemaining] = useState(timeout);
-
+    let timeout = 1200000; //1080000;
+    const modalTimeout = 300000 //120000;
+    const [remaining, setRemaining] = useState(timeout);
     const [elapsed, setElapsed] = useState(0);
     const elapseDiff = 5000;
 
@@ -81,39 +78,38 @@ const IdleLogout = () => {
 
     const handleOnActive = () => setIsIdle(false);
     const handleOnIdle = () => setIsIdle(true);
-    
-    useEffect(() => {
-        setModalRemaining(getRemainingTime())
-        setLogoutRemaining(getRemainingTime())
 
-        setLastActive(getLastActiveTime())
-        setElapsed(getElapsedTime())
-    
-        setInterval(() => {
-            setModalRemaining(getRemainingTime())
-            setLogoutRemaining(getRemainingTime())
-            setLastActive(getLastActiveTime())
-            setElapsed(getElapsedTime())
-        }, 1000);
-        // console.log("useeffect" + remaining)
-    }, []);
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
     const [modalStyle] = useState(getModalStyle);
     const [open, setOpen] = useState(false);
-    
-    const handleClose = () => {
-        setOpen(false);
+
+   
+    function logoutAfter2Minutes() {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(logoutAndCloseModal());
+            }, 300000);
+        })
     };
-    const handleOpen = () => {
-        setOpen(true);
-        handleReset();
-    }
+    
     const logoutAndCloseModal = () => {
         handleClose();
         handleLogout();
     }
+
+    async function handleOpen() {
+        setOpen(true);
+        handleReset();
+        setRemaining(modalTimeout);
+        await logoutAfter2Minutes();
+
+    };
     
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     const {
         reset,
         pause,
@@ -131,29 +127,41 @@ const IdleLogout = () => {
     const handlePause = () => pause();
     const handleResume = () => resume();
 
+    useEffect(() => {
+        setRemaining(getRemainingTime())
+        setLastActive(getLastActiveTime())
+        setElapsed(getElapsedTime())
+    
+        setInterval(() => {
+            setRemaining(getRemainingTime())
+            setLastActive(getLastActiveTime())
+            setElapsed(getElapsedTime())
+        }, 1000);
+    }, []);
 
     const body = () => {
         return (
-            <div style={modalStyle} className={classes.Idle}>
+            <div style={modalStyle} 
+                className={classes.Idle}
+                data-cy="activityCheckModal">
                 <p id="simple-modal-description">
                     <Typography variant="h5" className={classes.IdleFont}>Are you still there?</Typography>
                     <div style={{"text-align": "center"}}>
-                        {(logoutRemaining === 0) && logoutAndCloseModal()}
-                    <Button 
-                        onClick={handleClose}
-                        className={classes.YesButton}
+                        <Button 
+                            onClick={handleClose}
+                            className={classes.YesButton}
+                            data-cy="activityModalSubmit"
                         >Yes</Button>
-                        </div>
+                    </div>
                 </p>
             </div>
         )};
     return (
         <div>
             {
-                (modalRemaining === 0) && handleOpen()
-                // remaining === 0 ? handleOpen() : doNothing()
+                (remaining === 0) && handleOpen()
             }
-            
+        
             <Modal
                 open={open}
                 onClose={handleClose}

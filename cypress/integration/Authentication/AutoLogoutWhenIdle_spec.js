@@ -41,14 +41,14 @@ describe("Fills out form", () => {
 
     it("idles for 18 mins and clicks still here", () => {
         setTimeout(function() {console.log("waiting 18 mins...");}, 18000);
-        cy.get("[data-cy=activityCheckModal]").should("be.enabled");
+        cy.get("[data-cy=activityCheckModal]").should("exist");
         cy.get("[data-cy=activityModalSubmit]").click()
-        cy.get("[data-cy=hiddenTimer]").should("have.value", 0);
+        setTimeout(function() {console.log("waiting 2 mins..."); }, 120000);
+        cy.url().should("not.include", '/login')
     };
     it("idles for 20 mins and logs out", () => {
-        setTimeout(function() { console.log("waiting for 20 mins..."); }, 20000);
-        cy.get("[data-cy=login-firstName-input]")
-            .should("be.empty");
+        setTimeout(function() { console.log("waiting for 20 mins..."); }, 1200000 + 300000);
+        cy.url().should("include", "/login");
     })
 
 });
