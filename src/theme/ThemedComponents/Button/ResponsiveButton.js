@@ -1,10 +1,6 @@
 import React from 'react'
-import theme from '../../muiTheme';
 import { PropTypes } from 'prop-types';
 import Button from "@material-ui/core/Button";
-import Grid from '@material-ui/core/Grid';
-import BackArrow from '@material-ui/icons/ArrowBackIos';
-import AddIcon from '@material-ui/icons/Add';
 
 const buttonWidth = (label) => {
     let buttonWidth;
@@ -18,7 +14,11 @@ const buttonWidth = (label) => {
        return buttonWidth;
    };
 
-export const ResponsiveButton = ({ label, variant, disabled, icon}) => {
+/* To utilize an icon in this button, import the icon in your component and pass it in through the startIcon prop to have it 
+on the left of the label and endIcon to have it on the right. Example: startIcon={<AddIcon />}
+*/
+
+export const ResponsiveButton = ({ label, variant, disabled, startIcon, endIcon}) => {
     return (
         <Button
         style={{
@@ -27,17 +27,9 @@ export const ResponsiveButton = ({ label, variant, disabled, icon}) => {
         }}
         variant={variant}
         disabled={disabled}
+        startIcon={startIcon}
+        endIcon={endIcon}
         >
-        {/* {hasIcon && label === 'back' 
-        ? <Grid container>
-			<BackArrow style={{transform: 'scale(0.6)'}} />
-        </Grid> 
-        : hasIcon && label !== 'back'
-        ? <Grid container>
-            <AddIcon style={{transform: 'scale(0.7)'}} />
-        </Grid> :
-        null
-        } */}
             {label}
         </Button>
     )
@@ -45,5 +37,5 @@ export const ResponsiveButton = ({ label, variant, disabled, icon}) => {
 
 ResponsiveButton.propTypes = {
     label: PropTypes.string.isRequired,
-    variant: PropTypes.string,
+    variant: PropTypes.string.isRequired
 }

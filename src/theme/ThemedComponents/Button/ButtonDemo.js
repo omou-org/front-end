@@ -3,6 +3,8 @@ import Grid from '@material-ui/core/Grid';
 import { Typography } from '@material-ui/core';
 import BackgroundPaper from '../../../components/OmouComponents/BackgroundPaper';
 import { ResponsiveButton } from './ResponsiveButton';
+import BackArrow from '@material-ui/icons/ArrowBackIos';
+import AddIcon from '@material-ui/icons/Add';
 
 
 
@@ -78,10 +80,10 @@ const ButtonDemo = () => {
                 </Grid>
 
                 <Grid item xs={6}>
-                    <ResponsiveButton variant='outlined' label='back' hasIcon/>
+                    <ResponsiveButton variant='outlined' label='back' startIcon={<BackArrow/>}/>
                 </Grid>
                 <Grid item xs={6}>
-                    <ResponsiveButton variant='outlined' label='register' hasIcon/>
+                    <ResponsiveButton variant='outlined' label='register' startIcon={<AddIcon/>}/>
                 </Grid>
             </Grid>
 
@@ -153,13 +155,13 @@ const ButtonDemo = () => {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='contained' label='back' hasIcon/>
+                    <ResponsiveButton variant='contained' label='back' startIcon={<BackArrow/>}/>
                 </Grid>
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='contained' label='register' hasIcon/>
+                    <ResponsiveButton variant='contained' label='register' startIcon={<AddIcon/>}/>
                 </Grid>
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='contained' label='register' hasIcon disabled/>
+                    <ResponsiveButton variant='contained' label='register' startIcon={<AddIcon/>} disabled/>
                 </Grid>
             </Grid>
 
