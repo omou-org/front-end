@@ -8,8 +8,11 @@ import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {useIdleTimer} from 'react-idle-timer';
 import { useHistory } from "react-router-dom";
+<<<<<<< HEAD
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+=======
+>>>>>>> 390263c8d8968ab3c43a6067ca54948ac73579eb
 
 function rand() {
     return Math.round(Math.random() * 20) - 10;

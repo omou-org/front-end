@@ -29,6 +29,7 @@ const App = () => {
 		return (
 
 				<div>
+<<<<<<< HEAD
 					{ authUser.user && <IdleLogout /> }
 
 					<MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
@@ -37,6 +38,18 @@ const App = () => {
 							<Navigation/>
 						</div>
 					</MuiPickersUtilsProvider>
+=======
+								{
+				authUser.user && <IdleLogout />
+			}
+
+						<MuiPickersUtilsProvider utils={MomentUtils} libInstance={moment}>
+								<div className="App">
+										<CssBaseline/>
+										<Navigation/>
+								</div>
+						</MuiPickersUtilsProvider>
+>>>>>>> 390263c8d8968ab3c43a6067ca54948ac73579eb
 				</div>
 		)};
 
