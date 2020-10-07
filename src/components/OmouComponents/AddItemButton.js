@@ -11,6 +11,7 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '1.3rem',
+    cursor: 'pointer',
     height: height,
     width: width,
     background: '#F5F5F5',

@@ -34,6 +34,7 @@ import {
     DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
 } from "actions/actionTypes";
 import {instance} from "actions/apiActions";
+import { AddItemButton } from "components/OmouComponents/AddItemButton";
 
 const useStyles = makeStyles((theme) => ({
 	"icons": {
@@ -545,22 +546,25 @@ const Notes = ({ownerType, ownerID, isDashboard}) => {
                             <Grid
                                 item
                                 xs={12}>
-                                <div
-                                    className={`addNote ${classes.addNote}`}
+                                <AddItemButton
+                                    height={'100%'}
+                                    width='inherit'
+                                    style={{padding: 0}}
                                     onClick={openNewNote}
-                                    style={{"cursor": "pointer", height: "100%", backgroundColor: "white"}}>
-                                    <Typography className="center" style={{padding: 0}}>
-                                        <AddIcon /> Add Note
-                                    </Typography>
-                                </div>
+                                >
+                                    + Add Note
+                                </AddItemButton>
                             </Grid>
                     </>
-                    :   <Grid item md={3}>
-                            <div className={classes.addNote} onClick={openNewNote}>
-                                <Typography className={classes.center}>
-                                    <AddIcon /><br />Add Note
-                                </Typography>
-                            </div>
+                    :
+                       <Grid item md={3}>
+                           <AddItemButton
+                            height={200}
+                            width='inherit'
+                            onClick={openNewNote}
+                           >
+                               + Add Note
+                           </AddItemButton>
                         </Grid>            
                 }  
             
