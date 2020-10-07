@@ -29,6 +29,7 @@ import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
 import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
 import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
+import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -80,6 +81,12 @@ export const RootRoutes = () => {
                 path="/demos/button"
             >
                <ButtonDemo />
+            </Route>
+
+            <Route
+                path="/demos/colors"
+            >
+                <ColorsDemo />
             </Route>
 
 
