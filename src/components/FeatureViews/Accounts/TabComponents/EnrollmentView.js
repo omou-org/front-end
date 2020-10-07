@@ -53,6 +53,7 @@ const CourseSessionStatus = () => {
     const dispatch = useDispatch();
     const goToRoute = useGoToRoute();
     const { "accountID": studentID, courseID } = useParams();
+    // const { "accountID": studentID } = useParams();
     const courseSessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
     const usersList = useSelector(({ Users }) => Users);
     const courses = useSelector(({ Course }) => Course.NewCourseList);
@@ -158,74 +159,82 @@ const CourseSessionStatus = () => {
         dispatch(initializeRegistration());
     }, [dispatch]);
 
-    const GET_INSTRUCTOR_SESSIONS = gql`query GetInstructorSessions($instructorId: ID!, $startDate: String!, $endDate:String!) {
-        __typename
-        sessions(instructorId: $instructorId, startDate: $startDate, endDate: $endDate) {
-          id
-          title
-          endDatetime
-          startDatetime
-          instructor {
-            user {
-              id
-              lastName
-              firstName
-            }
-          }
-          course {
-            id
-            title
-            enrollmentSet {
-              student {
-                user {
-                  lastName
-                  firstName
-                }
-              }
-            }
-            endDate
-            startDate
-            academicLevel
-          }
-        }
-      }`;
-
-    //Had to remove enrollmentNoteSet, enrollmentBalance, paymentList
-    // const GET_ENROLLMENT = gql ` 
-    //     query GetEnrollment($enrollmentId: ID!) {
-    //       enrollment(enrollmentId: "1") {
-    //         id
+    // const GET_INSTRUCTOR_SESSIONS = gql`query GetInstructorSessions($instructorId: ID!, $startDate: String!, $endDate:String!) {
+    //     __typename
+    //     sessions(instructorId: $instructorId, startDate: $startDate, endDate: $endDate) {
+    //       id
+    //       title
+    //       endDatetime
+    //       startDatetime
+    //       instructor {
+    //         user {
+    //           id
+    //           lastName
+    //           firstName
+    //         }
+    //       }
     //       course {
     //         id
     //         title
-    //         instructor {
-    //           user {
-    //             firstName
-    //             id
-    //             lastName
-    //           }
-    //         }
-    //       }
-    //       student {
-    //         user {
-    //           id
-    //           firstName
-    //           lastName
-    //           parent {
+    //         enrollmentSet {
+    //           student {
     //             user {
-    //               id
-    //               firstName
     //               lastName
+    //               firstName
     //             }
     //           }
     //         }
+    //         endDate
+    //         startDate
+    //         academicLevel
     //       }
     //     }
-    // }
-      
-    //   `;
+    //   }`;
 
-    //   const GET_ENROLLMENTS = gql ` 
+    //Had to remove enrollmentNoteSet, enrollmentBalance, paymentList
+    const GET_ENROLLMENT = gql ` 
+    query EnrollmentViewQuery {
+        enrollment(enrollmentId: "1") {
+          enrollmentnoteSet {
+            id
+            important
+          }
+          enrollmentBalance
+          course {
+            id
+            title
+            instructor {
+              user {
+                firstName
+                id
+                lastName
+              }
+            }
+          }
+          paymentList {
+            id
+          }
+          student {
+            user {
+              id
+              firstName
+              lastName
+              parent {
+                user {
+                  id
+                  firstName
+                  lastName
+                }
+              }
+            }
+          }
+        }
+      }
+    
+      
+      `;
+
+    //   const GET_ENROLLMENT = gql ` 
     //   query enrollment($enrollmentId: ID!) {
     //     enrollmentnoteSet {
     //       id
@@ -264,22 +273,60 @@ const CourseSessionStatus = () => {
     
     // `;
 
-    //   const {data, loading, error} = useQuery(GET_ENROLLMENT, {
-    //     // variables: {studentId: studentID}
-    // });
+      const {data, loading, error} = useQuery(GET_ENROLLMENT);
 
-    // if (loading) {
-    //     return <Loading/>
-    // }
-    // if (error) {
-    //     return <Typography>
-    //         There's been an error! Error: {error.message}
-    //     </Typography>
-    // }
+    if (loading) {
+        return <Loading/>
+    }
+    if (error) {
+        return <Typography>
+            There's been an error! Error: {error.message}
+        </Typography>
+    }
 
-    // const {enrollmentsData} = data;
     
-    // console.log(enrollmentsData)
+    // console.log(data)
+
+
+    // const courseid = data.enrollment.course.id;
+    // const studentid = data.enrollment.student.user.id;
+    // console.log(studentid)
+    // console.log(courseid);
+
+    const GET_SESSIONS = gql ` 
+    query MyQuery {
+        sessions(courseId: ${courseid}) {
+          course {
+            startTime
+            endTime
+            id
+            hourlyTuition
+          }
+          id
+        }
+      }
+    `
+
+    const {sessionsData, sessionsLoading, sessionsError} = useQuery(GET_SESSIONS);
+
+    if (sessionsLoading) {
+        return <Loading/>
+    }
+    if (sessionsError) {
+        return <Typography>
+            There's been an error! Error: {sessionsError.message}
+        </Typography>
+    }
+    console.log(data)
+
+
+    const courseid = data.enrollment.course.id;
+    const studentid = data.enrollment.student.user.id;
+    console.log(studentid)
+    console.log(courseid);
+    console.log(sessionsData)
+
+    // const course = courses[courseID];
 
     // either doesn't exist or only has notes defined
     if (
