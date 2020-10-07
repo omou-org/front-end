@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -156,6 +158,129 @@ const CourseSessionStatus = () => {
         dispatch(initializeRegistration());
     }, [dispatch]);
 
+    const GET_INSTRUCTOR_SESSIONS = gql`query GetInstructorSessions($instructorId: ID!, $startDate: String!, $endDate:String!) {
+        __typename
+        sessions(instructorId: $instructorId, startDate: $startDate, endDate: $endDate) {
+          id
+          title
+          endDatetime
+          startDatetime
+          instructor {
+            user {
+              id
+              lastName
+              firstName
+            }
+          }
+          course {
+            id
+            title
+            enrollmentSet {
+              student {
+                user {
+                  lastName
+                  firstName
+                }
+              }
+            }
+            endDate
+            startDate
+            academicLevel
+          }
+        }
+      }`;
+
+    //Had to remove enrollmentNoteSet, enrollmentBalance, paymentList
+    // const GET_ENROLLMENT = gql ` 
+    //     query GetEnrollment($enrollmentId: ID!) {
+    //       enrollment(enrollmentId: "1") {
+    //         id
+    //       course {
+    //         id
+    //         title
+    //         instructor {
+    //           user {
+    //             firstName
+    //             id
+    //             lastName
+    //           }
+    //         }
+    //       }
+    //       student {
+    //         user {
+    //           id
+    //           firstName
+    //           lastName
+    //           parent {
+    //             user {
+    //               id
+    //               firstName
+    //               lastName
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    // }
+      
+    //   `;
+
+    //   const GET_ENROLLMENTS = gql ` 
+    //   query enrollment($enrollmentId: ID!) {
+    //     enrollmentnoteSet {
+    //       id
+    //       important
+    //     }
+    //     enrollmentBalance
+    //     course {
+    //       id
+    //       title
+    //       instructor {
+    //         user {
+    //           firstName
+    //           id
+    //           lastName
+    //         }
+    //       }
+    //     }
+    //     paymentList {
+    //       id
+    //     }
+    //     student {
+    //       user {
+    //         id
+    //         firstName
+    //         lastName
+    //         parent {
+    //           user {
+    //             id
+    //             firstName
+    //             lastName
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    
+    // `;
+
+    //   const {data, loading, error} = useQuery(GET_ENROLLMENT, {
+    //     // variables: {studentId: studentID}
+    // });
+
+    // if (loading) {
+    //     return <Loading/>
+    // }
+    // if (error) {
+    //     return <Typography>
+    //         There's been an error! Error: {error.message}
+    //     </Typography>
+    // }
+
+    // const {enrollmentsData} = data;
+    
+    // console.log(enrollmentsData)
+
     // either doesn't exist or only has notes defined
     if (
         !enrollment ||
@@ -182,6 +307,8 @@ const CourseSessionStatus = () => {
     ) {
         return <LoadingError error="data" />;
     }
+
+
 
     const mainContent = () => {
         switch (activeTab) {
