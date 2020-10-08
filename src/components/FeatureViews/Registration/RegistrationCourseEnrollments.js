@@ -31,6 +31,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 import "theme/theme.scss";
 import "./registration.scss";
@@ -39,6 +40,29 @@ import { deleteEnrollment } from "actions/registrationActions";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { fullName } from "../../../utils";
+
+const useStyles = makeStyles({
+    accordionNotes: {
+        textAlign: 'left',
+        fontSize: '12 px !important'
+    },
+    accordionNotesBorder: {
+        border: '1px #E0E0E0 solid',
+        borderRadius: "25px",
+        margin: '5px 24px 25px 24px'
+    },
+    accordionSpacing: {
+        width: '170px',
+    },
+    noBorder: {
+        border: 'none',
+        textDecoration: 'none'
+    },
+    actionsAccordionSpacing: {
+        width: '350px',
+    },
+});
+
 
 export const GET_ENROLLMENT_DETAILS = gql`
 	query EnrollmentDetails($courseId: ID!){
@@ -67,6 +91,7 @@ export const GET_ENROLLMENT_DETAILS = gql`
          }
 	}
     `;
+
     
     // export const GET_ENROLLMENT_DETAILS = gql`
 	// query EnrollmentDetails($courseId: ID!){
@@ -111,6 +136,7 @@ const TableToolbar = (
         </TableRow>
     </TableHead>
 );
+
 
 const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) => {
     const dispatch = useDispatch();
@@ -164,7 +190,7 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
         [dispatch, unenroll.enrollment]
     );
 
-
+    const classes = useStyles();
     if (loading) {
         return <Loading />
     }
@@ -203,29 +229,30 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                         const { primaryParent } = student;
                         return (
                             <Fragment key={student.user.id}>
-                            <Accordion className="no-border">
+                            <Accordion className={classes.noBorder}>
 
                                 <AccordionSummary
                                     expandIcon="⬇"
                                     aria-controls="panel1a-content"
-                                    className = "no-border"
+                                    className={classes.noBorder}
+                                   
                                     
                                 >
 
-                                <TableRow className = "no-border">
-                                    <TableCell className="bold accordion-spacing">
+                                <TableRow className={classes.noBorder}>
+                                    <TableCell className={classes.accordionSpacing}>
                                         <Link className="no-underline"
                                             to={`/accounts/student/${student.user.id}`}>
                                             {fullName(student.user)}
                                         </Link>
                                     </TableCell>
-                                    <TableCell className ="accordion-spacing">
+                                    <TableCell className={classes.accordionSpacing}>
                                         <Link className="no-underline"
                                             to={`/accounts/parent/${primaryParent.user.id}`}>
                                             {fullName(primaryParent.user)}
                                         </Link>
                                     </TableCell>
-                                    <TableCell className="actions-accordion-spacing">
+                                    <TableCell className={classes.actionsAccordionSpacing}>
                                         {addDashes(primaryParent.phoneNumber)}
                                     </TableCell>
                                     <TableCell>
@@ -273,8 +300,8 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                 </TableRow>
                                 </AccordionSummary>
                                 
-                                <AccordionDetails className="accordion-notes-border">
-                                    <Typography className="accordion-notes">
+                                <AccordionDetails className={classes.accordionNotesBorder}>
+                                    <Typography className={classes.accordionNotes} variant="body">
                                     <p>
                                         <b>School:</b> {student.school} 
                                     </p>
@@ -369,3 +396,4 @@ RegistrationCourseEnrollments.propTypes = {
 };
 
 export default RegistrationCourseEnrollments;
+
