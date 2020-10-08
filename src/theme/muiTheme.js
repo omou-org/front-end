@@ -64,7 +64,52 @@ const theme = createMuiTheme({
             "@global": {
                 "body": {
                     "backgroundColor": neutralBackgroundColor,
+                    "a": {
+                      "fontSize": '12px',
+                      "fontWeight": '500',
+                      "fontFamily": 'Roboto',
+                      "lineHeight": '16px',
+                  // color: '#1F82A1',
+                      "color": 'pink',
+                      "textDecoration": 'underline'
+                    },
+                    a: {
+                      "fontSize": '12px',
+                      "fontWeight": '500',
+                      "fontFamily": 'Roboto',
+                      "lineHeight": '16px',
+                  // color: '#1F82A1',
+                      "color": 'pink',
+                      "textDecoration": 'underline'
+                    },
                 },
+                "a": {
+                  "fontSize": '12px',
+                  "fontWeight": '500',
+                  "fontFamily": 'Roboto',
+                  "lineHeight": '16px',
+              // color: '#1F82A1',
+                  "color": 'pink',
+                  "textDecoration": 'underline'
+                },
+                a: {
+                  "fontSize": '12px',
+                  "fontWeight": '500',
+                  "fontFamily": 'Roboto',
+                  "lineHeight": '16px',
+              // color: '#1F82A1',
+                  "color": 'pink',
+                  "textDecoration": 'underline'
+                },
+                "link": {
+                  "fontSize": '12px',
+                  "fontWeight": '500',
+                  "fontFamily": 'Roboto',
+                  "lineHeight": '16px',
+              // color: '#1F82A1',
+                  "color": 'pink',
+                  "textDecoration": 'underline'
+                }
             },
         },
         MuiTypography: {

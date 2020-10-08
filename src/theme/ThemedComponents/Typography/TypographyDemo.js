@@ -58,16 +58,14 @@ const TypographyDemo = () => {
                 Body (Bolded)
             </Typography>
             </p>
-            This is an a variant:
             <p>
-            <Typography variant="a">
-                It's a link?
-            </Typography>
+            <a href="#">
+                Body (Links) w/ an a tag
+            </a>
             </p>
-            This is an a tag:
             <p>
-            <Link href="#" color="palette.primary.main">
-                Body (Links)
+            <Link href="#">
+                Body (Links) w/ the link component
             </Link>
             </p>
 
