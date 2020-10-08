@@ -82,6 +82,15 @@ const theme = createMuiTheme({
                       "color": 'pink',
                       "textDecoration": 'underline'
                     },
+                    a:visted {
+                      "fontSize": '12px',
+                      "fontWeight": '500',
+                      "fontFamily": 'Roboto',
+                      "lineHeight": '16px',
+                  // color: '#1F82A1',
+                      "color": 'pink',
+                      "textDecoration": 'underline'
+                    },
                 },
                 "a": {
                   "fontSize": '12px',
