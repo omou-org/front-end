@@ -32,6 +32,9 @@ const theme = createMuiTheme({
             "main": neutralBackgroundColor,
             "default": neutralBackgroundColor,
         },
+        "success": {"main": "#6CE086"},
+        "warning": {"main": "#FFDD59"},
+        "error": {"main": "#FF6766"},
     },
     "colors": {
         "black": "#000000",
@@ -45,13 +48,9 @@ const theme = createMuiTheme({
         "slateGrey": "#666666",
         "gloom": "#999999",
         "cloudy": "#C4C4C4",
-        "lightGrey": "#D3D3D3",/*listed same as cloudy on Figma*/
-        /* component specific */
+        "lightGrey": "#D3D3D3",
         "buttonBlue": "#289FC3",
-        "backgroundGrey": "#FAFAFA",
-        "statusGreen": "#6CE086",
-        "statusYellow": "#FFDD59",
-        "statusRed": "#FF6766",
+        "backgroundGrey": "#EEEEEE",
 
     },
     a: {
@@ -197,8 +196,7 @@ const theme = createMuiTheme({
                 "color": "#999999",
                 "opacity": "80%"
               },
-            },
-            
+            },   
 			containedPrimary: {
 				color: "#FFFFFF", 
 			}
