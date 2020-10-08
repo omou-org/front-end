@@ -14,6 +14,7 @@ import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import MomentUtils from "@date-io/moment";
+import MaskedInput from "react-text-mask";
 
 const getLabel = ({label}) => label;
 
@@ -38,6 +39,20 @@ export const DatePicker = (props) =>
     <Fields.KeyboardDatePicker dateFunsUtils={MomentUtils} {...props} />;
 export const TimePicker = (props) =>
     <Fields.KeyboardTimePicker {...props} dateFunsUtils={MomentUtils} />;
+
+const MaskedPhoneInput = (props) => 
+    <MaskedInput mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/,]}
+                 placeholderChar={'\u2000'}
+                 showMask={false}
+                 {...props}/>;
+
+export const PhoneInput = (props) => 
+    <TextField
+        {...props}
+        InputProps={{
+            inputComponent: MaskedPhoneInput
+        }}/>;
+
 
 export const Autocomplete = ({ name, options, ...props }) => {
     const renderOption = useCallback(
