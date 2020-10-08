@@ -146,16 +146,18 @@ const RegistrationLanding = () => {
             }
         }, Object.values(courses));
     
-    const sortedCourses = filteredCourses.sort((a,b) => {
+    const sortedCourses = filteredCourses.sort((firstCourse, secondCourse) => {
         switch (sortType) {
             case "title":
-                if (a.title > b.title) return 1;
-                if (a.title < b.title) return -1;
+                if (firstCourse.title > secondCourse.title) return 1;
+                if (firstCourse.title < secondCourse.title) return -1;
                 return 0;
             case "seatsLeft":
-                return (b.maxCapacity - b.enrollmentSet.id) - (a.maxCapacity - a.enrollmentSet.id);
+                return (secondCourse.maxCapacity - secondCourse.enrollmentSet.id) - (firstCourse.maxCapacity - firstCourse.enrollmentSet.id);
             default:
-                return b.startDate - a.startDate;
+                if (firstCourse.title > secondCourse.title) return 1;
+                if (firstCourse.title < secondCourse.title) return -1;
+                return 0;
         }
     })
 
@@ -246,9 +248,8 @@ const RegistrationLanding = () => {
                                     {value: 'seatsLeft', label: 'Sort by: Seats Left'},
                                     {value: 'title', label: 'Sort by: Course Name'}
                                 ]}
-                                placeholder={'Sort by'}
+                                placeholder={'Sort by: Course Name'}
                                 styles={customStyles}
-                                value={sortType}
                             />
                         </Grid>
                     </Hidden> 
