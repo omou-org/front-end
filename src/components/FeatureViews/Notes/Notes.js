@@ -547,7 +547,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 item
                                 xs={12}>
                                 <AddItemButton
-                                    height={'100%'}
+                                    height='100%'
                                     width='inherit'
                                     style={{padding: 0}}
                                     onClick={openNewNote}
