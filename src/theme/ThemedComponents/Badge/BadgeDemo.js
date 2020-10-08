@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Typography, Container } from "@material-ui/core";
 import BackgroundPaper from "components/OmouComponents/BackgroundPaper";
 import React from "react";
 import {LabelBadge} from "./LabelBadge";
@@ -8,7 +8,7 @@ const useStyles = makeStyles(() => ({
         margin: "-2px"
     },
     column: {
-        borderBottom: "solid"
+        borderBottom: "solid 1px"
     }
 }))
 
@@ -16,6 +16,7 @@ const BadgeDemo = () => {
     const classes = useStyles();
 
     return (
+        <Container fullWidth="sm">
         <BackgroundPaper>
             <Grid container direction="column" spacing={1} item xs={12}>
                 <Grid container item xs={12} spacing={3} justify="center" className={classes.row}>
@@ -120,10 +121,10 @@ const BadgeDemo = () => {
                                 <LabelBadge label="1" type="round-positive"/>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="2" type="round-warning"/>
+                                <LabelBadge label="20" type="round-warning"/>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="2" type="round-negative"/>
+                                <LabelBadge label="300" type="round-negative"/>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -151,6 +152,7 @@ const BadgeDemo = () => {
                 </Grid>
         </Grid>
         </BackgroundPaper>
+        </Container>
 
     )
 }
