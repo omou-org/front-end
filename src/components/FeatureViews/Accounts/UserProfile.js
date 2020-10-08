@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Redirect, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
+import gql from "graphql-tag"
+import { useQuery } from "@apollo/react-hooks"
 
 import Badge from "@material-ui/core/Badge";
 import BioIcon from "@material-ui/icons/PersonOutlined";
@@ -233,9 +235,6 @@ const UserProfile = () => {
 								/>
 						))}
 				</Tabs>
-				{console.log(displayTabs
-						.filter((tab) =>
-							console.log((tab.access_permissions))))}
 				<ComponentViewer
 					inView={displayTabs
 						.filter((tab) =>

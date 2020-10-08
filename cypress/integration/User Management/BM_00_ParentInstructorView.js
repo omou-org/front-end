@@ -116,7 +116,9 @@ describe("Test should load our courses from course.json into course management, 
                     .should("have.css", "background-color", "rgb(189, 189, 189)");  
                 cy.get("[data-cy=course-list]")
                     .eq(1)
-                cy.visitAuthenticated(`/coursemanagement/class/${ScienceCourse.id}`)   
+                cy.get("[data-cy=course-list-title]")
+                    .eq(1)
+                    .click();
         });
     });
 
