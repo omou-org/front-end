@@ -123,7 +123,6 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 path="/registration/course/:courseID?/:courseTitle?">
-                {/* users={[USER_TYPES.admin, USER_TYPES.receptionist]}> */}
                 <RegistrationCourse />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/cart/">
