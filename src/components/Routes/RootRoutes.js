@@ -26,10 +26,7 @@ import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
-import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
-import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
-import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
-import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
+import DemoRoutes from './DemoRoutes';
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -65,30 +62,9 @@ export const RootRoutes = () => {
             </Route>
             
             {/* Dahl Design Migration Demos */}
-            <Route
-                path="/demos/badge"
-            >
-                <BadgeDemo/>
+            <Route path="/demo/:views?">
+                <DemoRoutes/>
             </Route>
-
-            <Route
-                path="/demos/typography"
-            >
-                 <TypographyDemo />
-            </Route>
-
-            <Route
-                path="/demos/button"
-            >
-               <ButtonDemo />
-            </Route>
-
-            <Route
-                path="/demos/colors"
-            >
-                <ColorsDemo />
-            </Route>
-
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
