@@ -27,6 +27,7 @@ const theme = createMuiTheme({
     "palette": {
         "primary": {"main": omouBlue},
         "secondary": {"main": "#a6a6a6"},
+        "warning": {"main": "#FFDD59"},
         "background": {
             "main": neutralBackgroundColor,
             "default": neutralBackgroundColor,
@@ -50,7 +51,9 @@ const theme = createMuiTheme({
         "lightGrey": "#D3D3D3",
         "buttonBlue": "#289FC3",
         "backgroundGrey": "#EEEEEE",
-
+        "statusGreen": "#6CE086",
+        "statusYellow": "#FFDD59",
+        "statusRed": "#FF6766",
     },
     a: {
       // color: "#1F82A1",
