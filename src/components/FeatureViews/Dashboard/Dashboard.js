@@ -18,6 +18,8 @@ import Moment from 'react-moment';
 import Select from 'react-select';
 import {makeStyles} from "@material-ui/styles";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.down('md')]: {
@@ -145,16 +147,16 @@ const Dashboard = () => {
                                         {currentDate}
                                     </Moment>
                                     </Grid>
-                                    <Button 
-                                        variant="outlined" 
+                                    <ResponsiveButton 
+                                        variant='outlined' 
+                                        label='view in scheduler'
                                         style={{margin:"5px", float: "right"}}
                                         component={Link}
                                         to={{
                                             pathname: "/scheduler",
                                             state: { isDashboard: true}
-                                        }}
-                                        >View in Scheduler
-                                    </Button>
+                                        }} 
+                                    />
                             </Grid>
                             <Grid item sm={6} md={6} lg={4}>
                                 <Select

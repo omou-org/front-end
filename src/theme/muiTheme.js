@@ -145,6 +145,7 @@ const theme = createMuiTheme({
             },
         },
         "MuiButton": {
+            "minWidth": "0",
             "text": {
                 "color": "black",
             },
@@ -161,15 +162,15 @@ const theme = createMuiTheme({
                 "backgroundColor": "#289FC3",
                 "opacity": "80%",
                 "border": "rgba(40, 159, 195, 0.8)",
-                // "-webkit-background-clip": "padding-box", 
-                // "background-clip": "padding-box"
+                "-webkit-background-clip": "padding-box", 
+                "background-clip": "padding-box"
               },
               "&:active": {
                 "backgroundColor": "#289FC3",
                 "opacity": "60%",
                 "border": "rgba(40, 159, 195, 0.6)",
-                // "-webkit-background-clip": "padding-box", 
-                // "background-clip": "padding-box"
+                "-webkit-background-clip": "padding-box", 
+                "background-clip": "padding-box"
               },
             },
             "outlined" : {

@@ -79,11 +79,14 @@ const ButtonDemo = () => {
                     <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>buttons with icons</Typography>
                 </Grid>
 
-                <Grid item xs={6}>
-                    <ResponsiveButton variant='outlined' label='back' startIcon={<BackArrow/>}/>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='back' startIcon={<BackArrow />}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <ResponsiveButton variant='outlined' label='register' startIcon={<AddIcon/>}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='announcement' startIcon={<AddIcon/>} />
                 </Grid>
             </Grid>
 
