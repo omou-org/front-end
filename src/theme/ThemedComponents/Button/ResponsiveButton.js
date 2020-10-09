@@ -22,7 +22,7 @@ import the icon in your component.
 To have it on the left of label, pass through startIcon. Example: startIcon={<Icon />}
 To have it on the right of label, pass through endIcon. Example: endIcon={<Icon />}
 
-ResponsiveButtonProps: variant, label, component, to, disabled, startIcon, endIcon
+ResponsiveButtonProps: variant, label, component, to, disabled, startIcon, endIcon, onClick
 */
 
 export const ResponsiveButton = ({ label, disabled, startIcon, endIcon, ...ResponsiveButtonProps}) => {
@@ -45,6 +45,8 @@ export const ResponsiveButton = ({ label, disabled, startIcon, endIcon, ...Respo
 ResponsiveButton.propTypes = {
     label: PropTypes.string.isRequired,
     variant: PropTypes.string.isRequired,
+    color: PropTypes.string,
+    onClick: PropTypes.func,
     startIcon: PropTypes.elementType,
     endIcon: PropTypes.elementType,
     component: PropTypes.elementType,

@@ -34,6 +34,8 @@ import theme from "../../../theme/muiTheme";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import secondaryTheme from "../../../theme/secondaryTheme";
 import NewUser from "@material-ui/icons/PersonAdd";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PersonAddIcon from '@material-ui/icons/PersonAdd'
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -243,26 +245,24 @@ const Accounts = () => {
             <BackgroundPaper elevation={2}>
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
-                        <Button
-                            className="button"
-                            color="secondary"
+                        <ResponsiveButton 
+                            // color="secondary"
                             component={Link}
                             to="/form/student"
                             variant="outlined"
-                        >
-                            <NewUser className="icon" /> NEW STUDENT
-                        </Button>
+                            label='new student'
+                            startIcon={<PersonAddIcon />}
+                        />
                     </Grid>
                     <Grid item>
-                        <Button
-                            className="button"
-                            color="secondary"
+                        <ResponsiveButton 
+                            // color="secondary"
                             component={Link}
                             to="/form/parent"
                             variant="outlined"
-                        >
-                            <NewUser className="icon" /> NEW PARENT
-                        </Button>
+                            label='new parent '
+                            startIcon={<PersonAddIcon />}
+                        />
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
