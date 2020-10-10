@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { EditorState, RichUtils, convertToRaw } from "draft-js";
+import { EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
 import Editor from "draft-js-plugins-editor";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
@@ -215,10 +215,16 @@ const ModalTextEditor = ({
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
   const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
   const [subject, setSubject] = useState(textSubject);
-  // const [body, setBody] = useState(textBody);
   const [body, setBody] = useState(() => EditorState.createEmpty());
   const courseId = useParams();
   const poster_id = posterId.results[0].user.id;
+
+  useEffect(() => {
+    if(buttonState === "edit") {
+      setBody(EditorState.createWithContent(convertFromRaw(textBody)))
+    }
+  }, [buttonState])
+
   const QUERIES = {
     ANNOUNCEMENTS: GET_ANNOUNCEMENTS,
     COURSE_SESSIONS: GET_SESSION_NOTES,
@@ -346,6 +352,8 @@ const ModalTextEditor = ({
         return "ADD NOTE";
     }
   };
+
+  // console.log(typeof convertToRaw(body.getCurrentContent()))
 
   return (
     <Grid container>

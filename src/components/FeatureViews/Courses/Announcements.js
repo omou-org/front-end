@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Create, Cancel } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
-import { EditorState, convertFromRaw } from "draft-js"
+import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 import Editor from "draft-js-plugins-editor";
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
@@ -64,33 +64,17 @@ const AnnouncementCard = ({
   handleEdit,
   handleDelete,
 }) => {
-
-  // const [editorState] = useState(EditorState.createWithContent(JSON.parse(body)))
-  // console.log(body)
-  // console.log(JSON.parse(body))
-  // const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
-  // useEffect(() => {
-  //   setEditorState(() => {
-  //     try {
-  //       EditorState.createWithContent(convertFromRaw(body))
-  //     } catch (err) {
-  //       console.error(err)
-  //     }
-  //   })
-  // }, []);
-
+  const decode = EditorState.createWithContent(convertFromRaw(JSON.parse(body)))
+  const [editorState] = useState(decode);
   const classes = useStyles();
   const date = moment(updatedAt).format("MM/DD");
   const time = moment(updatedAt).format("h:mma");
   const subjectRef = useRef();
-  const bodyRef = useRef();
   const handleOpenForm = () => {
     const currentSubject = subjectRef.current.textContent;
-    const currentBody = bodyRef.current.textContent;
+    const currentBody = convertToRaw(editorState.getCurrentContent())
     handleEdit(true, id, currentSubject, currentBody);
   };
-  // console.log(editorState)
   const handleDeleteForm = () => handleDelete(id);
 
   return (
@@ -122,10 +106,7 @@ const AnnouncementCard = ({
       </AccessControlComponent>
       </Grid>
       <Grid item xs={12} className={classes.announcementBody}>
-      {/* <Editor editorState={editorState} customStyleMap={styleMap} readOnly /> */}
-        <Typography variant="body1" align="left" ref={bodyRef}>
-          {body}
-        </Typography>
+      <Editor editorState={editorState} customStyleMap={styleMap} readOnly />
       </Grid>
       <Grid item xs={12}>
         <Typography variant="subtitle2" align="left">
@@ -212,7 +193,6 @@ const Announcements = ({
 
   const announcementRender = announcementsData
   .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
-
   return (
     <Grid container justify="flex-start" data-active="inactive">
       <AccessControlComponent
@@ -238,7 +218,7 @@ const Announcements = ({
             id={id}
             fullName={fullName(poster)}
             subject={subject}
-            body={body}
+            body={body.replace(/'/g, '"')}
             updatedAt={updatedAt}
             handleEdit={handleEdit}
             handleDelete={handleDeleteAnnouncement}
