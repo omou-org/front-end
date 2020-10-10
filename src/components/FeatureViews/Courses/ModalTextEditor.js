@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -10,6 +11,7 @@ import { omouBlue } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { GET_SESSION_NOTES } from "./ClassSessionView";
+import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -68,6 +70,100 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
+const MUTATIONS = {
+  "ANNOUNCEMENTS": gql`
+  mutation CreateAnnouncement(
+    $subject: String!
+    $body: String!
+    $courseId: ID!
+    $userId: ID!
+    $shouldEmail: Boolean
+    $id: ID
+  ) {
+    __typename
+    createAnnouncement(
+      body: $body
+      course: $courseId
+      subject: $subject
+      user: $userId
+      shouldEmail: $shouldEmail
+      id: $id
+    ) {
+      announcement {
+        subject
+        id
+        body
+        createdAt
+        updatedAt
+        poster {
+          firstName
+          lastName
+        }
+      }
+    }
+  }`,
+  "STUDENT_ENROLLMENT": gql`
+  mutation SendEmail(
+    $body: String!
+    $subject: String!
+    $userId: ID!
+    $posterId: ID!
+  ) {
+    __typename
+    sendEmail(
+      body: $body
+      posterId: $posterId
+      userId: $userId
+      subject: $subject
+    ) {
+      created
+    }
+  }`,
+  "COURSE_SESSIONS": gql`
+  mutation createSessionNote(
+    $body: String!
+    $subject: String!
+    $user: ID!
+    $sessionId: ID!
+    $id: ID
+  ) {
+    __typename
+    createSessionNote(
+      body: $body
+      user: $user
+      subject: $subject
+      sessionId: $sessionId
+      id: $id
+    ) {
+      sessionNote {
+        id
+        body
+        subject
+        poster {
+          firstName
+          lastName
+          id
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }`
+};
+
+const QUERY_KEY = {
+  "ANNOUNCEMENTS": "announcements",
+  "COURSE_SESSIONS": "sessionNotes"
+};
+
+const MUTATION_KEY = {
+  "ANNOUNCEMENTS": "createAnnouncement",
+  "COURSE_SESSIONS": "createSessionNote"
+};
+
+
 const ModalTextEditor = ({
   open,
   handleCloseForm,
@@ -76,127 +172,92 @@ const ModalTextEditor = ({
   posterId,
   sessionId,
   noteId,
-  noteSubject,
-  noteBody,
+  textSubject,
+  textBody,
   buttonState,
+  announcementId
 }) => {
   const classes = useStyles();
-  const [subject, setSubject] = useState(noteSubject);
-  const [body, setBody] = useState(noteBody);
+  const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
+  const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
+  const [subject, setSubject] = useState(textSubject);
+  const [body, setBody] = useState(textBody);
+  const courseId = useParams();
   const poster_id = posterId.results[0].user.id;
+  const QUERIES = {
+    "ANNOUNCEMENTS": GET_ANNOUNCEMENTS,
+    "COURSE_SESSIONS": GET_SESSION_NOTES
+  }
 
-  const SEND_EMAIL = gql`
-    mutation SendEmail(
-      $body: String!
-      $subject: String!
-      $userId: ID!
-      $posterId: ID!
-    ) {
-      __typename
-      sendEmail(
-        body: $body
-        posterId: $posterId
-        userId: $userId
-        subject: $subject
-      ) {
-        created
-      }
+  const QUERY_VARAIBLES = {
+    "ANNOUNCEMENTS": {
+      id: courseId.id
+    },
+    "COURSE_SESSIONS": {
+      sessionId
     }
-  `;
+  };
 
-  const CREATE_SESSION_NOTE = gql`
-    mutation createSessionNote(
-      $body: String!
-      $subject: String!
-      $user: ID!
-      $sessionId: ID!
-      $id: ID
-    ) {
-      __typename
-      createSessionNote(
-        body: $body
-        user: $user
-        subject: $subject
-        sessionId: $sessionId
-        id: $id
-      ) {
-        sessionNote {
-          id
-          body
-          subject
-          poster {
-            firstName
-            lastName
-            id
-          }
-          createdAt
-          updatedAt
-        }
-      }
+  const MUTATION_VARIABLES = {
+    "ANNOUNCEMENTS": {
+      subject,
+      body,
+      id: announcementId,
+      userId: poster_id,
+      courseId: courseId.id,
+      shouldEmail: sendEmailCheckbox,
+    },
+    "STUDENT_ENROLLMENT": {
+      subject: subject,
+      body: body,
+      userId,
+      posterId: poster_id,
+    },
+    "COURSE_SESSIONS": {
+      subject: subject,
+      body: body,
+      user: poster_id,
+      sessionId: sessionId,
+      id: noteId,
     }
-  `;
+  };
 
-  const [sendEmail, sendEmailResult] = useMutation(SEND_EMAIL, {
-    onCompleted: () => handleClose(false),
-    error: (err) => console.error(err),
-  });
+const [mutateTextEditor, createResults] = useMutation(MUTATIONS[origin], {
+    onCompleted: () =>  handleClose(false),
+    update: (cache, { data }) => {
+      const [newTextData] = Object.values(data[MUTATION_KEY[origin]]);
+      const cachedTextData = cache.readQuery({
+        query: QUERIES[origin],
+        variables: QUERY_VARAIBLES[origin]
+      })[QUERY_KEY[origin]];
+      let updatedTextData = [...cachedTextData];
+      const matchingIndex = updatedTextData.findIndex(({ id }) => id === newTextData.id);
+      if (matchingIndex === -1) {
+        updatedTextData = [...cachedTextData, newTextData];
+      } else {
+        updatedTextData[matchingIndex] = newTextData;
+      };
 
-  const [createSessionNote, createSessionNoteResult] = useMutation(
-    CREATE_SESSION_NOTE,
-    {
-      onCompleted: () => handleClose(false),
-      error: (err) => console.error(err),
-      update: (cache, { data }) => {
-        const [newSessionNote] = Object.values(data.createSessionNote);
-        const cachedSessionNote = cache.readQuery({
-          query: GET_SESSION_NOTES,
-          variables: { sessionId: sessionId },
-        })["sessionNotes"];
-        let updatedSessionNotes = [...cachedSessionNote];
-        const matchingIndex = updatedSessionNotes.findIndex(
-          ({ id }) => id === newSessionNote.id
-        );
-        if (matchingIndex === -1) {
-          updatedSessionNotes = [...cachedSessionNote, newSessionNote];
-        } else {
-          updatedSessionNotes[matchingIndex] = newSessionNote;
-        }
-        cache.writeQuery({
-          data: {
-            ["sessionNotes"]: updatedSessionNotes,
-          },
-          query: GET_SESSION_NOTES,
-          variables: { sessionId: sessionId },
-        });
-      },
+      cache.writeQuery({
+        data: {
+          [QUERY_KEY[origin]]: updatedTextData,
+        },
+        query: QUERIES[origin],
+        variables: QUERY_VARAIBLES[origin] 
+      });
     }
+  },
   );
 
   const handleClose = () => handleCloseForm(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (origin === "STUDENT_ENROLLMENT") {
-      const sentEmail = await sendEmail({
-        variables: {
-          subject: subject,
-          body: body,
-          userId: userId,
-          posterId: poster_id,
-        },
-      });
-    } else {
-      const createdSessionNote = await createSessionNote({
-        variables: {
-          subject: subject,
-          body: body,
-          user: poster_id,
-          sessionId: sessionId,
-          id: noteId,
-        },
-      });
-    }
-  };
+      const createTextData = await mutateTextEditor({
+        variables: MUTATION_VARIABLES[origin]
+      })
+    
+  }
 
   const handleSubjectChange = useCallback((event) => {
     setSubject(event.target.value);
@@ -205,6 +266,17 @@ const ModalTextEditor = ({
   const handleBodyChange = useCallback((event) => {
     setBody(event.target.value);
   }, []);
+  
+  const renderButtonText = () => {
+    switch(buttonState) {
+      case "edit":
+          return "EDIT";
+      case "post":
+          return "POST" ;
+      default: 
+        return "ADD NOTE"
+    }
+  }
 
   return (
     <Dialog
@@ -220,7 +292,7 @@ const ModalTextEditor = ({
           className={classes.subjectUnderline}
           disableUnderline
           onChange={handleSubjectChange}
-          defaultValue={buttonState === "edit" ? noteSubject : ""}
+          defaultValue={buttonState === "edit" ? textSubject : ""}
         />
         <TextField
           InputProps={{
@@ -235,7 +307,7 @@ const ModalTextEditor = ({
           placeholder="Body"
           type="email"
           fullWidth
-          defaultValue={buttonState === "edit" ? noteBody : ""}
+          defaultValue={buttonState === "edit" ? textBody : ""}
           multiline
           rows={12}
         />
@@ -246,7 +318,7 @@ const ModalTextEditor = ({
         </Button>
         <Button className={classes.submitButton} onClick={handleSubmit}>
           {origin === "STUDENT_ENROLLMENT" ? "Send Email" : 
-          (buttonState === "edit") ? "EDIT NOTE" : "ADD NOTE"}
+          renderButtonText()}
         </Button>
       </DialogActions>
     </Dialog>

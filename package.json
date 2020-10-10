@@ -32,6 +32,7 @@
     "cypress-waitfor": "^1.1.0",
     "date-fns": "^2.15.0",
     "dotenv": "^8.2.0",
+    "draft-js": "^0.11.7",
     "final-form": "^4.20.0",
     "graphql": "^15.1.0",
     "graphql-tag": "^2.11.0",

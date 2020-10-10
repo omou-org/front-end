@@ -238,8 +238,8 @@ const ClassSessionView = ({
             sessionId={sessionId}
             origin="COURSE_SESSIONS"
             noteId={noteId}
-            noteSubject={noteSubject}
-            noteBody={noteBody}
+            textSubject={noteSubject}
+            textBody={noteBody}
             buttonState={buttonState}
           />
         </div>

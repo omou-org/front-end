@@ -9,7 +9,7 @@ import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
-import NewAnnouncementModal from "./NewAnnoucementsModal";
+import ModelTextEditor from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
@@ -220,14 +220,15 @@ const Announcements = ({
           />
         </>
       ))}
-      <NewAnnouncementModal
-        handleClose={handleClose}
+      <ModelTextEditor 
+        handleCloseForm={handleClose}
         open={openNewAnnouncementForm}
-        id={announcementId}
-        subject={announcementSubject}
-        body={announcementBody}
-        userId={loggedInUser}
-        buttonState={editOrPost}
+        announcementId={announcementId}
+        textSubject={announcementSubject}
+        textBody={announcementBody}
+        origin="ANNOUNCEMENTS"
+        posterId={loggedInUser}
+        buttonState={editOrPost}        
       />
     </Grid>
   );
