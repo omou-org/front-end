@@ -222,6 +222,8 @@ const ModalTextEditor = ({
   useEffect(() => {
     if(buttonState === "edit") {
       setBody(EditorState.createWithContent(convertFromRaw(textBody)))
+    } else {
+      setBody(EditorState.createEmpty())
     }
   }, [buttonState])
 
@@ -291,36 +293,56 @@ const ModalTextEditor = ({
     },
   });
 
-  const handleClose = () => handleCloseForm(false);
+  const handleClose = () => {
+    handleCloseForm(false);
+    setBody(EditorState.createEmpty());
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
     const createTextData = await mutateTextEditor({
       variables: MUTATION_VARIABLES[origin],
     });
+    setBody(EditorState.createEmpty())
   };
 
   const toggleInlineStyles = e => {
     e.preventDefault();
-    let style = e.currentTarget.getAttribute("data-style");
-    const newState = RichUtils.toggleInlineStyle(body, style);
-    if (newState) {
-      setBody(newState);
-      return "handled";
+    const style = e.currentTarget.getAttribute("data-style");
+    const {toggleInlineStyle, toggleBlockType } = RichUtils
+    const newState = {
+      [style]: toggleInlineStyle(body, style),
+      [style]: toggleBlockType(body, style),
+    } 
+    console.log(newState[style])
+    if(newState[style]) {
+      setBody(newState[style])
+      return "handled"
     }
-    return "not handled";
-  };
+    return "not handled"
+  }
 
-  const toggleBulletPoints = e => {
-    e.preventDefault();
-    let styles = e.currentTarget.getAttribute("data-style");
-    const newState = RichUtils.toggleBlockType(body, styles);
-    if (newState) {
-      setBody(newState);
-      return "handled";
-    }
-    return "not handled";
-  };
+  // const toggleInlineStyles = e => {
+  //   e.preventDefault();
+  //   let style = e.currentTarget.getAttribute("data-style");
+  //   const newState = RichUtils.toggleInlineStyle(body, style);
+  //   if (newState) {
+  //     setBody(newState);
+  //     return "handled";
+  //   }
+  //   return "not handled";
+  // };
+
+  // const toggleBulletPoints = e => {
+  //   e.preventDefault();
+  //   let styles = e.currentTarget.getAttribute("data-style");
+  //   const newState = RichUtils.toggleBlockType(body, styles);
+  //   if (newState) {
+  //     setBody(newState);
+  //     return "handled";
+  //   }
+  //   return "not handled";
+  // };
 
   const handleKeyCommand = (command, body) => {
     const newState = RichUtils.handleKeyCommand(body, command);
@@ -352,8 +374,6 @@ const ModalTextEditor = ({
         return "ADD NOTE";
     }
   };
-
-  // console.log(typeof convertToRaw(body.getCurrentContent()))
 
   return (
     <Grid container>
@@ -403,13 +423,13 @@ const ModalTextEditor = ({
                     <StrikethroughSIcon />
                   </IconButton>
                   <IconButton
-                    onClick={toggleBulletPoints}
+                    onClick={toggleInlineStyles}
                     data-style="unordered-list-item"
                   >
                     <ListIcon />
                   </IconButton>
                   <IconButton
-                    onClick={toggleBulletPoints}
+                    onClick={toggleInlineStyles}
                     data-style="ordered-list-item"
                   >
                     <FormatListNumberedIcon />
