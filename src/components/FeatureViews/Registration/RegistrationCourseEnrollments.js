@@ -11,6 +11,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -73,7 +74,8 @@ const useStyles = makeStyles({
         margin: '5px 24px 25px 24px'
     },
     accordionSpacing: {
-        width: '170px',
+        width: '10px',
+    
     },
     noBorder: {
         border: '7x pink solid!important',
@@ -235,30 +237,30 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                     
                                 >
 
-                                <TableRow className={classes.noBorder}>
-                                    <TableCell className={classes.accordionSpacing}>
+                                <Grid className={classes.noBorder}>
+                                    <Grid item xs={1} className={classes.accordionSpacing}>
                                         <Link className="no-underline"
                                             to={`/accounts/student/${student.user.id}`}>
                                             {fullName(student.user)}
                                         </Link>
-                                    </TableCell>
-                                    <TableCell className={classes.accordionSpacing}>
+                                    </Grid>
+                                    <Grid item xs={1} className={classes.accordionSpacing}>
                                         <Link className="no-underline"
                                             to={`/accounts/parent/${primaryParent.user.id}`}>
                                             {fullName(primaryParent.user)}
                                         </Link>
-                                    </TableCell>
-                                    <TableCell className={classes.actionsAccordionSpacing}>
+                                    </Grid>
+                                    {/* <div className={classes.actionsAccordionSpacing}> */}
                                         {addDashes(primaryParent.phoneNumber)}
-                                    </TableCell>
-                                    <TableCell>
+                                    {/* </div> */}
+                                    {/* <div> */}
                                         <div style={{ "width": "40px" }}>
                                             {/*<SessionPaymentStatusChip className="session-status-chip"*/}
                                             {/*    enrollment={enrollment}*/}
                                             {/*    session={upcomingSess} />*/}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
+                                        {/* </div> */}
+                                    </div>
+                                    <div>
                                         <div className="actions" key={student.user.id}>
                                             <IconButton component={Link}
                                                 to={`mailto:${primaryParent.user.email}`}>
@@ -292,8 +294,8 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                                }
                                             </span> */}
                                         </div>
-                                    </TableCell>
-                                </TableRow>
+                                    </div>
+                                </Grid>
                                 </AccordionSummary>
                                 
                                 <AccordionDetails className={classes.accordionNotesBorder}>
