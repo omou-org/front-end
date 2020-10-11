@@ -26,8 +26,7 @@ import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
-import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
-import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
+import DemoRoutes from './DemoRoutes';
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -60,6 +59,11 @@ export const RootRoutes = () => {
             </Route>
             <Route path="/new/:type?">
                 <NewAccount/>
+            </Route>
+            
+            {/* Dahl Design Migration Demos */}
+            <Route path="/demo/:views?">
+                <DemoRoutes/>
             </Route>
 
             {/* Main Feature Views */}
@@ -180,24 +184,10 @@ export const RootRoutes = () => {
                 <CourseClasses />
             </AuthenticatedRoute>
 
-            {/* Demos */}
-            <AuthenticatedRoute
-                path="/demos/badge"
-            >
-                <BadgeDemo/>
-            </AuthenticatedRoute>
-
-            <AuthenticatedRoute
-                path="/demos/typography"
-            >
-                <TypographyDemo />
-            </AuthenticatedRoute>
-
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
             </AuthenticatedRoute>
             <Redirect to="/PageNotFound" />
-
 
 
         </Switch>

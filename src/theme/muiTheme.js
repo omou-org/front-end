@@ -27,10 +27,14 @@ const theme = createMuiTheme({
     "palette": {
         "primary": {"main": omouBlue},
         "secondary": {"main": "#a6a6a6"},
+        "warning": {"main": "#FFDD59"},
         "background": {
             "main": neutralBackgroundColor,
             "default": neutralBackgroundColor,
         },
+        "success": {"main": "#6CE086"},
+        "warning": {"main": "#FFDD59"},
+        "error": {"main": "#FF6766"},
     },
     "colors": {
         "black": "#000000",
@@ -44,14 +48,12 @@ const theme = createMuiTheme({
         "slateGrey": "#666666",
         "gloom": "#999999",
         "cloudy": "#C4C4C4",
-        "lightGrey": "#D3D3D3",/*listed same as cloudy on Figma*/
-        /* component specific */
+        "lightGrey": "#D3D3D3",
         "buttonBlue": "#289FC3",
-        "backgroundGrey": "#FAFAFA",
+        "backgroundGrey": "#EEEEEE",
         "statusGreen": "#6CE086",
         "statusYellow": "#FFDD59",
         "statusRed": "#FF6766",
-
     },
 	"typography": {
 		subtitle2: {
@@ -195,6 +197,54 @@ const theme = createMuiTheme({
             "text": {
                 "color": "black",
             },
+            "contained" : {
+              "color": "#FFFFFF",
+              "backgroundColor": "#289FC3",
+              "border": "2px solid #289FC3",
+              "boxSizing": "border-box",
+              "borderRadius": "5px",
+              "overflow": "hidden",
+              "white-space": "nowrap",
+              "text-overflow": "ellipsis",
+              "&:hover": {
+                "backgroundColor": "#289FC3",
+                "opacity": "80%",
+                "border": "rgba(40, 159, 195, 0.8)",
+                // "-webkit-background-clip": "padding-box", 
+                // "background-clip": "padding-box"
+              },
+              "&:active": {
+                "backgroundColor": "#289FC3",
+                "opacity": "60%",
+                "border": "rgba(40, 159, 195, 0.6)",
+                // "-webkit-background-clip": "padding-box", 
+                // "background-clip": "padding-box"
+              },
+            },
+            "outlined" : {
+              "color": "#289FC3",
+              "backgroundColor": "#FFFFFF",
+              "border": "2px solid #C4C4C4",
+              "boxSizing": "border-box",
+              "border-radius": "5px",
+              "overflow": "hidden",
+              "white-space": "nowrap",
+              "text-overflow": "ellipsis",
+              "&:hover": {
+                "backgroundColor": "#FFFFFF",
+                "opacity": "90%"
+              },
+              "&:active": {
+                "backgroundColor": "#FFFFFF",
+                "opacity": "70%"
+              },
+              "&:disabled": {
+                "border": "2px solid #999999",
+                "backgroundColor": "#C4C4C4",
+                "color": "#999999",
+                "opacity": "80%"
+              },
+            },   
 			containedPrimary: {
 				color: "#FFFFFF", 
 			}
