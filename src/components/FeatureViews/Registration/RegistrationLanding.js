@@ -153,7 +153,7 @@ const RegistrationLanding = () => {
                 if (firstCourse.title < secondCourse.title) return -1;
                 return 0;
             case "seatsLeft":
-                return (secondCourse.maxCapacity - secondCourse.enrollmentSet.id) - (firstCourse.maxCapacity - firstCourse.enrollmentSet.id);
+                return  (firstCourse.maxCapacity - firstCourse.enrollmentSet.length) - (secondCourse.maxCapacity - secondCourse.enrollmentSet.length);
             default:
                 if (firstCourse.title > secondCourse.title) return 1;
                 if (firstCourse.title < secondCourse.title) return -1;
