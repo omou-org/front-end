@@ -227,18 +227,18 @@ const CourseSessionStatus = () => {
     // either doesn't exist or only has notes defined
    
 
-return (
-    <div>
-        hi
-    </div>
-)
+// return (
+//     <div>
+//         hi
+//     </div>
+// )
 
-    // const mainContent = () => {
-        // switch (activeTab) {
-        //     case 0:
-        //         return (
-        //             <>
-                        {/* <Grid className="accounts-table-heading" container item xs={12}>
+    const mainContent = () => {
+        switch (activeTab) {
+            case 0:
+                return (
+                    <>
+                        <Grid className="accounts-table-heading" container item xs={12}>
                             <Grid item xs={1} />
                             <Grid item xs={2}>
                                 <Typography align="left" className="table-text">
@@ -267,17 +267,30 @@ return (
                             </Grid>
                         </Grid>
                         <Grid container spacing={1}>
-                            {sessions.length !== 0 ?
-                                sessions.map((session) => {
+                            {sessionsData.sessions.length !== 0 ?
+                                sessionsData.sessions.map((session) => {
                                     const {
                                         date,
                                         startTime,
                                         endTime,
-                                        tuition,
+                                        hourlyTuition,
                                         id,
                                         course_id,
                                         instructor,
-                                    } = sessionDataParse(session);
+                                    // } = sessionDataParse(session);
+                                    } = sessionsData(session);
+                                
+                                    // {enrollmentData.enrollment.length !== 0 ?
+                                    //     enrollmentData.enrollment.map((enrollment) => {
+                                    //         const {
+                                    //             course,
+                                    //             enrollmentNoteSet,
+                                    //             enrollmentBalance,
+                                    //             paymentList,
+                                    //             id,
+                                    //             student,
+                                    //     } = enrollmentData(enrollment);
+                                
                                     return (
                                         <Grid className="accounts-table-row"
                                             component={Link}
@@ -331,7 +344,7 @@ return (
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={1}>
-                                                    <Typography align="left">${tuition}</Typography>
+                                                    <Typography align="left">${hourlyTuition}</Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
                                                     <SessionPaymentStatusChip enrollment={enrollment}
@@ -341,7 +354,9 @@ return (
                                             </Paper>
                                         </Grid>
                                     );
+                                            
                                 })
+                            
                                 : (
                                     <NoListAlert list="Course" />
                                 )}
@@ -493,8 +508,9 @@ return (
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Paper> */}
-    {/* ); */}
+        </Paper> 
+     );
+                
 };
 
 CourseSessionStatus.propTypes = {};
