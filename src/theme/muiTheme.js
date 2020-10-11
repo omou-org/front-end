@@ -55,15 +55,6 @@ const theme = createMuiTheme({
         "statusYellow": "#FFDD59",
         "statusRed": "#FF6766",
     },
-    a: {
-      // color: "#1F82A1",
-      color: 'purple',
-      fontSize: '12px',
-      fontWeight: 'medium',
-      fontFamily: 'Roboto',
-      lineHeight: '16px',
-      textDecorationLine: 'underline'
-    },
 	"typography": {
 		subtitle2: {
 			fontWeight: 500,
@@ -75,7 +66,7 @@ const theme = createMuiTheme({
             "@global": {
                 "body": {
                     "backgroundColor": neutralBackgroundColor,
-                },
+                }
             },
         },
         MuiTypography: {
@@ -137,14 +128,6 @@ const theme = createMuiTheme({
                 fontSize: '20px',
                 fontWeight: '300',
                 fontFamily: 'Roboto',
-            },
-            a: {
-              color: "#1F82A1",
-              fontSize: '12px',
-              fontWeight: 'medium',
-              fontFamily: 'Roboto',
-              lineHeight: '16px',
-              textDecorationLine: 'underline'
             },
         },
         "MuiButton": {

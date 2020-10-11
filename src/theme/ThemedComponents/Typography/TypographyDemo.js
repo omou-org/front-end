@@ -3,79 +3,58 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 // import LabelBadge from "./LabelBadge";
 import Paper from "@material-ui/core/Paper";
-import { makeStyles } from '@material-ui/core/styles';
-
+import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-      width: '100%',
-    },
-    'p': {
-      textAlign: 'right',
-      color: 'pink'
-    },
-    
-  }));
-
+  root: {
+    width: "100%",
+  },
+  style: {
+    textAlign: "left",
+    paddingLeft: "100px",
+    paddingBottom: "100px",
+  },
+  headingOneStyle: {
+    textAlign: "left",
+    paddingTop: "100px",
+  },
+}));
 
 const TypographyDemo = () => {
+  const classes = useStyles();
 
-    return (
-        <Paper>
-            <p>
-                This is h1:
-            <Typography variant="h1">
-                Hello OMOU!
-            </Typography>
-            </p>
-            This is h2:
-            <p>
-            <Typography variant="h2">
-                How's it going?
-            </Typography>
-            </p>
-            This is h3:
-            <p>
-            <Typography variant="h3">
-                It's been a crazy time.
-            </Typography>
-            </p>
-            This is h4:
-            <p>
-            <Typography variant="h4">
-               But look at what you've accomplished!
-            </Typography>
-            </p>
-            This is h5:
-            <p>
-            <Typography variant="h5">
-                you are doing great
-            </Typography>
-            </p>
-            This is body1:
-            <p>
-            <Typography variant="body1">
-                Look at this paragraph! Such a normal paragraph.
-            </Typography>
-            </p>
-            This is body2:
-            <p>
-            <Typography variant="body2">
-                Look at this paragraph! Such a bolded paragraph!
-            </Typography>
-            </p>
-            This is an a variant:
-            <p>
-            <Typography variant="a">
-                It's a link?
-            </Typography>
-            </p>
-            This is an a tag:
-            <p>
-            <a href="www.google.com">What's happening here</a>
-            </p>
-        </Paper>
-    )
-}
+  return (
+    <Paper className={classes.style}>
+      <Typography className={classes.headingOneStyle} variant="h1">
+        Heading 1
+      </Typography>
+      <p>
+        <Typography variant="h2">Heading 2</Typography>
+      </p>
+      <p>
+        <Typography variant="h3">Heading 3</Typography>
+      </p>
+      <p>
+        <Typography variant="h4">Heading 4</Typography>
+      </p>
+      <p>
+        <Typography variant="h5">heading 5</Typography>
+      </p>
+      <p>
+        <Typography variant="body1">Body(Default)</Typography>
+      </p>
+      <p>
+        <Typography variant="body2">Body (Bolded)</Typography>
+      </p>
+      <p>
+        <a href="#">Body (Links) w/ an a tag</a>
+      </p>
+      <p>
+        <Link href="#">Body (Links) w/ the link component</Link>
+      </p>
+    </Paper>
+  );
+};
 
 export default TypographyDemo;
