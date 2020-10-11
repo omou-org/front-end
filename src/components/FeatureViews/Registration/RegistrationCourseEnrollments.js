@@ -9,6 +9,7 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -41,7 +42,27 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { fullName } from "../../../utils";
 
+// const TableCell = withStyles({
+//     root: {
+//       borderBottom: "none"
+//     }
+//   })(MuiTableCell);
+
 const useStyles = makeStyles({
+    // MuiAccordionroot: {
+    //     "&.MuiAccordion-root:before": {
+    //       backgroundColor: "white",
+    //     }
+    //   },
+    MuiTableCell: {
+        root: {
+            borderBottom: "none"  
+        }
+    },
+    MuiTableCell: {
+        borderBottom: "none"  
+    },
+
     accordionNotes: {
         textAlign: 'left',
         fontSize: '12 px !important'
@@ -55,16 +76,19 @@ const useStyles = makeStyles({
         width: '170px',
     },
     noBorder: {
-        border: 'none',
+        border: '7x pink solid!important',
         textDecoration: 'none'
     },
     actionsAccordionSpacing: {
-        width: '350px',
+        width: '309px',
     },
+    arrowIcon: {
+        color: '#43B5D9',
+        // backgroundColor: 'blue'
+    }
 });
-
-
-export const GET_ENROLLMENT_DETAILS = gql`
+    
+    export const GET_ENROLLMENT_DETAILS = gql`
 	query EnrollmentDetails($courseId: ID!){
 		enrollments(courseId: $courseId) {
             student {
@@ -83,47 +107,16 @@ export const GET_ENROLLMENT_DETAILS = gql`
                 email
                 id
               }
-              school {
-                name
-              }
+              studentschoolinfoSet {
+                    textbook
+                    teacher
+                    name
+                }
             }
             id
          }
 	}
-    `;
-
-    
-    // export const GET_ENROLLMENT_DETAILS = gql`
-	// query EnrollmentDetails($courseId: ID!){
-	// 	enrollments(courseId: $courseId) {
-    //         student {
-    //           primaryParent {
-    //             user {
-    //               firstName
-    //               lastName
-    //               email
-    //               id
-    //             }
-    //             phoneNumber
-    //           }
-    //           user {
-    //             firstName
-    //             lastName
-    //             email
-    //             id
-    //           }
-    //           school {
-    //             name
-    //           }
-    //         }
-    //         StudentSchoolInfo {
-    //             textbook
-    //             teacher
-    //         }
-    //         id
-    //      }
-	// }
-	// `;
+	`;
 
 const TableToolbar = (
     <TableHead>
@@ -229,10 +222,13 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                         const { primaryParent } = student;
                         return (
                             <Fragment key={student.user.id}>
-                            <Accordion className={classes.noBorder}>
+                            <Accordion classes={{
+                                root: classes.MuiAccordionroot
+                                }}
+                                className={classes.noBorder}>
 
                                 <AccordionSummary
-                                    expandIcon="⬇"
+                                    expandIcon={<ExpandMoreIcon className={classes.arrowIcon}/>}
                                     aria-controls="panel1a-content"
                                     className={classes.noBorder}
                                    
@@ -303,14 +299,14 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                 <AccordionDetails className={classes.accordionNotesBorder}>
                                     <Typography className={classes.accordionNotes} variant="body">
                                     <p>
-                                        <b>School:</b> {student.school} 
+                                        <b>School:</b> {student.studentschoolinfoSet.school} 
                                     </p>
                                     <p>
-                                        <b>School Teacher:</b> {student.user.id} 
+                                        <b>School Teacher:</b> {student.studentschoolinfoSet.teacher} 
                                         {/* <b>School Teacher:</b> {StudentSchoolInfo.textbook} */}
                                     </p>
                                     <p>
-                                        <b>Textbook used:</b> {student.school} 
+                                        <b>Textbook used:</b> {student.studentschoolinfoSet.textbook} 
                                         {/* <b>Textbook used:</b> {StudentSchoolInfo.teacher}  */}
                                     </p>
 
