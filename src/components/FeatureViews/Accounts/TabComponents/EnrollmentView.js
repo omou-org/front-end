@@ -40,8 +40,8 @@ import { useSessionsWithConfig } from "actions/calendarActions";
 import Moment from "react-moment";
 
 const GET_ENROLLMENT = gql ` 
-    query EnrollmentViewQuery {
-        enrollment(enrollmentId: "1") {
+    query EnrollmentViewQuery ($enrollmentId: ID!) {
+        enrollment(enrollmentId: $enrollmentId) {
           enrollmentnoteSet {
             id
             important
@@ -61,6 +61,7 @@ const GET_ENROLLMENT = gql `
           paymentList {
             id
           }
+          lastPaidSessionDatetime
           student {
             user {
               id
@@ -81,6 +82,22 @@ const GET_ENROLLMENT = gql `
       
       `;
 
+      const GET_SESSIONS = gql ` 
+    query GetSessions ($courseId: ID!) {
+        sessions(courseId: $courseId) {
+          course {
+            startTime
+            endTime
+            id
+            hourlyTuition
+          }
+          id
+        }
+      }
+    `
+
+   
+
 const timeOptions = {
     "hour": "2-digit",
     "minute": "2-digit",
@@ -94,85 +111,49 @@ const dateOptions = {
 const CourseSessionStatus = () => {
     const dispatch = useDispatch();
     const goToRoute = useGoToRoute();
-    const { "accountID": studentID, courseID } = useParams();
-    // const { "accountID": studentID } = useParams();
-    const courseSessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
-    const usersList = useSelector(({ Users }) => Users);
-    const courses = useSelector(({ Course }) => Course.NewCourseList);
-    const enrollments = useSelector(({ Enrollments }) => Enrollments);
-    const course = courses[courseID];
+    const { enrollmentId } = useParams();
+    
+    const {data: enrollmentData, loading: enrollmentLoading, error: enrollmentError} = useQuery(GET_ENROLLMENT, {
+        variables: {enrollmentId}
+    });
+
+    const {data: sessionsData, loading: sessionsLoading, error: sessionsError} = useQuery(GET_SESSIONS, {
+        variables: {courseId: enrollmentData?.enrollment.course.id},
+        skip: enrollmentLoading || enrollmentError
+    });
+
 
     const [activeTab, setActiveTab] = useState(0);
     const [highlightSession, setHighlightSession] = useState(false);
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
-    const sessionConfig = useMemo(
-        () => ({
-            "params": {
-                "course_id": courseID,
-            },
-        }),
-        [courseID]
-    );
 
-    const sessionStatus = useSessionsWithConfig(sessionConfig);
-    const studentStatus = hooks.useStudent(studentID);
-    const courseStatus = hooks.useCourse(courseID);
-    const instructorStatus = hooks.useInstructor(
-        course && course.instructor_id,
-        true
-    );
-    const enrollmentStatus = hooks.useEnrollmentByCourse(courseID);
+    // const upcomingSess = upcomingSession(sessions, courseID) || {};
 
-    const enrollment = useMemo(
-        () => (enrollments[studentID] && enrollments[studentID][courseID]) || {},
-        [enrollments, studentID, courseID]
-    );
+    // const studentParent =
+    //     usersList.StudentList[studentID] &&
+    //     usersList.StudentList[studentID].parent_id;
 
-    const noteInfo = useMemo(
-        () => ({
-            courseID,
-            "enrollmentID": enrollment.enrollment_id,
-            studentID,
-        }),
-        [courseID, enrollment.enrollment_id, studentID]
-    );
-
-    const sessions = useMemo(
-        () =>
-            Object.values(courseSessions || {})
-                .map((instructorSessions) => Object.values(instructorSessions))
-                .flat()
-                .filter((session) => session.course == courseID),
-        [courseSessions, courseID]
-    );
-
-    const upcomingSess = upcomingSession(sessions, courseID) || {};
-
-    const studentParent =
-        usersList.StudentList[studentID] &&
-        usersList.StudentList[studentID].parent_id;
-
-    const sessionDataParse = useCallback(
-        ({ start_datetime, end_datetime, course, status, id, instructor }) => {
-            if (start_datetime && end_datetime && course) {
-                const startDate = new Date(start_datetime);
-                const endDate = new Date(end_datetime);
-                return {
-                    "course_id": course,
-                    "date": startDate,
-                    "endTime": endDate,
-                    id,
-                    instructor,
-                    "startTime": start_datetime,
-                    status,
-                    "tuition": course && courses[course].hourly_tuition,
-                };
-            }
-            return {};
-        },
-        [courses]
-    );
+    // const sessionDataParse = useCallback(
+    //     ({ start_datetime, end_datetime, course, status, id, instructor }) => {
+    //         if (start_datetime && end_datetime && course) {
+    //             const startDate = new Date(start_datetime);
+    //             const endDate = new Date(end_datetime);
+    //             return {
+    //                 "course_id": course,
+    //                 "date": startDate,
+    //                 "endTime": endDate,
+    //                 id,
+    //                 instructor,
+    //                 "startTime": start_datetime,
+    //                 status,
+    //                 "tuition": course && courses[course].hourly_tuition,
+    //             };
+    //         }
+    //         return {};
+    //     },
+    //     [courses]
+    // );
 
     const handleTabChange = useCallback((_, newTab) => {
         setActiveTab(newTab);
@@ -190,11 +171,11 @@ const CourseSessionStatus = () => {
         (toUnenroll) => () => {
             setUnenrollWarningOpen(false);
             if (toUnenroll) {
-                deleteEnrollment(enrollment)(dispatch);
-                goToRoute(`/accounts/student/${studentID}`);
+                // deleteEnrollment(enrollment)(dispatch);
+                // goToRoute(`/accounts/student/${studentID}`);
             }
         },
-        [dispatch, enrollment, goToRoute, studentID]
+        // [dispatch, enrollment, goToRoute, studentID]
     );
 
     useEffect(() => {
@@ -202,36 +183,35 @@ const CourseSessionStatus = () => {
     }, [dispatch]);
 
 
-      const {data: enrollmentsData, loading: enrollmentsLoading, error: enrollmentsError} = useQuery(GET_ENROLLMENT);
-    //    if (loading) {
-    //     return <Loading/>
-    // }
-    // if (error) {
-    //     return <Typography>
-    //         There's been an error! Error: {error.message}
-    //     </Typography>
-    // }
-      console.log(enrollmentsData)
+       if (enrollmentLoading || sessionsLoading) {
+        return <Loading/>
+    }
+    if (enrollmentError || sessionsError) {
+        return <Typography>
+            There's been an error! Error: {enrollmentError.message || sessionsError.message}
+        </Typography>
+    }
+      console.log(enrollmentData)
+      console.log(sessionsData)
     
 
     //   const courseid = enrollmentsData.enrollment.course.id;
-      const courseid= 1;
+    //   const courseid= 1;
 
-       const GET_SESSIONS = gql ` 
-    query MyQuery {
-        sessions(courseId: ${courseid}) {
-          course {
-            startTime
-            endTime
-            id
-            hourlyTuition
-          }
-          id
-        }
-      }
-    `
+    //    const GET_SESSIONS = gql ` 
+    // query MyQuery {
+    //     sessions(courseId: ${courseid}) {
+    //       course {
+    //         startTime
+    //         endTime
+    //         id
+    //         hourlyTuition
+    //       }
+    //       id
+    //     }
+    //   }
+    // `
 
-      const {data: sessionsData, loading: sessionsLoading, error: sessionsError} = useQuery(GET_SESSIONS);
     //   if (sessionsLoading) {
     //     return <Loading/>
     // }
@@ -240,45 +220,25 @@ const CourseSessionStatus = () => {
     //         There's been an error! Error: {error.message}
     //     </Typography>
     // }
-      console.log(sessionsData)
+    //   console.log(sessionsData)
       
 
 
     // either doesn't exist or only has notes defined
-    if (
-        !enrollment ||
-        Object.keys(enrollment).length <= 1 ||
-        hooks.isLoading(
-            courseStatus,
-            enrollmentStatus,
-            studentStatus,
-            instructorStatus,
-            sessionStatus
-        )
-    ) {
-        return <Loading paper />;
-    }
+   
 
-    if (
-        hooks.isFail(
-            courseStatus,
-            enrollmentStatus,
-            studentStatus,
-            instructorStatus,
-            sessionStatus
-        )
-    ) {
-        return <LoadingError error="data" />;
-    }
+return (
+    <div>
+        hi
+    </div>
+)
 
-
-
-    const mainContent = () => {
-        switch (activeTab) {
-            case 0:
-                return (
-                    <>
-                        <Grid className="accounts-table-heading" container item xs={12}>
+    // const mainContent = () => {
+        // switch (activeTab) {
+        //     case 0:
+        //         return (
+        //             <>
+                        {/* <Grid className="accounts-table-heading" container item xs={12}>
                             <Grid item xs={1} />
                             <Grid item xs={2}>
                                 <Typography align="left" className="table-text">
@@ -533,8 +493,8 @@ const CourseSessionStatus = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Paper>
-    );
+        </Paper> */}
+    {/* ); */}
 };
 
 CourseSessionStatus.propTypes = {};
