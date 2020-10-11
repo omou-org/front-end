@@ -66,60 +66,6 @@ const theme = createMuiTheme({
             "@global": {
                 "body": {
                     "backgroundColor": neutralBackgroundColor,
-                    "a": {
-                      "fontSize": '12px',
-                      "fontWeight": '500',
-                      "fontFamily": 'Roboto',
-                      "lineHeight": '16px',
-                  // color: '#1F82A1',
-                      "color": 'pink',
-                      "textDecoration": 'underline'
-                    },
-                    a: {
-                      "fontSize": '12px',
-                      "fontWeight": '500',
-                      "fontFamily": 'Roboto',
-                      "lineHeight": '16px',
-                  // color: '#1F82A1',
-                      "color": 'pink',
-                      "textDecoration": 'underline'
-                    },
-                  //   a:visted {
-                  //     "fontSize": '12px',
-                  //     "fontWeight": '500',
-                  //     "fontFamily": 'Roboto',
-                  //     "lineHeight": '16px',
-                  // // color: '#1F82A1',
-                  //     "color": 'pink',
-                  //     "textDecoration": 'underline'
-                  //   },
-                },
-                "a": {
-                  "fontSize": '12px',
-                  "fontWeight": '500',
-                  "fontFamily": 'Roboto',
-                  "lineHeight": '16px',
-              // color: '#1F82A1',
-                  "color": 'pink',
-                  "textDecoration": 'underline'
-                },
-                a: {
-                  "fontSize": '12px',
-                  "fontWeight": '500',
-                  "fontFamily": 'Roboto',
-                  "lineHeight": '16px',
-              // color: '#1F82A1',
-                  "color": 'pink',
-                  "textDecoration": 'underline'
-                },
-                "link": {
-                  "fontSize": '12px',
-                  "fontWeight": '500',
-                  "fontFamily": 'Roboto',
-                  "lineHeight": '16px',
-              // color: '#1F82A1',
-                  "color": 'pink',
-                  "textDecoration": 'underline'
                 }
             },
         },
@@ -183,15 +129,6 @@ const theme = createMuiTheme({
                 fontWeight: '300',
                 fontFamily: 'Roboto',
             },
-            caption: {
-              fontSize: '12px',
-              fontWeight: '500',
-              fontFamily: 'Roboto',
-              lineHeight: '16px',
-              // color: '#1F82A1',
-              color: 'pink',
-              textDecoration: 'underline'
-            }
         },
         "MuiButton": {
             "text": {
@@ -280,15 +217,6 @@ const theme = createMuiTheme({
         },
         "paper": {
             "background": "#FAFAFA",
-        },
-        'Link': {
-          fontSize: '12px',
-          fontWeight: '500',
-          fontFamily: 'Roboto',
-          lineHeight: '16px',
-          // color: '#1F82A1',
-          color: 'pink',
-          textDecoration: 'underline'
         },
         "MuiMenuItem": {
             "root": {
