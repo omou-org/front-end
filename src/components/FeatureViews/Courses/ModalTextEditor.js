@@ -309,40 +309,18 @@ const ModalTextEditor = ({
   const toggleInlineStyles = e => {
     e.preventDefault();
     const style = e.currentTarget.getAttribute("data-style");
-    const {toggleInlineStyle, toggleBlockType } = RichUtils
+    const { toggleInlineStyle, toggleBlockType } = RichUtils
     const newState = {
       [style]: toggleInlineStyle(body, style),
-      [style]: toggleBlockType(body, style),
-    } 
-    console.log(newState[style])
+      "unordered-list-item": toggleBlockType(body, style),
+      "ordered-list-item": toggleBlockType(body, style),
+    }; 
     if(newState[style]) {
       setBody(newState[style])
       return "handled"
     }
     return "not handled"
-  }
-
-  // const toggleInlineStyles = e => {
-  //   e.preventDefault();
-  //   let style = e.currentTarget.getAttribute("data-style");
-  //   const newState = RichUtils.toggleInlineStyle(body, style);
-  //   if (newState) {
-  //     setBody(newState);
-  //     return "handled";
-  //   }
-  //   return "not handled";
-  // };
-
-  // const toggleBulletPoints = e => {
-  //   e.preventDefault();
-  //   let styles = e.currentTarget.getAttribute("data-style");
-  //   const newState = RichUtils.toggleBlockType(body, styles);
-  //   if (newState) {
-  //     setBody(newState);
-  //     return "handled";
-  //   }
-  //   return "not handled";
-  // };
+  };
 
   const handleKeyCommand = (command, body) => {
     const newState = RichUtils.handleKeyCommand(body, command);
@@ -375,6 +353,37 @@ const ModalTextEditor = ({
     }
   };
 
+  const iconArray = [
+  {
+    "style": "BOLD",
+    "icon": <FormatBoldIcon />
+  },
+  {
+    "style": "ITALIC",
+    "icon": <FormatItalicIcon />
+  },
+  {
+    "style": "UNDERLINE",
+    "icon": <FormatUnderlinedIcon />
+  },
+  {
+    "style": "STRIKETHROUGH",
+    "icon": <StrikethroughSIcon />
+  },
+  {
+    "style": "unordered-list-item",
+    "icon": <ListIcon />
+  },
+  {
+    "style": "ordered-list-item",
+    "icon": <FormatListNumberedIcon />
+  },
+  {
+    "style": "HIGHLIGHT",
+    "icon": <HighlightIcon />
+  },
+]
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -404,42 +413,13 @@ const ModalTextEditor = ({
                   color="primary"
                   aria-label="outlined primary button group"
                 >
-                  <IconButton onClick={toggleInlineStyles} data-style="BOLD">
-                    <FormatBoldIcon />
-                  </IconButton>
-                  <IconButton onClick={toggleInlineStyles} data-style="ITALIC">
-                    <FormatItalicIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={toggleInlineStyles}
-                    data-style="UNDERLINE"
-                  >
-                    <FormatUnderlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={toggleInlineStyles}
-                    data-style="STRIKETHROUGH"
-                  >
-                    <StrikethroughSIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={toggleInlineStyles}
-                    data-style="unordered-list-item"
-                  >
-                    <ListIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={toggleInlineStyles}
-                    data-style="ordered-list-item"
-                  >
-                    <FormatListNumberedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={toggleInlineStyles}
-                    data-style="HIGHLIGHT"
-                  >
-                    <HighlightIcon />
-                  </IconButton>
+                  {
+                    iconArray.map(icons => (
+                    <IconButton onClick={toggleInlineStyles} data-style={icons.style}>
+                      {icons.icon}
+                    </IconButton>
+                    ))
+                  }
                 </ButtonGroup>
               </Grid>
               <Grid item xs={12}>
