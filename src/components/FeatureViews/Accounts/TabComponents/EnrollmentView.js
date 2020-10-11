@@ -42,6 +42,7 @@ import Moment from "react-moment";
 const GET_ENROLLMENT = gql ` 
     query EnrollmentViewQuery ($enrollmentId: ID!) {
         enrollment(enrollmentId: $enrollmentId) {
+          id
           enrollmentnoteSet {
             id
             important
@@ -90,6 +91,7 @@ const GET_ENROLLMENT = gql `
             endTime
             id
             hourlyTuition
+            startDate
           }
           id
         }
@@ -232,8 +234,11 @@ const CourseSessionStatus = () => {
 //         hi
 //     </div>
 // )
+const {course, enrollmentnoteSet, enrollmentBalance, paymentList, student, id} = enrollmentData.enrollment
+console.log(sessionsData.sessions)
 
     const mainContent = () => {
+        // const {course, enrollmentnoteSet, paymentList, student, id} = enrollmentData
         switch (activeTab) {
             case 0:
                 return (
@@ -269,27 +274,20 @@ const CourseSessionStatus = () => {
                         <Grid container spacing={1}>
                             {sessionsData.sessions.length !== 0 ?
                                 sessionsData.sessions.map((session) => {
-                                    const {
-                                        date,
-                                        startTime,
-                                        endTime,
-                                        hourlyTuition,
-                                        id,
-                                        course_id,
-                                        instructor,
+                                    // const {
+                                    //     date,
+                                    //     startTime,
+                                    //     endTime,
+                                    //     hourlyTuition,
+                                    //     id,
+                                    //     course_id,
+                                    //     instructor
+
+                                    
                                     // } = sessionDataParse(session);
-                                    } = sessionsData(session);
+                                    
                                 
-                                    // {enrollmentData.enrollment.length !== 0 ?
-                                    //     enrollmentData.enrollment.map((enrollment) => {
-                                    //         const {
-                                    //             course,
-                                    //             enrollmentNoteSet,
-                                    //             enrollmentBalance,
-                                    //             paymentList,
-                                    //             id,
-                                    //             student,
-                                    //     } = enrollmentData(enrollment);
+                                    
                                 
                                     return (
                                         <Grid className="accounts-table-row"
@@ -298,15 +296,15 @@ const CourseSessionStatus = () => {
                                             key={id}
                                             to={
                                                 course.course_type === "tutoring"
-                                                    ? `/scheduler/view-session/${course_id}/${id}/${instructor}`
-                                                    : `/registration/course/${course_id}`
+                                                    ? `/scheduler/view-session/${session.course.id}/${id}/${session.instructor}`
+                                                    : `/registration/course/${session.course.id}`
                                             }
                                             xs={12}>
                                             <Paper className={`session-info
                                                 ${highlightSession && " active"}
                                                 ${
-                                                upcomingSess.id == id &&
-                                                " upcoming-session"
+                                                session.id == session.id &&
+                                                "upcoming-session"
                                                 }`}
                                                 component={Grid}
                                                 container
@@ -315,7 +313,7 @@ const CourseSessionStatus = () => {
                                                 <Grid item xs={2}>
                                                     <Typography align="left">
                                                         <Moment
-                                                            date={date}
+                                                            date={session.startDate}
                                                             format="M/D/YYYY"
                                                         />
                                                     </Typography>
@@ -324,7 +322,7 @@ const CourseSessionStatus = () => {
                                                     <Typography align="left">
                                                         <Typography align="left">
                                                             <Moment
-                                                                date={date}
+                                                                date={session.startDate}
                                                                 format="dddd"
                                                             />
                                                         </Typography>
@@ -333,23 +331,24 @@ const CourseSessionStatus = () => {
                                                 <Grid item xs={3}>
                                                     <Typography align="left">
                                                         <Moment
-                                                            date={startTime}
+                                                            date={session.startTime}
                                                             format="h:mm A"
                                                         />
                                                         {" - "}
                                                         <Moment
-                                                            date={endTime}
+                                                            date={session.endTime}
                                                             format="h:mm A"
                                                         />
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={1}>
-                                                    <Typography align="left">${hourlyTuition}</Typography>
+                                                    <Typography align="left">${session.hourlyTuition}</Typography>
                                                 </Grid>
                                                 <Grid item xs={2}>
-                                                    <SessionPaymentStatusChip enrollment={enrollment}
+                                                    {/* MUST FIX STATUS */}
+                                                    {/* <SessionPaymentStatusChip enrollment={enrollmentData.enrollment}
                                                         session={session}
-                                                        setPos />
+                                                        setPos /> */}
                                                 </Grid>
                                             </Paper>
                                         </Grid>
@@ -365,14 +364,14 @@ const CourseSessionStatus = () => {
                 );
             case 1:
                 return (
-                    <Notes ownerID={enrollment.enrollment_id}
+                    <Notes ownerID={id}
                         ownerType="enrollment" />
                 );
             case 2:
                 return (
-                    <PaymentTable courseID={course.course_id}
-                        enrollmentID={enrollment.enrollment_id}
-                        paymentList={enrollment.payment_list}
+                    <PaymentTable courseID={course.id}
+                        enrollmentID={id}
+                        paymentList={paymentList}
                         type="enrollment" />
                 );
             default:
@@ -403,8 +402,8 @@ const CourseSessionStatus = () => {
                         spacing={2}>
                         <Grid item>
                             <AddSessions componentOption="button"
-                                enrollment={enrollment}
-                                parentOfCurrentStudent={studentParent} />
+                                enrollment={enrollmentData}
+                                parentOfCurrentStudent={student.parent} />
                         </Grid>
                         <Grid item>
                             <Button className="button unenroll" onClick={openUnenrollDialog}>
@@ -415,18 +414,18 @@ const CourseSessionStatus = () => {
                     <Grid className="participants" item xs={12}>
                         <Typography align="left">
                             Student:{" "}
-                            <Link to={`/accounts/student/${studentID}`}>
-                                {usersList.StudentList[studentID].name}
+                            <Link to={`/accounts/student/${student.id}`}>
+                                {student.user.firstName} {student.user.lastName}
                             </Link>
                         </Typography>
                         <Typography align="left">
                             Instructor:{" "}
                             <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                                {usersList.InstructorList[course.instructor_id].name}
+                                {course.instructor.user.firstName} {course.instructor.user.lastName}
                             </Link>
                         </Typography>
                         <Typography align="left">
-                            Enrollment Balance Left: ${enrollment.balance}
+                            Enrollment Balance Left: ${enrollmentBalance}
                         </Typography>
                     </Grid>
                     {activeTab === 0 && (
@@ -457,7 +456,7 @@ const CourseSessionStatus = () => {
                         </>
                     } />
                     <Tab label={
-                        Object.values(enrollment.notes).some(
+                        Object.values(enrollmentnoteSet).some(
                             ({ important }) => important
                         ) ? (
                                 <>
@@ -486,8 +485,8 @@ const CourseSessionStatus = () => {
                 <DialogContent>
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for{" "}
-                        <b>{usersList.StudentList[studentID].name}</b>. Performing this
-                        action will credit <b>${enrollment.balance}</b> back to the parent's
+                        <b>{student.user.firstName} {student.user.lastName}</b>. Performing this
+                        action will credit <b>${enrollmentBalance}</b> back to the parent's
                         account balance. Are you sure you want to unenroll?
                     </DialogContentText>
                 </DialogContent>
