@@ -6,25 +6,24 @@ import {useQuery} from "@apollo/react-hooks";
 import Typography from "@material-ui/core/Typography";
 import gql from "graphql-tag";
 
-export const GET_PARENT_PAYMENTS = gql`
-    query ParentPayments($parentId: ID!) {
-        payments(parentId: $parentId) {
+export const GET_ENROLLMENT_PAYMENTS = gql`
+    query EnrollmentPayments ($enrollmentId: ID!) {
+        enrollment(enrollmentId: $enrollmentId) {
+          paymentList {
             id
             createdAt
-            registrationSet {
-              id
-            }
             total
             method
+          }
         }
     }
 `;
 
 const EnrollmentPayment = ({user_id}) => {
-	const {data, loading, error} = useQuery(GET_PARENT_PAYMENTS,
-		{variables: {parentId: user_id}}
+	const {data, loading, error} = useQuery(GET_ENROLLMENT_PAYMENTS,
+		{variables: {enrollmentId: user_id}}
 	);
-
+    
 	if (loading) {
 		return <Loading/>
 	}
@@ -34,12 +33,13 @@ const EnrollmentPayment = ({user_id}) => {
 		</Typography>
     }
 
-	const {payments} = data;
-
+	const payments = data.enrollment.paymentList;
+    console.log(data);
+    console.log(payments);
     return (
         <PaymentTable
             paymentList={payments}
-            type="parent" />
+            type="enrollment" />
     );
 };
 
