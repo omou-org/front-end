@@ -27,7 +27,9 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
 import {useDispatch, useSelector} from "react-redux";
+import AddIcon from '@material-ui/icons/Add';
 import * as types from "actions/actionTypes";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -183,18 +185,29 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     <span className="label">Enrolled</span>
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
-                                    <Button
+                                    // <Button
+                                    //     disabled={shouldDisableQuickRegister({
+                                    //         course, enrolledCourseIds,
+                                    //         registrations, studentList
+                                    //     })}
+                                    //     variant="contained"
+                                    //     color="primary"
+                                    //     onClick={handleStartQuickRegister(course.id)}
+                                    //     data-cy="quick-register-class"
+                                    // >
+                                    //     + REGISTER
+                                    // </Button>
+                                    <ResponsiveButton
                                         disabled={shouldDisableQuickRegister({
                                             course, enrolledCourseIds,
                                             registrations, studentList
                                         })}
                                         variant="contained"
-                                        color="primary"
                                         onClick={handleStartQuickRegister(course.id)}
                                         data-cy="quick-register-class"
-                                    >
-                                        + REGISTER
-                                    </Button>
+                                        label='register'
+                                        startIcon={<AddIcon />}
+                                    />
                                 )}
                             </TableCell>
                         </TableRow>
