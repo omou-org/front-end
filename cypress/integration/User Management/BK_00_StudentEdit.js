@@ -50,7 +50,9 @@ describe("Fills out form with mock data of students from our user.json file, vie
             cy.get("[data-cy=student-address-input]")
                 .should("have.value", original_student_data.address);
             cy.get("[data-cy=student-phoneNumber-input]")
-                .should("have.value", original_student_data.phoneNumber);
+                .should("have.value", original_student_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"))
+                .click()
+                .type("1")
             cy.get("[data-cy=submitButton]")
                 .should("be.enabled");
         });
