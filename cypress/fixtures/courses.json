@@ -1,0 +1,147 @@
+{
+  "ScienceCourse": {
+    "id": "2",
+    "academicLevel": "COLLEGE_LVL",
+    "courseCategory": {
+      "name": "Science",
+      "id": 2,
+      "__typename": "CourseCategoryType"
+    },
+    "title": "Science",
+    "startTime": "09:15:00",
+    "startDate": "2020-06-15",
+    "endDate": "2020-10-15",
+    "endTime": "11:15:00",
+    "dayOfWeek": "MONDAY",
+    "description": null,
+    "instructor": {
+      "user": {
+        "firstName": "Paul",
+        "id": 3,
+        "lastName": "Wu",
+        "__typename": "UserType"
+      },
+      "__typename": "InstructorType"
+    },
+    "enrollmentSet": [
+      {
+        "student": {
+          "user": {
+            "firstName": "Aaron",
+            "lastName": "Ao",
+            "id": 1,
+            "__typename": "UserType"
+          },
+          "primaryParent": {
+            "user": {
+              "firstName": "John",
+              "lastName": "Oliver",
+              "id": 5,
+              "email": "john@oliver.com",
+              "__typename": "UserType"
+            },
+            "accountType": "PARENT",
+            "phoneNumber": "4532565451",
+            "__typename": "ParentType"
+          },
+          "accountType": "STUDENT",
+          "__typename": "StudentType"
+        },
+        "__typename": "EnrollmentType"
+      }
+    ],
+    "sessionSet": [
+      {
+        "startDatetime": "2020-06-15T16:15:00+00:00",
+        "id": "11",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-06-22T16:15:00+00:00",
+        "id": "12",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-06-29T16:15:00+00:00",
+        "id": "13",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-06T16:15:00+00:00",
+        "id": "14",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-13T16:15:00+00:00",
+        "id": "15",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-20T16:15:00+00:00",
+        "id": "16",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-07-27T16:15:00+00:00",
+        "id": "17",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-03T16:15:00+00:00",
+        "id": "18",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-10T16:15:00+00:00",
+        "id": "19",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-17T16:15:00+00:00",
+        "id": "20",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-24T16:15:00+00:00",
+        "id": "21",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-08-31T16:15:00+00:00",
+        "id": "22",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-07T16:15:00+00:00",
+        "id": "23",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-14T16:15:00+00:00",
+        "id": "24",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-21T16:15:00+00:00",
+        "id": "25",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-09-28T16:15:00+00:00",
+        "id": "26",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-10-05T16:15:00+00:00",
+        "id": "27",
+        "__typename": "SessionType"
+      },
+      {
+        "startDatetime": "2020-10-12T16:15:00+00:00",
+        "id": "28",
+        "__typename": "SessionType"
+      }
+    ],
+    "__typename": "CourseType"
+  }
+}

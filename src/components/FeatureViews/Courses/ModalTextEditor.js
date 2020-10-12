@@ -24,7 +24,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Input from "@material-ui/core/Input";
-import { omouBlue } from "../../../theme/muiTheme";
+import { omouBlue, styleMap } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { GET_SESSION_NOTES } from "./ClassSessionView";
@@ -97,12 +97,6 @@ const useStyles = makeStyles(theme => ({
     marginBottom: "3.5em",
   },
 }));
-
-const styleMap = {
-  HIGHLIGHT: {
-    backgroundColor: "yellow",
-  },
-};
 
 const MUTATIONS = {
   ANNOUNCEMENTS: gql`
@@ -218,6 +212,11 @@ const ModalTextEditor = ({
   const [body, setBody] = useState(() => EditorState.createEmpty());
   const courseId = useParams();
   const poster_id = posterId.results[0].user.id;
+  const disableCheck = convertToRaw(body.getCurrentContent()).blocks
+  .reduce((accum, currentValue) => {
+    return {...accum, text: currentValue.text} 
+  }, {}).text
+
 
   useEffect(() => {
     if(buttonState === "edit") {
@@ -355,34 +354,41 @@ const ModalTextEditor = ({
 
   const iconArray = [
   {
+    "name": "bold",
     "style": "BOLD",
     "icon": <FormatBoldIcon />
   },
   {
+    "name": "italic",
     "style": "ITALIC",
     "icon": <FormatItalicIcon />
   },
   {
+    "name": "underline",
     "style": "UNDERLINE",
     "icon": <FormatUnderlinedIcon />
   },
   {
+    "name": "strikethrough",
     "style": "STRIKETHROUGH",
     "icon": <StrikethroughSIcon />
   },
   {
+    "name": "unordered-list-item",
     "style": "unordered-list-item",
     "icon": <ListIcon />
   },
   {
+    "name": "ordered-list-item",
     "style": "ordered-list-item",
     "icon": <FormatListNumberedIcon />
   },
   {
+    "name": "highlight",
     "style": "HIGHLIGHT",
     "icon": <HighlightIcon />
   },
-]
+];
 
   return (
     <Grid container>
@@ -406,6 +412,7 @@ const ModalTextEditor = ({
                   disableUnderline
                   onChange={handleSubjectChange}
                   defaultValue={buttonState === "edit" ? textSubject : ""}
+                  data-cy="text-editor-subject"
                 />
               </Grid>
               <Grid item xs={6}>
@@ -415,7 +422,7 @@ const ModalTextEditor = ({
                 >
                   {
                     iconArray.map(icons => (
-                    <IconButton onClick={toggleInlineStyles} data-style={icons.style}>
+                    <IconButton onClick={toggleInlineStyles} data-style={icons.style} data-cy={`text-editor-${icons.name}`}>
                       {icons.icon}
                     </IconButton>
                     ))
@@ -423,7 +430,7 @@ const ModalTextEditor = ({
                 </ButtonGroup>
               </Grid>
               <Grid item xs={12}>
-                <div className={classes.textfield}>
+                <div className={classes.textfield} data-cy="text-editor-body">
                   <Editor
                     editorState={body}
                     onChange={handleBodyChange}
@@ -447,6 +454,7 @@ const ModalTextEditor = ({
                     checkedIcon={<CheckBoxIcon className={classes.checkBox} />}
                     icon={<CheckBoxOutlineBlankOutlinedIcon />}
                     color="primary"
+                    data-cy="text-editor-email-checkbox"
                   />
                 }
                 label={
@@ -465,6 +473,7 @@ const ModalTextEditor = ({
                     checkedIcon={<CheckBoxIcon className={classes.checkBox} />}
                     icon={<CheckBoxOutlineBlankOutlinedIcon />}
                     color="primary"
+                    data-cy="text-editor-sms-checkbox"
                   />
                 }
                 label={
@@ -479,7 +488,12 @@ const ModalTextEditor = ({
             <Button className={classes.cancelButton} onClick={handleClose}>
               Cancel
             </Button>
-            <Button className={classes.submitButton} onClick={handleSubmit}>
+            <Button 
+              className={classes.submitButton} 
+              data-cy="text-editor-post-button"
+              onClick={handleSubmit} 
+              disabled={disableCheck === "" || subject === "" ? true : false}
+            >
               {origin === "STUDENT_ENROLLMENT"
                 ? "Send Email"
                 : renderButtonText()}

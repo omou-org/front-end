@@ -193,6 +193,7 @@ const Announcements = ({
 
   const announcementRender = announcementsData
   .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
+
   return (
     <Grid container justify="flex-start" data-active="inactive">
       <AccessControlComponent
@@ -207,6 +208,7 @@ const Announcements = ({
           onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
           value="post"
           name="post"
+          data-cy="new-announcement-button"
         >
           <span className={classes.plusSpan}>+</span> New Announcement
         </Button>
