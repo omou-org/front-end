@@ -3,15 +3,13 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import Grid from "@material-ui/core/Grid";
+import GridList from "@material-ui/core/GridList"
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -66,27 +64,43 @@ const useStyles = makeStyles({
 
     accordionNotes: {
         textAlign: 'left',
-        fontSize: '12 px !important'
+        fontSize: '12 px !important',
+        display: 'inline-block'
     },
     accordionNotesBorder: {
         border: '1px #E0E0E0 solid',
         borderRadius: "25px",
-        margin: '5px 24px 25px 24px'
+        margin: '0px 24px 25px 24px',
+        paddingTop: '0px'
     },
-    accordionSpacing: {
-        width: '10px',
+    studentAccordionSpacing: {
+        width: '320px!important',
+        height: '30px!important',
+        textAlign: 'left'
+    
+    },
+    parentAccordionSpacing: {
+        // width: '720px!important',
+        height: '30px!important',
+        textAlign: 'left'
     
     },
     noBorder: {
-        border: '7x pink solid!important',
-        textDecoration: 'none'
+        textAlign: 'center'
     },
     actionsAccordionSpacing: {
-        width: '309px',
+        width: '309px!important',
+        height: '30px!important',
+        textAlign: 'left',
+
+    },
+    iconsAccordionSpacing: {
+        // width: '309px!important',
+        height: '60px!important',
+        paddingLeft: '25px'
     },
     arrowIcon: {
         color: '#43B5D9',
-        // backgroundColor: 'blue'
     }
 });
     
@@ -236,31 +250,33 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                    
                                     
                                 >
-
-                                <Grid className={classes.noBorder}>
-                                    <Grid item xs={1} className={classes.accordionSpacing}>
+                               
+                                <GridList cols={1} className={classes.noBorder}>
+                                    <Grid item xs={3} className={classes.studentAccordionSpacing}>
                                         <Link className="no-underline"
                                             to={`/accounts/student/${student.user.id}`}>
                                             {fullName(student.user)}
                                         </Link>
                                     </Grid>
-                                    <Grid item xs={1} className={classes.accordionSpacing}>
+                                    <Grid item xs={3} className={classes.parentAccordionSpacing}>
                                         <Link className="no-underline"
                                             to={`/accounts/parent/${primaryParent.user.id}`}>
                                             {fullName(primaryParent.user)}
                                         </Link>
                                     </Grid>
-                                    {/* <div className={classes.actionsAccordionSpacing}> */}
+                                    <Grid item xs={3} className={classes.actionsAccordionSpacing}>
                                         {addDashes(primaryParent.phoneNumber)}
-                                    {/* </div> */}
-                                    {/* <div> */}
-                                        <div style={{ "width": "40px" }}>
+                                    </Grid>
+                                    {/* <Grid item xs={3}> */}
+                                        {/* <div style={{ "width": "40px" }}> */}
                                             {/*<SessionPaymentStatusChip className="session-status-chip"*/}
                                             {/*    enrollment={enrollment}*/}
                                             {/*    session={upcomingSess} />*/}
                                         {/* </div> */}
-                                    </div>
-                                    <div>
+                                    {/* </Grid> */}
+                                    </GridList>
+                                    {/* <Grid item xs={3} className = {classes.iconsAccordionSpacing}> */}
+                                    <div className= {classes.iconsAccordionSpacing}>
                                         <div className="actions" key={student.user.id}>
                                             <IconButton component={Link}
                                                 to={`mailto:${primaryParent.user.email}`}>
@@ -295,7 +311,7 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                                             </span> */}
                                         </div>
                                     </div>
-                                </Grid>
+                                {/* </GridList> */}
                                 </AccordionSummary>
                                 
                                 <AccordionDetails className={classes.accordionNotesBorder}>
