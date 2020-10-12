@@ -246,7 +246,7 @@ const Accounts = () => {
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
+                            color="secondary"
                             component={Link}
                             to="/form/student"
                             variant="outlined"
@@ -256,7 +256,7 @@ const Accounts = () => {
                     </Grid>
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
+                            color="secondary"
                             component={Link}
                             to="/form/parent"
                             variant="outlined"

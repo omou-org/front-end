@@ -16,6 +16,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { omouBlue } from '../../../theme/muiTheme';
 import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -194,38 +195,65 @@ export default function CreateOOOForm() {
                 >
                     <Grid item style={{ padding: '5%' }}>
                         {!submitted && (
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    color: 'black',
-                                    width: '150px',
-                                }}
-                                onClick={() =>
-                                    SubmitNoticeChild.current.handleClearForm()
-                                }
-                                color="primary"
-                                variant="outlined"
-                                data-cy="clear-OOO-button"
-                            >
-                                Clear
-                            </Button>
+                            <ResponsiveButton
+                            // style={{
+                            //     backgroundColor: 'white',
+                            //     color: 'black',
+                            //     width: '150px',
+                            // }}
+                            onClick={() =>
+                                SubmitNoticeChild.current.handleClearForm()
+                            }
+                            // color="primary"
+                            variant="outlined"
+                            data-cy="clear-OOO-button"
+                            label="clear"
+                        />
+                        
+                            // <Button
+                            //     style={{
+                            //         backgroundColor: 'white',
+                            //         color: 'black',
+                            //         width: '150px',
+                            //     }}
+                            //     onClick={() =>
+                            //         SubmitNoticeChild.current.handleClearForm()
+                            //     }
+                            //     color="primary"
+                            //     variant="outlined"
+                            //     data-cy="clear-OOO-button"
+                            // >
+                            //     Clear
+                            // </Button>
                         )}
                     </Grid>
                     <Grid item>
                         {!submitted && (
-                            <Button
-                                style={{
-                                    backgroundColor: omouBlue,
-                                    color: 'white',
-                                    width: '150px',
-                                }}
+                            <ResponsiveButton
+                                // style={{
+                                //     backgroundColor: omouBlue,
+                                //     color: 'white',
+                                //     width: '150px',
+                                // }}
                                 onClick={handleSubmit}
-                                color="primary"
+                                // color="primary"
                                 variant="outlined"
                                 data-cy="submit-OOO-button"
-                            >
-                                Submit
-                            </Button>
+                                label='submit'
+                            />
+                            // <Button
+                            //     style={{
+                            //         backgroundColor: omouBlue,
+                            //         color: 'white',
+                            //         width: '150px',
+                            //     }}
+                            //     onClick={handleSubmit}
+                            //     color="primary"
+                            //     variant="outlined"
+                            //     data-cy="submit-OOO-button"
+                            // >
+                            //     Submit
+                            // </Button>
                         )}
                     </Grid>
                 </Grid>
