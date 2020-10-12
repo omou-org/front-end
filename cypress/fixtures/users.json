@@ -84,5 +84,59 @@
             "__typename": "UserType"
         },
         "zipcode": "91801"
+    },
+    "original_instructor_data": {
+        "address": "123 Main St",
+        "biography": "Taught at Cal Poly Pomona for several years, now I'm teaching here for fun.",
+        "birthDate": "1989-06-05",
+        "city": "San Gabriel",
+        "experience": 5,
+        "gender": "MALE",
+        "language": "English",
+        "phoneNumber": "9253418562",
+        "state": "CA",
+        "subjects": [{
+            "name": "Math",
+            "id": 1,
+            "__typename": "CourseCategoryType"
+        }],
+        "user": {
+            "__typename": "UserType",
+            "email": "paulwuus1000@hotmail.com",
+            "firstName": "Paul",
+            "lastName": "Wu",
+            "id": 3
+        },
+        "zipcode": "91820",
+        "__typename": "InstructorType"
+    },
+    "updated_instructor_data": {
+        "address": "456 Main St",
+        "biography": "Omou is awesome!",
+        "birthDate": "1989-06-05",
+        "city": "San Gabriel",
+        "experience": "10",
+        "gender": "MALE",
+        "language": "Cantonese, English, French",
+        "phoneNumber": "9253458562",
+        "state": "CA",
+        "subjects": [{
+            "name": "Biology",
+            "id": 2,
+            "__typename": "CourseCategoryType"
+        }],
+        "user": {
+            "__typename": "UserType",
+            "email": "paulwuus1000@hotmail.com",
+            "firstName": "Paul",
+            "lastName": "Wu",
+            "id": 3
+        },
+        "zipcode": "91820",
+        "__typename": "InstructorType"
+    },
+    "inviteInstructorConfirmationResponse": {
+        "status": "failed",
+        "__typename": "InviteInstructor"
     }
 }
