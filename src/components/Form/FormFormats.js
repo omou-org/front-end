@@ -446,10 +446,7 @@ const GET_USER_TYPE = gql`
 
 export default {
     "student": {
-        "title": {
-            "create": "Add Student",
-            "edit": "Add Student",
-        },
+        "title": "Student",
         "form": [
             {
                 "name": "student",
@@ -512,7 +509,6 @@ export default {
                         "query": GET_NAME,
                         "variables": {id},
                     });
-
                     return {
                         "student": {
                             "primaryParent": {
@@ -548,6 +544,7 @@ export default {
                             firstName
                             lastName
                             email
+                            id
                         }
                     }
                 }`;
@@ -555,7 +552,7 @@ export default {
                         "query": GET_INFO,
                         "variables": {id},
                     });
-
+                    
                     const modifiedData = {
                         ...student,
                         "firstName": student.user.firstName,
@@ -584,7 +581,8 @@ export default {
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!,
+            mutation AddStudent(
+            $firstName: String!,
             $email: String,
             $lastName: String!,
             $address: String,
@@ -608,6 +606,7 @@ export default {
                     "mutation": ADD_STUDENT,
                     "variables": {
                         ...student,
+                        id,
                         "email": student.email || "",
                         "birthDate": parseDate(student.birthDate),
                         "primaryParent": student.primaryParent.value,

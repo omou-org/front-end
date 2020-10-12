@@ -79,7 +79,9 @@ describe("Editing an existing Receptionist account details", () => {
             cy.get("[data-cy=user-address-input]")
                 .should("have.value", original_receptionist_data.address);
             cy.get("[data-cy=user-phoneNumber-input]")
-                .should("have.value", original_receptionist_data.phoneNumber);
+                .should("have.value", original_receptionist_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"))
+                .click()
+                .type("1");
             cy.get("[data-cy=submitButton]")
                 .should("be.enabled");
         });
