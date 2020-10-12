@@ -27,6 +27,44 @@
         "state": "CA",
         "zipcode": "94566"
     },
+    "original_receptionist_data": {
+        "address": "742 Los Robles Ave.",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "Ross@Gellar.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "rGellar",
+        "zipcode": "91801",
+        "__typename": "AdminType"
+    },
+    "updated_receptionist_data": {
+        "address": "342 Los Robles Ave.",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "DrRoss@Gellar.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "rGellar",
+        "zipcode": "91003",
+        "__typename": "AdminType"
+    },
     "original_instructor_data": {
         "address": "123 Main St",
         "biography": "Taught at Cal Poly Pomona for several years, now I'm teaching here for fun.",
