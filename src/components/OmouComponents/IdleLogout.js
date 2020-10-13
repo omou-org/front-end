@@ -60,7 +60,7 @@ const IdleLogout = () => {
     const dispatch = useDispatch();
 
     const handleLogout = useCallback(() => {
-        console.log("logging out...")
+        console.log("logging out...");
         closeRegistrationCart();
         dispatch(logout());
         history.push("/login");
