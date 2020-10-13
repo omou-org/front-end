@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
         padding: '8px 0 8px 0',
         color: 'white',
         marginTop: '20px',
-
         textAlign: 'center'
     }
 }));
@@ -67,17 +66,10 @@ const IdleLogout = () => {
         history.push("/login");
     }, [dispatch, history]);
 
-    let timeout = 1200000; //1080000;
-    const modalTimeout = 300000 //120000;
+    let timeout = 1080000;
+    const modalTimeout = 300000;
     const [remaining, setRemaining] = useState(timeout);
-    const [elapsed, setElapsed] = useState(0);
-    const elapseDiff = 5000;
 
-    const [lastActive, setLastActive] = useState(+new Date());
-    const [isIdle, setIsIdle] = useState(false);
-
-    const handleOnActive = () => setIsIdle(false);
-    const handleOnIdle = () => setIsIdle(true);
 
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
@@ -89,53 +81,38 @@ const IdleLogout = () => {
         return new Promise(resolve => {
             setTimeout(() => {
                 resolve(logoutAndCloseModal());
-            }, 300000);
-        })
-    };
+            }, modalTimeout);
+        });
+    }
     
     const logoutAndCloseModal = () => {
         handleClose();
         handleLogout();
-    }
+    };
 
     async function handleOpen() {
         setOpen(true);
         handleReset();
         setRemaining(modalTimeout);
         await logoutAfter2Minutes();
-
-    };
+    }
     
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleClose = () => setOpen(false);
 
     const {
         reset,
-        pause,
-        resume,
         getRemainingTime,
-        getLastActiveTime,
-        getElapsedTime
     } = useIdleTimer({
-        timeout,
-        onActive: handleOnActive,
-        onIdle: handleOnIdle
+        timeout
     });
     
     const handleReset = () => reset();
-    const handlePause = () => pause();
-    const handleResume = () => resume();
 
     useEffect(() => {
-        setRemaining(getRemainingTime())
-        setLastActive(getLastActiveTime())
-        setElapsed(getElapsedTime())
+        setRemaining(getRemainingTime());
     
         setInterval(() => {
-            setRemaining(getRemainingTime())
-            setLastActive(getLastActiveTime())
-            setElapsed(getElapsedTime())
+            setRemaining(getRemainingTime());
         }, 1000);
     }, []);
 
@@ -158,9 +135,7 @@ const IdleLogout = () => {
         )};
     return (
         <div>
-            {
-                (remaining === 0) && handleOpen()
-            }
+            { (remaining === 0) && handleOpen() }
         
             <Modal
                 open={open}

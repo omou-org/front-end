@@ -1,6 +1,6 @@
 const { it } = require("date-fns/locale");
 
-describe("Fills out form", () => {
+describe("sets 20 min timeout and checks for prompt and followed by automatic logout", () => {
     before(() => {
         cy.fixture("users.json").then(({admin}) => {
             cy.mockGraphQL({
