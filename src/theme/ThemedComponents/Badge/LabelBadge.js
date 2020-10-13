@@ -4,7 +4,7 @@ import theme from "../../muiTheme";
 import { Typography } from "@material-ui/core";
 import PropTypes from "prop-types";
 
-export const LabelBadge = ({label, type, ...rest}) => {
+export const LabelBadge = ({label, variant = "default", ...rest}) => {
     const colors = theme.colors;
 
     const badgeCategory = {
@@ -27,23 +27,23 @@ export const LabelBadge = ({label, type, ...rest}) => {
     }
 
     const badgeType = {
-        "user-outline": {
-            labelColor: colors.slateGrey,
-            chipColor: colors.white,
-            chipVariant: "outlined",
-            chipBorder: colors.slateGrey,
-            ...badgeCategory.labelBadge
-        },
-        "info": {
+        "default": {
             labelColor: colors.white,
             chipColor: colors.darkBlue,
             ...badgeCategory.labelBadge
         },
-        "info-outline": {
+        "outline": {
             labelColor: colors.darkBlue,
             chipColor: colors.white,
             chipVariant: "outlined",
             chipBorder: colors.darkBlue,
+            ...badgeCategory.labelBadge
+        },
+        "outline-gray": {
+            labelColor: colors.slateGrey,
+            chipColor: colors.white,
+            chipVariant: "outlined",
+            chipBorder: colors.slateGrey,
             ...badgeCategory.labelBadge
         },
         "status-positive": {
@@ -87,7 +87,7 @@ export const LabelBadge = ({label, type, ...rest}) => {
         },
     }
 
-    const badgeStyle = badgeType[type];
+    const badgeStyle = badgeType[variant];
 
     return <Chip 
                 variant={badgeStyle.chipVariant}
@@ -112,9 +112,9 @@ export const LabelBadge = ({label, type, ...rest}) => {
 LabelBadge.propTypes = {
     label: PropTypes.string.isRequired,
     type: PropTypes.oneOf([
-                            "user-outline",
-                            "info",
-                            "info-outline",
+                            "default",
+                            "outline",
+                            "outline-gray",
                             "status-positive",
                             "status-warning",
                             "status-negative",

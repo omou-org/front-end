@@ -62,7 +62,7 @@ export const RootRoutes = () => {
             </Route>
             
             {/* Dahl Design Migration Demos */}
-            <Route path="/demo/:views?">
+            <Route path="/demo/:type">
                 <DemoRoutes/>
             </Route>
 
