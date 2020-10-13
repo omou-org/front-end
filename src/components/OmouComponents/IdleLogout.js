@@ -68,7 +68,7 @@ const IdleLogout = () => {
 
     let timeout = 1080000;
     const modalTimeout = 300000;
-    const [remaining, setRemaining] = useState(timeout);
+    const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(timeout);
 
 
     const classes = useStyles();
@@ -93,7 +93,7 @@ const IdleLogout = () => {
     async function handleOpen() {
         setOpen(true);
         handleReset();
-        setRemaining(modalTimeout);
+        setRemainingMsUntilPrompt(modalTimeout);
         await logoutAfter2Minutes();
     }
     
@@ -109,10 +109,10 @@ const IdleLogout = () => {
     const handleReset = () => reset();
 
     useEffect(() => {
-        setRemaining(getRemainingTime());
+        setRemainingMsUntilPrompt(getRemainingTime());
     
         setInterval(() => {
-            setRemaining(getRemainingTime());
+            setRemainingMsUntilPrompt(getRemainingTime());
         }, 1000);
     }, []);
 
@@ -135,7 +135,7 @@ const IdleLogout = () => {
         )};
     return (
         <div>
-            { (remaining === 0) && handleOpen() }
+            { (remainingMsUntilPrompt === 0) && handleOpen() }
         
             <Modal
                 open={open}
