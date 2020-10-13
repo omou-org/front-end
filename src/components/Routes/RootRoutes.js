@@ -36,6 +36,9 @@ import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContain
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 
+import Welcome from "../FeatureViews/Onboarding/Welcome";
+import ImportFlow from "../FeatureViews/Onboarding/ImportFlow";
+
 export const RootRoutes = () => {
     const dispatch = useDispatch();
     const AuthUser = useSelector(({auth}) => auth);
@@ -164,6 +167,15 @@ export const RootRoutes = () => {
                 <FormPage />
             </AuthenticatedRoute>
 
+            {/* Onboarding Routes */}
+            <AuthenticatedRoute path="/onboarding/welcome" users={[USER_TYPES.admin]}>
+                <Welcome />
+            </AuthenticatedRoute>
+
+            <AuthenticatedRoute path="/onboarding/import" users={[USER_TYPES.admin]}>
+                <ImportFlow />
+            </AuthenticatedRoute>
+        
             {/* Course Management Routes */}
             <AuthenticatedRoute 
             path="/coursemanagement"
