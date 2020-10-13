@@ -36,6 +36,7 @@ import Notes from "components/FeatureViews/Notes/Notes";
 import { useEnrollmentNotes } from "actions/userActions";
 import { useSessionsWithConfig } from "actions/calendarActions";
 import Moment from "react-moment";
+import EnrollmentPayment from "./EnrollmentPayment";
 
 const timeOptions = {
     "hour": "2-digit",
@@ -55,6 +56,7 @@ const CourseSessionStatus = () => {
     const usersList = useSelector(({ Users }) => Users);
     const courses = useSelector(({ Course }) => Course.NewCourseList);
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
+    console.log(enrollments);
     const course = courses[courseID];
 
     const [activeTab, setActiveTab] = useState(0);
@@ -305,11 +307,19 @@ const CourseSessionStatus = () => {
                 );
             case 2:
                 return (
-                    <PaymentTable courseID={course.course_id}
+                    <div>
+                        <PaymentTable courseID={course.course_id}
                         enrollmentID={enrollment.enrollment_id}
                         paymentList={enrollment.payment_list}
                         type="enrollment" />
-                );
+                        <EnrollmentPayment
+                            courseID={course.course_id}
+                            enrollmentID={enrollment.enrollment_id}
+                            paymentList={enrollment.payment_list}
+                            type="enrollment"
+                        />
+                    </div>
+                    );
             default:
                 return null;
         }

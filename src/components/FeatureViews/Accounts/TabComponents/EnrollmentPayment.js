@@ -7,21 +7,28 @@ import Typography from "@material-ui/core/Typography";
 import gql from "graphql-tag";
 
 export const GET_ENROLLMENT_PAYMENTS = gql`
-    query EnrollmentPayments ($enrollmentId: ID!) {
+    query EnrollmentPayments($enrollmentId: ID!) {
         enrollment(enrollmentId: $enrollmentId) {
           paymentList {
-            id
+            __typename
+            accountBalance
             createdAt
-            total
+            discountTotal
+            id
             method
+            priceAdjustment
+            subTotal
+            total
+            updatedAt
           }
+          __typename
         }
-    }
+      }
 `;
 
-const EnrollmentPayment = ({user_id}) => {
+const EnrollmentPayment = ({enrollmentID, courseID, paymentList, type}) => {
 	const {data, loading, error} = useQuery(GET_ENROLLMENT_PAYMENTS,
-		{variables: {enrollmentId: user_id}}
+		{variables: {enrollmentId: enrollmentID}}
 	);
     
 	if (loading) {
@@ -36,10 +43,12 @@ const EnrollmentPayment = ({user_id}) => {
 	const payments = data.enrollment.paymentList;
     console.log(data);
     console.log(payments);
+    console.log(paymentList);
     return (
-        <PaymentTable
-            paymentList={payments}
-            type="enrollment" />
+        <PaymentTable courseID={courseID}
+        enrollmentID={enrollmentID}
+        paymentList={payments}
+        type="enrollment" />
     );
 };
 
