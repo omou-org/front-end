@@ -17,9 +17,9 @@
         "state": "CA",
         "zipcode": "94566"
     },
-    "student": {
+    "original_student_data": {
         "__typename": "StudentType",
-        "address": "543 W. Crazy Vista Ave",
+        "address": "543 W. Linda Vista Ave",
         "birthDate": "2002-12-12",
         "city": "Alhambra",
         "gender": "MALE",
@@ -41,13 +41,87 @@
     },
         "state": "CA",
         "user": {
-            "email": "test@test.com",
+            "email": "Aaron@Ao.com",
             "firstName": "Aaron",
             "lastName": "Ao",
             "id": 1,
             "__typename": "UserType"
         },
         "zipcode": "91801"
+    },
+    "accountType": {
+        "accountType": "STUDENT",
+        "__typename": "StudentType"
+    },
+    "updated_student_data": {
+        "__typename": "StudentType",
+        "address": "543 W. Santa Anita Ave",
+        "birthDate": "2002-12-12",
+        "city": "Temple City",
+        "gender": "MALE",
+        "grade": 12,
+        "phoneNumber": "6262846535",
+        "primaryParent": {
+            "user": {
+                "firstName": "John",
+                "id": 5,
+                "lastName": "Oliver",
+                "__typename": "UserType"
+            },
+            "__typename": "ParentType"
+        },
+        "school": {
+            "id": 1,
+            "name": "Alhambra High School",
+            "__typename": "SchoolType"
+    },
+        "state": "CA",
+        "user": {
+            "email": "Aaron@Ao.com",
+            "firstName": "Aaron",
+            "lastName": "Ao",
+            "id": 1,
+            "__typename": "UserType"
+        },
+        "zipcode": "91801"
+    },
+    "original_receptionist_data": {
+        "address": "742 Los Robles Ave.",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "Ross@Gellar.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "rGellar",
+        "zipcode": "91801",
+        "__typename": "AdminType"
+    },
+    "updated_receptionist_data": {
+        "address": "342 Los Robles Ave.",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "DrRoss@Gellar.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "rGellar",
+        "zipcode": "91003",
+        "__typename": "AdminType"
     },
     "original_instructor_data": {
         "address": "123 Main St",
@@ -74,36 +148,33 @@
         "zipcode": "91820",
         "__typename": "InstructorType"
     },
-    "parant_view_instructor_data": {
+    "updated_instructor_data": {
+        "address": "456 Main St",
+        "biography": "Omou is awesome!",
+        "birthDate": "1989-06-05",
+        "city": "San Gabriel",
+        "experience": "10",
+        "gender": "MALE",
+        "language": "Cantonese, English, French",
+        "phoneNumber": "9253458562",
+        "state": "CA",
+        "subjects": [{
+            "name": "Biology",
+            "id": 2,
+            "__typename": "CourseCategoryType"
+        }],
         "user": {
             "__typename": "UserType",
             "email": "paulwuus1000@hotmail.com",
             "firstName": "Paul",
-            "lastName": "Wu"
+            "lastName": "Wu",
+            "id": 3
         },
+        "zipcode": "91820",
         "__typename": "InstructorType"
     },
-    "instructorData": {
-        "address": "123 Main St",
-        "biography": "Taught at Cal Poly Pomona for several years, now I'm teaching here for fun.",
-        "birthDate": "1989-06-05",
-        "city": "San Gabriel",
-        "created_at": "2020-08-23T19:17:18.729916Z",
-        "experience": 5,
-        "gender": "MALE",
-        "language": "English",
-        "phoneNumber": "9253418562",
-        "state": "CA",
-        "subject": [2],
-        "updated_at": "2020-08-23T19:17:18.735918Z",
-        "user": {
-            "email": "paulwuus1000@hotmail.com",
-            "firstName": "Paul",
-            "id": 3,
-            "is_staff": false,
-            "lastName": "Wu"
-        },
-        "user_uuid": null,
-        "zipcode": "91820"
+    "inviteInstructorConfirmationResponse": {
+        "status": "failed",
+        "__typename": "InviteInstructor"
     }
 }
