@@ -9,6 +9,7 @@ import Button from "@material-ui/core/Button"
 import BackArrow from "@material-ui/icons/ArrowBack";
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'; 
 import "./scheduler.scss";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const NotEnrolledStudentsDialog = (props) => {
     const [open, setOpen] = React.useState(true);
@@ -35,13 +36,19 @@ const NotEnrolledStudentsDialog = (props) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <ResponsiveButton 
+                        onClick={handleClose}
+                        startIcon={<BackArrow />}
+                        label='Back'
+                        variant='outlined'
+                    />
+                    {/* <Button
                         className="control course button"
                         onClick={handleClose}
                     >
                         <BackArrow className="icon" />
                         <span className="label">Back</span>
-                    </Button>
+                    </Button> */}
                 </DialogActions>
             </Dialog>
         </div>

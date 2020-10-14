@@ -191,7 +191,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     //         registrations, studentList
                                     //     })}
                                     //     variant="contained"
-                                    //     color="primary"
+                                    //     color="success"
                                     //     onClick={handleStartQuickRegister(course.id)}
                                     //     data-cy="quick-register-class"
                                     // >
@@ -201,7 +201,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                         disabled={shouldDisableQuickRegister({
                                             course, enrolledCourseIds,
                                             registrations, studentList
-                                        })}
+                                        })}                                    
                                         variant="contained"
                                         onClick={handleStartQuickRegister(course.id)}
                                         data-cy="quick-register-class"
