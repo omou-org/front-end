@@ -209,7 +209,7 @@ const ModalTextEditor = ({
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
   const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
   const [subject, setSubject] = useState(textSubject);
-  const [body, setBody] = useState(() => EditorState.createEmpty());
+  const [body, setBody] = useState(EditorState.createEmpty());
   const courseId = useParams();
   const poster_id = posterId.results[0].user.id;
   const disableCheck = convertToRaw(body.getCurrentContent()).blocks
