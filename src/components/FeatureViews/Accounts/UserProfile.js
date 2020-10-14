@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {Redirect, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
+import gql from "graphql-tag"
+import { useQuery } from "@apollo/react-hooks"
 
 import Badge from "@material-ui/core/Badge";
 import BioIcon from "@material-ui/icons/PersonOutlined";
@@ -52,7 +54,7 @@ const userTabs = {
 		{
 			icon: <BioIcon className="TabIcon"/>,
 			tab_heading: "Bio",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.parent],
 			tab_id: 2,
 		},
 		{
@@ -147,7 +149,6 @@ const UserProfile = () => {
 
 	const fetchStatus = useUser(accountID, accountType);
 	const AuthUser = useSelector(({auth}) => auth);
-
 	useAccountNotes(accountID, accountType);
 	const user = useMemo(() => {
 		switch (accountType) {

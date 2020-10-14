@@ -34,7 +34,7 @@ const ComponentViewer = ({inView, user}) => {
 			},
 			{
 				component: <Bio background={user.background} key={2}/>,
-				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.parent],
 				id: 2,
 			},
 			{

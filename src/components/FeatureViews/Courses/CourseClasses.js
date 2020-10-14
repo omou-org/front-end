@@ -78,10 +78,10 @@ const CourseClasses = () => {
   const classes = useStyles();
   const [index, setIndex] = useState(0);
   const tabs = [
-    { label: "About Course" },
-    { label: "Announcements" },
-    { label: "Student Enrolled" },
-    { label: "Sessions" },
+    { label: "About Course", "data-cy": "description" },
+    { label: "Announcements", "data-cy": "announcements" },
+    { label: "Student Enrolled", "data-cy": "student-enrollment" },
+    { label: "Sessions", "data-cy": "sessions" },
   ];
 
   const { email, accountType } = useSelector(({ auth }) => auth) || [];
@@ -112,6 +112,7 @@ const CourseClasses = () => {
         instructor {
           user {
             firstName
+            id
             lastName
           }
         }
@@ -309,6 +310,7 @@ const CourseClasses = () => {
               variant="body1"
               align="left"
               className={classes.dataFontDate}
+              data-cy="instructor-name"
             >{`${firstName} ${lastName}`}
             </Typography>
           </Grid>

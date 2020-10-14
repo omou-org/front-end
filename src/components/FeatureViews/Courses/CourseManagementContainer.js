@@ -181,9 +181,15 @@ const ClassListItem = ({
         className={classes.mainCardContainer}
         data-active="inactive"
         onClick={handleClick}
+        data-cy="course-list"
       >
         <Grid item xs={6} sm={9} md={6}>
-          <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
+          <Typography 
+            variant="h4" 
+            align="left" 
+            style={{ marginLeft: ".85em" }}
+            data-cy="course-list-title"
+          >
             {title}
           </Typography>
         </Grid>
@@ -194,6 +200,7 @@ const ClassListItem = ({
             style={{
               backgroundColor: isActive ? activeColor : pastColor,
             }}
+            data-cy="course-list-chip"
           />
         </Grid>
         <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
@@ -201,6 +208,7 @@ const ClassListItem = ({
             variant="body1"
             align="left"
             style={{ marginLeft: "1.85em" }}
+            data-cy="course-list-instructor-name"
           >
             <span style={{ marginRight: theme.spacing(1) }}>By:</span>
             <span className={classes.highlightName}>{`${concatFullName}`}</span>

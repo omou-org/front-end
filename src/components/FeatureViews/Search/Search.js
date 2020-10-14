@@ -244,14 +244,16 @@ const Search = ({onMobileType = () => {}}) => {
                                         "name": "primary-filter",
                                     }}
                                     onChange={changeFilter}
-                                    value={filter}>
-                                    <MenuItem value="all">All</MenuItem>
-                                    <MenuItem value="account">Account</MenuItem>
-                                    <MenuItem value="course">Course</MenuItem>
+                                    value={filter}
+                                    data-cy="search-selector"
+                                    >
+                                    <MenuItem value="all" data-cy="all">All</MenuItem>
+                                    <MenuItem value="account" data-cy="account">Account</MenuItem>
+                                    <MenuItem value="course" data-cy="course">Course</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item md={10} xs={mobileSearching ? 9 : 7}>
+                        <Grid item md={10} xs={mobileSearching ? 9 : 7} data-cy="search-bar">
                             <AsyncCreatableSelect allowCreateWhileLoading
                                 cacheOptions className="search-input"
                                 classNamePrefix="main-search"
@@ -263,7 +265,8 @@ const Search = ({onMobileType = () => {}}) => {
                                 onChange={handleItemSelect}
                                 onInputChange={handleChange}
                                 placeholder={placeholder} styles={styles}
-                                value={query} />
+                                value={query} 
+                                />
                         </Grid>
                     </Grid>
                 </form>
