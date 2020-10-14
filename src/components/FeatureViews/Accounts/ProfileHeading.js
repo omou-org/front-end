@@ -1,7 +1,7 @@
-import React, {useCallback, useMemo, useState} from "react";
-import {Link} from "react-router-dom";
+import React, { useCallback, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
@@ -15,22 +15,22 @@ import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
 
 import "./Accounts.scss";
-import {addDashes} from "./accountUtils";
-import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
-import {ReactComponent as GradeIcon} from "../../grade.svg";
-import {ReactComponent as IDIcon} from "../../identifier.svg";
+import { addDashes } from "./accountUtils";
+import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
+import { ReactComponent as GradeIcon } from "../../grade.svg";
+import { ReactComponent as IDIcon } from "../../identifier.svg";
 import InstructorAvailability from "./InstructorAvailability";
 import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
-import {ReactComponent as SchoolIcon} from "../../school.svg";
-import {USER_TYPES} from "utils";
+import { ReactComponent as SchoolIcon } from "../../school.svg";
+import { USER_TYPES } from "utils";
 
 const ProfileHeading = ({ user }) => {
+	const { userInfo } = user;
 	const [anchorEl, setAnchorEl] = useState(null);
-	const isAdmin =
-		useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
-
-	const handleOpen = useCallback(({currentTarget}) => {
+	const isAdmin = userInfo.accountType === USER_TYPES.admin;
+	console.log(userInfo)
+	const handleOpen = useCallback(({ currentTarget }) => {
 		setAnchorEl(currentTarget);
 	}, []);
 
@@ -40,15 +40,15 @@ const ProfileHeading = ({ user }) => {
 
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
-			{user.role === "instructor" && (
+			{userInfo.accountType === "INSTRUCTOR" && (
 				<Grid align="left" className="schedule-button" item xs={12}>
-					<Button
+					{/* <Button
 						aria-controls="simple-menu"
 						aria-haspopup="true"
 						onClick={handleOpen}
 						variant="outlined"
 					>
-						<CalendarIcon/>
+						<CalendarIcon />
 						Schedule Options
 					</Button>
 					<Menu
@@ -61,8 +61,8 @@ const ProfileHeading = ({ user }) => {
 							button={false}
 							instructorID={user.user_id}
 						/>
-						<OutOfOffice button={false} instructorID={user.user_id}/>
-					</Menu>
+						<OutOfOffice button={false} instructorID={user.user_id} />
+					</Menu> */}
 				</Grid>
 			)}
 			{isAdmin && (
@@ -70,20 +70,20 @@ const ProfileHeading = ({ user }) => {
 					<Grid component={Hidden} item mdDown xs={12}>
 						<Button
 							component={Link}
-							to={`/form/${user.role}/${user.user_id}`}
+							to={`/form/${userInfo.accountType.role}/${userInfo.user.id}`}
 							variant="outlined"
 						>
-							<EditIcon/>
+							<EditIcon />
 							Edit Profile
 						</Button>
 					</Grid>
 					<Grid component={Hidden} item lgUp xs={12}>
 						<Button
 							component={Link}
-							to={`/form/${user.role}/${user.user_id}`}
+							to={`/form/${userInfo.accountType.role}/${userInfo.user.id}`}
 							variant="outlined"
 						>
-							<EditIcon/>
+							<EditIcon />
 						</Button>
 					</Grid>
 				</>
@@ -92,14 +92,14 @@ const ProfileHeading = ({ user }) => {
 	);
 
 	const profileDetails = useMemo(() => {
-		const IDRow = ({width = 6}) => (
+		const IDRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<IDIcon className="iconScaling"/>
+					<IDIcon className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
 					<Typography className="rowText">
-						#{user.summit_id || user.user_id}
+						#{user.summit_id || userInfo.user.id}
 					</Typography>
 				</Grid>
 			</>
@@ -108,26 +108,26 @@ const ProfileHeading = ({ user }) => {
 		const EmailRow = () => (
 			<>
 				<Grid className="emailPadding" item md={1}>
-					<a href={`mailto:${user.email}`}>
-						<EmailIcon/>
+					<a href={`mailto:${userInfo.user.email}`}>
+						<EmailIcon />
 					</a>
 				</Grid>
 				<Grid className="emailPadding" item md={5}>
-					<a href={`mailto:${user.email}`}>
-						<Typography className="rowText">{user.email}</Typography>
+					<a href={`mailto:${userInfo.user.email}`}>
+						<Typography className="rowText">{userInfo.user.email}</Typography>
 					</a>
 				</Grid>
 			</>
 		);
 
-		const PhoneRow = ({width = 6}) => (
+		const PhoneRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<PhoneIcon className="iconScaling"/>
+					<PhoneIcon className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
 					<Typography className="rowText">
-						{addDashes(user.phone_number)}
+						{addDashes(userInfo.phoneNumber)}
 					</Typography>
 				</Grid>
 			</>
@@ -136,7 +136,7 @@ const ProfileHeading = ({ user }) => {
 		const BirthdayRow = () => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<BirthdayIcon className="iconScaling"/>
+					<BirthdayIcon className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
 					<Typography className="rowText">{user.birthday}</Typography>
@@ -144,49 +144,64 @@ const ProfileHeading = ({ user }) => {
 			</>
 		);
 
-		switch (user.role) {
+		switch (userInfo.accountType) {
 			case "student":
 				return (
 					<>
-						<IDRow/>
-						<BirthdayRow/>
+						<IDRow />
+						<BirthdayRow />
 						<Grid className="rowPadding" item xs={1}>
-							<GradeIcon className="iconScaling"/>
+							<GradeIcon className="iconScaling" />
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
 							<Typography className="rowText">Grade {user.grade}</Typography>
 						</Grid>
-						<PhoneRow/>
+						<PhoneRow />
 						<Grid className="rowPadding" item xs={1}>
-							<SchoolIcon className="iconScaling"/>
+							<SchoolIcon className="iconScaling" />
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
 							<Typography className="rowText">{user.school}</Typography>
 						</Grid>
-						<EmailRow/>
+						<EmailRow />
 					</>
 				);
-			case "instructor":
-			case "receptionist":
+			case "INSTRUCTOR":
 				return (
 					<>
-						<IDRow width={12}/>
-						<PhoneRow width={12}/>
-						<EmailRow/>
+						<IDRow width={12} />
+						<PhoneRow width={12} />
+						<EmailRow />
+					</>
+				);
+			case "RECEPTIONIST":
+				return (
+					<>
+						<IDRow width={12} />
+						<PhoneRow width={12} />
+						<EmailRow />
+					</>
+				);
+			case "OWNER":
+				return (
+					<>
+						<IDRow width={12} />
+						<PhoneRow width={12} />
+						<EmailRow />
 					</>
 				);
 			case "parent":
 				return (
 					<>
-						<IDRow/>
+						<IDRow />
 						<Grid className="rowPadding" item xs={1}>
-							<MoneyIcon className="iconScaling"/>
+							<MoneyIcon className="iconScaling" />
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
 							<Typography className="rowText">${user.balance}</Typography>
 						</Grid>
-						<PhoneRow width={12}/>
-						<EmailRow/>
+						<PhoneRow width={12} />
+						<EmailRow />
 					</>
 				);
 			default:
@@ -197,12 +212,12 @@ const ProfileHeading = ({ user }) => {
 	return (
 		<Grid alignItems="center" container item xs={12}>
 			<Grid align="left" alignItems="center" container item xs={8}>
-				<Grid className="profile-name" item style={{paddingRight: 10}}>
-					<Typography variant="h4">{user.name}</Typography>
+				<Grid className="profile-name" item style={{ paddingRight: 10 }}>
+					<Typography variant="h4">{userInfo.user.firstName} {userInfo.user.lastName}</Typography>
 				</Grid>
 				<Grid item>
 					<Hidden smDown>
-						<RoleChip role={user.role}/>
+						<RoleChip role={userInfo.accountType} />
 					</Hidden>
 				</Grid>
 			</Grid>
@@ -210,7 +225,7 @@ const ProfileHeading = ({ user }) => {
 			<Grid
 				container
 				style={{
-					margin: user.role === "instructor" ? "-10px 0" : "10px 0",
+					margin: userInfo.accountType === "why" ? "-10px 0" : "10px 0",
 				}}
 			>
 				{profileDetails}
@@ -227,7 +242,7 @@ ProfileHeading.propTypes = {
 		grade: PropTypes.number,
 		name: PropTypes.string,
 		phone_number: PropTypes.string,
-		role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
+		// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
 		school: PropTypes.string,
 		summit_id: PropTypes.string,
 		user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
