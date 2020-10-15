@@ -10,6 +10,7 @@ import Notes from "../Notes/Notes";
 import ParentContact from "./TabComponents/ParentContact";
 import PayCourses from "./TabComponents/PayCourses";
 import PaymentHistory from "./TabComponents/PaymentHistory";
+import ActionLog from "./TabComponents/ActionLog";
 import StudentCourseViewer from "./TabComponents/StudentCourseViewer";
 import StudentInfo from "./TabComponents/StudentInfo";
 import NotificationSettings from "./TabComponents/NotificationSettings";
@@ -17,7 +18,7 @@ import UserAccessControl from "./UserAccessControl";
 import { useSelector } from "react-redux";
 import { USER_TYPES } from "../../../utils";
 
-const ComponentViewer = ({ inView, user }) => {
+const ComponentViewer = ({ inView, user, log }) => {
 	const AuthUser = useSelector(({ auth }) => auth);
 	const { userInfo } = user
 	console.log(userInfo)
@@ -77,11 +78,16 @@ const ComponentViewer = ({ inView, user }) => {
 				id: 9,
 			},
 			{
-				component: <UserAccessControl key={10} user={user}>
+				component: <ActionLog key={10} log={log} />,
+				access_permissions: [USER_TYPES.admin, USER_TYPES.receptionist],
+				id: 10,
+			},
+			{
+				component: <UserAccessControl key={11} user={user}>
 					<NotificationSettings user={user} />
 				</UserAccessControl>,
 				access_permissions: [USER_TYPES.student, USER_TYPES.parent, USER_TYPES.instructor],
-				id: 10,
+				id: 11,
 			}
 		].filter((tab) => (tab.access_permissions.includes(AuthUser.accountType))),
 		[user]
@@ -95,7 +101,7 @@ const ComponentViewer = ({ inView, user }) => {
 };
 
 ComponentViewer.propTypes = {
-	inView: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]).isRequired,
+	inView: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).isRequired,
 	user: PropTypes.shape({
 		background: PropTypes.object,
 		parent_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

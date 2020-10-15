@@ -125,9 +125,14 @@ const userTabs = {
 		},
 	],
 	admin: [
-
 		{
-			icon: <notificationIcon className="TabIcon" />,
+			icon: <ContactIcon className="TabIcon" />,
+			tab_heading: "Action Log",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+			tab_id: 10,
+		},
+		{
+			icon: <NoteIcon className="TabIcon" />,
 			tab_heading: "Notes",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
 			tab_id: 7,
@@ -319,42 +324,6 @@ const UserProfile = () => {
 
 	const tabs = () => {
 
-		if (!data) {
-			return null;
-		}
-		if (data.userInfo.accountType === "ADMIN") {
-			return (
-				<>
-					<Typography align="left" variant="h6">
-						Action Log
-					</Typography>
-					<Paper elevation={2} className="paper">
-						<Table className="ActionTable">
-							<TableHead>
-								<TableRow>
-									<TableCell>Date</TableCell>
-									<TableCell>Time</TableCell>
-									<TableCell>Description</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{console.log(logData.logs.results.map((x) => console.log(x)))}
-								{logData.logs.results.map(({ date }) => (
-									<TableRow >
-
-										<TableCell>{moment(date).format("L")}</TableCell>
-										<TableCell>{moment(date).format("LT")}</TableCell>
-										{/* <TableCell>{description}</TableCell> */}
-									</TableRow>
-								)
-								)}
-							</TableBody>
-						</Table>
-					</Paper>
-				</>
-			);
-		}
-
 		return (
 			<>
 				<Tabs
@@ -390,7 +359,9 @@ const UserProfile = () => {
 					inView={displayTabs
 						.filter((tab) =>
 							(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
-					user={data} />
+					user={data}
+					log={logData}
+				/>
 			</>
 		);
 	};
