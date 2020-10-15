@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Loading from "../../../OmouComponents/Loading";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 
 const GET_CATEGORIES = gql`query GetCategories {
   __typename
@@ -17,13 +17,13 @@ const GET_CATEGORIES = gql`query GetCategories {
   }
 }`
 
-const Bio = ({"background": {bio, experience, languages, subjects}}) => {
-	const {data, loading, error} = useQuery(GET_CATEGORIES);
+const Bio = ({ "background": { biography, experience, language, subjects } }) => {
+	const { data, loading, error } = useQuery(GET_CATEGORIES);
 
-	if (loading) return <Loading/>
+	if (loading) return <Loading />
 	if (error) return <div>There's been an error! - {error.message}</div>
 
-	const {courseCategories} = data;
+	const { courseCategories } = data;
 
 	return (
 		<Card className="Bio">
@@ -40,7 +40,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 						Biography
 					</Typography>
 					<Typography className="bioBody">
-						{bio}
+						{biography}
 					</Typography>
 				</Grid>
 				<Grid
@@ -76,15 +76,15 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 						</Grid>
 						{
 							subjects && subjects.map((subject) => (
-									<Grid
-										className="chipPadding"
-										key={subject}>
-										<Chip
-											className="bioChip"
-											label={courseCategories[subject - 1].name}
-											variant="outlined"/>
-									</Grid>
-								)
+								<Grid
+									className="chipPadding"
+									key={subject}>
+									<Chip
+										className="bioChip"
+										label={subject.name}
+										variant="outlined" />
+								</Grid>
+							)
 							)
 						}
 					</Grid>
@@ -95,7 +95,7 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 							Language:
 						</Grid>
 						{
-							languages && languages.split(",").map((language) => (
+							language && language.split(",").map((language) => (
 								<Grid
 									className="chipPadding"
 									key={language}>

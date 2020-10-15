@@ -34,6 +34,7 @@ import { useAccountNotes } from "actions/userActions";
 import UserAvatar from "./UserAvatar";
 import SettingsIcon from "@material-ui/icons/Settings"
 import { USER_TYPES } from "../../../utils";
+import moment from "moment";
 
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
@@ -81,7 +82,7 @@ const userTabs = {
 		{
 			icon: <PaymentIcon className="TabIcon" />,
 			tab_heading: "Payment History",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 			tab_id: 5,
 		},
 		{
@@ -122,6 +123,21 @@ const userTabs = {
 			tab_heading: "Notes",
 			tab_id: 7,
 		},
+	],
+	admin: [
+
+		{
+			icon: <notificationIcon className="TabIcon" />,
+			tab_heading: "Notes",
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+			tab_id: 7,
+		},
+		{
+			icon: <SettingsIcon className="SettingsIcon" />,
+			tab_heading: "Notification Settings",
+			access_permissions: [USER_TYPES.instructor],
+			tab_id: 10,
+		}
 	],
 };
 
@@ -166,15 +182,13 @@ const QUERIES = {
 		userInfo(userId: $ownerID) {
 		  ... on ParentType {
 			balance
+			accountType
+			phoneNumber
 			user {
 			  email
 			  id
 			  firstName
 			  lastName
-			  parent {
-				phoneNumber
-				secondaryPhoneNumber
-			  }
 			}
 		  }
 		}
@@ -186,6 +200,12 @@ const QUERIES = {
 			phoneNumber
 			birthDate
 			accountType
+			biography
+		  	experience
+			language
+			 subjects {
+			  name
+			}
 			user {
 			  lastName
 			  firstName
@@ -216,14 +236,30 @@ const QUERIES = {
 			}
 		  }
 		}
-	  }`
+	  }`,
+	"adminLog": gql`
+	  query AdminInfoQuery($ownerID: ID!) {
+		logs(userId: $ownerID) {
+		  results {
+			action
+			date
+			objectType
+			objectRepr
+		  }
+		}
+	  }
+	  `
+
 }
+
+
+
 
 const UserProfile = () => {
 	// const userList = useSelector(({ Users }) => Users);
 	const { accountType, accountID } = useParams();
-	// const [tabIndex, setTabIndex] = useState(0);
-	// const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
+	const [tabIndex, setTabIndex] = useState(0);
+	const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
 	// const fetchStatus = useUser(accountID, accountType);
 	const AuthUser = useSelector(({ auth }) => auth);
@@ -243,112 +279,131 @@ const UserProfile = () => {
 	// 	}
 	// }, [userList, accountID, accountType]);
 
+
+
+
+
+
+
+	// reset to first tab when profile changes
+	useEffect(() => {
+		setTabIndex(0);
+	}, [accountType, accountID]);
+
+
+	// reset tab list when profile type changes
+	useEffect(() => {
+		setDisplayTabs(userTabs[accountType]);
+	}, [accountType]);
+
+
+
+
 	const { loading, error, data } = useQuery(QUERIES[accountType], {
 		variables: { ownerID: accountID },
 	})
 
-	if (loading) return null
-	if (error) return `${error}`
+	const { data: logData, error: logError, loading: logLoading } = useQuery(QUERIES["adminLog"], {
+		variables: { ownerID: accountID }
+	})
 
-	console.log(data)
 
-	// const handleTabChange = useCallback((_, newTabIndex) => {
-	// 	setTabIndex(newTabIndex);
-	// }, []);
 
-	// const tabs = useMemo(() => {
-	// 	if (!user) {
-	// 		return null;
-	// 	}
-	// 	if (user.role === "receptionist") {
-	// 		return (
-	// 			<>
-	// 				<Typography align="left" variant="h6">
-	// 					Action Log
-	// 				</Typography>
-	// 				<Paper elevation={2} className="paper">
-	// 					<Table className="ActionTable">
-	// 						<TableHead>
-	// 							<TableRow>
-	// 								<TableCell>Date</TableCell>
-	// 								<TableCell>Time</TableCell>
-	// 								<TableCell>Description</TableCell>
-	// 							</TableRow>
-	// 						</TableHead>
-	// 						<TableBody>
-	// 							{Object.entries(user.action_log).map(
-	// 								([key, { date, time, description }]) => (
-	// 									<TableRow key={key}>
-	// 										<TableCell>{date}</TableCell>
-	// 										<TableCell>{time}</TableCell>
-	// 										<TableCell>{description}</TableCell>
-	// 									</TableRow>
-	// 								)
-	// 							)}
-	// 						</TableBody>
-	// 					</Table>
-	// 				</Paper>
-	// 			</>
-	// 		);
-	// 	}
 
-	// 	return (
-	// 		<>
-	// 			<Tabs
-	// 				indicatorColor="primary"
-	// 				onChange={handleTabChange}
-	// 				textColor="primary"
-	// 				value={tabIndex}
-	// 			>
-	// 				{displayTabs
-	// 					.filter((tab) => (tab.access_permissions.includes(AuthUser.accountType)))
-	// 					.map((tab) => (
-	// 						tab.tab_id === 7 ?
-	// 							<Tab
-	// 								key={tab.tab_id}
-	// 								label={
-	// 									<>
-	// 										{tab.icon} {tab.tab_heading}
-	// 									</>
-	// 								}
-	// 							/>
-	// 							:
-	// 							<Tab
-	// 								key={tab.tab_id}
-	// 								label={
-	// 									<>
-	// 										{tab.icon} {tab.tab_heading}
-	// 									</>
-	// 								}
-	// 							/>
-	// 					))}
-	// 			</Tabs>
-	// 			<ComponentViewer
-	// 				inView={displayTabs
-	// 					.filter((tab) =>
-	// 						(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
-	// 				user={user} />
-	// 		</>
-	// 	);
-	// }, [displayTabs, handleTabChange, tabIndex, user]);
+	if (loading || logLoading) return null
+	if (error || logError) return <Redirect to="/PageNotFound" />;
 
-	// // reset to first tab when profile changes
+	const handleTabChange = (_, newTabIndex) => {
+		setTabIndex(newTabIndex);
+	};
+
+	const tabs = () => {
+
+		if (!data) {
+			return null;
+		}
+		if (data.userInfo.accountType === "ADMIN") {
+			return (
+				<>
+					<Typography align="left" variant="h6">
+						Action Log
+					</Typography>
+					<Paper elevation={2} className="paper">
+						<Table className="ActionTable">
+							<TableHead>
+								<TableRow>
+									<TableCell>Date</TableCell>
+									<TableCell>Time</TableCell>
+									<TableCell>Description</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{console.log(logData.logs.results.map((x) => console.log(x)))}
+								{logData.logs.results.map(({ date }) => (
+									<TableRow >
+
+										<TableCell>{moment(date).format("L")}</TableCell>
+										<TableCell>{moment(date).format("LT")}</TableCell>
+										{/* <TableCell>{description}</TableCell> */}
+									</TableRow>
+								)
+								)}
+							</TableBody>
+						</Table>
+					</Paper>
+				</>
+			);
+		}
+
+		return (
+			<>
+				<Tabs
+					indicatorColor="primary"
+					onChange={handleTabChange}
+					textColor="primary"
+					value={tabIndex}
+				>
+					{displayTabs
+						.filter((tab) => (tab.access_permissions.includes(AuthUser.accountType)))
+						.map((tab) => (
+							tab.tab_id === 7 ?
+								<Tab
+									key={tab.tab_id}
+									label={
+										<>
+											{tab.icon} {tab.tab_heading}
+										</>
+									}
+								/>
+								:
+								<Tab
+									key={tab.tab_id}
+									label={
+										<>
+											{tab.icon} {tab.tab_heading}
+										</>
+									}
+								/>
+						))}
+				</Tabs>
+				<ComponentViewer
+					inView={displayTabs
+						.filter((tab) =>
+							(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
+					user={data} />
+			</>
+		);
+	};
+
+
+
 	// useEffect(() => {
-	// 	setTabIndex(0);
-	// }, [accountType, accountID]);
-
-	// // reset tab list when profile type changes
-	// useEffect(() => {
-	// 	setDisplayTabs(userTabs[accountType]);
-	// }, [accountType]);
-
-	// useEffect(() => {
-	// 	if (user) {
-	// 		const numImportantNotes = Object.values(user.notes || {}).reduce(
+	// 	if (data) {
+	// 		const numImportantNotes = Object.values(data.notes || {}).reduce(
 	// 			(total, { important }) => (important ? total + 1 : total),
 	// 			0
 	// 		);
-	// 		if (user.role !== "receptionist") {
+	// 		if (data.role !== "receptionist") {
 	// 			setDisplayTabs((prevTabs) => {
 	// 				const newTabs = [...prevTabs];
 	// 				const notesIndex = newTabs.findIndex((tab) => tab.tab_id === 7);
@@ -364,15 +419,10 @@ const UserProfile = () => {
 	// 			});
 	// 		}
 	// 	}
-	// }, [user]);
-	// console.log(user)
-	// if (!user || Object.keys(user).length <= 1) {
-	// 	if (hooks.isLoading(fetchStatus)) {
-	// 		return <Loading />;
-	// 	} else if (hooks.isFail(fetchStatus)) {
-	// 		return <Redirect to="/PageNotFound" />;
-	// 	}
-	// }
+	// }, [data]);
+
+
+
 
 	return (
 		<div className="UserProfile">
@@ -385,7 +435,7 @@ const UserProfile = () => {
 							<UserAvatar
 								fontSize="3.5vw"
 								margin={20}
-								name={data.userInfo.user.firstName}
+								name={`${data.userInfo.user.firstName} ${data.userInfo.user.lastName}`}
 								size="9vw"
 							/>
 						</Hidden>
@@ -394,7 +444,7 @@ const UserProfile = () => {
 						<ProfileHeading user={data} />
 					</Grid>
 				</Grid>
-				{/* {tabs} */}
+				{tabs()}
 			</Paper>
 		</div>
 	);

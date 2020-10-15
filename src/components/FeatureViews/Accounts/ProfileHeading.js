@@ -29,7 +29,7 @@ const ProfileHeading = ({ user }) => {
 	const { userInfo } = user;
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isAdmin = userInfo.accountType === USER_TYPES.admin;
-	console.log(userInfo)
+
 	const handleOpen = useCallback(({ currentTarget }) => {
 		setAnchorEl(currentTarget);
 	}, []);
@@ -144,6 +144,8 @@ const ProfileHeading = ({ user }) => {
 			</>
 		);
 
+
+
 		switch (userInfo.accountType) {
 			case "student":
 				return (
@@ -174,7 +176,7 @@ const ProfileHeading = ({ user }) => {
 						<EmailRow />
 					</>
 				);
-			case "RECEPTIONIST":
+			case "ADMIN":
 				return (
 					<>
 						<IDRow width={12} />
@@ -190,7 +192,7 @@ const ProfileHeading = ({ user }) => {
 						<EmailRow />
 					</>
 				);
-			case "parent":
+			case "PARENT":
 				return (
 					<>
 						<IDRow />
@@ -198,7 +200,7 @@ const ProfileHeading = ({ user }) => {
 							<MoneyIcon className="iconScaling" />
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">${user.balance}</Typography>
+							<Typography className="rowText">${userInfo.balance}</Typography>
 						</Grid>
 						<PhoneRow width={12} />
 						<EmailRow />
@@ -209,6 +211,8 @@ const ProfileHeading = ({ user }) => {
 		}
 	}, [user]);
 
+
+
 	return (
 		<Grid alignItems="center" container item xs={12}>
 			<Grid align="left" alignItems="center" container item xs={8}>
@@ -217,7 +221,7 @@ const ProfileHeading = ({ user }) => {
 				</Grid>
 				<Grid item>
 					<Hidden smDown>
-						<RoleChip role={userInfo.accountType} />
+						<RoleChip role={userInfo.accountType === "ADMIN" ? userInfo.adminType : userInfo.accountType} />
 					</Hidden>
 				</Grid>
 			</Grid>
@@ -225,12 +229,12 @@ const ProfileHeading = ({ user }) => {
 			<Grid
 				container
 				style={{
-					margin: userInfo.accountType === "why" ? "-10px 0" : "10px 0",
+					margin: "10px 0",
 				}}
 			>
 				{profileDetails}
 			</Grid>
-		</Grid>
+		</Grid >
 	);
 };
 
