@@ -27,6 +27,7 @@ import LoadingError from "./LoadingCourseError"
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
+import EnrollmentSessionRow from "./EnrollmentSessionRow";
 
 import * as hooks from "actions/hooks";
 import { upcomingSession, useGoToRoute } from "utils";
@@ -51,6 +52,7 @@ const GET_ENROLLMENT = gql `
           course {
             id
             title
+            courseType
             instructor {
               user {
                 firstName
@@ -272,20 +274,16 @@ console.log(sessionsData.sessions)
                             </Grid>
                         </Grid>
                         <Grid container spacing={1}>
+                        <EnrollmentSessionRow 
+                            sessionsData = {sessionsData}
+                            enrollmentData = {enrollmentData}
+                            highlightSession = {highlightSession}
+                        />
+                        </Grid>
+                        {/* <Grid container spacing={1}>
                             {sessionsData.sessions.length !== 0 ?
                                 sessionsData.sessions.map((session) => {
-                                    // const {
-                                    //     date,
-                                    //     startTime,
-                                    //     endTime,
-                                    //     hourlyTuition,
-                                    //     id,
-                                    //     course_id,
-                                    //     instructor
-
-                                    
-                                    // } = sessionDataParse(session);
-                                    
+                                 
                                 
                                     
                                 
@@ -349,17 +347,17 @@ console.log(sessionsData.sessions)
                                                     {/* <SessionPaymentStatusChip enrollment={enrollmentData.enrollment}
                                                         session={session}
                                                         setPos /> */}
-                                                </Grid>
+                                                {/* </Grid>
                                             </Paper>
-                                        </Grid>
-                                    );
+                                        </Grid> */} 
+                                    {/* ); */}
                                             
-                                })
+                                {/* })
                             
                                 : (
                                     <NoListAlert list="Course" />
                                 )}
-                        </Grid>
+                        </Grid> */}
                     </>
                 );
             case 1:

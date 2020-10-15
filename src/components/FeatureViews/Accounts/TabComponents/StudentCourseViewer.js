@@ -107,7 +107,8 @@ const StudentCourseViewer = ({studentID, current}) => {
 								component={Link}
 								item
 								key={enrollment.id}
-								to={`${pathname}/${enrollment.course.id}`}
+								to={`${pathname}/enrollment/${enrollment.course.id}`}
+								to={`/enrollment/${enrollment.course.id}`}
 								xs={12}
 							>
 								<Paper square>

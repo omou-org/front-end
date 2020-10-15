@@ -128,9 +128,15 @@ export const combineDateAndTime = (date, time) =>
     );
 
 export const sessionPaymentStatus = (session, enrollment) => {
-    const session_date = dateTimeToDate(new Date(session.start_datetime)),
+    console.log("THIS IS SESSION IN UTILS.js")
+    console.log(session.course)
+    console.log(session.course.startDate)
+    console.log(session.course.startDate + "T" + session.course.startTime + "+00:00")
+    const sessionDateTime = session.course.startDate + "T" + session.course.startTime + "+00:00"
+    // const sessionDateTime = 3
+    const session_date = dateTimeToDate(new Date(sessionDateTime)),
         last_session = dateTimeToDate(
-            new Date(enrollment.last_paid_session_datetime)
+            new Date(enrollment.lastPaidSessionDatetime)
         ),
         first_payment = dateTimeToDate(
             new Date(enrollment.payment_list[0].created_at)

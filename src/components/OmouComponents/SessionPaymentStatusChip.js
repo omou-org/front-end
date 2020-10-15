@@ -2,6 +2,8 @@ import React from "react";
 import {sessionPaymentStatus} from "utils";
 
 const SessionPaymentStatusChip = ({session, enrollment, setPos, style}) => {
+    console.log(session)
+    console.log(enrollment)
     if (!session || !enrollment) {
         return (
             <div
