@@ -130,8 +130,8 @@ export const combineDateAndTime = (date, time) =>
 export const sessionPaymentStatus = (session, enrollment) => {
     console.log("THIS IS SESSION IN UTILS.js")
     console.log(session.course)
-    console.log(session.course.startDate)
-    console.log(session.course.startDate + "T" + session.course.startTime + "+00:00")
+    console.log(session.course.startDatetime)
+    console.log(session.course.startDatetime + "T" + session.course.startTime + "+00:00")
     const sessionDateTime = session.course.startDate + "T" + session.course.startTime + "+00:00"
     // const sessionDateTime = 3
     const session_date = dateTimeToDate(new Date(sessionDateTime)),

@@ -48,6 +48,7 @@ const GET_ENROLLMENT = gql `
             id
             important
           }
+          sessionsLeft
           enrollmentBalance
           course {
             id
@@ -93,9 +94,10 @@ const GET_ENROLLMENT = gql `
             endTime
             id
             hourlyTuition
-            startDate
           }
           id
+          startDatetime
+          endDatetime
         }
       }
     `
