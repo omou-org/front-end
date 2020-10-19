@@ -21,6 +21,7 @@ import theme, {
   activeColor,
   pastColor,
 } from "../../../theme/muiTheme";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 
 export const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -103,15 +104,6 @@ const useStyles = makeStyles((theme) => ({
       fontSize: ".85rem",
     },
   },
-  chipSize: {
-    height: "2.0625em",
-    width: "6.5em",
-    fontFamily: "Roboto",
-    fontStyle: "normal",
-    fontWeight: 500,
-    fontSize: "1rem",
-    color: "#FFFFFF",
-  },
   mainCardContainer: {
     paddingTop: "4.25em",
     width: "97%",
@@ -182,19 +174,13 @@ const ClassListItem = ({
         data-active="inactive"
         onClick={handleClick}
       >
+        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
+            <LabelBadge label={isActive ? "ACTIVE" : "PAST"} variant={`status-${isActive ? "active" : "past"}`}/>
+        </Grid>
         <Grid item xs={6} sm={9} md={6}>
           <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
             {title}
           </Typography>
-        </Grid>
-        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
-          <Chip
-            label={isActive ? "ACTIVE" : "PAST"}
-            className={classes.chipSize}
-            style={{
-              backgroundColor: isActive ? activeColor : pastColor,
-            }}
-          />
         </Grid>
         <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
           <Typography
