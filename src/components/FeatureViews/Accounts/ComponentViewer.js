@@ -21,19 +21,16 @@ import { USER_TYPES } from "../../../utils";
 const ComponentViewer = ({ inView, user, log }) => {
 	const AuthUser = useSelector(({ auth }) => auth);
 	const { userInfo } = user
-	console.log(userInfo)
-
-
 
 	const componentsArray = useMemo(
 		() => [
 			{
-				component: <InstructorSchedule instructorID={userInfo.user.user_id} key={0} />,
+				component: <InstructorSchedule instructorID={userInfo.user.id} key={0} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 0,
 			},
 			{
-				component: <InstructorCourses instructorID={userInfo.user.user_id} key={1} />,
+				component: <InstructorCourses instructorID={userInfo.user.id} key={1} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 1,
 			},
@@ -43,18 +40,18 @@ const ComponentViewer = ({ inView, user, log }) => {
 				id: 2,
 			},
 			{
-				component: <StudentCourseViewer current key={3} studentID={userInfo.user.user_id} />,
+				component: <StudentCourseViewer current key={3} studentID={userInfo.user.id} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 3,
 			},
 			{
-				component: <StudentCourseViewer current={false} key={4} studentID={userInfo.user.user_id} />,
+				component: <StudentCourseViewer current={false} key={4} studentID={userInfo.user.id} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 4,
 			},
 			{
-				component: <PaymentHistory key={5} user_id={userInfo.user.user_id} />,
-				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
+				component: <PaymentHistory key={5} user_id={userInfo.user.id} />,
+				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 				id: 5,
 			},
 			{
@@ -63,7 +60,7 @@ const ComponentViewer = ({ inView, user, log }) => {
 				id: 6,
 			},
 			{
-				component: <Notes key={7} ownerID={userInfo.user.user_id} ownerType="account" />,
+				component: <Notes key={7} ownerID={userInfo.user.id} ownerType="account" />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent, USER_TYPES.instructor],
 				id: 7,
 			},
@@ -83,7 +80,7 @@ const ComponentViewer = ({ inView, user, log }) => {
 				id: 10,
 			},
 			{
-				component: <UserAccessControl key={11} user={user}>
+				component: <UserAccessControl key={11} user={userInfo}>
 					<NotificationSettings user={user} />
 				</UserAccessControl>,
 				access_permissions: [USER_TYPES.student, USER_TYPES.parent, USER_TYPES.instructor],

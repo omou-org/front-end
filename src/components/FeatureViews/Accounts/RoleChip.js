@@ -15,8 +15,6 @@ const clipColor = {
     "ASSISTANT": "#D04E3D"
 }
 
-console.log(clipColor["INSTRUCTOR"])
-
 const RoleChip = ({ role }) => (
     <Chip
         className={`userLabel ${role}`}

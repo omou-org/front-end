@@ -60,7 +60,7 @@ const userTabs = {
 			tab_id: 2,
 		},
 		{
-			icon: <notificationIcon className="TabIcon" />,
+			icon: <NoteIcon className="TabIcon" />,
 			tab_heading: "Notes",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
 			tab_id: 7,
@@ -69,7 +69,7 @@ const userTabs = {
 			icon: <SettingsIcon className="SettingsIcon" />,
 			tab_heading: "Notification Settings",
 			access_permissions: [USER_TYPES.instructor],
-			tab_id: 10,
+			tab_id: 11,
 		}
 	],
 	parent: [
@@ -95,7 +95,7 @@ const userTabs = {
 			icon: <SettingsIcon className="SettingsIcon" />,
 			tab_heading: "Notification Settings",
 			access_permissions: [USER_TYPES.parent],
-			tab_id: 10,
+			tab_id: 11,
 		}
 	],
 	student: [
@@ -141,7 +141,7 @@ const userTabs = {
 			icon: <SettingsIcon className="SettingsIcon" />,
 			tab_heading: "Notification Settings",
 			access_permissions: [USER_TYPES.instructor],
-			tab_id: 10,
+			tab_id: 11,
 		}
 	],
 };
@@ -243,7 +243,7 @@ const QUERIES = {
 		}
 	  }`,
 	"adminLog": gql`
-	  query AdminInfoQuery($ownerID: ID!) {
+	  query AdminLogQuery($ownerID: ID!) {
 		logs(userId: $ownerID) {
 		  results {
 			action
@@ -277,10 +277,10 @@ const UserProfile = () => {
 	// 			return userList.ParentList[accountID];
 	// 		case "instructor":
 	// 			return userList.InstructorList[accountID];
-	// 		case "receptionist":
+	// 		case "receptionist":  
 	// 			return userList.ReceptionistList[accountID];
 	// 		default:
-	// 			return null;
+	// 			return null;  s
 	// 	}
 	// }, [userList, accountID, accountType]);
 
@@ -311,7 +311,6 @@ const UserProfile = () => {
 	const { data: logData, error: logError, loading: logLoading } = useQuery(QUERIES["adminLog"], {
 		variables: { ownerID: accountID }
 	})
-
 
 
 
@@ -357,8 +356,7 @@ const UserProfile = () => {
 				</Tabs>
 				<ComponentViewer
 					inView={displayTabs
-						.filter((tab) =>
-							(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
+						.filter((tab) => (tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
 					user={data}
 					log={logData}
 				/>

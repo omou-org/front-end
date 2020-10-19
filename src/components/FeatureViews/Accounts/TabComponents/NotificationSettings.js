@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
@@ -10,9 +10,9 @@ import Switch from "@material-ui/core/Switch";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Grid from "@material-ui/core/Grid";
-import {omouBlue} from "../../../../theme/muiTheme";
+import { omouBlue } from "../../../../theme/muiTheme";
 import gql from "graphql-tag";
-import {useMutation, useQuery} from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
 
 const StyledTableRow = withStyles((theme) => ({
@@ -87,48 +87,49 @@ const GET_PARENT_NOTIFICATION_SETTINGS = gql`query GetParentNotificationSettings
 }`
 
 const createNotificationSetting = (name, description, email, sms) =>
-	({name, description, email, sms, optional: false});
+	({ name, description, email, sms, optional: false });
 
 const createOptInSetting = (name, description, optIn) =>
-	({name, description, optIn, optional: true});
+	({ name, description, optIn, optional: true });
 
-export default function NotificationSettings({user}) {
+export default function NotificationSettings({ user }) {
+	const { userInfo } = user;
 	const classes = useStyles();
 	const [notificationRows, setNotificationRows] = useState([]);
 	const [optInNotifRows, setOptInNotifRows] = useState([]);
-
-	const isParent = user.role.toLowerCase() === "parent";
-	const isInstructor = user.role.toLowerCase() === "instructor";
+	console.log(user)
+	const isParent = userInfo.accountType === "PARENT";
+	const isInstructor = userInfo.accountType === "INSTRUCTOR";
 	const instructorSettingResponse = useQuery(GET_INSTRUCTOR_NOTIFICATION_SETTINGS, {
-		variables: {instructorId: user.user_id},
+		variables: { instructorId: userInfo.user.id },
 		skip: !isInstructor,
 	});
 	const parentSettingResponse = useQuery(GET_PARENT_NOTIFICATION_SETTINGS, {
-		variables: {parentId: user.user_id},
+		variables: { parentId: userInfo.user.id },
 		skip: !isParent,
 	})
 
 	const [createParentNotification, createParentNotificationResults] =
 		useMutation(CREATE_PARENT_NOTIFICATION_SETTINGS, {
-			update: (cache, {data}) => {
+			update: (cache, { data }) => {
 				cache.writeQuery({
 					data: {
 						parentNotificationSettings: data.createParentNotificationSetting.settings,
 					},
 					query: GET_PARENT_NOTIFICATION_SETTINGS,
-					variables: {parentId: user.user_id},
+					variables: { parentId: userInfo.user.id },
 				})
 			}
 		});
 	const [createInstructorNotification, createInstructorNotificationResults] =
 		useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
-			update: (cache, {data}) => {
+			update: (cache, { data }) => {
 				cache.writeQuery({
 					data: {
 						instructorNotificationSettings: data.createInstructorNotificationSetting.settings,
 					},
 					query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
-					variables: {instructorId: user.user_id}
+					variables: { instructorId: userInfo.user.id }
 				})
 			}
 		});
@@ -137,8 +138,8 @@ export default function NotificationSettings({user}) {
 	useEffect(() => {
 		let userSettings;
 		if (instructorSettingResponse.loading === false || parentSettingResponse.loading === false) {
-			const {data: {instructorNotificationSettings} = {}} = instructorSettingResponse;
-			const {data: {parentNotificationSettings} = {}} = parentSettingResponse;
+			const { data: { instructorNotificationSettings } = {} } = instructorSettingResponse;
+			const { data: { parentNotificationSettings } = {} } = parentSettingResponse;
 
 			if (isParent) {
 				userSettings = parentNotificationSettings;
@@ -150,18 +151,18 @@ export default function NotificationSettings({user}) {
 		setNotificationRows([
 			createNotificationSetting("Session Reminder",
 				"Get notified when a session is coming up.",
-				{settingName: "sessionReminderEmail", checked: userSettings?.sessionReminderEmail || false,},
-				{settingName: "sessionReminderSms", checked: userSettings?.sessionReminderSms || false,}),
-			...(user.role.toLowerCase() === "parent" ? [createNotificationSetting("Payment Reminder",
+				{ settingName: "sessionReminderEmail", checked: userSettings?.sessionReminderEmail || false, },
+				{ settingName: "sessionReminderSms", checked: userSettings?.sessionReminderSms || false, }),
+			...(userInfo.accountType === "PARENT" ? [createNotificationSetting("Payment Reminder",
 				"Get notified when a payment is coming up.",
-				{settingName: "paymentReminderEmail", checked: userSettings?.paymentReminderEmail || false,},
-				{settingName: "paymentReminderSms", checked: userSettings?.paymentReminderSms || false,})] : []),
+				{ settingName: "paymentReminderEmail", checked: userSettings?.paymentReminderEmail || false, },
+				{ settingName: "paymentReminderSms", checked: userSettings?.paymentReminderSms || false, })] : []),
 		]);
 		setOptInNotifRows([
 			createOptInSetting("SMS Schedule Updates", "Get notified for schedule changes by SMS",
-				{settingName: "scheduleUpdatesSms", checked: userSettings?.scheduleUpdatesSms || false,}),
+				{ settingName: "scheduleUpdatesSms", checked: userSettings?.scheduleUpdatesSms || false, }),
 			createOptInSetting("SMS Course Requests", "Get notified for cancellations by SMS",
-				{settingName: "courseRequestsSms", checked: userSettings?.courseRequestsSms || false,}),
+				{ settingName: "courseRequestsSms", checked: userSettings?.courseRequestsSms || false, }),
 		]);
 	}, [setNotificationRows, setOptInNotifRows, createNotificationSetting, createOptInSetting,
 		instructorSettingResponse.loading, parentSettingResponse.loading]);
@@ -177,11 +178,11 @@ export default function NotificationSettings({user}) {
 					checked: !newState[index][setting].checked
 				},
 			};
-			notificationRows.forEach(({email, sms}) => {
+			notificationRows.forEach(({ email, sms }) => {
 				notificationSettings[email.settingName] = email.checked;
 				notificationSettings[sms.settingName] = sms.checked;
 			});
-			optInNotifRows.forEach(({optIn}) => {
+			optInNotifRows.forEach(({ optIn }) => {
 				notificationSettings[optIn.settingName] = optIn.checked;
 			});
 			const updatedSettingName = prevState[index][setting].settingName;
@@ -189,35 +190,35 @@ export default function NotificationSettings({user}) {
 			return newState;
 		});
 
-		if (user.role.toLowerCase() === "parent") {
-			notificationSettings.parent = user.user_id;
-			createParentNotification({variables: notificationSettings});
+		if (userInfo.accountType === "PARENT") {
+			notificationSettings.parent = userInfo.user.id;
+			createParentNotification({ variables: notificationSettings });
 		} else {
-			notificationSettings.instructor = user.user_id;
-			createInstructorNotification({variables: notificationSettings});
+			notificationSettings.instructor = userInfo.user.id;
+			createInstructorNotification({ variables: notificationSettings });
 		}
 	};
 
-	if (instructorSettingResponse.loading || parentSettingResponse.loading) return <Loading/>;
+	if (instructorSettingResponse.loading || parentSettingResponse.loading) return <Loading />;
 
 	return (<>
-		<Grid container style={{backgroundColor: "#F5F5F5", padding: "1%", marginTop: "30px"}}>
-			<Typography style={{color: omouBlue, fontWeight: 600}}>Notification Settings</Typography>
+		<Grid container style={{ backgroundColor: "#F5F5F5", padding: "1%", marginTop: "30px" }}>
+			<Typography style={{ color: omouBlue, fontWeight: 600 }}>Notification Settings</Typography>
 		</Grid>
 		<TableContainer>
 			<Table className={classes.table} aria-label="simple table">
 				<TableBody>
 					<StyledTableRow>
-						<TableCell/>
+						<TableCell />
 						<TableCell align="center">Text Message</TableCell>
 						<TableCell align="center">Email</TableCell>
-						<TableCell/>
+						<TableCell />
 					</StyledTableRow>
 					{notificationRows.map((row, index) => (
 						<StyledTableRow key={row.name}>
 							<TableCell component="th" scope="row" className={classes.settingCol}>
 								<Typography
-									style={{"fontSize": "14px", fontWeight: "bold"}}
+									style={{ "fontSize": "14px", fontWeight: "bold" }}
 									display="block"
 								>
 									{row.name}
@@ -228,7 +229,7 @@ export default function NotificationSettings({user}) {
 								<Checkbox
 									checked={row.sms.checked}
 									color="primary"
-									inputProps={{'aria-label': 'primary checkbox'}}
+									inputProps={{ 'aria-label': 'primary checkbox' }}
 									onChange={handleSettingChange("sms", setNotificationRows, index)}
 								/>
 							</TableCell>
@@ -236,18 +237,18 @@ export default function NotificationSettings({user}) {
 								<Checkbox
 									checked={row.email.checked}
 									color="primary"
-									inputProps={{'aria-label': 'primary checkbox'}}
+									inputProps={{ 'aria-label': 'primary checkbox' }}
 									onChange={handleSettingChange("email", setNotificationRows, index)}
 								/>
 							</TableCell>
-							<TableCell/>
+							<TableCell />
 						</StyledTableRow>
 					))}
 				</TableBody>
 			</Table>
 		</TableContainer>
-		<Grid container style={{backgroundColor: "#F5F5F5", padding: "1%", marginTop: "2%"}}>
-			<Typography style={{color: omouBlue, fontWeight: 600}}>Opt-in SMS Notifications</Typography>
+		<Grid container style={{ backgroundColor: "#F5F5F5", padding: "1%", marginTop: "2%" }}>
+			<Typography style={{ color: omouBlue, fontWeight: 600 }}>Opt-in SMS Notifications</Typography>
 		</Grid>
 		<TableContainer>
 			<Table className={classes.table} aria-label="simple table">
@@ -256,22 +257,22 @@ export default function NotificationSettings({user}) {
 						<StyledTableRow key={row.name}>
 							<TableCell component="th" scope="row" className={classes.settingCol}>
 								<Typography
-									style={{"fontSize": "14px", fontWeight: "bold"}}
+									style={{ "fontSize": "14px", fontWeight: "bold" }}
 									display="block"
 								>
 									{row.name}
 								</Typography>
 								<span>{row.description}</span>
 							</TableCell>
-							<TableCell align="center" style={{width: "28%"}}>
+							<TableCell align="center" style={{ width: "28%" }}>
 								<Switch
 									checked={row.optIn.checked}
 									color="primary"
-									inputProps={{'aria-label': 'primary checkbox'}}
+									inputProps={{ 'aria-label': 'primary checkbox' }}
 									onChange={handleSettingChange("optIn", setOptInNotifRows, index)}
 								/>
 							</TableCell>
-							<TableCell/>
+							<TableCell />
 						</StyledTableRow>
 					))}
 				</TableBody>
