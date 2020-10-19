@@ -216,7 +216,6 @@ const RegistrationCourseEnrollments = ({
       <Table>{TableToolbar}</Table>
       <Table>
         <TableBody>
-          {/* {enrollments.map(({ student, id, StudentSchoolInfo}))} */}
           {enrollments.map(({ student, id }) => {
             const { primaryParent } = student;
             return (
