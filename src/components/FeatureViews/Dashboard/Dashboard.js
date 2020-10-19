@@ -149,14 +149,15 @@ const Dashboard = () => {
                                     </Grid>
                                     <ResponsiveButton 
                                         variant='outlined' 
-                                        label='view in scheduler'
                                         style={{margin:"5px", float: "right"}}
                                         component={Link}
                                         to={{
                                             pathname: "/scheduler",
                                             state: { isDashboard: true}
                                         }} 
-                                    />
+                                    >
+                                        view in scheduler
+                                    </ ResponsiveButton>
                             </Grid>
                             <Grid item sm={6} md={6} lg={4}>
                                 <Select

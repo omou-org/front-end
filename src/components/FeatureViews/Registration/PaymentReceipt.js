@@ -18,6 +18,7 @@ import { bindActionCreators } from "redux";
 import { fullName } from "../../../utils";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { closeRegistrationCart } from "../../OmouComponents/RegistrationUtils";
+import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
@@ -346,13 +347,20 @@ const PaymentReceipt = ({ paymentID }) => {
 					<Grid container direction="row" justify="flex-end" spacing={1}>
 						{!location.pathname.includes("parent") && (
 							<Grid item>
-								<Button
+								<ResponsiveButton 
+									variant='contained'
+									data-cy="close-parent"
+									className="button primary"
+									onClick={handleCloseReceipt()}
+									label="close parent"
+								/>
+								{/* <Button
 									data-cy="close-parent"
 									className="button primary"
 									onClick={handleCloseReceipt()}
 								>
 									CLOSE PARENT
-								</Button>
+								</Button> */}
 							</Grid>
 						)}
 					</Grid>

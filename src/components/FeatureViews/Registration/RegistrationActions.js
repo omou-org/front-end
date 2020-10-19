@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../../OmouComponents/Loading";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
@@ -101,7 +102,7 @@ const RegistrationActions = () => {
 				<Grid item md={9}>
 					{(currentParent || parentIsLoggedIn) && (
 						<Grid item xs={2}>
-							<Button
+							<ResponsiveButton 
 								aria-controls="simple-menu"
 								aria-haspopup="true"
 								className="button"
@@ -109,10 +110,10 @@ const RegistrationActions = () => {
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
 								data-cy="register-class"
+								startIcon={<NewCourse className="icon innerIcon"/>}
 							>
-								<NewCourse className="icon innerIcon"/>
-								REGISTER CLASS
-							</Button>
+								register class
+							</ ResponsiveButton>
 						</Grid>
 					)}
 				</Grid>

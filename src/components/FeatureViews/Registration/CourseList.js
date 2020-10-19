@@ -185,18 +185,6 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     <span className="label">Enrolled</span>
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
-                                    // <Button
-                                    //     disabled={shouldDisableQuickRegister({
-                                    //         course, enrolledCourseIds,
-                                    //         registrations, studentList
-                                    //     })}
-                                    //     variant="contained"
-                                    //     color="success"
-                                    //     onClick={handleStartQuickRegister(course.id)}
-                                    //     data-cy="quick-register-class"
-                                    // >
-                                    //     + REGISTER
-                                    // </Button>
                                     <ResponsiveButton
                                         disabled={shouldDisableQuickRegister({
                                             course, enrolledCourseIds,
@@ -205,9 +193,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                         variant="contained"
                                         onClick={handleStartQuickRegister(course.id)}
                                         data-cy="quick-register-class"
-                                        label='register'
                                         startIcon={<AddIcon />}
-                                    />
+                                    >
+                                        register
+                                    </ResponsiveButton>
                                 )}
                             </TableCell>
                         </TableRow>
@@ -236,12 +225,13 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </Select>
                 </FormControl>
                 <DialogActions>
-                    <Button data-cy="add-registration-to-cart"
-                            onClick={handleAddRegistration}
-                            disabled={!quickStudent}
+                    <ResponsiveButton 
+                        data-cy="add-registration-to-cart"
+                        onClick={handleAddRegistration}
+                        disabled={!quickStudent}
                     >
-                        ADD TO CART
-                    </Button>
+                        add to cart
+                    </ ResponsiveButton>
                 </DialogActions>
             </DialogContent>
         </Dialog>

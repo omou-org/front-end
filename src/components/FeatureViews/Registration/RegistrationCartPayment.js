@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
 import PriceQuoteForm from "components/Form/PriceQuoteForm";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import "./registration.scss";
 import * as registrationActions from "actions/registrationActions";
@@ -124,36 +125,46 @@ const Payment = ({
 						<>
 							<Grid item>
 								{isSmallGroup && (
-									<Button
+									<ResponsiveButton 
 										className="button"
+										variant='contained'
 										component={Link}
 										to={`/registration/form/course_details/${selectedCourseID}`}
 									>
-										Edit Group Course
-									</Button>
+										edit group course
+									</ResponsiveButton>
+
 								)}
 							</Grid>
 							<Grid item>
-								<Button
-									className="button"
+								<ResponsiveButton
+									className="button" 
+									variant='contained'
 									component={Link}
 									to={`/registration/form/${formType}/${selectedStudentID}+${course_id}`}
 								>
-									Edit Registration
-								</Button>
+									edit registration
+								</ ResponsiveButton>
 							</Grid>
 						</>
 					)}
 					<Grid item>
 						<Grid container justify="flex-end">
 							{!selectedCourseSameAsRedux() && (
-								<Button
+								<ResponsiveButton 
 									className="button"
+									variant='contained'
 									disabled={!allValid}
 									onClick={updateQuantity}
-								>
-									UPDATE SESSIONS
-								</Button>
+									label='update sessions'
+								/>
+								// <Button
+								// 	className="button"
+								// 	disabled={!allValid}
+								// 	onClick={updateQuantity}
+								// >
+								// 	UPDATE SESSIONS
+								// </Button>
 							)}
 						</Grid>
 					</Grid>

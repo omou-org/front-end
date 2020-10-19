@@ -1,16 +1,18 @@
 import React from 'react'
 import { PropTypes } from 'prop-types';
 import Button from "@material-ui/core/Button";
+import Typography from '@material-ui/core/Typography';
 
-const buttonWidth = (label) => {
+const buttonWidth = (label, children) => {
+    const buttonText = label || children;
     let buttonWidth;
-       if (label.length < 6) {
+       if (buttonText.length < 6) {
            buttonWidth = 88;
-       } else if (label.length >= 7 && label.length <= 10) {
+       } else if (buttonText.length >= 7 && buttonText.length <= 10) {
            buttonWidth = 112;
-       } else if (label.length >= 11 && label.lenght <= 16) {
+       } else if (buttonText.length >= 11 && buttonText.lenght <= 16) {
            buttonWidth = 144;
-       } else if (label.length >= 17) {
+       } else if (buttonText.length >= 17) {
            buttonWidth = 160;
        }
        return buttonWidth;;
@@ -25,30 +27,35 @@ To have it on the right of label, pass through endIcon. Example: endIcon={<Icon 
 ResponsiveButtonProps: variant, label, component, to, disabled, startIcon, endIcon, onClick
 */
 
-export const ResponsiveButton = ({ label, disabled, startIcon, endIcon, ...ResponsiveButtonProps}) => {
+export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon, ...ResponsiveButtonProps}) => {
+    const buttonText = label || children
     return (
         <Button
-        style={{
-            width: startIcon || endIcon ? buttonWidth(label) + 16 : buttonWidth(label),
-            border: disabled ? "2px solid #DBD7D7" : ""
-        }}
-        disabled={disabled}
-        startIcon={startIcon}
-        endIcon={endIcon}
-        {...ResponsiveButtonProps}
-        >
-            {label}
+            style={{
+                width: startIcon || endIcon ? buttonWidth(buttonText) + 16 : buttonWidth(buttonText),
+                border: disabled ? "2px solid #DBD7D7" : "",
+                fontVariantCaps: "all-small-caps",
+            }}
+            size='large'
+            disabled={disabled}
+            startIcon={startIcon}
+            endIcon={endIcon}
+            {...ResponsiveButtonProps}
+            >
+                <Typography variant='h5'>
+                    {buttonText}
+                </Typography>
         </Button>
     )
 }
 
 ResponsiveButton.propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.elementType.isRequired, PropTypes.func.isRequired]),
     variant: PropTypes.string.isRequired,
     color: PropTypes.string,
     onClick: PropTypes.func,
-    startIcon: PropTypes.elementType,
-    endIcon: PropTypes.elementType,
+    startIcon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.func]),
+    endIcon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.func]),
     component: PropTypes.elementType,
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 }

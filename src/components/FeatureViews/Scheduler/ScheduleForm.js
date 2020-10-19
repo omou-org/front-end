@@ -8,7 +8,6 @@ import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/Respons
 //Material UI Imports
 import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
 import { AddIcon } from '@material-ui/icons/Add';
 
 
@@ -71,12 +70,10 @@ function ScheduleForm() {
 				variant='outlined'
 				color='primary'
 				onClick={handleClickOpen}
-				label='add more times'
 				startIcon={<AddIcon />}
-			/>
-			{/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-				+ Add more times
-			</Button> */}
+			>
+				add more times	
+			</ResponsiveButton>
 			<ResourceForm
 				selectedValue={selectedValue}
 				open={open}

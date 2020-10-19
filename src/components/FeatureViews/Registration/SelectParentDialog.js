@@ -17,6 +17,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -176,17 +177,18 @@ const SelectParentDialog = ({onClose, open}) => {
 			</DialogContent>
 			<DialogActions>
 				{currentParent ?
-					<Button
+					<ResponsiveButton
 						onClick={handleExitParent}
 						data-cy="exit-parent-action"
 					>
-						Exit Parent
-					</Button>
-					: <Button
+						exit parent
+					</ResponsiveButton>
+					: 
+					<ResponsiveButton
 						data-cy="set-parent-action"
 						onClick={handleClose}>
 						Set Parent
-					</Button>
+					</ResponsiveButton>
 				}
 			</DialogActions>
 		</Dialog>

@@ -39,16 +39,10 @@ const NotEnrolledStudentsDialog = (props) => {
                     <ResponsiveButton 
                         onClick={handleClose}
                         startIcon={<BackArrow />}
-                        label='Back'
                         variant='outlined'
-                    />
-                    {/* <Button
-                        className="control course button"
-                        onClick={handleClose}
                     >
-                        <BackArrow className="icon" />
-                        <span className="label">Back</span>
-                    </Button> */}
+                        back
+                    </ ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </div>

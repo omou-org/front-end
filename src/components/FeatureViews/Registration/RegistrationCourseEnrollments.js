@@ -28,9 +28,11 @@ import "theme/theme.scss";
 import "./registration.scss";
 import { addDashes } from "components/FeatureViews/Accounts/accountUtils";
 import { deleteEnrollment } from "actions/registrationActions";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { fullName } from "../../../utils";
+
 
 export const GET_ENROLLMENT_DETAILS = gql`
 	query EnrollmentDetails($courseId: ID!){
@@ -263,20 +265,21 @@ const RegistrationCourseEnrollments = ({ courseID, maxCapacity, courseTitle }) =
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <ResponsiveButton
                         variant="outlined"
                         color="secondary"
                         onClick={closeUnenrollDialog(true)}
                     >
                         Yes, unenroll
-                    </Button>
-                    <Button
+                    </ResponsiveButton>
+                    
+                    <ResponsiveButton
                         variant="outlined"
                         color="primary"
                         onClick={closeUnenrollDialog(false)}
                     >
-                        Cancel
-                    </Button>
+                        cancel
+                    </ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </>

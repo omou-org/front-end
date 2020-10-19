@@ -8,6 +8,8 @@ import Hidden from "@material-ui/core/Hidden/Hidden";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+
 
 const BackButton = (props) => {
 
@@ -22,10 +24,10 @@ const BackButton = (props) => {
 	const label = () => {
 		var label = "";
 		if (props.label == null) {
-			label = "Back";
+			label = "back";
 		}
 		if (props.label == "cancel") {
-			label = "Cancel";
+			label = "cancel";
 		}
 		return label;
 	};
@@ -68,7 +70,9 @@ const BackButton = (props) => {
 
 	const renderIcon = () => {
 		if (props.icon == null) {
-			return <BackArrow fontSize="small" className="icon" />
+			return <BackArrow style={{transform: "scale(0.8)"}}/>
+			//<BackArrow fontSize="small" className="icon" />
+			
 		}
 		if (props.icon == "cancel") {
 			return null;
@@ -77,6 +81,13 @@ const BackButton = (props) => {
 
 	return (
 		<Hidden mdDown>
+			{/* <ResponsiveButton 
+				variant='outlined'
+				// className="control course"
+				onClick={() => { handleClick() }}
+				label={label()}
+				startIcon={renderIcon()}
+			/> */}
 			<Button
 				className="control course button"
 				onClick={() => { handleClick() }}
