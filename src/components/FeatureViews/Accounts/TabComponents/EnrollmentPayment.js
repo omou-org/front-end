@@ -7,24 +7,43 @@ import Typography from "@material-ui/core/Typography";
 import gql from "graphql-tag";
 
 export const GET_ENROLLMENT_PAYMENTS = gql`
-    query EnrollmentPayments($enrollmentId: ID!) {
-        enrollment(enrollmentId: $enrollmentId) {
-          paymentList {
-            __typename
-            accountBalance
-            createdAt
-            discountTotal
-            id
-            method
-            priceAdjustment
-            subTotal
-            total
-            updatedAt
-          }
-          __typename
-        }
+query EnrollmentPayments($enrollmentId: ID!) {
+  enrollment(enrollmentId: $enrollmentId) {
+    paymentList {
+      __typename
+      accountBalance
+      createdAt
+      discountTotal
+      id
+      method
+      priceAdjustment
+      subTotal
+      total
+      updatedAt
+      registrationSet {
+        attendanceStartDate
+        createdAt
+        id
+        numSessions
+        updatedAt
       }
+      enrollments {
+        id
+      }
+    }
+    __typename
+  }
+}
+
+
 `;
+
+const formatSets = (payments) => {
+  return payments.map(payment => {
+    payment['registrations'] = payment['registrationSet'];
+    delete payment['registrationSet'];
+  })
+}
 
 const EnrollmentPayment = ({enrollmentID, courseID, paymentList, type}) => {
 	const {data, loading, error} = useQuery(GET_ENROLLMENT_PAYMENTS,
@@ -40,10 +59,11 @@ const EnrollmentPayment = ({enrollmentID, courseID, paymentList, type}) => {
 		</Typography>
     }
 
-	const payments = data.enrollment.paymentList;
-    console.log(data);
-    console.log(payments);
-    console.log(paymentList);
+  console.log("data: ", data);
+  const payments = formatSets(data.enrollment.paymentList);
+  
+    console.log("payments: " + payments);
+    console.log("paymentList: " + paymentList);
     return (
         <PaymentTable courseID={courseID}
         enrollmentID={enrollmentID}

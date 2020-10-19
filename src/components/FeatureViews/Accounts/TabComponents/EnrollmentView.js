@@ -56,7 +56,6 @@ const CourseSessionStatus = () => {
     const usersList = useSelector(({ Users }) => Users);
     const courses = useSelector(({ Course }) => Course.NewCourseList);
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
-    console.log(enrollments);
     const course = courses[courseID];
 
     const [activeTab, setActiveTab] = useState(0);
@@ -308,10 +307,10 @@ const CourseSessionStatus = () => {
             case 2:
                 return (
                     <div>
-                        <PaymentTable courseID={course.course_id}
+                        {/* <PaymentTable courseID={course.course_id}
                         enrollmentID={enrollment.enrollment_id}
                         paymentList={enrollment.payment_list}
-                        type="enrollment" />
+                        type="enrollment" /> */}
                         <EnrollmentPayment
                             courseID={course.course_id}
                             enrollmentID={enrollment.enrollment_id}

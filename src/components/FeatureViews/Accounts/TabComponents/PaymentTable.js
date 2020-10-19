@@ -31,10 +31,12 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
     const course = useSelector(({Course}) => Course.NewCourseList[courseID]);
 
     const numPaidSessionsByPayment = useCallback((paymentID) => {
+        console.log(paymentID);
         const payment = paymentList.find(({id}) => id === paymentID);
         if (!payment) {
             return null;
         }
+        console.log(payment);
         const registration = payment.registrations.find(({enrollment}) =>
             enrollment === enrollmentID);
         if (!registration) {
@@ -68,7 +70,9 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
                 </TableHead>
                 <TableBody>
                     {
-                        paymentList.map((payment) => (
+                        paymentList.map((payment) => {
+                        console.log(paymentList);
+                        return (
                             <TableRow
                                 component={NavLinkNoDup}
                                 hover
@@ -101,7 +105,7 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
                                     {paymentToString(payment.method)}
                                 </TableCell>
                             </TableRow>
-                        ))
+                        )})
                     }
                 </TableBody>
             </Table>
