@@ -141,6 +141,7 @@ const Announcements = ({
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
   const courseId = useParams();
+  const userId = loggedInUser.results[0].user.id;
 
   const DELETE_ANNOUNCEMENT = gql`
     mutation removeAnnouncement($id: ID!) {
@@ -151,6 +152,54 @@ const Announcements = ({
       }
     }
   `;
+
+  const announcementQuery = {
+    gqlquery: GET_ANNOUNCEMENTS,
+    queryVariables: {
+      id: courseId.id,
+    },
+    queryTitle: "announcements"
+  };
+
+  const announcementMutation = {
+    gqlmutation: gql`mutation CreateAnnouncement(
+      $subject: String!
+      $body: String!
+      $courseId: ID!
+      $userId: ID!
+      $shouldEmail: Boolean
+      $id: ID
+    ) {
+      __typename
+      createAnnouncement(
+        body: $body
+        course: $courseId
+        subject: $subject
+        user: $userId
+        shouldEmail: $shouldEmail
+        id: $id
+      ) {
+        announcement {
+          subject
+          id
+          body
+          createdAt
+          updatedAt
+          poster {
+            firstName
+            lastName
+          }
+        }
+      }
+    }`,
+    mutationVariables: {
+      id: announcementId,
+      userId,
+      courseId: courseId.id,
+      shouldEmail: false,
+    },
+    mutationTitle: "createAnnouncement",
+  }
 
   const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
     DELETE_ANNOUNCEMENT,
@@ -235,7 +284,9 @@ const Announcements = ({
         textBody={announcementBody}
         origin="ANNOUNCEMENTS"
         posterId={loggedInUser}
-        buttonState={editOrPost}        
+        buttonState={editOrPost}
+        mutation={announcementMutation}
+        query={announcementQuery}        
       />
     </Grid>
   );

@@ -16,7 +16,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Link } from "react-router-dom";
 import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
-import SessionEmailOrNotesModal from "./ModalTextEditor";
+import ModalTextEditor from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 
 const useStyles = makeStyles((theme) => ({
@@ -231,12 +231,13 @@ const Studentenrollment = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <SessionEmailOrNotesModal
+      <ModalTextEditor
         open={modalOpen}
         handleCloseForm={handleCloseModal}
         accountType={typeOfAccount}
         userId={userId}
         origin="STUDENT_ENROLLMENT"
+        textBody={{subject: null, body: null}}
         posterId={loggedInUser}
       />
     </Grid>

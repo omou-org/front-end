@@ -204,6 +204,8 @@ const ModalTextEditor = ({
   textBody,
   buttonState,
   announcementId,
+  mutation,
+  query
 }) => {
   const classes = useStyles();
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
@@ -216,7 +218,8 @@ const ModalTextEditor = ({
   .reduce((accum, currentValue) => {
     return {...accum, text: currentValue.text} 
   }, {}).text
-
+  const { gqlquery, queryVariables, queryTitle } = query;
+  const { gqlmutation, mutationVariables, mutationTitle } = mutation;
 
   useEffect(() => {
     if(buttonState === "edit") {
@@ -240,6 +243,16 @@ const ModalTextEditor = ({
     },
   };
 
+  const NEWMUTATION_VARIABLES = {
+    ...mutationVariables,
+    subject,
+    body: convertToRaw(body.getCurrentContent()),
+  };
+
+  const NEWQUERY_VARIABLES = {
+    ...queryVariables
+  }
+
   const MUTATION_VARIABLES = {
     ANNOUNCEMENTS: {
       subject,
@@ -250,28 +263,30 @@ const ModalTextEditor = ({
       shouldEmail: sendEmailCheckbox,
     },
     STUDENT_ENROLLMENT: {
-      subject: subject,
+      subject,
       body: body.getCurrentContent(),
       userId,
       posterId: poster_id,
     },
     COURSE_SESSIONS: {
-      subject: subject,
+      subject,
       body: convertToRaw(body.getCurrentContent()),
       user: poster_id,
       sessionId: sessionId,
       id: noteId,
     },
   };
+  // console.log(MUTATIONS[origin])
+  // console.log(gqlmutation)
 
-  const [mutateTextEditor, createResults] = useMutation(MUTATIONS[origin], {
+  const [mutateTextEditor, createResults] = useMutation(gqlmutation, {
     onCompleted: () => handleClose(false),
     update: (cache, { data }) => {
-      const [newTextData] = Object.values(data[MUTATION_KEY[origin]]);
+      const [newTextData] = Object.values(data[mutationTitle]);
       const cachedTextData = cache.readQuery({
-        query: QUERIES[origin],
-        variables: QUERY_VARAIBLES[origin],
-      })[QUERY_KEY[origin]];
+        query: gqlquery,
+        variables: NEWQUERY_VARIABLES,
+      })[queryTitle];
       let updatedTextData = [...cachedTextData];
       const matchingIndex = updatedTextData.findIndex(
         ({ id }) => id === newTextData.id
@@ -284,13 +299,41 @@ const ModalTextEditor = ({
 
       cache.writeQuery({
         data: {
-          [QUERY_KEY[origin]]: updatedTextData,
+          [queryTitle]: updatedTextData,
         },
-        query: QUERIES[origin],
-        variables: QUERY_VARAIBLES[origin],
+        query: gqlquery,
+        variables: NEWQUERY_VARIABLES,
       });
     },
   });
+
+  // const [mutateTextEditor, createResults] = useMutation(MUTATIONS[origin], {
+  //   onCompleted: () => handleClose(false),
+  //   update: (cache, { data }) => {
+  //     const [newTextData] = Object.values(data[MUTATION_KEY[origin]]);
+  //     const cachedTextData = cache.readQuery({
+  //       query: QUERIES[origin],
+  //       variables: QUERY_VARAIBLES[origin],
+  //     })[QUERY_KEY[origin]];
+  //     let updatedTextData = [...cachedTextData];
+  //     const matchingIndex = updatedTextData.findIndex(
+  //       ({ id }) => id === newTextData.id
+  //     );
+  //     if (matchingIndex === -1) {
+  //       updatedTextData = [...cachedTextData, newTextData];
+  //     } else {
+  //       updatedTextData[matchingIndex] = newTextData;
+  //     }
+
+  //     cache.writeQuery({
+  //       data: {
+  //         [QUERY_KEY[origin]]: updatedTextData,
+  //       },
+  //       query: QUERIES[origin],
+  //       variables: QUERY_VARAIBLES[origin],
+  //     });
+  //   },
+  // });
 
   const handleClose = () => {
     handleCloseForm(false);
@@ -300,7 +343,7 @@ const ModalTextEditor = ({
   const handleSubmit = async e => {
     e.preventDefault();
     const createTextData = await mutateTextEditor({
-      variables: MUTATION_VARIABLES[origin],
+      variables: NEWMUTATION_VARIABLES,
     });
     setBody(EditorState.createEmpty())
   };

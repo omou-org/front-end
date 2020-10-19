@@ -235,11 +235,11 @@ const ClassSessionView = ({
             open={open}
             handleCloseForm={handleCloseForm}
             posterId={loggedInUser}
-            sessionId={sessionId}
+            currentId={sessionId}
             origin="COURSE_SESSIONS"
             noteId={noteId}
             textSubject={noteSubject}
-            textBody={noteBody}
+            textBody={{body: noteBody, setBody: setNoteBody}}
             buttonState={buttonState}
           />
         </div>
