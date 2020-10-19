@@ -5,7 +5,6 @@ import {useQuery} from "@apollo/react-hooks";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -13,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 
 import "../Search.scss";
 import {truncateStrings} from "utils";
+import {LabelBadge} from "../../../../theme/ThemedComponents/Badge/LabelBadge";
 
 const getLocaleDateString = (start, end) => {
     if (start && end) {
@@ -81,18 +81,8 @@ const CourseCard = ({courseID, isLoading = false}) => {
                     </Grid>
                     <Grid align="left" item sm="auto">
                         {course.maxCapacity > course.enrollmentSet.length ?
-                            <Chip color="primary" label="Open" style={{
-                                    "color": "white",
-                                    "cursor": "pointer",
-                                    "height": "15px",
-                                    "width": "9rem",
-                                }} /> :
-                            <Chip color="secondary" label="Full" style={{
-                                    "color": "white",
-                                    "cursor": "pointer",
-                                    "height": "15px",
-                                    "width": "9rem",
-                                }} />}
+                            <LabelBadge label="Open" variant="status-new"/> :
+                            <LabelBadge label="Full" variant="status-past" />}
                     </Grid>
                     <Grid container item>
                         <Grid align="left" className="courseRow" item xs={12}>

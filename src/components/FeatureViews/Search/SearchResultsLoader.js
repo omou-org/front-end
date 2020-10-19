@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
 
-import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
@@ -12,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import "./Search.scss";
 import AccountCard from "./cards/AccountCard";
 import CourseCard from "./cards/CourseCard";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 const SearchResultsLoader = ({
 								 numResults,
@@ -42,7 +42,7 @@ const SearchResultsLoader = ({
 								</Typography>
 							</Grid>
 							<Grid item>
-								<Chip className="searchChip" label="See All Accounts"/>
+								<LabelBadge label="See All Accounts" variant="outline-gray"/>
 							</Grid>
 						</Grid>
 						<Grid container direction="row" spacing={2}>
@@ -82,7 +82,7 @@ const SearchResultsLoader = ({
 								</Typography>
 							</Grid>
 							<Grid item style={{paddingRight: "1vh"}}>
-								<Chip className="searchChip" label="See All Courses"/>
+								<LabelBadge label="See All Courses" variant="outline-gray"/>
 							</Grid>
 						</Grid>
 						<Grid container direction="row" spacing={1}>
