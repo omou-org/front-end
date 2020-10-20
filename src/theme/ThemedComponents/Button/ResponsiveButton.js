@@ -50,8 +50,7 @@ export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon
 }
 
 ResponsiveButton.propTypes = {
-    label: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.elementType.isRequired, PropTypes.func.isRequired]),
-    variant: PropTypes.string.isRequired,
+    variant: PropTypes.string,
     color: PropTypes.string,
     onClick: PropTypes.func,
     startIcon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.func]),

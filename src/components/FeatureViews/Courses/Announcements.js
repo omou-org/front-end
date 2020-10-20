@@ -11,9 +11,13 @@ import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { AddIcon } from '@material-ui/icons/Add';
 import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
+
+
 
 const useStyles = makeStyles({
   announcementContainer: {
@@ -205,6 +209,15 @@ const Announcements = ({
         >
           <span className={classes.plusSpan}>+</span> New Announcement
         </Button>
+        {/* <ResponsiveButton
+          className={classes.newNoteButton}
+          onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
+          value="post"
+          name="post"
+          startIcon={<AddIcon />}
+        >
+           New Announcement
+        </ResponsiveButton> */}
       </AccessControlComponent>
       {announcementRender.map(({ poster, subject, body, updatedAt, id }) => (
         <>

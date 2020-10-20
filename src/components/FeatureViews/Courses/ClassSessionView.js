@@ -16,6 +16,8 @@ import Loading from "../../OmouComponents/Loading";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent"
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme from "../../../theme/muiTheme";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { AddIcon } from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -158,6 +160,13 @@ const ClassSessionView = ({
                     >
                       <span className={classes.plusSpan}>+</span> New Note
                     </Button>
+                    {/* <ResponsiveButton
+                      className={classes.newNoteButton}
+                      onClick={handleOpenForm}
+                      startIcon={<AddIcon />}
+                    >
+                       New Note
+                    </ResponsiveButton> */}
                   </Grid>
                   </AccessControlComponent>
 
