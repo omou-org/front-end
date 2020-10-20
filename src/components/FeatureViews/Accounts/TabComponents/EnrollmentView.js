@@ -64,6 +64,7 @@ const GET_ENROLLMENT = gql `
           }
           paymentList {
             id
+            createdAt
           }
           lastPaidSessionDatetime
           student {

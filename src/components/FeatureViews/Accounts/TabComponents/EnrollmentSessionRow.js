@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 import NoListAlert from "../../../OmouComponents/NoListAlert";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
+import moment from "moment";
 
 
 
@@ -19,6 +20,9 @@ return (
     <Grid container spacing={1}> 
         {sessionsData.sessions.length !== 0 ?
             sessionsData.sessions.map((session) => {
+                console.log(session)
+                console.log(session.course.startTime)
+                console.log(session.course.endTime)
             return (
                 <Grid className="accounts-table-row"
                     component={Link}
@@ -43,7 +47,6 @@ return (
                                     <Grid item xs={2}>
                                         <Typography align="left">
                                             <Moment
-                                            //needs to use algorithim
                                                 date={session.startDatetime}
                                                 format="M/D/YYYY"
                                             />
@@ -53,7 +56,6 @@ return (
                                         <Typography align="left">
                                             <Typography align="left">
                                                 <Moment
-                                                    //needs to use algorithim
                                                     date={session.startDatetime}
                                                     format="dddd"
                                                 />
@@ -62,15 +64,13 @@ return (
                                     </Grid>
                                     <Grid item xs={3}>
                                         <Typography align="left">
-                                            <Moment
-                                                //needs to use algorithim
-                                                date={session.startTime}
+                                            <Moment                          
+                                                date={session.startDatetime}
                                                 format="h:mm A"
                                             />
                                             {" - "}
                                             <Moment
-                                                //needs to use algorithim
-                                                date={session.endTime}
+                                                date={session.endDatetime}
                                                 format="h:mm A"
                                             />
                                         </Typography>
