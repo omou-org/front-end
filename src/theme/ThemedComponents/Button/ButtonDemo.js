@@ -80,7 +80,7 @@ const ButtonDemo = () => {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='outlined' label='back' startIcon={<BackArrow style={{transform: "scale(0.8)"}}/>}/>
+                    <ResponsiveButton variant='outlined' label='back' />
                 </Grid>
                 <Grid item xs={4}>
                     <ResponsiveButton variant='outlined' label='register' startIcon={<AddIcon/>}/>
@@ -113,10 +113,10 @@ const ButtonDemo = () => {
                     <ResponsiveButton variant='contained' label='delete' />
                 </Grid>
                 <Grid item xs={3}>
-                    <ResponsiveButton variant='contained' label='pay' />
+                    <ResponsiveButton variant='contained' label='send' />
                 </Grid>
                 <Grid item xs={3}>
-                    <ResponsiveButton variant='contained' label='ok' />
+                    <ResponsiveButton variant='contained' label='cancel' />
                 </Grid>
 
                 <Grid item xs={6}>
@@ -158,7 +158,7 @@ const ButtonDemo = () => {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='contained' label='back' startIcon={<BackArrow style={{transform: "scale(0.8)"}}/>}/>
+                    <ResponsiveButton variant='contained' label='back' />
                 </Grid>
                 <Grid item xs={4}>
                     <ResponsiveButton variant='contained' label='register' startIcon={<AddIcon/>}/>

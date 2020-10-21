@@ -1,7 +1,6 @@
 import React from 'react'
 import { PropTypes } from 'prop-types';
 import Button from "@material-ui/core/Button";
-import Typography from '@material-ui/core/Typography';
 
 const buttonWidth = (label, children) => {
     const buttonText = label || children;
@@ -34,7 +33,6 @@ export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon
             style={{
                 width: startIcon || endIcon ? buttonWidth(buttonText) + 16 : buttonWidth(buttonText),
                 border: disabled ? "2px solid #DBD7D7" : "",
-                fontVariantCaps: "all-small-caps",
             }}
             size='large'
             disabled={disabled}
@@ -42,9 +40,7 @@ export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon
             endIcon={endIcon}
             {...ResponsiveButtonProps}
             >
-                <Typography variant='h5'>
-                    {buttonText}
-                </Typography>
+                {buttonText}
         </Button>
     )
 }
