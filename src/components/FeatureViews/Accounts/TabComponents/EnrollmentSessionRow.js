@@ -15,24 +15,21 @@ import moment from "moment";
 
 function EnrollmentSessionRow({sessionsData, enrollmentData, highlightSession}) {
     const {course, id} = enrollmentData.enrollment
-
+    console.log(course)
 return (
     <Grid container spacing={1}> 
         {sessionsData.sessions.length !== 0 ?
             sessionsData.sessions.map((session) => {
-                console.log(session)
-                console.log(session.course.startTime)
-                console.log(session.course.endTime)
+                
             return (
                 <Grid className="accounts-table-row"
                     component={Link}
                     item
                     key={id}
                     to={
-                        course.courseType === "tutoring"
-                            ? `/scheduler/view-session/${session.course.id}/${id}/${session.instructor}`
-                            : `/registration/course/${session.course.id}`
-                        }
+                        // check on this link it's not working
+                        `/scheduler/view-session/${session.course.id}/${id}/${course.instructor.user.id}`
+                    }
                     xs={12}>
                         <Paper className={`session-info
                             ${highlightSession && " active"}
@@ -76,10 +73,10 @@ return (
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={1}>
+                                        {/* hourly rate * endtime-starttime */}
                                         <Typography align="left">${session.hourlyTuition}</Typography>
                                     </Grid>
                                     <Grid item xs={2}>
-                                        {/* MUST FIX STATUS */}
                                         <SessionPaymentStatusChip enrollment={enrollmentData.enrollment}
                                             session={session}
                                             setPos />
