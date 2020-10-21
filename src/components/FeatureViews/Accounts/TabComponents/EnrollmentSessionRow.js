@@ -6,10 +6,6 @@ import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 import NoListAlert from "../../../OmouComponents/NoListAlert";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
-import moment from "moment";
-
-
-
 
 
 
@@ -25,10 +21,10 @@ return (
                 <Grid className="accounts-table-row"
                     component={Link}
                     item
+                    data-cy="view-session-link"
                     key={id}
                     to={
-                        // check on this link it's not working
-                        `/scheduler/view-session/${session.course.id}/${id}/${course.instructor.user.id}`
+                        `/scheduler/view-session/${course.id}/${id}/${course.instructor.user.id}`
                     }
                     xs={12}>
                         <Paper className={`session-info

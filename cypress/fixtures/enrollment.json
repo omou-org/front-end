@@ -1,0 +1,14 @@
+{
+    "enrollment": {
+        "id": 2,
+        "course": {
+            "id":3,
+            "instructor": {
+                "user": {
+                    "id": 4
+                }
+            }
+        }
+    }
+    
+}
