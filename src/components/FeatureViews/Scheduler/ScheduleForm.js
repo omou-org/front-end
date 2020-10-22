@@ -8,7 +8,6 @@ import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/Respons
 //Material UI Imports
 import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
-import { AddIcon } from '@material-ui/icons/Add';
 
 
 function ResourceForm({ onClose, selectedValue, open }) {
@@ -70,7 +69,6 @@ function ScheduleForm() {
 				variant='outlined'
 				color='primary'
 				onClick={handleClickOpen}
-				startIcon={<AddIcon />}
 			>
 				add more times	
 			</ResponsiveButton>

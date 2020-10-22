@@ -11,12 +11,13 @@ import { useMutation } from "@apollo/react-hooks";
 import moment from "moment";
 import NewAnnouncementModal from "./NewAnnoucementsModal";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import { AddIcon } from '@material-ui/icons/Add';
+
+import  AddIcon from '@material-ui/icons/Add';
 import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 
 const useStyles = makeStyles({
@@ -34,11 +35,11 @@ const useStyles = makeStyles({
   },
   newNoteButton: {
     marginBottom: "2em",
-    border: "1px solid #999999",
-    borderRadius: "5px",
-    fontSize: ".75rem",
-    fontWeight: 300,
-    fontFamily: "Roboto",
+    // border: "1px solid #999999",
+    // borderRadius: "5px",
+    // fontSize: ".75rem",
+    // fontWeight: 300,
+    // fontFamily: "Roboto",
     height: "2.5em",
     marginTop: "2em",
     marginLeft: ".75em",
@@ -201,15 +202,8 @@ const Announcements = ({
           USER_TYPES.instructor,
         ]}
       >
-        <Button
-          className={classes.newNoteButton}
-          onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
-          value="post"
-          name="post"
-        >
-          <span className={classes.plusSpan}>+</span> New Announcement
-        </Button>
-        {/* <ResponsiveButton
+        <ResponsiveButton
+          variant="outlined"
           className={classes.newNoteButton}
           onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
           value="post"
@@ -217,7 +211,7 @@ const Announcements = ({
           startIcon={<AddIcon />}
         >
            New Announcement
-        </ResponsiveButton> */}
+        </ResponsiveButton>
       </AccessControlComponent>
       {announcementRender.map(({ poster, subject, body, updatedAt, id }) => (
         <>

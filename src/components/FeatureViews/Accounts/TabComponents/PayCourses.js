@@ -12,6 +12,8 @@ import Paper from "@material-ui/core/Paper";
 import {Button} from "@material-ui/core";
 import {NavLink} from "react-router-dom";
 
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+
 const msPerWeek = 1000 * 60 * 60 * 24 * 7;
 
 const calcSessionCost = ({
@@ -90,14 +92,14 @@ const PayCourses = (props) => {
                             ))}
                     </TableBody>
                 </Table>
-                <Button
+                <ResponsiveButton
                     style={{
                         "float": "right",
                     }}
                     component={NavLink}
                     to={`/accounts/parents/${props.user.user_id}/pay`}>
                     $ Pay
-                </Button>
+                </ResponsiveButton>
             </Grid>
         </Grid>
     );

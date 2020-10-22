@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import BackArrow from '@material-ui/icons/ArrowBackIos';
 import Modal from "@material-ui/core/Modal";
-import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden/Hidden";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
@@ -81,14 +80,14 @@ const BackButton = (props) => {
 
 	return (
 		<Hidden mdDown>
-			{/* <ResponsiveButton 
+			<ResponsiveButton 
 				variant='outlined'
-				// className="control course"
+				className="control course button"
 				onClick={() => { handleClick() }}
-				label={label()}
-				startIcon={renderIcon()}
-			/> */}
-			<Button
+			>
+				{label()}
+			</ResponsiveButton>
+			{/* <Button
 				className="control course button"
 				onClick={() => { handleClick() }}
 			>
@@ -96,7 +95,7 @@ const BackButton = (props) => {
 					{renderIcon()}
 					<span className="label">{label()}</span>
 				</Grid>
-			</Button>
+			</Button> */}
 			<Modal
 				aria-labelledby="simple-modal-title"
 				aria-describedby="simple-modal-description"
@@ -108,7 +107,7 @@ const BackButton = (props) => {
 						{props.alertMessage ||
 							"Are you sure you want to leave unsaved changes?"}
 					</Typography>
-					<Button
+					<ResponsiveButton
 						onClick={(e) => {
 							e.preventDefault();
 							(denyAction());
@@ -117,8 +116,8 @@ const BackButton = (props) => {
 						className="button secondary"
 					>
 						{props.alertDenyText || "No, leave me here"}
-					</Button>
-					<Button
+					</ResponsiveButton>
+					<ResponsiveButton
 						onClick={(e) => {
 							e.preventDefault();
 							(confirmAction());
@@ -127,7 +126,7 @@ const BackButton = (props) => {
 						className="button primary"
 					>
 						{props.alertConfirmText || "Yes, take me back"}
-					</Button>
+					</ResponsiveButton>
 				</div>
 			</Modal>
 		</Hidden>

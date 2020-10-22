@@ -12,6 +12,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import UpdateTeacher from "@material-ui/icons/PersonAdd";
 import Button from "@material-ui/core/Button";
 import {NavLink} from "react-router-dom";
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 
 class SessionView extends Component {
 	constructor(props) {
@@ -33,27 +34,25 @@ class SessionView extends Component {
 						className="registration-action-control"
 					>
 						<Grid item>
-							<Button
+							<ResponsiveButton
 								component={NavLink}
 								to="/scheduler/add-course"
 								variant="outlined"
 								color="secondary"
 								className="button"
 							>
-								<NewCourse className="icon"/>
 								Add New Course
-							</Button>
+							</ResponsiveButton>
 						</Grid>
 						<Grid item>
-							<Button
+							<ResponsiveButton
 								to="/"
 								variant="outlined"
 								color="secondary"
 								className="button"
 							>
-								<UpdateTeacher className="icon"/>
 								Update Teacher Avalibility
-							</Button>
+							</ResponsiveButton>
 						</Grid>
 						<Grid item>
 							<Button

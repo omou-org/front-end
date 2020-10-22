@@ -17,7 +17,7 @@ import AccessControlComponent from "../../OmouComponents/AccessControlComponent"
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme from "../../../theme/muiTheme";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { AddIcon } from '@material-ui/icons/Add';
+import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,11 +51,11 @@ const useStyles = makeStyles((theme) => ({
   },
   newNoteButton: {
     marginBottom: "2em",
-    border: "1px solid #999999",
-    borderRadius: "5px",
-    fontSize: ".75rem",
-    fontWeight: 300,
-    fontFamily: "Roboto",
+    // border: "1px solid #999999",
+    // borderRadius: "5px",
+    // fontSize: ".75rem",
+    // fontWeight: 300,
+    // fontFamily: "Roboto",
     height: "2.5em",
     marginTop: "2em",
   },
@@ -154,19 +154,14 @@ const ClassSessionView = ({
               <Grid container justify="flex-start">
               <AccessControlComponent permittedAccountTypes={[USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.receptionist]}>
                   <Grid item xs={12} style={{ textAlign: "left" }}>
-                    <Button
-                      className={classes.newNoteButton}
-                      onClick={handleOpenForm}
-                    >
-                      <span className={classes.plusSpan}>+</span> New Note
-                    </Button>
-                    {/* <ResponsiveButton
+                    <ResponsiveButton
+                      variant='outlined'
                       className={classes.newNoteButton}
                       onClick={handleOpenForm}
                       startIcon={<AddIcon />}
                     >
                        New Note
-                    </ResponsiveButton> */}
+                    </ResponsiveButton>
                   </Grid>
                   </AccessControlComponent>
 

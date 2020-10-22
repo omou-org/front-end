@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { Prompt, useHistory, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -19,6 +18,7 @@ import { fullName } from "../../../utils";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { closeRegistrationCart } from "../../OmouComponents/RegistrationUtils";
 import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
+import ParentContact from '../Accounts/TabComponents/ParentContact';
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
@@ -352,15 +352,9 @@ const PaymentReceipt = ({ paymentID }) => {
 									data-cy="close-parent"
 									className="button primary"
 									onClick={handleCloseReceipt()}
-									label="close parent"
-								/>
-								{/* <Button
-									data-cy="close-parent"
-									className="button primary"
-									onClick={handleCloseReceipt()}
 								>
-									CLOSE PARENT
-								</Button> */}
+									close parent
+								</ ResponsiveButton>
 							</Grid>
 						)}
 					</Grid>

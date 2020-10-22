@@ -2,7 +2,6 @@ import React, {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
 
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Chip from "@material-ui/core/Chip";
 import ClassIcon from "@material-ui/icons/Class";
@@ -137,7 +136,6 @@ const RegistrationCourse = () => {
 								variant='outlined'
 								component={Link}
 								to={`/registration/form/course_details/${courseID}`}
-								startIcon={<EditIcon className="icon"/>}
 							>
 								edit course
 							</ ResponsiveButton>

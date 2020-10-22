@@ -110,7 +110,6 @@ const RegistrationActions = () => {
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
 								data-cy="register-class"
-								startIcon={<NewCourse className="icon innerIcon"/>}
 							>
 								register class
 							</ ResponsiveButton>

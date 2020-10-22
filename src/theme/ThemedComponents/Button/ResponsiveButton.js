@@ -45,6 +45,8 @@ export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon
     )
 }
 
+
+
 ResponsiveButton.propTypes = {
     variant: PropTypes.string,
     color: PropTypes.string,
@@ -53,4 +55,6 @@ ResponsiveButton.propTypes = {
     endIcon: PropTypes.oneOfType([PropTypes.elementType, PropTypes.func]),
     component: PropTypes.elementType,
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+    value: PropTypes.string,
+    name: PropTypes.string
 }

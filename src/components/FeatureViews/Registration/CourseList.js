@@ -27,7 +27,6 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
 import {useDispatch, useSelector} from "react-redux";
-import AddIcon from '@material-ui/icons/Add';
 import * as types from "actions/actionTypes";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
@@ -193,7 +192,6 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                         variant="contained"
                                         onClick={handleStartQuickRegister(course.id)}
                                         data-cy="quick-register-class"
-                                        startIcon={<AddIcon />}
                                     >
                                         register
                                     </ResponsiveButton>

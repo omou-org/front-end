@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {Tooltip, Typography, withStyles} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from "../../OmouComponents/Loading";
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
@@ -34,6 +35,7 @@ import AddSessions from "components/OmouComponents/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {capitalizeString} from "../../../utils";
+
 
 
 const StyledMenu = withStyles({
@@ -283,21 +285,23 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                 direction="row"
                 justify="flex-end">
                 <Grid item>
-                    <Button className="button"
+                    <ResponsiveButton 
+                        className="button"
                         color="secondary"
                         component={NavLink}
                         to={`/registration/course/${course.course_id}`}
-                        variant="outlined">
+                        variant="outlined"
+                    >
                         Course Page
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
                 <Grid item>
                     {reduxCourse.course_type=="tutoring" && (
                         <>
-                            <Button className="button" onClick={handleTutoringMenuClick}>
+                            <ResponsiveButton className="button" onClick={handleTutoringMenuClick}>
                                 Tutoring Options
-                                <ArrowDropDownIcon />
-                            </Button>
+                                {/* <ArrowDropDownIcon /> */}
+                            </ResponsiveButton>
                             <StyledMenu anchorEl={tutoringActionsAnchor}
                                 keepMounted
                                 onClose={closeTutoringMenu}
@@ -321,14 +325,15 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     )}
                 </Grid>
                 <Grid item>
-                    <Button 
+                    <ResponsiveButton 
                         className="editButton"
                         color="primary"
                         onClick={handleEditToggle(true)}
                         to="/"
-                        variant="outlined">
+                        variant="outlined"
+                    >
                         Reschedule
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
             </Grid>
             <Dialog aria-describedby="form-dialog-description"
@@ -356,18 +361,19 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     </RadioGroup>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="primary" onClick={handleEditToggle(true)}>
+                    <ResponsiveButton color="primary" onClick={handleEditToggle(true)}>
                         Cancel
-                    </Button>
-                    <Button
+                    </ResponsiveButton>
+                    <ResponsiveButton
                         color="primary"
                         component={NavLink}
                         to={{
                             "pathname": `/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
                             , "state": { course: course, session: session }
-                        }}>
+                        }}
+                    >
                         Confirm to Edit
-                    </Button>
+                    </ResponsiveButton>
                 </DialogActions>
             </Dialog>
 
@@ -392,20 +398,20 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <ResponsiveButton
                         variant="outlined"
                         color="secondary"
                         onClick={closeUnenrollDialog(true)}
                     >
                         Yes, unenroll
-                    </Button>
-                    <Button
+                    </ResponsiveButton>
+                    <ResponsiveButton
                         variant="outlined"
                         color="primary"
                         onClick={closeUnenrollDialog(false)}
                     >
                         Cancel
-                    </Button>
+                    </ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </>

@@ -29,6 +29,7 @@ import Typography from "@material-ui/core/Typography";
 import * as hooks from "actions/hooks";
 import { upcomingSession, useGoToRoute } from "utils";
 import { deleteEnrollment, initializeRegistration } from "actions/registrationActions";
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from "components/OmouComponents/AddSessions";
 import BackButton from "components/OmouComponents/BackButton";
 import Loading from "components/OmouComponents/Loading";
@@ -342,9 +343,9 @@ const CourseSessionStatus = () => {
                                 parentOfCurrentStudent={studentParent} />
                         </Grid>
                         <Grid item>
-                            <Button className="button unenroll" onClick={openUnenrollDialog}>
+                            <ResponsiveButton Button className="button unenroll" onClick={openUnenrollDialog}>
                                 Unenroll Course
-                            </Button>
+                            </ResponsiveButton>
                         </Grid>
                     </Grid>
                     <Grid className="participants" item xs={12}>
@@ -395,6 +396,7 @@ const CourseSessionStatus = () => {
                         Object.values(enrollment.notes).some(
                             ({ important }) => important
                         ) ? (
+
                                 <>
                                     <Avatar className="notificationCourse" />
                                     <NoteIcon className="TabIcon" /> Notes
@@ -427,20 +429,20 @@ const CourseSessionStatus = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <ResponsiveButton
                         variant="outlined"
                         color="secondary"
                         onClick={closeUnenrollDialog(true)}
                     >
                         Yes, unenroll
-                    </Button>
-                    <Button
+                    </ResponsiveButton>
+                    <ResponsiveButton
                         variant="outlined"
                         color="primary"
                         onClick={closeUnenrollDialog(false)}
                     >
                         Cancel
-                    </Button>
+                    </ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </Paper>

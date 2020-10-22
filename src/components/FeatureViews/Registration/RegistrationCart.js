@@ -334,7 +334,6 @@ const RegistrationCart = () => {
 								component={Link} 
 								to="/registration"
 								label='register'
-								startIcon={<BackArrow/>}
 							>
 								register
 							</ ResponsiveButton>
