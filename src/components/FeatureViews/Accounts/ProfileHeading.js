@@ -21,9 +21,10 @@ import {ReactComponent as GradeIcon} from "../../grade.svg";
 import {ReactComponent as IDIcon} from "../../identifier.svg";
 import InstructorAvailability from "./InstructorAvailability";
 import OutOfOffice from "./OutOfOffice";
-import RoleChip from "./RoleChip";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 import {ReactComponent as SchoolIcon} from "../../school.svg";
 import {USER_TYPES} from "utils";
+import { capitalizeString } from "utils";
 
 const ProfileHeading = ({ user }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -202,7 +203,7 @@ const ProfileHeading = ({ user }) => {
 				</Grid>
 				<Grid item>
 					<Hidden smDown>
-						<RoleChip role={user.role}/>
+						<LabelBadge label={capitalizeString(user.role)} variant="outline-gray"/>
 					</Hidden>
 				</Grid>
 			</Grid>

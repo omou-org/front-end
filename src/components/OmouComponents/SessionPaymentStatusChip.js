@@ -9,18 +9,14 @@ const SessionPaymentStatusChip = ({session, enrollment, setPos, style}) => {
         );
     }
     const status = sessionPaymentStatus(session, enrollment);
-    const badgeVariant = (paymentStatus) => {
-        switch (paymentStatus) {
-            case "Paid": 
-                return "status-positive";
-            case "Partial":
-                return "status-warning";
-            case "Unpaid":
-                return "status-negative";
-            default:
-                return "outline-gray";
-        }
-    }
+    
+    const badgeVariant = (paymentStatus) => ({
+        "Paid": "status-positive",
+        "Partial": "status-warning",
+        "Unpaid": "status-negative",
+        "NA": "outline-gray",
+    }[paymentStatus]);
+    
     return (
         <LabelBadge label={status} variant={badgeVariant(status)}/>
     );

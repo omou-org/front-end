@@ -5,7 +5,6 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Chip from "@material-ui/core/Chip";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden/Hidden";
@@ -21,6 +20,7 @@ import { ReactComponent as IDIcon } from "components/identifier.svg";
 import UserAvatar from "./UserAvatar";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 
 const useStyles = makeStyles({
     "linkUnderline": {
@@ -70,9 +70,9 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                                         {user.name}
                                     </Typography>
                                     <Typography align="left" component="p">
-                                        <Chip
-                                            className={`userLabel ${user.accountType}`}
-                                            label={capitalizeString(user.accountType)} />
+                                        <LabelBadge 
+                                            label={capitalizeString(user.accountType)}
+                                            variant="outline-gray"/>
                                     </Typography>
                                     <Typography>
                                         <Grid className="card-content" container>

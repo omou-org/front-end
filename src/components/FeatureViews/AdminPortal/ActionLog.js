@@ -7,7 +7,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import Moment from "react-moment";
-import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -29,6 +28,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import ErrorIcon from '@material-ui/icons/Error';
 import { fullName } from "../../../utils";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 
 const GET_LOGS = gql`
     query GetLogs ($action: String,
@@ -128,10 +128,10 @@ const ActionLog = () => {
     if (loading) return <Loading />;
     // if (error) return <div>error</div>;
 
-    const renderChip = (action) => ({
-        "Edit": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FFDD59" }} label="Edit" />,
-        "Add": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#78E08F" }} label="Add" />,
-        "Delete": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FF7675" }} label="Delete" />,
+    const badgeVariant = (action) => ({
+        "Edit": "status-warning",
+        "Add": "status-positive",
+        "Delete": "status-negative",
     }[action]);
 
     const handleSelection = (setValue) => (event) => {
@@ -430,7 +430,9 @@ const ActionLog = () => {
                                 </div>
                             </TableCell>
                             <TableCell>
-                                {renderChip(actionItem.action)}
+                                <LabelBadge 
+                                    label={actionItem.action}
+                                    variant={badgeVariant(actionItem.action)}/>
                             </TableCell>
                             <TableCell>
                                 <div style={{ textTransform: "capitalize" }}>
