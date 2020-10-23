@@ -55,7 +55,7 @@ const ComponentViewer = ({ inView, user, log }) => {
 				id: 5,
 			},
 			{
-				component: <ParentContact key={6} parent_id={user.parent_id} />,
+				component: <ParentContact key={6} parent_id={userInfo.user.id} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student,],
 				id: 6,
 			},

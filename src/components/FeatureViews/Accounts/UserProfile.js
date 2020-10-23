@@ -146,24 +146,6 @@ const userTabs = {
 	],
 };
 
-const useUser = (id, type) => {
-	switch (type) {
-		case "student":
-			return hooks.useStudent(id);
-		case "parent":
-			return hooks.useParent(id);
-		case "instructor":
-			return hooks.useInstructor(id);
-		case "receptionist":
-			return hooks.useAdmin(id);
-			// TODO: add receptionist fetching
-			return 200;
-		default:
-			// can't find the user (invalid user type)
-			return 404;
-	}
-};
-
 
 const QUERIES = {
 	"student": gql`query StudentInfoQuery($ownerID: ID!) {
@@ -268,26 +250,6 @@ const UserProfile = () => {
 
 	// const fetchStatus = useUser(accountID, accountType);
 	const AuthUser = useSelector(({ auth }) => auth);
-	// useAccountNotes(accountID, accountType);
-	// const user = useMemo(() => {
-	// 	switch (accountType) {
-	// 		case "student":
-	// 			return userList.StudentList[accountID];
-	// 		case "parent":
-	// 			return userList.ParentList[accountID];
-	// 		case "instructor":
-	// 			return userList.InstructorList[accountID];
-	// 		case "receptionist":  
-	// 			return userList.ReceptionistList[accountID];
-	// 		default:
-	// 			return null;  s
-	// 	}
-	// }, [userList, accountID, accountType]);
-
-
-
-
-
 
 
 	// reset to first tab when profile changes

@@ -40,31 +40,6 @@ const ProfileHeading = ({ user }) => {
 
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
-			{userInfo.accountType === "INSTRUCTOR" && (
-				<Grid align="left" className="schedule-button" item xs={12}>
-					{/* <Button
-						aria-controls="simple-menu"
-						aria-haspopup="true"
-						onClick={handleOpen}
-						variant="outlined"
-					>
-						<CalendarIcon />
-						Schedule Options
-					</Button>
-					<Menu
-						anchorEl={anchorEl}
-						keepMounted
-						onClose={handleClose}
-						open={anchorEl !== null}
-					>
-						<InstructorAvailability
-							button={false}
-							instructorID={user.user_id}
-						/>
-						<OutOfOffice button={false} instructorID={user.user_id} />
-					</Menu> */}
-				</Grid>
-			)}
 			{isAdmin && (
 				<>
 					<Grid component={Hidden} item mdDown xs={12}>
@@ -176,22 +151,6 @@ const ProfileHeading = ({ user }) => {
 						<EmailRow />
 					</>
 				);
-			case "ADMIN":
-				return (
-					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
-						<EmailRow />
-					</>
-				);
-			case "OWNER":
-				return (
-					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
-						<EmailRow />
-					</>
-				);
 			case "PARENT":
 				return (
 					<>
@@ -207,7 +166,13 @@ const ProfileHeading = ({ user }) => {
 					</>
 				);
 			default:
-				return null;
+				return (
+					<>
+						<IDRow width={12} />
+						<PhoneRow width={12} />
+						<EmailRow />
+					</>
+				);;
 		}
 	}, [user]);
 

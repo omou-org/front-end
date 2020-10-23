@@ -97,7 +97,6 @@ export default function NotificationSettings({ user }) {
 	const classes = useStyles();
 	const [notificationRows, setNotificationRows] = useState([]);
 	const [optInNotifRows, setOptInNotifRows] = useState([]);
-	console.log(user)
 	const isParent = userInfo.accountType === "PARENT";
 	const isInstructor = userInfo.accountType === "INSTRUCTOR";
 	const instructorSettingResponse = useQuery(GET_INSTRUCTOR_NOTIFICATION_SETTINGS, {
