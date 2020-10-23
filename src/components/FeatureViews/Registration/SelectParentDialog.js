@@ -178,6 +178,7 @@ const SelectParentDialog = ({onClose, open}) => {
 			<DialogActions>
 				{currentParent ?
 					<ResponsiveButton
+						variant='outlined'
 						onClick={handleExitParent}
 						data-cy="exit-parent-action"
 					>
@@ -185,9 +186,11 @@ const SelectParentDialog = ({onClose, open}) => {
 					</ResponsiveButton>
 					: 
 					<ResponsiveButton
+						variant='outlined'
 						data-cy="set-parent-action"
-						onClick={handleClose}>
-						Set Parent
+						onClick={handleClose}
+					>
+						set parent
 					</ResponsiveButton>
 				}
 			</DialogActions>

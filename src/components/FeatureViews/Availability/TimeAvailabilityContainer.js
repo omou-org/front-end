@@ -214,8 +214,8 @@ export default function TimeAvailabilityContainer() {
 				</Grid>
 			</Grid>
 			<Grid item xs={3}>
-				<ResponsiveButton variant='outlined' style={{marginRight: "10px"}} label='reset all'></ResponsiveButton>
-				<ResponsiveButton variant='outlined' label='update' onClick={handleAvailability}></ResponsiveButton>
+				<ResponsiveButton variant='outlined' style={{marginRight: "10px"}} >reset all</ResponsiveButton>
+				<ResponsiveButton variant='outlined' onClick={handleAvailability}>update</ResponsiveButton>
 			</Grid>
 		</Grid>
 		<Grid item xs={12} container>

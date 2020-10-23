@@ -9,11 +9,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import NewInstructor from "@material-ui/icons/PersonAdd";
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 
 import "./AdminPortal.scss";
 import {initializeRegistration} from "actions/registrationActions";
 
 import {withStyles} from "@material-ui/core";
+
 
 const StyledMenu = withStyles({
 	paper: {
@@ -73,38 +75,41 @@ const AdminActionCenter = () => {
 	return (
 		<Grid className="admin-actions-wrapper" container spacing={2}>
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					aria-controls="simple-menu"
 					aria-haspopup="true"
 					className={`button ${tabState.user && "active"}`}
 					onClick={handleClick(setUserAnchor)}
+					variant='outlined'
 				>
-					<NewInstructor className="admin-action-icon" />
+					{/* <NewInstructor className="admin-action-icon" /> */}
 					Add Users
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					aria-controls="simple-menu"
 					aria-haspopup="true"
 					className={`button ${tabState.course && "active"}`}
 					onClick={handleClick(setCourseAnchor)}
+					variant='outlined'
 				>
-					<CourseIcon className="admin-action-icon" />
+					{/* <CourseIcon className="admin-action-icon" /> */}
 					Manage Course
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					aria-controls="simple-menu"
 					aria-haspopup="true"
 					className={`button ${tabState.course && "active"}`}
 					component={NavLink} 
 					to="/adminportal/actionlog"
+					variant='outlined'
 				>
-					<CourseIcon className="admin-action-icon" />
+					{/* <CourseIcon className="admin-action-icon" /> */}
 					Action Log
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 			{/*<Grid item>*/}
 			{/*	<Button*/}

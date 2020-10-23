@@ -207,8 +207,9 @@ export default function CreateOOOForm() {
                             // color="primary"
                             variant="outlined"
                             data-cy="clear-OOO-button"
-                            label="clear"
-                        />
+                        >
+                            clear
+                        </ResponsiveButton>
                         
                             // <Button
                             //     style={{
@@ -230,17 +231,13 @@ export default function CreateOOOForm() {
                     <Grid item>
                         {!submitted && (
                             <ResponsiveButton
-                                // style={{
-                                //     backgroundColor: omouBlue,
-                                //     color: 'white',
-                                //     width: '150px',
-                                // }}
                                 onClick={handleSubmit}
                                 // color="primary"
                                 variant="outlined"
                                 data-cy="submit-OOO-button"
-                                label='submit'
-                            />
+                            >
+                                submit
+                            </ResponsiveButton>
                             // <Button
                             //     style={{
                             //         backgroundColor: omouBlue,

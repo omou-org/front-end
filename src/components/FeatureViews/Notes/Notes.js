@@ -27,6 +27,8 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton'
+
 import "./Notes.scss";
 import {
     DELETE_ACCOUNT_NOTE_SUCCESSFUL,
@@ -488,14 +490,17 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         value={noteBody} variant="filled" />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={hideWarning} variant="outlined">
+                    <ResponsiveButton onClick={hideWarning} variant="outlined">
                         Cancel
-                    </Button>
-                    <Button color="primary"
+                    </ResponsiveButton>
+                    <ResponsiveButton 
+                        color="primary"
                         disabled={!noteBody || createResults.loading}
-                        onClick={saveNote} variant="outlined">
+                        onClick={saveNote} 
+                        variant="outlined"
+                    >
                         {createResults.loading ? "Saving..." : "Save"}
-                    </Button>
+                    </ResponsiveButton>
                     {createResults.error &&
                         <span style={{ "float": "right" }}>
                             Error while saving!
@@ -515,15 +520,20 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                     }?
                 </DialogContent>
                 <DialogActions className={classes.deleteActions}>
-                    <Button color="primary" onClick={hideWarning}
-                        variant="contained">
+                    <ResponsiveButton 
+                        color="primary" 
+                        onClick={hideWarning}
+                        variant="contained"
+                    >
                         Cancel
-                    </Button>
-                    <Button className={classes.deleteButton}
+                    </ResponsiveButton>
+                    <ResponsiveButton 
+                        className={classes.deleteButton}
                         onClick={handleDelete}
-                        variant="contained">
+                        variant="contained"
+                    >
                         Delete
-                    </Button>
+                    </ResponsiveButton>
                     {deleteError &&
                         <span style={{ "float": "right" }}>
                             Error while deleting!
@@ -625,7 +635,9 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                             <NotificationIcon className="noteNotification"
                                 onClick={toggleNoteField(note.id, "important")}
                                 style={note.important ? { "color": "red" } : {}} />
-                        </Typography>
+                        </Typography>import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
                         <Typography align="left" className="body">
                             {note.body}
                         </Typography>

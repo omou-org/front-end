@@ -246,22 +246,22 @@ const Accounts = () => {
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <ResponsiveButton 
-                            color="secondary"
+                            // color="secondary"
                             component={Link}
                             to="/form/student"
                             variant="outlined"
-                            startIcon={<PersonAddIcon />}
+                            // startIcon={<PersonAddIcon />}
                         >
                             new student
                         </ResponsiveButton>
                     </Grid>
                     <Grid item>
                         <ResponsiveButton 
-                            color="secondary"
+                            // color="secondary"
                             component={Link}
                             to="/form/parent"
                             variant="outlined"
-                            startIcon={<PersonAddIcon />}
+                            // startIcon={<PersonAddIcon />}
                         >
                           new  parent 
                         </ResponsiveButton>
@@ -295,9 +295,10 @@ const Accounts = () => {
                         <Grid container item md={3}>
                             <Grid className="toggleView" item md={6}>
                                 <ResponsiveButton
-                                    className={`btn list ${viewToggle && "active"}`}
+                                    // className={`btn list ${viewToggle && "active"}`}
                                     onClick={setView(true)}
-                                    startIcon={<ListView className={`icon ${viewToggle && "active"}`} />}
+                                    // startIcon={<ListView className={`icon ${viewToggle && "active"}`} />}
+                                    variant='contained'
                                     >                                   
                                         List View
                                 </ResponsiveButton>
@@ -305,9 +306,10 @@ const Accounts = () => {
                             </Grid>
                             <Grid className="toggleView" item md={6}>
                                 <ResponsiveButton
-                                    className={`btn card ${!viewToggle && "active"}`}
+                                    // className={`btn card ${!viewToggle && "active"}`}
                                     onClick={setView(false)}
-                                    startIcon={<CardView className={`icon ${!viewToggle && "active"}`} />}
+                                    // startIcon={<CardView className={`icon ${!viewToggle && "active"}`} />}
+                                    variant='contained'
                                     >       
                                         Grid View
                                 </ResponsiveButton>

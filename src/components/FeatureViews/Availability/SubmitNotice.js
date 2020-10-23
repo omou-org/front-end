@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import DialogActions from '@material-ui/core/DialogActions/DialogActions';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useImperativeHandle } from 'react';
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
     root: {
@@ -238,12 +239,13 @@ export const SubmitNotice = forwardRef((props, ref) => {
                     ranges={state}
                 />
                 <DialogActions>
-                    <Button
+                    <ResponsiveButton
                         onClick={() => setOpenCalendar(false)}
                         color="primary"
+                        variant='outlined'
                     >
                         Save & Close
-                    </Button>
+                    </ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </Container>

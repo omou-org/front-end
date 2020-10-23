@@ -4,6 +4,7 @@ import gql from "graphql-tag"
 import {useLazyQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from "@material-ui/core/Grid";
 import {fullName, getDuration} from "../../../utils";
 import Typography from "@material-ui/core/Typography";
@@ -30,6 +31,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {CSVLink} from "react-csv";
 import moment from "moment";
 import NoListAlert from "../../OmouComponents/NoListAlert";
+
 
 const GET_INSTRUCTOR_SESSIONS = gql`query GetInstructorSessions($instructorId: ID!, $startDate: String!, $endDate:String!) {
   __typename
@@ -217,25 +219,29 @@ export default function TeachingLogContainer() {
 							ranges={state}
 						/>
 						<DialogActions>
-							<Button onClick={handleSaveDateRange} color="primary">
+							<ResponsiveButton variant='outlined' onClick={handleSaveDateRange}>
 								Save & Close
-							</Button>
+							</ResponsiveButton>
 						</DialogActions>
 					</Dialog>
 				</Grid>
 				<Grid item>
-					<ButtonGroup variant="contained">
+					<ButtonGroup >
 						<CSVLink
 							headers={teachingLogHeader}
 							data={teachingLogCSVData}
 							filename={fileName}
 							style={{textDecorationLine: 'none'}}
 						>
-							<Button>
+							<ResponsiveButton 
+							variant='outlined'
+							>
 								Download
-							</Button>
+							</ResponsiveButton>
 						</CSVLink>
-						<Button>Print</Button>
+						<ResponsiveButton 
+						variant='outlined'
+						>Print</ResponsiveButton>
 					</ButtonGroup>
 				</Grid>
 			</Grid>

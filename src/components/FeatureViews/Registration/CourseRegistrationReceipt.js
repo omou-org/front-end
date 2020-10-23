@@ -119,8 +119,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 		>
 			<Grid item>
 				<ResponsiveButton 
-					color="primary"
-					variant="outlined"
+					variant='outlined'
 					component={NavLinkNoDup}
 					to='/registration'
 					data-cy="back-to-register"
@@ -130,8 +129,7 @@ export default function CourseRegistrationReceipt({formData, format}) {
 			</Grid>
 			<Grid item>
 				<ResponsiveButton 
-					color="primary"
-					variant="contained"
+					variant='contained'
 					component={NavLinkNoDup}
 					to={'/registration/cart/'}
 					data-cy="back-to-register"				

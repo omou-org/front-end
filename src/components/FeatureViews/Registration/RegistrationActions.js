@@ -5,6 +5,8 @@ import {Link, useHistory} from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
 import Tooltip from "@material-ui/core/Tooltip";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
@@ -14,7 +16,6 @@ import {useDispatch, useSelector} from "react-redux";
 import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Loading from "../../OmouComponents/Loading";
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
@@ -105,7 +106,7 @@ const RegistrationActions = () => {
 							<ResponsiveButton 
 								aria-controls="simple-menu"
 								aria-haspopup="true"
-								className="button"
+								// className="button"
 								color="secondary"
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
@@ -119,22 +120,30 @@ const RegistrationActions = () => {
 				<Grid item xs={2}>
 					{registeringParent ? (
 						!data && <Tooltip title="Registering Parent">
-							<Button className="button" onClick={openDialog}>
-								<div
+							<ResponsiveButton 
+								variant='contained'
+								// className="button" 
+								onClick={openDialog}>
+								{/* <div
 									className="circle-icon"
 									style={{
 										backgroundColor: stringToColor(parentName),
 									}}
 									data-cy="current-parent"
-								/>
+								/> */}
 								{parentName}
-							</Button>
+							</ResponsiveButton>
 						</Tooltip>
 					) : (
-						<Button className="button set-parent" onClick={openDialog} data-cy="select-parent">
-							<div className="circle-icon"/>
+						<ResponsiveButton 
+							variant='contained'
+							// className="button set-parent" 
+							onClick={openDialog} 
+							data-cy="select-parent"
+						>
+							{/* <div className="circle-icon"/> */}
 							SET PARENT
-						</Button>
+						</ResponsiveButton>
 					)}
 				</Grid>
 				<Grid item xs={1} style={{ paddingRight: "6vh", verticalAlign: "middle" }}>
