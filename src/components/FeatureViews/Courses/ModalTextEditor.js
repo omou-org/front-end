@@ -12,19 +12,13 @@ import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import Grid from "@material-ui/core/Grid";
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormatBoldIcon from "@material-ui/icons/FormatBold";
-import FormatItalicIcon from "@material-ui/icons/FormatItalic";
-import FormatUnderlinedIcon from "@material-ui/icons/FormatUnderlined";
-import StrikethroughSIcon from "@material-ui/icons/StrikethroughS";
-import ListIcon from "@material-ui/icons/List";
 import Typography from "@material-ui/core/Typography";
-import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
-import HighlightIcon from "@material-ui/icons/Highlight";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Input from "@material-ui/core/Input";
 import { omouBlue, styleMap } from "../../../theme/muiTheme";
+import { getOperationAST } from 'graphql'
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { GET_SESSION_NOTES } from "./ClassSessionView";
@@ -98,100 +92,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MUTATIONS = {
-  ANNOUNCEMENTS: gql`
-    mutation CreateAnnouncement(
-      $subject: String!
-      $body: String!
-      $courseId: ID!
-      $userId: ID!
-      $shouldEmail: Boolean
-      $id: ID
-    ) {
-      __typename
-      createAnnouncement(
-        body: $body
-        course: $courseId
-        subject: $subject
-        user: $userId
-        shouldEmail: $shouldEmail
-        id: $id
-      ) {
-        announcement {
-          subject
-          id
-          body
-          createdAt
-          updatedAt
-          poster {
-            firstName
-            lastName
-          }
-        }
-      }
-    }
-  `,
-  STUDENT_ENROLLMENT: gql`
-    mutation SendEmail(
-      $body: String!
-      $subject: String!
-      $userId: ID!
-      $posterId: ID!
-    ) {
-      __typename
-      sendEmail(
-        body: $body
-        posterId: $posterId
-        userId: $userId
-        subject: $subject
-      ) {
-        created
-      }
-    }
-  `,
-  COURSE_SESSIONS: gql`
-    mutation createSessionNote(
-      $body: String!
-      $subject: String!
-      $user: ID!
-      $sessionId: ID!
-      $id: ID
-    ) {
-      __typename
-      createSessionNote(
-        body: $body
-        user: $user
-        subject: $subject
-        sessionId: $sessionId
-        id: $id
-      ) {
-        sessionNote {
-          id
-          body
-          subject
-          poster {
-            firstName
-            lastName
-            id
-          }
-          createdAt
-          updatedAt
-        }
-      }
-    }
-  `,
-};
-
-const QUERY_KEY = {
-  ANNOUNCEMENTS: "announcements",
-  COURSE_SESSIONS: "sessionNotes",
-};
-
-const MUTATION_KEY = {
-  ANNOUNCEMENTS: "createAnnouncement",
-  COURSE_SESSIONS: "createSessionNote",
-};
-
 const ModalTextEditor = ({
   open,
   handleCloseForm,
@@ -205,7 +105,8 @@ const ModalTextEditor = ({
   buttonState,
   announcementId,
   mutation,
-  query
+  query,
+  iconArray
 }) => {
   const classes = useStyles();
   const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
@@ -218,8 +119,8 @@ const ModalTextEditor = ({
   .reduce((accum, currentValue) => {
     return {...accum, text: currentValue.text} 
   }, {}).text
-  const { gqlquery, queryVariables, queryTitle } = query;
-  const { gqlmutation, mutationVariables, mutationTitle } = mutation;
+  const { gqlquery, queryVariables } = query;
+  const { gqlmutation, mutationVariables } = mutation;
 
   useEffect(() => {
     if(buttonState === "edit") {
@@ -228,20 +129,6 @@ const ModalTextEditor = ({
       setBody(EditorState.createEmpty())
     }
   }, [buttonState])
-
-  const QUERIES = {
-    ANNOUNCEMENTS: GET_ANNOUNCEMENTS,
-    COURSE_SESSIONS: GET_SESSION_NOTES,
-  };
-
-  const QUERY_VARAIBLES = {
-    ANNOUNCEMENTS: {
-      id: courseId.id,
-    },
-    COURSE_SESSIONS: {
-      sessionId,
-    },
-  };
 
   const NEWMUTATION_VARIABLES = {
     ...mutationVariables,
@@ -253,35 +140,11 @@ const ModalTextEditor = ({
     ...queryVariables
   }
 
-  const MUTATION_VARIABLES = {
-    ANNOUNCEMENTS: {
-      subject,
-      body: convertToRaw(body.getCurrentContent()),
-      id: announcementId,
-      userId: poster_id,
-      courseId: courseId.id,
-      shouldEmail: sendEmailCheckbox,
-    },
-    STUDENT_ENROLLMENT: {
-      subject,
-      body: body.getCurrentContent(),
-      userId,
-      posterId: poster_id,
-    },
-    COURSE_SESSIONS: {
-      subject,
-      body: convertToRaw(body.getCurrentContent()),
-      user: poster_id,
-      sessionId: sessionId,
-      id: noteId,
-    },
-  };
-  // console.log(MUTATIONS[origin])
-  // console.log(gqlmutation)
-
   const [mutateTextEditor, createResults] = useMutation(gqlmutation, {
     onCompleted: () => handleClose(false),
     update: (cache, { data }) => {
+      const queryTitle = getOperationAST(gqlquery).selectionSet.selections[0].name.value;
+      const mutationTitle = getOperationAST(gqlmutation).selectionSet.selections[1].name.value;
       const [newTextData] = Object.values(data[mutationTitle]);
       const cachedTextData = cache.readQuery({
         query: gqlquery,
@@ -306,34 +169,6 @@ const ModalTextEditor = ({
       });
     },
   });
-
-  // const [mutateTextEditor, createResults] = useMutation(MUTATIONS[origin], {
-  //   onCompleted: () => handleClose(false),
-  //   update: (cache, { data }) => {
-  //     const [newTextData] = Object.values(data[MUTATION_KEY[origin]]);
-  //     const cachedTextData = cache.readQuery({
-  //       query: QUERIES[origin],
-  //       variables: QUERY_VARAIBLES[origin],
-  //     })[QUERY_KEY[origin]];
-  //     let updatedTextData = [...cachedTextData];
-  //     const matchingIndex = updatedTextData.findIndex(
-  //       ({ id }) => id === newTextData.id
-  //     );
-  //     if (matchingIndex === -1) {
-  //       updatedTextData = [...cachedTextData, newTextData];
-  //     } else {
-  //       updatedTextData[matchingIndex] = newTextData;
-  //     }
-
-  //     cache.writeQuery({
-  //       data: {
-  //         [QUERY_KEY[origin]]: updatedTextData,
-  //       },
-  //       query: QUERIES[origin],
-  //       variables: QUERY_VARAIBLES[origin],
-  //     });
-  //   },
-  // });
 
   const handleClose = () => {
     handleCloseForm(false);
@@ -394,44 +229,6 @@ const ModalTextEditor = ({
         return "ADD NOTE";
     }
   };
-
-  const iconArray = [
-  {
-    "name": "bold",
-    "style": "BOLD",
-    "icon": <FormatBoldIcon />
-  },
-  {
-    "name": "italic",
-    "style": "ITALIC",
-    "icon": <FormatItalicIcon />
-  },
-  {
-    "name": "underline",
-    "style": "UNDERLINE",
-    "icon": <FormatUnderlinedIcon />
-  },
-  {
-    "name": "strikethrough",
-    "style": "STRIKETHROUGH",
-    "icon": <StrikethroughSIcon />
-  },
-  {
-    "name": "unordered-list-item",
-    "style": "unordered-list-item",
-    "icon": <ListIcon />
-  },
-  {
-    "name": "ordered-list-item",
-    "style": "ordered-list-item",
-    "icon": <FormatListNumberedIcon />
-  },
-  {
-    "name": "highlight",
-    "style": "HIGHLIGHT",
-    "icon": <HighlightIcon />
-  },
-];
 
   return (
     <Grid container>

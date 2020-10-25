@@ -7,6 +7,13 @@ import { Create, Cancel } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 import Editor from "draft-js-plugins-editor";
+import FormatBoldIcon from "@material-ui/icons/FormatBold";
+import FormatItalicIcon from "@material-ui/icons/FormatItalic";
+import FormatUnderlinedIcon from "@material-ui/icons/FormatUnderlined";
+import StrikethroughSIcon from "@material-ui/icons/StrikethroughS";
+import ListIcon from "@material-ui/icons/List";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
+import HighlightIcon from "@material-ui/icons/Highlight";
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
@@ -158,7 +165,6 @@ const Announcements = ({
     queryVariables: {
       id: courseId.id,
     },
-    queryTitle: "announcements"
   };
 
   const announcementMutation = {
@@ -198,8 +204,45 @@ const Announcements = ({
       courseId: courseId.id,
       shouldEmail: false,
     },
-    mutationTitle: "createAnnouncement",
-  }
+  };
+
+  const icons = [
+    {
+      "name": "bold",
+      "style": "BOLD",
+      "icon": <FormatBoldIcon />
+    },
+    {
+      "name": "italic",
+      "style": "ITALIC",
+      "icon": <FormatItalicIcon />
+    },
+    {
+      "name": "underline",
+      "style": "UNDERLINE",
+      "icon": <FormatUnderlinedIcon />
+    },
+    {
+      "name": "strikethrough",
+      "style": "STRIKETHROUGH",
+      "icon": <StrikethroughSIcon />
+    },
+    {
+      "name": "unordered-list-item",
+      "style": "unordered-list-item",
+      "icon": <ListIcon />
+    },
+    {
+      "name": "ordered-list-item",
+      "style": "ordered-list-item",
+      "icon": <FormatListNumberedIcon />
+    },
+    {
+      "name": "highlight",
+      "style": "HIGHLIGHT",
+      "icon": <HighlightIcon />
+    },
+  ];
 
   const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
     DELETE_ANNOUNCEMENT,
@@ -286,7 +329,8 @@ const Announcements = ({
         posterId={loggedInUser}
         buttonState={editOrPost}
         mutation={announcementMutation}
-        query={announcementQuery}        
+        query={announcementQuery}
+        iconArray={icons}        
       />
     </Grid>
   );
