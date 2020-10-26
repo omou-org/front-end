@@ -196,61 +196,25 @@ export default function CreateOOOForm() {
                     <Grid item style={{ padding: '5%' }}>
                         {!submitted && (
                             <ResponsiveButton
-                            // style={{
-                            //     backgroundColor: 'white',
-                            //     color: 'black',
-                            //     width: '150px',
-                            // }}
-                            onClick={() =>
-                                SubmitNoticeChild.current.handleClearForm()
-                            }
-                            // color="primary"
-                            variant="outlined"
-                            data-cy="clear-OOO-button"
+                                onClick={() =>
+                                    SubmitNoticeChild.current.handleClearForm()
+                                }
+                                variant="outlined"
+                                data-cy="clear-OOO-button"
                         >
                             clear
-                        </ResponsiveButton>
-                        
-                            // <Button
-                            //     style={{
-                            //         backgroundColor: 'white',
-                            //         color: 'black',
-                            //         width: '150px',
-                            //     }}
-                            //     onClick={() =>
-                            //         SubmitNoticeChild.current.handleClearForm()
-                            //     }
-                            //     color="primary"
-                            //     variant="outlined"
-                            //     data-cy="clear-OOO-button"
-                            // >
-                            //     Clear
-                            // </Button>
+                            </ResponsiveButton>
                         )}
                     </Grid>
                     <Grid item>
                         {!submitted && (
                             <ResponsiveButton
                                 onClick={handleSubmit}
-                                // color="primary"
                                 variant="outlined"
                                 data-cy="submit-OOO-button"
                             >
                                 submit
                             </ResponsiveButton>
-                            // <Button
-                            //     style={{
-                            //         backgroundColor: omouBlue,
-                            //         color: 'white',
-                            //         width: '150px',
-                            //     }}
-                            //     onClick={handleSubmit}
-                            //     color="primary"
-                            //     variant="outlined"
-                            //     data-cy="submit-OOO-button"
-                            // >
-                            //     Submit
-                            // </Button>
                         )}
                     </Grid>
                 </Grid>

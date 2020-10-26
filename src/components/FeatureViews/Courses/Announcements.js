@@ -35,11 +35,6 @@ const useStyles = makeStyles({
   },
   newNoteButton: {
     marginBottom: "2em",
-    // border: "1px solid #999999",
-    // borderRadius: "5px",
-    // fontSize: ".75rem",
-    // fontWeight: 300,
-    // fontFamily: "Roboto",
     height: "2.5em",
     marginTop: "2em",
     marginLeft: ".75em",

@@ -295,10 +295,8 @@ const Accounts = () => {
                         <Grid container item md={3}>
                             <Grid className="toggleView" item md={6}>
                                 <ResponsiveButton
-                                    // className={`btn list ${viewToggle && "active"}`}
                                     onClick={setView(true)}
-                                    // startIcon={<ListView className={`icon ${viewToggle && "active"}`} />}
-                                    variant='contained'
+                                    variant='outlined'
                                     >                                   
                                         List View
                                 </ResponsiveButton>
@@ -306,10 +304,8 @@ const Accounts = () => {
                             </Grid>
                             <Grid className="toggleView" item md={6}>
                                 <ResponsiveButton
-                                    // className={`btn card ${!viewToggle && "active"}`}
                                     onClick={setView(false)}
-                                    // startIcon={<CardView className={`icon ${!viewToggle && "active"}`} />}
-                                    variant='contained'
+                                    variant='outlined'
                                     >       
                                         Grid View
                                 </ResponsiveButton>

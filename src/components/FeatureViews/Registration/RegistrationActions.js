@@ -106,7 +106,6 @@ const RegistrationActions = () => {
 							<ResponsiveButton 
 								aria-controls="simple-menu"
 								aria-haspopup="true"
-								// className="button"
 								color="secondary"
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
@@ -122,26 +121,16 @@ const RegistrationActions = () => {
 						!data && <Tooltip title="Registering Parent">
 							<ResponsiveButton 
 								variant='contained'
-								// className="button" 
 								onClick={openDialog}>
-								{/* <div
-									className="circle-icon"
-									style={{
-										backgroundColor: stringToColor(parentName),
-									}}
-									data-cy="current-parent"
-								/> */}
 								{parentName}
 							</ResponsiveButton>
 						</Tooltip>
 					) : (
 						<ResponsiveButton 
 							variant='contained'
-							// className="button set-parent" 
 							onClick={openDialog} 
 							data-cy="select-parent"
 						>
-							{/* <div className="circle-icon"/> */}
 							SET PARENT
 						</ResponsiveButton>
 					)}

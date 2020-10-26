@@ -2,8 +2,6 @@ import React, {useEffect, useMemo, useState} from "react";
 import {NavLink, useLocation} from "react-router-dom";
 import {useDispatch} from "react-redux";
 
-import Button from "@material-ui/core/Button";
-import CourseIcon from "@material-ui/icons/Class";
 import Grid from "@material-ui/core/Grid";
 import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
@@ -83,7 +81,6 @@ const AdminActionCenter = () => {
 					onClick={handleClick(setUserAnchor)}
 					variant='outlined'
 				>
-					{/* <NewInstructor className="admin-action-icon" /> */}
 					Add Users
 				</ResponsiveButton>
 			</Grid>
@@ -94,8 +91,7 @@ const AdminActionCenter = () => {
 					className={`button ${tabState.course && "active"}`}
 					onClick={handleClick(setCourseAnchor)}
 					variant='outlined'
-				>
-					{/* <CourseIcon className="admin-action-icon" /> */}
+				>					
 					Manage Course
 				</ResponsiveButton>
 			</Grid>
@@ -108,7 +104,6 @@ const AdminActionCenter = () => {
 					to="/adminportal/actionlog"
 					variant='outlined'
 				>
-					{/* <CourseIcon className="admin-action-icon" /> */}
 					Action Log
 				</ResponsiveButton>
 			</Grid>

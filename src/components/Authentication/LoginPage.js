@@ -15,7 +15,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
-
 import {setToken} from "actions/authActions.js";
 import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
 import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
@@ -169,20 +168,6 @@ const LoginPage = () => {
                                 >
                                     CREATE ACCOUNT
                                 </ResponsiveButton>
-                                {/* <Button 
-                                    className="createAccountButton"
-                                    component={Link} 
-                                    to={{
-                                        "pathname": "/new/parent",
-                                        "state": {
-                                            email,
-                                            password,
-                                        },
-                                    }} 
-                                    variant="outlined"
-                                >
-                                    CREATE ACCOUNT
-                                </Button> */}
                             </Grid>
                             <Grid item md={4}>
                                 <ResponsiveButton 
@@ -193,14 +178,6 @@ const LoginPage = () => {
                                 >
                                     SIGN IN
                                 </ResponsiveButton>
-                                {/* <Button 
-                                    data-cy="nextButton" 
-                                    className="signInButton" 
-                                    onClick={handleCheck}
-                                    // variant='outlined'
-                                >
-                                    SIGN IN
-                                </Button> */}
                             </Grid>
                             <Grid item md={2} />
                         </Grid>
@@ -296,11 +273,14 @@ const LoginPage = () => {
                             <Grid item md={2} />
                             <Grid item md={4} />
                             <Grid className="buttonSpacing" item md={4}>
-                                <Button className="signInButton"
+                                <ResponsiveButton 
+                                    className="signInButton"
                                     data-cy="signInButton"
-                                    type="submit" variant="contained">
+                                    type="submit" 
+                                    variant="contained"
+                                >
                                     SIGN IN
-                                </Button>
+                                </ResponsiveButton>
                             </Grid>
                             <Grid item md={4} />
                         </Grid>

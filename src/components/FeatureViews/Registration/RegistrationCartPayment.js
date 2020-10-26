@@ -157,13 +157,6 @@ const Payment = ({
 									onClick={updateQuantity}
 									label='update sessions'
 								/>
-								// <Button
-								// 	className="button"
-								// 	disabled={!allValid}
-								// 	onClick={updateQuantity}
-								// >
-								// 	UPDATE SESSIONS
-								// </Button>
 							)}
 						</Grid>
 					</Grid>

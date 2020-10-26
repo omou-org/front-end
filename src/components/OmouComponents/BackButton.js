@@ -70,8 +70,6 @@ const BackButton = (props) => {
 	const renderIcon = () => {
 		if (props.icon == null) {
 			return <BackArrow style={{transform: "scale(0.8)"}}/>
-			//<BackArrow fontSize="small" className="icon" />
-			
 		}
 		if (props.icon == "cancel") {
 			return null;
@@ -87,15 +85,6 @@ const BackButton = (props) => {
 			>
 				{label()}
 			</ResponsiveButton>
-			{/* <Button
-				className="control course button"
-				onClick={() => { handleClick() }}
-			>
-				<Grid container>
-					{renderIcon()}
-					<span className="label">{label()}</span>
-				</Grid>
-			</Button> */}
 			<Modal
 				aria-labelledby="simple-modal-title"
 				aria-describedby="simple-modal-description"

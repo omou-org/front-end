@@ -342,7 +342,10 @@ const CourseSessionStatus = () => {
                                 parentOfCurrentStudent={studentParent} />
                         </Grid>
                         <Grid item>
-                            <ResponsiveButton Button className="button unenroll" onClick={openUnenrollDialog}>
+                            <ResponsiveButton 
+                                className="button unenroll" 
+                                onClick={openUnenrollDialog}
+                            >
                                 Unenroll Course
                             </ResponsiveButton>
                         </Grid>
