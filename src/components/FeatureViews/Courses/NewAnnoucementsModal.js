@@ -13,7 +13,7 @@ import CheckBoxOutlineBlankOutlinedIcon from "@material-ui/icons/CheckBoxOutline
 import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { makeStyles } from "@material-ui/core/styles";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";

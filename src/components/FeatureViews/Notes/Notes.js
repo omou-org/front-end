@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import AddIcon from "@material-ui/icons/AddOutlined";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import Delete from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -635,9 +634,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                             <NotificationIcon className="noteNotification"
                                 onClick={toggleNoteField(note.id, "important")}
                                 style={note.important ? { "color": "red" } : {}} />
-                        </Typography>import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-
+                        </Typography>
                         <Typography align="left" className="body">
                             {note.body}
                         </Typography>

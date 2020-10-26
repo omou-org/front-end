@@ -16,8 +16,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
-
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
     "buttons": {

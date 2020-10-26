@@ -9,14 +9,14 @@ import IconButton from "@material-ui/core/IconButton/IconButton";
 import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import "./AdminPortal.scss";
 import * as adminActions from "actions/adminActions";
 import * as hooks from "actions/hooks";
 import Loading from "components/OmouComponents/Loading";
 import NoListAlert from "components/OmouComponents/NoListAlert";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+
 
 
 const ManageCategories = () => {

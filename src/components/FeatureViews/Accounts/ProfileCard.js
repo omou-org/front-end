@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -21,6 +21,7 @@ import { ReactComponent as IDIcon } from "components/identifier.svg";
 import UserAvatar from "./UserAvatar";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
+
 
 
 const useStyles = makeStyles({

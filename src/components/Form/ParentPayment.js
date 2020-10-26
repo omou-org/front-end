@@ -17,7 +17,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const msPerWeek = 1000 * 60 * 60 * 24 * 7;
 

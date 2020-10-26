@@ -23,13 +23,14 @@ import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from "graphql-tag";
 import moment from "moment";
 import Loading from "../../OmouComponents/Loading";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { useQuery } from "@apollo/react-hooks";
 import { DateRange } from "react-date-range";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import ErrorIcon from '@material-ui/icons/Error';
 import { fullName } from "../../../utils";
+
 
 
 const GET_LOGS = gql`

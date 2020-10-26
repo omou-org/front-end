@@ -24,7 +24,7 @@ import "./registration.scss";
 import {Link, useRouteMatch} from "react-router-dom";
 import BackButton from "../../OmouComponents/BackButton.js";
 import Loading from "components/OmouComponents/Loading";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
 import UserAvatar from "../Accounts/UserAvatar";
@@ -110,7 +110,6 @@ const RegistrationCourse = () => {
 	const hasImportantNotes = Object.values(courseNotes || {}).some(
 		({important}) => important
 	);
-
 
 	const instructorName = fullName(instructor.user);
 

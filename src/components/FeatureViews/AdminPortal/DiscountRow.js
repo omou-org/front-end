@@ -24,11 +24,12 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import {withStyles} from "@material-ui/core/styles";
 
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import * as adminActions from "actions/adminActions";
 import {dateParser} from "../../Form/FormUtils";
 import {DatePicker} from "@material-ui/pickers";
+
 
 
 const styles = () => ({

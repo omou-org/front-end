@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
@@ -25,6 +25,7 @@ import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
 import {ReactComponent as SchoolIcon} from "../../school.svg";
 import {USER_TYPES} from "utils";
+
 
 
 const ProfileHeading = ({ user }) => {

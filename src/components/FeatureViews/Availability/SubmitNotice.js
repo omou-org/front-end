@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 import DialogActions from '@material-ui/core/DialogActions/DialogActions';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useImperativeHandle } from 'react';
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
     root: {

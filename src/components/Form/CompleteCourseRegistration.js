@@ -8,8 +8,7 @@ import * as hooks from "../../actions/hooks";
 import Loading from "../OmouComponents/Loading";
 import { stringToColor } from "../FeatureViews/Accounts/accountUtils";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 export function CompleteCourseRegistration({
   registeredCourseForm,

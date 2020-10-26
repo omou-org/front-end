@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 import {useSelector} from "react-redux";
 import {useLazyQuery} from "@apollo/react-hooks";
 import moment from "moment";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from "../../OmouComponents/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";

@@ -8,8 +8,7 @@ import * as registrationActions from "../../../actions/registrationActions";
 import {useDispatch, useSelector} from "react-redux";
 import {Tooltip, Typography, withStyles} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Button from "@material-ui/core/Button";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from "../../OmouComponents/Loading";
 import Avatar from "@material-ui/core/Avatar";
 import {stringToColor} from "../Accounts/accountUtils";
@@ -35,8 +34,6 @@ import AddSessions from "components/OmouComponents/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {capitalizeString} from "../../../utils";
-
-
 
 const StyledMenu = withStyles({
     "paper": {

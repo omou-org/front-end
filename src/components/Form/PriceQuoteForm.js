@@ -26,7 +26,7 @@ import * as registrationActions from "../../actions/registrationActions";
 import {dayOfWeek, weeklySessionsParser} from "./FormUtils";
 import {usePrevious} from "../../actions/hooks";
 import {isExistingTutoring, USER_TYPES} from "utils";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const CASH = "cash",
     CHECK = "check",

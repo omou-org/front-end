@@ -4,7 +4,7 @@ import gql from "graphql-tag"
 import {useLazyQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from "@material-ui/core/Grid";
 import {fullName, getDuration} from "../../../utils";
 import Typography from "@material-ui/core/Typography";
@@ -31,7 +31,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {CSVLink} from "react-csv";
 import moment from "moment";
 import NoListAlert from "../../OmouComponents/NoListAlert";
-
 
 const GET_INSTRUCTOR_SESSIONS = gql`query GetInstructorSessions($instructorId: ID!, $startDate: String!, $endDate:String!) {
   __typename

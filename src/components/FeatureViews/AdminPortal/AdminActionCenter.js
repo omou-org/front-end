@@ -9,12 +9,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import NewInstructor from "@material-ui/icons/PersonAdd";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import "./AdminPortal.scss";
 import {initializeRegistration} from "actions/registrationActions";
 
 import {withStyles} from "@material-ui/core";
+
 
 
 const StyledMenu = withStyles({

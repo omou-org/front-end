@@ -12,7 +12,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import UpdateTeacher from "@material-ui/icons/PersonAdd";
 import Button from "@material-ui/core/Button";
 import {NavLink} from "react-router-dom";
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 class SessionView extends Component {
 	constructor(props) {
