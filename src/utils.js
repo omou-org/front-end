@@ -84,13 +84,9 @@ export const courseDateFormat = ({schedule, is_confirmed}) => ({
  * @param {Date} date Date to convert
  * @returns {Date} date object without the time
  */
-export const dateTimeToDate = (date) => {
-    moment(date).format('YYYY/MM/DD')
-    console.log(moment(date).format('YYYY/MM/DD')
+export const dateTimeToDate = (date) => 
+    moment(date).format('YYYY/MM/DD');
     
-    )};
-
-    dateTimeToDate('2020-10-15T22:00:00+00:00')
 
 export const courseDataParser = (course) => {
     const timeOptions = {

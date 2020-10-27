@@ -6,17 +6,16 @@ import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 import NoListAlert from "../../../OmouComponents/NoListAlert";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
+import moment from "moment";
 
 
 
-function EnrollmentSessionRow({sessionsData, enrollmentData, highlightSession}) {
+function EnrollmentSessionRow({session, enrollmentData, highlightSession}) {
     const {course, id} = enrollmentData.enrollment
-    console.log(course)
-return (
-    <Grid container spacing={1}> 
-        {sessionsData.sessions.length !== 0 ?
-            sessionsData.sessions.map((session) => {
-                
+    const tuitionStartTime = moment(session.startDatetime).format('hh')
+    const tuitionEndTime = moment(session.endDatetime).format('hh')
+    const tuition = session.course.hourlyTuition * (tuitionEndTime - tuitionStartTime)
+
             return (
                 <Grid className="accounts-table-row"
                     component={Link}
@@ -70,7 +69,7 @@ return (
                                     </Grid>
                                     <Grid item xs={1}>
                                         {/* hourly rate * endtime-starttime */}
-                                        <Typography align="left">${session.hourlyTuition}</Typography>
+                                        <Typography align="left">${tuition}</Typography>
                                     </Grid>
                                     <Grid item xs={2}>
                                         <SessionPaymentStatusChip enrollment={enrollmentData.enrollment}
@@ -81,13 +80,6 @@ return (
                         </Paper>
                 </Grid>
             );
-
-        })
-                            
-        : (
-            <NoListAlert list="Course" />
-        )}
-    </Grid>
-)}
+}
 
 export default EnrollmentSessionRow;

@@ -75,7 +75,9 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
             <Card className={`unpaid-sessions-card ${classes.card}`}>
                 <CardActionArea
                     component={Link}
-                    to={`/accounts/students/${studentId}/${courseId}`}
+                    //TODO: make sure this is the right path, to go to the EnrollmentView
+                    // to={`/accounts/students/${studentId}/${courseId}`}
+                    to={`/enrollment/${courseId}`}
                 >
                     <Grid
                         className={`unpaid-avatar-container ${classes.avatarContainer}`}

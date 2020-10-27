@@ -1,3 +1,5 @@
+const { it } = require("date-fns/locale");
+
 describe("Properly calculates height of AddItemButton component", () => {
     before(() => {
         cy.fixture("enrollment.json").then(({ enrollment }) => {
@@ -7,8 +9,7 @@ describe("Properly calculates height of AddItemButton component", () => {
                 "EnrollmentViewQuery": {
                     "response": {
                         "data": {
-                            "createEnrollment": {
-                                "created": false,
+                            enrollment
                             },
                         },
                     },
@@ -41,6 +42,10 @@ describe("Properly calculates height of AddItemButton component", () => {
         });
     });
     
+
+    it("will test stuff", () => {
+        
+    }
     
     it('goes to the view-session scheduler of that session', () => {
 

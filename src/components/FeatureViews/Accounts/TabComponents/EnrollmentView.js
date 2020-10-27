@@ -139,33 +139,6 @@ const CourseSessionStatus = () => {
   const [highlightSession, setHighlightSession] = useState(false);
   const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
-  // const upcomingSess = upcomingSession(sessions, courseID) || {};
-
-  // const studentParent =
-  //     usersList.StudentList[studentID] &&
-  //     usersList.StudentList[studentID].parent_id;
-
-  // const sessionDataParse = useCallback(
-  //     ({ start_datetime, end_datetime, course, status, id, instructor }) => {
-  //         if (start_datetime && end_datetime && course) {
-  //             const startDate = new Date(start_datetime);
-  //             const endDate = new Date(end_datetime);
-  //             return {
-  //                 "course_id": course,
-  //                 "date": startDate,
-  //                 "endTime": endDate,
-  //                 id,
-  //                 instructor,
-  //                 "startTime": start_datetime,
-  //                 status,
-  //                 "tuition": course && courses[course].hourly_tuition,
-  //             };
-  //         }
-  //         return {};
-  //     },
-  //     [courses]
-  // );
-
   const handleTabChange = useCallback((_, newTab) => {
     setActiveTab(newTab);
   }, []);
@@ -186,7 +159,7 @@ const CourseSessionStatus = () => {
       //     deleteEnrollment(enrollment)(dispatch);
       //     goToRoute(`/accounts/student/${studentID}`);
       // }
-    },
+    }
     // [dispatch, enrollment, goToRoute, studentID]
   );
 
@@ -205,43 +178,6 @@ const CourseSessionStatus = () => {
       </Typography>
     );
   }
-  console.log(enrollmentData);
-  console.log(sessionsData);
-
-  //   const courseid = enrollmentsData.enrollment.course.id;
-  //   const courseid= 1;
-
-  //    const GET_SESSIONS = gql `
-  // query MyQuery {
-  //     sessions(courseId: ${courseid}) {
-  //       course {
-  //         startTime
-  //         endTime
-  //         id
-  //         hourlyTuition
-  //       }
-  //       id
-  //     }
-  //   }
-  // `
-
-  //   if (sessionsLoading) {
-  //     return <Loading/>
-  // }
-  // if (sessionsError) {
-  //     return <Typography>
-  //         There's been an error! Error: {error.message}
-  //     </Typography>
-  // }
-  //   console.log(sessionsData)
-
-  // either doesn't exist or only has notes defined
-
-  // return (
-  //     <div>
-  //         hi
-  //     </div>
-  // )
   const {
     course,
     enrollmentnoteSet,
@@ -250,10 +186,8 @@ const CourseSessionStatus = () => {
     student,
     id,
   } = enrollmentData.enrollment;
-  console.log(sessionsData.sessions);
 
   const mainContent = () => {
-    // const {course, enrollmentnoteSet, paymentList, student, id} = enrollmentData
     switch (activeTab) {
       case 0:
         return (
@@ -287,91 +221,20 @@ const CourseSessionStatus = () => {
               </Grid>
             </Grid>
             <Grid container spacing={1}>
-                {/* map here go through component 24 time */}
-              <EnrollmentSessionRow
-                sessionsData={sessionsData}
-                enrollmentData={enrollmentData}
-                highlightSession={highlightSession}
-              />
+              {sessionsData.sessions.length !== 0 ? (
+                sessionsData.sessions.map((session) => {
+                  return (
+                    <EnrollmentSessionRow
+                      session={session}
+                      enrollmentData={enrollmentData}
+                      highlightSession={highlightSession}
+                    />
+                  );
+                })
+              ) : (
+                <NoListAlert list="Course" />
+              )}
             </Grid>
-            {/* <Grid container spacing={1}>
-                            {sessionsData.sessions.length !== 0 ?
-                                sessionsData.sessions.map((session) => {
-                                 
-                                
-                                    
-                                
-                                    return (
-                                        <Grid className="accounts-table-row"
-                                            component={Link}
-                                            item
-                                            key={id}
-                                            to={
-                                                course.course_type === "tutoring"
-                                                    ? `/scheduler/view-session/${session.course.id}/${id}/${session.instructor}`
-                                                    : `/registration/course/${session.course.id}`
-                                            }
-                                            xs={12}>
-                                            <Paper className={`session-info
-                                                ${highlightSession && " active"}
-                                                ${
-                                                session.id == session.id &&
-                                                "upcoming-session"
-                                                }`}
-                                                component={Grid}
-                                                container
-                                                square>
-                                                <Grid item xs={1} />
-                                                <Grid item xs={2}>
-                                                    <Typography align="left">
-                                                        <Moment
-                                                            date={session.startDate}
-                                                            format="M/D/YYYY"
-                                                        />
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    <Typography align="left">
-                                                        <Typography align="left">
-                                                            <Moment
-                                                                date={session.startDate}
-                                                                format="dddd"
-                                                            />
-                                                        </Typography>
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={3}>
-                                                    <Typography align="left">
-                                                        <Moment
-                                                            date={session.startTime}
-                                                            format="h:mm A"
-                                                        />
-                                                        {" - "}
-                                                        <Moment
-                                                            date={session.endTime}
-                                                            format="h:mm A"
-                                                        />
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item xs={1}>
-                                                    <Typography align="left">${session.hourlyTuition}</Typography>
-                                                </Grid>
-                                                <Grid item xs={2}>
-                                                    {/* MUST FIX STATUS */}
-            {/* <SessionPaymentStatusChip enrollment={enrollmentData.enrollment}
-                                                        session={session}
-                                                        setPos /> */}
-            {/* </Grid>
-                                            </Paper>
-                                        </Grid> */}
-            {/* ); */}
-
-            {/* })
-                            
-                                : (
-                                    <NoListAlert list="Course" />
-                                )}
-                        </Grid> */}
           </>
         );
       case 1:
