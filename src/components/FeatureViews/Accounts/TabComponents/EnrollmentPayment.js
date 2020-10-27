@@ -37,15 +37,20 @@ query EnrollmentPayments($enrollmentId: ID!) {
 
 
 `;
-
+// Why is the map after the console log affecting the objects?
 const formatSets = (payments) => {
+  console.log("payments", payments);
   return payments.map(payment => {
     payment['registrations'] = payment['registrationSet'];
     delete payment['registrationSet'];
+
+    payment.id = +payment.id;
+
+    payment.method = payment.method.toLowerCase();
   })
 }
 
-const EnrollmentPayment = ({enrollmentID, courseID, paymentList, type}) => {
+const EnrollmentPayment = ({enrollmentID, courseID, paymentList}) => {
 	const {data, loading, error} = useQuery(GET_ENROLLMENT_PAYMENTS,
 		{variables: {enrollmentId: enrollmentID}}
 	);
@@ -59,15 +64,15 @@ const EnrollmentPayment = ({enrollmentID, courseID, paymentList, type}) => {
 		</Typography>
     }
 
-  console.log("data: ", data);
+  console.log("data: ", data.enrollment.paymentList);
   const payments = formatSets(data.enrollment.paymentList);
   
-    console.log("payments: " + payments);
-    console.log("paymentList: " + paymentList);
+    //console.log("payments: ", payments);
+    //console.log("paymentList: ", paymentList);
     return (
         <PaymentTable courseID={courseID}
         enrollmentID={enrollmentID}
-        paymentList={payments}
+        paymentList={data.enrollment.paymentList}
         type="enrollment" />
     );
 };
