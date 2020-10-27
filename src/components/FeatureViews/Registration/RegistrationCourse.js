@@ -2,7 +2,6 @@ import React, {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
 
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Chip from "@material-ui/core/Chip";
 import ClassIcon from "@material-ui/icons/Class";
@@ -20,10 +19,12 @@ import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import Moment from "react-moment";
 
+
 import "./registration.scss";
 import {Link, useRouteMatch} from "react-router-dom";
 import BackButton from "../../OmouComponents/BackButton.js";
 import Loading from "components/OmouComponents/Loading";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
 import UserAvatar from "../Accounts/UserAvatar";
@@ -129,14 +130,14 @@ const RegistrationCourse = () => {
 					<Typography align="left" variant="h3">
 						{title}
 						{isAdmin && (
-							<Button
+							<ResponsiveButton 
 								className="button"
+								variant='outlined'
 								component={Link}
 								to={`/registration/form/course_details/${courseID}`}
 							>
-								<EditIcon className="icon"/>
-								Edit Course
-							</Button>
+								edit course
+							</ ResponsiveButton>
 						)}
 					</Typography>
 					<div className="date">

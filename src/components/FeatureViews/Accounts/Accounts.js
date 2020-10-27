@@ -34,6 +34,8 @@ import theme from "../../../theme/muiTheme";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import secondaryTheme from "../../../theme/secondaryTheme";
 import NewUser from "@material-ui/icons/PersonAdd";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PersonAddIcon from '@material-ui/icons/PersonAdd'
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -243,26 +245,26 @@ const Accounts = () => {
             <BackgroundPaper elevation={2}>
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
-                        <Button
-                            className="button"
-                            color="secondary"
+                        <ResponsiveButton 
+                            // color="secondary"
                             component={Link}
                             to="/form/student"
                             variant="outlined"
+                            // startIcon={<PersonAddIcon />}
                         >
-                            <NewUser className="icon" /> NEW STUDENT
-                        </Button>
+                            new student
+                        </ResponsiveButton>
                     </Grid>
                     <Grid item>
-                        <Button
-                            className="button"
-                            color="secondary"
+                        <ResponsiveButton 
+                            // color="secondary"
                             component={Link}
                             to="/form/parent"
                             variant="outlined"
+                            // startIcon={<PersonAddIcon />}
                         >
-                            <NewUser className="icon" /> NEW PARENT
-                        </Button>
+                          new  parent 
+                        </ResponsiveButton>
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
@@ -292,20 +294,22 @@ const Accounts = () => {
                         <Grid item md={1} />
                         <Grid container item md={3}>
                             <Grid className="toggleView" item md={6}>
-                                <Button
-                                    className={`btn list ${viewToggle && "active"}`}
-                                    onClick={setView(true)}>
-                                    <ListView className={`icon ${viewToggle && "active"}`} />
-                                List View
-                            </Button>
+                                <ResponsiveButton
+                                    onClick={setView(true)}
+                                    variant='outlined'
+                                    >                                   
+                                        List View
+                                </ResponsiveButton>
+                            
                             </Grid>
                             <Grid className="toggleView" item md={6}>
-                                <Button
-                                    className={`btn card ${!viewToggle && "active"}`}
-                                    onClick={setView(false)}>
-                                    <CardView className={`icon ${!viewToggle && "active"}`} />
-                                Grid View
-                            </Button>
+                                <ResponsiveButton
+                                    onClick={setView(false)}
+                                    variant='outlined'
+                                    >       
+                                        Grid View
+                                </ResponsiveButton>
+                                
                             </Grid>
                         </Grid>
                     </Hidden>

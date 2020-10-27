@@ -28,6 +28,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
 import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -183,18 +184,17 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     <span className="label">Enrolled</span>
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
-                                    <Button
+                                    <ResponsiveButton
                                         disabled={shouldDisableQuickRegister({
                                             course, enrolledCourseIds,
                                             registrations, studentList
-                                        })}
+                                        })}                                    
                                         variant="contained"
-                                        color="primary"
                                         onClick={handleStartQuickRegister(course.id)}
                                         data-cy="quick-register-class"
                                     >
-                                        + REGISTER
-                                    </Button>
+                                        register
+                                    </ResponsiveButton>
                                 )}
                             </TableCell>
                         </TableRow>
@@ -223,12 +223,13 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </Select>
                 </FormControl>
                 <DialogActions>
-                    <Button data-cy="add-registration-to-cart"
-                            onClick={handleAddRegistration}
-                            disabled={!quickStudent}
+                    <ResponsiveButton 
+                        data-cy="add-registration-to-cart"
+                        onClick={handleAddRegistration}
+                        disabled={!quickStudent}
                     >
-                        ADD TO CART
-                    </Button>
+                        add to cart
+                    </ ResponsiveButton>
                 </DialogActions>
             </DialogContent>
         </Dialog>

@@ -14,6 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import {setToken} from "actions/authActions.js";
 import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
 import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
@@ -24,6 +25,7 @@ import {ReactComponent as Picture2} from "./loginImages/picture2.svg";
 import {ReactComponent as Picture3} from "./loginImages/picture3.svg";
 import {ReactComponent as Picture4} from "./loginImages/picture4.svg";
 import "./LoginPage.scss";
+
 
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
@@ -152,21 +154,30 @@ const LoginPage = () => {
                         <Grid className="buttonContainer" container item>
                             <Grid item md={2} />
                             <Grid item md={4}>
-                                <Button className="createAccountButton"
-                                    component={Link} to={{
+                                <ResponsiveButton 
+                                    className="createAccountButton"
+                                    component={Link} 
+                                    to={{
                                         "pathname": "/new/parent",
                                         "state": {
                                             email,
                                             password,
                                         },
-                                    }} variant="outlined">
+                                    }} 
+                                    variant="outlined"
+                                >
                                     CREATE ACCOUNT
-                                </Button>
+                                </ResponsiveButton>
                             </Grid>
                             <Grid item md={4}>
-                                <Button data-cy="nextButton" className="signInButton" onClick={handleCheck}>
+                                <ResponsiveButton 
+                                    data-cy="nextButton" 
+                                    className="signInButton" 
+                                    onClick={handleCheck}
+                                    variant='outlined'
+                                >
                                     SIGN IN
-                                </Button>
+                                </ResponsiveButton>
                             </Grid>
                             <Grid item md={2} />
                         </Grid>
@@ -262,11 +273,14 @@ const LoginPage = () => {
                             <Grid item md={2} />
                             <Grid item md={4} />
                             <Grid className="buttonSpacing" item md={4}>
-                                <Button className="signInButton"
+                                <ResponsiveButton 
+                                    className="signInButton"
                                     data-cy="signInButton"
-                                    type="submit" variant="contained">
+                                    type="submit" 
+                                    variant="contained"
+                                >
                                     SIGN IN
-                                </Button>
+                                </ResponsiveButton>
                             </Grid>
                             <Grid item md={4} />
                         </Grid>

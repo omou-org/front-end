@@ -23,12 +23,15 @@ import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from "graphql-tag";
 import moment from "moment";
 import Loading from "../../OmouComponents/Loading";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { useQuery } from "@apollo/react-hooks";
 import { DateRange } from "react-date-range";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import ErrorIcon from '@material-ui/icons/Error';
 import { fullName } from "../../../utils";
+
+
 
 const GET_LOGS = gql`
     query GetLogs ($action: String,
@@ -193,15 +196,15 @@ const ActionLog = () => {
                     ranges={state}
                 />
                 <DialogActions>
-                    <Button onClick={handleSaveDateRange} color="primary">
+                    <ResponsiveButton onClick={handleSaveDateRange} color="primary">
                         Save & Close
-						</Button>
+					</ResponsiveButton>
                 </DialogActions>
             </Dialog>
             <div style={{ textAlign: "right", padding: 0 }}>
-                <Button onClick={resetFilters}>
+                <ResponsiveButton variant='outlined' onClick={resetFilters}>
                     Reset All Filters
-                </Button>
+                </ResponsiveButton>
             </div>
             <Table>
                 <TableHead>

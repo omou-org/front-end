@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
@@ -25,6 +26,8 @@ import RoleChip from "./RoleChip";
 import {ReactComponent as SchoolIcon} from "../../school.svg";
 import {USER_TYPES} from "utils";
 
+
+
 const ProfileHeading = ({ user }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isAdmin =
@@ -42,15 +45,15 @@ const ProfileHeading = ({ user }) => {
 		<Grid container item xs={4}>
 			{user.role === "instructor" && (
 				<Grid align="left" className="schedule-button" item xs={12}>
-					<Button
+					<ResponsiveButton
 						aria-controls="simple-menu"
 						aria-haspopup="true"
 						onClick={handleOpen}
 						variant="outlined"
+						startIcon={<CalendarIcon/>}
 					>
-						<CalendarIcon/>
 						Schedule Options
-					</Button>
+					</ResponsiveButton>
 					<Menu
 						anchorEl={anchorEl}
 						keepMounted
@@ -68,14 +71,14 @@ const ProfileHeading = ({ user }) => {
 			{isAdmin && (
 				<>
 					<Grid component={Hidden} item mdDown xs={12}>
-						<Button
+						<ResponsiveButton
 							component={Link}
 							to={`/form/${user.role}/${user.user_id}`}
 							variant="outlined"
+							startIcon={<EditIcon/>}
 						>
-							<EditIcon/>
 							Edit Profile
-						</Button>
+						</ResponsiveButton>
 					</Grid>
 					<Grid component={Hidden} item lgUp xs={12}>
 						<Button

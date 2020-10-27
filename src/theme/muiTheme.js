@@ -131,10 +131,24 @@ const theme = createMuiTheme({
             },
         },
         "MuiButton": {
+          "fontSize": '14px',
+          "fontWeight": '500',
+          "fontStyle": 'normal',
+          "fontFamily": 'Roboto',
+          "lineHeight": '16px',
+          "fontVariant": 'all-small-caps',
+          "fontFeatureSettings": '"cpsp" on',
             "text": {
                 "color": "black",
             },
             "contained" : {
+              "fontSize": '14px',
+              "fontWeight": '500',
+              "fontStyle": 'normal',
+              "fontFamily": 'Roboto',
+              "lineHeight": '16px',
+              "fontVariant": 'all-small-caps',
+              "fontFeatureSettings": '"cpsp" on',
               "color": "#FFFFFF",
               "backgroundColor": "#289FC3",
               "border": "2px solid #289FC3",
@@ -147,18 +161,25 @@ const theme = createMuiTheme({
                 "backgroundColor": "#289FC3",
                 "opacity": "80%",
                 "border": "rgba(40, 159, 195, 0.8)",
-                // "-webkit-background-clip": "padding-box", 
-                // "background-clip": "padding-box"
+                "-webkit-background-clip": "padding-box", 
+                "background-clip": "padding-box"
               },
               "&:active": {
                 "backgroundColor": "#289FC3",
                 "opacity": "60%",
                 "border": "rgba(40, 159, 195, 0.6)",
-                // "-webkit-background-clip": "padding-box", 
-                // "background-clip": "padding-box"
+                "-webkit-background-clip": "padding-box", 
+                "background-clip": "padding-box"
               },
             },
             "outlined" : {
+              "fontSize": '14px',
+              "fontWeight": '500',
+              "fontStyle": 'normal',
+              "fontFamily": 'Roboto',
+              "lineHeight": '16px',
+              "fontVariant": 'all-small-caps',
+              "fontFeatureSettings": '"cpsp" on',
               "color": "#289FC3",
               "backgroundColor": "#FFFFFF",
               "border": "2px solid #C4C4C4",
