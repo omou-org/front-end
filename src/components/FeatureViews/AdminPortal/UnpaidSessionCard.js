@@ -14,6 +14,7 @@ import * as adminUtils from "./AdminUtils";
 import {fullName, initials} from "utils";
 import {stringToColor} from "../Accounts/accountUtils";
 import {makeStyles} from "@material-ui/styles";
+import {LabelBadge} from "theme/ThemedComponents/Badge/LabelBadge";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -97,6 +98,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                         <Typography className={`unpaid-role-label ${classes.label}`}>
                             Student
                         </Typography>
+                        <LabelBadge label="Student" variant="outline" style={{"margin": "auto"}}/>
                         <Typography className={`unpaid-status-info ${classes.info}`}>
                             Payment Status: <span
                                 className="unpaid-status"
@@ -107,6 +109,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                                 }}>
                                 {sessionsLeft}
                             </span>
+                            <LabelBadge label="1" variant="round-warning"/>
                             <br />
                             Amount Due: ${amtDue}
                             <br />
