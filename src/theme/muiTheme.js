@@ -109,11 +109,20 @@ const theme = createMuiTheme({
               fontVariant: 'small-caps',
               fontFeatureSettings: '"cpsp" on'
             },
+            //Body(Default)
             body1: {
               fontSize: '12px',
               fontWeight: '400',
               fontFamily: 'Roboto',
               lineHeight: '16px',
+              color: '#000000'
+            },
+            //Body(Paragraph)
+            h6: {
+              fontSize: '12px',
+              fontWeight: '400',
+              fontFamily: 'Roboto',
+              lineHeight: '18px',
               color: '#000000'
             },
             //Body(Bolded)
