@@ -125,18 +125,16 @@ const ModalTextEditor = ({
   useEffect(() => {
     if(buttonState === "edit") {
       setBody(EditorState.createWithContent(convertFromRaw(textBody)))
-    } else {
-      setBody(EditorState.createEmpty())
     }
   }, [buttonState])
 
-  const NEWMUTATION_VARIABLES = {
+  const MUTATION_VARIABLES = {
     ...mutationVariables,
     subject,
     body: convertToRaw(body.getCurrentContent()),
   };
 
-  const NEWQUERY_VARIABLES = {
+  const QUERY_VARIABLES = {
     ...queryVariables
   }
 
@@ -148,8 +146,9 @@ const ModalTextEditor = ({
       const [newTextData] = Object.values(data[mutationTitle]);
       const cachedTextData = cache.readQuery({
         query: gqlquery,
-        variables: NEWQUERY_VARIABLES,
+        variables: QUERY_VARIABLES,
       })[queryTitle];
+      // util function
       let updatedTextData = [...cachedTextData];
       const matchingIndex = updatedTextData.findIndex(
         ({ id }) => id === newTextData.id
@@ -159,13 +158,12 @@ const ModalTextEditor = ({
       } else {
         updatedTextData[matchingIndex] = newTextData;
       }
-
       cache.writeQuery({
         data: {
           [queryTitle]: updatedTextData,
         },
         query: gqlquery,
-        variables: NEWQUERY_VARIABLES,
+        variables: QUERY_VARIABLES,
       });
     },
   });
@@ -178,7 +176,7 @@ const ModalTextEditor = ({
   const handleSubmit = async e => {
     e.preventDefault();
     const createTextData = await mutateTextEditor({
-      variables: NEWMUTATION_VARIABLES,
+      variables: MUTATION_VARIABLES,
     });
     setBody(EditorState.createEmpty())
   };
@@ -187,25 +185,19 @@ const ModalTextEditor = ({
     e.preventDefault();
     const style = e.currentTarget.getAttribute("data-style");
     const { toggleInlineStyle, toggleBlockType } = RichUtils
-    const newState = {
-      [style]: toggleInlineStyle(body, style),
-      "unordered-list-item": toggleBlockType(body, style),
-      "ordered-list-item": toggleBlockType(body, style),
-    }; 
-    if(newState[style]) {
-      setBody(newState[style])
-      return "handled"
+    
+    if(style === "ordered-list-item" || style === "unordered-list-item") {
+        setBody(toggleBlockType(body, style))
+    } else {
+      setBody(toggleInlineStyle(body, style))
     }
-    return "not handled"
   };
 
   const handleKeyCommand = (command, body) => {
     const newState = RichUtils.handleKeyCommand(body, command);
     if (newState) {
       setBody(newState);
-      return "handled";
     }
-    return "not handled";
   };
 
   const handleCheckboxChange = setCheckbox => e =>
@@ -225,10 +217,14 @@ const ModalTextEditor = ({
         return "EDIT";
       case "post":
         return "POST";
-      default:
+      case "addNote":
         return "ADD NOTE";
+      default:
+        return "FINISH";
     }
   };
+
+  console.log(convertToRaw(body.getCurrentContent()))
 
   return (
     <Grid container>

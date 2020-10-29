@@ -13,7 +13,7 @@ import FormatUnderlinedIcon from "@material-ui/icons/FormatUnderlined";
 import StrikethroughSIcon from "@material-ui/icons/StrikethroughS";
 import ListIcon from "@material-ui/icons/List";
 import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
-import HighlightIcon from "@material-ui/icons/Highlight";
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
@@ -240,7 +240,7 @@ const Announcements = ({
     {
       "name": "highlight",
       "style": "HIGHLIGHT",
-      "icon": <HighlightIcon />
+      "icon": <BorderColorIcon />
     },
   ];
 
@@ -286,6 +286,7 @@ const Announcements = ({
   const announcementRender = announcementsData
   .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
 
+  // console.log(announcementBody);
   return (
     <Grid container justify="flex-start" data-active="inactive">
       <AccessControlComponent
