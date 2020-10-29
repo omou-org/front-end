@@ -243,12 +243,12 @@ const QUERIES = {
 
 
 const UserProfile = () => {
-	// const userList = useSelector(({ Users }) => Users);
+	
 	const { accountType, accountID } = useParams();
 	const [tabIndex, setTabIndex] = useState(0);
 	const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
-	// const fetchStatus = useUser(accountID, accountType);
+	
 	const AuthUser = useSelector(({ auth }) => auth);
 
 
@@ -320,7 +320,8 @@ const UserProfile = () => {
 					inView={displayTabs
 						.filter((tab) => (tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
 					user={data}
-					log={logData}
+					id={accountID}
+					
 				/>
 			</>
 		);

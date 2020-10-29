@@ -18,34 +18,42 @@ import UserAccessControl from "./UserAccessControl";
 import { useSelector } from "react-redux";
 import { USER_TYPES } from "../../../utils";
 
-const ComponentViewer = ({ inView, user, log }) => {
+const ComponentViewer = ({ inView, user, log ,id}) => {
 	const AuthUser = useSelector(({ auth }) => auth);
 	const { userInfo } = user
+
+
+	// All components should take an user id. Components will do all the gql calls  
+	/**
+	 * [x]Bio
+	 * []StudentCourseViewer
+	 * []
+	 */
 
 	const componentsArray = useMemo(
 		() => [
 			{
-				component: <InstructorSchedule instructorID={userInfo.user.id} key={0} />,
+				component: <InstructorSchedule instructorID={id} key={0} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 0,
 			},
 			{
-				component: <InstructorCourses instructorID={userInfo.user.id} key={1} />,
+				component: <InstructorCourses instructorID={id} key={1} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 1,
 			},
 			{
-				component: <Bio background={userInfo} key={2} />,
+				component: <Bio ownerID={id} key={2} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
 				id: 2,
 			},
 			{
-				component: <StudentCourseViewer current key={3} studentID={userInfo.user.id} />,
+				component: <StudentCourseViewer current key={3} studentID={id} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 3,
 			},
 			{
-				component: <StudentCourseViewer current={false} key={4} studentID={userInfo.user.id} />,
+				component: <StudentCourseViewer current={false} key={4} studentID={id} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 4,
 			},
@@ -60,7 +68,7 @@ const ComponentViewer = ({ inView, user, log }) => {
 				id: 6,
 			},
 			{
-				component: <Notes key={7} ownerID={userInfo.user.id} ownerType="account" />,
+				component: <Notes key={7} ownerID={id} ownerType="account" />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent, USER_TYPES.instructor],
 				id: 7,
 			},
@@ -75,7 +83,7 @@ const ComponentViewer = ({ inView, user, log }) => {
 				id: 9,
 			},
 			{
-				component: <ActionLog key={10} log={log} />,
+				component: <ActionLog key={10} ownerID={id} />,
 				access_permissions: [USER_TYPES.admin, USER_TYPES.receptionist],
 				id: 10,
 			},

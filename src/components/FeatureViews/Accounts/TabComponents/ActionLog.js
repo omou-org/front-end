@@ -17,13 +17,34 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import moment from "moment";
 import Box from "@material-ui/core/Box"
+import { Redirect } from "react-router-dom";
 
 
 
+const GET_ADMIN_LOG =gql`
+query AdminLogQuery($ownerID: ID!) {
+  logs(userId: $ownerID) {
+    results {
+      action
+      date
+      objectType
+      objectRepr
+    }
+  }
+}
+`
 
 
-const ActionLog = ({ log }) => {
-    const { logs } = log;
+const ActionLog = ({ ownerID }) => {
+    
+    const { data,loading, error } = useQuery(GET_ADMIN_LOG, {
+		variables: { ownerID: ownerID },
+    })
+    
+    if (loading ) return null
+	if (error ) return <Redirect to="/PageNotFound" />;
+
+    const {logs} = data;
 
     const ActionBoxStyle = (actionType) => {
         const actionTypeBackgrounds = {
@@ -66,7 +87,7 @@ const ActionLog = ({ log }) => {
                             <TableRow >
 
                                 <TableCell>{moment(date).format("LLLL")}</TableCell>
-                                <TableCell>{ActionBoxStyle(action)}</TableCell>
+                                <TableCell >{ActionBoxStyle(action)}</TableCell>
                                 <TableCell>{objectType}</TableCell>
                                 <TableCell>{objectRepr}</TableCell>
                             </TableRow>

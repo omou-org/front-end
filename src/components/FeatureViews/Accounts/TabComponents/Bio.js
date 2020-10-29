@@ -9,21 +9,35 @@ import Loading from "../../../OmouComponents/Loading";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
-const GET_CATEGORIES = gql`query GetCategories {
-  __typename
-  courseCategories {
-    name
-    id
+
+
+const GET_USER_BIO = gql`query getUserBio($ownerID: ID!) {
+	userInfo(userId: $ownerID) {
+	  ... on InstructorType {
+		biography
+		experience
+		language
+		subjects {
+		  name
+		}
+	  }
+	}
   }
-}`
+  `
 
-const Bio = ({ "background": { biography, experience, language, subjects } }) => {
-	const { data, loading, error } = useQuery(GET_CATEGORIES);
 
-	if (loading) return <Loading />
+const Bio = ({ownerID}) => {
+	
+	const { data, loading, error } = useQuery(GET_USER_BIO, {
+		variables: {ownerID}
+	})
+	
+	if (loading ) return <Loading />
 	if (error) return <div>There's been an error! - {error.message}</div>
 
-	const { courseCategories } = data;
+	
+	const {userInfo : {biography,experience,language, subjects}} = data
+	
 
 	return (
 		<Card className="Bio">
