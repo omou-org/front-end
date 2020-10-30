@@ -315,16 +315,16 @@ const theme = createMuiTheme({
                     "borderRadius": "5px 5px 0px 0px"
                 },
               },
-              // selected: {
-              //   backgroundColor: skyBlue,
-              //   color: omouBlue,
-              //   "& + $root": {
-              //     zIndex: 1
-              //   },
-              //   "& + $root:before": {
-              //     opacity: 0
-              //   }
-              // },
+              selected: {
+                backgroundColor: skyBlue,
+                color: omouBlue,
+                "& + $root": {
+                  zIndex: 1
+                },
+                "& + $root:before": {
+                  opacity: 0
+                }
+              },
               wrapper: {
                 zIndex: 2,
                 marginTop: "0.5em",
