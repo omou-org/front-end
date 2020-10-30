@@ -112,7 +112,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
 
 LabelBadge.propTypes = {
     label: PropTypes.string.isRequired,
-    type: PropTypes.oneOf([
+    variant: PropTypes.oneOf([
                             "default",
                             "outline",
                             "outline-gray",
