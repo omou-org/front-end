@@ -223,20 +223,7 @@ const QUERIES = {
 			}
 		  }
 		}
-	  }`,
-	"adminLog": gql`
-	  query AdminLogQuery($ownerID: ID!) {
-		logs(userId: $ownerID) {
-		  results {
-			action
-			date
-			objectType
-			objectRepr
-		  }
-		}
-	  }
-	  `
-
+	  }`
 }
 
 
@@ -270,14 +257,12 @@ const UserProfile = () => {
 		variables: { ownerID: accountID },
 	})
 
-	const { data: logData, error: logError, loading: logLoading } = useQuery(QUERIES["adminLog"], {
-		variables: { ownerID: accountID }
-	})
+	
 
 
 
-	if (loading || logLoading) return null
-	if (error || logError) return <Redirect to="/PageNotFound" />;
+	if (loading ) return null
+	if (error ) return <Redirect to="/PageNotFound" />;
 
 	const handleTabChange = (_, newTabIndex) => {
 		setTabIndex(newTabIndex);

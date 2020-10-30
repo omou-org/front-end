@@ -30,13 +30,6 @@ const ProfileHeading = ({ user }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isAdmin = userInfo.accountType === USER_TYPES.admin;
 
-	const handleOpen = useCallback(({ currentTarget }) => {
-		setAnchorEl(currentTarget);
-	}, []);
-
-	const handleClose = useCallback(() => {
-		setAnchorEl(null);
-	}, []);
 
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
