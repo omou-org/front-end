@@ -67,8 +67,8 @@ const QUERY_USERS = gql`
     ${simpleUser}
 `;
 
-const TABS = ["ALL", "INSTRUCTORS", "STUDENTS", "RECEPTIONIST", "PARENTS"]
-    .map((label) => <Tab className="tab" key={label} label={label} />);
+const TABS = ["All", "Instructors", "Students", "Receptionist", "Parents"]
+    .map((label) => <Tab key={label} label={label} />);
 
 const useStyles = makeStyles({
     "tableRowStyle": {
@@ -275,10 +275,14 @@ const Accounts = () => {
                 </Typography>
                 <Grid container direction="row">
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
-                        <Tabs className="tabs" ndicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="on"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs 
+                            indicatorColor="primary"
+                            onChange={handleTabChange} 
+                            scrollButtons="on"
+                            textColor="primary" 
+                            value={tabIndex}
+                            variant="scrollable"
+                            >
                             {TABS}
                         </Tabs>
                     </Grid>

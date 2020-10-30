@@ -374,7 +374,7 @@ const CourseClasses = () => {
                     onChange={handleChange}
                   />
                 </Toolbar>
-                <Divider classes={{ root: classes.dividerColor }} />
+               
               <Grid container>
                 <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
                   <ClassInfo description={description} />

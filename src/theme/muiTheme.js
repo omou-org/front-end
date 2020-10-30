@@ -255,12 +255,18 @@ const theme = createMuiTheme({
         },
         "MuiTab": {
             root: {
+                fontSize: '14px',
+                fontWeight: '500',
+                fontFamily: 'Roboto',
+                lineHeight: '16px',
                 opacity: 1,
+                strokeWidth: '1',
                 overflow: "initial",
                 paddingLeft: "1em",
                 paddingRight: "1em",
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
+                borderTopLeftRadius: '5px',
+                borderTopRightRadius: '5px',
+                borderBottom: "1px solid #43B5D9",
                 marginTop: "0",
                 color: "#666666",
                 backgroundColor: "#ffffff",
@@ -301,18 +307,24 @@ const theme = createMuiTheme({
                 "&$selected": {
                     "backgroundColor": skyBlue,
                     "color": omouBlue,
+                    "background": "#EBFAFF",
+                    "borderTop": "1px solid #43B5D9",
+                    "borderLeft": "1px solid #43B5D9",
+                    "borderRight": "1px solid #43B5D9",
+                    "boxSizing": "border-box",
+                    "borderRadius": "5px 5px 0px 0px"
                 },
               },
-              selected: {
-                backgroundColor: skyBlue,
-                color: omouBlue,
-                "& + $root": {
-                  zIndex: 1
-                },
-                "& + $root:before": {
-                  opacity: 0
-                }
-              },
+              // selected: {
+              //   backgroundColor: skyBlue,
+              //   color: omouBlue,
+              //   "& + $root": {
+              //     zIndex: 1
+              //   },
+              //   "& + $root:before": {
+              //     opacity: 0
+              //   }
+              // },
               wrapper: {
                 zIndex: 2,
                 marginTop: "0.5em",
