@@ -20,6 +20,8 @@ import DeleteIcon from "@material-ui/icons/Clear";
 import IconButton from "@material-ui/core/IconButton";
 import TimeIcon from "@material-ui/icons/Schedule";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
 const useStyles = makeStyles(() => ({
 	availabilityRow: {
 		display: "block",
@@ -144,14 +146,17 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 				(!displayNewAvailability &&
 					Object.values(availabilities).filter(availability => !availability.toDelete).length > 0) &&
 				<div className={classes.availabilityRow}>
-					<Button color="primary"
-							onClick={(e) => {
-								e.preventDefault();
-								setDisplayNewAvailability(true)
-							}}
+					<ResponsiveButton
+						variant='outlined' 
+						color="primary"
+						onClick={(e) => {
+							e.preventDefault();
+							setDisplayNewAvailability(true)
+						}}
+						startIcon={<AddCircleIcon style={{marginRight: "10px"}}/>}
 					>
-						<AddCircleIcon style={{marginRight: "10px"}}/> Add Availability
-					</Button>
+						 Add Availability
+					</ResponsiveButton>
 				</div>
 			}
 		</TableCell>
@@ -181,9 +186,9 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 				</DialogContentText>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleDialogClose}>
+				<ResponsiveButton onClick={handleDialogClose}>
 					Ok, I'll change it
-				</Button>
+				</ResponsiveButton>
 			</DialogActions>
 		</Dialog>
 	</>)

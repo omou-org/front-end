@@ -16,6 +16,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { omouBlue } from '../../../theme/muiTheme';
 import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -194,38 +195,26 @@ export default function CreateOOOForm() {
                 >
                     <Grid item style={{ padding: '5%' }}>
                         {!submitted && (
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    color: 'black',
-                                    width: '150px',
-                                }}
+                            <ResponsiveButton
                                 onClick={() =>
                                     SubmitNoticeChild.current.handleClearForm()
                                 }
-                                color="primary"
                                 variant="outlined"
                                 data-cy="clear-OOO-button"
-                            >
-                                Clear
-                            </Button>
+                        >
+                            clear
+                            </ResponsiveButton>
                         )}
                     </Grid>
                     <Grid item>
                         {!submitted && (
-                            <Button
-                                style={{
-                                    backgroundColor: omouBlue,
-                                    color: 'white',
-                                    width: '150px',
-                                }}
+                            <ResponsiveButton
                                 onClick={handleSubmit}
-                                color="primary"
                                 variant="outlined"
                                 data-cy="submit-OOO-button"
                             >
-                                Submit
-                            </Button>
+                                submit
+                            </ResponsiveButton>
                         )}
                     </Grid>
                 </Grid>

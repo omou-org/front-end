@@ -72,18 +72,21 @@ const ButtonDemo = () => {
                     <ResponsiveButton variant='outlined' label='reset password' />
                 </Grid>
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='outlined' label='learn more' />
+                    <ResponsiveButton variant='outlined' label='learn more ' />
                 </Grid>
 
                 <Grid item xs={12}>
                     <Typography variant='h4' align='left' style={{textTransform: 'uppercase'}}>buttons with icons</Typography>
                 </Grid>
 
-                <Grid item xs={6}>
-                    <ResponsiveButton variant='outlined' label='back' startIcon={<BackArrow/>}/>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='back' />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <ResponsiveButton variant='outlined' label='register' startIcon={<AddIcon/>}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <ResponsiveButton variant='outlined' label='announcement' startIcon={<AddIcon/>} />
                 </Grid>
             </Grid>
 
@@ -110,10 +113,10 @@ const ButtonDemo = () => {
                     <ResponsiveButton variant='contained' label='delete' />
                 </Grid>
                 <Grid item xs={3}>
-                    <ResponsiveButton variant='contained' label='pay' />
+                    <ResponsiveButton variant='contained' label='send' />
                 </Grid>
                 <Grid item xs={3}>
-                    <ResponsiveButton variant='contained' label='ok' />
+                    <ResponsiveButton variant='contained' label='cancel' />
                 </Grid>
 
                 <Grid item xs={6}>
@@ -141,13 +144,13 @@ const ButtonDemo = () => {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='contained' label='set password' />
+                    <ResponsiveButton variant='contained' label='send reset email' />
                 </Grid>
                 <Grid item xs={4}>
                     <ResponsiveButton variant='contained' label='reset password' />
                 </Grid>
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='contained' label='learn more' />
+                    <ResponsiveButton variant='contained' label='request demo' />
                 </Grid>
 
                 <Grid item xs={12}>
@@ -155,7 +158,7 @@ const ButtonDemo = () => {
                 </Grid>
 
                 <Grid item xs={4}>
-                    <ResponsiveButton variant='contained' label='back' startIcon={<BackArrow/>}/>
+                    <ResponsiveButton variant='contained' label='back' />
                 </Grid>
                 <Grid item xs={4}>
                     <ResponsiveButton variant='contained' label='register' startIcon={<AddIcon/>}/>

@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import {useSelector} from "react-redux";
 import {useLazyQuery} from "@apollo/react-hooks";
 import moment from "moment";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from "../../OmouComponents/Loading";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -14,6 +15,7 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 import {DateRange} from "react-date-range";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
+
 
 export const GET_PARENT_PAYMENTS_FILTERED = gql`
     query ParentPayments($parentId: ID!, $startDate: String, $endDate: String) {
@@ -98,9 +100,13 @@ export default function MyPaymentHistory() {
 						ranges={state}
 					/>
 					<DialogActions>
-						<Button onClick={handleSaveDateRange} color="primary">
+						<ResponsiveButton 
+							variant='contained' 
+							onClick={handleSaveDateRange} 
+							color="primary"
+						>
 							Save & Close
-						</Button>
+						</ResponsiveButton>
 					</DialogActions>
 				</Dialog>
 			</Grid>

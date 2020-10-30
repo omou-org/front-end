@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -21,6 +21,8 @@ import UserAvatar from "./UserAvatar";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
+
+
 
 const useStyles = makeStyles({
     "linkUnderline": {
@@ -100,14 +102,15 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                             </NavLink>
                             {studentInvite &&
                                 <CardActions>
-                                    <Button>
+                                    <ResponsiveButton>
                                         <NavLink to={`/form/student/${user.user.id}`}>
                                             Edit
-                                            </NavLink>
-                                    </Button>
-                                    <Button onClick={inviteStudent}>
+                                        </NavLink>
+                                    </ResponsiveButton>
+
+                                    <ResponsiveButton onClick={inviteStudent}>
                                         Invite
-                                        </Button>
+                                    </ResponsiveButton>
                                 </CardActions>}
                         </Grid>
                     </Grid>

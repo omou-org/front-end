@@ -18,6 +18,7 @@ import moment from "moment";
 import Moment from "react-moment";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const CREATE_INSTRUCTOR_AVAILABILITIES = gql`mutation CreateInstructorAvailabilities($availabilities: [InstructorAvailabilityInput]!) {
   __typename
@@ -213,8 +214,8 @@ export default function TimeAvailabilityContainer() {
 				</Grid>
 			</Grid>
 			<Grid item xs={3}>
-				<Button variant="outlined" style={{marginRight: "10px"}}>Reset All</Button>
-				<Button variant="outlined" onClick={handleAvailability}>Update</Button>
+				<ResponsiveButton variant='outlined' style={{marginRight: "10px"}} >reset all</ResponsiveButton>
+				<ResponsiveButton variant='outlined' onClick={handleAvailability}>update</ResponsiveButton>
 			</Grid>
 		</Grid>
 		<Grid item xs={12} container>
