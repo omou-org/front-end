@@ -275,8 +275,9 @@ const Accounts = () => {
                 </Typography>
                 <Grid container direction="row">
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
-                        <Tabs 
-                            indicatorColor="secondary"
+                        <Tabs
+                            className='tabs' 
+                            indicatorColor="primary"
                             onChange={handleTabChange} 
                             scrollButtons="on"
                             textColor="primary" 
