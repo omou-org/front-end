@@ -20,7 +20,7 @@ import { USER_TYPES } from "../../../utils";
 
 const ComponentViewer = ({ inView, user, log ,id}) => {
 	const AuthUser = useSelector(({ auth }) => auth);
-	const { userInfo } = user
+	
 
 
 	// All components should take an user id. Components will do all the gql calls  
@@ -58,12 +58,12 @@ const ComponentViewer = ({ inView, user, log ,id}) => {
 				id: 4,
 			},
 			{
-				component: <PaymentHistory key={5} user_id={userInfo.user.id} />,
+				component: <PaymentHistory key={5} user_id={id} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 				id: 5,
 			},
 			{
-				component: <ParentContact key={6} parent_id={userInfo.user.id} />,
+				component: <ParentContact key={6} parent_id={id} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student,],
 				id: 6,
 			},
@@ -73,7 +73,7 @@ const ComponentViewer = ({ inView, user, log ,id}) => {
 				id: 7,
 			},
 			{
-				component: <StudentInfo key={8} user={user} />,
+				component: <StudentInfo key={8} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 				id: 8,
 			},
@@ -88,7 +88,7 @@ const ComponentViewer = ({ inView, user, log ,id}) => {
 				id: 10,
 			},
 			{
-				component: <UserAccessControl key={11} user={userInfo}>
+				component: <UserAccessControl key={11} userID={id}>
 					<NotificationSettings user={user} />
 				</UserAccessControl>,
 				access_permissions: [USER_TYPES.student, USER_TYPES.parent, USER_TYPES.instructor],

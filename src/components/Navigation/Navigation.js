@@ -44,7 +44,6 @@ const Navigation = () => {
     const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
     const ID = useSelector(({auth}) => auth?.user?.id)
 
-    console.log(ID)
 
     const NavigationList = NavList[ACCOUNT_TYPE];
 
