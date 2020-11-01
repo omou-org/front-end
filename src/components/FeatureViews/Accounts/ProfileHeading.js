@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
@@ -13,7 +13,7 @@ import Menu from "@material-ui/core/Menu";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
-
+import Loading from "components/OmouComponents/Loading";
 import "./Accounts.scss";
 import { addDashes } from "./accountUtils";
 import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
@@ -24,12 +24,99 @@ import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
 import { ReactComponent as SchoolIcon } from "../../school.svg";
 import { USER_TYPES } from "utils";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
 
-const ProfileHeading = ({ user }) => {
-	const { userInfo } = user;
+
+const GET_PROFILE_HEADING_QUERY = gql
+`query ProfileHeadingQuery($ownerID: [ID]!) {
+	userInfos(userIds: $ownerID) {
+	  ... on AdminType {
+		userUuid
+		birthDate
+		accountType
+		adminType
+		phoneNumber
+		user {
+		  lastName
+		  firstName
+		  email
+		}
+	  }
+	  ... on InstructorType {
+		birthDate
+		phoneNumber
+		accountType
+		user {
+		  firstName
+		  lastName
+		  email
+		}
+	  }
+	  ... on ParentType {
+		userUuid
+		birthDate
+		accountType
+		balance
+		user {
+		  firstName
+		  lastLogin
+		  email
+		}
+	  }
+	}
+  }
+  
+  `
+
+
+
+const ProfileHeading = ({ ownerID }) => {
+
+
+	
+
+
 	const [anchorEl, setAnchorEl] = useState(null);
-	const isAdmin = userInfo.accountType === USER_TYPES.admin;
+	
 
+	//1. check if account is admin 
+	//2. need to query for userInfo 
+	/**
+	 * Admin : 
+	 * accountType
+	 * ID
+	 * All Users:
+	 * ID 
+	 * fist & last name 
+	 * Email
+	 * phone #
+	 * birthday
+	 * Sutudent:
+	 * grade 
+	 * school
+	 * Parent:
+	 * balance
+	 * 
+	 */  	
+
+	const {data,loading,error} = useQuery(GET_PROFILE_HEADING_QUERY,{
+		variables: {ownerID},
+		skip: !ownerID
+	});
+
+console.log({data}, {loading}, {error})
+	
+	if(loading) return <Loading/>;
+	if (error ) return `Error: ${error}`
+	
+
+
+	const user = {user: 1}
+	
+	const {userInfo} = data
+	
+	const isAdmin = userInfo.accountType === USER_TYPES.admin;
 
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
@@ -59,7 +146,9 @@ const ProfileHeading = ({ user }) => {
 		</Grid>
 	);
 
-	const profileDetails = useMemo(() => {
+
+
+	const profileDetails = () => {
 		const IDRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
@@ -112,52 +201,54 @@ const ProfileHeading = ({ user }) => {
 			</>
 		);
 
+		
+
 
 
 		switch (userInfo.accountType) {
-			case "student":
-				return (
-					<>
-						<IDRow />
-						<BirthdayRow />
-						<Grid className="rowPadding" item xs={1}>
-							<GradeIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">Grade {user.grade}</Typography>
-						</Grid>
-						<PhoneRow />
-						<Grid className="rowPadding" item xs={1}>
-							<SchoolIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">{user.school}</Typography>
-						</Grid>
-						<EmailRow />
-					</>
-				);
-			case "INSTRUCTOR":
-				return (
-					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
-						<EmailRow />
-					</>
-				);
-			case "PARENT":
-				return (
-					<>
-						<IDRow />
-						<Grid className="rowPadding" item xs={1}>
-							<MoneyIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">${userInfo.balance}</Typography>
-						</Grid>
-						<PhoneRow width={12} />
-						<EmailRow />
-					</>
-				);
+			// case "student":
+			// 	return (
+			// 		<>
+			// 			<IDRow />
+			// 			<BirthdayRow />
+			// 			<Grid className="rowPadding" item xs={1}>
+			// 				<GradeIcon className="iconScaling" />
+			// 			</Grid>
+			// 			<Grid className="rowPadding" item xs={5}>
+			// 				<Typography className="rowText">Grade {user.grade}</Typography>
+			// 			</Grid>
+			// 			<PhoneRow />
+			// 			<Grid className="rowPadding" item xs={1}>
+			// 				<SchoolIcon className="iconScaling" />
+			// 			</Grid>
+			// 			<Grid className="rowPadding" item xs={5}>
+			// 				<Typography className="rowText">{user.school}</Typography>
+			// 			</Grid>
+			// 			<EmailRow />
+			// 		</>
+			// 	);
+			// case "INSTRUCTOR":
+			// 	return (
+			// 		<>
+			// 			<IDRow width={12} />
+			// 			<PhoneRow width={12} />
+			// 			<EmailRow />
+			// 		</>
+			// 	);
+			// case "PARENT":
+			// 	return (
+			// 		<>
+			// 			<IDRow />
+			// 			<Grid className="rowPadding" item xs={1}>
+			// 				<MoneyIcon className="iconScaling" />
+			// 			</Grid>
+			// 			<Grid className="rowPadding" item xs={5}>
+			// 				<Typography className="rowText">${userInfo.balance}</Typography>
+			// 			</Grid>
+			// 			<PhoneRow width={12} />
+			// 			<EmailRow />
+			// 		</>
+			// 	);
 			default:
 				return (
 					<>
@@ -167,7 +258,8 @@ const ProfileHeading = ({ user }) => {
 					</>
 				);;
 		}
-	}, [user]);
+	};
+
 
 
 
@@ -197,18 +289,18 @@ const ProfileHeading = ({ user }) => {
 };
 
 ProfileHeading.propTypes = {
-	user: PropTypes.shape({
-		balance: PropTypes.string,
-		birthday: PropTypes.string,
-		email: PropTypes.string,
-		grade: PropTypes.number,
-		name: PropTypes.string,
-		phone_number: PropTypes.string,
-		// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
-		school: PropTypes.string,
-		summit_id: PropTypes.string,
-		user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	}).isRequired,
+	// user: PropTypes.shape({
+	// 	balance: PropTypes.string,
+	// 	birthday: PropTypes.string,
+	// 	email: PropTypes.string,
+	// 	grade: PropTypes.number,
+	// 	name: PropTypes.string,
+	// 	phone_number: PropTypes.string,
+	// 	// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
+	// 	school: PropTypes.string,
+	// 	summit_id: PropTypes.string,
+	// 	user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	// }).isRequired,
 };
 
 export default ProfileHeading;

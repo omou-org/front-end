@@ -358,7 +358,7 @@ const UserProfile = () => {
 						</Hidden>
 					</Grid>
 					<Grid className="headingPadding" item md={10} xs={12}>
-						<ProfileHeading user={data} />
+						<ProfileHeading user={data} ownerID={accountID} />
 					</Grid>
 				</Grid>
 				{tabs()}

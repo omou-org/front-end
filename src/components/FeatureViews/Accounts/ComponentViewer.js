@@ -110,8 +110,8 @@ ComponentViewer.propTypes = {
 	user: PropTypes.shape({
 		background: PropTypes.object,
 		parent_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-		role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"])
-			.isRequired,
+		// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"])
+		// 	.isRequired,
 		user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 			.isRequired,
 	}).isRequired,
