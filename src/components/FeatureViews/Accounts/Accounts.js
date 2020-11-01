@@ -29,7 +29,6 @@ import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
 import { simpleUser } from "queryFragments";
 import UserAvatar from "./UserAvatar";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import theme from "../../../theme/muiTheme";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import secondaryTheme from "../../../theme/secondaryTheme";
@@ -242,7 +241,6 @@ const Accounts = () => {
 
     return (
         <Grid className="Accounts" item xs={12}>
-            <BackgroundPaper elevation={2}>
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <ResponsiveButton 
@@ -320,7 +318,6 @@ const Accounts = () => {
                         {isMobile || !viewToggle ? cardView : tableView}
                     </LoadingHandler>
                 </Grid>
-            </BackgroundPaper>
         </Grid>
     );
 };
