@@ -335,7 +335,6 @@ const CourseManagementContainer = () => {
 
   return (
     <Grid item xs={12}>
-      <BackgroundPaper elevation={2}>
         <Typography align="left" className="heading" variant="h3">
           Course Management
         </Typography>
@@ -440,7 +439,6 @@ const CourseManagementContainer = () => {
             />
           )
         )}
-      </BackgroundPaper>
     </Grid>
   );
 };
