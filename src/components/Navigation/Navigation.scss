@@ -60,14 +60,15 @@ body{
     }
 
     @include respond-to(wide-screens) {
-      margin-left: $drawerWidth;
+      margin-left: $drawerWidth + 50;
     }
 
-    padding: 2.2% 3%;
-    height: 92vh;
+    padding: 2.2% 3% 5% 3%;
+    height: 96vh;
     overflow-x: hidden;
     overflow-y: scroll;
-    background-color: #FAFAFA;
+    background-color: #FFFFFF;
+    box-shadow: -2px 0px 5px #C1C1C1;
   }
 
   .DrawerList {
