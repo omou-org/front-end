@@ -2,10 +2,11 @@ import { connect } from "react-redux";
 import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { Card, Paper, Typography, Grow } from "@material-ui/core";
-import Chip from "@material-ui/core/Chip";
 import CardActions from "@material-ui/core/CardActions";
+import {LabelBadge} from "../../../../theme/ThemedComponents/Badge/LabelBadge";
 import { withRouter } from "react-router-dom";
 import "../Search.scss";
+
 
 function UpcomingSessionCard(props) {
     return (
@@ -19,13 +20,7 @@ function UpcomingSessionCard(props) {
                         <Typography align={"left"} variant={"subtitle2"}> November 12, 2019 | 7:00 - 9:00 </Typography>
                     </Grid>
                     <Grid item sm={5}>
-                        <Chip
-                            style={{
-                                cursor: "pointer", width: '100px',
-                                height: '20px'
-                            }}
-                            label={"Type of course"}
-                        />
+                        <LabelBadge label="Type of course" variant="outline-gray"/> 
                     </Grid>
                     <Grid container>
                         <Grid container

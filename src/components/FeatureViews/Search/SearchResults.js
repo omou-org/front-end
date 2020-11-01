@@ -3,7 +3,6 @@ import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import {useSearchParams} from "actions/hooks";
 
-import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import LessResultsIcon from "@material-ui/icons/KeyboardArrowLeft";
@@ -16,6 +15,7 @@ import "./Search.scss";
 import AccountFilters from "./AccountFilters";
 import AccountCard from "./cards/AccountCard";
 import BackButton from "../../OmouComponents/BackButton";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 import CourseFilters from "./CourseFilters";
 import CourseCard from "./cards/CourseCard";
 import NoResultsPage from "./NoResults/NoResultsPage";
@@ -201,8 +201,7 @@ const SearchResults = () => {
                                                 "pathname": "/search/",
                                                 "search": `?query=${query}&filter=account`,
                                             }}>
-                                                <Chip className="searchChip"
-                                                    label="See All Accounts" />
+                                                <LabelBadge label="See All Accounts" variant="outline-gray"/>
                                             </Link>
                                         </Grid>
                                     )}
@@ -256,8 +255,7 @@ const SearchResults = () => {
                                                 "pathname": "/search/",
                                                 "search": `?query=${query}&filter=course`,
                                             }}>
-                                                <Chip className="searchChip"
-                                                    label="See All Courses" />
+                                                <LabelBadge label="See All Courses" variant="outline-gray"/>
                                             </Link>
                                         </Grid>
                                     )}
