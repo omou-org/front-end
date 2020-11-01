@@ -186,7 +186,7 @@ const RegistrationLanding = () => {
         setUpdatedParent(status);
     }
     return (
-        <BackgroundPaper className="RegistrationLanding" elevation={2}>
+        <Grid item xs={12} container>
             <Grid container>
                 <RegistrationActions updateRegisteringParent={handleUpdateParent} updatedParent={updatedParent}/>
             </Grid>
@@ -228,7 +228,7 @@ const RegistrationLanding = () => {
                 {/*    <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/> :*/}
                 {/*    <TutoringList />}*/}
             </Grid>
-        </BackgroundPaper>
+        </Grid>
     );
 };
 
