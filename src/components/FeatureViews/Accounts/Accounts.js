@@ -79,6 +79,9 @@ const useStyles = makeStyles({
         head: {
             backgroundColor: "white"
         }
+    },
+    MuiIndicator: {
+        height: "1px"
     }
 });
 
@@ -276,22 +279,27 @@ const Accounts = () => {
                 <Grid container direction="row">
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
                         <Tabs
-                            className='tabs' 
+                            className='tabs'
                             indicatorColor="primary"
                             onChange={handleTabChange} 
                             scrollButtons="on"
                             textColor="primary" 
                             value={tabIndex}
                             variant="scrollable"
-                            >
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>
                     <Grid component={Hidden} item md={8} mdDown xs={10}>
-                        <Tabs className="tabs" indicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="off"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs 
+                            className="tabs"
+                            classes={{indicator: classes.MuiIndicator}}
+                            indicatorColor="primary"
+                            onChange={handleTabChange} 
+                            scrollButtons="off"
+                            textColor="primary" 
+                            value={tabIndex}
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>

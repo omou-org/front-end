@@ -22,6 +22,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
 
 
 import "./Accounts.scss";
@@ -167,6 +168,13 @@ const UserProfile = () => {
 		setTabIndex(newTabIndex);
 	}, []);
 
+	const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+		}
+	});
+	const classes = useStyles();
+
 	const tabs = useMemo(() => {
 		if (!user) {
 			return null;
@@ -206,6 +214,7 @@ const UserProfile = () => {
 		return (
 			<>
 				<Tabs
+					classes={{indicator: classes.MuiIndicator}}
 					indicatorColor="primary"
 					onChange={handleTabChange}
 					textColor="primary"
