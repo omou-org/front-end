@@ -101,7 +101,7 @@ const ProfileHeading = ({ user }) => {
 					<IDIcon className="iconScaling"/>
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
-					<Typography className="rowText">
+					<Typography variant="body1" className="rowText">
 						#{user.summit_id || user.user_id}
 					</Typography>
 				</Grid>
@@ -117,7 +117,7 @@ const ProfileHeading = ({ user }) => {
 				</Grid>
 				<Grid className="emailPadding" item md={5}>
 					<a href={`mailto:${user.email}`}>
-						<Typography className="rowText">{user.email}</Typography>
+						<Typography variant="body1" className="rowText">{user.email}</Typography>
 					</a>
 				</Grid>
 			</>
@@ -129,7 +129,7 @@ const ProfileHeading = ({ user }) => {
 					<PhoneIcon className="iconScaling"/>
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
-					<Typography className="rowText">
+					<Typography variant="body1" className="rowText">
 						{addDashes(user.phone_number)}
 					</Typography>
 				</Grid>
@@ -142,7 +142,7 @@ const ProfileHeading = ({ user }) => {
 					<BirthdayIcon className="iconScaling"/>
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
-					<Typography className="rowText">{user.birthday}</Typography>
+					<Typography variant="body1" className="rowText">{user.birthday}</Typography>
 				</Grid>
 			</>
 		);
@@ -157,14 +157,14 @@ const ProfileHeading = ({ user }) => {
 							<GradeIcon className="iconScaling"/>
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">Grade {user.grade}</Typography>
+							<Typography variant="body1" className="rowText">Grade {user.grade}</Typography>
 						</Grid>
 						<PhoneRow/>
 						<Grid className="rowPadding" item xs={1}>
 							<SchoolIcon className="iconScaling"/>
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">{user.school}</Typography>
+							<Typography variant="body1" className="rowText">{user.school}</Typography>
 						</Grid>
 						<EmailRow/>
 					</>
@@ -186,7 +186,7 @@ const ProfileHeading = ({ user }) => {
 							<MoneyIcon className="iconScaling"/>
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">${user.balance}</Typography>
+							<Typography variant="body1" className="rowText">${user.balance}</Typography>
 						</Grid>
 						<PhoneRow width={12}/>
 						<EmailRow/>
@@ -201,7 +201,7 @@ const ProfileHeading = ({ user }) => {
 		<Grid alignItems="center" container item xs={12}>
 			<Grid align="left" alignItems="center" container item xs={8}>
 				<Grid className="profile-name" item style={{paddingRight: 10}}>
-					<Typography variant="h4">{user.name}</Typography>
+					<Typography variant="h3">{user.name}</Typography>
 				</Grid>
 				<Grid item>
 					<Hidden smDown>

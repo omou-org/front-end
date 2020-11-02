@@ -174,25 +174,37 @@ const UserProfile = () => {
 		if (user.role === "receptionist") {
 			return (
 				<>
-					<Typography align="left" variant="h6">
+					<Typography variant="h4" align="left" variant="h6">
 						Action Log
 					</Typography>
 					<Paper elevation={2} className="paper">
 						<Table className="ActionTable">
 							<TableHead>
 								<TableRow>
-									<TableCell>Date</TableCell>
-									<TableCell>Time</TableCell>
-									<TableCell>Description</TableCell>
+									<TableCell>
+										<Typography variant="h4" >Date</Typography>
+									</TableCell>
+									<TableCell>
+										<Typography variant="h4">Time</Typography>
+									</TableCell>
+									<TableCell>
+										<Typography variant="h4">Description</Typography>
+									</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
 								{Object.entries(user.action_log).map(
 									([key, {date, time, description}]) => (
 										<TableRow key={key}>
-											<TableCell>{date}</TableCell>
-											<TableCell>{time}</TableCell>
-											<TableCell>{description}</TableCell>
+											<TableCell>
+												<Typography variant="body1">{date}</Typography>
+											</TableCell>
+											<TableCell>
+												<Typography variant="body1">{time}</Typography>
+											</TableCell>
+											<TableCell>
+												<Typography variant="body1">{description}</Typography>
+											</TableCell>
 										</TableRow>
 									)
 								)}

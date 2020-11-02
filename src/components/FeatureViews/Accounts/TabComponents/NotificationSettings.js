@@ -202,27 +202,36 @@ export default function NotificationSettings({user}) {
 
 	return (<>
 		<Grid container style={{backgroundColor: "#F5F5F5", padding: "1%", marginTop: "30px"}}>
-			<Typography style={{color: omouBlue, fontWeight: 600}}>Notification Settings</Typography>
+			<Typography variant="h4" style={{color: omouBlue, fontWeight: 600}}>Notification Settings</Typography>
 		</Grid>
 		<TableContainer>
 			<Table className={classes.table} aria-label="simple table">
 				<TableBody>
 					<StyledTableRow>
 						<TableCell/>
-						<TableCell align="center">Text Message</TableCell>
-						<TableCell align="center">Email</TableCell>
+						<TableCell align="center">
+							<Typography variant="body2">Text Message</Typography>
+						</TableCell>
+						<TableCell align="center">
+						<Typography variant="body2">Email</Typography>
+						</TableCell>
 						<TableCell/>
 					</StyledTableRow>
 					{notificationRows.map((row, index) => (
 						<StyledTableRow key={row.name}>
 							<TableCell component="th" scope="row" className={classes.settingCol}>
 								<Typography
+									variant="body2"
 									style={{"fontSize": "14px", fontWeight: "bold"}}
 									display="block"
 								>
 									{row.name}
 								</Typography>
-								<span>{row.description}</span>
+								<span>
+								<Typography variant="body1">
+									{row.description}
+								</Typography>
+								</span>
 							</TableCell>
 							<TableCell align="center">
 								<Checkbox
@@ -247,7 +256,7 @@ export default function NotificationSettings({user}) {
 			</Table>
 		</TableContainer>
 		<Grid container style={{backgroundColor: "#F5F5F5", padding: "1%", marginTop: "2%"}}>
-			<Typography style={{color: omouBlue, fontWeight: 600}}>Opt-in SMS Notifications</Typography>
+			<Typography variant="h4" style={{color: omouBlue, fontWeight: 600}}>Opt in</Typography>
 		</Grid>
 		<TableContainer>
 			<Table className={classes.table} aria-label="simple table">
@@ -255,13 +264,17 @@ export default function NotificationSettings({user}) {
 					{optInNotifRows.map((row, index) => (
 						<StyledTableRow key={row.name}>
 							<TableCell component="th" scope="row" className={classes.settingCol}>
-								<Typography
+								<Typography variant="body2"
 									style={{"fontSize": "14px", fontWeight: "bold"}}
 									display="block"
 								>
 									{row.name}
 								</Typography>
-								<span>{row.description}</span>
+								<span>
+									<Typography variant="body1">
+										{row.description}
+									</Typography>
+								</span>
 							</TableCell>
 							<TableCell align="center" style={{width: "28%"}}>
 								<Switch
