@@ -311,11 +311,11 @@ const CourseSessionStatus = () => {
                         enrollmentID={enrollment.enrollment_id}
                         paymentList={enrollment.payment_list}
                         type="enrollment" />
-                        <EnrollmentPayment
+                        {/* <EnrollmentPayment
                             courseID={course.course_id}
                             enrollmentID={enrollment.enrollment_id}
                             paymentList={enrollment.payment_list}
-                        />
+                        /> */}
                     </div>
                     );
             default:
