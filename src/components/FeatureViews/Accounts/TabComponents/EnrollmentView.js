@@ -168,7 +168,7 @@ const CourseSessionStatus = () => {
             sessionStatus
         )
     ) {
-        return <Loading paper />;
+        return <Loading />;
     }
 
     if (

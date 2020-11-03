@@ -38,6 +38,7 @@ import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityCont
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 import StudentCourseViewer from "components/FeatureViews/Accounts/TabComponents/StudentCourseViewer";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
+import Loading from "components/OmouComponents/Loading";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -62,16 +63,16 @@ export const RootRoutes = () => {
             <Route path="/new/:type?">
                 <NewAccount/>
             </Route>
+
+            <Route path="/demo/loading">
+                <Loading paper={true}/>
+            </Route>
             
             {/* Dahl Design Migration Demos */}
             <Route path="/demo/:type">
                 <DemoRoutes/>
             </Route>
 
-            <Route path="/badge/test">
-                <StudentCourseViewer studentID={1}/>
-                <SessionPaymentStatusChip/>
-            </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
