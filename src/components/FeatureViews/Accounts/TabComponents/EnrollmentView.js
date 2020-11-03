@@ -316,7 +316,7 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Paper className="paper" elevation={2}>
+        <Grid item xs={12} container>
             <Grid className="course-session-status" container>
                 <Grid item xs={12}>
                     <BackButton />
@@ -446,7 +446,7 @@ const CourseSessionStatus = () => {
                     </ResponsiveButton>
                 </DialogActions>
             </Dialog>
-        </Paper>
+        </Grid>
     );
 };
 
