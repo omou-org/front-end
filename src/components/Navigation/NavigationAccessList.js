@@ -3,9 +3,9 @@ import React from "react";
 import AccountsIcon from "@material-ui/icons/Contacts";
 import AdminIcon from "@material-ui/icons/Face";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import DashboardIcon from "@material-ui/icons/Dashboard"
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import MenuBookIcon from '@material-ui/icons/MenuBook';
-import PaymentIcon from "@material-ui/icons/Payment"
+import PaymentIcon from "@material-ui/icons/Payment";
 
 /**
  * Various pages accessible by different users
@@ -29,7 +29,7 @@ export const NavList = {
 			"icon": <AssignmentIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
@@ -61,7 +61,7 @@ export const NavList = {
 			"icon": <AssignmentIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
@@ -78,17 +78,17 @@ export const NavList = {
 		// 	"icon": <DashboardIcon/>,
 		// },
 		{
-			"name": "My Schedule",
+			"name": "Schedule",
 			"link": "/scheduler",
 			"icon": <EventIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
 		{
-			"name": "My Availability",
+			"name": "Availability",
 			"link": "/availability",
 			"icon": <EventIcon/>,
 		},
@@ -104,30 +104,26 @@ export const NavList = {
 		// 	"link": "/",
 		// 	"icon": <DashboardIcon/>,
 		// },
+
 		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
+			"name": "Schedule",
+			"link": "/scheduler",
+			"icon": <EventIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
 		{
-			"name": "My Scheduler",
-			"link": "/scheduler",
-			"icon": <EventIcon/>,
+			"name": "Payments",
+			"link": "/my-payments",
+			"icon": <PaymentIcon/>,
 		},
 		{
 			"name": "Registration",
 			"link": "/registration",
 			"icon": <AssignmentIcon/>,
-		},
-		{
-			"name": "My Payments",
-			"link": "/my-payments",
-			"icon": <PaymentIcon/>,
 		},
 	],
     "STUDENT": [],
