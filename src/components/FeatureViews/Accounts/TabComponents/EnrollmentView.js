@@ -307,15 +307,15 @@ const CourseSessionStatus = () => {
             case 2:
                 return (
                     <div>
-                        <PaymentTable courseID={course.course_id}
+                        {/* <PaymentTable courseID={course.course_id}
                         enrollmentID={enrollment.enrollment_id}
                         paymentList={enrollment.payment_list}
-                        type="enrollment" />
-                        {/* <EnrollmentPayment
+                        type="enrollment" /> */}
+                        <EnrollmentPayment
                             courseID={course.course_id}
                             enrollmentID={enrollment.enrollment_id}
                             paymentList={enrollment.payment_list}
-                        /> */}
+                        />
                     </div>
                     );
             default:

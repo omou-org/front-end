@@ -23,6 +23,9 @@ query EnrollmentPayments($enrollmentId: ID!) {
       registrationSet {
         attendanceStartDate
         createdAt
+        enrollment {
+          id
+        }
         id
         numSessions
         updatedAt

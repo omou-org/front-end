@@ -37,12 +37,13 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
             return null;
         }
         console.log(payment);
-        const registration = payment.registrations.find(({enrollment}) =>
-            enrollment === enrollmentID);
+        const registration = payment.registrationSet.find(({enrollment}) => 
+            enrollment.id == enrollmentID);
+        console.log({registration: registration});
         if (!registration) {
             return null;
         }
-        return registration.num_sessions;
+        return registration.numSessions;
     }, [paymentList, enrollmentID]);
 
 
