@@ -272,7 +272,6 @@ const LoginPage = () => {
                             <Grid item md={4} />
                             <Grid className="buttonSpacing" item md={4}>
                                 <ResponsiveButton 
-                                    className="signInButton"
                                     data-cy="signInButton"
                                     type="submit" 
                                     variant="contained"
