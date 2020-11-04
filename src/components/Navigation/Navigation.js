@@ -31,11 +31,10 @@ const useStyles = makeStyles({
 });
 
 
-const GET_ACCOUNT_INFO_QUERY = gql`query getAccountType($userID: ID!) {
-    userType(userId: $userID, adminTypes: true)
-  }
-  `
-
+const GET_ACCOUNT_INFO_QUERY = gql`
+    query getAccountType($userID: ID!) {
+        userType(userId: $userID, adminTypes: true)
+    }`
 
 const Navigation = () => {
     const classes = useStyles();
@@ -43,11 +42,11 @@ const Navigation = () => {
 
     const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
     const ID = useSelector(({auth}) => auth?.user?.id)
-
-
     const NavigationList = NavList[ACCOUNT_TYPE];
 
     const [mobileOpen, setMobileOpen] = useState(false);
+    const {data} = useQuery(GET_ACCOUNT_INFO_QUERY, {"variables": {"userID":ID }})
+    console.log(data)
 
     const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
@@ -57,10 +56,14 @@ const Navigation = () => {
         return <Loading/>
     }
 
+    console.log(NavigationList)
+
     const drawer = (
         <div className="DrawerList">
             <List className="list">
 				{NavigationList && NavigationList.map((NavItem) => (
+                    data?.userType!=="OWNER" && NavItem.name=="Admin" ?
+                    <div/> :
                     <ListItem
                         button
                         className={`listItem ${classes.navigationIconStyle}`}
