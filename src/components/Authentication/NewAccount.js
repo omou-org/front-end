@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useStyles from "./styles.js";
 import Typography from "@material-ui/core/Typography";
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import Button from "@material-ui/core/Button";
 import { PHONE_NUMBER_FIELD, stringField } from "../Form/FormFormats";
 import { FORM_ERROR } from "final-form";
@@ -21,6 +22,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import { makeValidate } from "mui-rff";
+
 
 const basicInfo = [
     <Fields.TextField className="TextField" fullWidth={false} key="firstName" label="First Name" margin="dense" name="firstName" required variant="outlined" />,
@@ -115,16 +117,25 @@ const NewAccount = () => {
                         <Grid alignItems="center"
                             container
                             justify="center">
-                            <Button className="formButton"
-                                component={Link} data-cy="return" to={{
+                            <ResponsiveButton 
+                                style={{padding: '8px', margin: '10px 20px'}}
+                                component={Link} 
+                                data-cy="return" 
+                                to={{
                                     "pathname": "/login",
                                     "state": { email },
-                                }} variant="contained">
+                                }} 
+                                variant="contained"
+                            >
                                 Back to login
-                            </Button>
-                            <Button className="formButton" color="primary" type="submit" variant="contained">
+                            </ResponsiveButton>
+                            <ResponsiveButton 
+                                style={{padding: '8px', margin: '10px 20px'}}  
+                                type="submit" 
+                                variant="contained"
+                            >
                                 Create Account
-                            </Button>
+                            </ResponsiveButton>
                         </Grid>
                     </>
                 );
