@@ -255,6 +255,8 @@ const theme = createMuiTheme({
         },
         "MuiTab": {
             root: {
+                width: "144px",
+                height: "40px",
                 fontSize: '14px',
                 fontWeight: '500',
                 fontFamily: 'Roboto',
