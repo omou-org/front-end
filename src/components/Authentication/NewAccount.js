@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import useStyles from "./styles.js";
 import Typography from "@material-ui/core/Typography";
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
-import Button from "@material-ui/core/Button";
 import { PHONE_NUMBER_FIELD, stringField } from "../Form/FormFormats";
 import { FORM_ERROR } from "final-form";
 import * as Yup from "yup";
@@ -22,7 +21,6 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import { makeValidate } from "mui-rff";
-
 
 const basicInfo = [
     <Fields.TextField className="TextField" fullWidth={false} key="firstName" label="First Name" margin="dense" name="firstName" required variant="outlined" />,
@@ -118,7 +116,7 @@ const NewAccount = () => {
                             container
                             justify="center">
                             <ResponsiveButton 
-                                style={{padding: '8px', margin: '10px 20px'}}
+                                style={{margin: '10px 20px'}}
                                 component={Link} 
                                 data-cy="return" 
                                 to={{
@@ -130,7 +128,7 @@ const NewAccount = () => {
                                 Back to login
                             </ResponsiveButton>
                             <ResponsiveButton 
-                                style={{padding: '8px', margin: '10px 20px'}}  
+                                style={{margin: '10px 20px'}}  
                                 type="submit" 
                                 variant="contained"
                             >
@@ -144,13 +142,19 @@ const NewAccount = () => {
                         <Typography style={{ "margin": "80px 0" }} variant="body1">
                             You can now log in to your new account.
                         </Typography>
-                        <Button className="formButton" color="primary"
-                            component={Link} data-cy="return" to={{
+                        <ResponsiveButton 
+                            className="formButton" 
+                            color="primary"
+                            component={Link} 
+                            data-cy="return" 
+                            to={{
                                 "pathname": "/login",
                                 "state": { email },
-                            }} variant="contained">
+                            }} 
+                            variant="contained"
+                        >
                             Login
-                        </Button>
+                        </ResponsiveButton>
                     </>
                 );
                 // no default
