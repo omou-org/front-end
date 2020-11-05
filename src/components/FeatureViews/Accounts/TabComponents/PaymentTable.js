@@ -31,15 +31,14 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
     const course = useSelector(({Course}) => Course.NewCourseList[courseID]);
 
     const numPaidSessionsByPayment = useCallback((paymentID) => {
-        console.log(paymentID);
         const payment = paymentList.find(({id}) => id === paymentID);
         if (!payment) {
             return null;
         }
-        console.log(payment);
+
         const registration = payment.registrationSet.find(({enrollment}) => 
-            enrollment.id == enrollmentID);
-        console.log({registration: registration});
+            Number(enrollment.id) === enrollmentID);
+
         if (!registration) {
             return null;
         }
@@ -72,7 +71,6 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
                 <TableBody>
                     {
                         paymentList.map((payment) => {
-                        console.log(paymentList);
                         return (
                             <TableRow
                                 component={NavLinkNoDup}
@@ -83,7 +81,7 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
                                     {payment.id}
                                 </TableCell>
                                 <TableCell>
-                                    <Moment date={payment.created_at} format="M/DD/YYYY"/>
+                                    <Moment date={payment.createdAt} format="M/DD/YYYY"/>
                                 </TableCell>
                                 <TableCell>
                                     {

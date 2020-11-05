@@ -17,7 +17,6 @@ import NoListAlert from "../../../OmouComponents/NoListAlert";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
-import PaymentTable from "./PaymentTable";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 import Switch from "@material-ui/core/Switch";
@@ -306,17 +305,10 @@ const CourseSessionStatus = () => {
                 );
             case 2:
                 return (
-                    <div>
-                        {/* <PaymentTable courseID={course.course_id}
-                        enrollmentID={enrollment.enrollment_id}
-                        paymentList={enrollment.payment_list}
-                        type="enrollment" /> */}
-                        <EnrollmentPayment
-                            courseID={course.course_id}
-                            enrollmentID={enrollment.enrollment_id}
-                            paymentList={enrollment.payment_list}
-                        />
-                    </div>
+                    <EnrollmentPayment
+                        courseID={Number(course.course_id)}
+                        enrollmentID={Number(enrollment.enrollment_id)}
+                    />
                     );
             default:
                 return null;
