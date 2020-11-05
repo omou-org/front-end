@@ -218,9 +218,9 @@ const SessionView = () => {
   const closeTutoringMenu = () => {
     setTutoringActionsAnchor(null);
   };
-
+//NO TOGGLE
   const toggleEditing = (editSelection) => {
-    console.log("DANIEL WHAT DOES THIS NEED TO DO");
+    
     // setEditSelection(editSelection)
     // this.setState((oldState) => {
     //   return {
@@ -344,6 +344,7 @@ const SessionView = () => {
               )}
             </Typography>
             {course && (
+                // REACH OUT TO DESIGN FOR NO STUDENTS MESSAGE
               <NavLink
                 style={{ textDecoration: "none" }}
                 to={`/accounts/instructor/${instructor.user_id}`}
@@ -362,15 +363,18 @@ const SessionView = () => {
               {enrolledStudents}
             </Typography>
             <Grid container direction="row">
+                {/* map through enrolledstudents, and fill in as needed */}
               {studentKeys.map((key) => (
                 <NavLink
                   key={key}
                   style={{ textDecoration: "none" }}
+                //   needs to be enrollmentview
                   to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
                 >
                   <Tooltip title={enrolledStudents[key].name}>
                     <Avatar style={styles(enrolledStudents[key].name)}>
                       {enrolledStudents
+                      //fullName(student.user).match
                         ? enrolledStudents[key].name.match(/\b(\w)/g).join("")
                         : hooks.isFail(enrollmentStatus)
                         ? "Error!"
