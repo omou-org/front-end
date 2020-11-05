@@ -11,7 +11,6 @@ import RegistrationActions from "./RegistrationActions";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const customStyles = {
@@ -186,7 +185,7 @@ const RegistrationLanding = () => {
         setUpdatedParent(status);
     }
     return (
-        <BackgroundPaper className="RegistrationLanding" elevation={2}>
+        <Grid item xs={12} container>
             <Grid container>
                 <RegistrationActions updateRegisteringParent={handleUpdateParent} updatedParent={updatedParent}/>
             </Grid>
@@ -228,7 +227,7 @@ const RegistrationLanding = () => {
                 {/*    <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/> :*/}
                 {/*    <TutoringList />}*/}
             </Grid>
-        </BackgroundPaper>
+        </Grid>
     );
 };
 

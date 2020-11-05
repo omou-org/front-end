@@ -68,10 +68,6 @@ export const RootRoutes = () => {
                 <DemoRoutes/>
             </Route>
 
-            <Route path="/badge/test">
-                <StudentCourseViewer studentID={1}/>
-                <SessionPaymentStatusChip/>
-            </Route>
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
