@@ -78,10 +78,12 @@ const BackButton = (props) => {
 
 	return (
 		<Hidden mdDown>
-			<ResponsiveButton 
+			<ResponsiveButton
+				style={{display: 'flex'}} 
 				variant='outlined'
 				className="control course button"
 				onClick={() => { handleClick() }}
+				startIcon={renderIcon()}
 			>
 				{label()}
 			</ResponsiveButton>

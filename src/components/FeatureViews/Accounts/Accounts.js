@@ -246,22 +246,18 @@ const Accounts = () => {
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
                             component={Link}
                             to="/form/student"
                             variant="outlined"
-                            // startIcon={<PersonAddIcon />}
                         >
                             new student
                         </ResponsiveButton>
                     </Grid>
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
                             component={Link}
                             to="/form/parent"
                             variant="outlined"
-                            // startIcon={<PersonAddIcon />}
                         >
                           new  parent 
                         </ResponsiveButton>
@@ -297,6 +293,7 @@ const Accounts = () => {
                                 <ResponsiveButton
                                     onClick={setView(true)}
                                     variant='outlined'
+                                    startIcon={<ListView />}
                                     >                                   
                                         List View
                                 </ResponsiveButton>
@@ -306,6 +303,7 @@ const Accounts = () => {
                                 <ResponsiveButton
                                     onClick={setView(false)}
                                     variant='outlined'
+                                    startIcon={<CardView />}
                                     >       
                                         Grid View
                                 </ResponsiveButton>

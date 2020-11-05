@@ -7,9 +7,9 @@ const buttonWidth = (label, children) => {
     let buttonWidth;
        if (buttonText.length < 6) {
            buttonWidth = 88;
-       } else if (buttonText.length >= 7 && buttonText.length <= 10) {
+       } else if (buttonText.length >= 7 && buttonText.length <= 9) {
            buttonWidth = 112;
-       } else if (buttonText.length >= 11 && buttonText.lenght <= 16) {
+       } else if (buttonText.length >= 10 && buttonText.lenght <= 16) {
            buttonWidth = 144;
        } else if (buttonText.length >= 17) {
            buttonWidth = 160;
