@@ -36,6 +36,8 @@ import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
+import StudentCourseViewer from "components/FeatureViews/Accounts/TabComponents/StudentCourseViewer";
+import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -65,6 +67,7 @@ export const RootRoutes = () => {
             <Route path="/demo/:type">
                 <DemoRoutes/>
             </Route>
+
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">

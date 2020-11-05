@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from "react";
-import {Redirect, useParams} from "react-router-dom";
-import {useSelector} from "react-redux";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Redirect, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import Badge from "@material-ui/core/Badge";
 import BioIcon from "@material-ui/icons/PersonOutlined";
@@ -31,39 +31,39 @@ import BackButton from "components/OmouComponents/BackButton";
 import ComponentViewer from "./ComponentViewer.js";
 import Loading from "components/OmouComponents/Loading";
 import ProfileHeading from "./ProfileHeading.js";
-import {useAccountNotes} from "actions/userActions";
+import { useAccountNotes } from "actions/userActions";
 import UserAvatar from "./UserAvatar";
 import SettingsIcon from "@material-ui/icons/Settings"
-import {USER_TYPES} from "../../../utils";
+import { USER_TYPES } from "../../../utils";
 
 const userTabs = {
 	instructor: [
 		{
-			icon: <ScheduleIcon className="TabIcon"/>,
+			icon: <ScheduleIcon className="TabIcon" />,
 			tab_heading: "Schedule",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 0,
 		},
 		{
-			icon: <CoursesIcon className="TabIcon"/>,
+			icon: <CoursesIcon className="TabIcon" />,
 			tab_heading: "Courses",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 1,
 		},
 		{
-			icon: <BioIcon className="TabIcon"/>,
+			icon: <BioIcon className="TabIcon" />,
 			tab_heading: "Bio",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
 			tab_id: 2,
 		},
 		{
-			icon: <notificationIcon className="TabIcon"/>,
+			icon: <notificationIcon className="TabIcon" />,
 			tab_heading: "Notes",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
 			tab_id: 7,
 		},
 		{
-			icon: <SettingsIcon className="SettingsIcon"/>,
+			icon: <SettingsIcon className="SettingsIcon" />,
 			tab_heading: "Notification Settings",
 			access_permissions: [USER_TYPES.instructor],
 			tab_id: 10,
@@ -71,25 +71,25 @@ const userTabs = {
 	],
 	parent: [
 		{
-			icon: <CurrentSessionsIcon className="TabIcon"/>,
+			icon: <CurrentSessionsIcon className="TabIcon" />,
 			tab_heading: "Student Info",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 			tab_id: 8,
 		},
 		{
-			icon: <PaymentIcon className="TabIcon"/>,
+			icon: <PaymentIcon className="TabIcon" />,
 			tab_heading: "Payment History",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 5,
 		},
 		{
-			icon: <NoteIcon className="TabIcon"/>,
+			icon: <NoteIcon className="TabIcon" />,
 			tab_heading: "Notes",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 			tab_id: 7,
 		},
 		{
-			icon: <SettingsIcon className="SettingsIcon"/>,
+			icon: <SettingsIcon className="SettingsIcon" />,
 			tab_heading: "Notification Settings",
 			access_permissions: [USER_TYPES.parent],
 			tab_id: 10,
@@ -97,25 +97,25 @@ const userTabs = {
 	],
 	student: [
 		{
-			icon: <CurrentSessionsIcon className="TabIcon"/>,
+			icon: <CurrentSessionsIcon className="TabIcon" />,
 			tab_heading: "Current Course(s)",
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 3,
 		},
 		{
-			icon: <PastSessionsIcon className="TabIcon"/>,
+			icon: <PastSessionsIcon className="TabIcon" />,
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_heading: "Past Course(s)",
 			tab_id: 4,
 		},
 		{
-			icon: <ContactIcon className="TabIcon"/>,
+			icon: <ContactIcon className="TabIcon" />,
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent],
 			tab_heading: "Parent Contact",
 			tab_id: 6,
 		},
 		{
-			icon: <NoteIcon className="TabIcon"/>,
+			icon: <NoteIcon className="TabIcon" />,
 			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent],
 			tab_heading: "Notes",
 			tab_id: 7,
@@ -141,13 +141,13 @@ const useUser = (id, type) => {
 };
 
 const UserProfile = () => {
-	const userList = useSelector(({Users}) => Users);
-	const {accountType, accountID} = useParams();
+	const userList = useSelector(({ Users }) => Users);
+	const { accountType, accountID } = useParams();
 	const [tabIndex, setTabIndex] = useState(0);
 	const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
 	const fetchStatus = useUser(accountID, accountType);
-	const AuthUser = useSelector(({auth}) => auth);
+	const AuthUser = useSelector(({ auth }) => auth);
 
 	useAccountNotes(accountID, accountType);
 	const user = useMemo(() => {
@@ -196,7 +196,7 @@ const UserProfile = () => {
 							</TableHead>
 							<TableBody>
 								{Object.entries(user.action_log).map(
-									([key, {date, time, description}]) => (
+									([key, { date, time, description }]) => (
 										<TableRow key={key}>
 											<TableCell>{date}</TableCell>
 											<TableCell>{time}</TableCell>
@@ -247,7 +247,7 @@ const UserProfile = () => {
 					inView={displayTabs
 						.filter((tab) =>
 							(tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
-					user={user}/>
+					user={user} />
 			</>
 		);
 	}, [displayTabs, handleTabChange, tabIndex, user]);
@@ -265,7 +265,7 @@ const UserProfile = () => {
 	useEffect(() => {
 		if (user) {
 			const numImportantNotes = Object.values(user.notes || {}).reduce(
-				(total, {important}) => (important ? total + 1 : total),
+				(total, { important }) => (important ? total + 1 : total),
 				0
 			);
 			if (user.role !== "receptionist") {
@@ -276,7 +276,7 @@ const UserProfile = () => {
 						...newTabs[notesIndex],
 						icon: (
 							<Badge badgeContent={numImportantNotes} color="primary">
-								<NoteIcon className="TabIcon"/>
+								<NoteIcon className="TabIcon" />
 							</Badge>
 						),
 					};
@@ -288,34 +288,32 @@ const UserProfile = () => {
 
 	if (!user || Object.keys(user).length <= 1) {
 		if (hooks.isLoading(fetchStatus)) {
-			return <Loading/>;
+			return <Loading />;
 		} else if (hooks.isFail(fetchStatus)) {
-			return <Redirect to="/PageNotFound"/>;
+			return <Redirect to="/PageNotFound" />;
 		}
 	}
 
 	return (
 		<div className="UserProfile">
-			<Paper className="UserProfile paper">
-				<BackButton warn={false}/>
-				<hr/>
-				<Grid className="padding" container layout="row">
-					<Grid item md={2}>
-						<Hidden smDown>
-							<UserAvatar
-								fontSize="3.5vw"
-								margin={20}
-								name={user.name}
-								size="9vw"
-							/>
-						</Hidden>
-					</Grid>
-					<Grid className="headingPadding" item md={10} xs={12}>
-						<ProfileHeading user={user}/>
-					</Grid>
+			<BackButton warn={false} />
+			<hr />
+			<Grid className="padding" container layout="row">
+				<Grid item md={2}>
+					<Hidden smDown>
+						<UserAvatar
+							fontSize="3.5vw"
+							margin={20}
+							name={user.name}
+							size="9vw"
+						/>
+					</Hidden>
 				</Grid>
-				{tabs}
-			</Paper>
+				<Grid className="headingPadding" item md={10} xs={12}>
+					<ProfileHeading user={user} />
+				</Grid>
+			</Grid>
+			{tabs}
 		</div>
 	);
 };
