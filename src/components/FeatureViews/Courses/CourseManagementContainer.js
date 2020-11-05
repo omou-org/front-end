@@ -124,7 +124,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const test = {
   "PARENT" : gql`query studentCourses($query: [ID]!) {
     enrollments(studentIds: $query) {
@@ -209,8 +208,6 @@ const GET_COURSES = gql`
     }
   }
 `;
-
-
 
 const ClassListItem = ({
   title,
@@ -367,60 +364,50 @@ const CourseManagementContainer = () => {
   const [gradeFilterValue, setGradeFilterValue] = useState("");
   const [subectFilterValue, setSubjectFilterValue] = useState("");
   const [instructorsFilterValue, setInstructorFilterValue] = useState("");
-  const accountInfo = useSelector(({auth}) => auth)
-  const handleChange = (event) => setSortByDate(event.target.value);
-  
+  const accountInfo = useSelector(({auth}) => auth);
 
-  const isAdmin = accountInfo.accountType === "ADMIN" || accountInfo.accountType === "INSTRUCTOR"  ? "ADMIN" :  "PARENT";
+  const handleChange = (event) => setSortByDate(event.target.value);
 
   const query = accountInfo.accountType === "ADMIN" ? "": accountInfo.user.id;
-  
+  const isAdmin = accountInfo.accountType === "ADMIN" || accountInfo.accountType === "INSTRUCTOR"  ? "ADMIN" :  "PARENT";
   
   const { data, loading, error } = useQuery(test[isAdmin], {
     variables: {query}
   });
-  
+
+
+
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
 
+  console.log(data)
 
-  const createFilteredListFromCourses = (courseArray,filterCondition) =>
-  
-    courseArray.reduce(
+  const createFilteredListFromCourses = (filterCondition) =>
+    data.courses.reduce(
       (accumulator, currentValue) =>
         !accumulator.some((course) => filterCondition(currentValue, course))
           ? [...accumulator, currentValue]
           : accumulator,
       []
     );
-
-    let subjectList = []
-    let instructorsList = []
-    
-
-    
-
-
-
-  // const subjectList = createFilteredListFromCourses(
-  //   (currentValue, course) =>
-  //     currentValue.courseCategory.id === course.courseCategory.id
-  // );
-  // const instructorsList = createFilteredListFromCourses(
-  //   (currentValue, course) =>
-  //     currentValue.instructor.user.id === course.instructor.user.id
-  // );
+  const subjectList = createFilteredListFromCourses(
+    (currentValue, course) =>
+      currentValue.courseCategory.id === course.courseCategory.id
+  );
+  const instructorsList = createFilteredListFromCourses(
+    (currentValue, course) =>
+      currentValue.instructor.user.id === course.instructor.user.id
+  );
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-  const courseDataFilter = []
-  const defaultCourseDisplay = (courseData) => {
-   
-    let courseDataFilter = courseData.filter(
+
+  const defaultCourseDisplay = data.courses
+    .filter(
       (course) =>
         checkFilter(course.academicLevel, gradeFilterValue) &&
-        checkFilter(course?.course.courseCategory.id, subectFilterValue) &&
-        checkFilter(course?.course.instructor.user.id, instructorsFilterValue)
+        checkFilter(course.courseCategory.id, subectFilterValue) &&
+        checkFilter(course.instructor.user.id, instructorsFilterValue)
     )
     .sort(
       (firstEl, secondEl) =>
@@ -429,39 +416,6 @@ const CourseManagementContainer = () => {
           class_name: sortDescOrder(firstEl.title, secondEl.title),
         }[sortByDate])
     );
-   courseDataFilter = courseDataFilter
-  }
-  
-  
-  if(accountInfo.accountType === "ADMIN" || accountInfo.accountType === "INSTRUCTOR"  ){
-    let courseData = data.courses
-    subjectList = createFilteredListFromCourses(courseData,
-      (currentValue, course) =>
-    currentValue.courseCategory.id === course.courseCategory.id
-      )
-      instructorsList = createFilteredListFromCourses(courseData,
-        (currentValue, course) =>
-          currentValue.instructor.user.id === course.instructor.user.id
-          )
-
-         defaultCourseDisplay(courseData) 
-  } else {
-    let courseData = data.enrollments
-    
-    subjectList = createFilteredListFromCourses(courseData,
-      (currentValue, course) =>
-    currentValue.course.courseCategory.id === course.course.courseCategory.id
-      )
-      instructorsList = createFilteredListFromCourses(courseData,
-        (currentValue, course) => 
-          currentValue.course.instructor.user.id === course.course.instructor.user.id
-          )
-          defaultCourseDisplay(courseData) 
-  }
-
-   
-
-   
 
   return (
     <Grid item xs={12}>
@@ -546,7 +500,7 @@ const CourseManagementContainer = () => {
             />
           </Grid>
         </Paper>
-        {courseDataFilter.map(
+        {defaultCourseDisplay.map(
           ({
             title,
             dayOfWeek,
