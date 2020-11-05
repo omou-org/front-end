@@ -113,7 +113,7 @@ export const ACADEMIC_LVL_FIELD = {
         "name": "birthDate",
         "label": "Birth Date",
         "component": <Fields.DatePicker format="MM/DD/YYYY" openTo="year" />,
-        "validator": Yup.date().max(moment()),
+        "validator": Yup.date().max(moment(), 'Please enter a valid date'),
     },
     CITY_FIELD = {
         "name": "city",
