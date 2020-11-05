@@ -25,6 +25,8 @@ import ClassSessionContainer from "./ClassSessionContainer";
 import { useSelector } from "react-redux";
 import { gradeLvl } from "../../../utils";
 import theme from "../../../theme/muiTheme";
+import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
+import {  USER_TYPES  } from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,18 +76,25 @@ export const GET_ANNOUNCEMENTS = gql`
 `;
 
 const CourseClasses = () => {
-  const id = useParams();
+  const {id} = useParams();
   const classes = useStyles();
   const [index, setIndex] = useState(0);
-  const tabs = [
+
+
+
+  const { email, accountType } = useSelector(({ auth }) => auth) || [];
+  const tabLabels = accountType === "PARENT" ?   [
+    { label: "About Course" },
+    { label: "Announcements" },
+    { label: "Attendance" },
+    
+  ]  :    
+   [
     { label: "About Course" },
     { label: "Announcements" },
     { label: "Student Enrolled" },
     { label: "Sessions" },
   ];
-
-  const { email, accountType } = useSelector(({ auth }) => auth) || [];
-
   const queryParser = (userType) =>
     ({
       ADMIN: "AdminType",
@@ -170,17 +179,22 @@ const CourseClasses = () => {
        }
     }
   `;
+  
+
+  
 
   const { data, loading, error } = useQuery(GET_CLASSES, {
     variables: {
-      id: id.id,
+      id: id,
       email: email,
     },
   });
 
+  
+
   const getAnnouncements = useQuery(GET_ANNOUNCEMENTS, {
     variables: {
-      id: id.id,
+      id: id,
     },
   });
 
@@ -228,7 +242,7 @@ const CourseClasses = () => {
     switch(index) {
       case 0:
         return classes.chromeTabStart;
-      case tabs.legth - 1: 
+      case tabLabels.length - 1: 
         return classes.chromeTabEnd;
       default:
         return classes.chromeTab;
@@ -254,14 +268,22 @@ const CourseClasses = () => {
             </Typography>
           </Grid>
           <Grid item xs={6}>
+      <AccessControlComponent 
+      permittedAccountTypes={[
+        USER_TYPES.admin,
+        USER_TYPES.receptionist,
+        USER_TYPES.instructor,
+      ]}
+      >
             <IconButton
               className={classes.editcoursebutton}
               size="small"
               component={Link}
-              to={`/registration/form/course_details/${id.id}`}
+              to={`/registration/form/course_details/${id}`}
             >
               <EditIcon />
             </IconButton>
+            </AccessControlComponent>
           </Grid>
         </Grid>
         <Grid container justify="flex-start" style={{ marginTop: "2.5em" }}>
@@ -356,7 +378,7 @@ const CourseClasses = () => {
                     }
                     tabs={
                       comparison(data.parent?.studentList, data.enrollments)
-                        ? tabs
+                        ? tabLabels
                         : [{ label: "About Course" }]
                     }
                     tabStyle={{
@@ -379,12 +401,30 @@ const CourseClasses = () => {
                 <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
                   <ClassInfo description={description} />
                 </TabPanel>
+  
                 <TabPanel index={1} value={index}>
                   <Announcements
                     announcementsData={getAnnouncements.data.announcements}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
+                <AccessControlComponent
+                   permittedAccountTypes={[
+                    USER_TYPES.parent,
+                  ]}>
+                     <TabPanel index={2} value={index}>
+                 <h1>Hello</h1>
+                </TabPanel>
+
+                  </AccessControlComponent>
+
+                <AccessControlComponent
+                      permittedAccountTypes={[
+                        USER_TYPES.admin,
+                        USER_TYPES.receptionist,
+                        USER_TYPES.instructor,
+                      ]}
+                >
                 <TabPanel index={2} value={index}>
                   <ClassEnrollmentList
                     enrollmentList={enrollmentSet}
@@ -397,6 +437,12 @@ const CourseClasses = () => {
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
+                </AccessControlComponent>
+
+
+
+
+
               </Grid>
             </ThemeProvider>
           </Grid>

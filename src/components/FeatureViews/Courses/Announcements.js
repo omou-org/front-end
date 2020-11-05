@@ -205,7 +205,7 @@ const Announcements = ({
         >
           <span className={classes.plusSpan}>+</span> New Announcement
         </Button>
-      </AccessControlComponent>
+   
       {announcementRender.map(({ poster, subject, body, updatedAt, id }) => (
         <>
           <AnnouncementCard
@@ -229,6 +229,7 @@ const Announcements = ({
         userId={loggedInUser}
         buttonState={editOrPost}
       />
+         </AccessControlComponent>
     </Grid>
   );
 };
