@@ -1,32 +1,67 @@
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as calendarActions from "../../../actions/calendarActions";
-import PropTypes from "prop-types";
-import React, { Component, useEffect, useState } from "react";
-import BackButton from "../../OmouComponents/BackButton.js";
-import "../../../theme/theme.scss";
-import "./scheduler.scss";
-import * as apiActions from "../../../actions/apiActions";
-import * as userActions from "../../../actions/userActions";
-import * as adminActions from "../../../actions/adminActions";
+import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
-import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { GET } from "../../../actions/actionTypes";
-import DisplaySessionView from "./DisplaySessionView";
-import EditSessionView from "./EditSessionView";
-import { withRouter, useParams } from "react-router-dom";
+import {NavLink, Redirect, useParams} from "react-router-dom";
 
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
-import Loading from "components/OmouComponents/Loading";
-import Typography from "@material-ui/core/Typography";
+import {bindActionCreators} from "redux";
+import * as registrationActions from "../../../actions/registrationActions";
+import {useDispatch, useSelector} from "react-redux";
+import {Tooltip, Typography, withStyles} from "@material-ui/core";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Button from "@material-ui/core/Button";
+import Loading from "../../OmouComponents/Loading";
+import Avatar from "@material-ui/core/Avatar";
+import {stringToColor} from "../Accounts/accountUtils";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Divider from "@material-ui/core/Divider";
+import DialogContent from "@material-ui/core/DialogContent";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+import {dayOfWeek} from "../../Form/FormUtils";
+import * as hooks from "actions/hooks";
+import ConfirmIcon from "@material-ui/icons/CheckCircle";
+import UnconfirmIcon from "@material-ui/icons/Cancel";
+import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+import DialogContentText from "@material-ui/core/es/DialogContentText";
+import LoadingError from "../Accounts/TabComponents/LoadingCourseError"
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+
+import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
+import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusChip";
+import AddSessions from "components/OmouComponents/AddSessions";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import {capitalizeString} from "../../../utils";
 
 
+const StyledMenu = withStyles({
+    "paper": {
+        "border": "1px solid #d3d4d5",
+    },
+})((props) => (
+    <Menu anchorOrigin={{
+        "vertical": "bottom",
+        "horizontal": "center",
+    }}
+        elevation={0}
+        getContentAnchorEl={null}
+        transformOrigin={{
+            "vertical": "top",
+            "horizontal": "center",
+        }}
+        {...props} />
+));
 
-export const EDIT_ALL_SESSIONS = "all";
-export const EDIT_CURRENT_SESSION = "current";
+const styles = (username) => ({
+    "backgroundColor": stringToColor(username),
+    "color": "white",
+    "width": "3vw",
+    "height": "3vw",
+    "fontSize": 15,
+    "marginRight": 10,
+});
 
 const GET_SESSION = gql`
   query SessionViewQuery($sessionId: ID!) {
@@ -58,26 +93,12 @@ const GET_SESSION = gql`
   }
 `;
 
-const SessionView = (props) => {
+const DisplaySessionView = () => {
+//No more props
 
-	const [editSelection, setEditSelection] = useState("current")
-	const [editing, setEditing] = useState(false)
+    const { session_id } = useParams();
 
-	console.log(props)
-
-	//from class component
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       editSelection: "current",
-//       editing: false,
-//     };
-//   }
-
-  useEffect(() => {
-	const { session_id, course_id, instructor_id } = useParams();
-
-	const {data, loading, error} = useQuery(GET_SESSION, {
+    const {data, loading, error} = useQuery(GET_SESSION, {
 		variables: { session_id }
 	})
 
@@ -94,136 +115,364 @@ const SessionView = (props) => {
 	}
 
 	console.log(data)
-  })
-
-  
-
-//   componentDidMount() {
-//     this.props.calendarActions.fetchSession({
-// 	  id: this.props.match.params.session_id,
-//     });
-//     this.props.apiActions.fetchCourses(this.props.match.params.course_id);
-//     this.props.userActions.fetchInstructors();
-// 	this.props.adminActions.fetchCategories();
-// 	const { session_id, instructor_id } = this.props.match.params;
-
-//   }
-
-
-  //what is the functional component equivalent? useEffect?
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (
-      this.props !== prevProps &&
-      Object.keys(this.props.courseSessions).length !== 0 &&
-      Object.entries(this.props.courses).length !== 0
-    ) {
-      this.setState(() => {
-        const { session_id, instructor_id } = this.props.match.params;
-        const sessionData = this.props.courseSessions[instructor_id][
-          session_id
-        ];
-        sessionData["start"] = new Date(sessionData.start_datetime).getDay();
-
-        sessionData["startTime"] = new Date(
-          sessionData.start_datetime
-        ).toLocaleTimeString("en-US", {
-          hour12: true,
-          timeStyle: "short",
-        });
-        sessionData["endTime"] = new Date(
-          sessionData.end_datetime
-        ).toLocaleTimeString("en-US", {
-          hour12: true,
-          timeStyle: "short",
-        });
-        sessionData.start_datetime = new Date(sessionData.start_datetime);
-        sessionData.end_datetime = new Date(sessionData.end_datetime);
-        let courseData = this.props.courses[this.props.match.params.course_id];
-        if (
-          courseData &&
-          !this.props.requestStatus["instructor"][GET][courseData.instructor_id]
-        ) {
-          this.props.userActions.fetchInstructors(courseData.instructor_id);
-        }
-        return {
-          sessionData,
-          courseData,
-        };
-      });
-    }
-  }
-
-  toggleEditing = (editSelection) => {
-	setEditSelection(editSelection)
-    // this.setState((oldState) => {
-    //   return {
-    //     ...oldState,
-    //     editing: !oldState.editing,
-    //     editSelection: editSelection,
-    //   };
-    // });
-  };
-
-  render() {
-    return (
-      <Grid className="main-session-view" container>
-        <Paper
-          elevation={2}
-          className="paper session"
-          mt="2em"
-          style={{ width: "100%" }}
-        >
-          <Grid className="session-button" item>
-            <BackButton />
-          </Grid>
-          <Divider />
-          {this.state.editing ? (
-            <EditSessionView
-              course={this.state.courseData}
-              session={this.state.sessionData}
-              enrolledStudents={this.state.students}
-              editSelection={this.state.editSelection}
-              handleToggleEditing={this.toggleEditing}
-            />
-          ) : (
-            this.state.courseData && (
-              <DisplaySessionView
-                course={this.state.courseData}
-                session={this.state.sessionData}
-                handleToggleEditing={this.toggleEditing}
-              />
-            )
-          )}
-        </Paper>
-      </Grid>
+    const dispatch = useDispatch();
+    const api = useMemo(
+        () => bindActionCreators(registrationActions, dispatch),
+        [dispatch]
     );
-  }
-}
 
-SessionView.propTypes = {
-  sessionView: PropTypes.string,
+    const { instructor_id } = useParams();
+
+    const instructors = useSelector(
+        ({ "Users": { InstructorList } }) => InstructorList
+    );
+    const categories = useSelector(
+        ({ "Course": { CourseCategories } }) => CourseCategories
+    );
+    const courses = useSelector(({ "Course": { NewCourseList } }) => NewCourseList);
+    const students = useSelector(({ "Users": { StudentList } }) => StudentList);
+
+    const [enrolledStudents, setEnrolledStudents] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [unenroll, setUnenroll] = useState(false);
+    const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
+    const [tutoringActionsAnchor, setTutoringActionsAnchor] = useState(null);
+
+    useEffect(() => {
+        api.initializeRegistration();
+    }, [api]);
+    const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
+    const enrollments = useSelector(({ Enrollments }) => Enrollments);
+    const reduxCourse = courses[course.course_id];
+    const studentStatus = hooks.useStudent(reduxCourse.roster);
+    const loadedStudents = useMemo(
+        () => reduxCourse.roster.filter((studentID) => students[studentID]),
+        [reduxCourse.roster, students]
+    );
+
+    useEffect(() => {
+        if (hooks.isSuccessful(studentStatus)) {
+            setEnrolledStudents(
+                loadedStudents.map((studentID) => ({
+                    ...students[studentID],
+                }))
+            );
+        }
+    }, [loadedStudents, studentStatus, students]);
+
+    if (loadedStudents.length === 0 && reduxCourse.roster.length > 1) {
+        if (hooks.isLoading(studentStatus)) {
+            return <Loading />;
+        }
+        if (hooks.isFail(studentStatus)) {
+            return <LoadingError error="enrollment details" />;
+        }
+    }
+
+    const instructor = instructors[instructor_id] || { "name": "N/A" };
+    const studentKeys = Object.keys(enrolledStudents);
+
+    const handleTutoringMenuClick = (event) => {
+        setTutoringActionsAnchor(event.currentTarget);
+    };
+    const closeTutoringMenu = () => {
+        setTutoringActionsAnchor(null);
+    };
+
+    const toggleEditing = (editSelection) => {
+        console.log("DANIEL WHAT DOES THIS NEED TO DO")
+        // setEditSelection(editSelection)
+        // this.setState((oldState) => {
+        //   return {
+        //     ...oldState,
+        //     editing: !oldState.editing,
+        //     editSelection: editSelection,
+        //   };
+        // });
+      };
+//EDITSTUFF
+    const handleEditToggle = (cancel) => (event) => {
+        event.preventDefault();
+        if (!cancel && edit) {
+            // if we're applying to edit session then toggle to edit view
+            toggleEditing(editSelection);
+        } else {
+            setEdit(!edit);
+        }
+    };
+
+    const handleEditSelection = (event) => {
+        setEditSelection(event.target.value);
+    };
+
+    const handleUnenroll = (event) => {
+        event.preventDefault();
+        setTutoringActionsAnchor(null);
+        setUnenroll(true);
+    };
+
+    // We only support unenrollment from session view for tutoring courses
+    const closeUnenrollDialog = (toUnenroll) => (event) => {
+        event.preventDefault();
+        setUnenroll(false);
+        if (toUnenroll) {
+            // We assume course is tutoring course thus we're getting the first studentID
+            const enrollment = enrollments[course.roster[0]][course.course_id];
+            api.deleteEnrollment(enrollment);
+        }
+    };
+
+    // enrollment not found in database
+    if ((Object.entries(enrollments).length === 0 && enrollments.constructor === Object) &&
+        hooks.isSuccessful(enrollmentStatus)) {
+        return <Redirect to="/NotEnrolledStudent" />;
+    }
+    if (!course || !categories || (
+        Object.entries(enrollments).length === 0 && enrollments.constructor === Object)) {
+        return <Loading />;
+    }
+    const sessionStart = new Date(session.start_datetime);
+    const day = sessionStart.getDate() !== new Date().getDate()
+        ? session.start - 1 >= 0
+            ? session.start - 1
+            : 6
+        : session.start;
+
+    return (
+        <>
+            <Grid className="session-view" container direction="row" spacing={1}>
+                <Grid item sm={12}>
+                    <Typography align="left" className="session-view-title" variant="h3">
+                        {session && session.title}
+                    </Typography>
+                </Grid>
+                <Grid item sm={12}>
+                    <Grid container>
+                        <Grid className="course-session-status" item xs={2}>
+                            {course.course_type === "tutoring" && (
+                                <SessionPaymentStatusChip enrollment={
+                                    enrollments[Object.keys(enrollments)[0]][course.course_id]
+                                }
+                                    session={session}
+                                    setPos />
+                            )}
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid align="left"
+                    className="session-view-details"
+                    container
+                    item
+                    spacing={2}
+                    xs={6}>
+                    <Grid item xs={6}>
+                        <Typography variant="h5">Subject</Typography>
+                        <Typography>
+                            {
+                                (
+                                    categories.find(
+                                        (category) => category.id === course.category
+                                    ) || {}
+                                ).name
+                            }
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant="h5">Room</Typography>
+                        <Typography>{course && (course.room_id || "TBA")}</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="h5">
+                            Instructor
+                            {session.is_confirmed ? (
+                                <ConfirmIcon className="confirmed course-icon" />
+                            ) : (
+                                    <UnconfirmIcon className="unconfirmed course-icon" />
+                                )}
+                        </Typography>
+                        {course && (
+                            <NavLink style={{ "textDecoration": "none" }}
+                                to={`/accounts/instructor/${instructor.user_id}`}>
+                                <Tooltip aria-label="Instructor Name" title={instructor.name}>
+                                    <Avatar style={styles(instructor.name)}>
+                                        {instructor.name.match(/\b(\w)/g).join("")}
+                                    </Avatar>
+                                </Tooltip>
+                            </NavLink>
+                        )}
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography align="left" variant="h5">
+                            Students Enrolled
+                        </Typography>
+                        <Grid container direction="row">
+                            {studentKeys.map((key) => (
+                                <NavLink key={key}
+                                    style={{ "textDecoration": "none" }}
+                                    to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}>
+                                    <Tooltip title={enrolledStudents[key].name}>
+                                        <Avatar style={styles(enrolledStudents[key].name)}>
+                                            {enrolledStudents
+                                                ? enrolledStudents[key].name.match(/\b(\w)/g).join("")
+                                                : hooks.isFail(enrollmentStatus)
+                                                    ? "Error!"
+                                                    : "Loading..."}
+                                        </Avatar>
+                                    </Tooltip>
+                                </NavLink>
+                            ))}
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant="h5">Day(s)</Typography>
+                        <Typography>{capitalizeString(dayOfWeek[day])}</Typography>
+                        <Typography>
+                            {new Date(session.start_datetime).toLocaleDateString()}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant="h5">Time</Typography>
+                        <Typography>
+                            {session.startTime} - {session.endTime}
+                        </Typography>
+                    </Grid>
+                </Grid>
+                <Grid item xs={6}>
+                    <InstructorSchedule instructorID={instructor_id} />
+                </Grid>
+            </Grid>
+            <Grid className="session-detail-action-control"
+                container
+                direction="row"
+                justify="flex-end">
+                <Grid item>
+                    <Button className="button"
+                        color="secondary"
+                        component={NavLink}
+                        to={`/registration/course/${course.course_id}`}
+                        variant="outlined">
+                        Course Page
+                    </Button>
+                </Grid>
+                <Grid item>
+                    {reduxCourse.course_type=="tutoring" && (
+                        <>
+                            <Button className="button" onClick={handleTutoringMenuClick}>
+                                Tutoring Options
+                                <ArrowDropDownIcon />
+                            </Button>
+                            <StyledMenu anchorEl={tutoringActionsAnchor}
+                                keepMounted
+                                onClose={closeTutoringMenu}
+                                open={Boolean(tutoringActionsAnchor)}>
+                                <MenuItem color="secondary"
+                                    component={NavLink}
+                                    to={`/accounts/student/${course.roster[0]}/${course.course_id}`}
+                                    variant="outlined">
+                                    Enrollment View
+                                </MenuItem>
+                                <AddSessions componentOption="menuItem"
+                                    enrollment={enrollments[course.roster[0]][course.course_id]}
+                                    parentOfCurrentStudent={students[course.roster[0]].parent_id} />
+                                <MenuItem color="secondary"
+                                    onClick={handleUnenroll}
+                                    variant="outlined">
+                                    Unenroll Course
+                                </MenuItem>
+                            </StyledMenu>
+                        </>
+                    )}
+                </Grid>
+                <Grid item>
+                    <Button 
+                        className="editButton"
+                        color="primary"
+                        onClick={handleEditToggle(true)}
+                        to="/"
+                        variant="outlined">
+                        Reschedule
+                    </Button>
+                </Grid>
+            </Grid>
+            <Dialog aria-describedby="form-dialog-description"
+                aria-labelledby="form-dialog-title"
+                className="session-view-modal"
+                fullWidth
+                maxWidth="xs"
+                onClose={handleEditToggle(true)}
+                open={edit}>
+                <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <RadioGroup aria-label="delete"
+                        name="delete"
+                        onChange={handleEditSelection}
+                        value={editSelection}>
+                        <FormControlLabel control={<Radio color="primary" />}
+                            label="This Session"
+                            labelPlacement="end"
+                            value={EDIT_CURRENT_SESSION} />
+                        <FormControlLabel control={<Radio color="primary" />}
+                            label="All Sessions"
+                            labelPlacement="end"
+                            value={EDIT_ALL_SESSIONS} />
+                    </RadioGroup>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={handleEditToggle(true)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        color="primary"
+                        component={NavLink}
+                        to={{
+                            "pathname": `/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
+                            , "state": { course: course, session: session }
+                        }}>
+                        Confirm to Edit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog aria-describedby="unenroll-dialog-description"
+                aria-labelledby="unenroll-dialog-title"
+                className="session-view-modal"
+                fullWidth
+                maxWidth="xs"
+                onClose={closeUnenrollDialog(false)}
+                open={unenroll}>
+                <DialogTitle id="unenroll-dialog-title">
+                    Unenroll in {course.title}
+                </DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <DialogContentText>
+                        You are about to unenroll in <b>{course.title}</b> for{" "}
+                        <b>{enrolledStudents && enrolledStudents[studentKeys[0]].name}</b>.
+                        Performing this action will credit the remaining enrollment balance
+                        back to the parent's account balance. Are you sure you want to
+                        unenroll?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={closeUnenrollDialog(true)}
+                    >
+                        Yes, unenroll
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={closeUnenrollDialog(false)}
+                    >
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
+    );
 };
 
-function mapStateToProps(state) {
-  return {
-    courses: state.Course.NewCourseList,
-    courseCategories: state.Course.CourseCategories,
-    students: state.Users.StudentList,
-    instructors: state.Users.InstructorList,
-    courseSessions: state.Calendar.CourseSessions,
-    requestStatus: state.RequestStatus,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    calendarActions: bindActionCreators(calendarActions, dispatch),
-    apiActions: bindActionCreators(apiActions, dispatch),
-    userActions: bindActionCreators(userActions, dispatch),
-    adminActions: bindActionCreators(adminActions, dispatch),
-  };
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(SessionView)
-);
+export default DisplaySessionView;
