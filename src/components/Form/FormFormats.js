@@ -171,8 +171,8 @@ export const ACADEMIC_LVL_FIELD = {
     PHONE_NUMBER_FIELD = {
         "name": "phoneNumber",
         "label": "Phone Number",
-        "component": <Fields.TextField />,
-        "validator": Yup.string().matches(/(^\d{3}[- ]?\d{3}[- ]?\d{4}?$)|(^[(]\d{3}[)][- ]?\d{3}[- ]?\d{4}?$)/u,
+        "component": <Fields.PhoneInput />,
+        "validator": Yup.string().matches(/(^[(]\d{3}[)][- ]?\d{3}[- ]?\d{4}?$)/u,
             "Invalid phone number"),
     },
     POSITIVE_NUMBER_FIELD = {
@@ -206,6 +206,22 @@ export const ACADEMIC_LVL_FIELD = {
         "validator": Yup.string().matches(/^\d{5}(?:[-\s]\d{4})?$/u,
             "Invalid zipcode"),
     };
+    
+const INSTRUCTOR_FIELDS = {
+    "name": "basicInfo",
+    "label": "Basic Information",
+    "fields": [
+        ...NAME_FIELDS,
+        EMAIL_FIELD,
+        PHONE_NUMBER_FIELD,
+        GENDER_FIELD,
+        ADDRESS_FIELD,
+        CITY_FIELD,
+        ZIPCODE_FIELD,
+        STATE_FIELD,
+        BIRTH_DATE_FIELD,
+    ],
+};
 
 const PARENT_FIELDS = {
     "name": "parent",
@@ -430,10 +446,7 @@ const GET_USER_TYPE = gql`
 
 export default {
     "student": {
-        "title": {
-            "create": "Add Student",
-            "edit": "Add Student",
-        },
+        "title": "Student",
         "form": [
             {
                 "name": "student",
@@ -496,7 +509,6 @@ export default {
                         "query": GET_NAME,
                         "variables": {id},
                     });
-
                     return {
                         "student": {
                             "primaryParent": {
@@ -532,6 +544,7 @@ export default {
                             firstName
                             lastName
                             email
+                            id
                         }
                     }
                 }`;
@@ -539,7 +552,7 @@ export default {
                         "query": GET_INFO,
                         "variables": {id},
                     });
-
+                    
                     const modifiedData = {
                         ...student,
                         "firstName": student.user.firstName,
@@ -568,7 +581,8 @@ export default {
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!,
+            mutation AddStudent(
+            $firstName: String!,
             $email: String,
             $lastName: String!,
             $address: String,
@@ -592,6 +606,7 @@ export default {
                     "mutation": ADD_STUDENT,
                     "variables": {
                         ...student,
+                        id,
                         "email": student.email || "",
                         "birthDate": parseDate(student.birthDate),
                         "primaryParent": student.primaryParent.value,
@@ -771,11 +786,12 @@ export default {
             const CREATE_ADMIN = gql`
             mutation CreateAdmin(
                 $address: String,
-                $adminType: AdminTypeEnum,
+                $adminType: AdminTypeEnum!,
                 $birthDate: Date,
                 $city: String,
                 $gender: GenderEnum,
                 $phoneNumber: String,
+                $id: ID,
                 $state: String,
                 $email: String,
                 $firstName: String!,
@@ -786,7 +802,8 @@ export default {
                 createAdmin(
                     user: {
                         firstName: $firstName, lastName: $lastName,
-                        password: $password, email: $email
+                        password: $password, email: $email,
+                        id: $id,
                     },
                     address: $address,
                     adminType: $adminType,
@@ -816,14 +833,23 @@ export default {
                     "birthDate": parseDate(formData.user.birthDate),
                 },
             };
+
+            const adminMutationVariable = Object.values(modifiedData)
+            .reduce((obj, section) => ({
+                ...obj,
+                ...section,
+            }), {});
+            
+            const userUuid = `${adminMutationVariable.firstName.charAt(0).toLowerCase()}${adminMutationVariable.lastName}`
+            
             try {
                 await client.mutate({
                     "mutation": CREATE_ADMIN,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": {
+                        ...adminMutationVariable,
+                        id,
+                        userUuid
+                    }
                 });
             } catch (error) {
                 return {
@@ -1085,7 +1111,7 @@ export default {
 }
             `;
 
-            const {courseInfo, tuition} = formData;
+            const { courseInfo, tuition } = formData;
             const modifiedData = {
                 "courseInfo": {
                     ...courseInfo,
@@ -1122,21 +1148,7 @@ export default {
     "instructor": {
         "title": "Instructor",
         "form": [
-            {
-                "name": "basicInfo",
-                "label": "Basic Information",
-                "fields": [
-                    ...NAME_FIELDS,
-                    EMAIL_FIELD,
-                    PHONE_NUMBER_FIELD,
-                    GENDER_FIELD,
-                    ADDRESS_FIELD,
-                    CITY_FIELD,
-                    ZIPCODE_FIELD,
-                    STATE_FIELD,
-                    BIRTH_DATE_FIELD,
-                ],
-            },
+            INSTRUCTOR_FIELDS,
             {
                 "name": "experience",
                 "label": "Experience",
@@ -1215,7 +1227,7 @@ export default {
                         "city": instructor.city,
                         "zipcode": instructor.zipcode,
                         "state": instructor.state,
-                        "birthDate": instructor.birthDate,
+                        "birthDate": moment(instructor.birthDate, "YYYY-MM-DD"),
                     },
                     "experience": {
                         "subjects": instructor.subjects.map(({name, id}) => ({
@@ -1233,7 +1245,9 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_INSTRUCTOR = gql`
-            mutation CreateInstructor($firstName: String!,
+            mutation CreateInstructor(
+            $id: ID,
+            $firstName: String!,
             $lastName: String!,
             $email: String,
             $phoneNumber: String,
@@ -1246,13 +1260,15 @@ export default {
             $biography: String,
             $language: String,
             $birthDate: Date,
-            $zipcode: String) {
+            $zipcode: String,
+            ) {
                 createInstructor(
                 user: {
                     firstName: $firstName,
                     lastName: $lastName,
                     email: $email,
-                    password: "abcdefgh"
+                    password: "abcdefg",
+                    id: $id
                 },
                 address: $address,
                 biography: $biography,
@@ -1264,25 +1280,25 @@ export default {
                 phoneNumber: $phoneNumber,
                 subjects: $subjects,
                 state: $state,
-                zipcode: $zipcode) {
+                zipcode: $zipcode
+                ) {
+                    created
                     instructor {
-                    user {
-                        id
-                    }
-                    }
+                        user {
+                          id
+                        }
+                      }
                 }
-            }
-            `;
+            }`;
 
             const INVITE_INSTRUCTOR = gql`
-            mutation MyMutation($email:String!) {
+            mutation InviteInstructor($email:String!) {
   inviteInstructor(email: $email) {
     status
   }
 }
 `;
-
-            const {basicInfo, experience} = formData;
+            const { basicInfo, experience } = formData;
 
             const modifiedData = {
                 "basicInfo": {
@@ -1296,14 +1312,21 @@ export default {
                 },
             };
 
+            const instructorMutationVariable = Object.values(modifiedData)
+            .reduce((obj, section) => {
+                return ({
+                ...obj,
+                ...section,
+            })
+        }, {});
             try {
                 await client.mutate({
                     "mutation": CREATE_INSTRUCTOR,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": {
+                        ...instructorMutationVariable,
+                        id,
+                    }
+
                 });
             } catch (error) {
                 return {
