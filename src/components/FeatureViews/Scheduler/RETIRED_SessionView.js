@@ -21,7 +21,7 @@ import {withRouter} from "react-router-dom";
 export const EDIT_ALL_SESSIONS = "all";
 export const EDIT_CURRENT_SESSION = "current";
 
-class SessionView extends Component {
+class RETIRED_SessionView extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -151,4 +151,4 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SessionView));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RETIRED_SessionView));

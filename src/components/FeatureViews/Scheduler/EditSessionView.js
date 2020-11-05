@@ -3,6 +3,9 @@ import React, {useEffect, useMemo, useState} from "react";
 import Grid from "@material-ui/core/Grid";
 import {useHistory, useLocation, withRouter} from "react-router-dom";
 
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
+
 import {bindActionCreators} from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
 import * as calendarActions from "../../../actions/calendarActions";
@@ -18,12 +21,15 @@ import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
+// import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import {dateFormat, timeFormat} from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import BackButton from "../../OmouComponents/BackButton";
 import "./scheduler.scss";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+
+const EDIT_ALL_SESSIONS = "all";
+const EDIT_CURRENT_SESSION = "current";
 
 const EditSessionView = ({editSelection}) => {
 	const dispatch = useDispatch();

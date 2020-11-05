@@ -12,11 +12,14 @@ import {stringToColor} from "../accountUtils";
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
+//TODO: Refactor instructor schedule to graphQL
 const InstructorSchedule = ({instructorID}) => {
+
 	const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
 	const instructor = useSelector(
 		({Users}) => Users.InstructorList[instructorID]
 	);
+	console.log(instructor)
 	const OOOstatus = hooks.useOutOfOffice();
 	const availabilityStatus = hooks.useInstructorAvailability(instructorID);
 	const classEnrollmentStatus = hooks.useClassSessionsInPeriod("week");
