@@ -6,6 +6,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import PaymentIcon from "@material-ui/icons/Payment";
+import {ReactComponent as NewAdminIcon} from "./newadminicon.svg";
 
 /**
  * Various pages accessible by different users
@@ -41,7 +42,7 @@ export const NavList = {
 		{
 			"name": "Admin",
 			"link": "/adminportal",
-			"icon": <AdminIcon/>,
+			"icon": <NewAdminIcon color="blue"/>,
 		},
 	],
 	"RECEPTIONIST": [
