@@ -9,7 +9,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
 
     const badgeCategory = {
         "labelBadge": {
-            chipMinWidth: "96px",
+            padding: "4px, 20px",
             labelComponent: "body1",
         },
         "statusBadge": {
@@ -93,6 +93,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
                 variant={badgeStyle.chipVariant}
                 style={{
                     minWidth: badgeStyle.chipMinWidth, 
+                    padding: badgeStyle.padding,
                     backgroundColor: badgeStyle.chipColor, 
                     borderColor: badgeStyle.chipBorder, 
                     borderRadius: badgeStyle.borderRadius,
