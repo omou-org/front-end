@@ -607,3 +607,20 @@ export function useSessionStorage(key, initialValue) {
 
     return [storedValue, setValue];
 }
+
+/** 
+ * @description
+*/
+export const newUpdatedCache = (newData, cachedData) => {
+    let updatedData = [...cachedData]
+    const matchingIndex = updatedData.findIndex(
+      ({ id }) => id === newData.id
+    );
+    if(matchingIndex === -1) {
+      updatedData = [...cachedData, newData]
+      return updatedData;
+    } else {
+      updatedData[matchingIndex] = newData
+      return updatedData;
+    };
+  };

@@ -80,7 +80,7 @@ const AnnouncementCard = ({
   const handleOpenForm = () => {
     const currentSubject = subjectRef.current.textContent;
     const currentBody = convertToRaw(editorState.getCurrentContent())
-    handleEdit(true, id, currentSubject, currentBody);
+    handleEdit(true, id);
   };
   const handleDeleteForm = () => handleDelete(id);
 
@@ -143,8 +143,6 @@ const Announcements = ({
 }) => {
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
-  const [announcementSubject, setAnnouncementSubject] = useState("");
-  const [announcementBody, setAnnouncementBody] = useState("");
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
   const courseId = useParams();
@@ -159,6 +157,20 @@ const Announcements = ({
       }
     }
   `;
+
+  const editAnnouncementQuery = {
+    editGqlQuery: gql`
+    query EditAnnouncement($announcementId: ID!) {
+      announcement(announcementId: $announcementId) {
+        body
+        subject
+        id
+      }
+    }`,
+    editQueryVariables: {
+      announcementId
+    }
+  }
 
   const announcementQuery = {
     gqlquery: GET_ANNOUNCEMENTS,
@@ -271,8 +283,6 @@ const Announcements = ({
     setEditOrPost("edit");
     setAnnouncementId(id);
     setNewAnnouncementForm(boolean);
-    setAnnouncementSubject(subject);
-    setAnnouncementBody(body);
   };
 
   const handleClose = (boolean) => setNewAnnouncementForm(boolean);
@@ -282,11 +292,10 @@ const Announcements = ({
       variables: { id: id },
     });
   };
-
+  
   const announcementRender = announcementsData
   .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
 
-  // console.log(announcementBody);
   return (
     <Grid container justify="flex-start" data-active="inactive">
       <AccessControlComponent
@@ -298,7 +307,7 @@ const Announcements = ({
       >
         <Button
           className={classes.newNoteButton}
-          onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
+          onClick={() => {setNewAnnouncementForm(true, setEditOrPost("post")); setAnnouncementId(null)}}
           value="post"
           name="post"
           data-cy="new-announcement-button"
@@ -324,8 +333,7 @@ const Announcements = ({
         handleCloseForm={handleClose}
         open={openNewAnnouncementForm}
         announcementId={announcementId}
-        textSubject={announcementSubject}
-        textBody={announcementBody}
+        editPost={editAnnouncementQuery}
         origin="ANNOUNCEMENTS"
         posterId={loggedInUser}
         buttonState={editOrPost}
