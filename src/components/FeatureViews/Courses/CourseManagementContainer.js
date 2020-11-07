@@ -124,93 +124,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const test = {
-  "PARENT" : gql`
-  query getCourses($query:ID!) {
-    courses(parentId: $query) {
-      dayOfWeek
-      endDate
-      endTime
-      title
-      startTime
-      academicLevel
-      startDate
-      instructor {
-        user {
-          firstName
-          lastName
-          id
-        }
-      }
-      courseCategory {
-        id
-        name
-      }
-      courseId
-      id
-    }
-  
-  }
-  `,
-  //gets all courses or admin courses 
-  "ADMIN": gql`
-  query getCourses($query:ID!) {
-    courses(instructorId: $query) {
-      dayOfWeek
-      endDate
-      endTime
-      title
-      startTime
-      academicLevel
-      startDate
-      instructor {
-        user {
-          firstName
-          lastName
-          id
-        }
-      }
-      courseCategory {
-        id
-        name
-      }
-      courseId
-      id
-    }
-  
-  }
-  `,
-  
-}
-
-
-const GET_COURSES = gql`
-  query getCourses {
-    courses {
-      dayOfWeek
-      endDate
-      endTime
-      title
-      startTime
-      academicLevel
-      startDate
-      instructor {
-        user {
-          firstName
-          lastName
-          id
-        }
-      }
-      courseCategory {
-        id
-        name
-      }
-      courseId
-      id
-    }
-  }
-`;
-
 const ClassListItem = ({
   title,
   endDate,
@@ -370,11 +283,42 @@ const CourseManagementContainer = () => {
 
   const handleChange = (event) => setSortByDate(event.target.value);
 
-  const query = accountInfo.accountType === "ADMIN" ? "": accountInfo.user.id;
-  const isAdmin = accountInfo.accountType === "ADMIN" || accountInfo.accountType === "INSTRUCTOR"  ? "ADMIN" :  "PARENT";
-  
-  const { data, loading, error } = useQuery(test[isAdmin], {
-    variables: {query}
+  const checkAccountForQuery = accountInfo.accountType === "ADMIN" || accountInfo.accountType === "INSTRUCTOR" ?
+    "instructorId" :
+    "parentId"
+
+  const GET_COURSES = gql`
+    query getCourses($accountId:ID!) {
+      courses(${checkAccountForQuery}: $accountId) {
+        dayOfWeek
+        endDate
+        endTime
+        title
+        startTime
+        academicLevel
+        startDate
+        instructor {
+          user {
+            firstName
+            lastName
+            id
+          }
+        }
+        courseCategory {
+          id
+          name
+        }
+        courseId
+        id
+      }
+    
+    }
+  `;
+
+  const accountId = accountInfo.accountType === "ADMIN" ? "": accountInfo.user.id;
+ 
+  const { data, loading, error } = useQuery(GET_COURSES, {
+    variables: {accountId}
   });
 
 
