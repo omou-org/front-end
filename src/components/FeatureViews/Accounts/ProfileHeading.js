@@ -128,7 +128,7 @@ const ProfileHeading = ({ ownerID }) => {
 
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
-			{isAdmin && isAuthUser && (
+			{(isAdmin && isAuthUser) && (
 				<>
 					<Grid component={Hidden} item mdDown xs={12}>
 						<Button
