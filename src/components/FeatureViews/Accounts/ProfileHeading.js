@@ -190,6 +190,7 @@ const ProfileHeading = ({ user }) => {
       </>
     );
 
+	//set up dialog like these
     const EmailRow = () => (
       <>
         <Grid className="emailPadding" item md={1}>
