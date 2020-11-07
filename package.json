@@ -27,6 +27,7 @@
     "apollo-link-context": "^1.0.20",
     "apollo-link-error": "^1.1.13",
     "apollo-link-http": "^1.5.17",
+    "apollo-upload-client": "^14.1.2",
     "axios": "^0.19.2",
     "clsx": "^1.1.1",
     "cypress-waitfor": "^1.1.0",
