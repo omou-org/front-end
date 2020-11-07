@@ -125,31 +125,33 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const test = {
-  "PARENT" : gql`query studentCourses($query: [ID]!) {
-    enrollments(studentIds: $query) {
-      course {
-        dayOfWeek
-        courseType
-        endTime
-        endDate
-        title
-        startTime
-        instructor {
-          user {
-            firstName
-            lastName
-            id
-          }
-        }
-        courseCategory {
+  "PARENT" : gql`
+  query getCourses($query:ID!) {
+    courses(parentId: $query) {
+      dayOfWeek
+      endDate
+      endTime
+      title
+      startTime
+      academicLevel
+      startDate
+      instructor {
+        user {
+          firstName
+          lastName
           id
-          name
         }
-        courseId
-        id
       }
+      courseCategory {
+        id
+        name
+      }
+      courseId
+      id
     }
-  }`,
+  
+  }
+  `,
   //gets all courses or admin courses 
   "ADMIN": gql`
   query getCourses($query:ID!) {
