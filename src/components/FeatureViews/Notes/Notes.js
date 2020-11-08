@@ -22,6 +22,7 @@ import Loading from "components/OmouComponents/Loading";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
+import ReadMore from "components/OmouComponents/ReadMore";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -578,9 +579,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 !
                             </Avatar>
                         </Typography>
-                        <Typography align="left" className="body">
-                            {note.body}
-                        </Typography>
+                        <ReadMore body = {note.body} height = {"20px"}/>
                         <Grid item xs={12}>
                             <Typography className={`date ${classes.dateDisplay}`}
                                 style={{ "fontWeight": "500" }}>
