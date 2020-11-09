@@ -126,7 +126,7 @@ const SessionView = () => {
 
   const { course, endDatetime, id, startDatetime, title } = data.session;
 
-  const {
+  var {
     courseCategory,
     dayOfWeek,
     enrollmentSet,
@@ -143,7 +143,7 @@ const SessionView = () => {
   const startSessionTime = moment(startDatetime).format("h:MM A");
 
   const endSessionTime = moment(endDatetime).format("h:MM A");
-
+  
   return (
     <>
       <Grid className="session-view" container direction="row" spacing={1}>
@@ -196,7 +196,6 @@ const SessionView = () => {
               )} */}
             </Typography>
             {course && (
-              // REACH OUT TO DESIGN FOR NO STUDENTS MESSAGE
               <NavLink
                 style={{ textDecoration: "none" }}
                 to={`/accounts/instructor/${instructor.user.id}`}
@@ -214,7 +213,8 @@ const SessionView = () => {
               Students Enrolled
             </Typography>
             <Grid container direction="row">
-              {enrollmentSet.map((student) => (
+              {enrollmentSet.length > 0 ? (
+              enrollmentSet.map((student) => (
                 <NavLink
                   key={student.student.user.id}
                   style={{ textDecoration: "none" }}
@@ -244,7 +244,10 @@ const SessionView = () => {
                     </Avatar>
                   </Tooltip>
                 </NavLink>
-              ))}
+              ))
+              ):( <Typography variant="body">
+                 No students enrolled yet.
+              </Typography>)}
             </Grid>
           </Grid>
           <Grid item xs={6}>

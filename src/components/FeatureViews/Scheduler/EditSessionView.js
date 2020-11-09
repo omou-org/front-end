@@ -29,6 +29,7 @@ import InstructorConflictCheck from "components/OmouComponents/InstructorConflic
 import BackButton from "../../OmouComponents/BackButton";
 import "./scheduler.scss";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import { fullName } from "../../../utils"
 
 const EDIT_ALL_SESSIONS = "all";
 const EDIT_CURRENT_SESSION = "current";
@@ -39,7 +40,8 @@ const GET_SESSION = gql`
       id
       startDatetime
       course {
-        id
+		id
+		isConfirmed
 		dayOfWeek
 		startTime
 		endTime
@@ -95,21 +97,25 @@ const EditSessionView = () => {
 
 	const { data, loading, error } = useQuery(GET_SESSION, {
 		variables: { sessionId: session_id },
+		"onCompleted": (data) => {
+            setFromMigration(data)
+        },
 	  });
 	
 	  
 
 	
-	// const [sessionFields, setSessionFields] = useState({
-	// 	start_time: "3:00",
-	// 	instructor: "daniel",
-	// 	end_time: "4:00",
-	// 	title: "HonorsBiologyPrep",
-	// 	category: "Math",
-	// 	is_confirmed: "true",
-	// 	duration: "1 hour",
-	// 	updatedDuration: "2 hour",
-	// });
+	const [sessionFields, setSessionFields] = useState({
+		start_time: "",
+		instructor: "",
+		end_time: "",
+		room: "",
+		title: "",
+		category: "",
+		is_confirmed: "",
+		duration: "",
+		updatedDuration: "",
+	});
 
 	// useEffect(() => {
 	// 	api.initializeRegistration();
@@ -252,6 +258,32 @@ const EditSessionView = () => {
 	
 	  console.log(data)
 
+	//   useEffect(() => {
+		// if (course && session) {
+		// 	let durationHours =
+		// 		Math.abs(session.end_datetime - session.start_datetime) / 36e5;
+		// 	if (durationHours === 0) {
+		// 		durationHours = 1;
+		// 	}
+		// 	const category = categories.find(
+		// 		(category) => category.id === course.category
+		// 	);
+
+		// 	setSessionFields({
+		// 		category: {value: category.id, label: category.name},
+		// 		instructor: {
+		// 			value: session.instructor,
+		// 			label: instructors[session.instructor].name,
+		// 		},
+		// 		start_time: session.start_datetime,
+		// 		end_time: session.end_datetime,
+		// 		duration: durationHours,
+		// 		title: session.title,
+		// 		is_confirmed: session.is_confirmed,
+		// 	});
+		// }
+	// }, [course, instructors, session]);
+
 	  const { course, endDatetime, id, startDatetime, title } = data.session;
 console.log(course)
   const {
@@ -268,13 +300,62 @@ console.log(course)
 	  
 	  const session = "bye"
 	//   const categories = "no"
-	  const setSessionFields = "no"
-	  const instructors = "no"
-	  const sessionFields = "no"
+	//   const setSessionFields = "no"
+	//   const instructors = "no"
+	//   const sessionFields = "no"
 	  const editSelection = "no"
 
+//UPDATE
+//need to grab all instructors. For now:
+
+const instructors = [
+	{
+
+		id: 1,
+		name: "Danny Dude"
+		
+
+	},
+	{
+
+		id: 1,
+		name: "Mister man"
+
+
+	}
+]
 
 	
+	const setFromMigration = (response) => {
+		console.log(response)
+		console.log(response.session.course)
+		let durationHours =
+			Math.abs(response.session.end_datetime - response.session.start_datetime) / 36e5;
+		if (durationHours === 0) {
+			durationHours = 1;
+		}
+		console.log(durationHours)
+		const category = categories.find(
+			(category) => category.id === course.category
+		);
+		setSessionFields({
+			category: {
+				value: response.session.course.courseCategory.id,
+				label: response.session.course.courseCategory.name
+			},
+			instructor: {
+				value: fullName(response.session.course.instructor.user),
+				label: fullName(response.session.course.instructor.user)
+			},
+			start_time: response.session.start_datetime,
+			end_time: response.session.end_datetime,
+			room: response.session.course.room,
+			duration: durationHours,
+			title: response.session.title,
+			is_confirmed: response.session.course.isConfirmed,
+		});
+
+	}
 
 	const updateSession = () => {
 		const {
@@ -347,7 +428,7 @@ console.log(course)
 						<TextField
 							fullWidth
 							onChange={handleTextChange("title")}
-							value={sessionFields.title}
+							value={title}
 						/>
 					</Grid>
 					<Grid
@@ -370,7 +451,7 @@ console.log(course)
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="h5"> Room</Typography>
-							<TextField value={course.room_id} />
+							<TextField value={sessionFields.room} />
 						</Grid>
 
 						<Grid item xs={12}>
