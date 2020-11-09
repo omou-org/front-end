@@ -37,6 +37,7 @@ import AddSessions from "components/OmouComponents/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { capitalizeString } from "../../../utils";
+import moment from "moment";
 
 const EDIT_ALL_SESSIONS = "all";
 const EDIT_CURRENT_SESSION = "current";
@@ -74,9 +75,13 @@ const GET_SESSION = gql`
   query SessionViewQuery($sessionId: ID!) {
     session(sessionId: $sessionId) {
       id
+      startDatetime
       course {
-        courseId
+        id
+        dayOfWeek
         room
+        startTime
+        endTime
         courseCategory {
           id
           name
@@ -185,6 +190,7 @@ const SessionView = () => {
   const course = data.session.course;
   const enrollmentStatus = true;
   const session = data.session;
+  const course_id = data.session.course.id
   const reduxCourse = 1;
   const instructor_id = data.session.course.instructor.user.id;
   const category = data.session.course.courseCategory.name
@@ -193,6 +199,11 @@ const SessionView = () => {
     " " +
     data.session.course.instructor.user.lastName;
   const enrolledStudents = data.session.course.enrollmentSet;
+  const dayOfWeek = data.session.course.dayOfWeek
+  const startDateTime = data.session.startDatetime
+  const startTime = data.session.course.startTime
+  const endTime = data.session.course.endTime
+  console.log(startDateTime)
   // const enrolledStudents = []
   // const enrolledStudents = "daniel"
 
@@ -204,6 +215,7 @@ const SessionView = () => {
   console.log(categories);
   console.log(instructor_id);
   console.log(enrolledStudents);
+  console.log(course_id)
 
 //   var enrolledStudentsId = enrolledStudents.map((studentID) => {
 //     return studentID.student.user.id;
@@ -344,7 +356,7 @@ const SessionView = () => {
                 // REACH OUT TO DESIGN FOR NO STUDENTS MESSAGE
               <NavLink
                 style={{ textDecoration: "none" }}
-                to={`/accounts/instructor/${instructor.user_id}`}
+                to={`/accounts/instructor/${instructor_id}`}
               >
                 <Tooltip aria-label="Instructor Name" title={instructorName}>
                   <Avatar style={styles(instructorName)}>
@@ -364,50 +376,29 @@ const SessionView = () => {
                 <NavLink
                 key={student.student.user.id}
                 style={{ textDecoration: "none" }}
-                to={`/accounts/student/${student.student.user.id}/${course.course_id}`}
+                to={`/accounts/student/${student.student.user.id}/${course_id}`}
               >
                 <Tooltip title={student.student.user.firstName + " " + student.student.user.lastName}>
                     <Avatar style={styles(student.student.user.firstName + " " + student.student.user.lastName)}>
-                      {/* {student.student.user.firstName.match(/\b(\w)/g).join("")} */}
                       {(student.student.user.firstName + " " + student.student.user.lastName).match(/\b(\w)/g).join("")}
 
                     </Avatar>
                   </Tooltip>
               </NavLink>
               ))}
-            
-              {/* {studentKeys.map((key) => (
-                <NavLink
-                  key={key}
-                  style={{ textDecoration: "none" }}
-                  to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
-                >
-                  <Tooltip title={enrolledStudents[key].firstName + " " + enrolledStudents[key].lastName }>
-                    <Avatar style={styles(enrolledStudents[key].firstName + " " + enrolledStudents[key].lastName)}>
-                      {enrolledStudents
-                        // ? (enrolledStudents[key].firstName + " " + enrolledStudents[key].lastName).match(/\b(\w)/g).join("")
-                        ? daniel.match(/\b(\w)/g).join("")
-
-                        : hooks.isFail(enrollmentStatus)
-                        ? "Error!"
-                        : "Loading..."}
-                    </Avatar>
-                  </Tooltip>
-                </NavLink>
-              ))} */}
             </Grid>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="h5">Day(s)</Typography>
-            <Typography>{capitalizeString(dayOfWeek[day])}</Typography>
+            <Typography>{capitalizeString(dayOfWeek)}</Typography>
             <Typography>
-              {new Date(session.start_datetime).toLocaleDateString()}
+              {new Date(startDateTime).toLocaleDateString()}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="h5">Time</Typography>
             <Typography>
-              {session.startTime} - {session.endTime}
+              {startTime} - {endTime}
             </Typography>
           </Grid>
         </Grid>
@@ -426,7 +417,7 @@ const SessionView = () => {
             className="button"
             color="secondary"
             component={NavLink}
-            to={`/registration/course/${course.course_id}`}
+            to={`/registration/course/${course_id}`}
             variant="outlined"
           >
             Course Page
@@ -448,7 +439,7 @@ const SessionView = () => {
                 <MenuItem
                   color="secondary"
                   component={NavLink}
-                  to={`/accounts/student/${course.roster[0]}/${course.course_id}`}
+                  to={`/accounts/student/${course.roster[0]}/${course_id}`}
                   variant="outlined"
                 >
                   Enrollment View
@@ -474,7 +465,7 @@ const SessionView = () => {
             className="editButton"
             color="primary"
             onClick={handleEditToggle(true)}
-            to={`/scheduler/edit-session/${course.course_id}/${session_id}/${instructor_id}/edit`}
+            to={`/scheduler/edit-session/${course_id}/${session_id}/${instructor_id}/edit`}
             variant="outlined"
           >
             Reschedule
@@ -521,7 +512,7 @@ const SessionView = () => {
             color="primary"
             component={NavLink}
             to={{
-              pathname: `/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`,
+              pathname: `/scheduler/edit-session/${course_id}/${session_id}/${instructor_id}/edit`,
               state: { course: course, session: session },
             }}
           >
