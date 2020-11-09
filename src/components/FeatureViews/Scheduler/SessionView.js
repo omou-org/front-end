@@ -30,6 +30,7 @@ import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import BackButton from "components/OmouComponents/BackButton";
 
+
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusChip";
 import AddSessions from "components/OmouComponents/AddSessions";
@@ -121,6 +122,7 @@ const SessionView = () => {
   if (error) {
     return <Typography>There's been an error!</Typography>;
   }
+
 
   const { course, endDatetime, id, startDatetime, title } = data.session;
 

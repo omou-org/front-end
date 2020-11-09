@@ -1,7 +1,9 @@
 import React, {useEffect, useMemo, useState} from "react";
 // Material UI Imports
 import Grid from "@material-ui/core/Grid";
-import {useHistory, useLocation, withRouter} from "react-router-dom";
+import {useHistory, useLocation, withRouter, useParams} from "react-router-dom";
+import Loading from "components/OmouComponents/Loading";
+
 
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
@@ -31,7 +33,52 @@ import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 const EDIT_ALL_SESSIONS = "all";
 const EDIT_CURRENT_SESSION = "current";
 
-const EditSessionView = ({editSelection}) => {
+const GET_SESSION = gql`
+  query SessionViewQuery($sessionId: ID!) {
+    session(sessionId: $sessionId) {
+      id
+      startDatetime
+      course {
+        id
+		dayOfWeek
+		startTime
+		endTime
+        room
+        courseCategory {
+          id
+          name
+        }
+        instructor {
+          user {
+            id
+            firstName
+            lastName
+          }
+          subjects {
+            name
+          }
+        }
+        enrollmentSet {
+          student {
+            user {
+              id
+              firstName
+              lastName
+            }
+          }
+        }
+      }
+      endDatetime
+      title
+      startDatetime
+    }
+  }
+`;
+console.log("bye")
+const EditSessionView = () => {
+	console.log("hi")
+	const { session_id } = useParams();
+	console.log( session_id )
 	const dispatch = useDispatch();
 	const api = useMemo(
 		() => ({
@@ -44,71 +91,90 @@ const EditSessionView = ({editSelection}) => {
 	);
 	const history = useHistory();
 	const location = useLocation();
-	const {course, session} = location.state;
+	// const {course, session} = location.state;
 
-	const [sessionFields, setSessionFields] = useState({
-		start_time: "",
-		instructor: "",
-		end_time: "",
-		title: "",
-		category: "",
-		is_confirmed: "",
-		duration: "",
-		updatedDuration: "",
-	});
+	const { data, loading, error } = useQuery(GET_SESSION, {
+		variables: { sessionId: session_id },
+	  });
+	
+	  
 
-	useEffect(() => {
-		api.initializeRegistration();
-		api.fetchCourses();
-	}, [api]);
+	
+	// const [sessionFields, setSessionFields] = useState({
+	// 	start_time: "3:00",
+	// 	instructor: "daniel",
+	// 	end_time: "4:00",
+	// 	title: "HonorsBiologyPrep",
+	// 	category: "Math",
+	// 	is_confirmed: "true",
+	// 	duration: "1 hour",
+	// 	updatedDuration: "2 hour",
+	// });
 
-	const categories = useSelector(
-		({Course: {CourseCategories}}) => CourseCategories
-	);
-	const instructors = useSelector(
-		({Users: {InstructorList}}) => InstructorList
-	);
+	// useEffect(() => {
+	// 	api.initializeRegistration();
+	// 	api.fetchCourses();
+	// }, [api]);
 
-	useEffect(() => {
-		if (course && session) {
-			let durationHours =
-				Math.abs(session.end_datetime - session.start_datetime) / 36e5;
-			if (durationHours === 0) {
-				durationHours = 1;
-			}
-			const category = categories.find(
-				(category) => category.id === course.category
-			);
+	// const categories = useSelector(
+	// 	({Course: {CourseCategories}}) => CourseCategories
+	// );
+	// const instructors = useSelector(
+	// 	({Users: {InstructorList}}) => InstructorList
+	// );
 
-			setSessionFields({
-				category: {value: category.id, label: category.name},
-				instructor: {
-					value: session.instructor,
-					label: instructors[session.instructor].name,
-				},
-				start_time: session.start_datetime,
-				end_time: session.end_datetime,
-				duration: durationHours,
-				title: session.title,
-				is_confirmed: session.is_confirmed,
-			});
+	// useEffect(() => {
+	// 	if (course && session) {
+	// 		let durationHours =
+	// 			Math.abs(session.end_datetime - session.start_datetime) / 36e5;
+	// 		if (durationHours === 0) {
+	// 			durationHours = 1;
+	// 		}
+	// 		const category = categories.find(
+	// 			(category) => category.id === course.category
+	// 		);
+
+	// 		setSessionFields({
+	// 			category: {value: category.id, label: category.name},
+	// 			instructor: {
+	// 				value: session.instructor,
+	// 				label: instructors[session.instructor].name,
+	// 			},
+	// 			start_time: session.start_datetime,
+	// 			end_time: session.end_datetime,
+	// 			duration: durationHours,
+	// 			title: session.title,
+	// 			is_confirmed: session.is_confirmed,
+	// 		});
+	// 	}
+	// }, [course, instructors, session]);
+
+	// const handleDateTimeChange = (date) => {
+	// 	const {end_time, duration} = sessionFields;
+	// 	if (date.end_time) {
+	// 	}
+	// 	end_time.setDate(date.getDate());
+	// 	end_time.setHours(date.getHours() + duration);
+	// 	end_time.setMinutes(date.getMinutes());
+
+	// 	setSessionFields({
+	// 		...sessionFields,
+	// 		start_time: date,
+	// 		end_time,
+	// 	});
+	// };
+
+	//NEED UPDATE FROM HARDCODE
+	const categories = [
+		{
+			id: 1,
+			name: "History"
+		},
+		{
+			id: 1,
+			name: "History"
 		}
-	}, [categories, course, instructors, session]);
-
-	const handleDateTimeChange = (date) => {
-		const {end_time, duration} = sessionFields;
-		if (date.end_time) {
-		}
-		end_time.setDate(date.getDate());
-		end_time.setHours(date.getHours() + duration);
-		end_time.setMinutes(date.getMinutes());
-
-		setSessionFields({
-			...sessionFields,
-			start_time: date,
-			end_time,
-		});
-	};
+	]
 
 	const categoriesList = categories.map(({id, name}) => ({
 		value: id,
@@ -134,6 +200,16 @@ const EditSessionView = ({editSelection}) => {
 			...sessionFields,
 			[field]: event.target.value,
 		});
+	};
+
+	const handleDateTimeChange = (date) => {
+		console.log("what")
+		// if (date.end_time) {
+		// }
+		// end_time.setDate(date.getDate());
+		// end_time.setHours(date.getHours() + duration);
+		// end_time.setMinutes(date.getMinutes());
+
 	};
 
 	const handleDurationSelect = (event) => {
@@ -165,6 +241,40 @@ const EditSessionView = ({editSelection}) => {
 	};
 
 	const courseDurationOptions = [1, 1.5, 2, 0.5];
+
+	if (loading) {
+		return <Loading />;
+	  }
+	
+	  if (error) {
+		return <Typography>There's been an error!</Typography>;
+	  }
+	
+	  console.log(data)
+
+	  const { course, endDatetime, id, startDatetime, title } = data.session;
+console.log(course)
+  const {
+    courseCategory,
+	dayOfWeek,
+	endTime,
+    enrollmentSet,
+    courseId,
+    instructor,
+	room,
+	startTime
+  } = course;
+
+	  
+	  const session = "bye"
+	//   const categories = "no"
+	  const setSessionFields = "no"
+	  const instructors = "no"
+	  const sessionFields = "no"
+	  const editSelection = "no"
+
+
+	
 
 	const updateSession = () => {
 		const {
@@ -335,8 +445,8 @@ const EditSessionView = ({editSelection}) => {
 										? session.id
 										: course.course_id
 								}
-								instructorID={sessionFields.instructor.value}
-								start={sessionFields.start_time}
+								instructorID={instructor.user.id}
+								start={course.startTime}
 								type={editSelection === EDIT_CURRENT_SESSION ? "session" : "course"}
 								onSubmit={updateSession}
 							>
@@ -357,4 +467,4 @@ const EditSessionView = ({editSelection}) => {
 	);
 };
 
-export default withRouter(EditSessionView);
+export default EditSessionView;
