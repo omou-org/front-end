@@ -1,8 +1,6 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
-
+import {Link, useParams} from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/EditOutlined";
@@ -13,7 +11,7 @@ import Menu from "@material-ui/core/Menu";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
-
+import Loading from "components/OmouComponents/Loading";
 import "./Accounts.scss";
 import { addDashes } from "./accountUtils";
 import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
@@ -23,17 +21,114 @@ import InstructorAvailability from "./InstructorAvailability";
 import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
 import { ReactComponent as SchoolIcon } from "../../school.svg";
-import { USER_TYPES } from "utils";
+import { USER_TYPES } from "utils"; 
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
 
-const ProfileHeading = ({ user }) => {
-	const { userInfo } = user;
-	const [anchorEl, setAnchorEl] = useState(null);
+import { useSelector } from "react-redux";
+
+const GET_PROFILE_HEADING_QUERY = {
+	"admin" : gql`
+	query getAdmimUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on AdminType {
+			birthDate
+			accountType
+			adminType
+			user {
+			  firstName
+			  lastLogin
+			  email
+			  id
+			}
+		  }
+		}
+	  }
+	  `,
+	  "instructor": gql`
+	  query getInstructorUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on InstructorType {
+			birthDate
+			accountType
+			phoneNumber
+			user {
+			  firstName
+			  lastName
+			  email
+			  id
+			}
+		  }
+		}
+	  }`,
+	  "parent" : gql`query getParentUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on ParentType {
+			birthDate
+			accountType
+			balance
+			user {
+			  firstName
+			  lastName
+			  email
+			  id
+			}
+		  }
+		}
+	  }`,
+	  "student" : gql`
+	  query getStudentUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on StudentType {
+			birthDate
+			accountType
+			grade
+			school {
+			  name
+			  id
+			}
+			user {
+			  firstName
+			  lastName
+			  email
+			  id
+			}
+		  }
+		}
+	  }
+	  
+	  
+	 
+	  `
+
+}
+
+
+const ProfileHeading = ({ ownerID }) => {
+	const { accountType } = useParams();
+
+	const loggedInUserID = useSelector(({auth}) => auth.user.id)
+	
+
+	 const {data, loading, error } = useQuery(GET_PROFILE_HEADING_QUERY[accountType],{
+		variables: {userID: ownerID}
+	})
+	 
+	 
+	if(loading) return <Loading/>;
+	
+	if (error) return `Error: ${error}`
+	const {userInfo} = data;
+	
 	const isAdmin = userInfo.accountType === USER_TYPES.admin;
-
+	const isAuthUser = userInfo.user.id === loggedInUserID
+	
+	
+// if logged in user is admin 
 
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
-			{isAdmin && (
+			{(isAdmin && isAuthUser) && (
 				<>
 					<Grid component={Hidden} item mdDown xs={12}>
 						<Button
@@ -59,7 +154,9 @@ const ProfileHeading = ({ user }) => {
 		</Grid>
 	);
 
-	const profileDetails = useMemo(() => {
+
+
+	const profileDetails = () => {
 		const IDRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
@@ -67,7 +164,7 @@ const ProfileHeading = ({ user }) => {
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
 					<Typography className="rowText">
-						#{user.summit_id || userInfo.user.id}
+						#{userInfo.summit_id || userInfo.user.id}
 					</Typography>
 				</Grid>
 			</>
@@ -107,14 +204,16 @@ const ProfileHeading = ({ user }) => {
 					<BirthdayIcon className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
-					<Typography className="rowText">{user.birthday}</Typography>
+					<Typography className="rowText">{userInfo?.birthday}</Typography>
 				</Grid>
 			</>
 		);
 
+		
+		
+			
 
-
-		switch (userInfo.accountType) {
+		switch (accountType) {
 			case "student":
 				return (
 					<>
@@ -124,14 +223,14 @@ const ProfileHeading = ({ user }) => {
 							<GradeIcon className="iconScaling" />
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">Grade {user.grade}</Typography>
+							<Typography className="rowText">Grade {userInfo.grade}</Typography>
 						</Grid>
 						<PhoneRow />
 						<Grid className="rowPadding" item xs={1}>
 							<SchoolIcon className="iconScaling" />
 						</Grid>
 						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">{user.school}</Typography>
+							<Typography className="rowText">{userInfo.school?.name}</Typography>
 						</Grid>
 						<EmailRow />
 					</>
@@ -167,7 +266,8 @@ const ProfileHeading = ({ user }) => {
 					</>
 				);;
 		}
-	}, [user]);
+	};
+
 
 
 
@@ -190,25 +290,25 @@ const ProfileHeading = ({ user }) => {
 					margin: "10px 0",
 				}}
 			>
-				{profileDetails}
+				{profileDetails()}
 			</Grid>
 		</Grid >
 	);
 };
 
 ProfileHeading.propTypes = {
-	user: PropTypes.shape({
-		balance: PropTypes.string,
-		birthday: PropTypes.string,
-		email: PropTypes.string,
-		grade: PropTypes.number,
-		name: PropTypes.string,
-		phone_number: PropTypes.string,
-		// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
-		school: PropTypes.string,
-		summit_id: PropTypes.string,
-		user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	}).isRequired,
+	// user: PropTypes.shape({
+	// 	balance: PropTypes.string,
+	// 	birthday: PropTypes.string,
+	// 	email: PropTypes.string,
+	// 	grade: PropTypes.number,
+	// 	name: PropTypes.string,
+	// 	phone_number: PropTypes.string,
+	// 	// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
+	// 	school: PropTypes.string,
+	// 	summit_id: PropTypes.string,
+	// 	user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	// }).isRequired,
 };
 
 export default ProfileHeading;

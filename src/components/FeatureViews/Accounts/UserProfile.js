@@ -56,7 +56,7 @@ const userTabs = {
 		{
 			icon: <BioIcon className="TabIcon" />,
 			tab_heading: "Bio",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.parent],
 			tab_id: 2,
 		},
 		{
@@ -128,19 +128,19 @@ const userTabs = {
 		{
 			icon: <ContactIcon className="TabIcon" />,
 			tab_heading: "Action Log",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 10,
 		},
 		{
 			icon: <NoteIcon className="TabIcon" />,
 			tab_heading: "Notes",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 			tab_id: 7,
 		},
 		{
 			icon: <SettingsIcon className="SettingsIcon" />,
 			tab_heading: "Notification Settings",
-			access_permissions: [USER_TYPES.instructor],
+			access_permissions: [USER_TYPES.admin],
 			tab_id: 11,
 		}
 	],
@@ -238,6 +238,10 @@ const UserProfile = () => {
 	
 	const AuthUser = useSelector(({ auth }) => auth);
 
+	// check if user is viewing a differnt profile 
+
+	// 
+
 
 	// reset to first tab when profile changes
 	useEffect(() => {
@@ -252,14 +256,9 @@ const UserProfile = () => {
 
 
 
-
 	const { loading, error, data } = useQuery(QUERIES[accountType], {
 		variables: { ownerID: accountID },
 	})
-
-	
-
-
 
 	if (loading ) return null
 	if (error ) return <Redirect to="/PageNotFound" />;
@@ -268,6 +267,7 @@ const UserProfile = () => {
 		setTabIndex(newTabIndex);
 	};
 
+	
 	const tabs = () => {
 
 		return (
@@ -302,8 +302,7 @@ const UserProfile = () => {
 						))}
 				</Tabs>
 				<ComponentViewer
-					inView={displayTabs
-						.filter((tab) => (tab.access_permissions.includes(AuthUser.accountType)))[tabIndex].tab_id}
+					inView={displayTabs.filter((tab) => (tab.access_permissions.includes(AuthUser.accountType)))[tabIndex]?.tab_id}
 					user={data}
 					id={accountID}
 					
@@ -358,7 +357,7 @@ const UserProfile = () => {
 						</Hidden>
 					</Grid>
 					<Grid className="headingPadding" item md={10} xs={12}>
-						<ProfileHeading user={data} />
+						<ProfileHeading  ownerID={accountID} />
 					</Grid>
 				</Grid>
 				{tabs()}

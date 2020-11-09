@@ -18,10 +18,10 @@ import UserAccessControl from "./UserAccessControl";
 import { useSelector } from "react-redux";
 import { USER_TYPES } from "../../../utils";
 
-const ComponentViewer = ({ inView, user, log ,id}) => {
+const ComponentViewer = ({ inView, user ,id}) => {
+
 	const AuthUser = useSelector(({ auth }) => auth);
 	
-
 
 	// All components should take an user id. Components will do all the gql calls  
 	/**
@@ -44,31 +44,31 @@ const ComponentViewer = ({ inView, user, log ,id}) => {
 			},
 			{
 				component: <Bio ownerID={id} key={2} />,
-				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor],
+				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.instructor,USER_TYPES.parent],
 				id: 2,
 			},
 			{
-				component: <StudentCourseViewer current key={3} studentID={id} />,
+				component: <StudentCourseViewer current  studentID={id} key={3} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 3,
 			},
 			{
-				component: <StudentCourseViewer current={false} key={4} studentID={id} />,
+				component: <StudentCourseViewer current={false}  studentID={id} key={4} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
 				id: 4,
 			},
 			{
-				component: <PaymentHistory key={5} user_id={id} />,
+				component: <PaymentHistory user_id={id} key={5} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
 				id: 5,
 			},
 			{
-				component: <ParentContact key={6} parent_id={id} />,
-				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student,],
+				component: <ParentContact key={6}/>,
+				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent],
 				id: 6,
 			},
 			{
-				component: <Notes key={7} ownerID={id} ownerType="account" />,
+				component: <Notes  ownerID={id} ownerType="account" key={7} />,
 				access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.student, USER_TYPES.parent, USER_TYPES.instructor],
 				id: 7,
 			},
@@ -95,12 +95,13 @@ const ComponentViewer = ({ inView, user, log ,id}) => {
 				id: 11,
 			}
 		].filter((tab) => (tab.access_permissions.includes(AuthUser.accountType))),
-		[user]
+		[id]
 	);
-
+		
 	return (
 		<Grid className="profile-component-container">
-			{componentsArray.find(({ id }) => id == inView).component}
+			
+			{ componentsArray.find(({ id }) => id == inView)?.component }
 		</Grid>
 	);
 };
@@ -110,8 +111,8 @@ ComponentViewer.propTypes = {
 	user: PropTypes.shape({
 		background: PropTypes.object,
 		parent_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-		role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"])
-			.isRequired,
+		// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"])
+		// 	.isRequired,
 		user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 			.isRequired,
 	}).isRequired,
