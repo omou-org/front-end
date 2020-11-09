@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-// Material UI Imports
 import Grid from "@material-ui/core/Grid";
 import { NavLink, Redirect, useParams } from "react-router-dom";
 
@@ -26,10 +25,10 @@ import { dayOfWeek } from "../../Form/FormUtils";
 import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-// import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import BackButton from "components/OmouComponents/BackButton";
 
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusChip";
@@ -38,9 +37,6 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { capitalizeString } from "../../../utils";
 import moment from "moment";
-
-const EDIT_ALL_SESSIONS = "all";
-const EDIT_CURRENT_SESSION = "current";
 
 const StyledMenu = withStyles({
   paper: {
@@ -80,8 +76,6 @@ const GET_SESSION = gql`
         id
         dayOfWeek
         room
-        startTime
-        endTime
         courseCategory {
           id
           name
@@ -114,67 +108,11 @@ const GET_SESSION = gql`
 `;
 
 const SessionView = () => {
-  const dispatch = useDispatch();
   const { session_id } = useParams();
-  console.log(session_id)
 
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
   });
-
-  console.log(data);
-
-  const api = useMemo(() => bindActionCreators(registrationActions, dispatch), [
-    dispatch,
-  ]);
-
-  const instructors = useSelector(
-    ({ Users: { InstructorList } }) => InstructorList
-  );
-  const categories = useSelector(
-    ({ Course: { CourseCategories } }) => CourseCategories
-  );
-
-  //   console.log(categories)
-  const courses = useSelector(({ Course: { NewCourseList } }) => NewCourseList);
-  const students = useSelector(({ Users: { StudentList } }) => StudentList);
-
-    // const [enrolledStudents, setEnrolledStudents] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [unenroll, setUnenroll] = useState(false);
-  const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
-  const [tutoringActionsAnchor, setTutoringActionsAnchor] = useState(null);
-
-  // useEffect(() => {
-  //     api.initializeRegistration();
-  // }, [api]);
-  // const enrollmentStatus = hooks.useEnrollmentByCourse(course.course_id);
-  // const enrollments = useSelector(({ Enrollments }) => Enrollments);
-  // const reduxCourse = courses[course.course_id];
-  // const studentStatus = hooks.useStudent(reduxCourse.roster);
-  // const loadedStudents = useMemo(
-  //     () => reduxCourse.roster.filter((studentID) => students[studentID]),
-  //     [reduxCourse.roster, students]
-  // );
-
-  // useEffect(() => {
-  //     if (hooks.isSuccessful(studentStatus)) {
-  //         setEnrolledStudents(
-  //             loadedStudents.map((studentID) => ({
-  //                 ...students[studentID],
-  //             }))
-  //         );
-  //     }
-  // }, [loadedStudents, studentStatus, students]);
-
-  // if (loadedStudents.length === 0 && reduxCourse.roster.length > 1) {
-  //     if (hooks.isLoading(studentStatus)) {
-  //         return <Loading />;
-  //     }
-  //     if (hooks.isFail(studentStatus)) {
-  //         return <LoadingError error="enrollment details" />;
-  //     }
-  // }
 
   if (loading) {
     return <Loading />;
@@ -184,133 +122,37 @@ const SessionView = () => {
     return <Typography>There's been an error!</Typography>;
   }
 
-  //CHANGE all of these with data
-  const enrollments = data.session.course.enrollmentSet;
-  const courseTitle = data.session.course.instructor.subjects[0].name;
-  const course = data.session.course;
-  const enrollmentStatus = true;
-  const session = data.session;
-  const course_id = data.session.course.id
-  const reduxCourse = 1;
-  const instructor_id = data.session.course.instructor.user.id;
-  const category = data.session.course.courseCategory.name
+  const { course, endDatetime, id, startDatetime, title } = data.session;
+
+  const {
+    courseCategory,
+    dayOfWeek,
+    enrollmentSet,
+    courseId,
+    instructor,
+    room,
+  } = course;
+
   const instructorName =
-    data.session.course.instructor.user.firstName +
-    " " +
-    data.session.course.instructor.user.lastName;
-  const enrolledStudents = data.session.course.enrollmentSet;
-  const dayOfWeek = data.session.course.dayOfWeek
-  const startDateTime = data.session.startDatetime
-  const startTime = data.session.course.startTime
-  const endTime = data.session.course.endTime
-  console.log(startDateTime)
-  // const enrolledStudents = []
-  // const enrolledStudents = "daniel"
+    instructor.user.firstName + " " + instructor.user.lastName;
 
+  const course_id = course.id;
 
-  //   const categories = data.session.course.courseCategory
-  // console.log(instructor.name)
-  console.log(data.session.course);
-  console.log(instructorName);
-  console.log(categories);
-  console.log(instructor_id);
-  console.log(enrolledStudents);
-  console.log(course_id)
+  const startSessionTime = moment(startDatetime).format("h:MM A");
 
-//   var enrolledStudentsId = enrolledStudents.map((studentID) => {
-//     return studentID.student.user.id;
-//   });
-
-//   console.log(enrolledStudentsId);
-
-  const instructor = instructors[instructor_id] || { name: "N/A" };
-//   const studentKeys = Object.keys(enrolledStudentsId);
-  // const studentKeys = Object.keys(enrolledStudents);
-  //needs to be an array of ids of the students enrolled
-
-  const handleTutoringMenuClick = (event) => {
-    setTutoringActionsAnchor(event.currentTarget);
-  };
-  const closeTutoringMenu = () => {
-    setTutoringActionsAnchor(null);
-  };
-//NO TOGGLE
-  const toggleEditing = (editSelection) => {
-    
-    // setEditSelection(editSelection)
-    // this.setState((oldState) => {
-    //   return {
-    //     ...oldState,
-    //     editing: !oldState.editing,
-    //     editSelection: editSelection,
-    //   };
-    // });
-  };
-  //EDITSTUFF
-  const handleEditToggle = (cancel) => (event) => {
-    event.preventDefault();
-    if (!cancel && edit) {
-      // if we're applying to edit session then toggle to edit view
-      toggleEditing(editSelection);
-    } else {
-      setEdit(!edit);
-    }
-  };
-
-  const handleEditSelection = (event) => {
-    setEditSelection(event.target.value);
-  };
-
-  const handleUnenroll = (event) => {
-    event.preventDefault();
-    setTutoringActionsAnchor(null);
-    setUnenroll(true);
-  };
-
-  // We only support unenrollment from session view for tutoring courses
-  const closeUnenrollDialog = (toUnenroll) => (event) => {
-    event.preventDefault();
-    setUnenroll(false);
-    if (toUnenroll) {
-      // We assume course is tutoring course thus we're getting the first studentID
-      const enrollment = enrollments[course.roster[0]][course.course_id];
-      api.deleteEnrollment(enrollment);
-    }
-  };
-
-  // enrollment not found in database
-  //   if (
-  //     Object.entries(enrollments).length === 0 &&
-  //     enrollments.constructor === Object &&
-  //     hooks.isSuccessful(enrollmentStatus)
-  //   ) {
-  //     return <Redirect to="/NotEnrolledStudent" />;
-  //   }
-  //   if (
-  //     !course ||
-  //     !categories ||
-  //     (Object.entries(enrollments).length === 0 &&
-  //       enrollments.constructor === Object)
-  //   ) {
-  //     return <Loading />;
-  //   }
-  const sessionStart = new Date(session.start_datetime);
-  const day =
-    sessionStart.getDate() !== new Date().getDate()
-      ? session.start - 1 >= 0
-        ? session.start - 1
-        : 6
-      : session.start;
+  const endSessionTime = moment(endDatetime).format("h:MM A");
 
   return (
     <>
       <Grid className="session-view" container direction="row" spacing={1}>
         <Grid item sm={12}>
+          <BackButton />
           <Typography align="left" className="session-view-title" variant="h3">
-            {session && session.title}
+            {title}
           </Typography>
         </Grid>
-        <Grid item sm={12}>
+        {/* DANIEL NEED? go though this */}
+        {/* <Grid item sm={12}>
           <Grid container>
             <Grid className="course-session-status" item xs={2}>
               {course.course_type === "tutoring" && (
@@ -324,7 +166,7 @@ const SessionView = () => {
               )}
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid
           align="left"
           className="session-view-details"
@@ -335,28 +177,27 @@ const SessionView = () => {
         >
           <Grid item xs={6}>
             <Typography variant="h5">Subject</Typography>
-            <Typography>
-              {category}
-            </Typography>
+            <Typography>{courseCategory.name}</Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="h5">Room</Typography>
-            <Typography>{course && (course.room || "TBA")}</Typography>
+            <Typography>{room || "TBA"}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h5">
               Instructor
-              {session.is_confirmed ? (
+              {/* DANIEL NEED? go though this */}
+              {/* {session.is_confirmed ? (
                 <ConfirmIcon className="confirmed course-icon" />
               ) : (
                 <UnconfirmIcon className="unconfirmed course-icon" />
-              )}
+              )} */}
             </Typography>
             {course && (
-                // REACH OUT TO DESIGN FOR NO STUDENTS MESSAGE
+              // REACH OUT TO DESIGN FOR NO STUDENTS MESSAGE
               <NavLink
                 style={{ textDecoration: "none" }}
-                to={`/accounts/instructor/${instructor_id}`}
+                to={`/accounts/instructor/${instructor.user.id}`}
               >
                 <Tooltip aria-label="Instructor Name" title={instructorName}>
                   <Avatar style={styles(instructorName)}>
@@ -369,22 +210,38 @@ const SessionView = () => {
           <Grid item xs={12}>
             <Typography align="left" variant="h5">
               Students Enrolled
-              {/* {enrolledStudents} */}
             </Typography>
             <Grid container direction="row">
-              {enrolledStudents.map((student) => (
+              {enrollmentSet.map((student) => (
                 <NavLink
-                key={student.student.user.id}
-                style={{ textDecoration: "none" }}
-                to={`/accounts/student/${student.student.user.id}/${course_id}`}
-              >
-                <Tooltip title={student.student.user.firstName + " " + student.student.user.lastName}>
-                    <Avatar style={styles(student.student.user.firstName + " " + student.student.user.lastName)}>
-                      {(student.student.user.firstName + " " + student.student.user.lastName).match(/\b(\w)/g).join("")}
-
+                  key={student.student.user.id}
+                  style={{ textDecoration: "none" }}
+                  to={`/accounts/student/${student.student.user.id}/${course_id}`}
+                >
+                  <Tooltip
+                    title={
+                      student.student.user.firstName +
+                      " " +
+                      student.student.user.lastName
+                    }
+                  >
+                    <Avatar
+                      style={styles(
+                        student.student.user.firstName +
+                          " " +
+                          student.student.user.lastName
+                      )}
+                    >
+                      {(
+                        student.student.user.firstName +
+                        " " +
+                        student.student.user.lastName
+                      )
+                        .match(/\b(\w)/g)
+                        .join("")}
                     </Avatar>
                   </Tooltip>
-              </NavLink>
+                </NavLink>
               ))}
             </Grid>
           </Grid>
@@ -392,13 +249,13 @@ const SessionView = () => {
             <Typography variant="h5">Day(s)</Typography>
             <Typography>{capitalizeString(dayOfWeek)}</Typography>
             <Typography>
-              {new Date(startDateTime).toLocaleDateString()}
+              {new Date(startDatetime).toLocaleDateString()}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="h5">Time</Typography>
             <Typography>
-              {startTime} - {endTime}
+              {startSessionTime} - {endSessionTime}
             </Typography>
           </Grid>
         </Grid>
@@ -424,7 +281,8 @@ const SessionView = () => {
           </Button>
         </Grid>
         <Grid item>
-          {reduxCourse.course_type == "tutoring" && (
+          {/* DANIEL NEED? go though this */}
+          {/* {reduxCourse.course_type == "tutoring" && (
             <>
               <Button className="button" onClick={handleTutoringMenuClick}>
                 Tutoring Options
@@ -458,109 +316,20 @@ const SessionView = () => {
                 </MenuItem>
               </StyledMenu>
             </>
-          )}
+          )} */}
         </Grid>
         <Grid item>
           <Button
             className="editButton"
             color="primary"
-            onClick={handleEditToggle(true)}
-            to={`/scheduler/edit-session/${course_id}/${session_id}/${instructor_id}/edit`}
+            component={NavLink}
+            to={`/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`}
             variant="outlined"
           >
             Reschedule
           </Button>
         </Grid>
       </Grid>
-      <Dialog
-        aria-describedby="form-dialog-description"
-        aria-labelledby="form-dialog-title"
-        className="session-view-modal"
-        fullWidth
-        maxWidth="xs"
-        onClose={handleEditToggle(true)}
-        open={edit}
-      >
-        <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
-        <Divider />
-        <DialogContent>
-          <RadioGroup
-            aria-label="delete"
-            name="delete"
-            onChange={handleEditSelection}
-            value={editSelection}
-          >
-            <FormControlLabel
-              control={<Radio color="primary" />}
-              label="This Session"
-              labelPlacement="end"
-              value={EDIT_CURRENT_SESSION}
-            />
-            <FormControlLabel
-              control={<Radio color="primary" />}
-              label="All Sessions"
-              labelPlacement="end"
-              value={EDIT_ALL_SESSIONS}
-            />
-          </RadioGroup>
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary" onClick={handleEditToggle(true)}>
-            Cancel
-          </Button>
-          <Button
-            color="primary"
-            component={NavLink}
-            to={{
-              pathname: `/scheduler/edit-session/${course_id}/${session_id}/${instructor_id}/edit`,
-              state: { course: course, session: session },
-            }}
-          >
-            Confirm to Edit
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        aria-describedby="unenroll-dialog-description"
-        aria-labelledby="unenroll-dialog-title"
-        className="session-view-modal"
-        fullWidth
-        maxWidth="xs"
-        onClose={closeUnenrollDialog(false)}
-        open={unenroll}
-      >
-        <DialogTitle id="unenroll-dialog-title">
-          Unenroll in {course.title}
-        </DialogTitle>
-        <Divider />
-        <DialogContent>
-          {/* ANNA UPDATE  */}
-          <DialogContentText>
-            You are about to unenroll in <b>{course.title}</b> for{" "}
-            <b>{enrolledStudents && enrolledStudents}</b>.
-            Performing this action will credit the remaining enrollment balance
-            back to the parent's account balance. Are you sure you want to
-            unenroll?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={closeUnenrollDialog(true)}
-          >
-            Yes, unenroll
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={closeUnenrollDialog(false)}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };
