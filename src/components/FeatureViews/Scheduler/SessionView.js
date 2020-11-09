@@ -111,6 +111,7 @@ const GET_SESSION = gql`
 const SessionView = () => {
   const dispatch = useDispatch();
   const { session_id } = useParams();
+  console.log(session_id)
 
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
@@ -133,7 +134,7 @@ const SessionView = () => {
   const courses = useSelector(({ Course: { NewCourseList } }) => NewCourseList);
   const students = useSelector(({ Users: { StudentList } }) => StudentList);
 
-    const [enrolledStudents, setEnrolledStudents] = useState(false);
+    // const [enrolledStudents, setEnrolledStudents] = useState(false);
   const [edit, setEdit] = useState(false);
   const [unenroll, setUnenroll] = useState(false);
   const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
@@ -186,12 +187,15 @@ const SessionView = () => {
   const session = data.session;
   const reduxCourse = 1;
   const instructor_id = data.session.course.instructor.user.id;
+  const category = data.session.course.courseCategory.name
   const instructorName =
     data.session.course.instructor.user.firstName +
     " " +
     data.session.course.instructor.user.lastName;
-//   const enrolledStudents = data.session.course.enrollmentSet;
-  const daniel = "Daniel Huang";
+  const enrolledStudents = data.session.course.enrollmentSet;
+  // const enrolledStudents = []
+  // const enrolledStudents = "daniel"
+
 
   //   const categories = data.session.course.courseCategory
   // console.log(instructor.name)
@@ -209,7 +213,7 @@ const SessionView = () => {
 
   const instructor = instructors[instructor_id] || { name: "N/A" };
 //   const studentKeys = Object.keys(enrolledStudentsId);
-  const studentKeys = Object.keys(enrolledStudents);
+  // const studentKeys = Object.keys(enrolledStudents);
   //needs to be an array of ids of the students enrolled
 
   const handleTutoringMenuClick = (event) => {
@@ -320,14 +324,7 @@ const SessionView = () => {
           <Grid item xs={6}>
             <Typography variant="h5">Subject</Typography>
             <Typography>
-              DANIEL WHAT
-              {
-                (
-                  categories.find(
-                    (category) => category.id === course.category
-                  ) || {}
-                ).name
-              }
+              {category}
             </Typography>
           </Grid>
           <Grid item xs={6}>
@@ -360,29 +357,25 @@ const SessionView = () => {
           <Grid item xs={12}>
             <Typography align="left" variant="h5">
               Students Enrolled
-              {enrolledStudents}
+              {/* {enrolledStudents} */}
             </Typography>
             <Grid container direction="row">
-                {/* map through enrolledstudents, and fill in as needed */}
-              {studentKeys.map((key) => (
+              {enrolledStudents.map((student) => (
                 <NavLink
-                  key={key}
-                  style={{ textDecoration: "none" }}
-                //   needs to be enrollmentview
-                  to={`/accounts/student/${enrolledStudents[key].user_id}/${course.course_id}`}
-                >
-                  <Tooltip title={enrolledStudents[key].name}>
-                    <Avatar style={styles(enrolledStudents[key].name)}>
-                      {enrolledStudents
-                      //fullName(student.user).match
-                        ? enrolledStudents[key].name.match(/\b(\w)/g).join("")
-                        : hooks.isFail(enrollmentStatus)
-                        ? "Error!"
-                        : "Loading..."}
+                key={student.student.user.id}
+                style={{ textDecoration: "none" }}
+                to={`/accounts/student/${student.student.user.id}/${course.course_id}`}
+              >
+                <Tooltip title={student.student.user.firstName + " " + student.student.user.lastName}>
+                    <Avatar style={styles(student.student.user.firstName + " " + student.student.user.lastName)}>
+                      {/* {student.student.user.firstName.match(/\b(\w)/g).join("")} */}
+                      {(student.student.user.firstName + " " + student.student.user.lastName).match(/\b(\w)/g).join("")}
+
                     </Avatar>
                   </Tooltip>
-                </NavLink>
+              </NavLink>
               ))}
+            
               {/* {studentKeys.map((key) => (
                 <NavLink
                   key={key}
@@ -551,9 +544,10 @@ const SessionView = () => {
         </DialogTitle>
         <Divider />
         <DialogContent>
+          {/* ANNA UPDATE  */}
           <DialogContentText>
             You are about to unenroll in <b>{course.title}</b> for{" "}
-            <b>{enrolledStudents && enrolledStudents[studentKeys[0]].name}</b>.
+            <b>{enrolledStudents && enrolledStudents}</b>.
             Performing this action will credit the remaining enrollment balance
             back to the parent's account balance. Are you sure you want to
             unenroll?
