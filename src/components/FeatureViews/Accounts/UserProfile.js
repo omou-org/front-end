@@ -76,7 +76,7 @@ const userTabs = {
 		{
 			icon: <CurrentSessionsIcon className="TabIcon" />,
 			tab_heading: "Student Info",
-			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent],
+			access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin, USER_TYPES.parent, USER_TYPES.instructor],
 			tab_id: 8,
 		},
 		{

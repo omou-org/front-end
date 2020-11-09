@@ -11,6 +11,8 @@ import { useQuery } from '@apollo/react-hooks';
 import { useSelector } from 'react-redux';
 import { AddItemButton } from '../../../OmouComponents/AddItemButton';
 import { PropTypes } from 'prop-types';
+import AccessControlComponent from "../../../OmouComponents/AccessControlComponent"
+import { USER_TYPES } from "../../../../utils";
 
 const useStyles = makeStyles({
   center: {
@@ -92,13 +94,15 @@ const StudentInfo = () => {
     >
       {studentList.map((student) => (
         <ProfileCard
-          key={student.user_id}
-          route={`/accounts/student/${student.user_id}`}
+          key={student.user.id}
+          route={`/accounts/student/${student.user.id}`}
           studentInvite={['PARENT', 'ADMIN'].includes(accountType)}
           user={student}
         />
       ))}
+
       <Grid item sm={6} xs={12}>
+      <AccessControlComponent permittedAccountTypes={[USER_TYPES.admin]}>
         <AddItemButton
           height={240}
           width='inherit'
@@ -107,7 +111,9 @@ const StudentInfo = () => {
         >
           + Add New Student
         </AddItemButton>
+        </AccessControlComponent>
       </Grid>
+
     </Grid>
   );
 };
