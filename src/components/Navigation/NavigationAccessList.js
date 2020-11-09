@@ -4,6 +4,7 @@ import AccountsIcon from "@material-ui/icons/Contacts";
 import AdminIcon from "@material-ui/icons/Face";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import DashboardIcon from "@material-ui/icons/Dashboard"
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import PaymentIcon from "@material-ui/icons/Payment"
 
 /**
@@ -23,14 +24,19 @@ export const NavList = {
 			"icon": <EventIcon/>,
 		},
 		{
-			"name": "Accounts",
-			"link": "/accounts",
-			"icon": <AccountsIcon/>,
-		},
-		{
 			"name": "Registration",
 			"link": "/registration",
 			"icon": <AssignmentIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
+		},
+		{
+			"name": "Accounts",
+			"link": "/accounts",
+			"icon": <AccountsIcon/>,
 		},
 		{
 			"name": "Admin",
@@ -50,14 +56,19 @@ export const NavList = {
 			"icon": <EventIcon/>,
 		},
 		{
-			"name": "Accounts",
-			"link": "/accounts",
-			"icon": <AccountsIcon/>,
-		},
-		{
 			"name": "Registration",
 			"link": "/registration",
 			"icon": <AssignmentIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
+		},
+		{
+			"name": "Accounts",
+			"link": "/accounts",
+			"icon": <AccountsIcon/>,
 		},
 	],
 	"INSTRUCTOR": [
@@ -70,6 +81,11 @@ export const NavList = {
 			"name": "My Schedule",
 			"link": "/scheduler",
 			"icon": <EventIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
 		},
 		{
 			"name": "My Availability",
@@ -89,7 +105,17 @@ export const NavList = {
 		// 	"icon": <DashboardIcon/>,
 		// },
 		{
-			"name": "My Schedule",
+			"name": "Dashboard",
+			"link": "/",
+			"icon": <DashboardIcon/>,
+		},
+		{
+			"name": "Course Management",
+			"link": "/coursemanagement",
+			"icon": <MenuBookIcon />
+		},
+		{
+			"name": "My Scheduler",
 			"link": "/scheduler",
 			"icon": <EventIcon/>,
 		},

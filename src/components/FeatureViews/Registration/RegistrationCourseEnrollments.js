@@ -75,6 +75,7 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity}) => {
     const {data, loading, error} = useQuery(GET_ENROLLMENT_DETAILS, {
         variables: {courseId: courseID}
     });
+    
 
     const [deleteEnrollment] = useMutation(DELETE_ENROLLMENT, {
         update: (cache, {data}) => {

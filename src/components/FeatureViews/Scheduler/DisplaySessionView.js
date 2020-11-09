@@ -94,7 +94,6 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
     const enrollments = useSelector(({ Enrollments }) => Enrollments);
     const reduxCourse = courses[course.course_id];
     const studentStatus = hooks.useStudent(reduxCourse.roster);
-
     const loadedStudents = useMemo(
         () => reduxCourse.roster.filter((studentID) => students[studentID]),
         [reduxCourse.roster, students]
@@ -293,7 +292,7 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                     </Button>
                 </Grid>
                 <Grid item>
-                    {studentKeys.length === 1 && (
+                    {reduxCourse.course_type=="tutoring" && (
                         <>
                             <Button className="button" onClick={handleTutoringMenuClick}>
                                 Tutoring Options

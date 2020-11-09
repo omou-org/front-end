@@ -24,6 +24,8 @@ import Scheduler from "../FeatureViews/Scheduler/Scheduler";
 import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
+import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
+import CourseClasses from "../FeatureViews/Courses/CourseClasses"
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -33,6 +35,8 @@ import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
+
+import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -57,6 +61,12 @@ export const RootRoutes = () => {
             <Route path="/new/:type?">
                 <NewAccount/>
             </Route>
+
+            {/* Route for Testing AddItemButton */}
+            <Route path="/demos/AddItemButton">
+                <AddItemButtonTestDemo />
+            </Route>
+            
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
@@ -162,10 +172,28 @@ export const RootRoutes = () => {
                 <FormPage />
             </AuthenticatedRoute>
 
+            {/* Course Management Routes */}
+            <AuthenticatedRoute 
+            path="/coursemanagement"
+            exact
+            >
+                <CourseManagementContainer />
+            </AuthenticatedRoute>
+
+            <AuthenticatedRoute 
+           path="/coursemanagement/class/:id?"
+            >
+                <CourseClasses />
+            </AuthenticatedRoute>
+
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage />
             </AuthenticatedRoute>
             <Redirect to="/PageNotFound" />
+
+
+            
+
         </Switch>
     );
 };
