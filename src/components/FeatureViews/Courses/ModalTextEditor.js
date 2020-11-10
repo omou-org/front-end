@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
 import Editor from "draft-js-plugins-editor";
@@ -23,8 +22,6 @@ import { newUpdatedCache } from '../../../utils';
 import Loading from "../../OmouComponents/Loading";
 import gql from "graphql-tag";
 import { useMutation, useQuery } from "@apollo/react-hooks";
-import { GET_SESSION_NOTES } from "./ClassSessionView";
-import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 import "./ModalTextEditor.scss";
 
 const useStyles = makeStyles(theme => ({
@@ -97,16 +94,9 @@ const useStyles = makeStyles(theme => ({
 const ModalTextEditor = ({
   open,
   handleCloseForm,
-  userId,
   origin,
-  posterId,
-  sessionId,
-  noteId,
-  textSubject,
-  textBody,
   buttonState,
   editPost,
-  announcementId,
   mutation,
   query,
   iconArray
@@ -116,36 +106,40 @@ const ModalTextEditor = ({
   const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
   const [subject, setSubject] = useState();
   const [body, setBody] = useState(EditorState.createEmpty());
-  const courseId = useParams();
-  const poster_id = posterId.results[0].user.id;
-  const disableCheck = convertToRaw(body.getCurrentContent())?.blocks
+  const isDisabled = convertToRaw(body.getCurrentContent())?.blocks
   .reduce((accum, currentValue) => {
     return {...accum, text: currentValue.text} 
-  }, {}).text === "" || subject === "" ? true : false
-  const { gqlquery, queryVariables } = query;
-  const { gqlmutation, mutationVariables } = mutation;
-  const { editGqlQuery, editQueryVariables } = editPost;
+  }, {}).text === "" || subject === "" ? true : false;
+  const plainText = convertToRaw(body.getCurrentContent())?.blocks.reduce((accum, currentValue) => ({...accum, text: currentValue.text}), {}).text; 
+  const { gqlquery, queryVariables } = query || {};
+  const { gqlmutation, mutationVariables } = mutation || {};
+  const { editGqlQuery, editQueryVariables } = editPost || {};
+
 
   const MUTATION_VARIABLES = {
     ...mutationVariables,
     subject,
-    body: convertToRaw(body.getCurrentContent()),
+    body: origin === "STUDENT_ENROLLMENT" ? plainText
+    : convertToRaw(body.getCurrentContent()),
   };
+
 
   const QUERY_VARIABLES = {
     ...queryVariables
   };
 
-  const { data, loading, error, refetch } = useQuery(
-    editGqlQuery, 
+  const { data, loading, error } = useQuery(
+    editGqlQuery || gql`query throwaway {
+      numRecentSessions(timeframe: YESTERDAY)
+    }
+    `, 
     {
-      variables: editQueryVariables,
-      skip: typeof editQueryVariables.announcementId === "undefined" || editQueryVariables.announcementId === null,
+      variables: editQueryVariables || null,
+      skip: typeof editQueryVariables === "undefined" || typeof editQueryVariables.announcementId === "undefined" || editQueryVariables.announcementId === null,
       onCompleted: () => {
         if(!data) return
         const { body, subject } = data.announcement
         setBody(EditorState.createWithContent(convertFromRaw(JSON.parse(body.replace(/'/g, '"')))));
-        console.log(body)
         setSubject(subject)
       },
     },
@@ -158,12 +152,10 @@ const ModalTextEditor = ({
       const queryTitle = getOperationAST(gqlquery).selectionSet.selections[0].name.value;
       const mutationTitle = getOperationAST(gqlmutation).selectionSet.selections[1].name.value;
       const [newTextData] = Object.values(data[mutationTitle]);
-      console.log(newTextData)
       const cachedTextData = cache.readQuery({
         query: gqlquery,
         variables: QUERY_VARIABLES,
       })[queryTitle];
-      console.log(newUpdatedCache(newTextData, cachedTextData))
       cache.writeQuery({
         data: {
           [queryTitle]: newUpdatedCache(newTextData, cachedTextData),
@@ -181,7 +173,7 @@ const ModalTextEditor = ({
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const createTextData = await mutateTextEditor({
+    await mutateTextEditor({
       variables: MUTATION_VARIABLES,
     });
     setBody(EditorState.createEmpty())
@@ -232,7 +224,8 @@ const ModalTextEditor = ({
   };
 
   if(loading) return <Loading />
-  console.log(open)
+  if(error) return console.error(error)
+
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -264,7 +257,7 @@ const ModalTextEditor = ({
                   aria-label="outlined primary button group"
                 >
                   {
-                    iconArray.map(icons => (
+                    iconArray?.map(icons => (
                     <IconButton onClick={toggleInlineStyles} data-style={icons.style} data-cy={`text-editor-${icons.name}`}>
                       {icons.icon}
                     </IconButton>
@@ -274,12 +267,12 @@ const ModalTextEditor = ({
               </Grid>
               <Grid item xs={12}>
                 <div className={classes.textfield} data-cy="text-editor-body">
-                  {origin === "ANNOUNCEMENTS" && <Editor
+                  <Editor
                     editorState={body}
                     onChange={handleBodyChange}
                     handleKeyCommand={handleKeyCommand}
                     customStyleMap={styleMap}
-                  />}
+                  />
                 </div>
               </Grid>
             </Grid>
@@ -335,8 +328,7 @@ const ModalTextEditor = ({
               className={classes.submitButton} 
               data-cy="text-editor-post-button"
               onClick={handleSubmit} 
-              disabled={disableCheck}
-            >
+              disabled={isDisabled}>
               {origin === "STUDENT_ENROLLMENT"
                 ? "Send Email"
                 : renderButtonText()}
