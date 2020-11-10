@@ -16,13 +16,14 @@ import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import moment from "moment";
 import ModelTextEditor from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
+import Loading from "components/OmouComponents/Loading";
 
 const useStyles = makeStyles({
   announcementContainer: {
@@ -71,15 +72,12 @@ const AnnouncementCard = ({
   handleEdit,
   handleDelete,
 }) => {
-  const decode = EditorState.createWithContent(convertFromRaw(JSON.parse(body)))
-  const [editorState] = useState(decode);
+  const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(body)));
   const classes = useStyles();
   const date = moment(updatedAt).format("MM/DD");
   const time = moment(updatedAt).format("h:mma");
   const subjectRef = useRef();
   const handleOpenForm = () => {
-    const currentSubject = subjectRef.current.textContent;
-    const currentBody = convertToRaw(editorState.getCurrentContent())
     handleEdit(true, id);
   };
   const handleDeleteForm = () => handleDelete(id);
@@ -113,7 +111,7 @@ const AnnouncementCard = ({
       </AccessControlComponent>
       </Grid>
       <Grid item xs={12} className={classes.announcementBody}>
-      <Editor editorState={editorState} customStyleMap={styleMap} readOnly />
+      <Editor editorState={editorState} customStyleMap={styleMap} readOnly/>
       </Grid>
       <Grid item xs={12}>
         <Typography variant="subtitle2" align="left">
@@ -145,7 +143,7 @@ const Announcements = ({
   const [announcementId, setAnnouncementId] = useState();
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
-  const courseId = useParams();
+  const { id } = useParams();
   const userId = loggedInUser.results[0].user.id;
 
   const DELETE_ANNOUNCEMENT = gql`
@@ -175,10 +173,10 @@ const Announcements = ({
   const announcementQuery = {
     gqlquery: GET_ANNOUNCEMENTS,
     queryVariables: {
-      id: courseId.id,
+      id,
     },
   };
-
+  
   const announcementMutation = {
     gqlmutation: gql`mutation CreateAnnouncement(
       $subject: String!
@@ -213,10 +211,16 @@ const Announcements = ({
     mutationVariables: {
       id: announcementId,
       userId,
-      courseId: courseId.id,
+      courseId: id,
       shouldEmail: false,
     },
   };
+
+  const { data, loading, error, refetch} = useQuery(GET_ANNOUNCEMENTS, {
+    variables: {
+      id,
+    },
+  });
 
   const icons = [
     {
@@ -263,7 +267,7 @@ const Announcements = ({
       update: (cache, { data: { deleteAnnouncement: { id } }}) => {
         const cachedAnnouncement = cache.readQuery({
           query: GET_ANNOUNCEMENTS,
-          variables: { id: courseId.id },
+          variables: { id },
         })["announcements"];
         let updatedAnnouncements = [...cachedAnnouncement];
         const removedIndex = updatedAnnouncements.findIndex(announcement => announcement.id === id);
@@ -273,7 +277,7 @@ const Announcements = ({
             ["announcements"]: updatedAnnouncements,
           },
           query: GET_ANNOUNCEMENTS,
-          variables: { id: courseId.id },
+          variables: { id },
         });
       },
     }
@@ -285,7 +289,11 @@ const Announcements = ({
     setNewAnnouncementForm(boolean);
   };
 
-  const handleClose = (boolean) => setNewAnnouncementForm(boolean);
+  const handleClose = (boolean) => {
+    setNewAnnouncementForm(boolean)
+    setAnnouncementId(null)
+    refetch()
+  };
 
   const handleDeleteAnnouncement = async (id) => {
     const deletedAnnouncement = await deleteAnnouncement({
@@ -295,6 +303,8 @@ const Announcements = ({
   
   const announcementRender = announcementsData
   .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
+
+  if(loading) return <Loading />
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
@@ -316,7 +326,6 @@ const Announcements = ({
         </Button>
       </AccessControlComponent>
       {announcementRender.map(({ poster, subject, body, updatedAt, id }) => (
-        <>
           <AnnouncementCard
             key={id}
             id={id}
@@ -327,7 +336,6 @@ const Announcements = ({
             handleEdit={handleEdit}
             handleDelete={handleDeleteAnnouncement}
           />
-        </>
       ))}
       <ModelTextEditor 
         handleCloseForm={handleClose}

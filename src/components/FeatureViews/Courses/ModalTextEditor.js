@@ -126,15 +126,6 @@ const ModalTextEditor = ({
   const { gqlmutation, mutationVariables } = mutation;
   const { editGqlQuery, editQueryVariables } = editPost;
 
-  // useEffect(() => {
-  //   if(buttonState === "edit") {
-  //     setBody(EditorState.createWithContent(convertFromRaw(textBody)))
-  //   }
-  // }, [buttonState])
-
-  // console.log(editGqlQuery);
-  // console.log(editQueryVariables)
-
   const MUTATION_VARIABLES = {
     ...mutationVariables,
     subject,
@@ -149,16 +140,17 @@ const ModalTextEditor = ({
     editGqlQuery, 
     {
       variables: editQueryVariables,
-      skip: editQueryVariables.announcementId === undefined ? true : false,
+      skip: typeof editQueryVariables.announcementId === "undefined" || editQueryVariables.announcementId === null,
       onCompleted: () => {
         if(!data) return
         const { body, subject } = data.announcement
-        console.log(body)
         setBody(EditorState.createWithContent(convertFromRaw(JSON.parse(body.replace(/'/g, '"')))));
+        console.log(body)
         setSubject(subject)
       },
     },
   );
+
   
   const [mutateTextEditor, createResults] = useMutation(gqlmutation, {
     onCompleted: () => handleClose(false),
@@ -240,7 +232,7 @@ const ModalTextEditor = ({
   };
 
   if(loading) return <Loading />
-
+  console.log(open)
   return (
     <Grid container>
       <Grid item xs={12}>
@@ -282,12 +274,12 @@ const ModalTextEditor = ({
               </Grid>
               <Grid item xs={12}>
                 <div className={classes.textfield} data-cy="text-editor-body">
-                  <Editor
+                  {origin === "ANNOUNCEMENTS" && <Editor
                     editorState={body}
                     onChange={handleBodyChange}
                     handleKeyCommand={handleKeyCommand}
                     customStyleMap={styleMap}
-                  />
+                  />}
                 </div>
               </Grid>
             </Grid>
