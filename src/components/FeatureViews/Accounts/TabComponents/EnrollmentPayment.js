@@ -39,7 +39,7 @@ query EnrollmentPayments($enrollmentId: ID!) {
 }
 `;
 
-const EnrollmentPayment = ({enrollmentID, courseID, paymentList}) => {
+const EnrollmentPayment = ({enrollmentID, courseID}) => {
 	const {data, loading, error} = useQuery(GET_ENROLLMENT_PAYMENTS,
 		{variables: {enrollmentId: enrollmentID}}
 	);
