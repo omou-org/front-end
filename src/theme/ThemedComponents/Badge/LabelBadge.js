@@ -85,6 +85,10 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
             chipColor: colors.statusRed,
             ...badgeCategory.statusRound,
         },
+        "round-count": {
+            chipColor: colors.buttonBlue,
+            ...badgeCategory.statusRound,
+        }
     }
 
     const badgeStyle = badgeType[variant];
@@ -125,6 +129,7 @@ LabelBadge.propTypes = {
                             "status-new",
                             "round-positive",
                             "round-warning",
-                            "round-negative"
+                            "round-negative",
+                            "round-count"
                         ]).isRequired,
 }
