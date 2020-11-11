@@ -10,7 +10,6 @@ export const GET_ENROLLMENT_PAYMENTS = gql`
 query EnrollmentPayments($enrollmentId: ID!) {
   enrollment(enrollmentId: $enrollmentId) {
     paymentList {
-      __typename
       accountBalance
       createdAt
       discountTotal
@@ -34,7 +33,6 @@ query EnrollmentPayments($enrollmentId: ID!) {
         id
       }
     }
-    __typename
   }
 }
 `;
@@ -44,21 +42,15 @@ const EnrollmentPayment = ({enrollmentID, courseID}) => {
 		{variables: {enrollmentId: enrollmentID}}
 	);
     
-	if (loading) {
-		return <Loading/>
-	}
-	if (error) {
-		return <Typography>
-			There's been an error! Error: {error.message}
-		</Typography>
-    }
-
-    return (
-        <PaymentTable courseID={courseID}
-        enrollmentID={enrollmentID}
-        paymentList={data.enrollment.paymentList}
-        type="enrollment" />
-    );
+	if (loading) 	return <Loading/>
+	if (error) return <Typography>There's been an error! Error: {error.message}</Typography>
+    
+  return (
+      <PaymentTable courseID={courseID}
+      enrollmentID={enrollmentID}
+      paymentList={data.enrollment.paymentList}
+      type="enrollment" />
+  );
 };
 
 EnrollmentPayment.propTypes = {
