@@ -10,24 +10,15 @@ export const GET_ENROLLMENT_PAYMENTS = gql`
 query EnrollmentPayments($enrollmentId: ID!) {
   enrollment(enrollmentId: $enrollmentId) {
     paymentList {
-      accountBalance
-      createdAt
-      discountTotal
       id
+      createdAt
       method
-      priceAdjustment
-      subTotal
       total
-      updatedAt
       registrationSet {
-        attendanceStartDate
-        createdAt
         enrollment {
           id
         }
-        id
         numSessions
-        updatedAt
       }
       enrollments {
         id
