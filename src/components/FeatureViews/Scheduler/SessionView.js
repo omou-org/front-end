@@ -139,8 +139,10 @@ const SessionView = () => {
     instructor.user.firstName + " " + instructor.user.lastName;
 
   const course_id = course.id;
+  console.log(startDatetime)
 
   const startSessionTime = moment(startDatetime).format("h:MM A");
+  console.log(startSessionTime)
 
   const endSessionTime = moment(endDatetime).format("h:MM A");
   
@@ -153,7 +155,7 @@ const SessionView = () => {
             {title}
           </Typography>
         </Grid>
-        {/* DANIEL NEED? go though this */}
+        {/* TODO: for tutoring */}
         {/* <Grid item sm={12}>
           <Grid container>
             <Grid className="course-session-status" item xs={2}>
@@ -188,7 +190,7 @@ const SessionView = () => {
           <Grid item xs={12}>
             <Typography variant="h5">
               Instructor
-              {/* DANIEL NEED? go though this */}
+              {/* Anna keep add isConfirmed IS RED X*/}
               {/* {session.is_confirmed ? (
                 <ConfirmIcon className="confirmed course-icon" />
               ) : (
@@ -253,6 +255,7 @@ const SessionView = () => {
           <Grid item xs={6}>
             <Typography variant="h5">Day(s)</Typography>
             <Typography>{capitalizeString(dayOfWeek)}</Typography>
+            {/* ANNA Ask Calvin */}
             <Typography>
               {new Date(startDatetime).toLocaleDateString()}
             </Typography>
@@ -286,42 +289,7 @@ const SessionView = () => {
           </Button>
         </Grid>
         <Grid item>
-          {/* DANIEL NEED? go though this */}
-          {/* {reduxCourse.course_type == "tutoring" && (
-            <>
-              <Button className="button" onClick={handleTutoringMenuClick}>
-                Tutoring Options
-                <ArrowDropDownIcon />
-              </Button>
-              <StyledMenu
-                anchorEl={tutoringActionsAnchor}
-                keepMounted
-                onClose={closeTutoringMenu}
-                open={Boolean(tutoringActionsAnchor)}
-              >
-                <MenuItem
-                  color="secondary"
-                  component={NavLink}
-                  to={`/accounts/student/${course.roster[0]}/${course_id}`}
-                  variant="outlined"
-                >
-                  Enrollment View
-                </MenuItem>
-                <AddSessions
-                  componentOption="menuItem"
-                  enrollment={enrollments[course.roster[0]][course.course_id]}
-                  parentOfCurrentStudent={students[course.roster[0]].parent_id}
-                />
-                <MenuItem
-                  color="secondary"
-                  onClick={handleUnenroll}
-                  variant="outlined"
-                >
-                  Unenroll Course
-                </MenuItem>
-              </StyledMenu>
-            </>
-          )} */}
+        
         </Grid>
         <Grid item>
           <Button
