@@ -9,7 +9,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
 
     const badgeCategory = {
         "labelBadge": {
-            chipMinWidth: "96px",
+            padding: "4px, 20px",
             labelComponent: "body1",
         },
         "statusBadge": {
@@ -85,6 +85,10 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
             chipColor: colors.statusRed,
             ...badgeCategory.statusRound,
         },
+        "round-count": {
+            chipColor: colors.buttonBlue,
+            ...badgeCategory.statusRound,
+        }
     }
 
     const badgeStyle = badgeType[variant];
@@ -93,6 +97,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
                 variant={badgeStyle.chipVariant}
                 style={{
                     minWidth: badgeStyle.chipMinWidth, 
+                    padding: badgeStyle.padding,
                     backgroundColor: badgeStyle.chipColor, 
                     borderColor: badgeStyle.chipBorder, 
                     borderRadius: badgeStyle.borderRadius,
@@ -124,6 +129,7 @@ LabelBadge.propTypes = {
                             "status-new",
                             "round-positive",
                             "round-warning",
-                            "round-negative"
+                            "round-negative",
+                            "round-count"
                         ]).isRequired,
 }

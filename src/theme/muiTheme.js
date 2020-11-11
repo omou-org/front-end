@@ -95,7 +95,7 @@ const theme = createMuiTheme({
               color: '#000000'
             },
             h4: {
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '500',
               fontFamily: 'Roboto',
               lineHeight: '16px',
@@ -111,7 +111,7 @@ const theme = createMuiTheme({
             },
             //Body(Default)
             body1: {
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: '400',
               fontFamily: 'Roboto',
               lineHeight: '16px',
@@ -119,15 +119,15 @@ const theme = createMuiTheme({
             },
             //Body(Paragraph)
             h6: {
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: '400',
               fontFamily: 'Roboto',
-              lineHeight: '18px',
+              lineHeight: '22px',
               color: '#000000'
             },
             //Body(Bolded)
             body2: {
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: '500',
               fontFamily: 'Roboto',
               lineHeight: '16px',
