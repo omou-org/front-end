@@ -88,6 +88,9 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
         "round-count": {
             chipColor: colors.buttonBlue,
             ...badgeCategory.statusRound,
+            chipMinWidth: "16px",
+            height: "16px",
+            fontSize: "10px",
         }
     }
 
@@ -97,17 +100,14 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
                 variant={badgeStyle.chipVariant}
                 style={{
                     minWidth: badgeStyle.chipMinWidth, 
-                    padding: badgeStyle.padding,
                     backgroundColor: badgeStyle.chipColor, 
                     borderColor: badgeStyle.chipBorder, 
-                    borderRadius: badgeStyle.borderRadius,
-                    paddingRight: badgeStyle.paddingRight,
-                    paddingLeft: badgeStyle.paddingLeft,
+                    ...badgeStyle,
                     ...style
                 }}
                 label={<Typography 
                                 variant={badgeStyle.labelComponent}
-                                style={{color: badgeStyle.labelColor}}
+                                style={{color: badgeStyle.labelColor, fontSize: badgeStyle.fontSize}}
                         >
                             {label}
                         </Typography>
