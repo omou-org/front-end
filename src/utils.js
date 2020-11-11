@@ -213,9 +213,9 @@ export const distinctObjectArray = (array) => {
 // Changes incoming payment options to something prettier.
 export const paymentToString = (string) => {
     switch (string) {
-        case "intl_credit_card":
+        case "INTL_CREDIT_CARD":
             return "International Credit Card";
-        case "credit_card":
+        case "CREDIT_CARD":
             return "Credit Card";
         default:
             return capitalizeString(string.toLowerCase());
