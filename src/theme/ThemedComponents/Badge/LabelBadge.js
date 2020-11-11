@@ -90,7 +90,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
             ...badgeCategory.statusRound,
             chipMinWidth: "16px",
             height: "16px",
-            fontSize: "10px",
+            chipFontSize: "10px",
         }
     }
 
@@ -107,7 +107,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
                 }}
                 label={<Typography 
                                 variant={badgeStyle.labelComponent}
-                                style={{color: badgeStyle.labelColor, fontSize: badgeStyle.fontSize}}
+                                style={{color: badgeStyle.labelColor, fontSize: badgeStyle.chipFontSize}}
                         >
                             {label}
                         </Typography>
