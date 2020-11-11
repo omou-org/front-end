@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Redirect, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Badge from "@material-ui/core/Badge";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden/Hidden";
+import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
@@ -171,7 +171,7 @@ const UserProfile = () => {
 	const useStyles = makeStyles({
 		MuiIndicator: {
 			height: "1px"
-		}
+		},
 	});
 	const classes = useStyles();
 
@@ -215,9 +215,7 @@ const UserProfile = () => {
 			<>
 				<Tabs
 					classes={{indicator: classes.MuiIndicator}}
-					indicatorColor="primary"
 					onChange={handleTabChange}
-					textColor="primary"
 					value={tabIndex}
 				>
 					{displayTabs
@@ -227,9 +225,9 @@ const UserProfile = () => {
 								<Tab
 									key={tab.tab_id}
 									label={
-										<>
-											{tab.icon} {tab.tab_heading}
-										</>
+										<span>
+											{tab.tab_heading} {tab.icon}
+										</span>										
 									}
 								/>
 								:
@@ -237,7 +235,7 @@ const UserProfile = () => {
 									key={tab.tab_id}
 									label={
 										<>
-											{tab.icon} {tab.tab_heading}
+											{tab.tab_heading}
 										</>
 									}
 								/>
@@ -275,9 +273,7 @@ const UserProfile = () => {
 					newTabs[notesIndex] = {
 						...newTabs[notesIndex],
 						icon: (
-							<Badge badgeContent={numImportantNotes} color="primary">
-								<NoteIcon className="TabIcon" />
-							</Badge>
+							numImportantNotes > 0 && <LabelBadge style={{marginLeft: '8px'}} label={numImportantNotes} variant="round-count"/> 
 						),
 					};
 					return newTabs;

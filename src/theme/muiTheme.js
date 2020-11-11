@@ -253,24 +253,30 @@ const theme = createMuiTheme({
                 "width": "100%",
             },
         },
+        "MuiTabs": {
+          root: {
+            color: '#000000',
+          }
+        },
         "MuiTab": {
             root: {
                 width: "144px",
                 height: "40px",
-                fontSize: '14px',
+                fontSize: '12px',
                 fontWeight: '500',
                 fontFamily: 'Roboto',
                 lineHeight: '16px',
+                color: '#000000',
                 opacity: 1,
                 strokeWidth: '1',
-                overflow: "initial",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
                 paddingLeft: "1em",
                 paddingRight: "1em",
                 borderTopLeftRadius: '5px',
                 borderTopRightRadius: '5px',
                 borderBottom: "1px solid #43B5D9",
                 marginTop: "0",
-                color: "#666666",
                 backgroundColor: "#ffffff",
                 transition: "0.2s",
                 [breakpoints.up("md")]: {

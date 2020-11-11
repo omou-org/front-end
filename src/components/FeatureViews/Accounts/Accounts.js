@@ -274,10 +274,8 @@ const Accounts = () => {
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
                         <Tabs
                             className='tabs'
-                            indicatorColor="primary"
                             onChange={handleTabChange} 
                             scrollButtons="on"
-                            textColor="primary" 
                             value={tabIndex}
                             variant="scrollable"
                         >
@@ -288,10 +286,8 @@ const Accounts = () => {
                         <Tabs 
                             className="tabs"
                             classes={{indicator: classes.MuiIndicator}}
-                            indicatorColor="primary"
                             onChange={handleTabChange} 
                             scrollButtons="off"
-                            textColor="primary" 
                             value={tabIndex}
                         >
                             {TABS}
