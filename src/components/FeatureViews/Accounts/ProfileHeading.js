@@ -31,6 +31,8 @@ import RoleChip from "./RoleChip";
 import { ReactComponent as SchoolIcon } from "../../school.svg";
 import { USER_TYPES } from "utils";
 
+import generatePassword from "password-generator"
+
 const ProfileHeading = ({ user }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
@@ -56,16 +58,22 @@ const ProfileHeading = ({ user }) => {
 
   const handleClosePassword = () => {
     setOpen(false);
+    console.log("the password function")
   };
 
   const handleClosePasswordReset = () => {
 	setOpen(false);
-	setResetOpen(true)
+  setResetOpen(true)
+  console.log("where")
   };
 
   const handleCloseReset = () => {
-	setResetOpen(false)
+  setResetOpen(false)
+  console.log("do I need")
   };
+
+  const password = generatePassword(8, false, /[\w\?\-]/)
+  console.log(password)
 
 
   const renderEditandAwayButton = () => (
