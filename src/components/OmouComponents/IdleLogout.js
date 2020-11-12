@@ -109,7 +109,6 @@ const IdleLogout = () => {
       }
     `;
 
-    const [getCurrentToken, tokenResult] = useMutation(TOKEN_AUTH);
     const [refreshToken, newToken] = useMutation(TOKEN_REFRESH);
 
     const resetToken = () => {
@@ -122,7 +121,7 @@ const IdleLogout = () => {
 
         if (token) {
             (async () => {
-                store.dispatch(await setToken(token));
+                store.dispatch(await setToken(newToken));
             })();
         }
     };
