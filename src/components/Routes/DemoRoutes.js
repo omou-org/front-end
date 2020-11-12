@@ -5,6 +5,7 @@ import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
 import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
 import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
+import ListComponentDemo from '../OmouComponents/ListComponent/ListComponentDemo';
 
 const DemoRoutes = () => (
     <Switch>
@@ -19,6 +20,9 @@ const DemoRoutes = () => (
         </Route>
         <Route path="/demo/color">
             <ColorsDemo/>
+        </Route>
+        <Route path="/demo/listcomponent">
+            <ListComponentDemo />
         </Route>
     </Switch>
 );
