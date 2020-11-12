@@ -24,7 +24,6 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
-
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
 import BackButton from "components/OmouComponents/BackButton";

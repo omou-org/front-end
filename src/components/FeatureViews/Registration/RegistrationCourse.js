@@ -1,18 +1,14 @@
 import React, {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
 
-import Avatar from "@material-ui/core/Avatar";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Chip from "@material-ui/core/Chip";
 import ClassIcon from "@material-ui/icons/Class";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Divider from "@material-ui/core/Divider";
-import EditIcon from "@material-ui/icons/Edit";
 import Grid from "@material-ui/core/Grid";
-import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Notes from "../Notes/Notes";
 import Paper from "@material-ui/core/Paper";
-import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
@@ -230,24 +226,13 @@ const RegistrationCourse = () => {
 						/>
 					<Tab
 						classes={{wrapper: classes.wrapper}}
-						// label={
-						// 	hasImportantNotes ? (
-						// 		<>
-						// 			<Avatar className="notificationCourse"/>
-						// 			<NoteIcon className="TabIcon"/> 
-						// 			 Notes
-						// 		</>
-						// 	) : (
-						// 		<> Notes </>
-						// 	)
-						// }
 						label={
 							numImportantNotes ? (
 								<>
 									 Notes 
 									 <LabelBadge style={{marginLeft: '8px'}} label={numImportantNotes} variant="round-count"/>
 								</>
-							) : "Notes"
+							) : <> Notes </>
 						}
 					/>
 				</Tabs>
