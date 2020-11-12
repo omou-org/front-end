@@ -8,7 +8,6 @@ import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden/Hidden";
-import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
@@ -23,6 +22,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 
 import "./Accounts.scss";

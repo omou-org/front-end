@@ -18,6 +18,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import Moment from "react-moment";
+import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 
 import "./registration.scss";
@@ -67,6 +69,17 @@ export const GET_COURSE_DETAILS = gql`
 	`;
 
 const RegistrationCourse = () => {
+
+	const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+		},
+		wrapper: {
+			flexDirection: "row"
+		}
+	});
+	const classes = useStyles();
+
 	const {
 		params: {courseID},
 	} = useRouteMatch();
@@ -110,6 +123,10 @@ const RegistrationCourse = () => {
 	const hasImportantNotes = Object.values(courseNotes || {}).some(
 		({important}) => important
 	);
+
+	const numImportantNotes = Object.values(courseNotes || {}).filter(
+		({important}) => important
+	).length;
 
 	const instructorName = fullName(instructor.user);
 
@@ -204,29 +221,33 @@ const RegistrationCourse = () => {
 				</Typography>
 				<Tabs
 					className="registration-course-tabs"
-					indicatorColor="primary"
+					classes={{indicator: classes.MuiIndicator}}
 					onChange={handleTabChange}
 					value={activeTab}
 				>
 					<Tab
-						label={
-							<>
-								<RegistrationIcon className="NoteIcon"/> Registration
-							</>
-						}
+						label="Registration"
 						/>
 					<Tab
+						classes={{wrapper: classes.wrapper}}
+						// label={
+						// 	hasImportantNotes ? (
+						// 		<>
+						// 			<Avatar className="notificationCourse"/>
+						// 			<NoteIcon className="TabIcon"/> 
+						// 			 Notes
+						// 		</>
+						// 	) : (
+						// 		<> Notes </>
+						// 	)
+						// }
 						label={
-							hasImportantNotes ? (
+							numImportantNotes ? (
 								<>
-									<Avatar className="notificationCourse"/>
-									<NoteIcon className="TabIcon"/> Notes
+									 Notes 
+									 <LabelBadge style={{marginLeft: '8px'}} label={numImportantNotes} variant="round-count"/>
 								</>
-							) : (
-								<>
-									<NoteIcon className="NoteIcon"/> Notes
-								</>
-							)
+							) : "Notes"
 						}
 					/>
 				</Tabs>
