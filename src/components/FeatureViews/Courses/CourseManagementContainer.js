@@ -9,6 +9,7 @@ import InputBase from "@material-ui/core/InputBase";
 import FormControl from "@material-ui/core/FormControl";
 import Divder from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel"
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
 import gql from "graphql-tag";
@@ -141,8 +142,9 @@ const ClassListItem = ({
   const endingTime = moment(endTime, "HH:mm").format("h:mm A");
   const startingDate = moment(startDate).calendar();
   const endingDate = moment(endDate).calendar();
-  const currentDate = moment().format("L");
-  const isActive = currentDate <= endingDate;
+  const isActive = moment(startDate).isSameOrBefore(endDate)
+
+  
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
   
@@ -311,7 +313,7 @@ const CourseManagementContainer = () => {
         courseId
         id
       }
-    
+     
     }
   `;
 
@@ -326,7 +328,6 @@ const CourseManagementContainer = () => {
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
 
-  console.log(data)
 
   const createFilteredListFromCourses = (filterCondition) =>
     data.courses.reduce(
@@ -363,12 +364,55 @@ const CourseManagementContainer = () => {
         }[sortByDate])
     );
 
+
+
+
+
+
   return (
     <Grid item xs={12}>
       <BackgroundPaper elevation={2}>
+      <Grid
+        container
+        direction="row"
+    >
+      <Grid item xs={6}>
         <Typography align="left" className="heading" variant="h3">
           Course Management
         </Typography>
+        </Grid>
+
+ {/* add dropdown only if account type is parent */}
+        <Grid item align="right" style={{paddingRight: "2em"}} xs={6}>
+          <FormControl>
+          <InputLabel shrink id="parent-filter-label">
+          Select Students:
+        </InputLabel>
+            <Select
+            id="parent-student-filter"
+            MenuProps={{
+              classes: { list: classes.dropdown },
+              anchorOrigin: {
+                vertical: "bottom",
+                horizontal: "left",
+              },
+              transformOrigin: {
+                vertical: "top",
+                horizontal: "left",
+              },
+              getContentAnchorEl: null,
+            }}
+          >
+              {/* add menu item here */}
+
+            </Select>
+          </FormControl>
+        </Grid>
+        </Grid>
+       
+
+
+
         <Paper elevation={4} className={classes.appBar}>
           <Grid
             container
@@ -446,6 +490,8 @@ const CourseManagementContainer = () => {
             />
           </Grid>
         </Paper>
+
+        {/* course data is displayed here */}
         {defaultCourseDisplay.map(
           ({
             title,
