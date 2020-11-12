@@ -30,7 +30,6 @@ import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import BackButton from "components/OmouComponents/BackButton";
 
-
 import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
 import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusChip";
 import AddSessions from "components/OmouComponents/AddSessions";
@@ -75,6 +74,7 @@ const GET_SESSION = gql`
       startDatetime
       course {
         id
+        isConfirmed
         dayOfWeek
         room
         courseCategory {
@@ -123,7 +123,6 @@ const SessionView = () => {
     return <Typography>There's been an error!</Typography>;
   }
 
-
   const { course, endDatetime, id, startDatetime, title } = data.session;
 
   var {
@@ -138,14 +137,16 @@ const SessionView = () => {
   const instructorName =
     instructor.user.firstName + " " + instructor.user.lastName;
 
+  const confirmed = course.isConfirmed;
+  console.log(confirmed)
   const course_id = course.id;
-  console.log(startDatetime)
+  console.log(startDatetime);
 
   const startSessionTime = moment(startDatetime).format("h:MM A");
-  console.log(startSessionTime)
+  console.log(startSessionTime);
 
   const endSessionTime = moment(endDatetime).format("h:MM A");
-  
+
   return (
     <>
       <Grid className="session-view" container direction="row" spacing={1}>
@@ -191,11 +192,11 @@ const SessionView = () => {
             <Typography variant="h5">
               Instructor
               {/* Anna keep add isConfirmed IS RED X*/}
-              {/* {session.is_confirmed ? (
+               {confirmed ? (
                 <ConfirmIcon className="confirmed course-icon" />
               ) : (
                 <UnconfirmIcon className="unconfirmed course-icon" />
-              )} */}
+              )} 
             </Typography>
             {course && (
               <NavLink
@@ -216,40 +217,42 @@ const SessionView = () => {
             </Typography>
             <Grid container direction="row">
               {enrollmentSet.length > 0 ? (
-              enrollmentSet.map((student) => (
-                <NavLink
-                  key={student.student.user.id}
-                  style={{ textDecoration: "none" }}
-                  to={`/accounts/student/${student.student.user.id}/${course_id}`}
-                >
-                  <Tooltip
-                    title={
-                      student.student.user.firstName +
-                      " " +
-                      student.student.user.lastName
-                    }
+                enrollmentSet.map((student) => (
+                  <NavLink
+                    key={student.student.user.id}
+                    style={{ textDecoration: "none" }}
+                    to={`/accounts/student/${student.student.user.id}/${course_id}`}
                   >
-                    <Avatar
-                      style={styles(
-                        student.student.user.firstName +
-                          " " +
-                          student.student.user.lastName
-                      )}
-                    >
-                      {(
+                    <Tooltip
+                      title={
                         student.student.user.firstName +
                         " " +
                         student.student.user.lastName
-                      )
-                        .match(/\b(\w)/g)
-                        .join("")}
-                    </Avatar>
-                  </Tooltip>
-                </NavLink>
-              ))
-              ):( <Typography variant="body">
-                 No students enrolled yet.
-              </Typography>)}
+                      }
+                    >
+                      <Avatar
+                        style={styles(
+                          student.student.user.firstName +
+                            " " +
+                            student.student.user.lastName
+                        )}
+                      >
+                        {(
+                          student.student.user.firstName +
+                          " " +
+                          student.student.user.lastName
+                        )
+                          .match(/\b(\w)/g)
+                          .join("")}
+                      </Avatar>
+                    </Tooltip>
+                  </NavLink>
+                ))
+              ) : (
+                <Typography variant="body">
+                  No students enrolled yet.
+                </Typography>
+              )}
             </Grid>
           </Grid>
           <Grid item xs={6}>
@@ -288,9 +291,7 @@ const SessionView = () => {
             Course Page
           </Button>
         </Grid>
-        <Grid item>
-        
-        </Grid>
+        <Grid item></Grid>
         <Grid item>
           <Button
             className="editButton"
