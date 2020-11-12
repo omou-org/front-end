@@ -14,11 +14,11 @@ import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import "./Accounts.scss";
 import { addDashes } from "./accountUtils";
@@ -30,13 +30,17 @@ import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
 import { ReactComponent as SchoolIcon } from "../../school.svg";
 import { USER_TYPES } from "utils";
+import { fullName } from "utils";
 
-import generatePassword from "password-generator"
+import generatePassword from "password-generator";
 
 const ProfileHeading = ({ user }) => {
+  console.log(user);
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const [openReset, setResetOpen] = useState(false);
+  const [password, setPassword] = useState();
+
   const isAdmin =
     useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
 
@@ -52,29 +56,25 @@ const ProfileHeading = ({ user }) => {
     setOpen(true);
   };
 
-//   const handleClickOpen = () => {
-//     seResetOpen(true);
-//   };
+  //   const handleClickOpen = () => {
+  //     seResetOpen(true);
+  //   };
 
   const handleClosePassword = () => {
     setOpen(false);
-    console.log("the password function")
+    console.log("the password function");
   };
 
   const handleClosePasswordReset = () => {
-	setOpen(false);
-  setResetOpen(true)
-  console.log("where")
+    setOpen(false);
+    setResetOpen(true);
+    setPassword(generatePassword(8, false, /[\w\?\-]/));
   };
 
   const handleCloseReset = () => {
-  setResetOpen(false)
-  console.log("do I need")
+    setResetOpen(false);
+    console.log("do I need");
   };
-
-  const password = generatePassword(8, false, /[\w\?\-]/)
-  console.log(password)
-
 
   const renderEditandAwayButton = () => (
     <Grid container item xs={4}>
@@ -106,46 +106,65 @@ const ProfileHeading = ({ user }) => {
       {isAdmin && (
         <>
           <Grid component={Hidden} item mdDown xs={12}>
-            <EditIcon />
+            {/* <EditIcon
+              className="editIcon" 
+            /> */}
+            <div className = "editResetDiv">
             <Button
+              className="edit"
               component={Link}
               to={`/form/${user.role}/${user.user_id}`}
-              variant="outlined"
+              // variant="outlined"
             >
               Edit Profile
+              <EditIcon
+              className="editIcon" 
+            />
             </Button>
             <Button
-              // component={Link}
-              // to={`/form/${user.role}/${user.user_id}`}
+              className="reset"
               // variant="outlined"
               onClick={handleClickOpen}
             >
               Reset Password
             </Button>
+            </div>
+            {/* <EditIcon
+              className="editIcon" 
+            /> */}
             <Dialog
               open={open}
               onClose={handleClosePassword}
+              maxWidth="xs"
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
+              <DialogTitle id="alert-dialog-title" className="center dialog-padding">
                 {"Do you want to reset this user's password?"}
               </DialogTitle>
               <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  When you reset the password, a randomly generated password will become the user's new password. This action cannot be reverted. An automatic email will be sent out notifying the user that their password has been reset. The user can also reset their own password through the portal login page.
+                <DialogContentText id="alert-dialog-description"className ="center">
+                  When you reset the password, a randomly generated password
+                  will become the user's new password. This action cannot be
+                  reverted. An automatic email will be sent out notifying the
+                  user that their password has been reset. The user can also
+                  reset their own password through the portal login page.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
                 <Button onClick={handleClosePassword} color="red">
                   cancel
                 </Button>
-                <Button onClick={handleClosePasswordReset} color="primary" autoFocus>
+                <Button
+                  onClick={handleClosePasswordReset}
+                  color="primary"
+                  autoFocus
+                >
                   reset password
                 </Button>
               </DialogActions>
             </Dialog>
-			<Dialog
+            <Dialog
               open={openReset}
               onClose={handleCloseReset}
               aria-labelledby="alert-dialog-title"
@@ -156,13 +175,15 @@ const ProfileHeading = ({ user }) => {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-					The new password for Danny Hong ID #1032489 is
+                  The new password for {user.first_name} {user.last_name} ID #
+                  {user.user_id} is
                 </DialogContentText>
-				<DialogContentText id="alert-dialog-description">
-					Dgh3453!
+                <DialogContentText id="alert-dialog-description">
+                  {password}
                 </DialogContentText>
-				<DialogContentText id="alert-dialog-description">
-					Please write it down since you will not be able to access it later
+                <DialogContentText id="alert-dialog-description">
+                  Please write it down since you will not be able to access it
+                  later
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
@@ -198,7 +219,7 @@ const ProfileHeading = ({ user }) => {
       </>
     );
 
-	//set up dialog like these
+    //set up dialog like these
     const EmailRow = () => (
       <>
         <Grid className="emailPadding" item md={1}>

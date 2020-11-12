@@ -258,4 +258,37 @@
   color: white;
 }
 
+// .editReset {
+//   width: 160px;
+// }
+
+.editIcon {
+  position: relative;
+  top: -20px;
+  left: -130px;
+}
+
+.editResetDiv {
+  border: solid 2px $primaryColor;
+  border-radius: 10px;
+  width: 150px;
+  z-index: 2px;
+}
+
+.reset {
+  background-color: #EBFAFF !important;
+  color: #43B5D9 !important;
+  border-radius: 0px 0px 8px 8px !important;
+  width: 100%;
+
+}
+
+.center {
+  text-align: center;
+}
+
+.dialog-padding {
+  padding: 20px 30px 5px 30px !important;
+}
+
 a { color:black; }
