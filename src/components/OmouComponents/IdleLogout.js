@@ -10,6 +10,15 @@ import {useIdleTimer} from 'react-idle-timer';
 import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import rootReducer from "../../reducers/rootReducer.js";
+import {composeWithDevTools} from "redux-devtools-extension";
+import {applyMiddleware, createStore} from "redux";
+import thunk from "redux-thunk";
+import {setToken} from "actions/authActions";
+
+import gql from "graphql-tag";
+
+import { useMutation} from "@apollo/react-hooks";
 
 function rand() {
     return Math.round(Math.random() * 20) - 10;
@@ -21,9 +30,9 @@ function getModalStyle() {
     const left = 50 + rand();
   
     return {
-	  top: `${top}%`,
-	  left: `${left}%`,
-	  transform: `translate(-${top}%, -${left}%)`,
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: `translate(-${top}%, -${left}%)`,
     };
 }
 
@@ -54,10 +63,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const store = createStore(
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk)),
+);
+
 const IdleLogout = () => {
 
     const history = useHistory();
     const dispatch = useDispatch();
+
+
 
     const handleLogout = useCallback(() => {
         console.log("logging out...");
@@ -76,7 +92,40 @@ const IdleLogout = () => {
     const [modalStyle] = useState(getModalStyle);
     const [open, setOpen] = useState(false);
 
-   
+    const TOKEN_AUTH = gql`
+        mutation tokenAuth($username: String!, $password:String!){
+            tokenAuth(username: $username, password: $password){
+                token
+            }
+        }
+    `;
+
+    const TOKEN_REFRESH = gql`
+    mutation refreshToken($token:String) {
+        refreshToken(token:$token){
+          token
+          refreshExpiresIn
+        }
+      }
+    `;
+
+    const [getCurrentToken, tokenResult] = useMutation(TOKEN_AUTH);
+    const [refreshToken, newToken] = useMutation(TOKEN_REFRESH);
+
+    const resetToken = () => {
+        const token = localStorage.getItem("token");
+        refreshToken({
+            "variables": {
+                "token": token
+            }
+        });
+
+        if (token) {
+            (async () => {
+                store.dispatch(await setToken(token));
+            })();
+        }
+    };
     function logoutAfter2Minutes() {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -97,7 +146,10 @@ const IdleLogout = () => {
         await logoutAfter2Minutes();
     }
     
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        resetToken();
+    };
 
     const {
         reset,
@@ -107,7 +159,7 @@ const IdleLogout = () => {
     });
     
     const handleReset = () => reset();
-
+    
     useEffect(() => {
         setRemainingMsUntilPrompt(getRemainingTime());
     
