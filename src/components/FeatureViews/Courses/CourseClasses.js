@@ -173,7 +173,7 @@ const CourseClasses = () => {
        ${
          accountType === "PARENT"
            ? `parent(email: $email) {
-        studentList
+            studentIdList
       }`
            : ""
        }
