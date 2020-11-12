@@ -281,6 +281,7 @@ const CourseManagementContainer = () => {
   const [gradeFilterValue, setGradeFilterValue] = useState("");
   const [subectFilterValue, setSubjectFilterValue] = useState("");
   const [instructorsFilterValue, setInstructorFilterValue] = useState("");
+  const [studentFilterValue, setStudentFilterValue] = useState("");
   const accountInfo = useSelector(({auth}) => auth);
 
   const handleChange = (event) => setSortByDate(event.target.value);
@@ -390,6 +391,7 @@ const CourseManagementContainer = () => {
         </InputLabel>
             <Select
             id="parent-student-filter"
+            classes={{ select: classes.menuSelect }}
             MenuProps={{
               classes: { list: classes.dropdown },
               anchorOrigin: {
@@ -403,6 +405,7 @@ const CourseManagementContainer = () => {
               getContentAnchorEl: null,
             }}
           >
+      
               {/* add menu item here */}
 
             </Select>
@@ -413,7 +416,7 @@ const CourseManagementContainer = () => {
 
 
 
-        <Paper elevation={4} className={classes.appBar}>
+     
           <Grid
             container
             alignItems="center"
@@ -489,7 +492,7 @@ const CourseManagementContainer = () => {
               filterKey="instructors"
             />
           </Grid>
-        </Paper>
+<hr/>
 
         {/* course data is displayed here */}
         {defaultCourseDisplay.map(
