@@ -28,8 +28,9 @@ query GetRegisteringParent($userId: ID!) {
       id
       lastName
       email
-    }
-    studentList
+	}
+	studentIdList
+    
   }
 }
 `
