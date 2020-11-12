@@ -20,6 +20,7 @@ import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
 import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
+import AttendanceContainer from './AttendanceContainer';
 import ClassEnrollmentList from "./ClassEnrollmentList";
 import ClassSessionContainer from "./ClassSessionContainer";
 import { useSelector } from "react-redux";
@@ -82,6 +83,7 @@ const CourseClasses = () => {
     { label: "Announcements" },
     { label: "Student Enrolled" },
     { label: "Sessions" },
+    { label: "Attendance" }
   ];
 
   const { email, accountType } = useSelector(({ auth }) => auth) || [];
@@ -396,6 +398,9 @@ const CourseClasses = () => {
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}
                   />
+                </TabPanel>
+                <TabPanel index={4} value={index}>
+                  <AttendanceContainer />
                 </TabPanel>
               </Grid>
             </ThemeProvider>
