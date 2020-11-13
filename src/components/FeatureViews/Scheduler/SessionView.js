@@ -77,6 +77,10 @@ const GET_SESSION = gql`
         isConfirmed
         dayOfWeek
         room
+        startDate
+        endTime
+        startTime
+        endTime
         courseCategory {
           id
           name
@@ -138,14 +142,17 @@ const SessionView = () => {
     instructor.user.firstName + " " + instructor.user.lastName;
 
   const confirmed = course.isConfirmed;
-  console.log(confirmed)
-  const course_id = course.id;
-  console.log(startDatetime);
 
-  const startSessionTime = moment(startDatetime).format("h:MM A");
+  const course_id = course.id;
+
+
+  console.log(startDatetime);
+  const startDateTime = `${course.startDate}T${course.startTime}`
+  console.log(startDateTime);
+  const startSessionTime = moment(startDatetime).format("h:mm A");
   console.log(startSessionTime);
 
-  const endSessionTime = moment(endDatetime).format("h:MM A");
+  const endSessionTime = moment(endDatetime).format("h:mm A");
 
   return (
     <>
@@ -191,7 +198,6 @@ const SessionView = () => {
           <Grid item xs={12}>
             <Typography variant="h5">
               Instructor
-              {/* Anna keep add isConfirmed IS RED X*/}
                {confirmed ? (
                 <ConfirmIcon className="confirmed course-icon" />
               ) : (
