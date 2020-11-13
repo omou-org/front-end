@@ -20,6 +20,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import {useSearchParams} from "actions/hooks";
 import "./Accounts.scss";
 import { addDashes } from "./accountUtils";
 import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
@@ -40,6 +41,11 @@ const ProfileHeading = ({ user }) => {
   const [open, setOpen] = useState(false);
   const [openReset, setResetOpen] = useState(false);
   const [password, setPassword] = useState();
+
+  const params = useSearchParams();
+
+  const resetToken = params.get("token");
+  console.log("token", resetToken);
 
   const isAdmin =
     useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
@@ -109,6 +115,8 @@ const ProfileHeading = ({ user }) => {
             {/* <EditIcon
               className="editIcon" 
             /> */}
+            {/* UPDATE */}
+            {/* Hover over is blue, other is black and white */}
             <div className = "editResetDiv">
             <Button
               className="edit"
@@ -117,10 +125,13 @@ const ProfileHeading = ({ user }) => {
               // variant="outlined"
             >
               Edit Profile
+              {/* UPDATE */}
+              {/* Only shows with hover */}
               <EditIcon
               className="editIcon" 
             />
             </Button>
+            {/* if student disable and gray out */}
             <Button
               className="reset"
               // variant="outlined"
