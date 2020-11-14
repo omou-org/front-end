@@ -290,6 +290,30 @@ const CourseManagementContainer = () => {
     "instructorId" :
     "parentId"
 
+  const accountId = accountInfo.accountType === "ADMIN" ? "": accountInfo.user.id;
+
+  const GET_STUDENTS = gql`
+    query getStudents($accountId: ID!) {
+      parent(userId: $accountId) {
+        user {
+          id
+        }
+        studentList {
+          user {
+            firstName
+            id
+            lastName
+          }
+          enrollmentSet {
+            course {
+              id 
+              title
+            }
+          }
+        }
+      }
+    }`;
+
   const GET_COURSES = gql`
     query getCourses($accountId:ID!) {
       courses(${checkAccountForQuery}: $accountId) {
@@ -314,24 +338,33 @@ const CourseManagementContainer = () => {
         courseId
         id
       }
-     
     }
   `;
 
-  const accountId = accountInfo.accountType === "ADMIN" ? "": accountInfo.user.id;
- 
-  const { data, loading, error } = useQuery(GET_COURSES, {
+  
+    console.log(accountId);
+  const { data: courseData, loading: courseLoading, error: courseError } = useQuery(GET_COURSES, {
     variables: {accountId}
   });
 
+  const { data: studentData, loading: studentLoading, error: studentError } = useQuery(GET_STUDENTS, {
+    variables: {accountId},
+    skip: accountInfo.accountType !== "PARENT"
+  })
 
 
-  if (loading) return <Loading />;
-  if (error) return console.error(error.message);
+
+
+  if (courseLoading || studentLoading) return <Loading />;
+  if (courseError) return console.error(courseError.message);
+  if (studentError) return console.error(studentError.message);
+
+  console.log({courseData});
+  console.log({studentData});
 
 
   const createFilteredListFromCourses = (filterCondition) =>
-    data.courses.reduce(
+    courseData.courses.reduce(
       (accumulator, currentValue) =>
         !accumulator.some((course) => filterCondition(currentValue, course))
           ? [...accumulator, currentValue]
@@ -350,7 +383,7 @@ const CourseManagementContainer = () => {
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
 
-  const defaultCourseDisplay = data.courses
+  const defaultCourseDisplay = courseData.courses
     .filter(
       (course) =>
         checkFilter(course.academicLevel, gradeFilterValue) &&
