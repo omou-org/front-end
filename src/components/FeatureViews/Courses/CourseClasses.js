@@ -173,6 +173,7 @@ const CourseClasses = () => {
     }
   `;
 
+  // Change studentList to studentIdList
   const { data, loading, error } = useQuery(GET_CLASSES, {
     variables: {
       id: id.id,
