@@ -129,13 +129,10 @@ const ModalTextEditor = ({
   };
 
   const { data, loading, error } = useQuery(
-    editGqlQuery || gql`query throwaway {
-      numRecentSessions(timeframe: YESTERDAY)
-    }
-    `, 
+    editGqlQuery, 
     {
       variables: editQueryVariables || null,
-      skip: typeof editQueryVariables === "undefined" || typeof editQueryVariables.announcementId === "undefined" || editQueryVariables.announcementId === null,
+      skip: typeof editGqlQuery === "undefined" || typeof editQueryVariables.announcementId === "undefined" || editQueryVariables.announcementId === null,
       onCompleted: () => {
         if(!data) return
         const { body, subject } = data.announcement
