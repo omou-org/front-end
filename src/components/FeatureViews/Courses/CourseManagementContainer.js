@@ -16,7 +16,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import { StudentBadge } from "./StudentBadge";
+import { UserAvatarCircle,  StudentCourseLabel } from "./StudentBadge";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import theme, {
@@ -160,46 +160,52 @@ const ClassListItem = ({
         data-active="inactive"
         onClick={handleClick}
       >
-     
-        <Grid item xs={6} sm={9} md={6}>
-          <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
-            {title}
-          </Typography>
-        </Grid>
-        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left"}}>
-          <Chip
-            label={isActive ? "ACTIVE" : "PAST"}
-            className={classes.chipSize}
-            style={{
-              backgroundColor: isActive ? activeColor : pastColor,
-            }}
+        <Grid container md={8}> 
+          <Grid item xs={6} sm={9} md={6}>
+            <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
+              {title}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left"}}>
+            <Chip
+              label={isActive ? "ACTIVE" : "PAST"}
+              className={classes.chipSize}
+              style={{
+                backgroundColor: isActive ? activeColor : pastColor,
+              }}
+            />
+          </Grid>
+          <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
+            <Typography
+              variant="body1"
+              align="left"
+              style={{ marginLeft: "1.85em" }}
+            >
+              <span style={{ marginRight: theme.spacing(1) }}>By:</span>
+              <span className={classes.highlightName}>{`${concatFullName}`}</span>
+            </Typography>
+          </Grid>
+          <Divder
+            orientation="vertical"
+            flexItem
+            style={{ height: "2em", marginTop: "1em" }}
           />
+          <Grid item xs={6} sm={7} md={6} >
+            <Typography
+              variant="body1"
+              align="left"
+              style={{ marginLeft: "1.2em", paddingTop: "3px" }}
+              className={classes.displayCardMargins}
+            >
+              {`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
-          <Typography
-            variant="body1"
-            align="left"
-            style={{ marginLeft: "1.85em" }}
-          >
-            <span style={{ marginRight: theme.spacing(1) }}>By:</span>
-            <span className={classes.highlightName}>{`${concatFullName}`}</span>
-          </Typography>
-        </Grid>
-        <Divder
-          orientation="vertical"
-          flexItem
-          style={{ height: "2em", marginTop: "1em" }}
-        />
-        <Grid item xs={6} sm={7} md={6} >
-          <Typography
-            variant="body1"
-            align="left"
-            style={{ marginLeft: "1.2em", paddingTop: "3px" }}
-            className={classes.displayCardMargins}
-          >
-            {`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
-          </Typography>
-        </Grid>
+        {studentList && 
+          <Grid item xs={2}>
+            {studentList.filter((student) => student.courseIds.includes(id)).map(({label}) => <StudentCourseLabel label={label}/> )}
+          </Grid>
+        }
       </Grid>
       <Divder />
     </>
@@ -273,7 +279,7 @@ const CourseFilterDropdown = ({
               className={classes.menuSelect}
               ListItemClasses={{ selected: classes.menuSelected }}
             >
-              {filterKey === "students" ? <span><StudentBadge label={option.label}/></span> : ""}
+              {filterKey === "students" ? <span><UserAvatarCircle label={option.label}/></span> : ""}
               {option.label}
             </MenuItem>
           ))}
@@ -410,7 +416,14 @@ const CourseManagementContainer = () => {
     //const studentOptionList = studentData.parent.sudentList.map(({user}) => ({label: `${user.firstName} ${user.lastName}`, value: user.id}));
     let studentOptionList;
     if (accountInfo.accountType === "PARENT")
-        studentOptionList = studentData.parent.studentList.map((student) => ({label: `${student.user.firstName} ${student.user.lastName}`, value: student.user.id}));
+        studentOptionList = studentData.parent.studentList.map(
+          (student) => (
+            {
+              label: `${student.user.firstName} ${student.user.lastName}`, 
+              value: student.user.id,
+              courseIds: student.enrollmentSet.map(({course}) => course.id)
+            })
+        );
         console.log({studentOptionList});
 
         console.log({gradeOptions})
@@ -579,6 +592,7 @@ const CourseManagementContainer = () => {
               instructor={instructor}
               id={id}
               key={title}
+              studentList={studentOptionList}
             />
           )
         )}

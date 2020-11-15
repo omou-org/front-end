@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, MenuItem, Typography } from "@material-ui/core";
+import { Box, makeStyles, MenuItem, Typography } from "@material-ui/core";
 import {stringToColor} from "../Accounts/accountUtils";
 
 const useStyles = makeStyles(() => ({
@@ -8,10 +8,17 @@ const useStyles = makeStyles(() => ({
         width: "24px",
         borderRadius: "12px",
         marginRight: "24px",
+    },
+    courseLabel: {
+        display:"flex",
+        margin:"12px",
+    },
+    labelText: {
+        paddingTop:"3px"
     }
 }))
 
-export const StudentBadge = ({label}) => {
+export const UserAvatarCircle = ({label}) => {
 
     const classes = useStyles();
     const backgroundColor = stringToColor(label);
@@ -21,5 +28,15 @@ export const StudentBadge = ({label}) => {
             style={{backgroundColor}}
         ></div>
     )
-            
+}
+
+export const StudentCourseLabel = ({label}) => {
+
+    const classes = useStyles();
+    return (
+        <Box className={classes.courseLabel}>
+            <UserAvatarCircle label={label}/>
+            <Typography className={classes.labelText} variant="body">{label}</Typography>
+        </Box>
+    )
 }
