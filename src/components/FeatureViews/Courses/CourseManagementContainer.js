@@ -16,6 +16,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import { StudentBadge } from "./StudentBadge";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import theme, {
@@ -133,6 +134,7 @@ const ClassListItem = ({
   startDate,
   instructor,
   id,
+  studentList,
 }) => {
   const classes = useStyles();
   let history = useHistory();
@@ -158,12 +160,13 @@ const ClassListItem = ({
         data-active="inactive"
         onClick={handleClick}
       >
+     
         <Grid item xs={6} sm={9} md={6}>
           <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
             {title}
           </Typography>
         </Grid>
-        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
+        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left"}}>
           <Chip
             label={isActive ? "ACTIVE" : "PAST"}
             className={classes.chipSize}
@@ -187,7 +190,7 @@ const ClassListItem = ({
           flexItem
           style={{ height: "2em", marginTop: "1em" }}
         />
-        <Grid item xs={6} sm={7} md={6}>
+        <Grid item xs={6} sm={7} md={6} >
           <Typography
             variant="body1"
             align="left"
@@ -225,6 +228,10 @@ const CourseFilterDropdown = ({
       value: option.value.toUpperCase(),
       label: option.label,
     }),
+    students: (option) => ({
+      value: option.value,
+      label: option.label,
+    })
   }[filterKey];
 
   const ChosenFiltersOption = filterList.map(filterOptionsMapper);
@@ -266,6 +273,7 @@ const CourseFilterDropdown = ({
               className={classes.menuSelect}
               ListItemClasses={{ selected: classes.menuSelected }}
             >
+              {filterKey === "students" ? <span><StudentBadge label={option.label}/></span> : ""}
               {option.label}
             </MenuItem>
           ))}
@@ -285,7 +293,7 @@ const CourseManagementContainer = () => {
   const accountInfo = useSelector(({auth}) => auth);
 
   const handleChange = (event) => setSortByDate(event.target.value);
-
+  
   const checkAccountForQuery = accountInfo.accountType === "ADMIN" || accountInfo.accountType === "INSTRUCTOR" ?
     "instructorId" :
     "parentId"
@@ -382,7 +390,7 @@ const CourseManagementContainer = () => {
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-
+  console.log(courseData.courses);
   const defaultCourseDisplay = courseData.courses
     .filter(
       (course) =>
@@ -398,53 +406,75 @@ const CourseManagementContainer = () => {
         }[sortByDate])
     );
 
+    
+    //const studentOptionList = studentData.parent.sudentList.map(({user}) => ({label: `${user.firstName} ${user.lastName}`, value: user.id}));
+    let studentOptionList;
+    if (accountInfo.accountType === "PARENT")
+        studentOptionList = studentData.parent.studentList.map((student) => ({label: `${student.user.firstName} ${student.user.lastName}`, value: student.user.id}));
+        console.log({studentOptionList});
 
-
-
-
-
+        console.log({gradeOptions})
+        console.log({studentFilterValue})
   return (
     <Grid item xs={12}>
       <BackgroundPaper elevation={2}>
       <Grid
         container
         direction="row"
-    >
-      <Grid item xs={6}>
-        <Typography align="left" className="heading" variant="h3">
-          Course Management
-        </Typography>
+      >
+        <Grid item xs={6}>
+          <Typography align="left" className="heading" variant="h3">
+            Course Management
+          </Typography>
         </Grid>
 
+        {accountInfo.accountType === "PARENT" && 
+          <Grid item align="right" style={{paddingRight: "2em"}} xs={6}>
+            <CourseFilterDropdown
+                  filterList={studentOptionList}
+                  initialValue="All Students"
+                  setState={setStudentFilterValue}
+                  filter={studentFilterValue}
+                  filterKey="students"
+                />
+          </Grid>
+        }
+
  {/* add dropdown only if account type is parent */}
-        <Grid item align="right" style={{paddingRight: "2em"}} xs={6}>
-          <FormControl>
-          <InputLabel shrink id="parent-filter-label">
-          Select Students:
-        </InputLabel>
+        {/* <Grid item align="right" style={{paddingRight: "2em"}} xs={6}>
+          <FormControl style={{width:"180px"}}>
+            <InputLabel shrink id="parent-filter-label">
+              Select Students:
+            </InputLabel>
             <Select
-            id="parent-student-filter"
-            classes={{ select: classes.menuSelect }}
-            MenuProps={{
-              classes: { list: classes.dropdown },
-              anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "left",
-              },
-              transformOrigin: {
-                vertical: "top",
-                horizontal: "left",
-              },
-              getContentAnchorEl: null,
-            }}
-          >
-      
-              {/* add menu item here */}
+              labelId="parent-filter-label"
+              id="parent-student-filter"
+              classes={{ select: classes.menuSelect }}
+              value={studentFilterValue}
+              onChange={(e)=>setStudentFilterValue(e.target.value)}
+              MenuProps={{
+                classes: { list: classes.dropdown },
+                anchorOrigin: {
+                  vertical: "bottom",
+                  horizontal: "left",
+                },
+                transformOrigin: {
+                  vertical: "top",
+                  horizontal: "left",
+                },
+                getContentAnchorEl: null,
+              }}
+            >
+              <MenuItem value="">All Students</MenuItem>
+              <MenuItem value="Daniel Huang">Daniel Huang</MenuItem>
+              
+              {/* add menu item here 
 
             </Select>
           </FormControl>
-        </Grid>
-        </Grid>
+        </Grid> */}
+
+      </Grid>
        
 
 
