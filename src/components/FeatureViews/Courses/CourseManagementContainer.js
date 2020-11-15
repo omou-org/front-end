@@ -203,7 +203,7 @@ const ClassListItem = ({
         </Grid>
         {studentList && 
           <Grid item xs={2}>
-            {studentList.filter((student) => student.courseIds.includes(id)).map(({label}) => <StudentCourseLabel label={label}/> )}
+            {studentList.filter((student) => JSON.parse(student.value).includes(id)).map(({label}) => <StudentCourseLabel label={label}/> )}
           </Grid>
         }
       </Grid>
@@ -395,14 +395,17 @@ const CourseManagementContainer = () => {
   );
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
+  const checkStudentEnrolled = (value, filter) => "" === filter || JSON.parse(filter).includes(value);
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-  console.log(courseData.courses);
+  console.log(courseData.courses[0].id);
+  console.log(studentFilterValue)
   const defaultCourseDisplay = courseData.courses
     .filter(
       (course) =>
         checkFilter(course.academicLevel, gradeFilterValue) &&
         checkFilter(course.courseCategory.id, subectFilterValue) &&
-        checkFilter(course.instructor.user.id, instructorsFilterValue)
+        checkFilter(course.instructor.user.id, instructorsFilterValue) &&
+        checkStudentEnrolled(course.id, studentFilterValue)
     )
     .sort(
       (firstEl, secondEl) =>
@@ -420,8 +423,7 @@ const CourseManagementContainer = () => {
           (student) => (
             {
               label: `${student.user.firstName} ${student.user.lastName}`, 
-              value: student.user.id,
-              courseIds: student.enrollmentSet.map(({course}) => course.id)
+              value: JSON.stringify(student.enrollmentSet.map(({course}) => course.id)),
             })
         );
         console.log({studentOptionList});
