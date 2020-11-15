@@ -160,7 +160,7 @@ const ClassListItem = ({
         data-active="inactive"
         onClick={handleClick}
       >
-        <Grid container md={8}> 
+        <Grid container md={10}> 
           <Grid item xs={6} sm={9} md={6}>
             <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
               {title}
@@ -355,8 +355,6 @@ const CourseManagementContainer = () => {
     }
   `;
 
-  
-    console.log(accountId);
   const { data: courseData, loading: courseLoading, error: courseError } = useQuery(GET_COURSES, {
     variables: {accountId}
   });
@@ -367,14 +365,9 @@ const CourseManagementContainer = () => {
   })
 
 
-
-
   if (courseLoading || studentLoading) return <Loading />;
   if (courseError) return console.error(courseError.message);
   if (studentError) return console.error(studentError.message);
-
-  console.log({courseData});
-  console.log({studentData});
 
 
   const createFilteredListFromCourses = (filterCondition) =>
@@ -397,8 +390,7 @@ const CourseManagementContainer = () => {
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const checkStudentEnrolled = (value, filter) => "" === filter || JSON.parse(filter).includes(value);
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-  console.log(courseData.courses[0].id);
-  console.log(studentFilterValue)
+
   const defaultCourseDisplay = courseData.courses
     .filter(
       (course) =>
@@ -416,7 +408,6 @@ const CourseManagementContainer = () => {
     );
 
     
-    //const studentOptionList = studentData.parent.sudentList.map(({user}) => ({label: `${user.firstName} ${user.lastName}`, value: user.id}));
     let studentOptionList;
     if (accountInfo.accountType === "PARENT")
         studentOptionList = studentData.parent.studentList.map(
@@ -426,10 +417,7 @@ const CourseManagementContainer = () => {
               value: JSON.stringify(student.enrollmentSet.map(({course}) => course.id)),
             })
         );
-        console.log({studentOptionList});
 
-        console.log({gradeOptions})
-        console.log({studentFilterValue})
   return (
     <Grid item xs={12}>
       <BackgroundPaper elevation={2}>
@@ -455,46 +443,8 @@ const CourseManagementContainer = () => {
           </Grid>
         }
 
- {/* add dropdown only if account type is parent */}
-        {/* <Grid item align="right" style={{paddingRight: "2em"}} xs={6}>
-          <FormControl style={{width:"180px"}}>
-            <InputLabel shrink id="parent-filter-label">
-              Select Students:
-            </InputLabel>
-            <Select
-              labelId="parent-filter-label"
-              id="parent-student-filter"
-              classes={{ select: classes.menuSelect }}
-              value={studentFilterValue}
-              onChange={(e)=>setStudentFilterValue(e.target.value)}
-              MenuProps={{
-                classes: { list: classes.dropdown },
-                anchorOrigin: {
-                  vertical: "bottom",
-                  horizontal: "left",
-                },
-                transformOrigin: {
-                  vertical: "top",
-                  horizontal: "left",
-                },
-                getContentAnchorEl: null,
-              }}
-            >
-              <MenuItem value="">All Students</MenuItem>
-              <MenuItem value="Daniel Huang">Daniel Huang</MenuItem>
-              
-              {/* add menu item here 
-
-            </Select>
-          </FormControl>
-        </Grid> */}
-
       </Grid>
        
-
-
-
-     
           <Grid
             container
             alignItems="center"
