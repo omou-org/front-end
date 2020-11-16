@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
+import gql from "graphql-tag";
+import {useMutation, useQuery} from "@apollo/react-hooks";
+
 import Button from "@material-ui/core/Button";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/EditOutlined";
@@ -34,6 +37,7 @@ import { USER_TYPES } from "utils";
 import { fullName } from "utils";
 
 import generatePassword from "password-generator";
+import ResetPassword from "components/Authentication/ResetPassword";
 
 const ProfileHeading = ({ user }) => {
   console.log(user);
@@ -42,10 +46,22 @@ const ProfileHeading = ({ user }) => {
   const [openReset, setResetOpen] = useState(false);
   const [password, setPassword] = useState();
 
+  const RESET_PASSWORD = gql`
+    mutation ResetPassword($password: String!, $token: String!, $isParent: Boolean, $isInstructor: Boolean) {
+        resetPassword(newPassword: $password, token: $token, setInstructor: $isInstructor, setParent: $isParent) {
+            status
+        }
+    }`;
+
   const params = useSearchParams();
 
   const resetToken = params.get("token");
-  console.log("token", resetToken);
+  console.log("resetToken", resetToken);
+
+  const token = localStorage.getItem("token")
+  console.log("token", token)
+
+  const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD); 
 
   const isAdmin =
     useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
@@ -74,13 +90,38 @@ const ProfileHeading = ({ user }) => {
   const handleClosePasswordReset = () => {
     setOpen(false);
     setResetOpen(true);
-    setPassword(generatePassword(8, false, /[\w\?\-]/));
+	setPassword(generatePassword(8, false, /[\w\?\-]/));
+	
+	let isInstructor;
+	let isParent;
+	switch (user.role) {
+		case "instructor":
+			isInstructor = true;
+			isParent = false;
+			break;
+		case "parent":
+			isInstructor = false;
+			isParent = true;
+			break;
+		default:
+			break;
+	}
+	// resetPassword({
+	// 	"variables": {
+	// 		isInstructor,
+	// 		isParent,
+	// 		password: password,
+	// 		"token": token 
+	// 	},
+	// });
   };
 
   const handleCloseReset = () => {
     setResetOpen(false);
     console.log("do I need");
   };
+
+  console.log(user)
 
   const renderEditandAwayButton = () => (
     <Grid container item xs={4}>
@@ -112,37 +153,36 @@ const ProfileHeading = ({ user }) => {
       {isAdmin && (
         <>
           <Grid component={Hidden} item mdDown xs={12}>
-            {/* <EditIcon
+            <EditIcon
               className="editIcon" 
-            /> */}
-            {/* UPDATE */}
-            {/* Hover over is blue, other is black and white */}
+            />
             <div className = "editResetDiv">
             <Button
               className="edit"
               component={Link}
               to={`/form/${user.role}/${user.user_id}`}
-              // variant="outlined"
             >
               Edit Profile
               {/* UPDATE */}
               {/* Only shows with hover */}
-              <EditIcon
-              className="editIcon" 
-            />
             </Button>
-            {/* if student disable and gray out */}
+			{user.role === "student" ? (
             <Button
-              className="reset"
-              // variant="outlined"
+			  className="resetStudent"
+			  disabled
               onClick={handleClickOpen}
             >
               Reset Password
             </Button>
+			) : (
+			<Button
+              className="reset"
+              onClick={handleClickOpen}
+            >
+              Reset Password
+            </Button>
+			)}
             </div>
-            {/* <EditIcon
-              className="editIcon" 
-            /> */}
             <Dialog
               open={open}
               onClose={handleClosePassword}
@@ -162,13 +202,17 @@ const ProfileHeading = ({ user }) => {
                   reset their own password through the portal login page.
                 </DialogContentText>
               </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClosePassword} color="red">
+              <DialogActions
+			  	className = "dialog-actions"
+			  >
+				<Button 
+				onClick={handleClosePassword} 
+				variant="outlined">
                   cancel
                 </Button>
                 <Button
                   onClick={handleClosePasswordReset}
-                  color="primary"
+                  className="resetBtn"
                   autoFocus
                 >
                   reset password
@@ -181,15 +225,15 @@ const ProfileHeading = ({ user }) => {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
+              <DialogTitle id="alert-dialog-title" className="center">
                 {"Password has been reset."}
               </DialogTitle>
-              <DialogContent>
+              <DialogContent className = "center dialog-padding">
                 <DialogContentText id="alert-dialog-description">
                   The new password for {user.first_name} {user.last_name} ID #
                   {user.user_id} is
                 </DialogContentText>
-                <DialogContentText id="alert-dialog-description">
+                <DialogContentText id="alert-dialog-description" className="passwordDisplay">
                   {password}
                 </DialogContentText>
                 <DialogContentText id="alert-dialog-description">
@@ -197,8 +241,13 @@ const ProfileHeading = ({ user }) => {
                   later
                 </DialogContentText>
               </DialogContent>
-              <DialogActions>
-                <Button onClick={handleCloseReset} color="red">
+              <DialogActions
+			  className="dialog-actions"
+			  >
+				<Button 
+				onClick={handleCloseReset}
+				color="primary"
+				>
                   done
                 </Button>
               </DialogActions>
