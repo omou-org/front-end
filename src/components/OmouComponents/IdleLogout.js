@@ -82,7 +82,7 @@ const IdleLogout = () => {
         history.push("/login");
     }, [dispatch, history]);
 
-    let timeout = 1080000;
+    let timeout = 5000 ;//1080000;
     const modalTimeout = 300000;
     const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(timeout);
 
@@ -92,13 +92,6 @@ const IdleLogout = () => {
     const [modalStyle] = useState(getModalStyle);
     const [open, setOpen] = useState(false);
 
-    const TOKEN_AUTH = gql`
-        mutation tokenAuth($username: String!, $password:String!){
-            tokenAuth(username: $username, password: $password){
-                token
-            }
-        }
-    `;
 
     const TOKEN_REFRESH = gql`
     mutation refreshToken($token:String) {
@@ -113,18 +106,32 @@ const IdleLogout = () => {
 
     const resetToken = () => {
         const token = localStorage.getItem("token");
+        console.log({"token2": token});
         refreshToken({
-            "variables": {
+            "variables" : {
                 "token": token
             }
+        }).then((result) => {
+            console.log({"mutation result" :  result["token"]});
         });
+        // store.dispatch(setToken(refreshTokenPromise));
 
-        if (token) {
-            (async () => {
-                store.dispatch(await setToken(newToken));
-            })();
-        }
+        // const refreshTokenPromise = refreshToken({
+        //     "variables": {   
+        //         "token": token
+        //     }
+        // });
+        // try {
+        //     console.log({"result": refreshTokenPromise});
+        //     console.log({"x": newToken["token"]});
+        //     store.dispatch(setToken(refreshTokenPromise["token"], true));
+        // } catch(err) {
+        //     console.log(err);
+        // }
+        console.log({"new: ": localStorage.getItem("token")});
+
     };
+
     function logoutAfter2Minutes() {
         return new Promise(resolve => {
             setTimeout(() => {
@@ -139,6 +146,7 @@ const IdleLogout = () => {
     };
 
     async function handleOpen() {
+        console.log({"old token": localStorage.getItem("token")});
         setOpen(true);
         handleReset();
         setRemainingMsUntilPrompt(modalTimeout);
@@ -148,6 +156,7 @@ const IdleLogout = () => {
     const handleClose = () => {
         setOpen(false);
         resetToken();
+        console.log({"new token": localStorage.getItem("token")});
     };
 
     const {

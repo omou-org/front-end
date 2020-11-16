@@ -52,6 +52,7 @@ const GET_ACCOUNT_TYPE = gql`
     }`;
 
 export const setToken = async (token, shouldSave) => {
+    console.log(token);
     try {
         const {"data": {verifyToken}} = await client.mutate({
             "context": {
