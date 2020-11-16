@@ -1,9 +1,95 @@
-import * as React from 'react';
-import { DataGrid } from '@material-ui/data-grid';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import moment from "moment";
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Box from "@material-ui/core/Box";
+import { ExpandLess, ExpandMore } from "@material-ui/icons"
 import Loading from 'components/OmouComponents/Loading';
+import { buttonBlue } from "../../../theme/muiTheme";
+
+const useStyles = makeStyles((theme) => ({
+  table: {
+    maxWidth: '75.2vw',
+    overflowY: 'auto',
+    [theme.breakpoints.down('lg')] : {
+      maxWidth: '69vw',
+    }
+  },
+  tableCell: {
+    color: 'black',
+    whiteSpace: 'nowrap'
+  },
+  buttonDropDown: {
+    border: '1px solid #43B5D9',
+  },
+  attendanceButton: {
+    border: '1px solid #43B5D9',
+    borderRadius: 5,
+    background: buttonBlue,
+    color: 'white',
+    paddingTop: 10,
+    paddingRight: 14,
+    paddingBottom: 10,
+    paddingLeft: 14,
+    letterSpacing: '0.02em'
+  }
+}));
+
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+];
+
+const WrapperButtonComponent = ({ children }) => {
+  const classes = useStyles();
+  const [cellHead, setCellHead] = useState(null);
+  const handleOpen = e => setCellHead(e.currentTarget);
+  const handleClose = () => setCellHead(null);
+
+  return (
+  <div>
+      <Button
+        aria-controls="cell-header-menu"
+        aria-haspopup="true"
+        onClick={handleOpen}
+        className={classes.buttonDropDown}
+      >
+        {children} {cellHead ? <ExpandLess /> : <ExpandMore />}
+      </Button>
+      <Menu
+        id="cell-header-menu"
+        anchorEl={cellHead}
+        keepMounted
+        open={Boolean(cellHead)}
+        onClose={handleClose}
+        getContentAnchorEl={null}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+        transformOrigin={{vertical: 'top', horizontal: 'center'}}
+      >
+        <MenuItem onClick={handleClose}><Button className={classes.attendanceButton}><Typography variant="body2" style={{letterSpacing: '0.02em'}}>TAKE ATTENDANCE</Typography></Button></MenuItem>
+      </Menu>
+    </div>
+  )
+};
 
 export const GET_ATTENDANCE = gql`
 query getAttendance($courseId: ID!) {
@@ -22,63 +108,60 @@ query getAttendance($courseId: ID!) {
       }
     }
   }`;
+  
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 90,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.getValue('firstName') || ''} ${
-        params.getValue('lastName') || ''
-      }`,
-  },
-];
-
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
 
 const AttendanceTable = () => {
     const { id } = useParams();
-    
+    const classes = useStyles();
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
         variables: { courseId: id }
     });
-
+    const [cellHead, setCellHead] = useState('');
+    const handleChange = (event) => setCellHead(event.target.value);
+    
     if(loading) return <Loading />;
     if(error) return console.error(error);
     const { enrollments, sessions } = data;
 
-    console.log(enrollments);
-    // const rows = enrollments.map((enrollment, i) => {
-    //     const { user } = enrollment.student
-        
-    // });
-    console.log(sessions);
+
   return (
-    <div style={{ height: 400, width: '75vw' }}>
-      <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
-    </div>
+    <TableContainer className={classes.table}>
+      <Table aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell style={{color: 'black'}}>
+              <WrapperButtonComponent>
+              Student
+              </WrapperButtonComponent>
+            </TableCell>
+            {sessions.map(({ startDatetime, id }, i) => {
+      const startingDate = moment(startDatetime).calendar();
+      return (
+        <TableCell data-session-id={id} className={classes.tableCell}>
+          <WrapperButtonComponent>
+          {`Session ${i + 1} (${startingDate})`}
+          </WrapperButtonComponent>
+        </TableCell>
+      )
+    })}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {/* {rows.map((row) => (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right">{row.calories}</TableCell>
+              <TableCell align="right">{row.fat}</TableCell>
+              <TableCell align="right">{row.carbs}</TableCell>
+              <TableCell align="right">{row.protein}</TableCell>
+            </TableRow>
+          ))} */}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

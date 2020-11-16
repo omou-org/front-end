@@ -17,7 +17,6 @@
     "@fullcalendar/resource-timeline": "^4.4.2",
     "@fullcalendar/timegrid": "^4.4.2",
     "@material-ui/core": "^4.11.0",
-    "@material-ui/data-grid": "^4.0.0-alpha.9",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",

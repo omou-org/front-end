@@ -17,6 +17,7 @@ export const highlightColor = "#EBFAFF";
 export const errorRed = "#c0392b";
 export const activeColor = "#6FCF97";
 export const pastColor = "#BDBDBD";
+export const buttonBlue = "#278FC3";
 
 const defaultFontProps = {
     fontFamily: 'Roboto Slab',
