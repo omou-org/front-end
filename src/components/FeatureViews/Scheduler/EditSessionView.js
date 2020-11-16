@@ -11,7 +11,7 @@ import {
 import Loading from "components/OmouComponents/Loading";
 
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 
 import { bindActionCreators } from "redux";
 import * as registrationActions from "../../../actions/registrationActions";
@@ -119,6 +119,41 @@ const GET_SESSION = gql`
   }
 `;
 
+const UPDATE_SESSION = gql`
+    mutation UpdateSession($sessionId: ID!) {
+        updateSession(sessionId: $sessionId) {
+          startDatetime
+          course {
+            id
+            isConfirmed
+            dayOfWeek
+            startTime
+            endTime
+            room
+            courseCategory {
+              id
+              name
+            }
+            instructor {
+              user {
+                id
+                firstName
+                lastName
+              }
+              subjects {
+                name
+              }
+            }
+          }
+          endDatetime
+          title
+          startDatetime
+        }
+      }
+    `;
+
+
+ 
 const EditSessionView = () => {
   const { session_id } = useParams();
 
@@ -134,6 +169,8 @@ const EditSessionView = () => {
   );
 
   const history = useHistory();
+  const location = useLocation();
+ 
 
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
@@ -158,6 +195,60 @@ const EditSessionView = () => {
     skip: loading || error || categoriesLoading || categoriesError,
   });
 
+  const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
+    update: (cache, {data}) => {
+      const existingSession = cache.readQuery({
+        query: GET_SESSION,
+        variables: { sessionId: session_id },
+      }).session;
+
+      cache.writeQuery({
+        query: GET_SESSION,
+        data: {
+          session: [
+            ...existingSession,
+            ...data["updateSession"].session
+          ],
+        },
+         variables: { sessionId: session_id },
+      });
+      // const newSession = data.createEnrollments.enrollments.map(enrollment => {
+      //   return {
+      //     course: enrollment.course.id,
+      //     student: enrollment.student.user.id,
+      //   }
+      // });
+      // newEnrollments.forEach(newEnrollment => {
+      //   const matchingIndex = cachedCourses.findIndex((course) =>
+      //     (course.id === newEnrollment.course));
+      //   cachedCourses[matchingIndex] = {
+      //     ...cachedCourses[matchingIndex],
+      //     enrollmentSet: [...cachedCourses[matchingIndex].enrollmentSet,
+      //       {student: newEnrollment.student, course: newEnrollment.course}],
+      //   };
+      // });
+
+      // const newQueryEnrollments = data.createEnrollments.enrollments.map(enrollment => ({
+      //     id: enrollment.id,
+      //     course: {
+      //       id: enrollment.course.id,
+      //     }
+      //   })
+      // );
+
+      // cache.writeQuery({
+      //   query: GET_STUDENTS_AND_ENROLLMENTS,
+      //   data: {
+      //     userInfos,
+      //     enrollments: [
+      //       ...enrollments,
+      //       ...newQueryEnrollments,
+      //     ]
+      //   }
+      // })
+    }
+  });
+
   const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
   const [edit, setEdit] = useState(false);
   const [sessionFields, setSessionFields] = useState({
@@ -173,41 +264,56 @@ const EditSessionView = () => {
   });
 
   
-
+//Subject
   const handleCategoryChange = (event) => {
     setSessionFields({
       ...sessionFields,
       category: event,
     });
+     console.log(event)
   };
 
+  //Instructor
   const handleInstructorChange = (event) => {
     setSessionFields({
       ...sessionFields,
       instructor: event,
     });
+    console.log(event)
+
   };
 
+  //Updates room and Title
   const handleTextChange = (field) => (event) => {
     setSessionFields({
       ...sessionFields,
       [field]: event.target.value,
     });
+    console.log(event.target.value)
+
   };
 
+  //ANNA NOT WORKING
   const handleDateTimeChange = (date) => {
-    console.log(date);
-    // if (date.end_time) {
-    // }
-    // end_time.setDate(date.getDate());
-    // end_time.setHours(date.getHours() + duration);
-    // end_time.setMinutes(date.getMinutes());
+    const {end_time, duration} = sessionFields;
+		if (date.end_time) {
+		}
+		end_time.setDate(date.getDate());
+		end_time.setHours(date.getHours() + duration);
+		end_time.setMinutes(date.getMinutes());
+
+		setSessionFields({
+			...sessionFields,
+			start_time: date,
+			end_time,
+		});
   };
 
   const handleEditSelection = (event) => {
     setEditSelection(event.target.value);
 };
 
+//ANNA NOT WORKING
   const handleDurationSelect = (event) => {
     const { start_time } = sessionFields;
     const newEndTime = new Date(start_time);
@@ -234,6 +340,8 @@ const EditSessionView = () => {
       duration: event.target.value,
       end_time: newEndTime,
     });
+
+    console.log(event.target.value)
   };
 
   const onConfirmationChange = (event) => {
@@ -241,6 +349,7 @@ const EditSessionView = () => {
       ...sessionFields,
       is_confirmed: event.target.value,
     });
+    console.log(event.target.value)
   };
 
   const handleEditToggle = (cancel) => (event) => {
@@ -248,6 +357,7 @@ const EditSessionView = () => {
     if (!cancel && edit) {
         // if we're applying to edit session then toggle to edit view
         //ANNA NEED TO UPDATE THIS FUNCTION
+        //This goes back to session view
         // handleToggleEditing(editSelection);
     } else {
         setEdit(!edit);
@@ -256,6 +366,14 @@ const EditSessionView = () => {
 
 
   const setFromMigration = (response) => {
+
+    if (location.state === undefined) {
+      history.push(`/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`);
+    }
+    // console.log(location.state)
+
+    // setEditSelection(location.state)
+    // console.log(editSelection)
     const startTime = moment(response.session.startDatetime).format("h");
     const endTime = moment(response.session.endDatetime).format("h");
 
@@ -285,7 +403,7 @@ const EditSessionView = () => {
   };
 
   //Add dialog box here of current or all
-  const updateSession = () => {
+  const handleUpdateSession = () => {
     const {
       start_time,
       end_time,
@@ -294,51 +412,61 @@ const EditSessionView = () => {
       duration,
       title,
     } = sessionFields;
+    console.log("save click?")
+    console.log(editSelection)
     switch (editSelection) {
       case EDIT_CURRENT_SESSION: {
-        const patchedSession = {
-          start_datetime: start_time.toISOString(),
-          end_datetime: end_time.toISOString(),
-          is_confirmed,
+        console.log("we get here to current")
+        updateSession({
+          // start_datetime: start_time.toISOString(),
+          // end_datetime: end_time.toISOString(),
+          isConfirmed: is_confirmed,
           instructor: instructor.value,
           duration,
           title,
-        };
-        api.patchSession(session.id, patchedSession);
+        });
+        // api.patchSession(session.id, patchedSession);
         break;
       }
       case EDIT_ALL_SESSIONS: {
-        const patchedCourse = {
-          course_category: sessionFields.category.value,
-          subject: sessionFields.title,
-          start_time: start_time.toLocaleString("eng-US", timeFormat),
-          end_time: end_time.toLocaleString("eng-US", timeFormat),
-          instructor: instructor.value,
-          is_confirmed,
-          start_date: start_time.toLocaleString("sv-SE", dateFormat),
-          end_date: course.schedule.end_date.toLocaleString(
-            "sv-SE",
-            dateFormat
-          ),
-        };
-        api.patchCourse(course.course_id, patchedCourse);
+        console.log("we get here to all")
+        // const patchedCourse = {
+        //   course_category: sessionFields.category.value,
+        //   subject: sessionFields.title,
+        //   start_time: start_time.toLocaleString("eng-US", timeFormat),
+        //   end_time: end_time.toLocaleString("eng-US", timeFormat),
+        //   instructor: instructor.value,
+        //   is_confirmed,
+        //   start_date: start_time.toLocaleString("sv-SE", dateFormat),
+        //   end_date: course.schedule.end_date.toLocaleString(
+        //     "sv-SE",
+        //     dateFormat
+        //   ),
+        // };
+        // api.patchCourse(course.course_id, patchedCourse);
       }
       // no default
     }
-    history.push("/scheduler/");
+    // history.push("/scheduler/");
   };
+
+  // useEffect(() => {
+  //   console.log(location.state)
+  //   setEditSelection(location.state)
+  //   console.log(editSelection)
+  // });
 
   if (loading || categoriesLoading || instructorsLoading) {
     return <Loading />;
   }
 
   if (error || categoriesError|| instructorsError) {
-    return <Typography>There's been an error!</Typography>;
+    return <Typography>There's been an error!</Typography>;  
   }
 
-  console.log(data);
-  console.log(categoriesData)
-  console.log(instructorsData)
+  // console.log(data);
+  // console.log(categoriesData)
+  // console.log(instructorsData)
 
   const categoriesList = categoriesData.courseCategories.map(({ id, name }) => ({
     value: id,
@@ -353,7 +481,7 @@ const EditSessionView = () => {
     })
   );
 
-  console.log(categoriesList)
+  
 
   const courseDurationOptions = [1, 1.5, 2, 0.5];
 
@@ -373,7 +501,7 @@ const EditSessionView = () => {
   const session = data.session;
 
   // const editSelection = "no";
-
+// console.log(location.state)
   return (
     <Grid container className="main-session-view">
       <BackgroundPaper
@@ -413,7 +541,9 @@ const EditSessionView = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="h5"> Room</Typography>
-              <TextField value={sessionFields.room} />
+              <TextField 
+              onChange={handleTextChange("room")}
+              value={sessionFields.room} />
             </Grid>
 
             <Grid item xs={12}>
@@ -437,6 +567,8 @@ const EditSessionView = () => {
                 </Select>
               </FormControl>
             </Grid>
+            {/* DANIEL HAVING TO HARD CODE THIS, I KNOW IT HAS TO DO WITH SCOPE AND ASYNC BUT CAN'T GET TO WORK */}
+            {/* Help me update editSelection */}
             {editSelection === EDIT_CURRENT_SESSION && (
               <Grid item xs={6}>
                 <Typography variant="h5"> Date</Typography>
@@ -499,14 +631,15 @@ const EditSessionView = () => {
                     className="button"
                     color="secondary"
                     variant="outlined"
-                    onClick={handleEditToggle(true)}
+                    onClick={handleUpdateSession}
+                    // onClick={handleEditToggle(true)}
                   >
                     Save
                   </Button>
                 </Grid>
                 {/* Move back to sessionview and pass through import to = {state}
-                Do a check to see if add/current is defined, if not redirect to session view page. */}
-                <Dialog aria-describedby="form-dialog-description"
+                Do a check to see if add/current is defined, if not redirect to session view page. it reads as undefined*/}
+                {/* <Dialog aria-describedby="form-dialog-description"
                 aria-labelledby="form-dialog-title"
                 className="session-view-modal"
                 fullWidth
@@ -545,7 +678,7 @@ const EditSessionView = () => {
                         Confirm to Edit
                     </Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog> */}
               {/* </InstructorConflictCheck> */}
               <Grid item md={6}>
                 <BackButton warn={true} icon="cancel" label="cancel" />

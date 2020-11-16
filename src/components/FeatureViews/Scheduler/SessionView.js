@@ -67,6 +67,12 @@ const styles = (username) => ({
   marginRight: 10,
 });
 
+// const EDIT_ALL_SESSIONS = "all";
+// const EDIT_CURRENT_SESSION = "current";
+
+const EDIT_ALL_SESSIONS = "all";
+const EDIT_CURRENT_SESSION = "current";
+
 const GET_SESSION = gql`
   query SessionViewQuery($sessionId: ID!) {
     session(sessionId: $sessionId) {
@@ -115,9 +121,42 @@ const GET_SESSION = gql`
 const SessionView = () => {
   const { session_id } = useParams();
 
+  // const [enrolledStudents, setEnrolledStudents] = useState(false);
+    const [edit, setEdit] = useState(false);
+    // const [unenroll, setUnenroll] = useState(false);
+    const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
+    // const [tutoringActionsAnchor, setTutoringActionsAnchor] = useState(null);
+
+
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
   });
+
+  const handleEditToggle = (cancel) => (event) => {
+    event.preventDefault();
+    if (!cancel && edit) {
+        // if we're applying to edit session then toggle to edit view
+        //ANNA NEED TO UPDATE THIS FUNCTION
+        //This goes back to session view
+        handleToggleEditing(editSelection);
+    } else {
+        setEdit(!edit);
+    }
+};
+
+const handleToggleEditing = (editSelection) => {
+  this.setState((oldState) => {
+    return {
+      ...oldState,
+      editing: !oldState.editing,
+      editSelection: editSelection,
+    };
+  });
+};
+
+const handleEditSelection = (event) => {
+  setEditSelection(event.target.value);
+};
 
   if (loading) {
     return <Loading />;
@@ -140,18 +179,11 @@ const SessionView = () => {
 
   const instructorName =
     instructor.user.firstName + " " + instructor.user.lastName;
-
   const confirmed = course.isConfirmed;
-
   const course_id = course.id;
 
 
-  console.log(startDatetime);
-  const startDateTime = `${course.startDate}T${course.startTime}`
-  console.log(startDateTime);
   const startSessionTime = moment(startDatetime).format("h:mm A");
-  console.log(startSessionTime);
-
   const endSessionTime = moment(endDatetime).format("h:mm A");
 
   return (
@@ -264,7 +296,6 @@ const SessionView = () => {
           <Grid item xs={6}>
             <Typography variant="h5">Day(s)</Typography>
             <Typography>{capitalizeString(dayOfWeek)}</Typography>
-            {/* ANNA Ask Calvin */}
             <Typography>
               {new Date(startDatetime).toLocaleDateString()}
             </Typography>
@@ -302,12 +333,53 @@ const SessionView = () => {
           <Button
             className="editButton"
             color="primary"
-            component={NavLink}
-            to={`/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`}
+            onClick={handleEditToggle(true)}
+            // component={NavLink}
+            // to={`/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`}
             variant="outlined"
           >
             Reschedule
           </Button>
+          <Dialog aria-describedby="form-dialog-description"
+                aria-labelledby="form-dialog-title"
+                className="session-view-modal"
+                fullWidth
+                maxWidth="xs"
+                onClose={handleEditToggle(true)}
+                open={edit}>
+                <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <RadioGroup aria-label="delete"
+                        name="delete"
+                        onChange={handleEditSelection}
+                        value={editSelection}>
+                        <FormControlLabel control={<Radio color="primary" />}
+                            label="This Session"
+                            labelPlacement="end"
+                            value={EDIT_CURRENT_SESSION} />
+                        <FormControlLabel control={<Radio color="primary" />}
+                            label="All Sessions"
+                            labelPlacement="end"
+                            value={EDIT_ALL_SESSIONS} />
+                    </RadioGroup>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={handleEditToggle(true)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        color="primary"
+                        component={NavLink}
+                        to={{
+                          
+                            "pathname": `/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`
+                            , "state": { allOrCurrent: editSelection}
+                        }}>
+                        Confirm to Edit
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Grid>
       </Grid>
     </>
