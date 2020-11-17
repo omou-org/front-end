@@ -12,10 +12,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Box from "@material-ui/core/Box";
-import { ExpandLess, ExpandMore } from "@material-ui/icons"
+import { ExpandLess, ExpandMore, Add, Check } from "@material-ui/icons"
 import Loading from 'components/OmouComponents/Loading';
 import { buttonBlue } from "../../../theme/muiTheme";
 
@@ -114,16 +115,30 @@ query getAttendance($courseId: ID!) {
 const AttendanceTable = () => {
     const { id } = useParams();
     const classes = useStyles();
+    const [edit, setEdit] = useState();
+    const [currentSelectedSession, setCurrentSelectedSession] = useState();
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
-        variables: { courseId: id }
+        variables: { courseId: id },
+        onCompleted: () => {
+          // setEdit(data.sessions.map(({ id }) => ({ [id]: false })))
+          setEdit(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}))
+          setCurrentSelectedSession((data.sessions[0].id))
+        },
     });
-    const [cellHead, setCellHead] = useState('');
-    const handleChange = (event) => setCellHead(event.target.value);
-    
+
     if(loading) return <Loading />;
+    if(!edit) return <Loading />;
     if(error) return console.error(error);
     const { enrollments, sessions } = data;
 
+    const handleEdit = e => {
+      const sessionId = e.currentTarget.getAttribute("data-session-id")
+        if(edit[sessionId] === false) {
+          setEdit({...edit, [sessionId]: true})
+        } else {
+          setEdit({...edit, [sessionId]: false});
+        }  
+    }
 
   return (
     <TableContainer className={classes.table}>
@@ -138,10 +153,12 @@ const AttendanceTable = () => {
             {sessions.map(({ startDatetime, id }, i) => {
       const startingDate = moment(startDatetime).calendar();
       return (
-        <TableCell data-session-id={id} className={classes.tableCell}>
-          <WrapperButtonComponent>
+        <TableCell className={classes.tableCell}>
           {`Session ${i + 1} (${startingDate})`}
-          </WrapperButtonComponent>
+          <IconButton onClick={handleEdit} data-session-id={id}>
+            {edit[id] === true ? <Check /> : <Add /> }
+          </IconButton>
+
         </TableCell>
       )
     })}
