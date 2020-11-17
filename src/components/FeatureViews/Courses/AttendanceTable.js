@@ -13,6 +13,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
+import Divider from '@material-ui/core/Divider';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
@@ -98,9 +100,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// function createData(name, calories, fat, carbs, protein) {
-//   return { name, calories, fat, carbs, protein };
-// }
+function createData(name, sessionsId, studentId) {
+  return { name, ...sessionsId, studentId };
+}
 
 // const rows = [
 //   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
@@ -190,29 +192,6 @@ const StudentFilterOrSortDropdown = ({ students }) => {
       </Select>
     </FormControl>
   </Grid>
-  // <div>
-  //     <Button
-  //       aria-controls="cell-header-menu"
-  //       aria-haspopup="true"
-  //       onClick={handleOpen}
-  //       style={{border: '1px solid #43B5D9',}}
-  //     >
-  //       {children} {cellHead ? <ExpandLess /> : <ExpandMore />}
-  //     </Button>
-  //     <Menu
-  //       id="cell-header-menu"
-  //       anchorEl={cellHead}
-  //       keepMounted
-  //       open={Boolean(cellHead)}
-  //       onClose={handleClose}
-  //       getContentAnchorEl={null}
-  //       anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-  //       transformOrigin={{vertical: 'top', horizontal: 'center'}}
-  //       size="small"
-  //     >
-  //       <MenuItem onClick={handleClose}><Button className={classes.attendanceButton}><Typography variant="body2" style={{letterSpacing: '0.02em'}}>TAKE ATTENDANCE</Typography></Button></MenuItem>
-  //     </Menu>
-  //   </div>
   )
 };
 
@@ -285,12 +264,15 @@ const AttendanceTable = ({ setIsEditing }) => {
     const [editState, setEditState] = useState();
     const [attendanceRecord, setAttendanceRecord] = useState();
     const [isEdit, setIsEdit] = useState();
+    const [studentAttendanceData, setStudentAttendanceData] = useState();
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
         variables: { courseId: id },
         onCompleted: () => {
-          setEditState(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "noSelect" }), {}))
-          setAttendanceRecord(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: null }), {}))
-          setIsEdit(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}));
+          const { sessions, enrollments } = data;
+          setEditState(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "noSelect" }), {}))
+          setAttendanceRecord(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: null }), {}))
+          setIsEdit(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}));
+          setStudentAttendanceData(enrollments);
         },
     });
 
@@ -312,6 +294,9 @@ const AttendanceTable = ({ setIsEditing }) => {
     };
 
     const studentsFullName = enrollments.map(({student}) => fullName(student.user));
+
+    const newData = enrollments.map(data => createData(fullName(data.student.user), attendanceRecord, data.student.user.id));
+    console.log(isEdit);
 
   return (
     <TableContainer className={classes.table}>
@@ -341,6 +326,22 @@ const AttendanceTable = ({ setIsEditing }) => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {newData.map(row => {
+            const filterdKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId")
+            return (
+            <TableRow key={row.studentId}>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+                {filterdKey.map(keys => (
+                <TableCell align="right"id={row.studentId}>
+                  {/* {row[keys] === null ? null : (isEdit)
+
+                  } */}
+                </TableCell>))}
+            </TableRow>
+            )
+          })}
           {/* {rows.map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
