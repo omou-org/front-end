@@ -17,6 +17,8 @@ export const highlightColor = "#EBFAFF";
 export const errorRed = "#c0392b";
 export const activeColor = "#6FCF97";
 export const pastColor = "#BDBDBD";
+export const charcoal = "#333333";
+export const cloudy = "#C4C4C4";
 
 const defaultFontProps = {
   fontFamily: 'Roboto Slab',
@@ -328,10 +330,27 @@ const theme = createMuiTheme({
         "fill": "white",
       },
     },
+    MuiTableHead: {
+      root: {
+        color: omouBlue
+      }
+    },
+    TableHeadSecondary: {
+      color: charcoal
+    },
+    MuiTableRow: {
+      root: {
+        color: "inherit",
+        height: "48px"
+      }
+    },
     MuiTableCell: {
       head: {
-        color: omouBlue,
-        fontWeight: 600,
+        color: "inherit"
+      },
+      root: {
+        borderBottomColor: cloudy,
+        borderBottomWidth: "1px"
       }
     }
   },

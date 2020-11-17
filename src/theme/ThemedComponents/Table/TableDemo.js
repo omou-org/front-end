@@ -1,39 +1,59 @@
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@material-ui/core";
 import React from "react";
+import { TableHeadSecondary } from "./TableHeadSecondary"; 
 
-import { OmouTable, OmouTableBody, OmouTableCell, OmouTableHead, OmouTableRow } from "./OmouTable"; 
 
 
 const TableDemo = () => {
 
     let tableRow = (
-    <OmouTableRow>
-        <OmouTableCell>Text</OmouTableCell>
-        <OmouTableCell>Text</OmouTableCell>
-        <OmouTableCell>Text</OmouTableCell>
-        <OmouTableCell>Text</OmouTableCell>
-        <OmouTableCell>Text</OmouTableCell>
-    </OmouTableRow>)
+    <TableRow>
+        <TableCell>Text</TableCell>
+        <TableCell>Text</TableCell>
+        <TableCell>Text</TableCell>
+        <TableCell>Text</TableCell>
+        <TableCell>Text</TableCell>
+    </TableRow>)
+
+    let tableBody = (
+        <TableBody>
+            {tableRow}
+            {tableRow}
+            {tableRow}
+            {tableRow}
+        </TableBody>
+    )
 
     return (
-    <OmouTable>
-        <OmouTableHead>
-            <OmouTableRow>
-                <OmouTableCell>Heading</OmouTableCell>
-                <OmouTableCell>Heading</OmouTableCell>
-                <OmouTableCell>Heading</OmouTableCell>
-                <OmouTableCell>Heading</OmouTableCell>
-                <OmouTableCell>Heading</OmouTableCell>
-            </OmouTableRow>
-        </OmouTableHead>
-        <OmouTableBody>
-            {tableRow}
-            {tableRow}
-            {tableRow}
-            {tableRow}
-            
-        </OmouTableBody>
-    </OmouTable>)
+        <Box>
+            <Typography variant="h3">Primary Table</Typography>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                    </TableRow>
+                </TableHead>
+                {tableBody}
+            </Table>
+            <Typography variant="h3" style={{marginTop: "40px"}}>Secondary Table</Typography>
+            <Table>
+                <TableHeadSecondary>
+                    <TableRow>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                        <TableCell>Heading</TableCell>
+                    </TableRow>
+                </TableHeadSecondary>
+                {tableBody}
+            </Table>
+        </Box>
+    )
 }
 
 export default TableDemo;
