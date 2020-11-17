@@ -161,7 +161,7 @@ const Accounts = () => {
 
     const classes = useStyles();
     const tableView = useMemo(() => (<ThemeProvider theme={theme}>
-        <ThemeProvider theme={secondaryTheme}>
+        <ThemeProvider theme={theme}>
             <Table className="AccountsTable" resizable="false">
                 <TableHead className={classes.secondaryTableHead}>
                     <TableRow>
