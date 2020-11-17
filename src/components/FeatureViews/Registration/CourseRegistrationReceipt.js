@@ -32,7 +32,7 @@ const GET_COURSE = gql`
 	}
 `;
 
-export default function CourseRegistrationReceipt({formData, format}) {
+export default function CourseRegistrationReceipt({formData}) {
 	const {type} = useParams();
 	const {data, loading, error} = useQuery(GET_COURSE, {
 		variables: {courseId: formData.course?.class.value},

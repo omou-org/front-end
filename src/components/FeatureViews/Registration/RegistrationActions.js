@@ -146,7 +146,7 @@ const RegistrationActions = () => {
 					>
 						<Badge
 							data-cy="shopping-cart-num-registrations"
-							badgeContent={numberOfRegistrationsInCart}
+							badgeContent={numberOfRegistrationsInCart || 0}
 							color="primary"
 							showZero
 							anchorOrigin={{
