@@ -114,9 +114,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
   const classes = useStyles();
   const [student, setStudent] = useState(students);
   const [state, setState] = useState("");
-  // const handleOpen = e => setCellHead(e.currentTarget);
   const handleChange = (event) => setState(event.target.value);
-  // const handleClose = () => setCellHead(null);
 
   return (
     <Grid item xs={3}>
@@ -189,46 +187,6 @@ const StudentFilterOrSortDropdown = ({ students }) => {
            {studentName}
          </MenuItem>
         ))}
-                {student.map(studentName => (
-           <MenuItem
-           key={studentName}
-           value={studentName}
-           className={classes.menuSelect}
-           ListItemClasses={{ selected: classes.menuSelected }}
-         >
-           {studentName}
-         </MenuItem>
-        ))}
-                {student.map(studentName => (
-           <MenuItem
-           key={studentName}
-           value={studentName}
-           className={classes.menuSelect}
-           ListItemClasses={{ selected: classes.menuSelected }}
-         >
-           {studentName}
-         </MenuItem>
-        ))}
-        {student.map(studentName => (
-           <MenuItem
-           key={studentName}
-           value={studentName}
-           className={classes.menuSelect}
-           ListItemClasses={{ selected: classes.menuSelected }}
-         >
-           {studentName}
-         </MenuItem>
-        ))}
-        {/* {ChosenFiltersOption.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
-            className={classes.menuSelect}
-            ListItemClasses={{ selected: classes.menuSelected }}
-          >
-            {option.label}
-          </MenuItem>
-        ))} */}
       </Select>
     </FormControl>
   </Grid>
