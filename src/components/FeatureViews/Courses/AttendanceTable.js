@@ -16,6 +16,8 @@ import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Box from "@material-ui/core/Box";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel"
 import { ExpandLess, ExpandMore, Add, Check } from "@material-ui/icons"
 import Loading from 'components/OmouComponents/Loading';
 import { buttonBlue } from "../../../theme/muiTheme";
@@ -30,10 +32,14 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: 'black',
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
+    fontWeight: 500
   },
   buttonDropDown: {
     border: '1px solid #43B5D9',
+    marginLeft: '1em',
+    width: '.5em', 
+    height: '2.5em',
   },
   attendanceButton: {
     border: '1px solid #43B5D9',
@@ -45,7 +51,23 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 10,
     paddingLeft: 14,
     letterSpacing: '0.02em'
-  }
+  },
+  checkbox: {
+    borderRadius: 2,
+    backgroundColor: buttonBlue,
+    color: 'white',
+    width: '1em',
+    height: '1em',
+    marginLeft: '.5em',
+    '&:hover': {
+      backgroundColor: buttonBlue
+    }
+  },
+  checkbox2: {
+    '&:hover': {
+      backgroundColor: "rgba(39, 143, 195, 1) !important"
+    }
+  },
 }));
 
 function createData(name, calories, fat, carbs, protein) {
@@ -72,7 +94,7 @@ const WrapperButtonComponent = ({ children }) => {
         aria-controls="cell-header-menu"
         aria-haspopup="true"
         onClick={handleOpen}
-        className={classes.buttonDropDown}
+        style={{border: '1px solid #43B5D9',}}
       >
         {children} {cellHead ? <ExpandLess /> : <ExpandMore />}
       </Button>
@@ -85,12 +107,58 @@ const WrapperButtonComponent = ({ children }) => {
         getContentAnchorEl={null}
         anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
         transformOrigin={{vertical: 'top', horizontal: 'center'}}
+        size="small"
       >
         <MenuItem onClick={handleClose}><Button className={classes.attendanceButton}><Typography variant="body2" style={{letterSpacing: '0.02em'}}>TAKE ATTENDANCE</Typography></Button></MenuItem>
       </Menu>
     </div>
   )
 };
+
+const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, setEditState }) => {
+  const classes = useStyles();
+  const handleOpen = e => {
+    const sessionId = e.currentTarget.getAttribute("data-session-id")
+      setAttendanceRecord({[sessionId]: e.currentTarget})
+  };
+
+  const handleClose = e => {
+    const sessionId = e.currentTarget.getAttribute("data-session-id");
+    setAttendanceRecord({[sessionId]: null}); 
+    sessionId !== null && setEditState({...editState, [sessionId]: e.target.getAttribute("value")})
+  };
+  
+  return (
+    <>
+    <Button
+      aria-controls="session-action"
+      aria-haspopup="true"
+      onClick={handleOpen}
+      className={classes.buttonDropDown}
+      style={{width: '.5em', height: '2.5em'}}
+      data-session-id={id}
+      size="small"
+    >
+    {attendanceArray[id] ? <ExpandLess /> : <ExpandMore />}
+    </Button>
+    <Menu
+      id="session-action"
+      anchorEl={attendanceArray[id]}
+      keepMounted
+      open={Boolean(attendanceArray[id])}
+      onClose={handleClose}
+      getContentAnchorEl={null}
+      anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+      transformOrigin={{vertical: 'top', horizontal: 'center'}}
+      data-session-id={id}
+      size="small"
+    >
+      <MenuItem onClick={handleClose} value="sort" data-session-id={id}>Sort</MenuItem>
+      <MenuItem onClick={handleClose} value="edit" data-session-id={id}>Edit</MenuItem>
+    </Menu>
+    </>
+  )
+}
 
 export const GET_ATTENDANCE = gql`
 query getAttendance($courseId: ID!) {
@@ -112,34 +180,39 @@ query getAttendance($courseId: ID!) {
   
 
 
-const AttendanceTable = () => {
+const AttendanceTable = ({ setIsEditing }) => {
     const { id } = useParams();
     const classes = useStyles();
-    const [edit, setEdit] = useState();
-    const [currentSelectedSession, setCurrentSelectedSession] = useState();
+    const [editState, setEditState] = useState();
+    const [attendanceRecord, setAttendanceRecord] = useState();
+    const [isEdit, setIsEdit] = useState();
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
         variables: { courseId: id },
         onCompleted: () => {
-          // setEdit(data.sessions.map(({ id }) => ({ [id]: false })))
-          setEdit(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}))
-          setCurrentSelectedSession((data.sessions[0].id))
+          setEditState(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "noSelect" }), {}))
+          setAttendanceRecord(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: null }), {}))
+          setIsEdit(data.sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}));
         },
     });
 
     if(loading) return <Loading />;
-    if(!edit) return <Loading />;
+    if(!isEdit) return <Loading />;
     if(error) return console.error(error);
     const { enrollments, sessions } = data;
 
     const handleEdit = e => {
-      const sessionId = e.currentTarget.getAttribute("data-session-id")
-        if(edit[sessionId] === false) {
-          setEdit({...edit, [sessionId]: true})
+      const sessionId = e.currentTarget.getAttribute("id")
+        if(isEdit[sessionId] === false) {
+          setIsEdit({...isEdit, [sessionId]: true})
+          setIsEditing(true);
         } else {
-          setEdit({...edit, [sessionId]: false});
+          setIsEdit({...isEdit, [sessionId]: false});
+          setIsEditing(false);
+          setEditState({...editState, [sessionId]: "noSelect"})
         }  
-    }
+    };
 
+    console.log(editState)
   return (
     <TableContainer className={classes.table}>
       <Table aria-label="simple table">
@@ -155,10 +228,15 @@ const AttendanceTable = () => {
       return (
         <TableCell className={classes.tableCell}>
           {`Session ${i + 1} (${startingDate})`}
-          <IconButton onClick={handleEdit} data-session-id={id}>
-            {edit[id] === true ? <Check /> : <Add /> }
-          </IconButton>
-
+        {editState[id] === "edit" ? <Checkbox
+        checked={isEdit[id]}
+        onChange={handleEdit}
+        checkedIcon={<Check fontSize="small" style={{color: 'white'}} />}
+        icon={<Add fontSize="small"/>}
+        id={id}
+        disableRipple
+        classes={{ root: classes.checkbox, checked: classes.checkbox2 }}
+      /> : <SessionButton attendanceArray={attendanceRecord} id={id} setAttendanceRecord={setAttendanceRecord} editState={editState} setEditState={setEditState}/>}
         </TableCell>
       )
     })}
