@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
   menuSelect: {
     "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
     "&:focus": highlightColor,
+    display: "flex"
   },
   menuSelected: {
     backgroundColor: `${highlightColor} !important`,
@@ -279,7 +280,7 @@ const CourseFilterDropdown = ({
               className={classes.menuSelect}
               ListItemClasses={{ selected: classes.menuSelected }}
             >
-              {filterKey === "students" ? <span><UserAvatarCircle label={option.label}/></span> : ""}
+              {filterKey === "students" ? <UserAvatarCircle label={option.label}/> : ""}
               {option.label}
             </MenuItem>
           ))}
