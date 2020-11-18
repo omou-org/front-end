@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -264,6 +264,7 @@ const AttendanceTable = ({ setIsEditing }) => {
     const [editState, setEditState] = useState();
     const [attendanceRecord, setAttendanceRecord] = useState();
     const [isEdit, setIsEdit] = useState();
+    const [attendnanceState, setAttendanceState] = useState("");
     const [studentAttendanceData, setStudentAttendanceData] = useState();
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
         variables: { courseId: id },
@@ -272,7 +273,14 @@ const AttendanceTable = ({ setIsEditing }) => {
           setEditState(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "noSelect" }), {}))
           setAttendanceRecord(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: null }), {}))
           setIsEdit(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}));
-          setStudentAttendanceData(enrollments);
+          // setStudentAttendanceData(enrollments);
+          const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "Present" }), {});
+          const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id));
+          newData.map(row => {
+            const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
+            const filteredArray = filteredKey.reduce((obj, key) => ({ ...obj, [key]: "" }), []);
+            setStudentAttendanceData(filteredArray)
+          });
         },
     });
 
@@ -293,11 +301,22 @@ const AttendanceTable = ({ setIsEditing }) => {
         }  
     };
 
+    const handleClick = (e) => {
+      const attendanceValue = e.currentTarget.value;
+      const studentId = e.currentTarget.getAttribute("data-id");
+      const sessionId = e.currentTarget.getAttribute("data-keys");
+      setStudentAttendanceData({...studentAttendanceData, [sessionId]: attendanceValue})
+    }
+
     const studentsFullName = enrollments.map(({student}) => fullName(student.user));
+    const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "Present" }), {});
+    const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id));
 
-    const newData = enrollments.map(data => createData(fullName(data.student.user), attendanceRecord, data.student.user.id));
-    console.log(isEdit);
 
+    // console.log(newData)
+    // console.log(newClassData)
+    // console.log(isEdit);
+    console.log(studentAttendanceData)
   return (
     <TableContainer className={classes.table}>
       <Table aria-label="simple table">
@@ -327,17 +346,25 @@ const AttendanceTable = ({ setIsEditing }) => {
         </TableHead>
         <TableBody>
           {newData.map(row => {
-            const filterdKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId")
+            const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
+            const filteredArray = filteredKey.reduce((obj, key) => ({ ...obj, [key]: "" }), []);
             return (
             <TableRow key={row.studentId}>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-                {filterdKey.map(keys => (
+                {filteredKey.map(keys => (
                 <TableCell align="right"id={row.studentId}>
-                  {/* {row[keys] === null ? null : (isEdit)
-
-                  } */}
+                  {console.log(studentAttendanceData[keys])}
+                  {row[keys] === null ? null : (isEdit[keys]) ? 
+                  (<ButtonGroup>
+                    <Button data-id={row.studentId} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: '#6CE086'}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
+                    <Button data-id={row.studentId} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: '#FFDD59'}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
+                    <Button data-id={row.studentId} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: '#FF6766'}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
+                  </ButtonGroup>) 
+                  :
+                  (studentAttendanceData[keys] === "PRESENT" ? <Button style={{backgroundColor: '#6CE086', color: 'black'}} disabled>{studentAttendanceData[keys]}</Button> : <div>{filteredArray[keys]}</div>)
+                  }
                 </TableCell>))}
             </TableRow>
             )
