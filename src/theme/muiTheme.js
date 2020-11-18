@@ -4,19 +4,36 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 const breakpoints = createBreakpoints({})
 
 const tabBorderRadius = "10px";
-// Theme Colors
-export const omouBlue = "#43B5D9";
-export const skyBlue = "#EBFAFF";
-export const outlineGrey = "#E0E0E0";
 
 // Font Colors
 export const lightPrimaryFontColor = "#767474";
 export const secondaryFontColor = "#228eb2";
-export const neutralBackgroundColor = "#FAFAFA";
 export const highlightColor = "#EBFAFF";
 export const errorRed = "#c0392b";
 export const activeColor = "#6FCF97";
 export const pastColor = "#BDBDBD";
+
+// Theme Colors
+export const omouBlue = "#43B5D9";
+export const skyBlue = "#EBFAFF";
+export const outlineGrey = "#E0E0E0";
+export const black = "#000000";
+export const darkGrey = "#666666";
+export const darkBlue = "#1F82A1";
+export const white = "#FFFFFF";
+export const goth = "#000000";
+export const charcoal = "#333333";
+export const slateGrey = "#666666";
+export const gloom = "#999999";
+export const cloudy = "#C4C4C4";
+export const lightGrey = "#D3D3D3";
+export const buttonBlue = "#289FC3";
+export const backgroundGrey = "#FAFAFA";
+export const statusGreen = "#6CE086";
+export const statusYellow = "#FFDD59";
+export const statusRed = "#FF6766";
+
+// Typography
 
 const defaultFontProps = {
     fontFamily: 'Roboto Slab',
@@ -27,33 +44,33 @@ const theme = createMuiTheme({
     "palette": {
         "primary": {"main": omouBlue},
         "secondary": {"main": "#a6a6a6"},
-        "warning": {"main": "#FFDD59"},
+        "warning": {"main": statusYellow},
         "background": {
-            "main": neutralBackgroundColor,
-            "default": neutralBackgroundColor,
+            "main": backgroundGrey,
+            "default": backgroundGrey,
         },
-        "success": {"main": "#6CE086"},
-        "warning": {"main": "#FFDD59"},
-        "error": {"main": "#FF6766"},
+        "success": {"main": statusGreen},
+        "warning": {"main": statusYellow},
+        "error": {"main": statusRed},
     },
-    "colors": {
-        "black": "#000000",
-        "darkGray": "#666666",
-        "darkBlue": "#1F82A1",
-        "omouBlue": "#43B5D9",
-        "skyBlue": "#EBFAFF",
-        "white": "#FFFFFF",
-        "goth": "#000000",
-        "charcoal": "#333333",
-        "slateGrey": "#666666",
-        "gloom": "#999999",
-        "cloudy": "#C4C4C4",
-        "lightGrey": "#D3D3D3",
-        "buttonBlue": "#289FC3",
-        "backgroundGrey": "#EEEEEE",
-        "statusGreen": "#6CE086",
-        "statusYellow": "#FFDD59",
-        "statusRed": "#FF6766",
+    colors: {
+      black,
+      darkGrey,
+      darkBlue,
+      omouBlue,
+      skyBlue,
+      white,
+      goth,
+      charcoal,
+      slateGrey,
+      gloom,
+      cloudy,
+      lightGrey,
+      buttonBlue,
+      backgroundGrey,
+      statusGreen,
+      statusYellow,
+      statusRed,
     },
 	"typography": {
 		subtitle2: {
@@ -65,7 +82,7 @@ const theme = createMuiTheme({
         "MuiCssBaseline": {
             "@global": {
                 "body": {
-                    "backgroundColor": neutralBackgroundColor,
+                    "backgroundColor": backgroundGrey,
                 }
             },
         },
@@ -148,7 +165,7 @@ const theme = createMuiTheme({
           "fontVariant": 'all-small-caps',
           "fontFeatureSettings": '"cpsp" on',
             "text": {
-                "color": "black",
+                "color": goth,
             },
             "contained" : {
               "fontSize": '14px',
@@ -158,8 +175,8 @@ const theme = createMuiTheme({
               "lineHeight": '16px',
               "fontVariant": 'all-small-caps',
               "fontFeatureSettings": '"cpsp" on',
-              "color": "#FFFFFF",
-              "backgroundColor": "#289FC3",
+              "color": white,
+              "backgroundColor": buttonBlue,
               "border": "2px solid #289FC3",
               "boxSizing": "border-box",
               "borderRadius": "5px",
@@ -167,14 +184,14 @@ const theme = createMuiTheme({
               "white-space": "nowrap",
               "text-overflow": "ellipsis",
               "&:hover": {
-                "backgroundColor": "#289FC3",
+                "backgroundColor": buttonBlue,
                 "opacity": "80%",
                 "border": "rgba(40, 159, 195, 0.8)",
                 "-webkit-background-clip": "padding-box", 
                 "background-clip": "padding-box"
               },
               "&:active": {
-                "backgroundColor": "#289FC3",
+                "backgroundColor": buttonBlue,
                 "opacity": "60%",
                 "border": "rgba(40, 159, 195, 0.6)",
                 "-webkit-background-clip": "padding-box", 
@@ -189,8 +206,8 @@ const theme = createMuiTheme({
               "lineHeight": '16px',
               "fontVariant": 'all-small-caps',
               "fontFeatureSettings": '"cpsp" on',
-              "color": "#289FC3",
-              "backgroundColor": "#FFFFFF",
+              "color": buttonBlue,
+              "backgroundColor": white,
               "border": "2px solid #C4C4C4",
               "boxSizing": "border-box",
               "border-radius": "5px",
@@ -198,27 +215,27 @@ const theme = createMuiTheme({
               "white-space": "nowrap",
               "text-overflow": "ellipsis",
               "&:hover": {
-                "backgroundColor": "#FFFFFF",
+                "backgroundColor": white,
                 "opacity": "90%"
               },
               "&:active": {
-                "backgroundColor": "#FFFFFF",
+                "backgroundColor": white,
                 "opacity": "70%"
               },
               "&:disabled": {
                 "border": "2px solid #999999",
-                "backgroundColor": "#C4C4C4",
-                "color": "#999999",
+                "backgroundColor": cloudy,
+                "color": gloom,
                 "opacity": "80%"
               },
             },   
 			containedPrimary: {
-				color: "#FFFFFF", 
+				color: white, 
 			}
         },
         "MuiBadge": {
             "colorPrimary": {
-                "color": "white",
+                "color": white,
                 "marginRight": "6px",
                 "marginTop": "4px",
             },
@@ -241,12 +258,12 @@ const theme = createMuiTheme({
             },
             "paperAnchorDockedLeft": {
                 "borderRight": "none",
-                backgroundColor: neutralBackgroundColor,
+                backgroundColor: backgroundGrey,
                 padding: "1vw",
             }
         },
         "paper": {
-            "background": "#FAFAFA",
+            "background": backgroundGrey,
         },
         "MuiMenuItem": {
             "root": {
@@ -262,8 +279,8 @@ const theme = createMuiTheme({
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
                 marginTop: "0",
-                color: "#666666",
-                backgroundColor: "#ffffff",
+                color: slateGrey,
+                backgroundColor: white,
                 transition: "0.2s",
                 [breakpoints.up("md")]: {
                   minWidth: 120
@@ -281,7 +298,7 @@ const theme = createMuiTheme({
                     width: 1,
                     zIndex: 1,
                     marginTop: "0.5em",
-                    backgroundColor: "#EEEEEE"
+                    backgroundColor: backgroundGrey
                   }
                 },
                 "& + $selected:before": {
@@ -325,7 +342,7 @@ const theme = createMuiTheme({
         },
         "MuiStepIcon": {
             "text": {
-                "fill": "white",
+                "fill": white,
             },
         },
         MuiTableCell: {
