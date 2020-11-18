@@ -266,6 +266,7 @@ const AttendanceTable = ({ setIsEditing }) => {
     const [isEdit, setIsEdit] = useState();
     const [attendnanceState, setAttendanceState] = useState("");
     const [studentAttendanceData, setStudentAttendanceData] = useState();
+    const [color, setColor] = useState("")
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
         variables: { courseId: id },
         onCompleted: () => {
@@ -303,20 +304,28 @@ const AttendanceTable = ({ setIsEditing }) => {
 
     const handleClick = (e) => {
       const attendanceValue = e.currentTarget.value;
-      const studentId = e.currentTarget.getAttribute("data-id");
+      const studentId = e.currentTarget.getAttribute("data-studentId");
       const sessionId = e.currentTarget.getAttribute("data-keys");
+      if(attendanceValue === "PRESENT") {
+        setColor('#6CE086')
+      } else if (attendanceValue === "TARDY") {
+        setColor('#FFDD59')
+      } else {
+        setColor('#FF6766')
+      }
       setStudentAttendanceData({...studentAttendanceData, [sessionId]: attendanceValue})
     }
 
     const studentsFullName = enrollments.map(({student}) => fullName(student.user));
-    const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "Present" }), {});
+    const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "" }), {});
     const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id));
 
 
     // console.log(newData)
+    console.log(color)
     // console.log(newClassData)
     // console.log(isEdit);
-    console.log(studentAttendanceData)
+    // console.log(studentAttendanceData)
   return (
     <TableContainer className={classes.table}>
       <Table aria-label="simple table">
@@ -355,15 +364,15 @@ const AttendanceTable = ({ setIsEditing }) => {
               </TableCell>
                 {filteredKey.map(keys => (
                 <TableCell align="right"id={row.studentId}>
-                  {console.log(studentAttendanceData[keys])}
+                  {/* {console.log(studentAttendanceData[keys])} */}
                   {row[keys] === null ? null : (isEdit[keys]) ? 
                   (<ButtonGroup>
-                    <Button data-id={row.studentId} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: '#6CE086'}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
-                    <Button data-id={row.studentId} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: '#FFDD59'}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
-                    <Button data-id={row.studentId} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: '#FF6766'}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
+                    <Button data-studentId={row.studentId} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: '#6CE086'}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
+                    <Button data-studentId={row.studentId} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: '#FFDD59'}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
+                    <Button data-studentId={row.studentId} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: '#FF6766'}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
                   </ButtonGroup>) 
                   :
-                  (studentAttendanceData[keys] === "PRESENT" ? <Button style={{backgroundColor: '#6CE086', color: 'black'}} disabled>{studentAttendanceData[keys]}</Button> : <div>{filteredArray[keys]}</div>)
+                  (studentAttendanceData[keys] === "PRESENT" || "TARDY" || "ABSENT" ? <Button style={{backgroundColor: `${studentAttendanceData[keys] === "PRESENT" ? '#6CE086' : studentAttendanceData[keys] === "TARDY" ? '#FFDD59' : studentAttendanceData[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{studentAttendanceData[keys]}</Button> : <div>{studentAttendanceData[keys]}</div>)
                   }
                 </TableCell>))}
             </TableRow>
