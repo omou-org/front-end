@@ -34,7 +34,8 @@ import {
     DELETE_COURSE_NOTE_SUCCESSFUL,
     DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
 } from "actions/actionTypes";
-import { instance } from "actions/apiActions";
+import {instance} from "actions/apiActions";
+import { AddItemButton } from "components/OmouComponents/AddItemButton";
 
 const useStyles = makeStyles((theme) => ({
     "icons": {
@@ -238,7 +239,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             } else {
                 updatedNotes[matchingIndex] = newNote;
             }
-            
+
             cache.writeQuery({
                 "data": {
                     [QUERY_KEY[ownerType]]: updatedNotes,
@@ -546,32 +547,36 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                             variant="h5"
                             style={{ marginTop: "10px" }}
                         >My Tasks
-                            </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <AssignmentTurnedInIcon fontSize="large" style={{ marginTop: "10px" }} />
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}>
-                        <div
-                            className={`addNote ${classes.addNote}`}
+                        </Typography>
+                        </Grid>
+                         <Grid item xs={3}>
+                             <AssignmentTurnedInIcon fontSize = "large" style={{marginTop: "10px"}}/>
+                         </Grid>
+                            <Grid
+                                item
+                                xs={12}>
+                                <AddItemButton
+                                    height={'100%'}
+                                    width='inherit'
+                                    style={{padding: 0}}
+                                    onClick={openNewNote}
+                                >
+                                    + Add Note
+                                </AddItemButton>
+                            </Grid>
+                    </>
+                    :
+                       <Grid item md={3}>
+                           <AddItemButton
+                            height={200}
+                            width='inherit'
                             onClick={openNewNote}
-                            style={{ "cursor": "pointer", height: "100%", backgroundColor: "white" }}>
-                            <Typography className="center" style={{ padding: 0 }}>
-                                <AddIcon /> Add Note
-                                    </Typography>
-                        </div>
-                    </Grid>
-                </>
-                : <Grid item md={3}>
-                    <div className={classes.addNote} onClick={openNewNote}>
-                        <Typography className={classes.center}>
-                            <AddIcon /><br />Add Note
-                                </Typography>
-                    </div>
-                </Grid>
-            }
+                           >
+                               + Add Note
+                           </AddItemButton>
+                        </Grid>            
+                }  
+            
 
             {notes && isDashboard && Object.values(notes).map((note) => (
                 <Grid item key={note.id || note.body} xs={12}>
@@ -653,12 +658,9 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         </div>
                     </Paper>
                 </Grid>
-
-            ))}
-
-
-        </Grid>
-    )
+                ))}
+            </Grid>
+        )
 };
 
 Notes.propTypes = {

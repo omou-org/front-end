@@ -82,14 +82,14 @@ const SearchResults = () => {
     const searchParams = useSearchParams();
     const filter = searchParams.get("filter"),
         query = searchParams.get("query"),
-        sort = searchParams.get("sort");
-
+        sort = searchParams.get("sort"),
+        profile = searchParams.get("profile")?.toUpperCase();
     const accountQuery = useQuery(ACCOUNT_SEARCH, {
         "variables": {
             "grade": searchParams.get("grade"),
             "page": accountsPage,
             "pageSize": getPageSize(filter),
-            "profile": searchParams.get("profile"),
+            "profile": profile,
             query,
             sort,
         },
@@ -100,7 +100,7 @@ const SearchResults = () => {
             "availability": searchParams.get("availability"),
             "page": coursePage,
             "pageSize": getPageSize(filter),
-            "profile": searchParams.get("profile"),
+            "profile": profile,
             query,
             sort,
             "type": searchParams.get("course"),

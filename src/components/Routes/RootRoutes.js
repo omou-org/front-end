@@ -39,6 +39,8 @@ import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
 import StudentCourseViewer from "components/FeatureViews/Accounts/TabComponents/StudentCourseViewer";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 
+import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
+
 export const RootRoutes = () => {
     const dispatch = useDispatch();
     const AuthUser = useSelector(({auth}) => auth);
@@ -68,6 +70,12 @@ export const RootRoutes = () => {
                 <DemoRoutes/>
             </Route>
 
+
+            {/* Route for Testing AddItemButton */}
+            <Route path="/demos/AddItemButton">
+                <AddItemButtonTestDemo />
+            </Route>
+            
 
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
