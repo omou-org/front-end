@@ -1,4 +1,4 @@
-import {createMuiTheme} from "@material-ui/core/styles";
+import { createMuiTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 
 const breakpoints = createBreakpoints({})
@@ -34,324 +34,337 @@ export const statusYellow = "#FFDD59";
 export const statusRed = "#FF6766";
 
 // Typography
+export const h1 = {
+  fontSize: '36px',
+  fontWeight: 'bold',
+  fontFamily: 'Roboto Slab',
+  lineHeight: '48px',
+  color: goth
+};
+export const h2 = {
+  fontSize: '32px',
+  fontWeight: 'bold',
+  fontFamily: 'Roboto',
+  lineHeight: '40px',
+  color: slateGrey
+};
+export const h3 = {
+  fontSize: '20px',
+  fontWeight: '500',
+  fontFamily: 'Roboto',
+  lineHeight: '32px',
+  color: goth
+};
+export const h4 = {
+  fontSize: '16px',
+  fontWeight: '500',
+  fontFamily: 'Roboto',
+  lineHeight: '16px',
+};
+export const h5 = {
+  fontSize: '14px',
+  fontWeight: '500',
+  fontStyle: 'normal',
+  fontFamily: 'Roboto',
+  lineHeight: '16px',
+  fontVariant: 'small-caps',
+  fontFeatureSettings: '"cpsp" on'
+};
+// Body (Default)
+export const body1 = {
+  fontSize: '14px',
+  fontWeight: '400',
+  fontFamily: 'Roboto',
+  lineHeight: '16px',
+  color: goth
+};
+// Body (Paragraph)
+export const h6 = {
+  fontSize: '14px',
+  fontWeight: '400',
+  fontFamily: 'Roboto',
+  lineHeight: '22px',
+  color: goth
+};
+// Body (Bolded)
+export const body2 = {
+  fontSize: '14px',
+  fontWeight: '500',
+  fontFamily: 'Roboto',
+  lineHeight: '16px',
+  color: goth
+};
+export const subtitle1 = {
+  fontSize: '20px',
+  fontWeight: '300',
+  fontFamily: 'Roboto',
+};
+
 
 const defaultFontProps = {
-    fontFamily: 'Roboto Slab',
-    fontWeight: 700,
+  fontFamily: 'Roboto Slab',
+  fontWeight: 700,
 };
 
 const theme = createMuiTheme({
-    "palette": {
-        "primary": {"main": omouBlue},
-        "secondary": {"main": "#a6a6a6"},
-        "warning": {"main": statusYellow},
-        "background": {
-            "main": backgroundGrey,
-            "default": backgroundGrey,
-        },
-        "success": {"main": statusGreen},
-        "warning": {"main": statusYellow},
-        "error": {"main": statusRed},
+  "palette": {
+    "primary": { "main": omouBlue },
+    "secondary": { "main": "#a6a6a6" },
+    "warning": { "main": statusYellow },
+    "background": {
+      "main": backgroundGrey,
+      "default": backgroundGrey,
     },
-    colors: {
-      black,
-      darkGrey,
-      darkBlue,
-      omouBlue,
-      skyBlue,
-      white,
-      goth,
-      charcoal,
-      slateGrey,
-      gloom,
-      cloudy,
-      lightGrey,
-      buttonBlue,
-      backgroundGrey,
-      statusGreen,
-      statusYellow,
-      statusRed,
+    "success": { "main": statusGreen },
+    "warning": { "main": statusYellow },
+    "error": { "main": statusRed },
+  },
+  colors: {
+    black,
+    darkGrey,
+    darkBlue,
+    omouBlue,
+    skyBlue,
+    white,
+    goth,
+    charcoal,
+    slateGrey,
+    gloom,
+    cloudy,
+    lightGrey,
+    buttonBlue,
+    backgroundGrey,
+    statusGreen,
+    statusYellow,
+    statusRed,
+  },
+  "typography": {
+    subtitle2: {
+      fontWeight: 500,
+      fontSize: 12,
+    }
+  },
+  "overrides": {
+    "MuiCssBaseline": {
+      "@global": {
+        "body": {
+          "backgroundColor": backgroundGrey,
+        }
+      },
     },
-	"typography": {
-		subtitle2: {
-			fontWeight: 500,
-			fontSize: 12,
-		}
-	},
-    "overrides": {
-        "MuiCssBaseline": {
-            "@global": {
-                "body": {
-                    "backgroundColor": backgroundGrey,
-                }
-            },
+    MuiTypography: {
+      variantMapping: {
+        subtitle1: 'h5',
+      },
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      //Body(Default)
+      body1,
+      //Body(Paragraph)
+      h6,
+      //Body(Bolded)
+      body2,
+      subtitle1,
+    },
+    "MuiButton": {
+      "fontSize": '14px',
+      "fontWeight": '500',
+      "fontStyle": 'normal',
+      "fontFamily": 'Roboto',
+      "lineHeight": '16px',
+      "fontVariant": 'all-small-caps',
+      "fontFeatureSettings": '"cpsp" on',
+      "text": {
+        "color": goth,
+      },
+      "contained": {
+        "fontSize": '14px',
+        "fontWeight": '500',
+        "fontStyle": 'normal',
+        "fontFamily": 'Roboto',
+        "lineHeight": '16px',
+        "fontVariant": 'all-small-caps',
+        "fontFeatureSettings": '"cpsp" on',
+        "color": white,
+        "backgroundColor": buttonBlue,
+        "border": `2px solid ${buttonBlue}`,
+        "boxSizing": "border-box",
+        "borderRadius": "5px",
+        "overflow": "hidden",
+        "white-space": "nowrap",
+        "text-overflow": "ellipsis",
+        "&:hover": {
+          "backgroundColor": buttonBlue,
+          "opacity": "80%",
+          "border": "rgba(40, 159, 195, 0.8)",
+          "-webkit-background-clip": "padding-box",
+          "background-clip": "padding-box"
         },
-        MuiTypography: {
-            variantMapping: {
-                subtitle1: 'h5',
-            },
-            h1: {
-              fontSize: '36px',
-              fontWeight: 'bold',
-              fontFamily: 'Roboto Slab',
-              lineHeight: '48px',
-              color: '#000000'
-            },
-            h2: {
-              fontSize: '32px',
-              fontWeight: 'bold',
-              fontFamily: 'Roboto',
-              lineHeight: '40px',
-              color: '#666666'
-            },
-            h3: {
-              fontSize: '20px',
-              fontWeight: '500',
-              fontFamily: 'Roboto',
-              lineHeight: '32px',
-              color: '#000000'
-            },
-            h4: {
-              fontSize: '16px',
-              fontWeight: '500',
-              fontFamily: 'Roboto',
-              lineHeight: '16px',
-            },
-            h5: {
-              fontSize: '14px',
-              fontWeight: '500',
-              fontStyle: 'normal',
-              fontFamily: 'Roboto',
-              lineHeight: '16px',
-              fontVariant: 'small-caps',
-              fontFeatureSettings: '"cpsp" on'
-            },
-            //Body(Default)
-            body1: {
-              fontSize: '14px',
-              fontWeight: '400',
-              fontFamily: 'Roboto',
-              lineHeight: '16px',
-              color: '#000000'
-            },
-            //Body(Paragraph)
-            h6: {
-              fontSize: '14px',
-              fontWeight: '400',
-              fontFamily: 'Roboto',
-              lineHeight: '22px',
-              color: '#000000'
-            },
-            //Body(Bolded)
-            body2: {
-              fontSize: '14px',
-              fontWeight: '500',
-              fontFamily: 'Roboto',
-              lineHeight: '16px',
-              color: '#000000'
-            },
-            subtitle1: {
-                fontSize: '20px',
-                fontWeight: '300',
-                fontFamily: 'Roboto',
-            },
+        "&:active": {
+          "backgroundColor": buttonBlue,
+          "opacity": "60%",
+          "border": "rgba(40, 159, 195, 0.6)",
+          "-webkit-background-clip": "padding-box",
+          "background-clip": "padding-box"
         },
-        "MuiButton": {
-          "fontSize": '14px',
-          "fontWeight": '500',
-          "fontStyle": 'normal',
-          "fontFamily": 'Roboto',
-          "lineHeight": '16px',
-          "fontVariant": 'all-small-caps',
-          "fontFeatureSettings": '"cpsp" on',
-            "text": {
-                "color": goth,
-            },
-            "contained" : {
-              "fontSize": '14px',
-              "fontWeight": '500',
-              "fontStyle": 'normal',
-              "fontFamily": 'Roboto',
-              "lineHeight": '16px',
-              "fontVariant": 'all-small-caps',
-              "fontFeatureSettings": '"cpsp" on',
-              "color": white,
-              "backgroundColor": buttonBlue,
-              "border": "2px solid #289FC3",
-              "boxSizing": "border-box",
-              "borderRadius": "5px",
-              "overflow": "hidden",
-              "white-space": "nowrap",
-              "text-overflow": "ellipsis",
-              "&:hover": {
-                "backgroundColor": buttonBlue,
-                "opacity": "80%",
-                "border": "rgba(40, 159, 195, 0.8)",
-                "-webkit-background-clip": "padding-box", 
-                "background-clip": "padding-box"
-              },
-              "&:active": {
-                "backgroundColor": buttonBlue,
-                "opacity": "60%",
-                "border": "rgba(40, 159, 195, 0.6)",
-                "-webkit-background-clip": "padding-box", 
-                "background-clip": "padding-box"
-              },
-            },
-            "outlined" : {
-              "fontSize": '14px',
-              "fontWeight": '500',
-              "fontStyle": 'normal',
-              "fontFamily": 'Roboto',
-              "lineHeight": '16px',
-              "fontVariant": 'all-small-caps',
-              "fontFeatureSettings": '"cpsp" on',
-              "color": buttonBlue,
-              "backgroundColor": white,
-              "border": "2px solid #C4C4C4",
-              "boxSizing": "border-box",
-              "border-radius": "5px",
-              "overflow": "hidden",
-              "white-space": "nowrap",
-              "text-overflow": "ellipsis",
-              "&:hover": {
-                "backgroundColor": white,
-                "opacity": "90%"
-              },
-              "&:active": {
-                "backgroundColor": white,
-                "opacity": "70%"
-              },
-              "&:disabled": {
-                "border": "2px solid #999999",
-                "backgroundColor": cloudy,
-                "color": gloom,
-                "opacity": "80%"
-              },
-            },   
-			containedPrimary: {
-				color: white, 
-			}
+      },
+      "outlined": {
+        "fontSize": '14px',
+        "fontWeight": '500',
+        "fontStyle": 'normal',
+        "fontFamily": 'Roboto',
+        "lineHeight": '16px',
+        "fontVariant": 'all-small-caps',
+        "fontFeatureSettings": '"cpsp" on',
+        "color": buttonBlue,
+        "backgroundColor": white,
+        "border": `2px solid ${cloudy}`,
+        "boxSizing": "border-box",
+        "border-radius": "5px",
+        "overflow": "hidden",
+        "white-space": "nowrap",
+        "text-overflow": "ellipsis",
+        "&:hover": {
+          "backgroundColor": white,
+          "opacity": "90%"
         },
-        "MuiBadge": {
-            "colorPrimary": {
-                "color": white,
-                "marginRight": "6px",
-                "marginTop": "4px",
-            },
+        "&:active": {
+          "backgroundColor": white,
+          "opacity": "70%"
         },
-        MuiChip: {
-          root: {
-            height: "24px",  
-            borderRadius: "2px",
-            paddingRight: "12px",
-            paddingLeft: "12px"
-          },
-          label: {
-            paddingRight: "0px",
-            paddingLeft: "0px"
+        "&:disabled": {
+          "border": `2px solid ${gloom}`,
+          "backgroundColor": cloudy,
+          "color": gloom,
+          "opacity": "80%"
+        },
+      },
+      containedPrimary: {
+        color: white,
+      }
+    },
+    "MuiBadge": {
+      "colorPrimary": {
+        "color": white,
+        "marginRight": "6px",
+        "marginTop": "4px",
+      },
+    },
+    MuiChip: {
+      root: {
+        height: "24px",
+        borderRadius: "2px",
+        paddingRight: "12px",
+        paddingLeft: "12px"
+      },
+      label: {
+        paddingRight: "0px",
+        paddingLeft: "0px"
+      }
+    },
+    "MuiDrawer": {
+      "paperAnchorLeft": {
+        "zIndex": 1,
+      },
+      "paperAnchorDockedLeft": {
+        "borderRight": "none",
+        backgroundColor: backgroundGrey,
+        padding: "1vw",
+      }
+    },
+    "paper": {
+      "background": backgroundGrey,
+    },
+    "MuiMenuItem": {
+      "root": {
+        "width": "100%",
+      },
+    },
+    "MuiTab": {
+      root: {
+        opacity: 1,
+        overflow: "initial",
+        paddingLeft: "1em",
+        paddingRight: "1em",
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        marginTop: "0",
+        color: slateGrey,
+        backgroundColor: white,
+        transition: "0.2s",
+        [breakpoints.up("md")]: {
+          minWidth: 120
+        },
+        "&:before": {
+          transition: "0.2s"
+        },
+        "&:not(:first-of-type)": {
+          "&:before": {
+            content: '" "',
+            position: "absolute",
+            left: 0,
+            display: "block",
+            height: "10em",
+            width: 1,
+            zIndex: 1,
+            marginTop: "0.5em",
+            backgroundColor: backgroundGrey
           }
         },
-        "MuiDrawer": {
-            "paperAnchorLeft": {
-                "zIndex": 1,
-            },
-            "paperAnchorDockedLeft": {
-                "borderRight": "none",
-                backgroundColor: backgroundGrey,
-                padding: "1vw",
-            }
+        "& + $selected:before": {
+          opacity: 0
         },
-        "paper": {
-            "background": backgroundGrey,
+        "&:hover": {
+          "&:not($selected)": {
+            backgroundColor: skyBlue
+          },
+          "&::before": {
+            opacity: 0
+          },
+          "& + $root:before": {
+            opacity: 0
+          }
         },
-        "MuiMenuItem": {
-            "root": {
-                "width": "100%",
-            },
+        "&$selected": {
+          "backgroundColor": skyBlue,
+          "color": omouBlue,
         },
-        "MuiTab": {
-            root: {
-                opacity: 1,
-                overflow: "initial",
-                paddingLeft: "1em",
-                paddingRight: "1em",
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 0,
-                marginTop: "0",
-                color: slateGrey,
-                backgroundColor: white,
-                transition: "0.2s",
-                [breakpoints.up("md")]: {
-                  minWidth: 120
-                },
-                "&:before": {
-                  transition: "0.2s"
-                },
-                "&:not(:first-of-type)": {
-                  "&:before": {
-                    content: '" "',
-                    position: "absolute",
-                    left: 0,
-                    display: "block",
-                    height: "10em",
-                    width: 1,
-                    zIndex: 1,
-                    marginTop: "0.5em",
-                    backgroundColor: backgroundGrey
-                  }
-                },
-                "& + $selected:before": {
-                  opacity: 0
-                },
-                "&:hover": {
-                  "&:not($selected)": {
-                    backgroundColor: skyBlue
-                  },
-                  "&::before": {
-                    opacity: 0
-                  },
-                  "& + $root:before": {
-                    opacity: 0
-                  }
-                },
-                "&$selected": {
-                    "backgroundColor": skyBlue,
-                    "color": omouBlue,
-                },
-              },
-              selected: {
-                backgroundColor: skyBlue,
-                color: omouBlue,
-                "& + $root": {
-                  zIndex: 1
-                },
-                "& + $root:before": {
-                  opacity: 0
-                }
-              },
-              wrapper: {
-                zIndex: 2,
-                marginTop: "0.5em",
-                textTransform: "initial",    
-              },
-              indicator: {
-                display: "none",
-                marginTop: "1.1em",
-              }
+      },
+      selected: {
+        backgroundColor: skyBlue,
+        color: omouBlue,
+        "& + $root": {
+          zIndex: 1
         },
-        "MuiStepIcon": {
-            "text": {
-                "fill": white,
-            },
-        },
-        MuiTableCell: {
-            head: {
-                color: omouBlue,
-                fontWeight: 600,
-            }
+        "& + $root:before": {
+          opacity: 0
         }
+      },
+      wrapper: {
+        zIndex: 2,
+        marginTop: "0.5em",
+        textTransform: "initial",
+      },
+      indicator: {
+        display: "none",
+        marginTop: "1.1em",
+      }
     },
+    "MuiStepIcon": {
+      "text": {
+        "fill": white,
+      },
+    },
+    MuiTableCell: {
+      head: {
+        color: omouBlue,
+        fontWeight: 600,
+      }
+    }
+  },
 });
 
 export default theme;
