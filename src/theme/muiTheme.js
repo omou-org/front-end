@@ -4,7 +4,7 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 const breakpoints = createBreakpoints({})
 
 const tabBorderRadius = "10px";
-// Theme Colors
+// Theme Colorss
 export const omouBlue = "#43B5D9";
 export const skyBlue = "#EBFAFF";
 export const outlineGrey = "#E0E0E0";
