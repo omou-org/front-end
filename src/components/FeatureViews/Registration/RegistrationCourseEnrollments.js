@@ -12,9 +12,6 @@ import Typography from "@material-ui/core/Typography";
 
 import "theme/theme.scss";
 import "./registration.scss";
-import { addDashes } from "components/FeatureViews/Accounts/accountUtils";
-import { deleteEnrollment } from "actions/registrationActions";
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import gql from "graphql-tag";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import CourseEnrollmentRow from "./CourseEnrollmentRow";
@@ -152,46 +149,6 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity}) => {
                     }
                 </TableBody>
             </Table>
-            <Dialog aria-describedby="unenroll-dialog-description"
-                aria-labelledby="unenroll-dialog-title"
-                className="session-view-modal"
-                fullWidth
-                maxWidth="xs"
-                onClose={closeUnenrollDialog(false)}
-                open={unenroll.open}>
-                <DialogTitle id="unenroll-dialog-title">
-                    Unenroll in {courseTitle}
-                </DialogTitle>
-                <Divider />
-                <DialogContent>
-                    <DialogContentText>
-                        You are about to unenroll in <b>{courseTitle}</b> for{" "}
-                        <b>
-                            {unenroll.enrollment && fullName(enrollments.find(({ id }) => id == unenroll.enrollment).student.user)}
-                        </b>
-                        . Performing this action will credit the remaining enrollment
-                        balance back to the parent's account balance. Are you sure you want
-                        to unenroll?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <ResponsiveButton
-                        variant="outlined"
-                        color="secondary"
-                        onClick={closeUnenrollDialog(true)}
-                    >
-                        Yes, unenroll
-                    </ResponsiveButton>
-                    
-                    <ResponsiveButton
-                        variant="outlined"
-                        color="primary"
-                        onClick={closeUnenrollDialog(false)}
-                    >
-                        cancel
-                    </ResponsiveButton>
-                </DialogActions>
-            </Dialog>
         </>
     );
 };
