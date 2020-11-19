@@ -1,109 +1,151 @@
-import React from 'react';
+import React, { Children } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import { PropTypes } from 'prop-types';
 import { theme } from '../../../theme/muiTheme'
 import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton'
+import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge'
 import Divider from "@material-ui/core/Divider";
+import Link from "@material-ui/core/Link"
 
-const useStyles = makeStyles({
-    listStyles: ({ height, width }) => ({
-        borderTop: '1.5px solid #C4C4C4',
-        borderBottom: '1.5px solid #C4C4C4',
-        paddingTop: '15px',
+export const useStyles = makeStyles({
+    root: {
+        borderTop: '1px solid #C4C4C4',
+        borderBottom: '1px solid #C4C4C4',
+        padding: '24px',
+        height: '120px',
+    },
+    content: {
+    },
+    heading: {
         paddingBottom: '15px',
-    }),
+    },
+    badge: {
+        paddingRight: '24px'
+    },
   });
 
-  export const ListComponent = ({ children }) => {
-      const { listStyles } = useStyles({});
-      return (
-          <div>
-            { children.toArray(children) }
-          </div>
-          
-      )
-  }
+export const ListContent = ({ children }) => {
+    const classes = useStyles();
+    return (
+        <Grid item>
+            <Grid container justify="space-between" direction="column" className={classes.content}>
+                { children }
+            </Grid>
+        </Grid>
+    )
+}
 
-// export const ListComponent = ({ children }) => {
-//     const { listStyles } = useStyles({  });
-//     return (
-//       <Box className = { listStyles }>
-//         <Grid container justify="space-between">
-//             <Grid item>
-//                 <Grid container direction="column">
-//                     <Grid item>
-//                         <Grid container>
-//                             <Grid item>
-//                                 <Typography variant="body1" align="left">
-//                                     BADGE (sometimes)
-//                                 </Typography>
-//                             </Grid>
-//                             <Grid item>
-//                                 <Typography variant="h3" align="left">
-//                                     Course Name
-//                                 </Typography>
-//                             </Grid>
-//                         </Grid>
-                        
-//                     </Grid>
-//                     <Grid item>
-//                         <Grid container spacing={3}>
-//                             <Grid item>
-//                                 <Typography variant="body1">
-//                                     Instructor Name
-//                                 </Typography>
-//                             </Grid>
-//                             <Divider
-//                                 orientation="vertical"
-//                                 flexItem
-//                                 style={{ height: "1em", marginTop: "1em" }}
-//                             />
-//                             <Grid item>
-//                                 <Typography variant="body1">
-//                                     Start Date - End Date
-//                                 </Typography>
-//                             </Grid>
-//                             <Divider
-//                                 orientation="vertical"
-//                                 flexItem
-//                                 style={{ height: "1em", marginTop: "1em" }}
-//                             />
-//                             <Grid item>
-//                                 <Typography variant="body1">
-//                                     Start Time - End Time
-//                                 </Typography>
-//                             </Grid>
-//                             <Divider
-//                                 orientation="vertical"
-//                                 flexItem
-//                                 style={{ height: "1em", marginTop: "1em" }}
-//                             />
-//                             <Grid item>
-//                                 <Typography variant="body1">
-//                                     Cost
-//                                 </Typography>
-//                             </Grid>
-//                         </Grid>
-//                     </Grid>
+export const ListActions = ({ children }) => {
+    return (
+        <Grid item>
+            <Grid container direction="column">
+                { children }
+            </Grid>
+        </Grid>
+    )
+}
 
-//                 </Grid>
-//             </Grid>
-//             <Grid item>
-//                 <Grid container direction="column">
-//                     <Grid item>
-//                         <Typography>
-//                             #/# Enrolled
-//                         </Typography>
-//                     </Grid>
-//                     <Grid item>
-//                         BUTTON GO HERE (sometimes)
-//                     </Grid>
-//                 </Grid>
-//             </Grid>
-//         </Grid>
-//       </Box>
-//     );
-//   };
+export const ListHeading = ({ children }) => {
+    const classes = useStyles();
+    return (
+        <Grid item>
+            <Grid container className={classes.heading}>
+                { children }
+            </Grid>
+        </Grid>
+    )
+}
+
+export const ListTitle = ({ children }) => {
+    return (
+        <Grid item>
+            <Typography variant="h3">
+                { children }
+            </Typography>
+        </Grid>
+    )
+}
+
+export const ListDetails = ({ children }) => {
+    return (
+        <Grid item>
+            <Grid container spacing="{3}" justify="space-between">
+                { children }
+            </Grid>
+        </Grid>
+    )
+}
+
+export const ListDetail = ({ children }) => {
+    return (
+        <Grid item spacing={3}>
+            <Typography variant="body1">
+                { children }
+            </Typography>
+        </Grid> 
+    )
+}
+
+export const ListDetailLink = ({ children }) => {
+    return (
+        <Grid item spacing={3}>
+            <Link underline="always">
+                { children }
+            </Link>
+        </Grid> 
+    )
+}
+
+export const ListButton = ({ children }) => {
+    return (
+        <Grid item>
+            { children }
+        </Grid>
+    )
+}
+
+export const ListBadge = ({ children }) => {
+    const classes = useStyles();
+    return (
+        <Grid item className={classes.badge}>
+            { children }
+        </Grid>
+    )
+}
+
+export const ListStatus = ({ children }) => {
+    return (
+        <Grid item>
+            <Typography variant="h4">
+                { children }
+            </Typography>
+            { children }
+        </Grid>
+    )
+}
+
+export const ListDivider = () => {
+    return (
+        <Grid item>
+            <Divider
+                orientation="vertical"
+                style={{ height: "1em", marginRight: "1rem", marginLeft: "1rem" }}
+            />
+        </Grid>
+    )
+}
+
+const ListComponent = ({ children }) => {
+    const classes = useStyles();
+    return (
+        <Box className={classes.root}>
+            <Grid container justify="space-between">
+                { children }
+            </Grid>
+        </Box>
+    )
+  };
+
+  export default ListComponent;
