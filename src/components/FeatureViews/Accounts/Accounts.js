@@ -29,7 +29,6 @@ import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
 import { simpleUser } from "queryFragments";
 import UserAvatar from "./UserAvatar";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import theme from "../../../theme/muiTheme";
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import secondaryTheme from "../../../theme/secondaryTheme";
@@ -242,26 +241,21 @@ const Accounts = () => {
 
     return (
         <Grid className="Accounts" item xs={12}>
-            <BackgroundPaper elevation={2}>
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
                             component={Link}
                             to="/form/student"
                             variant="outlined"
-                            // startIcon={<PersonAddIcon />}
                         >
                             new student
                         </ResponsiveButton>
                     </Grid>
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
                             component={Link}
                             to="/form/parent"
                             variant="outlined"
-                            // startIcon={<PersonAddIcon />}
                         >
                           new  parent 
                         </ResponsiveButton>
@@ -297,6 +291,7 @@ const Accounts = () => {
                                 <ResponsiveButton
                                     onClick={setView(true)}
                                     variant='outlined'
+                                    startIcon={<ListView />}
                                     >                                   
                                         List View
                                 </ResponsiveButton>
@@ -306,6 +301,7 @@ const Accounts = () => {
                                 <ResponsiveButton
                                     onClick={setView(false)}
                                     variant='outlined'
+                                    startIcon={<CardView />}
                                     >       
                                         Grid View
                                 </ResponsiveButton>
@@ -320,7 +316,6 @@ const Accounts = () => {
                         {isMobile || !viewToggle ? cardView : tableView}
                     </LoadingHandler>
                 </Grid>
-            </BackgroundPaper>
         </Grid>
     );
 };

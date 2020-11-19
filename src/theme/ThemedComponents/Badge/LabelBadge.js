@@ -4,12 +4,12 @@ import theme from "../../muiTheme";
 import { Typography } from "@material-ui/core";
 import PropTypes from "prop-types";
 
-export const LabelBadge = ({label, variant = "default", ...rest}) => {
+export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
     const colors = theme.colors;
 
     const badgeCategory = {
         "labelBadge": {
-            chipMinWidth: "96px",
+            padding: "4px, 20px",
             labelComponent: "body1",
         },
         "statusBadge": {
@@ -85,6 +85,13 @@ export const LabelBadge = ({label, variant = "default", ...rest}) => {
             chipColor: colors.statusRed,
             ...badgeCategory.statusRound,
         },
+        "round-count": {
+            chipColor: colors.buttonBlue,
+            ...badgeCategory.statusRound,
+            chipMinWidth: "16px",
+            height: "16px",
+            chipFontSize: "10px",
+        }
     }
 
     const badgeStyle = badgeType[variant];
@@ -95,13 +102,12 @@ export const LabelBadge = ({label, variant = "default", ...rest}) => {
                     minWidth: badgeStyle.chipMinWidth, 
                     backgroundColor: badgeStyle.chipColor, 
                     borderColor: badgeStyle.chipBorder, 
-                    borderRadius: badgeStyle.borderRadius,
-                    paddingRight: badgeStyle.paddingRight,
-                    paddingLeft: badgeStyle.paddingLeft,
+                    ...badgeStyle,
+                    ...style
                 }}
                 label={<Typography 
                                 variant={badgeStyle.labelComponent}
-                                style={{color: badgeStyle.labelColor}}
+                                style={{color: badgeStyle.labelColor, fontSize: badgeStyle.chipFontSize}}
                         >
                             {label}
                         </Typography>
@@ -111,7 +117,7 @@ export const LabelBadge = ({label, variant = "default", ...rest}) => {
 
 LabelBadge.propTypes = {
     label: PropTypes.string.isRequired,
-    type: PropTypes.oneOf([
+    variant: PropTypes.oneOf([
                             "default",
                             "outline",
                             "outline-gray",
@@ -123,6 +129,7 @@ LabelBadge.propTypes = {
                             "status-new",
                             "round-positive",
                             "round-warning",
-                            "round-negative"
+                            "round-negative",
+                            "round-count"
                         ]).isRequired,
 }

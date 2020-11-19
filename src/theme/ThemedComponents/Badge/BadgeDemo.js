@@ -148,6 +148,14 @@ const BadgeDemo = () => {
                                 <LabelBadge label="NEW" variant="status-new"/>
                             </Grid>
                         </Grid>
+                        <Grid container item justify="center" className={classes.row}>
+                            <Typography variant="h4">List count badge</Typography>
+                        </Grid>
+                        <Grid container item spacing={1} justify="center" className={classes.row}>
+                            <Grid item>
+                                <LabelBadge label="1" variant="round-count"/>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
         </Grid>

@@ -11,16 +11,18 @@ import NoListAlert from "components/OmouComponents/NoListAlert";
 import Moment from "react-moment";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 
 const today = dateTimeToDate(new Date());
 
 const paymentStatus = (numPaidCourses) => {
+	numPaidCourses = Number(numPaidCourses);
 	if (numPaidCourses > 3) {
-		return "good";
+		return "round-positive";
 	} else if (0 < numPaidCourses && numPaidCourses <= 3) {
-		return "warning";
+		return "round-warning";
 	}
-	return "bad";
+	return "round-negative";
 };
 
 export const GET_STUDENT_ENROLLMENTS = gql`
@@ -152,14 +154,9 @@ const StudentCourseViewer = ({studentID, current}) => {
 											</Typography>
 										</Grid>
 										<Grid item xs={1}>
-											<div
-												className={`sessions-left-chip ${paymentStatus(
-													enrollment.sessionsLeft ?
-														Number(enrollment.sessionsLeft) : 4
-												)}`}
-											>
-												{enrollment.sessionsLeft}
-											</div>
+											<LabelBadge 
+												label={enrollment.sessionsLeft}
+												variant={paymentStatus(enrollment.sessionsLeft)}/>
 										</Grid>
 									</Grid>
 								</Paper>
