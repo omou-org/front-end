@@ -102,33 +102,23 @@ const IdleLogout = () => {
       }
     `;
 
-    const [refreshToken, newToken] = useMutation(TOKEN_REFRESH);
+    const [refreshToken, newToken] = useMutation(TOKEN_REFRESH, 
+        {
+            onCompleted: (data) => {
+                (async () => {
+                    store.dispatch(await setToken(data["refreshToken"]["token"], true));
+                })();
+            }
+        });
 
     const resetToken = () => {
         const token = localStorage.getItem("token");
-        console.log({"token2": token});
         refreshToken({
             "variables" : {
                 "token": token
             }
-        }).then((result) => {
-            console.log({"mutation result" :  result["token"]});
-        });
-        // store.dispatch(setToken(refreshTokenPromise));
+        })
 
-        // const refreshTokenPromise = refreshToken({
-        //     "variables": {   
-        //         "token": token
-        //     }
-        // });
-        // try {
-        //     console.log({"result": refreshTokenPromise});
-        //     console.log({"x": newToken["token"]});
-        //     store.dispatch(setToken(refreshTokenPromise["token"], true));
-        // } catch(err) {
-        //     console.log(err);
-        // }
-        console.log({"new: ": localStorage.getItem("token")});
 
     };
 
@@ -146,7 +136,6 @@ const IdleLogout = () => {
     };
 
     async function handleOpen() {
-        console.log({"old token": localStorage.getItem("token")});
         setOpen(true);
         handleReset();
         setRemainingMsUntilPrompt(modalTimeout);
@@ -156,7 +145,6 @@ const IdleLogout = () => {
     const handleClose = () => {
         setOpen(false);
         resetToken();
-        console.log({"new token": localStorage.getItem("token")});
     };
 
     const {
