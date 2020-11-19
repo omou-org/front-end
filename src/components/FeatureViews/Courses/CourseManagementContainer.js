@@ -307,7 +307,7 @@ const CourseManagementContainer = () => {
   const [instructorsFilterValue, setInstructorFilterValue] = useState("");
 
   const handleChange = (event) => setSortByDate(event.target.value);
-
+//
   const { data, loading, error } = useQuery(GET_COURSES);
 
   if (loading) return <Loading />;
