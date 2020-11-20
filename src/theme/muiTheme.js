@@ -12,8 +12,6 @@ export const highlightColor = "#EBFAFF";
 export const errorRed = "#c0392b";
 export const activeColor = "#6FCF97";
 export const pastColor = "#BDBDBD";
-export const charcoal = "#333333";
-export const cloudy = "#C4C4C4";
 
 // Theme Colors
 export const omouBlue = "#43B5D9";
@@ -362,7 +360,7 @@ const theme = createMuiTheme({
     },
     MuiTableHead: {
       root: {
-        color: omouBlue
+        color: omouBlue,
       }
     },
     TableHeadSecondary: {
@@ -375,12 +373,16 @@ const theme = createMuiTheme({
       }
     },
     MuiTableCell: {
-      head: {
-        color: "inherit"
-      },
       root: {
         borderBottomColor: cloudy,
-        borderBottomWidth: "1px"
+        borderBottomWidth: "1px",
+      },
+      head: {
+        color: "inherit",
+        ...h4,
+      },
+      body: {
+        ...body1,
       }
     }
   },
