@@ -108,11 +108,20 @@ function createData(name, sessionsId, studentId) {
 const StudentFilterOrSortDropdown = ({ students }) => {
   const classes = useStyles();
   const [student, setStudent] = useState(students);
-  const [state, setState] = useState("");
+  const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
-  const handleChange = (event) => setState(event.target.value);
+  const handleChange = (event) => setValue(event.target.value);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleKeyDown = event => {
+    if(event.which === 13) {
+      if(!student.find(val => val === event.currentTarget.value)) {
+        setStudent(...student, event.currentTarget.value)
+      }
+      event.currentTarget.value = "" 
+    }
+    event.stopPropagation()
+  }
 
   return (
     <Grid item xs={3}>
@@ -121,7 +130,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
         labelId="student-management-sort-tab"
         id="student-management-sort-tab"
         displayEmpty
-        value={state}
+        value={value}
         open={open}
         onChange={handleChange}
         onOpen={handleOpen}
@@ -141,7 +150,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
           getContentAnchorEl: null,
         }}
       >
-        {state === "" ? <MenuItem
+        {value === "" ? <MenuItem
           ListItemClasses={{ selected: classes.menuSelected }}
           value=""
         >
@@ -175,6 +184,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
           </InputAdornment>
           ),
           disableUnderline: true,
+          onKeyDown: handleKeyDown
         }}
         
       />
