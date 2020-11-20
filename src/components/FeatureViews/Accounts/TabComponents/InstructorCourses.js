@@ -49,27 +49,27 @@ const InstructorCourses = ({ instructorID }) => {
       <Grid item xs={12}>
         <Grid className="accounts-table-heading" container>
           <Grid item xs={4}>
-            <Typography variant="h4" align="left" className="table-header">
+            <Typography align="left" className="table-header">
 				Course
             </Typography>
           </Grid>
           <Grid item xs={3}>
-            <Typography variant="h4" align="left" className="table-header">
+            <Typography align="left" className="table-header">
               Dates
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="h4" align="left" className="table-header">
+            <Typography align="left" className="table-header">
               Day
             </Typography>
           </Grid>
           <Grid item xs={2}>
-            <Typography variant="h4" align="left" className="table-header">
+            <Typography align="left" className="table-header">
               Time
             </Typography>
           </Grid>
           <Grid item xs={1}>
-            <Typography variant="h4" align="left" className="table-header">
+            <Typography align="left" className="table-header">
               Confirmed
             </Typography>
           </Grid>
@@ -99,10 +99,10 @@ const InstructorCourses = ({ instructorID }) => {
                 <Paper elevation={2} square>
                   <Grid container>
                     <Grid item xs={4}>
-                      <Typography variant="body2" align="left">{course.title}</Typography>
+                      <Typography align="left">{course.title}</Typography>
                     </Grid>
                     <Grid item xs={3}>
-                      <Typography variant="body1" align="left">
+                      <Typography align="left">
                         <Moment
                             format="MMM D YYYY"
                             date={course.schedule.start_date}
@@ -115,7 +115,7 @@ const InstructorCourses = ({ instructorID }) => {
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                      <Typography variant="body1" align="left">
+                      <Typography align="left">
                         <Moment
                             format="dddd"
                             date={course.schedule.start_date}
@@ -123,7 +123,7 @@ const InstructorCourses = ({ instructorID }) => {
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                      <Typography variant="body1" align="left">
+                      <Typography align="left">
                         <Moment
                             format="h:mm a"
                             date={
