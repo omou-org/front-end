@@ -67,16 +67,16 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                         <Grid item md={8} xs={12}>
                             <NavLink className={classes.linkUnderline} to={route}>
                                 <CardContent className="text">
-                                    <Typography align="left" component="h2"
-                                        gutterBottom variant="h6">
+                                    <Typography align="left" component="h3"
+                                        gutterBottom variant="h4">
                                         {user.name}
                                     </Typography>
-                                    <Typography align="left" component="p">
+                                    <Typography variant="body2" align="left" component="p">
                                         <LabelBadge 
                                             label={capitalizeString(user.accountType)}
                                             variant="outline-gray"/>
                                     </Typography>
-                                    <Typography>
+                                    <Typography variant="body1">
                                         <Grid className="card-content" container>
                                             <Grid align="left" item md={3} xs={2}>
                                                 <IDIcon height={22} width={22} />
