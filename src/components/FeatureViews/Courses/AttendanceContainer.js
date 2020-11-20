@@ -90,7 +90,7 @@ const AttendanceLegend = () => {
 const AttendanceContainer = () => {
     const classes = useStyles();
     const [isEditing, setIsEditing] = useState(false);
-    console.log(isEditing)
+
     return (
     <Grid container>
         <Grid item xs={12}>
