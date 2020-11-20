@@ -90,7 +90,7 @@ const AttendanceLegend = () => {
 const AttendanceContainer = () => {
     const classes = useStyles();
     const [isEditing, setIsEditing] = useState(false);
-
+    console.log(isEditing)
     return (
     <Grid container>
         <Grid item xs={12}>
@@ -119,7 +119,7 @@ const AttendanceContainer = () => {
           </Grid>
         </AccordionSummary>
         <AccordionDetails>
-          <AttendanceTable setIsEditing={setIsEditing}/>
+          <AttendanceTable setIsEditing={setIsEditing} editingState={isEditing}/>
         </AccordionDetails>
       </Accordion>
         </Grid>

@@ -258,7 +258,7 @@ query getAttendance($courseId: ID!) {
   
 
 
-const AttendanceTable = ({ setIsEditing }) => {
+const AttendanceTable = ({ setIsEditing, editingState }) => {
     const { id } = useParams();
     const classes = useStyles();
     const [editState, setEditState] = useState();
@@ -275,13 +275,14 @@ const AttendanceTable = ({ setIsEditing }) => {
           setAttendanceRecord(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: null }), {}))
           setIsEdit(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}));
           // setStudentAttendanceData(enrollments);
-          const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "Present" }), {});
+          const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "" }), {});
           const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id));
-          newData.map(row => {
-            const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
-            const filteredArray = filteredKey.reduce((obj, key) => ({ ...obj, [key]: "" }), []);
-            setStudentAttendanceData(filteredArray)
-          });
+          // newData.map(row => {
+          //   const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
+          //   const filteredArray = filteredKey.reduce((obj, key) => ({ ...obj, [key]: "" }), []);
+          //   setStudentAttendanceData(filteredArray)
+          // });
+          setStudentAttendanceData(newData)
         },
     });
 
@@ -304,7 +305,7 @@ const AttendanceTable = ({ setIsEditing }) => {
 
     const handleClick = (e) => {
       const attendanceValue = e.currentTarget.value;
-      const studentId = e.currentTarget.getAttribute("data-studentId");
+      const arrayIndex = e.currentTarget.getAttribute("data-arrayIndex");
       const sessionId = e.currentTarget.getAttribute("data-keys");
       if(attendanceValue === "PRESENT") {
         setColor('#6CE086')
@@ -313,16 +314,21 @@ const AttendanceTable = ({ setIsEditing }) => {
       } else {
         setColor('#FF6766')
       }
-      setStudentAttendanceData({...studentAttendanceData, [sessionId]: attendanceValue})
+      const arrOfObj = { ...studentAttendanceData[arrayIndex], [sessionId]: attendanceValue }
+      let newArr = [...studentAttendanceData]
+      newArr[arrayIndex] = arrOfObj
+      // console.log(newArr)
+      // console.log([...studentAttendanceData, ])
+      setStudentAttendanceData(newArr)
     }
 
     const studentsFullName = enrollments.map(({student}) => fullName(student.user));
-    const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "" }), {});
-    const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id));
+    // const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "" }), {});
+    // const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id));
 
 
     // console.log(newData)
-    console.log(color)
+    // console.log(color)
     // console.log(newClassData)
     // console.log(isEdit);
     // console.log(studentAttendanceData)
@@ -354,27 +360,30 @@ const AttendanceTable = ({ setIsEditing }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {newData.map(row => {
+          {studentAttendanceData.map((row, i) => {
             const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
             const filteredArray = filteredKey.reduce((obj, key) => ({ ...obj, [key]: "" }), []);
+            // console.log(filteredKey)
             return (
-            <TableRow key={row.studentId}>
+              <TableRow key={row.studentId}>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-                {filteredKey.map(keys => (
-                <TableCell align="right"id={row.studentId}>
-                  {/* {console.log(studentAttendanceData[keys])} */}
-                  {row[keys] === null ? null : (isEdit[keys]) ? 
-                  (<ButtonGroup>
-                    <Button data-studentId={row.studentId} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: '#6CE086'}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
-                    <Button data-studentId={row.studentId} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: '#FFDD59'}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
-                    <Button data-studentId={row.studentId} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: '#FF6766'}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
-                  </ButtonGroup>) 
-                  :
-                  (studentAttendanceData[keys] === "PRESENT" || "TARDY" || "ABSENT" ? <Button style={{backgroundColor: `${studentAttendanceData[keys] === "PRESENT" ? '#6CE086' : studentAttendanceData[keys] === "TARDY" ? '#FFDD59' : studentAttendanceData[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{studentAttendanceData[keys]}</Button> : <div>{studentAttendanceData[keys]}</div>)
+                {filteredKey.map(keys => {
+              // console.log(isEdit[keys]);
+                  return <TableCell align="right"id={row.studentId}>
+                  {row[keys] === "" ? "" : ((row[keys] === "PRESENT" && !editingState) || (row[keys] === "TARDY" && !editingState) || (row[keys] === "ABSENT" && !editingState) ? (<Button style={{backgroundColor: `${row[keys] === "PRESENT" ? '#6CE086' : row[keys] === "TARDY" ? '#FFDD59' : row[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{row[keys]}</Button>) : null)}
+                  {
+                    isEdit[keys] && (
+                      <ButtonGroup>
+            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: '#6CE086'}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: '#FFDD59'}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: '#FF6766'}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
+    </ButtonGroup>
+                    )
                   }
-                </TableCell>))}
+                  </TableCell>
+                })}
             </TableRow>
             )
           })}
@@ -396,3 +405,18 @@ const AttendanceTable = ({ setIsEditing }) => {
 }
 
 export default AttendanceTable;
+
+// Goes between newDataMap
+// {filteredKey.map(keys => (
+//   <TableCell align="right"id={row.studentId}>
+//     {/* {console.log(studentAttendanceData[keys])} */}
+//     {row[keys] === null ? null : (isEdit[keys]) ? 
+//     (<ButtonGroup>
+//       <Button data-studentId={row.studentId} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: '#6CE086'}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
+//       <Button data-studentId={row.studentId} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: '#FFDD59'}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
+//       <Button data-studentId={row.studentId} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: '#FF6766'}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
+//     </ButtonGroup>) 
+//     :
+//     (studentAttendanceData[keys] === "PRESENT" || "TARDY" || "ABSENT" ? <Button style={{backgroundColor: `${studentAttendanceData[keys] === "PRESENT" ? '#6CE086' : studentAttendanceData[keys] === "TARDY" ? '#FFDD59' : studentAttendanceData[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{studentAttendanceData[keys]}</Button> : <div>{studentAttendanceData[keys]}</div>)
+//     }
+//   </TableCell>))}
