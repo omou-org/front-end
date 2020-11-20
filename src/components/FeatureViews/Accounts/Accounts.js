@@ -160,10 +160,9 @@ const Accounts = () => {
     }, []);
 
     const classes = useStyles();
-    const tableView = useMemo(() => (<ThemeProvider theme={theme}>
-        <ThemeProvider theme={theme}>
+    const tableView = useMemo(() => (
             <Table className="AccountsTable" resizable="false">
-                <TableHead className={classes.secondaryTableHead}>
+                <TableHead>
                     <TableRow>
                         <TableCell >
                             Name
@@ -224,9 +223,7 @@ const Accounts = () => {
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>
-        </ThemeProvider>
-    </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
+            </Table>), [displayUsers, isAdmin]);
 
     const cardView = useMemo(() => (
         <Grid alignItems="center" className="card-container" container
