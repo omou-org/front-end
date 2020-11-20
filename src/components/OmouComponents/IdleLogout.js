@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
 
 import { useDispatch }  from "react-redux";
 import { logout } from "actions/authActions";
@@ -82,7 +82,7 @@ const IdleLogout = () => {
         history.push("/login");
     }, [dispatch, history]);
 
-    let timeout = 5000 ;//1080000;
+    let timeout = 1080000;
     const modalTimeout = 300000;
     const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(timeout);
 
@@ -90,16 +90,16 @@ const IdleLogout = () => {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
     const [modalStyle] = useState(getModalStyle);
-    const [open, setOpen] = useState(false);
-
+    const [openModal, setOpenModal] = useState(false);
+    const sessionTimeoutRef = useRef(null);
 
     const TOKEN_REFRESH = gql`
-    mutation refreshToken($token:String) {
-        refreshToken(token:$token){
-          token
-          refreshExpiresIn
+        mutation refreshToken($token:String) {
+            refreshToken(token:$token){
+            token
+            refreshExpiresIn
+            }
         }
-      }
     `;
 
     const [refreshToken, newToken] = useMutation(TOKEN_REFRESH, 
@@ -118,17 +118,29 @@ const IdleLogout = () => {
                 "token": token
             }
         })
-
-
+    };
+    
+    const refreshTokenAfter15Minutes = () => {
+        return new Promise(resolve => {
+            setInterval(() => {
+                resolve(() => {
+                    const token = localStorage.getItem("token");
+                    refreshToken({
+                        "variables": {
+                            "token": token
+                        }
+                    });
+                });
+            }, 900000);
+        });
     };
 
-    function logoutAfter2Minutes() {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve(logoutAndCloseModal());
-            }, modalTimeout);
-        });
-    }
+    useEffect(() => {
+        (async () => {
+            await refreshTokenAfter15Minutes();
+        })();
+
+    });
     
     const logoutAndCloseModal = () => {
         handleClose();
@@ -136,14 +148,16 @@ const IdleLogout = () => {
     };
 
     async function handleOpen() {
-        setOpen(true);
+        setOpenModal(true);
         handleReset();
         setRemainingMsUntilPrompt(modalTimeout);
-        await logoutAfter2Minutes();
+
+        sessionTimeoutRef.current = setTimeout(logoutAndCloseModal, 5 * 1000);
     }
     
     const handleClose = () => {
-        setOpen(false);
+        clearInterval(sessionTimeoutRef.current);
+        setOpenModal(false);
         resetToken();
     };
 
@@ -186,7 +200,7 @@ const IdleLogout = () => {
             { (remainingMsUntilPrompt === 0) && handleOpen() }
         
             <Modal
-                open={open}
+                open={openModal}
                 onClose={handleClose}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
