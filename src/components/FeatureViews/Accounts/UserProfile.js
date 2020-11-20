@@ -146,6 +146,15 @@ const userTabs = {
 	],
 };
 
+const GET_ACCOUNT_NOTES = `
+	notes(userId: $ownerID) {
+		id
+		body
+		complete
+		important
+		timestamp
+		title
+	}`;
 
 const QUERIES = {
 	"student": gql`query StudentInfoQuery($ownerID: ID!) {
@@ -160,10 +169,11 @@ const QUERIES = {
 			  lastName
 			  email
 			}
-			
 		  }
 		}
-	}`,
+		${GET_ACCOUNT_NOTES}
+	}
+	`,
 	"parent": gql`
 	query ParentInfoQuery($ownerID: ID!) {
 		userInfo(userId: $ownerID) {
@@ -179,6 +189,7 @@ const QUERIES = {
 			}
 		  }
 		}
+		${GET_ACCOUNT_NOTES}
 	  }`,
 	"instructor": gql`query InstructorInfoQuery($ownerID: ID!) {
 		userInfo(userId: $ownerID) {
@@ -206,6 +217,7 @@ const QUERIES = {
 			}
 		  }
 		}
+		${GET_ACCOUNT_NOTES}
 	  }`,
 	"admin": gql`
 	  query AdminInfoQuery($ownerID: ID!) {
@@ -223,11 +235,9 @@ const QUERIES = {
 			}
 		  }
 		}
+		${GET_ACCOUNT_NOTES}
 	  }`
 }
-
-
-
 
 const UserProfile = () => {
 	
@@ -254,20 +264,22 @@ const UserProfile = () => {
 		setDisplayTabs(userTabs[accountType]);
 	}, [accountType]);
 
-
-
 	const { loading, error, data } = useQuery(QUERIES[accountType], {
 		variables: { ownerID: accountID },
 	})
 
-	if (loading ) return null
+	if (loading ) return null;
+
 	if (error ) return <Redirect to="/PageNotFound" />;
+
+	const { notes } = data;
+	const numImportantNotes = notes.filter(note => note.important).length;
+	const importantNotesBadge = numImportantNotes > 0 ? numImportantNotes : null
 
 	const handleTabChange = (_, newTabIndex) => {
 		setTabIndex(newTabIndex);
 	};
 
-	
 	const tabs = () => {
 
 		return (
@@ -286,7 +298,7 @@ const UserProfile = () => {
 									key={tab.tab_id}
 									label={
 										<>
-											{tab.icon} {tab.tab_heading}
+											{tab.icon}{tab.tab_heading}{importantNotesBadge}
 										</>
 									}
 								/>
