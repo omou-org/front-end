@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 
 import { useDispatch }  from "react-redux";
 import { logout } from "actions/authActions";
 import { closeRegistrationCart } from "components/OmouComponents/RegistrationUtils";
-import Navigation from "../Navigation/Navigation";
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {useIdleTimer} from 'react-idle-timer';
@@ -20,14 +19,10 @@ import gql from "graphql-tag";
 
 import { useMutation} from "@apollo/react-hooks";
 
-function rand() {
-    return Math.round(Math.random() * 20) - 10;
-}
 
-
-function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
+function getModalPosition() {
+    const top = 50;
+    const left = 50;
   
     return {
         top: `${top}%`,
@@ -81,15 +76,18 @@ const IdleLogout = () => {
         dispatch(logout());
         history.push("/login");
     }, [dispatch, history]);
+    
+    // Time(ms) before modal pops up
+    const idleTimeout = 1080000; 
 
-    let timeout = 1080000;
-    const modalTimeout = 300000;
-    const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(timeout);
+    // Time(ms) user has to click that they're still here before they're logged out
+    const modalTimeout = 180000;
+
+    const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(idleTimeout);
 
 
     const classes = useStyles();
-    // getModalStyle is not a pure function, we roll the style only on the first render
-    const [modalStyle] = useState(getModalStyle);
+    const [modalPosition] = useState(getModalPosition);
     const [openModal, setOpenModal] = useState(false);
     const sessionTimeoutRef = useRef(null);
 
@@ -165,22 +163,23 @@ const IdleLogout = () => {
         reset,
         getRemainingTime,
     } = useIdleTimer({
-        timeout
+        "timeout": idleTimeout
     });
     
     const handleReset = () => reset();
     
     useEffect(() => {
         setRemainingMsUntilPrompt(getRemainingTime());
-    
+        
+        // Only tracks intervals every second (1000ms) in order to not block thread... change with caution
         setInterval(() => {
             setRemainingMsUntilPrompt(getRemainingTime());
         }, 1000);
     }, []);
 
-    const body = () => {
+    const ModalBody = () => {
         return (
-            <div style={modalStyle} 
+            <div style={modalPosition} 
                 className={classes.Idle}
                 data-cy="activityCheckModal">
                 <p id="simple-modal-description">
@@ -205,7 +204,7 @@ const IdleLogout = () => {
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
-                {body()}
+                <ModalBody />
             </Modal>
 
         </div>
