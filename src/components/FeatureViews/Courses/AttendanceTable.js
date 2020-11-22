@@ -209,6 +209,7 @@ const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, se
   const classes = useStyles();
   const handleOpen = e => {
     const sessionId = e.currentTarget.getAttribute("data-session-id")
+    console.log(e.currentTarget)
       setAttendanceRecord({[sessionId]: e.currentTarget})
   };
 
@@ -242,7 +243,7 @@ const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, se
       data-session-id={id}
     >
       <MenuItem onClick={handleClose} value="sort" data-session-id={id}>Sort</MenuItem>
-      <MenuItem onClick={handleClose} value="edit" data-session-id={id}>Edit</MenuItem>
+      <MenuItem onClick={handleClose} value="beginEdit" data-session-id={id}>Edit</MenuItem>
     </Menu>
     </>
   )
@@ -300,7 +301,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         if(isEdit[sessionId] === false) {
           setIsEdit({...isEdit, [sessionId]: true})
           setIsEditing(true);
-          setEditState({...editState, [sessionId]: "edit"})
+          setEditState({...editState, [sessionId]: "willEdit"})
         } else {
           setIsEdit({...isEdit, [sessionId]: false});
           setIsEditing(false);
@@ -324,7 +325,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       newArr[arrayIndex] = arrOfObj
       if(attendanceValue !== "") {
         setStudentAttendanceData(newArr)
-        setEditState({...editState, [sessionId]: "edit"})
+        setEditState({...editState, [sessionId]: "edited"})
       }
     }
 
@@ -336,7 +337,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     // console.log(isEdit);
     // console.log(studentAttendanceData)
     // console.log(sessions)
-    console.log(editState)
+    // console.log(editState)
     // console.log(attendanceRecord)
   return (
     <TableContainer className={classes.table}>
@@ -351,7 +352,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       return (
         <TableCell className={classes.tableCell}>
           {`Session ${i + 1} (${startingDate})`}
-        {editState[id] === "noSelect" || editState[id] === "edit" ? <Checkbox
+        {editState[id] === "noSelect" || editState[id] === "beginEdit" || editState[id] === "willEdit" || editState[id] === "edited" ? 
+        <Checkbox
         checked={isEdit[id]}
         onChange={handleEdit}
         checkedIcon={<Check fontSize="small" style={{color: 'white'}} />}
@@ -366,7 +368,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentAttendanceData.map((row, i) => {
+          {studentAttendanceData.map((row, i, arr) => {
             const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
             const filteredArray = filteredKey.reduce((obj, key) => ({ ...obj, [key]: "" }), []);
             return (
@@ -375,14 +377,17 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                 {row.name}
               </TableCell>
                 {filteredKey.map(keys => {
+                  // console.log(editState[keys])
+                  // console.log(isEdit[keys])
+                  console.log(arr[i])
                   return <TableCell align="right"id={row.studentId}>
-                  {row[keys] === "" ? "" : ((row[keys] === "PRESENT" && editState[keys] === "done") || (row[keys] === "TARDY" && editState[keys] === "done") || (row[keys] === "ABSENT" && editState[keys] === "done") ? (<Button style={{backgroundColor: `${row[keys] === "PRESENT" ? '#6CE086' : row[keys] === "TARDY" ? '#FFDD59' : row[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{row[keys]}</Button>) : null)}
+                  {row[keys] === "" ? "" : ((row[keys] === "PRESENT" && editState[keys] === "done" || editState[keys] === "beginEdit") || (row[keys] === "TARDY" && editState[keys] === "done") || (row[keys] === "ABSENT" && editState[keys] === "done") ? (<Button style={{backgroundColor: `${row[keys] === "PRESENT" ? '#6CE086' : row[keys] === "TARDY" ? '#FFDD59' : row[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{row[keys]}</Button>) : null)}
                   {
                     isEdit[keys] && (
                       <ButtonGroup>
-            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: '#6CE086'}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: '#FFDD59'}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: '#FF6766'}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
+            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "PRESENT" ? '#6CE086' : '#C9FFD5'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "TARDY" ? '#FFDD59' : '#FFF6D4'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "ABSENT" ? '#FF6766' : '#FFD8D8'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
     </ButtonGroup>
                     )
                   }
