@@ -18,6 +18,7 @@ import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
+import { TableHeadSecondary } from "theme/ThemedComponents/Table/TableHeadSecondary";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -34,13 +35,6 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     width: "3vw",
-  },
-  variablesInfo: {
-    width: "15vw",
-    color: "#666666",
-    fontFamily: "Roboto",
-    fontWeight: 500,
-    fontSize: ".875rem",
   },
   menuSelected: {
     "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
@@ -181,23 +175,23 @@ const Studentenrollment = ({
   return (
     <Grid item xs={12}>
       <TableContainer>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
+        <Table className={classes.table}>
+          <TableHeadSecondary>
             <TableRow>
-              <TableCell className={classes.variablesInfo} align="left">
+              <TableCell>
                 Student
               </TableCell>
-              <TableCell className={classes.variablesInfo} align="left">
+              <TableCell>
                 Parent
               </TableCell>
-              <TableCell className={classes.variablesInfo} align="left">
+              <TableCell>
                 Phone
               </TableCell>
               <TableCell />
               <TableCell />
               <TableCell />
             </TableRow>
-          </TableHead>
+          </TableHeadSecondary>
           <TableBody>
             {enrollmentList
               .sort((firstStudent, secondStudent) =>
