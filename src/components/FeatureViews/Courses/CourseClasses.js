@@ -14,7 +14,6 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import moment from "moment";
 import Loading from "../../OmouComponents/Loading";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import BackButton from "../../OmouComponents/BackButton";
 import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
@@ -161,13 +160,12 @@ const CourseClasses = () => {
           }
         }
       }
-       ${
-         accountType === "PARENT"
-           ? `parent(email: $email) {
+       ${accountType === "PARENT"
+      ? `parent(email: $email) {
         studentList
       }`
-           : ""
-       }
+      : ""
+    }
     }
   `;
 
@@ -225,10 +223,10 @@ const CourseClasses = () => {
   };
 
   const tabSelection = () => {
-    switch(index) {
+    switch (index) {
       case 0:
         return classes.chromeTabStart;
-      case tabs.legth - 1: 
+      case tabs.legth - 1:
         return classes.chromeTabEnd;
       default:
         return classes.chromeTab;
@@ -237,171 +235,169 @@ const CourseClasses = () => {
 
   return (
     <Grid item xs={12}>
-      <BackgroundPaper elevation={2}>
-        <BackButton />
-        <Hidden xsDown>
-          <hr />
-        </Hidden>
-        <Grid container>
-          <Grid item xs={6}>
-            <Typography
-              align="left"
-              className="heading"
-              variant="h3"
-              style={{ marginTop: ".65em" }}
-            >
-              {title}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <IconButton
-              className={classes.editcoursebutton}
-              size="small"
-              component={Link}
-              to={`/registration/form/course_details/${id.id}`}
-            >
-              <EditIcon />
-            </IconButton>
-          </Grid>
+      <BackButton />
+      <Hidden xsDown>
+        <hr />
+      </Hidden>
+      <Grid container>
+        <Grid item xs={6}>
+          <Typography
+            align="left"
+            className="heading"
+            variant="h3"
+            style={{ marginTop: ".65em" }}
+          >
+            {title}
+          </Typography>
         </Grid>
-        <Grid container justify="flex-start" style={{ marginTop: "2.5em" }}>
-          <Grid item xs={2} md={4} lg={3} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Date
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >{`${startingDate} - ${endingDate}`}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} md={4} lg={3} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Time
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}
-            </Typography>
-          </Grid>
+        <Grid item xs={6}>
+          <IconButton
+            className={classes.editcoursebutton}
+            size="small"
+            component={Link}
+            to={`/registration/form/course_details/${id.id}`}
+          >
+            <EditIcon />
+          </IconButton>
         </Grid>
-        <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
-          <Grid item xs={2} md={4} lg={2} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Instructor
+      </Grid>
+      <Grid container justify="flex-start" style={{ marginTop: "2.5em" }}>
+        <Grid item xs={2} md={4} lg={3} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Date
             </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >{`${firstName} ${lastName}`}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} md={4} lg={2} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Grade
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >
-              {gradeLvl(academicLevel)}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} md={4} lg={2} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Subject
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >
-              {name}
-            </Typography>
-          </Grid>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >{`${startingDate} - ${endingDate}`}
+          </Typography>
         </Grid>
+        <Grid item xs={2} md={4} lg={3} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Time
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
+        <Grid item xs={2} md={4} lg={2} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Instructor
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >{`${firstName} ${lastName}`}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} md={4} lg={2} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Grade
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >
+            {gradeLvl(academicLevel)}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} md={4} lg={2} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Subject
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >
+            {name}
+          </Typography>
+        </Grid>
+      </Grid>
 
-        <Grid container style={{ marginTop: "2.5em" }}>
-          <Grid item xs={12} sm={12}>
-            <ThemeProvider theme={theme}>
-                <Toolbar disableGutters>
-                  <ChromeTabs
-                    className={
-                      tabSelection()
-                    }
-                    tabs={
-                      comparison(data.parent?.studentList, data.enrollments)
-                        ? tabs
-                        : [{ label: "About Course" }]
-                    }
-                    tabStyle={{
-                      bgColor: "#ffffff",
-                      selectedBgColor: "#EBFAFF",
-                      color: "rgba(102, 102, 102, 0.87)",
-                      topMargin: "1.1em",
-                      leftValue: 0,
-                      rightValue: 0,
-                    }}
-                    tabProps={{
-                      disableRipple: true,
-                    }}
-                    value={index}
-                    onChange={handleChange}
-                  />
-                </Toolbar>
-                <Divider classes={{ root: classes.dividerColor }} />
-              <Grid container>
-                <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
-                  <ClassInfo description={description} />
-                </TabPanel>
-                <TabPanel index={1} value={index}>
-                  <Announcements
-                    announcementsData={getAnnouncements.data.announcements}
-                    loggedInUser={data.accountSearch}
-                  />
-                </TabPanel>
-                <TabPanel index={2} value={index}>
-                  <ClassEnrollmentList
-                    enrollmentList={enrollmentSet}
-                    loggedInUser={data.accountSearch}
-                  />
-                </TabPanel>
-                <TabPanel index={3} value={index}>
-                  <ClassSessionContainer
-                    sessionList={sessionSet}
-                    loggedInUser={data.accountSearch}
-                  />
-                </TabPanel>
-              </Grid>
-            </ThemeProvider>
-          </Grid>
+      <Grid container style={{ marginTop: "2.5em" }}>
+        <Grid item xs={12} sm={12}>
+          <ThemeProvider theme={theme}>
+            <Toolbar disableGutters>
+              <ChromeTabs
+                className={
+                  tabSelection()
+                }
+                tabs={
+                  comparison(data.parent?.studentList, data.enrollments)
+                    ? tabs
+                    : [{ label: "About Course" }]
+                }
+                tabStyle={{
+                  bgColor: "#ffffff",
+                  selectedBgColor: "#EBFAFF",
+                  color: "rgba(102, 102, 102, 0.87)",
+                  topMargin: "1.1em",
+                  leftValue: 0,
+                  rightValue: 0,
+                }}
+                tabProps={{
+                  disableRipple: true,
+                }}
+                value={index}
+                onChange={handleChange}
+              />
+            </Toolbar>
+            <Divider classes={{ root: classes.dividerColor }} />
+            <Grid container>
+              <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
+                <ClassInfo description={description} />
+              </TabPanel>
+              <TabPanel index={1} value={index}>
+                <Announcements
+                  announcementsData={getAnnouncements.data.announcements}
+                  loggedInUser={data.accountSearch}
+                />
+              </TabPanel>
+              <TabPanel index={2} value={index}>
+                <ClassEnrollmentList
+                  enrollmentList={enrollmentSet}
+                  loggedInUser={data.accountSearch}
+                />
+              </TabPanel>
+              <TabPanel index={3} value={index}>
+                <ClassSessionContainer
+                  sessionList={sessionSet}
+                  loggedInUser={data.accountSearch}
+                />
+              </TabPanel>
+            </Grid>
+          </ThemeProvider>
         </Grid>
-      </BackgroundPaper>
+      </Grid>
     </Grid>
   );
 };
