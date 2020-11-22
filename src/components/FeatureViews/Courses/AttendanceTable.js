@@ -336,7 +336,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     // console.log(newClassData)
     // console.log(isEdit);
     // console.log(studentAttendanceData)
-    // console.log(sessions)
+    console.log(sessions)
     // console.log(editState)
     // console.log(attendanceRecord)
   return (
@@ -347,7 +347,9 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
             <TableCell style={{color: 'black'}}>
               <StudentFilterOrSortDropdown students={studentsFullName}/>
             </TableCell>
-            {sessions.map(({ startDatetime, id }, i) => {
+            {sessions
+            .sort((a,b) => a.id - b.id)
+            .map(({ startDatetime, id }, i) => {
       const startingDate = moment(startDatetime).calendar();
       return (
         <TableCell className={classes.tableCell}>
@@ -370,16 +372,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         <TableBody>
           {studentAttendanceData.map((row, i, arr) => {
             const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
-            const filteredArray = filteredKey.reduce((obj, key) => ({ ...obj, [key]: "" }), []);
             return (
               <TableRow key={row.studentId}>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
                 {filteredKey.map(keys => {
-                  // console.log(editState[keys])
-                  // console.log(isEdit[keys])
-                  console.log(arr[i])
                   return <TableCell align="right"id={row.studentId}>
                   {row[keys] === "" ? "" : ((row[keys] === "PRESENT" && editState[keys] === "done" || editState[keys] === "beginEdit") || (row[keys] === "TARDY" && editState[keys] === "done") || (row[keys] === "ABSENT" && editState[keys] === "done") ? (<Button style={{backgroundColor: `${row[keys] === "PRESENT" ? '#6CE086' : row[keys] === "TARDY" ? '#FFDD59' : row[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{row[keys]}</Button>) : null)}
                   {
