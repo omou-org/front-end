@@ -55,7 +55,7 @@ const StudentCourseViewer = ({studentID, current}) => {
 		return <Loading/>
 	}
 	if (error) {
-		return <Typography>
+		return <Typography variant="h3">
 			There's been an error! Error: {error.message}
 		</Typography>
 	}
@@ -75,27 +75,27 @@ const StudentCourseViewer = ({studentID, current}) => {
 		<>
 			<Grid className="accounts-table-heading" container>
 				<Grid item xs={4}>
-					<Typography align="left" className="table-header">
+					<Typography variant="h4" align="left" className="table-header">
 						Course
 					</Typography>
 				</Grid>
 				<Grid item xs={3}>
-					<Typography align="left" className="table-header">
+					<Typography variant="h4" align="left" className="table-header">
 						Dates
 					</Typography>
 				</Grid>
 				<Grid item xs={2}>
-					<Typography align="left" className="table-header">
+					<Typography variant="h4" align="left" className="table-header">
 						Class Day(s)
 					</Typography>
 				</Grid>
 				<Grid item xs={2}>
-					<Typography align="left" className="table-header">
+					<Typography variant="h4" align="left" className="table-header">
 						Time
 					</Typography>
 				</Grid>
 				<Grid item xs={1}>
-					<Typography align="left" className="table-header">
+					<Typography variant="h4" align="left" className="table-header">
 						Status
 					</Typography>
 				</Grid>
@@ -115,12 +115,12 @@ const StudentCourseViewer = ({studentID, current}) => {
 								<Paper square>
 									<Grid container>
 										<Grid item xs={4}>
-											<Typography align="left" className="accounts-table-text">
+											<Typography variant="body2" align="left" className="accounts-table-text">
 												{enrollment.course.title}
 											</Typography>
 										</Grid>
 										<Grid item xs={3}>
-											<Typography align="left" className="accounts-table-text">
+											<Typography variant="body1" align="left" className="accounts-table-text">
 												<Moment
 													format="MMM D YYYY"
 													date={enrollment.course.startDate}
@@ -133,7 +133,7 @@ const StudentCourseViewer = ({studentID, current}) => {
 											</Typography>
 										</Grid>
 										<Grid item xs={2}>
-											<Typography align="left" className="accounts-table-text">
+											<Typography variant="body1" align="left" className="accounts-table-text">
 												<Moment
 													format="dddd"
 													date={enrollment.course.startDate}
@@ -141,7 +141,7 @@ const StudentCourseViewer = ({studentID, current}) => {
 											</Typography>
 										</Grid>
 										<Grid item xs={2}>
-											<Typography align="left" className="accounts-table-text">
+											<Typography variant="body1" align="left" className="accounts-table-text">
 												<Moment
 													format="h:mm a"
 													date={`${enrollment.course.startDate}T${enrollment.course.startTime}`}

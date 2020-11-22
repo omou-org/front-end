@@ -36,10 +36,10 @@ const Bio = ({"background": {bio, experience, languages, subjects}}) => {
 					item
 					md={6}
 					xs={12}>
-					<Typography className="bioHeader">
+					<Typography variant="h4" className="bioHeader">
 						Biography
 					</Typography>
-					<Typography className="bioBody">
+					<Typography variant="h6" className="bioBody">
 						{bio}
 					</Typography>
 				</Grid>

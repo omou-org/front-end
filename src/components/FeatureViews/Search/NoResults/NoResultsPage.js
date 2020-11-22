@@ -26,11 +26,6 @@ const useStyles = makeStyles({
 		"display": "inline-block",
 		"text-align": "left"
 	},
-	"suggestionHeader": {
-		"fontSize": "32px",
-		"fontWeight": "500"
-
-	},
 	"popularHeader": {
 		"padding-top": "20px",
 		"fontSize": "32px",
@@ -51,18 +46,23 @@ const NoResultsPage = () => {
 					<BackButton />
 					<hr />
 					<div className={classes.center}>
-						<Typography variant={"h3"} style={{ paddingBottom: "20px" }} data-cy="no-results-header">Sorry, no results were found</Typography>
+						<Typography variant="h2" align="center" style={{ paddingBottom: "20px" }} data-cy="no-results-header">Sorry, no results were found</Typography>
 
-						<div className={classes.left}>
-							<Typography className={classes.suggestionHeader}>Search suggestions</Typography>
-							<Typography variant={"body1"}>
+						<div>
+							<Typography align="center" variant="h3" className={classes.suggestionHeader}>Search suggestions</Typography>
+							<Typography variant="body1" align="center">
+								<br />
 								Check your spelling
 								<br />
 								Try more general words
+								<br />
+								<br />
 							</Typography>
-							<Typography className={classes.popularHeader}>Popular pages</Typography>
-							<Typography variant={"h6"}>
+							<Typography variant="h3" align="center">Popular pages</Typography>
+							<Typography variant="h4" align="center">
+								<br />
 								<Link href="/scheduler" data-cy="schedulerLink" style={{ "borderBottom": "2px solid currentColor" }}>Scheduler</Link>
+								<br />
 								<br />
 								<Link href={"/registration"} style={{ "borderBottom": "2px solid currentColor" }}>Registration Catalogue</Link>
 							</Typography>
