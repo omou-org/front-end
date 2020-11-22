@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from "react";
-import {useSelector} from "react-redux";
+import React, { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Chip from "@material-ui/core/Chip";
@@ -8,7 +8,7 @@ import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Notes from "../Notes/Notes";
-import Paper from "@material-ui/core/Paper";
+import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
@@ -19,18 +19,18 @@ import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 
 import "./registration.scss";
-import {Link, useRouteMatch} from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import BackButton from "../../OmouComponents/BackButton.js";
 import Loading from "components/OmouComponents/Loading";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
 import UserAvatar from "../Accounts/UserAvatar";
-import {weeklySessionsParser} from "components/Form/FormUtils";
-import {useQuery} from "@apollo/react-hooks";
+import { weeklySessionsParser } from "components/Form/FormUtils";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import {SIMPLE_COURSE_DATA} from "queryFragments";
-import {fullName, USER_TYPES} from "utils";
+import { SIMPLE_COURSE_DATA } from "queryFragments";
+import { fullName, USER_TYPES } from "utils";
 
 export const GET_COURSE_DETAILS = gql`
 	query CourseDetails($courseId: ID!){
@@ -77,15 +77,15 @@ const RegistrationCourse = () => {
 	const classes = useStyles();
 
 	const {
-		params: {courseID},
+		params: { courseID },
 	} = useRouteMatch();
 	const isAdmin =
-		useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
+		useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
 
 	const [activeTab, setActiveTab] = useState(0);
 
-	const {data, loading, error} = useQuery(GET_COURSE_DETAILS, {
-		variables: {courseId: courseID}
+	const { data, loading, error } = useQuery(GET_COURSE_DETAILS, {
+		variables: { courseId: courseID }
 	});
 
 	const handleTabChange = useCallback((_, newTab) => {
@@ -93,7 +93,7 @@ const RegistrationCourse = () => {
 	}, []);
 
 	if (loading) {
-		return <Loading/>
+		return <Loading />
 	}
 	if (error) {
 		return <Typography>
@@ -117,7 +117,7 @@ const RegistrationCourse = () => {
 	} = data;
 
 	const hasImportantNotes = Object.values(courseNotes || {}).some(
-		({important}) => important
+		({ important }) => important
 	);
 
 	const numImportantNotes = Object.values(courseNotes || {}).filter(
@@ -128,88 +128,86 @@ const RegistrationCourse = () => {
 
 	return (
 		<Grid className="registrationCourse" item xs={12}>
-			<Paper className="paper content" elevation={2}>
-				<Grid container justify="space-between">
-					<Grid item sm={3}>
-						<BackButton/>
-					</Grid>
-					<Grid item sm={2}/>
+			<Grid container justify="space-between">
+				<Grid item sm={3}>
+					<BackButton />
 				</Grid>
-				<Divider className="top-divider"/>
-				<Grid item lg={12}>
-					<RegistrationActions courseTitle={title}/>
-				</Grid>
-				<div className="course-heading">
-					<Typography align="left" variant="h3">
-						{title}
-						{isAdmin && (
-							<ResponsiveButton 
-								className="button"
-								variant='outlined'
-								component={Link}
-								to={`/registration/form/course_details/${courseID}`}
-							>
-								edit course
-							</ ResponsiveButton>
-						)}
-					</Typography>
-					<div className="date">
-						<CalendarIcon align="left" className="icon"/>
-						<Typography align="left" className="sessions-text">
-							<Moment format="MMM D YYYY" date={startDate}/>
-							{" - "}
-							<Moment format="MMM D YYYY" date={endDate}/> (
+				<Grid item sm={2} />
+			</Grid>
+			<Divider className="top-divider" />
+			<Grid item lg={12}>
+				<RegistrationActions courseTitle={title} />
+			</Grid>
+			<div className="course-heading">
+				<Typography align="left" variant="h3">
+					{title}
+					{isAdmin && (
+						<ResponsiveButton
+							className="button"
+							variant='outlined'
+							component={Link}
+							to={`/registration/form/course_details/${courseID}`}
+						>
+							edit course
+						</ ResponsiveButton>
+					)}
+				</Typography>
+				<div className="date">
+					<CalendarIcon align="left" className="icon" />
+					<Typography align="left" className="sessions-text">
+						<Moment format="MMM D YYYY" date={startDate} />
+						{" - "}
+						<Moment format="MMM D YYYY" date={endDate} /> (
 							{weeklySessionsParser(startDate, endDate)} sessions)
 						</Typography>
+				</div>
+				<div className="info-section">
+					<div className="course-info-header">
+						<ClassIcon className="icon" />
+						<Typography align="left" className="text">
+							Course Information
+							</Typography>
 					</div>
-					<div className="info-section">
-						<div className="course-info-header">
-							<ClassIcon className="icon"/>
-							<Typography align="left" className="text">
-								Course Information
-							</Typography>
-						</div>
-						<div className="course-info-details">
-							{instructor && (
-								<>
-									{isConfirmed ? (
-										<ConfirmIcon className="confirmed course-icon"/>
-									) : (
-										<UnconfirmIcon className="unconfirmed course-icon"/>
+					<div className="course-info-details">
+						{instructor && (
+							<>
+								{isConfirmed ? (
+									<ConfirmIcon className="confirmed course-icon" />
+								) : (
+										<UnconfirmIcon className="unconfirmed course-icon" />
 									)}
-									<Chip
-										avatar={
-											<UserAvatar
-												fontSize={20}
-												name={instructorName}
-												size={38}
-											/>
-										}
-										className="chip"
-										component={Link}
-										label={instructorName}
-										to={`/accounts/instructor/${instructor.user.id}`}
-									/>
-								</>
-							)}
-							<Typography align="left" className="text">
-								<Moment
-									format="h:mm a"
-									date={startDate + "T" + startTime}
+								<Chip
+									avatar={
+										<UserAvatar
+											fontSize={20}
+											name={instructorName}
+											size={38}
+										/>
+									}
+									className="chip"
+									component={Link}
+									label={instructorName}
+									to={`/accounts/instructor/${instructor.user.id}`}
 								/>
-								{" - "}
-								<Moment
-									format="h:mm a"
-									date={endDate + "T" + endTime}
-								/>
-							</Typography>
-							<Typography align="left" className="text">
-								<Moment format="dddd" date={startDate}/>
-							</Typography>
-							<Typography align="left" className="text">
-								Grade {academicLevel}
-							</Typography>
-						</div>
+							</>
+						)}
+						<Typography align="left" className="text">
+							<Moment
+								format="h:mm a"
+								date={startDate + "T" + startTime}
+							/>
+							{" - "}
+							<Moment
+								format="h:mm a"
+								date={endDate + "T" + endTime}
+							/>
+						</Typography>
+						<Typography align="left" className="text">
+							<Moment format="dddd" date={startDate} />
+						</Typography>
+						<Typography align="left" className="text">
+							Grade {academicLevel}
+						</Typography>
 					</div>
 				</div>
 				<Typography align="left" className="description text">
@@ -248,8 +246,8 @@ const RegistrationCourse = () => {
 						<Notes ownerID={courseID} ownerType="course"/>
 					</div>
 				)}
-			</Paper>
-		</Grid>
+			</div>
+	</Grid>
 	);
 };
 
