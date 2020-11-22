@@ -331,12 +331,27 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
 
     const studentsFullName = enrollments.map(({student}) => fullName(student.user));
 
+    const sortStudentList = studentAttendanceData.sort((a,b) => {
+       if(a.name < b.name) {
+         return -1;
+       } else if (a.name > b.name) {
+         return 1;
+       } else {
+         return 0;
+       }
+    });
+
+    // const handleSort = () => {
+    //   if()
+    // }
+    // console.log(sortStudentList)
+
     // console.log(newData)
     // console.log(color)
     // console.log(newClassData)
     // console.log(isEdit);
     // console.log(studentAttendanceData)
-    console.log(sessions)
+    // console.log(sessions)
     // console.log(editState)
     // console.log(attendanceRecord)
   return (
@@ -370,7 +385,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentAttendanceData.map((row, i, arr) => {
+          {sortStudentList.map((row, i, arr) => {
             const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
             return (
               <TableRow key={row.studentId}>
@@ -383,9 +398,9 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                   {
                     isEdit[keys] && (
                       <ButtonGroup>
-            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "PRESENT" ? '#6CE086' : '#C9FFD5'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "TARDY" ? '#FFDD59' : '#FFF6D4'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "ABSENT" ? '#FF6766' : '#FFD8D8'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
+            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "PRESENT" || arr[i][keys] === "" ? '#6CE086' : '#C9FFD5'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "TARDY" || arr[i][keys] === "" ? '#FFDD59' : '#FFF6D4'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "ABSENT" || arr[i][keys] === "" ? '#FF6766' : '#FFD8D8'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
     </ButtonGroup>
                     )
                   }
