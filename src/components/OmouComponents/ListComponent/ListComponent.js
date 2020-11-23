@@ -22,8 +22,12 @@ export const useStyles = makeStyles({
         paddingBottom: '15px',
     },
     badge: {
-        paddingRight: '24px'
+        paddingRight: '24px',
+        paddingTop: '4px',
     },
+    link: {
+        lineHeight: "16",
+    }
   });
 
 export const ListContent = ({ children }) => {
@@ -90,8 +94,8 @@ export const ListDetail = ({ children }) => {
 
 export const ListDetailLink = ({ children }) => {
     return (
-        <Grid item spacing={3}>
-            <Link underline="always">
+        <Grid item spacing={3} lineHeight={0}>
+            <Link underline="always" variant="body1" lineHeight={0}>
                 { children }
             </Link>
         </Grid> 

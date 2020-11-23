@@ -115,30 +115,35 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const GET_COURSES = gql`
-  query getCourses {
-    courses {
-      dayOfWeek
-      endDate
-      endTime
-      title
-      startTime
-      academicLevel
-      startDate
-      instructor {
-        user {
-          firstName
-          lastName
-          id
-        }
-      }
-      courseCategory {
+query getCourses {
+  courses {
+    dayOfWeek
+    endDate
+    endTime
+    title
+    startTime
+    academicLevel
+    startDate
+    instructor {
+      user {
+        firstName
+        lastName
         id
-        name
+        __typename
       }
-      courseId
-      id
+      __typename
     }
+    courseCategory {
+      id
+      name
+      __typename
+    }
+    courseId
+    id
+    __typename
+    totalTuition
   }
+}
 `;
 
 const ClassListItem = ({
@@ -149,6 +154,7 @@ const ClassListItem = ({
   startDate,
   instructor,
   id,
+  totalTuition,
 }) => {
   const classes = useStyles();
   let history = useHistory();
@@ -160,6 +166,7 @@ const ClassListItem = ({
   const endingDate = moment(endDate).format("MMM D YYYY");
   const currentDate = moment().format("L");
   const isActive = currentDate <= moment(endDate).format("L");
+  const cost = totalTuition;
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
 
@@ -190,7 +197,7 @@ const ClassListItem = ({
                 </ListDetail>
                 <ListDivider />
                 <ListDetail>
-                    $400
+                  {cost}
                 </ListDetail>
             </ListDetails>
         </ListContent>
