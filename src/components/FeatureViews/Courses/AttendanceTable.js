@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -110,17 +110,21 @@ const StudentFilterOrSortDropdown = ({ students }) => {
   const [student, setStudent] = useState(students);
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
-  const handleChange = (event) => setValue(event.target.value);
+  const handleChange = (event) => {setValue(event.target.value)};
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleInputSelect = e => {
+    e.stopPropagation();
+    setOpen(true);
+  }
   const handleKeyDown = event => {
     if(event.which === 13) {
       if(!student.find(val => val === event.currentTarget.value)) {
-        setStudent(...student, event.currentTarget.value)
+        setStudent(...student, event.currentTarget.value);
       }
-      event.currentTarget.value = "" 
+      event.currentTarget.value = ""; 
     }
-    event.stopPropagation()
+    event.stopPropagation();
   }
 
   return (
@@ -171,7 +175,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
         <MenuItem
           ListItemClasses={{ selected: classes.menuSelected }}
           value="input"
-          onClick={handleOpen}
+          onClick={handleInputSelect}
         >
       <TextField
         className={classes.input}
@@ -205,17 +209,25 @@ const StudentFilterOrSortDropdown = ({ students }) => {
   )
 };
 
-const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, setEditState }) => {
+const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, setEditState, setCurrentSessionId, studentAttendanceData, setStudentAttendanceData, sortAttendanceArray }) => {
   const classes = useStyles();
   const handleOpen = e => {
     const sessionId = e.currentTarget.getAttribute("data-session-id")
-    console.log(e.currentTarget)
       setAttendanceRecord({[sessionId]: e.currentTarget})
   };
 
+  const handleSort = e => {
+    const sessionId = e.currentTarget.getAttribute("data-session-id");
+    setAttendanceRecord({[sessionId]: null});
+    setCurrentSessionId(sessionId); 
+    sessionId !== null && setEditState({...editState, [sessionId]: e.target.getAttribute("value")})
+    sortAttendanceArray()
+  }
+
   const handleClose = e => {
     const sessionId = e.currentTarget.getAttribute("data-session-id");
-    setAttendanceRecord({[sessionId]: null}); 
+    setAttendanceRecord({[sessionId]: null});
+    setCurrentSessionId(sessionId); 
     sessionId !== null && setEditState({...editState, [sessionId]: e.target.getAttribute("value")})
   };
   
@@ -225,7 +237,7 @@ const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, se
       aria-controls="session-action"
       aria-haspopup="true"
       onClick={handleOpen}
-      className={classes.buttonDropDown}
+      className={classes.buttonDropDown} 
       data-session-id={id}
       // size="small"
     >
@@ -242,7 +254,7 @@ const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, se
       transformOrigin={{vertical: 'top', horizontal: 'center'}}
       data-session-id={id}
     >
-      <MenuItem onClick={handleClose} value="sort" data-session-id={id}>Sort</MenuItem>
+      <MenuItem onClick={handleSort} value="sort" data-session-id={id}>Sort</MenuItem>
       <MenuItem onClick={handleClose} value="beginEdit" data-session-id={id}>Edit</MenuItem>
     </Menu>
     </>
@@ -275,7 +287,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     const [editState, setEditState] = useState();
     const [attendanceRecord, setAttendanceRecord] = useState();
     const [isEdit, setIsEdit] = useState();
-    const [attendnanceState, setAttendanceState] = useState("");
+    const [currentSessionId, setCurrentSessionId] = useState("");
     const [studentAttendanceData, setStudentAttendanceData] = useState();
     const [color, setColor] = useState("")
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
@@ -286,7 +298,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           setAttendanceRecord(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: null }), {}))
           setIsEdit(sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: false }), {}));
           const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "" }), {});
-          const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id));
+          const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id))
+                                     .sort((firstEl, secondEl) => firstEl.name < secondEl.name ? -1 : (firstEl.name > secondEl.name) ? 1 : 0)
           setStudentAttendanceData(newData)
         },
     });
@@ -301,7 +314,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         if(isEdit[sessionId] === false) {
           setIsEdit({...isEdit, [sessionId]: true})
           setIsEditing(true);
-          setEditState({...editState, [sessionId]: "willEdit"})
+          setEditState({...editState, [sessionId]: "edited"})
         } else {
           setIsEdit({...isEdit, [sessionId]: false});
           setIsEditing(false);
@@ -313,13 +326,6 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       const attendanceValue = e.currentTarget.value;
       const arrayIndex = e.currentTarget.getAttribute("data-arrayIndex");
       const sessionId = e.currentTarget.getAttribute("data-keys");
-      if(attendanceValue === "PRESENT") {
-        setColor('#6CE086')
-      } else if (attendanceValue === "TARDY") {
-        setColor('#FFDD59')
-      } else {
-        setColor('#FF6766')
-      }
       const arrOfObj = { ...studentAttendanceData[arrayIndex], [sessionId]: attendanceValue }
       let newArr = [...studentAttendanceData]
       newArr[arrayIndex] = arrOfObj
@@ -331,21 +337,50 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
 
     const studentsFullName = enrollments.map(({student}) => fullName(student.user));
 
-    const sortStudentList = studentAttendanceData.sort((a,b) => {
-       if(a.name < b.name) {
-         return -1;
-       } else if (a.name > b.name) {
-         return 1;
-       } else {
-         return 0;
-       }
-    });
+    // const sortStudentList = studentAttendanceData.sort((firstEl, secondEl) => {
+    //     if(firstEl.name < secondEl.name) {
+    //       return -1;
+    //     } else if (firstEl.name > secondEl.name) {
+    //       return 1;
+    //     } else {
+    //       return 0;
+    //     }        
+    // });
 
-    // const handleSort = () => {
-    //   if()
-    // }
+
+
+    // console.log(sortAttendanceList)
+
+    const colorHighlight = {
+      "PRESENT": '#6CE086',
+      "TARDY": '#FFDD59',
+      "ABSENT": '#FF6766'
+    }
+
+    const renderAttendanceChip = (row, keys, editState) => {
+      const renderEachButton = ["PRESENT", "TARDY", "ABSENT"].indexOf((row[keys])) >= 0 && editState[keys] !== "edited"
+      if(renderEachButton) {
+        return (<Button style={{backgroundColor: colorHighlight[row[keys]], color: 'black'}} disabled>{row[keys]}</Button>)
+      } else {
+        return null
+      }
+    };
+
+    const sortAttendanceArray = () => {
+      const sortAttendanceList = studentAttendanceData.sort((firstEl, secondEl) => {
+        if(!firstEl[currentSessionId] && !secondEl[currentSessionId]) return;
+        const attendanceValue = ["PRESENT", "TARDY", "ABSENT"];
+        const firstValue = attendanceValue.indexOf(firstEl[currentSessionId]);
+        const secondValue = attendanceValue.indexOf(secondEl[currentSessionId]);
+        if(firstValue === secondValue) {
+          return firstEl.name - secondEl.name
+        }
+        return firstValue - secondValue
+      });
+      setStudentAttendanceData(sortAttendanceList);
+    }
     // console.log(sortStudentList)
-
+    // console.log(currentSessionId);
     // console.log(newData)
     // console.log(color)
     // console.log(newClassData)
@@ -369,7 +404,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       return (
         <TableCell className={classes.tableCell}>
           {`Session ${i + 1} (${startingDate})`}
-        {editState[id] === "noSelect" || editState[id] === "beginEdit" || editState[id] === "willEdit" || editState[id] === "edited" ? 
+        {editState[id] === "noSelect" || editState[id] === "beginEdit" || editState[id] === "edited" ? 
         <Checkbox
         checked={isEdit[id]}
         onChange={handleEdit}
@@ -378,14 +413,14 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         id={id}
         disableRipple
         classes={{ root: classes.checkbox, checked: classes.checkbox2 }}
-      /> : <SessionButton attendanceArray={attendanceRecord} id={id} setAttendanceRecord={setAttendanceRecord} editState={editState} setEditState={setEditState}/>}
+      /> : <SessionButton attendanceArray={attendanceRecord} id={id} setAttendanceRecord={setAttendanceRecord} editState={editState} setEditState={setEditState} setCurrentSessionId={setCurrentSessionId} studentAttendanceData={studentAttendanceData} setStudentAttendanceData={setStudentAttendanceData} sortAttendanceArray={sortAttendanceArray}/>}
         </TableCell>
       )
     })}
           </TableRow>
         </TableHead>
         <TableBody>
-          {sortStudentList.map((row, i, arr) => {
+          {studentAttendanceData.map((row, i, arr) => {
             const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
             return (
               <TableRow key={row.studentId}>
@@ -394,8 +429,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
               </TableCell>
                 {filteredKey.map(keys => {
                   return <TableCell align="right"id={row.studentId}>
-                  {row[keys] === "" ? "" : ((row[keys] === "PRESENT" && editState[keys] === "done" || editState[keys] === "beginEdit") || (row[keys] === "TARDY" && editState[keys] === "done") || (row[keys] === "ABSENT" && editState[keys] === "done") ? (<Button style={{backgroundColor: `${row[keys] === "PRESENT" ? '#6CE086' : row[keys] === "TARDY" ? '#FFDD59' : row[keys] === "ABSENT" ? '#FF6766' : 'white'}`, color: 'black'}} disabled>{row[keys]}</Button>) : null)}
-                  {
+                    {renderAttendanceChip(row, keys, editState)}                  {
                     isEdit[keys] && (
                       <ButtonGroup>
             <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "PRESENT" || arr[i][keys] === "" ? '#6CE086' : '#C9FFD5'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
