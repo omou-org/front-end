@@ -31,6 +31,7 @@ import UserAvatar from "./UserAvatar";
 import NewUser from "@material-ui/icons/PersonAdd";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import PersonAddIcon from '@material-ui/icons/PersonAdd'
+import { makeStyles } from "@material-ui/core";
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -100,6 +101,8 @@ const Accounts = () => {
             window.removeEventListener("resize", handleResize);
         };
     }, [handleResize]);
+
+    const classes = useStyles();
 
     const displayUsers = useMemo(() => {
         if (!data) {
