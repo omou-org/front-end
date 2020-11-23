@@ -343,61 +343,61 @@ const CourseClasses = () => {
         </Grid>
       </Grid>
 
-      <Grid container style={{ marginTop: "2.5em" }}>
-        <Grid item xs={12} sm={12}>
-          <ThemeProvider theme={theme}>
-            <Toolbar disableGutters>
-              <ChromeTabs
-                className={
-                  tabSelection()
-                }
-                tabs={
-                  comparison(data.parent?.studentList, data.enrollments)
-                    ? tabs
-                    : [{ label: "About Course" }]
-                }
-                tabStyle={{
-                  bgColor: "#ffffff",
-                  selectedBgColor: "#EBFAFF",
-                  color: "rgba(102, 102, 102, 0.87)",
-                  topMargin: "1.1em",
-                  leftValue: 0,
-                  rightValue: 0,
-                }}
-                tabProps={{
-                  disableRipple: true,
-                }}
-                value={index}
-                onChange={handleChange}
-              />
-            </Toolbar>
-            <Divider classes={{ root: classes.dividerColor }} />
-            <Grid container>
-              <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
-                <ClassInfo description={description} />
-              </TabPanel>
-              <TabPanel index={1} value={index}>
-                <Announcements
-                  announcementsData={getAnnouncements.data.announcements}
-                  loggedInUser={data.accountSearch}
-                />
-              </TabPanel>
-              <TabPanel index={2} value={index}>
-                <ClassEnrollmentList
-                  enrollmentList={enrollmentSet}
-                  loggedInUser={data.accountSearch}
-                />
-              </TabPanel>
-              <TabPanel index={3} value={index}>
-                <ClassSessionContainer
-                  sessionList={sessionSet}
-                  loggedInUser={data.accountSearch}
-                />
-              </TabPanel>
-            </Grid>
-          </ThemeProvider>
+        <Grid container style={{ marginTop: "2.5em" }}>
+          <Grid item xs={12} sm={12}>
+            <ThemeProvider theme={theme}>
+                <Toolbar disableGutters>
+                  <ChromeTabs
+                    className={
+                      tabSelection()
+                    }
+                    tabs={
+                      comparison(data.parent?.studentList, data.enrollments)
+                        ? tabs
+                        : [{ label: "About Course" }]
+                    }
+                    tabStyle={{
+                      bgColor: "#ffffff",
+                      selectedBgColor: "#EBFAFF",
+                      color: "rgba(102, 102, 102, 0.87)",
+                      topMargin: "1.1em",
+                      leftValue: 0,
+                      rightValue: 0,
+                    }}
+                    tabProps={{
+                      disableRipple: true,
+                    }}
+                    value={index}
+                    onChange={handleChange}
+                  />
+                </Toolbar>
+               
+              <Grid container>
+                <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
+                  <ClassInfo description={description} />
+                </TabPanel>
+                <TabPanel index={1} value={index}>
+                  <Announcements
+                    announcementsData={getAnnouncements.data.announcements}
+                    loggedInUser={data.accountSearch}
+                  />
+                </TabPanel>
+                <TabPanel index={2} value={index}>
+                  <ClassEnrollmentList
+                    enrollmentList={enrollmentSet}
+                    loggedInUser={data.accountSearch}
+                  />
+                </TabPanel>
+                <TabPanel index={3} value={index}>
+                  <ClassSessionContainer
+                    sessionList={sessionSet}
+                    loggedInUser={data.accountSearch}
+                  />
+                </TabPanel>
+              </Grid>
+            </ThemeProvider>
+          </Grid>
         </Grid>
-      </Grid>
     </Grid>
   );
 };

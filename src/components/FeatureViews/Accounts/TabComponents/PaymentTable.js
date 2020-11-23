@@ -8,7 +8,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Typography from "@material-ui/core/Typography";
 
 import {paymentToString, tuitionAmount} from "utils";
 import Loading from "components/OmouComponents/Loading";
@@ -58,21 +57,13 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
             <Table>
                 <TableHead>
                     <TableRow>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Transaction Date</TableCell>
                         <TableCell>
-                            <Typography variant="h4">ID</Typography>
+                            {type === "enrollment" ? "Paid Sessions" : "Course"}
                         </TableCell>
-                        <TableCell>
-                            <Typography variant="h4">Transaction Date</Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="h4">{type === "enrollment" ? "Paid Sessions" : "Course"}</Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="h4">Amount Paid</Typography>
-                        </TableCell>
-                        <TableCell>
-                            <Typography variant="h4">Method</Typography>
-                        </TableCell>
+                        <TableCell>Amount Paid</TableCell>
+                        <TableCell>Method</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -84,36 +75,30 @@ const PaymentTable = ({paymentList, type, enrollmentID, courseID, rootRoute = "/
                                 key={payment.id}
                                 to={`${rootRoute}${payment.id}`}>
                                 <TableCell>
-                                    <Typography variant="body2">{payment.id}</Typography>
+                                    {payment.id}
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body1">
-                                        <Moment date={payment.created_at} format="M/DD/YYYY"/>
-                                    </Typography>
+                                    <Moment date={payment.created_at} format="M/DD/YYYY"/>
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body2">
-                                        {
-                                            type === "enrollment"
-                                                ? numPaidSessionsByPayment(payment.id)
-                                                : courseLabel(payment.registrationSet)
-                                        }
-                                    </Typography>
+                                    {
+                                        type === "enrollment"
+                                            ? numPaidSessionsByPayment(payment.id)
+                                            : courseLabel(payment.registrationSet)
+                                    }
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body2">
-                                        {
-                                            type === "enrollment"
-                                                ? tuitionAmount(
-                                                course,
-                                                numPaidSessionsByPayment(payment.id)
-                                                )
-                                                : `$${payment.total}`
-                                        }
-                                    </Typography>
+                                    {
+                                        type === "enrollment"
+                                            ? tuitionAmount(
+                                            course,
+                                            numPaidSessionsByPayment(payment.id)
+                                            )
+                                            : `$${payment.total}`
+                                    }
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="body2">{paymentToString(payment.method)}</Typography>
+                                    {paymentToString(payment.method)}
                                 </TableCell>
                             </TableRow>
                         ))

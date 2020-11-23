@@ -1,15 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 
-import Avatar from "@material-ui/core/Avatar";
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Chip from "@material-ui/core/Chip";
 import ClassIcon from "@material-ui/icons/Class";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Divider from "@material-ui/core/Divider";
-import EditIcon from "@material-ui/icons/Edit";
 import Grid from "@material-ui/core/Grid";
-import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Notes from "../Notes/Notes";
 import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import Tab from "@material-ui/core/Tab";
@@ -17,6 +14,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import Moment from "react-moment";
+import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 
 import "./registration.scss";
@@ -66,6 +65,17 @@ export const GET_COURSE_DETAILS = gql`
 	`;
 
 const RegistrationCourse = () => {
+
+	const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+		},
+		wrapper: {
+			flexDirection: "row"
+		}
+	});
+	const classes = useStyles();
+
 	const {
 		params: { courseID },
 	} = useRouteMatch();
@@ -109,6 +119,10 @@ const RegistrationCourse = () => {
 	const hasImportantNotes = Object.values(courseNotes || {}).some(
 		({ important }) => important
 	);
+
+	const numImportantNotes = Object.values(courseNotes || {}).filter(
+		({important}) => important
+	).length;
 
 	const instructorName = fullName(instructor.user);
 
@@ -196,51 +210,44 @@ const RegistrationCourse = () => {
 						</Typography>
 					</div>
 				</div>
-			</div>
-			<Typography align="left" className="description text">
-				{description}
-			</Typography>
-			<Tabs
-				className="registration-course-tabs"
-				indicatorColor="primary"
-				onChange={handleTabChange}
-				value={activeTab}
-			>
-				<Tab
-					label={
-						<>
-							<RegistrationIcon className="NoteIcon" /> Registration
-							</>
-					}
-				/>
-				<Tab
-					label={
-						hasImportantNotes ? (
-							<>
-								<Avatar className="notificationCourse" />
-								<NoteIcon className="TabIcon" /> Notes
-								</>
-						) : (
+				<Typography align="left" className="description text">
+					{description}
+				</Typography>
+				<Tabs
+					className="registration-course-tabs"
+					classes={{indicator: classes.MuiIndicator}}
+					onChange={handleTabChange}
+					value={activeTab}
+				>
+					<Tab
+						label="Registration"
+						/>
+					<Tab
+						classes={{wrapper: classes.wrapper}}
+						label={
+							numImportantNotes ? (
 								<>
-									<NoteIcon className="NoteIcon" /> Notes
+									 Notes 
+									 <LabelBadge style={{marginLeft: '8px'}} label={numImportantNotes} variant="round-count"/>
 								</>
-							)
-					}
-				/>
-			</Tabs>
-			{activeTab === 0 && (
-				<RegistrationCourseEnrollments
-					courseID={courseID}
-					maxCapacity={maxCapacity}
-					courseTitle={title}
-				/>
-			)}
-			{activeTab === 1 && (
-				<div className="notes-container">
-					<Notes ownerID={courseID} ownerType="course" />
-				</div>
-			)}
-		</Grid>
+							) : <> Notes </>
+						}
+					/>
+				</Tabs>
+				{activeTab === 0 && (
+					<RegistrationCourseEnrollments
+						courseID={courseID}
+						maxCapacity={maxCapacity}
+						courseTitle={title}
+					/>
+				)}
+				{activeTab === 1 && (
+					<div className="notes-container">
+						<Notes ownerID={courseID} ownerType="course"/>
+					</div>
+				)}
+			</div>
+	</Grid>
 	);
 };
 

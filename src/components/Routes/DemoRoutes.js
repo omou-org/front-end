@@ -6,6 +6,7 @@ import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDe
 import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
 
+
 const DemoRoutes = () => (
     <Switch>
         <Route path="/demo/badge">

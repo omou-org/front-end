@@ -87,6 +87,8 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
         },
         "round-count": {
             chipColor: colors.buttonBlue,
+            height: '16px',
+            width: '16px',
             ...badgeCategory.statusRound,
             chipMinWidth: "16px",
             height: "16px",

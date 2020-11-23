@@ -29,7 +29,7 @@ const PaymentHistory = ({user_id}) => {
 		return <Loading/>
 	}
 	if (error) {
-		return <Typography variant="h3">
+		return <Typography>
 			There's been an error! Error: {error.message}
 		</Typography>
     }

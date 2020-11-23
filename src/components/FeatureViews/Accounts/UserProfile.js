@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Redirect, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Badge from "@material-ui/core/Badge";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
@@ -22,7 +21,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
-
+import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
@@ -167,6 +167,13 @@ const UserProfile = () => {
 		setTabIndex(newTabIndex);
 	}, []);
 
+	const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+		},
+	});
+	const classes = useStyles();
+
 	const tabs = useMemo(() => {
 		if (!user) {
 			return null;
@@ -174,37 +181,25 @@ const UserProfile = () => {
 		if (user.role === "receptionist") {
 			return (
 				<>
-					<Typography variant="h4" align="left" variant="h6">
+					<Typography align="left" variant="h6">
 						Action Log
 					</Typography>
 					<Paper elevation={2} className="paper">
 						<Table className="ActionTable">
 							<TableHead>
 								<TableRow>
-									<TableCell>
-										<Typography variant="h4" >Date</Typography>
-									</TableCell>
-									<TableCell>
-										<Typography variant="h4">Time</Typography>
-									</TableCell>
-									<TableCell>
-										<Typography variant="h4">Description</Typography>
-									</TableCell>
+									<TableCell>Date</TableCell>
+									<TableCell>Time</TableCell>
+									<TableCell>Description</TableCell>
 								</TableRow>
 							</TableHead>
 							<TableBody>
 								{Object.entries(user.action_log).map(
 									([key, { date, time, description }]) => (
 										<TableRow key={key}>
-											<TableCell>
-												<Typography variant="body1">{date}</Typography>
-											</TableCell>
-											<TableCell>
-												<Typography variant="body1">{time}</Typography>
-											</TableCell>
-											<TableCell>
-												<Typography variant="body1">{description}</Typography>
-											</TableCell>
+											<TableCell>{date}</TableCell>
+											<TableCell>{time}</TableCell>
+											<TableCell>{description}</TableCell>
 										</TableRow>
 									)
 								)}
@@ -218,9 +213,8 @@ const UserProfile = () => {
 		return (
 			<>
 				<Tabs
-					indicatorColor="primary"
+					classes={{indicator: classes.MuiIndicator}}
 					onChange={handleTabChange}
-					textColor="primary"
 					value={tabIndex}
 				>
 					{displayTabs
@@ -230,9 +224,9 @@ const UserProfile = () => {
 								<Tab
 									key={tab.tab_id}
 									label={
-										<>
-											{tab.icon} {tab.tab_heading}
-										</>
+										<span>
+											{tab.tab_heading} {tab.icon}
+										</span>										
 									}
 								/>
 								:
@@ -240,7 +234,7 @@ const UserProfile = () => {
 									key={tab.tab_id}
 									label={
 										<>
-											{tab.icon} {tab.tab_heading}
+											{tab.tab_heading}
 										</>
 									}
 								/>
@@ -278,9 +272,7 @@ const UserProfile = () => {
 					newTabs[notesIndex] = {
 						...newTabs[notesIndex],
 						icon: (
-							<Badge badgeContent={numImportantNotes} color="primary">
-								<NoteIcon className="TabIcon" />
-							</Badge>
+							numImportantNotes > 0 && <LabelBadge style={{marginLeft: '8px'}} label={numImportantNotes} variant="round-count"/> 
 						),
 					};
 					return newTabs;

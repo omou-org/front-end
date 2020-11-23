@@ -558,7 +558,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                             className={`addNote ${classes.addNote}`}
                             onClick={openNewNote}
                             style={{ "cursor": "pointer", height: "100%", backgroundColor: "white" }}>
-                            <Typography variant="h4" className="center" style={{ padding: 0 }}>
+                            <Typography className="center" style={{ padding: 0 }}>
                                 <AddIcon /> Add Note
                                     </Typography>
                         </div>
@@ -566,7 +566,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                 </>
                 : <Grid item md={3}>
                     <div className={classes.addNote} onClick={openNewNote}>
-                        <Typography variant="h4" className={classes.center}>
+                        <Typography className={classes.center}>
                             <AddIcon /><br />Add Note
                                 </Typography>
                     </div>
@@ -576,7 +576,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             {notes && isDashboard && Object.values(notes).map((note) => (
                 <Grid item key={note.id || note.body} xs={12}>
                     <Paper className={`note ${classes.notePaper}`} elevation={2} >
-                        <Typography align="left" variant="h4"
+                        <Typography align="left"
                             className={`noteHeader ${classes.notesTitle}`}>
                             {note.title}
                             <Avatar
@@ -587,11 +587,11 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 !
                             </Avatar>
                         </Typography>
-                        <Typography align="left" className="body" variant="h6">
+                        <Typography align="left" className="body">
                             {note.body}
                         </Typography>
                         <Grid item xs={12}>
-                            <Typography variant="body1" className={`date ${classes.dateDisplay}`}
+                            <Typography className={`date ${classes.dateDisplay}`}
                                 style={{ "fontWeight": "500" }}>
                                 {numericDateString(note.timestamp)}
                             </Typography>
@@ -628,17 +628,17 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             {notes && !isDashboard && Object.values(notes).map((note) => (
                 <Grid item key={note.id || note.body} xs={3}>
                     <Paper className="note" elevation={2}>
-                        <Typography variant="h4" align="left"
+                        <Typography align="left"
                             className={`noteHeader ${classes.notesTitle}`}>
                             {note.title}
                             <NotificationIcon className="noteNotification"
                                 onClick={toggleNoteField(note.id, "important")}
                                 style={note.important ? { "color": "red" } : {}} />
                         </Typography>
-                        <Typography variant="h6" align="left" className="body">
+                        <Typography align="left" className="body">
                             {note.body}
                         </Typography>
-                        <Typography variant="body1" className="date"
+                        <Typography className="date"
                             style={{ "fontWeight": "500" }}>
                             {numericDateString(note.timestamp)}
                         </Typography>
