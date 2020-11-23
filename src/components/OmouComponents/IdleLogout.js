@@ -71,7 +71,6 @@ const IdleLogout = () => {
 
 
     const handleLogout = useCallback(() => {
-        console.log("logging out...");
         closeRegistrationCart();
         dispatch(logout());
         history.push("/login");
@@ -138,7 +137,7 @@ const IdleLogout = () => {
             await refreshTokenAfter15Minutes();
         })();
 
-    });
+    }, []);
     
     const logoutAndCloseModal = () => {
         handleClose();
@@ -169,8 +168,7 @@ const IdleLogout = () => {
     const handleReset = () => reset();
     
     useEffect(() => {
-        setRemainingMsUntilPrompt(getRemainingTime());
-        
+
         // Only tracks intervals every second (1000ms) in order to not block thread... change with caution
         setInterval(() => {
             setRemainingMsUntilPrompt(getRemainingTime());
