@@ -62,8 +62,14 @@ const QUERY_USERS = gql`
     ${simpleUser}
 `;
 
-const TABS = ["ALL", "INSTRUCTORS", "STUDENTS", "RECEPTIONIST", "PARENTS"]
-    .map((label) => <Tab className="tab" key={label} label={label} />);
+const TABS = ["All", "Instructors", "Students", "Receptionist", "Parents"]
+    .map((label) => <Tab key={label} label={label} />);
+
+const useStyles = makeStyles({
+    MuiIndicator: {
+        height: "1px"
+    }
+});
 
 const stopPropagation = (event) => {
     event.stopPropagation();
@@ -249,18 +255,24 @@ const Accounts = () => {
                 </Typography>
                 <Grid container direction="row">
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
-                        <Tabs className="tabs" ndicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="on"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs
+                            className='tabs'
+                            onChange={handleTabChange} 
+                            scrollButtons="on"
+                            value={tabIndex}
+                            variant="scrollable"
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>
                     <Grid component={Hidden} item md={8} mdDown xs={10}>
-                        <Tabs className="tabs" indicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="off"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs 
+                            className="tabs"
+                            classes={{indicator: classes.MuiIndicator}}
+                            onChange={handleTabChange} 
+                            scrollButtons="off"
+                            value={tabIndex}
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>

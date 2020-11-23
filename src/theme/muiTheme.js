@@ -67,7 +67,7 @@ export const h5 = {
   fontStyle: 'normal',
   fontFamily: 'Roboto',
   lineHeight: '16px',
-  fontVariant: 'small-caps',
+  fontVariant: 'all-small-caps',
   fontFeatureSettings: '"cpsp" on'
 };
 // Body (Default)
@@ -170,24 +170,12 @@ const theme = createMuiTheme({
       subtitle1,
     },
     "MuiButton": {
-      "fontSize": '14px',
-      "fontWeight": '500',
-      "fontStyle": 'normal',
-      "fontFamily": 'Roboto',
-      "lineHeight": '16px',
-      "fontVariant": 'all-small-caps',
-      "fontFeatureSettings": '"cpsp" on',
+      ...h5,
       "text": {
         "color": goth,
       },
       "contained": {
-        "fontSize": '14px',
-        "fontWeight": '500',
-        "fontStyle": 'normal',
-        "fontFamily": 'Roboto',
-        "lineHeight": '16px',
-        "fontVariant": 'all-small-caps',
-        "fontFeatureSettings": '"cpsp" on',
+        ...h5,
         "color": white,
         "backgroundColor": buttonBlue,
         "border": `2px solid ${buttonBlue}`,
@@ -212,13 +200,7 @@ const theme = createMuiTheme({
         },
       },
       "outlined": {
-        "fontSize": '14px',
-        "fontWeight": '500',
-        "fontStyle": 'normal',
-        "fontFamily": 'Roboto',
-        "lineHeight": '16px',
-        "fontVariant": 'all-small-caps',
-        "fontFeatureSettings": '"cpsp" on',
+        ...h5,
         "color": buttonBlue,
         "backgroundColor": white,
         "border": `2px solid ${cloudy}`,
@@ -283,75 +265,92 @@ const theme = createMuiTheme({
         "width": "100%",
       },
     },
-    "MuiTab": {
+    "MuiTabs": {
       root: {
-        opacity: 1,
-        overflow: "initial",
-        paddingLeft: "1em",
-        paddingRight: "1em",
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        marginTop: "0",
-        color: slateGrey,
-        backgroundColor: white,
-        transition: "0.2s",
-        [breakpoints.up("md")]: {
-          minWidth: 120
-        },
-        "&:before": {
-          transition: "0.2s"
-        },
-        "&:not(:first-of-type)": {
-          "&:before": {
-            content: '" "',
-            position: "absolute",
-            left: 0,
-            display: "block",
-            height: "10em",
-            width: 1,
-            zIndex: 1,
-            marginTop: "0.5em",
-            backgroundColor: backgroundGrey
-          }
-        },
-        "& + $selected:before": {
-          opacity: 0
-        },
-        "&:hover": {
-          "&:not($selected)": {
-            backgroundColor: skyBlue
-          },
-          "&::before": {
-            opacity: 0
-          },
-          "& + $root:before": {
-            opacity: 0
-          }
-        },
-        "&$selected": {
-          "backgroundColor": skyBlue,
-          "color": omouBlue,
-        },
-      },
-      selected: {
-        backgroundColor: skyBlue,
-        color: omouBlue,
-        "& + $root": {
-          zIndex: 1
-        },
-        "& + $root:before": {
-          opacity: 0
-        }
-      },
-      wrapper: {
-        zIndex: 2,
-        marginTop: "0.5em",
-        textTransform: "initial",
-      },
-      indicator: {
-        display: "none",
-        marginTop: "1.1em",
+        color: '#000000',
       }
+    },
+    "MuiTab": {
+        root: {
+            ...h5,
+            width: "144px",
+            height: "40px",
+            color: '#000000',
+            opacity: 1,
+            strokeWidth: '1',
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            paddingLeft: "1em",
+            paddingRight: "1em",
+            borderTopLeftRadius: '5px',
+            borderTopRightRadius: '5px',
+            borderBottom: "1px solid #43B5D9",
+            marginTop: "0",
+            backgroundColor: "#ffffff",
+            transition: "0.2s",
+            [breakpoints.up("md")]: {
+              minWidth: 120
+            },
+            "&:before": {
+              transition: "0.2s"
+            },
+            "&:not(:first-of-type)": {
+              "&:before": {
+                content: '" "',
+                position: "absolute",
+                left: 0,
+                display: "block",
+                height: "10em",
+                width: 1,
+                zIndex: 1,
+                marginTop: "0.5em",
+                backgroundColor: "#EEEEEE"
+              }
+            },
+            "& + $selected:before": {
+              opacity: 0
+            },
+            "&:hover": {
+              "&:not($selected)": {
+                backgroundColor: skyBlue
+              },
+              "&::before": {
+                opacity: 0
+              },
+              "& + $root:before": {
+                opacity: 0
+              }
+            },
+            "&$selected": {
+                "backgroundColor": skyBlue,
+                "color": omouBlue,
+                "background": "#EBFAFF",
+                "borderTop": "1px solid #43B5D9",
+                "borderLeft": "1px solid #43B5D9",
+                "borderRight": "1px solid #43B5D9",
+                "boxSizing": "border-box",
+                "borderRadius": "5px 5px 0px 0px"
+            },
+          },
+          selected: {
+            backgroundColor: skyBlue,
+            color: omouBlue,
+            "& + $root": {
+              zIndex: 1
+            },
+            "& + $root:before": {
+              opacity: 0
+            }
+          },
+          wrapper: {
+            zIndex: 2,
+            marginTop: "0.5em",
+            textTransform: "initial",    
+          },
+          indicator: {
+            display: "none",
+            marginTop: "1.1em",
+          }
     },
     "MuiStepIcon": {
       "text": {

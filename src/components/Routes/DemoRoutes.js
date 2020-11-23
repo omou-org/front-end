@@ -7,6 +7,7 @@ import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
 import TableDemo from '../../theme/ThemedComponents/Table/TableDemo';
 
+
 const DemoRoutes = () => (
     <Switch>
         <Route path="/demo/badge">
