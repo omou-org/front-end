@@ -578,7 +578,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 !
                             </Avatar>
                         </Typography>
-                        <ReadMoreText textLimit="110">
+                        <ReadMoreText textLimit = {110}>
                             {note.body}
                         </ReadMoreText>
                         <Grid item xs={12}>

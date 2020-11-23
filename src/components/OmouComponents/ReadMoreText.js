@@ -35,7 +35,7 @@ const ReadMoreText = (props) => {
 
 ReadMoreText.propTypes = {
     children : PropTypes.string.isRequired,
-    textLimit : PropTypes.string.isRequired
+    textLimit : PropTypes.number.isRequired
 };
 
 export default ReadMoreText;
