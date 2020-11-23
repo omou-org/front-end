@@ -6,7 +6,7 @@ import {
   useLocation,
   withRouter,
   useParams,
-  NavLink
+  NavLink,
 } from "react-router-dom";
 import Loading from "components/OmouComponents/Loading";
 
@@ -39,8 +39,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-
-
 
 import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
@@ -120,64 +118,41 @@ const GET_SESSION = gql`
 `;
 
 const UPDATE_SESSION = gql`
-    mutation DanielsUpdateSession($sessionId: ID!, $title: String, $startDatetime: DateTime, $isConfirmed: Boolean, $instructor: ID, $endDatetime: DateTime) {
-        createSession(id: $sessionId, title: $title, startDatetime: $startDatetime, isConfirmed: $isConfirmed, instructor: $instructor, endDatetime: $endDatetime) {
-          session {
+  mutation UpdateSession(
+    $sessionId: ID!
+    $title: String
+    $startDatetime: DateTime
+    $isConfirmed: Boolean
+    $instructor: ID
+    $endDatetime: DateTime
+  ) {
+    createSession(
+      id: $sessionId
+      title: $title
+      startDatetime: $startDatetime
+      isConfirmed: $isConfirmed
+      instructor: $instructor
+      endDatetime: $endDatetime
+    ) {
+      session {
+        id
+        title
+        startDatetime
+        isConfirmed
+        instructor {
+          user {
             id
-            title
-            startDatetime
-            isConfirmed
-            instructor {
-              user {
-                id
-                firstName
-                lastName
-                email
-              }
-            }
-            endDatetime
+            firstName
+            lastName
+            email
+          }
         }
-        }
+        endDatetime
       }
-    `;
+    }
+  }
+`;
 
-    // const UPDATE_SESSION = gql`
-    // mutation DanielsUpdateSession($sessionId: ID!, $title: String, $startDatetime: DateTime, $isConfirmed: Boolean, $instructor: ID, $endDatetime: DateTime) {
-    //     createSession(id: $sessionId, title: $title, startDatetime: $startDatetime, isConfirmed: $isConfirmed, instructor: $instructor, endDatetime: $endDatetime) {
-    //       startDatetime
-    //       course {
-    //         id
-    //         isConfirmed
-    //         dayOfWeek
-    //         startTime
-    //         endTime
-    //         room
-    //         courseCategory {
-    //           id
-    //           name
-    //         }
-    //         instructor {
-    //           user {
-    //             id
-    //             firstName
-    //             lastName
-    //           }
-    //           subjects {
-    //             name
-    //           }
-    //         }
-    //       }
-    //       endDatetime
-    //       title
-    //       startDatetime
-    //     }
-    //   }
-    // `;
-
-    
-
-
- 
 const EditSessionView = () => {
   const { session_id } = useParams();
 
@@ -194,7 +169,6 @@ const EditSessionView = () => {
 
   const history = useHistory();
   const location = useLocation();
- 
 
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
@@ -220,7 +194,7 @@ const EditSessionView = () => {
   });
 
   const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
-    update: (cache, {data}) => {
+    update: (cache, { data }) => {
       const existingSession = cache.readQuery({
         query: GET_SESSION,
         variables: { sessionId: session_id },
@@ -229,48 +203,11 @@ const EditSessionView = () => {
       cache.writeQuery({
         query: GET_SESSION,
         data: {
-          session: [
-            ...existingSession,
-            ...data["updateSession"].session
-          ],
+          session: [...existingSession, ...data["updateSession"].session],
         },
-         variables: { sessionId: session_id },
+        variables: { sessionId: session_id },
       });
-      // const newSession = data.createEnrollments.enrollments.map(enrollment => {
-      //   return {
-      //     course: enrollment.course.id,
-      //     student: enrollment.student.user.id,
-      //   }
-      // });
-      // newEnrollments.forEach(newEnrollment => {
-      //   const matchingIndex = cachedCourses.findIndex((course) =>
-      //     (course.id === newEnrollment.course));
-      //   cachedCourses[matchingIndex] = {
-      //     ...cachedCourses[matchingIndex],
-      //     enrollmentSet: [...cachedCourses[matchingIndex].enrollmentSet,
-      //       {student: newEnrollment.student, course: newEnrollment.course}],
-      //   };
-      // });
-
-      // const newQueryEnrollments = data.createEnrollments.enrollments.map(enrollment => ({
-      //     id: enrollment.id,
-      //     course: {
-      //       id: enrollment.course.id,
-      //     }
-      //   })
-      // );
-
-      // cache.writeQuery({
-      //   query: GET_STUDENTS_AND_ENROLLMENTS,
-      //   data: {
-      //     userInfos,
-      //     enrollments: [
-      //       ...enrollments,
-      //       ...newQueryEnrollments,
-      //     ]
-      //   }
-      // })
-    }
+    },
   });
 
   const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
@@ -287,14 +224,12 @@ const EditSessionView = () => {
     updatedDuration: "",
   });
 
-  
-//Subject
+  //Subject
   const handleCategoryChange = (event) => {
     setSessionFields({
       ...sessionFields,
       category: event,
     });
-     console.log(event)
   };
 
   //Instructor
@@ -303,8 +238,6 @@ const EditSessionView = () => {
       ...sessionFields,
       instructor: event,
     });
-    console.log(event)
-
   };
 
   //Updates room and Title
@@ -313,31 +246,66 @@ const EditSessionView = () => {
       ...sessionFields,
       [field]: event.target.value,
     });
-    console.log(event.target.value)
-
+    console.log(sessionFields.is_confirmed);
   };
 
   //ANNA NOT WORKING
-  const handleDateTimeChange = (date) => {
-    const {end_time, duration} = sessionFields;
-		if (date.end_time) {
-		}
-		end_time.setDate(date.getDate());
-		end_time.setHours(date.getHours() + duration);
-		end_time.setMinutes(date.getMinutes());
+  const handleDateChange = (date) => {
+    //this is a moment object
+    console.log(date);
+    //this is current date
+    // console.log(sessionFields.start_time);
+    const work = moment(date).utc().format();
+    // console.log(work.slice(0, 19))
+    const newDate = work.slice(0,-1)
+    console.log(newDate)
+    console.log(sessionFields.start_time);
+    const time = sessionFields.start_time.slice(-5)
+    console.log(time)
+    console.log(newDate+ "+" + time)
+    const newStartDateTime = newDate+ "+" + time
+    // const {end_time, duration} = sessionFields;
+    // if (date.end_time) {
+    // }
+    // end_time.setDate(date.getDate());
+    // end_time.setHours(date.getHours() + duration);
+    // end_time.setMinutes(date.getMinutes());
 
-		setSessionFields({
-			...sessionFields,
-			start_time: date,
-			end_time,
-		});
+    setSessionFields({
+    	...sessionFields,
+    	start_time: date,
+    	// end_time,
+    });
   };
+
+    //ANNA NOT WORKING
+    const handleTimeChange = (date) => {
+      //this is a moment object
+      console.log(date);
+      //this is current date
+      // console.log(sessionFields.start_time);
+      console.log(date[3]);
+      const work = moment(date).utc().format();
+      console.log(work)
+      console.log(sessionFields.start_time);
+      // const {end_time, duration} = sessionFields;
+      // if (date.end_time) {
+      // }
+      // end_time.setDate(date.getDate());
+      // end_time.setHours(date.getHours() + duration);
+      // end_time.setMinutes(date.getMinutes());
+  
+      setSessionFields({
+      	...sessionFields,
+      	start_time: date,
+      });
+    };
 
   const handleEditSelection = (event) => {
     setEditSelection(event.target.value);
-};
+  };
 
-//ANNA NOT WORKING
+  //ANNA NOT WORKING
   const handleDurationSelect = (event) => {
     const { start_time } = sessionFields;
     const newEndTime = new Date(start_time);
@@ -365,7 +333,7 @@ const EditSessionView = () => {
       end_time: newEndTime,
     });
 
-    console.log(event.target.value)
+    console.log(event.target.value);
   };
 
   const onConfirmationChange = (event) => {
@@ -373,41 +341,28 @@ const EditSessionView = () => {
       ...sessionFields,
       is_confirmed: event.target.value,
     });
-    console.log(event.target.value)
+    console.log(event.target.value);
   };
 
-  const handleEditToggle = (cancel) => (event) => {
-    event.preventDefault();
-    if (!cancel && edit) {
-        // if we're applying to edit session then toggle to edit view
-        //ANNA NEED TO UPDATE THIS FUNCTION
-        //This goes back to session view
-        // handleToggleEditing(editSelection);
-    } else {
-        setEdit(!edit);
-    }
-};
-
-
   const setFromMigration = (response) => {
-
     if (location.state === undefined) {
-      history.push(`/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`);
+      history.push(
+        `/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`
+      );
     }
-    console.log(location.state)
 
-    setEditSelection(location.state)
-    console.log(editSelection)
+    console.log(response.session.course.isConfirmed);
+    setEditSelection(location.state);
     const startTime = moment(response.session.startDatetime).format("h");
     const endTime = moment(response.session.endDatetime).format("h");
 
     const checkTime = moment(response.session.startDatetime).format("h:MM");
-
+    console.log(response.session.startDatetime);
     let durationHours = Math.abs(endTime - startTime);
     if (durationHours === 0) {
       durationHours = 1;
     }
-    
+
     setSessionFields({
       category: {
         value: response.session.course.courseCategory.id,
@@ -436,20 +391,29 @@ const EditSessionView = () => {
       duration,
       title,
     } = sessionFields;
-    console.log("save click?")
-    console.log(editSelection)
+    console.log("save click?");
+    console.log(editSelection);
     switch (location.state.allOrCurrent) {
       case "current": {
-        console.log("we get here to current")
-        console.log(session_id)
-        // const handleDeleteAnnouncement = async (id) => {
-        //   const deletedAnnouncement = await deleteAnnouncement({
-        //     variables: { id: id },
-        //   });
-        // };
+        console.log("we get here to current");
+        console.log(session_id);
+        // const UTCstartDatetime =  moment(start_time).utc().format().slice(0, -1);
+        const UTCstartDatetime = "2020-04-02T22:00:00+00:00"
+        // const newDate = work.slice(0,-1)
+        console.log(sessionFields.category.value)
+        console.log(is_confirmed);
+        console.log(start_time)
+        console.log(UTCstartDatetime)
+        // console.log(UTCstartDatetime.toISOString())
         updateSession({
-          variables: {sessionId: session_id, isConfirmed: is_confirmed,
-            instructor: instructor.value, title: title},
+          variables: {
+            sessionId: session_id,
+            title: title,
+            startDatetime: start_time,
+            isConfirmed: is_confirmed,
+            instructor: instructor.value,
+            title: title,
+          },
           // startDatetime: start_time.toISOString(),
           // endDatetime: end_time.toISOString(),
           // sessionId: session_id,
@@ -458,11 +422,20 @@ const EditSessionView = () => {
           // duration,
           // title
         });
+        console.log("saved");
         // api.patchSession(session.id, patchedSession);
         break;
       }
       case "all": {
-        console.log("we get here to all")
+        console.log("we get here to all");
+        updateSession({
+          variables: {
+            sessionId: session_id,
+            isConfirmed: is_confirmed,
+            instructor: instructor.value,
+            title: title,
+          },
+        });
         // const patchedCourse = {
         //   course_category: sessionFields.category.value,
         //   subject: sessionFields.title,
@@ -483,38 +456,25 @@ const EditSessionView = () => {
     // history.push("/scheduler/");
   };
 
-  // useEffect(() => {
-  //   console.log(location.state)
-  //   setEditSelection(location.state)
-  //   console.log(editSelection)
-  // });
-
   if (loading || categoriesLoading || instructorsLoading) {
     return <Loading />;
   }
 
-  if (error || categoriesError|| instructorsError) {
-    return <Typography>There's been an error!</Typography>;  
+  if (error || categoriesError || instructorsError) {
+    return <Typography>There's been an error!</Typography>;
   }
 
-  // console.log(data);
-  // console.log(categoriesData)
-  // console.log(instructorsData)
-
-  const categoriesList = categoriesData.courseCategories.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  }));
-
-  const instructorList = instructorsData.instructors.map(
-    ( instructor) => (
-      {
-      value: instructor.user.id,
-      label: `${fullName(instructor.user)} - ${instructor.user.email}`,
+  const categoriesList = categoriesData.courseCategories.map(
+    ({ id, name }) => ({
+      value: id,
+      label: name,
     })
   );
 
-  
+  const instructorList = instructorsData.instructors.map((instructor) => ({
+    value: instructor.user.id,
+    label: `${fullName(instructor.user)} - ${instructor.user.email}`,
+  }));
 
   const courseDurationOptions = [1, 1.5, 2, 0.5];
 
@@ -534,7 +494,7 @@ const EditSessionView = () => {
   const session = data.session;
 
   // const editSelection = "no";
-// console.log(location.state)
+  // console.log(location.state)
   return (
     <Grid container className="main-session-view">
       <BackgroundPaper
@@ -574,9 +534,10 @@ const EditSessionView = () => {
             </Grid>
             <Grid item xs={6}>
               <Typography variant="h5"> Room</Typography>
-              <TextField 
-              onChange={handleTextChange("room")}
-              value={sessionFields.room} />
+              <TextField
+                onChange={handleTextChange("room")}
+                value={sessionFields.room}
+              />
             </Grid>
 
             <Grid item xs={12}>
@@ -607,7 +568,7 @@ const EditSessionView = () => {
                 <Typography variant="h5"> Date</Typography>
                 <DatePicker
                   inputVariant="outlined"
-                  onChange={handleDateTimeChange}
+                  onChange={handleDateChange}
                   value={sessionFields.start_time}
                 />
               </Grid>
@@ -616,7 +577,7 @@ const EditSessionView = () => {
               <Typography variant="h5"> Start Time</Typography>
               <TimePicker
                 inputVariant="outlined"
-                onChange={handleDateTimeChange}
+                onChange={handleTimeChange}
                 value={sessionFields.start_time}
               />
             </Grid>
@@ -659,59 +620,16 @@ const EditSessionView = () => {
                 }
                 onSubmit={updateSession}
               > */}
-                <Grid item md={6}>
-                  <Button
-                    className="button"
-                    color="secondary"
-                    variant="outlined"
-                    onClick={handleUpdateSession}
-                    // onClick={handleEditToggle(true)}
-                  >
-                    Save
-                  </Button>
-                </Grid>
-                {/* Move back to sessionview and pass through import to = {state}
-                Do a check to see if add/current is defined, if not redirect to session view page. it reads as undefined*/}
-                {/* <Dialog aria-describedby="form-dialog-description"
-                aria-labelledby="form-dialog-title"
-                className="session-view-modal"
-                fullWidth
-                maxWidth="xs"
-                onClose={handleEditToggle(true)}
-                open={edit}>
-                <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
-                <Divider />
-                <DialogContent>
-                    <RadioGroup aria-label="delete"
-                        name="delete"
-                        onChange={handleEditSelection}
-                        value={editSelection}>
-                        <FormControlLabel control={<Radio color="primary" />}
-                            label="This Session"
-                            labelPlacement="end"
-                            value={EDIT_CURRENT_SESSION} />
-                        <FormControlLabel control={<Radio color="primary" />}
-                            label="All Sessions"
-                            labelPlacement="end"
-                            value={EDIT_ALL_SESSIONS} />
-                    </RadioGroup>
-                </DialogContent>
-                <DialogActions>
-                    <Button color="primary" onClick={handleEditToggle(true)}>
-                        Cancel
-                    </Button>
-                    <Button
-                        color="primary"
-                        // component={NavLink}
-                        // to={{
-                        //     "pathname": `/scheduler/edit-session/${course.course_id}/${session.id}/${instructor_id}/edit`
-                        //     , "state": { course: course, session: session }
-                        // }}>
-                        >
-                        Confirm to Edit
-                    </Button>
-                </DialogActions>
-            </Dialog> */}
+              <Grid item md={6}>
+                <Button
+                  className="button"
+                  color="secondary"
+                  variant="outlined"
+                  onClick={handleUpdateSession}
+                >
+                  Save
+                </Button>
+              </Grid>
               {/* </InstructorConflictCheck> */}
               <Grid item md={6}>
                 <BackButton warn={true} icon="cancel" label="cancel" />
