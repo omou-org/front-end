@@ -120,37 +120,61 @@ const GET_SESSION = gql`
 `;
 
 const UPDATE_SESSION = gql`
-    mutation UpdateSession($sessionId: ID!) {
-        updateSession(sessionId: $sessionId) {
-          startDatetime
-          course {
+    mutation DanielsUpdateSession($sessionId: ID!, $title: String, $startDatetime: DateTime, $isConfirmed: Boolean, $instructor: ID, $endDatetime: DateTime) {
+        createSession(id: $sessionId, title: $title, startDatetime: $startDatetime, isConfirmed: $isConfirmed, instructor: $instructor, endDatetime: $endDatetime) {
+          session {
             id
+            title
+            startDatetime
             isConfirmed
-            dayOfWeek
-            startTime
-            endTime
-            room
-            courseCategory {
-              id
-              name
-            }
             instructor {
               user {
                 id
                 firstName
                 lastName
-              }
-              subjects {
-                name
+                email
               }
             }
-          }
-          endDatetime
-          title
-          startDatetime
+            endDatetime
+        }
         }
       }
     `;
+
+    // const UPDATE_SESSION = gql`
+    // mutation DanielsUpdateSession($sessionId: ID!, $title: String, $startDatetime: DateTime, $isConfirmed: Boolean, $instructor: ID, $endDatetime: DateTime) {
+    //     createSession(id: $sessionId, title: $title, startDatetime: $startDatetime, isConfirmed: $isConfirmed, instructor: $instructor, endDatetime: $endDatetime) {
+    //       startDatetime
+    //       course {
+    //         id
+    //         isConfirmed
+    //         dayOfWeek
+    //         startTime
+    //         endTime
+    //         room
+    //         courseCategory {
+    //           id
+    //           name
+    //         }
+    //         instructor {
+    //           user {
+    //             id
+    //             firstName
+    //             lastName
+    //           }
+    //           subjects {
+    //             name
+    //           }
+    //         }
+    //       }
+    //       endDatetime
+    //       title
+    //       startDatetime
+    //     }
+    //   }
+    // `;
+
+    
 
 
  
@@ -370,10 +394,10 @@ const EditSessionView = () => {
     if (location.state === undefined) {
       history.push(`/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`);
     }
-    // console.log(location.state)
+    console.log(location.state)
 
-    // setEditSelection(location.state)
-    // console.log(editSelection)
+    setEditSelection(location.state)
+    console.log(editSelection)
     const startTime = moment(response.session.startDatetime).format("h");
     const endTime = moment(response.session.endDatetime).format("h");
 
@@ -414,21 +438,30 @@ const EditSessionView = () => {
     } = sessionFields;
     console.log("save click?")
     console.log(editSelection)
-    switch (editSelection) {
-      case EDIT_CURRENT_SESSION: {
+    switch (location.state.allOrCurrent) {
+      case "current": {
         console.log("we get here to current")
+        console.log(session_id)
+        // const handleDeleteAnnouncement = async (id) => {
+        //   const deletedAnnouncement = await deleteAnnouncement({
+        //     variables: { id: id },
+        //   });
+        // };
         updateSession({
-          // start_datetime: start_time.toISOString(),
-          // end_datetime: end_time.toISOString(),
-          isConfirmed: is_confirmed,
-          instructor: instructor.value,
-          duration,
-          title,
+          variables: {sessionId: session_id, isConfirmed: is_confirmed,
+            instructor: instructor.value, title: title},
+          // startDatetime: start_time.toISOString(),
+          // endDatetime: end_time.toISOString(),
+          // sessionId: session_id,
+          // isConfirmed: is_confirmed,
+          // instructor: instructor.value,
+          // duration,
+          // title
         });
         // api.patchSession(session.id, patchedSession);
         break;
       }
-      case EDIT_ALL_SESSIONS: {
+      case "all": {
         console.log("we get here to all")
         // const patchedCourse = {
         //   course_category: sessionFields.category.value,
@@ -569,7 +602,7 @@ const EditSessionView = () => {
             </Grid>
             {/* DANIEL HAVING TO HARD CODE THIS, I KNOW IT HAS TO DO WITH SCOPE AND ASYNC BUT CAN'T GET TO WORK */}
             {/* Help me update editSelection */}
-            {editSelection === EDIT_CURRENT_SESSION && (
+            {location.state.allOrCurrent === "current" && (
               <Grid item xs={6}>
                 <Typography variant="h5"> Date</Typography>
                 <DatePicker

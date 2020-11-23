@@ -1,14 +1,47 @@
 {
-    "enrollment": {
-        "id": 2,
+    "data": {
+      "enrollment": {
+        "id": "1",
+        "enrollmentnoteSet": [],
+        "sessionsLeft": -1,
+        "enrollmentBalance": "-10.00",
         "course": {
-            "id":3,
-            "instructor": {
-                "user": {
-                    "id": 4
-                }
-            }
-        }
-    }
-    
-}
+          "id": "1",
+          "title": "Honors Biology Prep",
+          "courseType": "CLASS",
+          "instructor": {
+            "user": {
+              "firstName": "Daniel",
+              "lastName": "Huang",
+              "id": "5",
+              "__typename": "UserType"
+            },
+            "__typename": "InstructorType"
+          },
+          "__typename": "CourseType"
+        },
+        "paymentList": [
+          {
+            "id": "1",
+            "createdAt": "2020-09-15T15:14:08.968777+00:00",
+            "__typename": "PaymentType"
+          }
+        ],
+        "lastPaidSessionDatetime": "2020-10-08T22:00:00+00:00",
+        "student": {
+          "user": {
+            "id": "3",
+            "firstName": "Danny",
+            "lastName": "Hong",
+            "parent": null,
+            "__typename": "UserType"
+          },
+          "__typename": "StudentType"
+        },
+        "__typename": "EnrollmentType"
+      }
+    },
+    "loading": false,
+    "networkStatus": 7,
+    "stale": false
+  }
