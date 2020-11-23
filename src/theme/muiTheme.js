@@ -357,10 +357,31 @@ const theme = createMuiTheme({
         "fill": white,
       },
     },
-    MuiTableCell: {
-      head: {
+    MuiTableHead: {
+      root: {
         color: omouBlue,
-        fontWeight: 600,
+      }
+    },
+    TableHeadSecondary: {
+      color: charcoal
+    },
+    MuiTableRow: {
+      root: {
+        color: "inherit",
+        height: "48px"
+      }
+    },
+    MuiTableCell: {
+      root: {
+        borderBottomColor: cloudy,
+        borderBottomWidth: "1px",
+      },
+      head: {
+        color: "inherit",
+        ...h4,
+      },
+      body: {
+        ...body1,
       }
     }
   },

@@ -5,6 +5,7 @@ import BadgeDemo from "../../theme/ThemedComponents/Badge/BadgeDemo";
 import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDemo"
 import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
+import TableDemo from '../../theme/ThemedComponents/Table/TableDemo';
 
 
 const DemoRoutes = () => (
@@ -20,6 +21,9 @@ const DemoRoutes = () => (
         </Route>
         <Route path="/demo/color">
             <ColorsDemo/>
+        </Route>
+        <Route path="/demo/table">
+            <TableDemo/>
         </Route>
     </Switch>
 );
