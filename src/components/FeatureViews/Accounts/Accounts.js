@@ -36,7 +36,7 @@ import secondaryTheme from "../../../theme/secondaryTheme";
 import NewUser from "@material-ui/icons/PersonAdd";
 
 const QUERY_USERS = gql`
-    query UserQuery {
+    query UserQuery($adminType: String) {
         students {
             user {
                 ...SimpleUser
@@ -54,6 +54,16 @@ const QUERY_USERS = gql`
             phoneNumber
         }
         instructors {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+         admins(adminType: $adminType) {
+            adminType
+            userUuid
             user {
                 ...SimpleUser
                 email
@@ -127,8 +137,7 @@ const Accounts = () => {
                 newUsersList = data.students;
                 break;
             case 3:
-                // TODO: receptionist
-                newUsersList = [];
+                newUsersList = data.admins.filter(admin => admin.adminType === USER_TYPES.receptionist);
                 break;
             case 4:
                 newUsersList = data.parents;
@@ -137,6 +146,7 @@ const Accounts = () => {
                 newUsersList = Object.values(data).flat();
         }
         return newUsersList
+            .filter(user => user.adminType !== "OWNER")
             .map((user) => ({
                 ...user,
                 "accountType": user.accountType.toLowerCase(),
@@ -217,14 +227,14 @@ const Accounts = () => {
                                     row.accountType === USER_TYPES.parent ||
                                     isAdmin) && (
                                     <IconButton component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}>
+                                        to={`/form/${row.accountType}/${row.user.id}`}>
                                         <EditIcon />
                                     </IconButton>
                                 )}
                             </Grid>
                             <Grid component={Hidden} lgUp>
                                 <Button component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}
+                                        to={`/form/${row.accountType}/${row.user.id}`}
                                         variant="outlined">
                                     <EditIcon/>
                                 </Button>
@@ -257,7 +267,7 @@ const Accounts = () => {
                             className="button"
                             color="secondary"
                             component={Link}
-                            to="/registration/form/student"
+                            to="/form/student"
                             variant="outlined"
                         >
                             <NewUser className="icon"/> New Student
