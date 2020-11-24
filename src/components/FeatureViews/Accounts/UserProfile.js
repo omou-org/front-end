@@ -298,9 +298,9 @@ const UserProfile = () => {
 					<Hidden smDown>
 						<UserAvatar
 							fontSize="3.5vw"
-							margin={20}
+							margin="0 20 0 0 "
 							name={user.name}
-							size="9vw"
+							size="136px"
 						/>
 					</Hidden>
 				</Grid>

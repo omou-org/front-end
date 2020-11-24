@@ -6,6 +6,7 @@ import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDe
 import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
 import TableDemo from '../../theme/ThemedComponents/Table/TableDemo';
+import UserProfileDemo from "../../theme/ThemedComponents/UserProfileDemo/UserProfileDemo";
 
 
 const DemoRoutes = () => (
@@ -24,6 +25,9 @@ const DemoRoutes = () => (
         </Route>
         <Route path="/demo/table">
             <TableDemo/>
+        </Route>
+        <Route path="/demo/user-profile">
+            <UserProfileDemo/>
         </Route>
     </Switch>
 );
