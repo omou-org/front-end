@@ -18,13 +18,13 @@ import { makeStyles } from "@material-ui/core";
 
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
-import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
 import {ReactComponent as GradeIcon} from "../../grade.svg";
 import {ReactComponent as IDIcon} from "../../identifier.svg";
 import InstructorAvailability from "./InstructorAvailability";
 import OutOfOffice from "./OutOfOffice";
 import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 import {ReactComponent as SchoolIcon} from "../../school.svg";
+import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 import {USER_TYPES} from "utils";
 import { capitalizeString } from "utils";
 import { darkGrey } from "theme/muiTheme";
@@ -127,7 +127,7 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 					text: addDashes(user.phone_number),
 				},
 				"Birthday": {
-					icon: <BirthdayIcon className={classes.icon}/>,
+					icon: <CakeOutlinedIcon className={classes.icon}/>,
 					text: user.birthday,
 				},
 				"Grade": {
@@ -196,9 +196,9 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 				return (
 					<>
 						<InfoRow variant="ID"/>
-						<InfoRow variant="Balance"/>
-						<InfoRow variant="Phone"/>
 						<InfoRow variant="Email"/>
+						<InfoRow variant="Phone"/>
+						<InfoRow variant="Balance"/>
 					</>
 				);
 			default:
@@ -224,7 +224,7 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 				align="left"
 				alignItems="center"
 				style={{
-					width: "485px",
+					width: "430px",
 					margin: user.role === "instructor" ? "-10px 0" : "10px 0",
 					color: darkGrey,
 				}}

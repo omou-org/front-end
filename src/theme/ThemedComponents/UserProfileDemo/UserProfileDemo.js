@@ -8,7 +8,7 @@ const UserProfileDemo = () => {
 
     const UserProfileInfo = ({ user, isDemo}) => (
         <Grid className="padding" container layout="row">
-			<Grid item md={2}>
+			<Grid item md={2} style={{maxWidth: "200px"}}>
 				<Hidden smDown>
 					<UserAvatar
 						fontSize="3.5vw"
