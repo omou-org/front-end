@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import {stringToColor} from "./accountUtils";
 
 import "./Accounts.scss";
 import { addDashes } from "./accountUtils";
@@ -32,7 +33,8 @@ const useStyles = makeStyles({
     },
     cardContainer: {
 		height: '152px',
-		width: '288px',
+        width: '288px',
+        borderRadius: '8px'
 	},
 	gridContainer: {
 		height: '100%',
@@ -47,7 +49,8 @@ const useStyles = makeStyles({
 		justifyContent: 'center',
 		margin: '0 auto',
 		height: '100%',
-		borderRadius: '8px 0px 0px 8px',
+		borderTopLeftRadius: '8px',
+		borderBottomLeftRadius: '8px',
 	},
 	cardRight: {
 		width: '100%',
@@ -92,15 +95,8 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
 
     const classes = useStyles();
 
-    let stripeColor;
+    let stripeColor = stringToColor(user.name);
 
-	if (user.accountType === 'parent') {
-		stripeColor = '#D74AC8';
-	}
-
-	if (user.accountType === 'student') {
-		stripeColor = '#9B59B6';
-    }
     return (
         <Grid item sm={6} xs={12}>
             {user && (
@@ -118,8 +114,6 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                         <NavLink className={classes.linkUnderline} to={route}>
                             <CardHeader
                                 className={classes.cardHeader}
-                                titleTypographyProps={{ variant: 'h4' }}
-                                subheaderTypographyProps={{ variant: 'body2' }}
                                 title={user.name}
                                 subheader={capitalizeString(user.accountType)}
                             />
@@ -158,6 +152,9 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                     </Grid>
                 </Grid>
             </Card>
+
+// OLD PROFILE CARD STARTS HERE
+
                 // <Card className="ProfileCard">
                 //     <Grid container>
                 //         <NavLink className={classes.linkUnderline} to={route}>
