@@ -227,14 +227,14 @@ const Accounts = () => {
                                     row.accountType === USER_TYPES.parent ||
                                     isAdmin) && (
                                     <IconButton component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}>
+                                        to={`/form/${row.accountType}/${row.user.id}`}>
                                         <EditIcon />
                                     </IconButton>
                                 )}
                             </Grid>
                             <Grid component={Hidden} lgUp>
                                 <Button component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}
+                                        to={`/form/${row.accountType}/${row.user.id}`}
                                         variant="outlined">
                                     <EditIcon/>
                                 </Button>
@@ -267,7 +267,7 @@ const Accounts = () => {
                             className="button"
                             color="secondary"
                             component={Link}
-                            to="/registration/form/student"
+                            to="/form/student"
                             variant="outlined"
                         >
                             <NewUser className="icon"/> New Student

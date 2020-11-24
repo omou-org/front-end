@@ -1,6 +1,5 @@
 import * as types from "actions/actionTypes";
-import {createTutoringDetails, submitRegistration} from
-    "../OmouComponents/RegistrationUtils";
+import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 import {instance} from "actions/apiActions";
 import React from "react";
 import {FORM_ERROR} from "final-form";
@@ -68,9 +67,9 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 }));
 
 const instructorSelect = (name) => (
-    <Fields.DataSelect name={name} 
+    <Fields.DataSelect name={name}
                        optionsMap={userMap}
-                       request={SEARCH_INSTRUCTORS} 
+                       request={SEARCH_INSTRUCTORS}
                        noOptionsText="No instructors available"/>
 );
 
@@ -206,7 +205,7 @@ export const ACADEMIC_LVL_FIELD = {
         "validator": Yup.string().matches(/^\d{5}(?:[-\s]\d{4})?$/u,
             "Invalid zipcode"),
     };
-    
+
 const INSTRUCTOR_FIELDS = {
     "name": "basicInfo",
     "label": "Basic Information",
@@ -361,8 +360,8 @@ const GET_CATEGORIES = gql`
     }
 `;
 
-const GET_COURSES = gql`
-    query GetCourses {
+const GET_BASIC_COURSES = gql`
+    query GetBasicCourses {
       courses {
         title
         id
@@ -381,9 +380,9 @@ const GET_COURSES = gql`
 `;
 
 const parentSelect = (name) => (
-    <Fields.DataSelect name={name} 
+    <Fields.DataSelect name={name}
                        optionsMap={userMap}
-                       request={SEARCH_PARENTS} 
+                       request={SEARCH_PARENTS}
                        noOptionsText="No parents available"/>
 );
 
@@ -406,9 +405,9 @@ const categoryMap = ({courseCategories}) => courseCategories
     }));
 
 const categorySelect = (name) => (
-    <Fields.DataSelect name={name} 
+    <Fields.DataSelect name={name}
                        optionsMap={categoryMap}
-                       request={GET_CATEGORIES} 
+                       request={GET_CATEGORIES}
                        noOptionsText="No categories available"/>
 );
 
@@ -426,9 +425,9 @@ const GET_SCHOOLS = gql`
     }`;
 
 const schoolSelect = (name) => (
-    <Fields.DataSelect name={name} 
+    <Fields.DataSelect name={name}
                        optionsMap={schoolMap}
-                       request={GET_SCHOOLS} 
+                       request={GET_SCHOOLS}
                        noOptionsText="No schools available"/>
 );
 
@@ -552,7 +551,7 @@ export default {
                         "query": GET_INFO,
                         "variables": {id},
                     });
-                    
+
                     const modifiedData = {
                         ...student,
                         "firstName": student.user.firstName,
@@ -839,9 +838,9 @@ export default {
                 ...obj,
                 ...section,
             }), {});
-            
+
             const userUuid = `${adminMutationVariable.firstName.charAt(0).toLowerCase()}${adminMutationVariable.lastName}`
-            
+
             try {
                 await client.mutate({
                     "mutation": CREATE_ADMIN,
@@ -1364,9 +1363,9 @@ export default {
                     {
                         "name": "class",
                         "label": "Class",
-                        "component": <Fields.DataSelect name="Classes" 
+                        "component": <Fields.DataSelect name="Classes"
                                                         optionsMap={openCourseMap}
-                                                        request={GET_COURSES} 
+                                                        request={GET_BASIC_COURSES}
                                                         noOptionsText="No classes available"/>,
                         "validator": Yup.mixed(),
                     },
@@ -1381,7 +1380,7 @@ export default {
                     courseId: formData.course.class.value,
                     studentId: formData.student.student,
                 }
-            })
+            });
         }
     },
     "tutoring-registration": {

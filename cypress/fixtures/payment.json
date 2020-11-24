@@ -1,0 +1,23 @@
+{
+  "simplePayment": {
+    "subTotal": 250,
+    "priceAdjustment": 0,
+    "accountBalance": 0,
+    "total": 250,
+    "discounts": []
+  },
+  "priceAdjustmentPayment": {
+    "subTotal": 250,
+    "priceAdjustment": 10,
+    "accountBalance": 0,
+    "total": 240,
+    "discounts": []
+  },
+  "accountBalancePayment": {
+    "subTotal": 250,
+    "priceAdjustment": 0,
+    "accountBalance": 200,
+    "total": 50,
+    "discounts": []
+  }
+}
