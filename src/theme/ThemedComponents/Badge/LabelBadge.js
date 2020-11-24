@@ -9,7 +9,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
 
     const badgeCategory = {
         "labelBadge": {
-            chipMinWidth: "96px",
+            padding: "4px, 20px",
             labelComponent: "body1",
         },
         "statusBadge": {
@@ -85,6 +85,15 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
             chipColor: colors.statusRed,
             ...badgeCategory.statusRound,
         },
+        "round-count": {
+            chipColor: colors.buttonBlue,
+            height: '16px',
+            width: '16px',
+            ...badgeCategory.statusRound,
+            chipMinWidth: "16px",
+            height: "16px",
+            chipFontSize: "10px",
+        }
     }
 
     const badgeStyle = badgeType[variant];
@@ -95,14 +104,12 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
                     minWidth: badgeStyle.chipMinWidth, 
                     backgroundColor: badgeStyle.chipColor, 
                     borderColor: badgeStyle.chipBorder, 
-                    borderRadius: badgeStyle.borderRadius,
-                    paddingRight: badgeStyle.paddingRight,
-                    paddingLeft: badgeStyle.paddingLeft,
+                    ...badgeStyle,
                     ...style
                 }}
                 label={<Typography 
                                 variant={badgeStyle.labelComponent}
-                                style={{color: badgeStyle.labelColor}}
+                                style={{color: badgeStyle.labelColor, fontSize: badgeStyle.chipFontSize}}
                         >
                             {label}
                         </Typography>
@@ -124,6 +131,7 @@ LabelBadge.propTypes = {
                             "status-new",
                             "round-positive",
                             "round-warning",
-                            "round-negative"
+                            "round-negative",
+                            "round-count"
                         ]).isRequired,
 }

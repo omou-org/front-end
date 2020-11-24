@@ -155,7 +155,6 @@ const LoginPage = () => {
                             <Grid item md={2} />
                             <Grid item md={4}>
                                 <ResponsiveButton 
-                                    className="createAccountButton"
                                     component={Link} 
                                     to={{
                                         "pathname": "/new/parent",
@@ -164,7 +163,7 @@ const LoginPage = () => {
                                             password,
                                         },
                                     }} 
-                                    variant="outlined"
+                                    variant="contained"
                                 >
                                     CREATE ACCOUNT
                                 </ResponsiveButton>
@@ -172,7 +171,6 @@ const LoginPage = () => {
                             <Grid item md={4}>
                                 <ResponsiveButton 
                                     data-cy="nextButton" 
-                                    className="signInButton" 
                                     onClick={handleCheck}
                                     variant='outlined'
                                 >
@@ -274,7 +272,6 @@ const LoginPage = () => {
                             <Grid item md={4} />
                             <Grid className="buttonSpacing" item md={4}>
                                 <ResponsiveButton 
-                                    className="signInButton"
                                     data-cy="signInButton"
                                     type="submit" 
                                     variant="contained"

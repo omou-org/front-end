@@ -10,7 +10,6 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
-import { makeStyles } from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -29,13 +28,10 @@ import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
 import { simpleUser } from "queryFragments";
 import UserAvatar from "./UserAvatar";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import theme from "../../../theme/muiTheme";
-import ThemeProvider from "@material-ui/styles/ThemeProvider";
-import secondaryTheme from "../../../theme/secondaryTheme";
 import NewUser from "@material-ui/icons/PersonAdd";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import PersonAddIcon from '@material-ui/icons/PersonAdd'
+import { makeStyles } from "@material-ui/core";
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -67,18 +63,12 @@ const QUERY_USERS = gql`
     ${simpleUser}
 `;
 
-const TABS = ["ALL", "INSTRUCTORS", "STUDENTS", "RECEPTIONIST", "PARENTS"]
-    .map((label) => <Tab className="tab" key={label} label={label} />);
+const TABS = ["All", "Instructors", "Students", "Receptionist", "Parents"]
+    .map((label) => <Tab key={label} label={label} />);
 
 const useStyles = makeStyles({
-    "tableRowStyle": {
-        "fontSize": "0.8125rem",
-        "padding": "0px",
-    },
-    MuiTableRow: {
-        head: {
-            backgroundColor: "white"
-        }
+    MuiIndicator: {
+        height: "1px"
     }
 });
 
@@ -111,6 +101,8 @@ const Accounts = () => {
             window.removeEventListener("resize", handleResize);
         };
     }, [handleResize]);
+
+    const classes = useStyles();
 
     const displayUsers = useMemo(() => {
         if (!data) {
@@ -160,11 +152,9 @@ const Accounts = () => {
         setViewToggle(view);
     }, []);
 
-    const classes = useStyles();
-    const tableView = useMemo(() => (<ThemeProvider theme={theme}>
-        <ThemeProvider theme={secondaryTheme}>
+    const tableView = useMemo(() => (
             <Table className="AccountsTable" resizable="false">
-                <TableHead className={classes.secondaryTableHead}>
+                <TableHead>
                     <TableRow>
                         <TableCell >
                             Name
@@ -186,7 +176,7 @@ const Accounts = () => {
                         <TableRow className="row" component={Link}
                             key={row.user.id}
                             to={`/accounts/${row.accountType}/${row.user.id}`}>
-                            <TableCell className={classes.tableRowStyle}>
+                            <TableCell>
                                 <Grid alignItems="center" container
                                     layout="row">
                                     <UserAvatar fontSize={14} margin={9}
@@ -225,9 +215,7 @@ const Accounts = () => {
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>
-        </ThemeProvider>
-    </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
+            </Table>), [displayUsers, isAdmin]);
 
     const cardView = useMemo(() => (
         <Grid alignItems="center" className="card-container" container
@@ -242,26 +230,21 @@ const Accounts = () => {
 
     return (
         <Grid className="Accounts" item xs={12}>
-            <BackgroundPaper elevation={2}>
                 <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
                             component={Link}
                             to="/form/student"
                             variant="outlined"
-                            // startIcon={<PersonAddIcon />}
                         >
                             new student
                         </ResponsiveButton>
                     </Grid>
                     <Grid item>
                         <ResponsiveButton 
-                            // color="secondary"
                             component={Link}
                             to="/form/parent"
                             variant="outlined"
-                            // startIcon={<PersonAddIcon />}
                         >
                           new  parent 
                         </ResponsiveButton>
@@ -275,18 +258,24 @@ const Accounts = () => {
                 </Typography>
                 <Grid container direction="row">
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
-                        <Tabs className="tabs" ndicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="on"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs
+                            className='tabs'
+                            onChange={handleTabChange} 
+                            scrollButtons="on"
+                            value={tabIndex}
+                            variant="scrollable"
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>
                     <Grid component={Hidden} item md={8} mdDown xs={10}>
-                        <Tabs className="tabs" indicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="off"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs 
+                            className="tabs"
+                            classes={{indicator: classes.MuiIndicator}}
+                            onChange={handleTabChange} 
+                            scrollButtons="off"
+                            value={tabIndex}
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>
@@ -297,6 +286,7 @@ const Accounts = () => {
                                 <ResponsiveButton
                                     onClick={setView(true)}
                                     variant='outlined'
+                                    startIcon={<ListView />}
                                     >                                   
                                         List View
                                 </ResponsiveButton>
@@ -306,6 +296,7 @@ const Accounts = () => {
                                 <ResponsiveButton
                                     onClick={setView(false)}
                                     variant='outlined'
+                                    startIcon={<CardView />}
                                     >       
                                         Grid View
                                 </ResponsiveButton>
@@ -320,7 +311,6 @@ const Accounts = () => {
                         {isMobile || !viewToggle ? cardView : tableView}
                     </LoadingHandler>
                 </Grid>
-            </BackgroundPaper>
         </Grid>
     );
 };
