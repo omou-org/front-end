@@ -6,12 +6,17 @@ const AccountCardDemo = () => {
 	return (
 		<div>
 			<Grid container>
-				<Grid item xs={12}>
-					<AccountCard />
+                <Grid item xs={4} />
+				<Grid style={{marginTop: "20px"}} item xs={4}>
+					<AccountCard role='Student' accountName='Student Name'/>
 				</Grid>
-				<Grid style={{marginTop: "20px"}} item xs={12}>
-					<AccountCard />
+                <Grid item xs={4} />
+
+                <Grid item xs={4} />
+				<Grid style={{marginTop: "20px"}} item xs={4}>
+					<AccountCard role='Parent' accountName='Parent Name'/>
 				</Grid>
+                <Grid item xs={4} />
 			</Grid>
 		</div>
 	);

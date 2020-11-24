@@ -26,7 +26,7 @@ const DemoRoutes = () => (
         <Route path="/demo/table">
             <TableDemo/>
         </Route>
-        <Route path = "/demo/accountcard">
+        <Route path = "/demo/accountscard">
             <AccountCardDemo/>
         </Route>
     </Switch>
