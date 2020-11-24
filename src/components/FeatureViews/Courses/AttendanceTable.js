@@ -105,12 +105,11 @@ function createData(name, sessionsId, studentId) {
 }
 
 
-const StudentFilterOrSortDropdown = ({ students }) => {
+const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphabet }) => {
   const classes = useStyles();
   const [student, setStudent] = useState(students);
-  const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
-  const handleChange = (event) => {setValue(event.target.value)};
+  const handleChange = (event) => setSortByAlphabet(event.target.value);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleInputSelect = e => {
@@ -134,7 +133,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
         labelId="student-management-sort-tab"
         id="student-management-sort-tab"
         displayEmpty
-        value={value}
+        value={sortByAlphabet}
         open={open}
         onChange={handleChange}
         onOpen={handleOpen}
@@ -154,7 +153,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
           getContentAnchorEl: null,
         }}
       >
-        {value === "" ? <MenuItem
+        {sortByAlphabet === "" ? <MenuItem
           ListItemClasses={{ selected: classes.menuSelected }}
           value=""
         >
@@ -209,7 +208,7 @@ const StudentFilterOrSortDropdown = ({ students }) => {
   )
 };
 
-const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, setEditState, setCurrentSessionId, studentAttendanceData, setStudentAttendanceData, sortAttendanceArray }) => {
+const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, setEditState, setCurrentSessionId, sortAttendanceArray }) => {
   const classes = useStyles();
   const handleOpen = e => {
     const sessionId = e.currentTarget.getAttribute("data-session-id")
@@ -289,7 +288,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     const [isEdit, setIsEdit] = useState();
     const [currentSessionId, setCurrentSessionId] = useState("");
     const [studentAttendanceData, setStudentAttendanceData] = useState();
-    const [color, setColor] = useState("")
+    const [sortByAlphabet, setSortByAlphabet] = useState("")
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
         variables: { courseId: id },
         onCompleted: () => {
@@ -333,7 +332,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         setStudentAttendanceData(newArr)
         setEditState({...editState, [sessionId]: "edited"})
       }
-    }
+    };
 
     const studentsFullName = enrollments.map(({student}) => fullName(student.user));
 
@@ -378,7 +377,26 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         return firstValue - secondValue
       });
       setStudentAttendanceData(sortAttendanceList);
-    }
+    };
+    const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
+    const sortAscOrder = (firstEl, secondEl) => (firstEl > secondEl ? -1 : 0);
+
+    const studentAttendanceDisplay = studentAttendanceData
+      .filter(student => (
+        sortByAlphabet === "asc" || sortByAlphabet === "desc" || sortByAlphabet === "" ? student :
+        {
+          [student.name]: student.name
+        }[sortByAlphabet]
+      ))
+      .sort(
+        (firstEl, secondEl) => ({
+          "asc": sortAscOrder(firstEl.name, secondEl.name),
+          "desc": sortDescOrder(firstEl.name, secondEl.name),
+        }[sortByAlphabet])
+      );
+    
+      // console.log(sortByAlphabet)
+    // console.log(studentAttendanceDisplay)
     // console.log(sortStudentList)
     // console.log(currentSessionId);
     // console.log(newData)
@@ -395,7 +413,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         <TableHead>
           <TableRow>
             <TableCell style={{color: 'black'}}>
-              <StudentFilterOrSortDropdown students={studentsFullName}/>
+              <StudentFilterOrSortDropdown students={studentsFullName} setSortByAlphabet={setSortByAlphabet} sortByAlphabet={sortByAlphabet}/>
             </TableCell>
             {sessions
             .sort((a,b) => a.id - b.id)
@@ -420,7 +438,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentAttendanceData.map((row, i, arr) => {
+          {studentAttendanceDisplay.map((row, i, arr) => {
             const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
             return (
               <TableRow key={row.studentId}>
@@ -432,9 +450,9 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                     {renderAttendanceChip(row, keys, editState)}                  {
                     isEdit[keys] && (
                       <ButtonGroup>
-            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "PRESENT" || arr[i][keys] === "" ? '#6CE086' : '#C9FFD5'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "TARDY" || arr[i][keys] === "" ? '#FFDD59' : '#FFF6D4'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: `${arr[i][keys] === "ABSENT" || arr[i][keys] === "" ? '#FF6766' : '#FFD8D8'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
+            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: `${row[keys] === "PRESENT" || row[keys] === "" ? '#6CE086' : '#C9FFD5'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: `${row[keys] === "TARDY" || row[keys] === "" ? '#FFDD59' : '#FFF6D4'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
+      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: `${row[keys] === "ABSENT" || row[keys] === "" ? '#FF6766' : '#FFD8D8'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
     </ButtonGroup>
                     )
                   }
