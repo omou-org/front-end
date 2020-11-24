@@ -441,8 +441,7 @@ const CourseManagementContainer = () => {
             startDate,
             instructor,
             id,
-          }) => {
-            return (
+          }) => (
             <ClassListItem
               title={title}
               day={availabilityList[0].dayOfWeek}
@@ -454,7 +453,7 @@ const CourseManagementContainer = () => {
               id={id}
               key={title}
             />
-          )}
+          )
         )}
       </BackgroundPaper>
     </Grid>
