@@ -235,6 +235,14 @@ const theme = createMuiTheme({
         "marginTop": "4px",
       },
     },
+    // "MuiCardHeader": {
+    //   titleTypographyProps: {
+    //     variant: "h4"
+    //   },
+    //   subheaderTypographyProps: {
+    //     variant: "body2"
+    //   }
+    // },
     MuiChip: {
       root: {
         height: "24px",
