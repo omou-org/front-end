@@ -115,8 +115,6 @@ const ProfileHeading = ({ user }) => {
 	);
 
 	const profileDetails = useMemo(() => {
-		
-		const ICON_WIDTH = 1;
 
 		const InfoRow = ({ variant, width = 6}) => {
 
@@ -154,12 +152,12 @@ const ProfileHeading = ({ user }) => {
 			if (variant === "Email" && user.email !== "") {
 				return (
 					<>
-						<Grid item md={ICON_WIDTH} className={classes.iconContainer}>
+						<Grid item md={1} className={classes.iconContainer}>
 							<a href={`mailto:${user.email}`}>
 								<EmailIcon className={classes.icon}/>
 							</a>
 						</Grid>
-						<Grid item md={width - ICON_WIDTH}>
+						<Grid item md={width - 1}>
 							<a className={classes.link} href={`mailto:${user.email}`}>
 								<Typography variant="body1" className={classes.text}>{user.email}</Typography>
 							</a>
@@ -169,10 +167,10 @@ const ProfileHeading = ({ user }) => {
 			} else {
 				return (
 					<>
-						<Grid item xs={ICON_WIDTH} className={classes.iconContainer}>
+						<Grid item xs={1} className={classes.iconContainer}>
 							{type[variant].icon}
 						</Grid>
-						<Grid item xs={width - ICON_WIDTH}>
+						<Grid item xs={width - 1}>
 							<Typography variant="body1" className={classes.text}>{type[variant].text}</Typography>
 						</Grid>
 					</> 
