@@ -60,7 +60,7 @@ const ProfileHeading = ({ user }) => {
 	}, []);
 
 	const classes = useStyles();
-	console.log(user);
+
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
 			{user.role === "instructor" && (
