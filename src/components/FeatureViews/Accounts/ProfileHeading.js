@@ -46,7 +46,7 @@ const useStyles = makeStyles({
 
 });
 
-const ProfileHeading = ({ user, isDemo = false }) => {
+const ProfileHeading = ({ user }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isAdmin =
 		useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
@@ -60,10 +60,10 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 	}, []);
 
 	const classes = useStyles();
-
+	console.log(user);
 	const renderEditandAwayButton = () => (
 		<Grid container item xs={4}>
-			{user.role === "instructor" && (!isDemo) && (
+			{user.role === "instructor" && (
 				<Grid align="left" className="schedule-button" item xs={12}>
 					<ResponsiveButton
 						aria-controls="simple-menu"
@@ -150,7 +150,7 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 					text: user.email,
 				}
 			}
-			console.log(user);
+
 			if (variant === "Email" && user.email !== "") {
 				return (
 					<>
@@ -217,7 +217,7 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 	}, [user]);
 
 	return (
-		<Grid alignItems="center" container item xs={12} style={{margin: user.role === "instructor" ? "-20px 0" : "10px 0",}}>
+		<Grid alignItems="center" container item xs={12} style={{margin: user.role === "instructor" ? "-20px 0" : "0",}}>
 			<Grid align="left" alignItems="center" container item xs={8}>
 				<Grid className="profile-name" item style={{marginRight: 20}}>
 					<Typography variant="h3">{user.name}</Typography>

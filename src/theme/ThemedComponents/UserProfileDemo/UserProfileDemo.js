@@ -1,28 +1,6 @@
-import { Grid, Hidden } from "@material-ui/core";
-import ProfileHeading from "components/FeatureViews/Accounts/ProfileHeading";
-import UserAvatar from "components/FeatureViews/Accounts/UserAvatar";
+import UserProfileInfo from "components/FeatureViews/Accounts/UserProfileInfo";
 import React from "react";
-import { h2, white} from "theme/muiTheme";
-
 const UserProfileDemo = () => {
-
-    const UserProfileInfo = ({ user, isDemo}) => (
-        <Grid className="padding" container layout="row">
-			<Grid item md={2} style={{maxWidth: "195px"}}>
-				<Hidden smDown>
-					<UserAvatar
-						margin="0"
-						name={user.name}
-                        size="136px"
-                        style={{...h2, color: white}}
-					/>
-				</Hidden>
-			</Grid>
-			<Grid className="headingPadding" item md={10} xs={12}>
-				<ProfileHeading user={user} isDemo={isDemo}/>
-			</Grid>
-		</Grid>
-    )
 
     const users = {
         student: {
