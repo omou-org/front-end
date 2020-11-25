@@ -6,8 +6,6 @@ import BioIcon from "@material-ui/icons/PersonOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
-import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden/Hidden";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
@@ -29,12 +27,9 @@ import * as hooks from "actions/hooks";
 import BackButton from "components/OmouComponents/BackButton";
 import ComponentViewer from "./ComponentViewer.js";
 import Loading from "components/OmouComponents/Loading";
-import ProfileHeading from "./ProfileHeading.js";
 import { useAccountNotes } from "actions/userActions";
-import UserAvatar from "./UserAvatar";
 import SettingsIcon from "@material-ui/icons/Settings"
 import { USER_TYPES } from "../../../utils";
-import { h2, white } from "theme/muiTheme";
 import UserProfileInfo from "./UserProfileInfo";
 
 const userTabs = {
