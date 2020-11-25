@@ -8,10 +8,9 @@ const UserProfileDemo = () => {
 
     const UserProfileInfo = ({ user, isDemo}) => (
         <Grid className="padding" container layout="row">
-			<Grid item md={2} style={{maxWidth: "200px"}}>
+			<Grid item md={2} style={{maxWidth: "195px"}}>
 				<Hidden smDown>
 					<UserAvatar
-						fontSize="3.5vw"
 						margin="0"
 						name={user.name}
                         size="136px"
@@ -42,7 +41,7 @@ const UserProfileDemo = () => {
             name: "Instructor Name",
             phone_number: "1231234567",
             role: "instructor",
-            user_id: "5"
+            user_id: 5
         },
         parent: {
             balance: "100",
@@ -66,7 +65,6 @@ const UserProfileDemo = () => {
         <>
             <UserProfileInfo user={users.student}/>
             <UserProfileInfo user={users.parent}/>
-            <UserProfileInfo user={users.instructor} isDemo={true}/>
             <UserProfileInfo user={users.receptionist}/>
         </>       
     )

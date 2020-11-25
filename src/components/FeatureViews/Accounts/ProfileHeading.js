@@ -39,6 +39,9 @@ const useStyles = makeStyles({
 	},
 	link: {
 		textDecoration: 'none',
+	},
+	iconContainer: {
+		paddingTop:"3px"
 	}
 
 });
@@ -141,35 +144,42 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 				"Balance": {
 					icon: <MoneyIcon className={classes.icon}/>,
 					text: `$${user.balance}`
+				},
+				"Email": {
+					icon: <EmailIcon className={classes.icon}/>,
+					text: user.email,
 				}
 			}
-
-			return (variant !== "Email" ?
-				<>
-					<Grid item xs={ICON_WIDTH}>
-						{type[variant].icon}
-					</Grid>
-					<Grid item xs={width - ICON_WIDTH}>
-						<Typography variant="body1" className={classes.text}>{type[variant].text}</Typography>
-					</Grid>
-				</> 
-				: 
-				<>
-					<Grid item md={ICON_WIDTH}>
-						<a href={`mailto:${user.email}`}>
-							<EmailIcon className={classes.icon}/>
-						</a>
-					</Grid>
-					<Grid item md={width - ICON_WIDTH}>
-						<a className={classes.link} href={`mailto:${user.email}`}>
-							<Typography variant="body1" className={classes.text}>{user.email}</Typography>
-						</a>
-					</Grid>
-			</>
-			)
+			console.log(user);
+			if (variant === "Email" && user.email !== "") {
+				return (
+					<>
+						<Grid item md={ICON_WIDTH} className={classes.iconContainer}>
+							<a href={`mailto:${user.email}`}>
+								<EmailIcon className={classes.icon}/>
+							</a>
+						</Grid>
+						<Grid item md={width - ICON_WIDTH}>
+							<a className={classes.link} href={`mailto:${user.email}`}>
+								<Typography variant="body1" className={classes.text}>{user.email}</Typography>
+							</a>
+						</Grid>
+					</>
+				)
+			} else {
+				return (
+					<>
+						<Grid item xs={ICON_WIDTH} className={classes.iconContainer}>
+							{type[variant].icon}
+						</Grid>
+						<Grid item xs={width - ICON_WIDTH}>
+							<Typography variant="body1" className={classes.text}>{type[variant].text}</Typography>
+						</Grid>
+					</> 
+				)
+			}
 		}
 
-		console.log(user);
 		switch (user.role) {
 			case "student":
 				return (
@@ -207,7 +217,7 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 	}, [user]);
 
 	return (
-		<Grid alignItems="center" container item xs={12}>
+		<Grid alignItems="center" container item xs={12} style={{margin: user.role === "instructor" ? "-20px 0" : "10px 0",}}>
 			<Grid align="left" alignItems="center" container item xs={8}>
 				<Grid className="profile-name" item style={{marginRight: 20}}>
 					<Typography variant="h3">{user.name}</Typography>
@@ -226,7 +236,6 @@ const ProfileHeading = ({ user, isDemo = false }) => {
 				style={{
 					width: "430px",
 					margin: user.role === "instructor" ? "-10px 0" : "10px 0",
-					color: darkGrey,
 				}}
 			>
 				{profileDetails}
