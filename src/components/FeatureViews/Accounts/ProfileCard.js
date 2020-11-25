@@ -8,7 +8,6 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden/Hidden";
 import { NavLink } from "react-router-dom";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
@@ -19,20 +18,22 @@ import "./Accounts.scss";
 import { addDashes } from "./accountUtils";
 import { capitalizeString } from "utils";
 import { ReactComponent as IDIcon } from "components/identifier.svg";
-import UserAvatar from "./UserAvatar";
 import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
-
-
 
 const useStyles = makeStyles({
     "linkUnderline": {
         "textDecoration": "none",
         "color": "black"
     },
+    editButton: {
+        textDecoration: "none",
+        color: "#1F82A1",
+        fontSize: "15px"
+    },
     cardContainer: {
-		height: '152px',
+        // height: '152px',
+        height: '200px',
         width: '288px',
         borderRadius: '8px'
 	},
@@ -69,7 +70,13 @@ const useStyles = makeStyles({
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center',
-	}
+    },
+    cardActions: {
+        display: 'flex',
+		alignItems: 'center',
+        justifyContent: 'space-evenly',
+        marginTop: '10px',
+    }
 });
 
 const INVITE_STUDENT = gql`
@@ -94,8 +101,7 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
     }, [invite, user]);
 
     const classes = useStyles();
-
-    let stripeColor = stringToColor(user.name);
+    const stripeColor = stringToColor(user.name);
 
     return (
         <Grid item sm={6} xs={12}>
@@ -111,14 +117,14 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                         {user.name[0]}{user.name[user.name.indexOf(' ') + 1]}
                     </Grid>
                     <Grid className={classes.cardRight} item xs={10}>
-                        <NavLink className={classes.linkUnderline} to={route}>
-                            <CardHeader
-                                className={classes.cardHeader}
-                                title={user.name}
-                                subheader={capitalizeString(user.accountType)}
-                            />
-                        </NavLink>
-    
+                            <NavLink className={classes.linkUnderline} to={route}>
+                                <CardHeader
+                                    className={classes.cardHeader}
+                                    title={user.name}
+                                    subheader={capitalizeString(user.accountType)}
+                                />
+                            </NavLink>
+                        
                         <Grid container>
                             <Grid className={classes.iconStyles} item xs={2}>
                                 <IDIcon height={22} width={20.5} />
@@ -148,7 +154,19 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                                 <Typography variant='body1'>{user.user.email}</Typography>
                             </Grid>
                         </Grid>
-    
+
+                    {studentInvite &&
+                        <Grid className={classes.cardActions} container>
+                            <ResponsiveButton variant='outlined'>
+                                <NavLink className={classes.editButton} to={`/form/student/${user.user.id}`}>
+                                    Edit
+                                </NavLink>
+                            </ResponsiveButton>
+
+                            <ResponsiveButton variant='outlined' onClick={inviteStudent}>
+                                Invite
+                            </ResponsiveButton>
+                        </Grid>}
                     </Grid>
                 </Grid>
             </Card>
