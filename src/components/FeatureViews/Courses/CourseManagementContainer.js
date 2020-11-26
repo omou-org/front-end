@@ -16,6 +16,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import { UserAvatarCircle,  StudentCourseLabel } from "./StudentBadge";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import theme, {
@@ -86,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
   menuSelect: {
     "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
     "&:focus": highlightColor,
+    display: "flex"
   },
   menuSelected: {
     backgroundColor: `${highlightColor} !important`,
@@ -133,6 +135,7 @@ const ClassListItem = ({
   startDate,
   instructor,
   id,
+  studentList,
 }) => {
   const classes = useStyles();
   let history = useHistory();
@@ -158,45 +161,52 @@ const ClassListItem = ({
         data-active="inactive"
         onClick={handleClick}
       >
-        <Grid item xs={6} sm={9} md={6}>
-          <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
-            {title}
-          </Typography>
-        </Grid>
-        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
-          <Chip
-            label={isActive ? "ACTIVE" : "PAST"}
-            className={classes.chipSize}
-            style={{
-              backgroundColor: isActive ? activeColor : pastColor,
-            }}
+        <Grid container md={10}> 
+          <Grid item xs={6} sm={9} md={6}>
+            <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
+              {title}
+            </Typography>
+          </Grid>
+          <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left"}}>
+            <Chip
+              label={isActive ? "ACTIVE" : "PAST"}
+              className={classes.chipSize}
+              style={{
+                backgroundColor: isActive ? activeColor : pastColor,
+              }}
+            />
+          </Grid>
+          <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
+            <Typography
+              variant="body1"
+              align="left"
+              style={{ marginLeft: "1.85em" }}
+            >
+              <span style={{ marginRight: theme.spacing(1) }}>By:</span>
+              <span className={classes.highlightName}>{`${concatFullName}`}</span>
+            </Typography>
+          </Grid>
+          <Divder
+            orientation="vertical"
+            flexItem
+            style={{ height: "2em", marginTop: "1em" }}
           />
+          <Grid item xs={6} sm={7} md={6} >
+            <Typography
+              variant="body1"
+              align="left"
+              style={{ marginLeft: "1.2em", paddingTop: "3px" }}
+              className={classes.displayCardMargins}
+            >
+              {`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
-          <Typography
-            variant="body1"
-            align="left"
-            style={{ marginLeft: "1.85em" }}
-          >
-            <span style={{ marginRight: theme.spacing(1) }}>By:</span>
-            <span className={classes.highlightName}>{`${concatFullName}`}</span>
-          </Typography>
-        </Grid>
-        <Divder
-          orientation="vertical"
-          flexItem
-          style={{ height: "2em", marginTop: "1em" }}
-        />
-        <Grid item xs={6} sm={7} md={6}>
-          <Typography
-            variant="body1"
-            align="left"
-            style={{ marginLeft: "1.2em", paddingTop: "3px" }}
-            className={classes.displayCardMargins}
-          >
-            {`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
-          </Typography>
-        </Grid>
+        {studentList && 
+          <Grid item xs={2}>
+            {studentList.filter((student) => JSON.parse(student.value).includes(id)).map(({label}) => <StudentCourseLabel label={label}/> )}
+          </Grid>
+        }
       </Grid>
       <Divder />
     </>
@@ -225,6 +235,10 @@ const CourseFilterDropdown = ({
       value: option.value.toUpperCase(),
       label: option.label,
     }),
+    students: (option) => ({
+      value: option.value,
+      label: option.label,
+    })
   }[filterKey];
 
   const ChosenFiltersOption = filterList.map(filterOptionsMapper);
@@ -266,6 +280,7 @@ const CourseFilterDropdown = ({
               className={classes.menuSelect}
               ListItemClasses={{ selected: classes.menuSelected }}
             >
+              {filterKey === "students" ? <UserAvatarCircle label={option.label}/> : ""}
               {option.label}
             </MenuItem>
           ))}
@@ -285,10 +300,34 @@ const CourseManagementContainer = () => {
   const accountInfo = useSelector(({auth}) => auth);
 
   const handleChange = (event) => setSortByDate(event.target.value);
-
+  
   const checkAccountForQuery = accountInfo.accountType === "ADMIN" || accountInfo.accountType === "INSTRUCTOR" ?
     "instructorId" :
     "parentId"
+
+  const accountId = accountInfo.accountType === "ADMIN" ? "": accountInfo.user.id;
+
+  const GET_STUDENTS = gql`
+    query getStudents($accountId: ID!) {
+      parent(userId: $accountId) {
+        user {
+          id
+        }
+        studentList {
+          user {
+            firstName
+            id
+            lastName
+          }
+          enrollmentSet {
+            course {
+              id 
+              title
+            }
+          }
+        }
+      }
+    }`;
 
   const GET_COURSES = gql`
     query getCourses($accountId:ID!) {
@@ -314,24 +353,26 @@ const CourseManagementContainer = () => {
         courseId
         id
       }
-     
     }
   `;
 
-  const accountId = accountInfo.accountType === "ADMIN" ? "": accountInfo.user.id;
- 
-  const { data, loading, error } = useQuery(GET_COURSES, {
+  const { data: courseData, loading: courseLoading, error: courseError } = useQuery(GET_COURSES, {
     variables: {accountId}
   });
 
+  const { data: studentData, loading: studentLoading, error: studentError } = useQuery(GET_STUDENTS, {
+    variables: {accountId},
+    skip: accountInfo.accountType !== "PARENT"
+  })
 
 
-  if (loading) return <Loading />;
-  if (error) return console.error(error.message);
+  if (courseLoading || studentLoading) return <Loading />;
+  if (courseError) return console.error(courseError.message);
+  if (studentError) return console.error(studentError.message);
 
 
   const createFilteredListFromCourses = (filterCondition) =>
-    data.courses.reduce(
+    courseData.courses.reduce(
       (accumulator, currentValue) =>
         !accumulator.some((course) => filterCondition(currentValue, course))
           ? [...accumulator, currentValue]
@@ -348,14 +389,16 @@ const CourseManagementContainer = () => {
   );
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
+  const checkStudentEnrolled = (value, filter) => "" === filter || JSON.parse(filter).includes(value);
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
 
-  const defaultCourseDisplay = data.courses
+  const defaultCourseDisplay = courseData.courses
     .filter(
       (course) =>
         checkFilter(course.academicLevel, gradeFilterValue) &&
         checkFilter(course.courseCategory.id, subectFilterValue) &&
-        checkFilter(course.instructor.user.id, instructorsFilterValue)
+        checkFilter(course.instructor.user.id, instructorsFilterValue) &&
+        checkStudentEnrolled(course.id, studentFilterValue)
     )
     .sort(
       (firstEl, secondEl) =>
@@ -365,10 +408,16 @@ const CourseManagementContainer = () => {
         }[sortByDate])
     );
 
-
-
-
-
+    
+    let studentOptionList;
+    if (accountInfo.accountType === "PARENT")
+        studentOptionList = studentData.parent.studentList.map(
+          (student) => (
+            {
+              label: `${student.user.firstName} ${student.user.lastName}`, 
+              value: JSON.stringify(student.enrollmentSet.map(({course}) => course.id)),
+            })
+        );
 
   return (
     <Grid item xs={12}>
@@ -376,47 +425,27 @@ const CourseManagementContainer = () => {
       <Grid
         container
         direction="row"
-    >
-      <Grid item xs={6}>
-        <Typography align="left" className="heading" variant="h3">
-          Course Management
-        </Typography>
+      >
+        <Grid item xs={6}>
+          <Typography align="left" className="heading" variant="h3">
+            Course Management
+          </Typography>
         </Grid>
 
- {/* add dropdown only if account type is parent */}
-        <Grid item align="right" style={{paddingRight: "2em"}} xs={6}>
-          <FormControl>
-          <InputLabel shrink id="parent-filter-label">
-          Select Students:
-        </InputLabel>
-            <Select
-            id="parent-student-filter"
-            classes={{ select: classes.menuSelect }}
-            MenuProps={{
-              classes: { list: classes.dropdown },
-              anchorOrigin: {
-                vertical: "bottom",
-                horizontal: "left",
-              },
-              transformOrigin: {
-                vertical: "top",
-                horizontal: "left",
-              },
-              getContentAnchorEl: null,
-            }}
-          >
-      
-              {/* add menu item here */}
+        {accountInfo.accountType === "PARENT" && 
+          <Grid item align="right" style={{paddingRight: "2em"}} xs={6}>
+            <CourseFilterDropdown
+                  filterList={studentOptionList}
+                  initialValue="All Students"
+                  setState={setStudentFilterValue}
+                  filter={studentFilterValue}
+                  filterKey="students"
+                />
+          </Grid>
+        }
 
-            </Select>
-          </FormControl>
-        </Grid>
-        </Grid>
+      </Grid>
        
-
-
-
-     
           <Grid
             container
             alignItems="center"
@@ -516,6 +545,7 @@ const CourseManagementContainer = () => {
               instructor={instructor}
               id={id}
               key={title}
+              studentList={studentOptionList}
             />
           )
         )}
