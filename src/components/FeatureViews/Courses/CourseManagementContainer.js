@@ -126,11 +126,13 @@ const useStyles = makeStyles((theme) => ({
 const GET_COURSES = gql`
   query getCourses {
     courses {
-      dayOfWeek
       endDate
-      endTime
+      availabilityList {
+        dayOfWeek
+        endTime
+        startTime
+      }
       title
-      startTime
       academicLevel
       startDate
       instructor {
@@ -434,20 +436,18 @@ const CourseManagementContainer = () => {
         {defaultCourseDisplay.map(
           ({
             title,
-            dayOfWeek,
+            availabilityList,
             endDate,
-            endTime,
-            startTime,
             startDate,
             instructor,
             id,
           }) => (
             <ClassListItem
               title={title}
-              day={dayOfWeek}
+              day={availabilityList[0].dayOfWeek}
               endDate={endDate}
-              endTime={endTime}
-              startTime={startTime}
+              endTime={availabilityList[0].endTime}
+              startTime={availabilityList[0].startTime}
               startDate={startDate}
               instructor={instructor}
               id={id}

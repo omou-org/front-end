@@ -29,7 +29,7 @@ query GetParents($query: String!) {
           id
           email
         }
-        studentList
+        studentIdList
       }
     }
   }

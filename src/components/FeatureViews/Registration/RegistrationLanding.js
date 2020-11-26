@@ -48,8 +48,10 @@ export const GET_COURSES = gql`
 	query CourseList {
 		courses {
             endDate
-            endTime
-            startTime
+            availabilityList {
+                endTime
+                startTime
+              }
             startDate
             title
             totalTuition

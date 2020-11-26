@@ -73,7 +73,10 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
       enrollments {
         course {
           title
-          startTime
+		  availabilityList {
+			endTime
+			startTime
+		  }
           startDate
           instructor {
             user {
@@ -84,7 +87,6 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
           }
           courseId
           endDate
-          endTime
           hourlyTuition
         }
         student {
@@ -186,12 +188,12 @@ export default function PaymentBoard() {
 			student,
 		}));
 
-	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
+	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentIdList}})
 	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS, {
 		update: (cache, {data}) => {
 			const existingEnrollmentsFromGetParent = cache.readQuery({
 				query: GET_PARENT_ENROLLMENTS,
-				variables: {studentIds: currentParent.studentList}
+				variables: {studentIds: currentParent.studentIdList}
 			}).enrollments;
 
 			cache.writeQuery({
@@ -203,7 +205,7 @@ export default function PaymentBoard() {
 						...data["createEnrollments"].enrollments
 					],
 				},
-				variables: {studentIds: currentParent.studentList}
+				variables: {studentIds: currentParent.studentIdList}
 			});
 			let cachedCourses = cache.readQuery({
 				query: GET_COURSES,
@@ -238,7 +240,7 @@ export default function PaymentBoard() {
 			const {userInfos, enrollments} = cache.readQuery({
 				query: GET_STUDENTS_AND_ENROLLMENTS,
 				variables: {
-					userIds: currentParent.studentList
+					userIds: currentParent.studentIdList
 				}
 			});
 

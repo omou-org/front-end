@@ -103,11 +103,13 @@ const CourseClasses = () => {
           id
         }
         title
-        startTime
+        availabilityList {
+          endTime
+          startTime
+          dayOfWeek
+        }
         startDate
-        endTime
         endDate
-        dayOfWeek
         description
         instructor {
           user {
@@ -194,14 +196,14 @@ const CourseClasses = () => {
     academicLevel,
     description,
     endDate,
-    endTime,
+    availabilityList,
     enrollmentSet,
     startDate,
-    startTime,
     title,
     sessionSet,
   } = data.course;
 
+  const { startTime, endTime } = availabilityList[0];
   const { name } = data.course.courseCategory;
   const { firstName, lastName } = data.course.instructor.user;
 
