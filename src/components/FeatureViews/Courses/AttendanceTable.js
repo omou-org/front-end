@@ -46,11 +46,12 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonDropDown: {
     border: '1px solid #43B5D9',
-    marginLeft: '1em',
-    width: '.5em', 
-    height: '2.5em',
-    maxWidth: '.5em',
-    maxHeight: "2.5em"
+    marginLeft: '.5em',
+    width: '100%', 
+    height: 'auto',
+    maxWidth: '2em',
+    maxHeight: "2em",
+    borderRadius: 5,
   },
   attendanceButton: {
     border: '1px solid #43B5D9',
@@ -107,11 +108,27 @@ function createData(name, sessionsId, studentId) {
 
 const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphabet }) => {
   const classes = useStyles();
-  const [student, setStudent] = useState(students);
+  const [student, setStudent] = useState([]);
   const [open, setOpen] = useState(false);
+  const [filterValue, setFilterValue] = useState("");
+  useEffect(() => setStudent(students), [sortByAlphabet]);
   const handleChange = (event) => setSortByAlphabet(event.target.value);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => {
+    setOpen(true)
+    setSortByAlphabet("")
+  };
+  const handleClose = () => {
+    setOpen(false);
+    setFilterValue("");
+  };
+  const studentNameList = student.filter(name => name.includes(filterValue));
+  const handleFilter = e => {
+    e.stopPropagation();
+    const { value } = e.target;
+    setFilterValue(value)
+    // const set = new Set(value);
+    // console.log(student.filter(name => name.includes(value)));
+  };
   const handleInputSelect = e => {
     e.stopPropagation();
     setOpen(true);
@@ -125,6 +142,8 @@ const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphab
     }
     event.stopPropagation();
   }
+
+  // console.log(sortByAlphabet)
 
   return (
     <Grid item xs={3}>
@@ -171,13 +190,14 @@ const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphab
         >
           Sort Z-A
         </MenuItem>
-        <MenuItem
+        {/* <MenuItem
           ListItemClasses={{ selected: classes.menuSelected }}
           value="input"
           onClick={handleInputSelect}
-        >
+        > */}
       <TextField
         className={classes.input}
+        onChange={handleFilter}
         InputProps={{
           endAdornment: (
           <InputAdornment>
@@ -187,12 +207,14 @@ const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphab
           </InputAdornment>
           ),
           disableUnderline: true,
-          onKeyDown: handleKeyDown
+          onKeyDown: handleKeyDown,
+          onClick: handleInputSelect,
+          // onChange: handleChange,
         }}
         
       />
-        </MenuItem>
-        {student.map(studentName => (
+        {/* </MenuItem> */}
+        {studentNameList.map(studentName => (
            <MenuItem
            key={studentName}
            value={studentName}
@@ -232,16 +254,16 @@ const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, se
   
   return (
     <>
-    <Button
+    <IconButton
       aria-controls="session-action"
       aria-haspopup="true"
       onClick={handleOpen}
       className={classes.buttonDropDown} 
       data-session-id={id}
-      // size="small"
+      classes={{ root: classes.buttonDropDown}}
     >
     {attendanceArray[id] ? <ExpandLess /> : <ExpandMore />}
-    </Button>
+    </IconButton>
     <Menu
       id="session-action"
       anchorEl={attendanceArray[id]}

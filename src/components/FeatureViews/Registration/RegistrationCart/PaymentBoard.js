@@ -72,8 +72,11 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
       discountTotal
       enrollments {
         course {
-          title
-          startTime
+		  title
+		  availabilityList {
+			endTime
+			startTime
+		  }
           startDate
           instructor {
             user {
@@ -82,9 +85,8 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
               firstName
             }
           }
-          courseId
+		  courseId
           endDate
-          endTime
           hourlyTuition
         }
         student {
@@ -186,7 +188,7 @@ export default function PaymentBoard() {
 			student,
 		}));
 
-	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
+	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentIdList}})
 	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS, {
 		update: (cache, {data}) => {
 			const existingEnrollmentsFromGetParent = cache.readQuery({
@@ -390,7 +392,7 @@ export default function PaymentBoard() {
 
 	const handlePayment = async () => {
 		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
-		console.log(enrollmentResponse);
+		// console.log(enrollmentResponse);
 		const {data: {enrollments}} = enrollmentResponse;
 		const isSameEnrollment = ({enrollment, course, student}) =>
 			(enrollment.student.user.id === student && enrollment.course.id === course);
@@ -437,6 +439,7 @@ export default function PaymentBoard() {
 				registrations: registrations,
 			}
 		});
+		console.log(classRegistrations)
 
 		//clean out parent registration cart
 		await createRegistrationCart({
@@ -450,8 +453,10 @@ export default function PaymentBoard() {
 	};
 
 	if (error || enrollmentResponse.error) {
-		console.error(error.message, enrollmentResponse.error.message);
-		return <div>There has been an error! : {error.message} {enrollmentResponse.error.message}</div>
+		// console.log(error)
+		// console.log(enrollmentResponse.error.message)
+		console.error(error?.message, enrollmentResponse.error.message);
+		return <div>There has been an error! : {error?.message} {enrollmentResponse.error.message}</div>
 	}
 
 	const priceQuote = data?.priceQuote || {

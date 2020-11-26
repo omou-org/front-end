@@ -45,8 +45,10 @@ const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
 			startDate
 			endDate
 			hourlyTuition
-			startTime
-			endTime
+			availabilityList {
+				endTime
+				startTime
+			  }
 			academicLevelPretty
 			courseCategory {
 				id
@@ -85,13 +87,12 @@ export default function RegistrationCartContainer() {
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	// create list of students to fetch
 	const studentIds = (Object.keys(registrationCartState).length > 0 && Object.keys(registrationCartState)) ||
-		currentParent.studentList;
+		currentParent.studentIdList;
 	// create list of courses to fetch
 	const courseIds = Object.values(registrationCartState).filter(reg => reg).length > 0 &&
 		Object.values(registrationCartState).flat()
 			.filter(registration => registration)
 			.map(({course}) => course.id);
-
 	const {data, loading, error} = useQuery(GET_COURSES_AND_STUDENTS_TO_REGISTER,
 		{
 			variables: {userIds: studentIds, courseIds: courseIds},
