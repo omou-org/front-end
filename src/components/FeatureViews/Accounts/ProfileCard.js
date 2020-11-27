@@ -98,7 +98,6 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
     }, [invite, user]);
 
     const classes = useStyles();
-    const stripeColor = stringToColor(user.name);
 
     return (
         <Grid item sm={6} xs={12}>
@@ -106,7 +105,7 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                 <Card className={classes.cardContainer}>
                 <Grid className={classes.gridContainer} container>
                     <Grid
-                        style={{ background: stripeColor }}
+                        style={{ background: stringToColor(user.name) }}
                         className={classes.leftStripe}
                         item
                         xs={2}
