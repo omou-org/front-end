@@ -78,6 +78,7 @@ const GET_SESSION = gql`
   query EditSessionViewQuery($sessionId: ID!) {
     session(sessionId: $sessionId) {
       id
+      isConfirmed
       startDatetime
       course {
         id
@@ -119,24 +120,27 @@ const GET_SESSION = gql`
 
 ///this session should be session.isConfirmed
 //all session should be session.course.isConfirmed
+//instructor should be from course
 
 const UPDATE_SESSION = gql`
   mutation UpdateSession(
     $sessionId: ID!
     $title: String
     $startDatetime: DateTime
-    $isConfirmed: Boolean
+    $sessionConfirmed: Boolean
+    $courseConfirmed: Boolean
+    $room: String
     $instructor: ID
     $endDatetime: DateTime
     $courseCategoryId: ID!
-    $name: String
+    $courseCategoryName: String
+    $courseId: ID!
   ) {
     createSession(
       id: $sessionId
       title: $title
       startDatetime: $startDatetime
-      isConfirmed: $isConfirmed
-      instructor: $instructor
+      isConfirmed: $sessionConfirmed
       endDatetime: $endDatetime
     ) {
       session {
@@ -144,6 +148,25 @@ const UPDATE_SESSION = gql`
         title
         startDatetime
         isConfirmed
+        endDatetime
+      }
+    }
+    createCourseCategory(id: $courseCategoryId, name: $courseCategoryName) {
+      courseCategory {
+        id
+        name
+      }
+    }
+    createCourse(
+      id: $courseId
+      isConfirmed: $courseConfirmed
+      room: $room
+      instructor: $instructor
+    ) {
+      course {
+        id
+        isConfirmed
+        room
         instructor {
           user {
             id
@@ -152,20 +175,12 @@ const UPDATE_SESSION = gql`
             email
           }
         }
-        endDatetime
-      }
-    }
-    createCourseCategory(
-      id: $courseCategoryId
-      name: $name
-    ) {
-      courseCategory {
-        id
-        name
       }
     }
   }
 `;
+
+//ANNA UPDATE ROOM??
 
 const EditSessionView = () => {
   const { course_id, session_id } = useParams();
@@ -211,7 +226,11 @@ const EditSessionView = () => {
     update: (cache, { data }) => {
       const existingSession = cache.readQuery({
         query: GET_SESSION,
-        variables: { sessionId: session_id, courseCategoryId: course_id },
+        variables: {
+          sessionId: session_id,
+          courseCategoryId: course_id,
+          courseId: course_id,
+        },
       }).session;
 
       cache.writeQuery({
@@ -219,13 +238,15 @@ const EditSessionView = () => {
         data: {
           session: [...existingSession, ...data["updateSession"].session],
         },
-        variables: { sessionId: session_id, courseCategoryId: course_id },
+        variables: {
+          sessionId: session_id,
+          courseCategoryId: course_id,
+          courseId: course_id,
+        },
       });
     },
   });
 
-  const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
-  const [edit, setEdit] = useState(false);
   const [sessionFields, setSessionFields] = useState({
     start_time: "",
     instructor: "",
@@ -260,90 +281,59 @@ const EditSessionView = () => {
       ...sessionFields,
       [field]: event.target.value,
     });
-    console.log(sessionFields.is_confirmed);
+    console.log(sessionFields.end_time);
   };
 
-  //ANNA NOT WORKING
   const handleDateChange = (date) => {
-    //this is a moment object
-    console.log(date);
-    //this is current date
-    // console.log(sessionFields.start_time);
-    const work = moment(date).utc().format();
-    // console.log(work.slice(0, 19))
-    const newDate = work.slice(0,-1)
-    console.log(newDate)
-    console.log(sessionFields.start_time);
-    const time = sessionFields.start_time.slice(-5)
-    console.log(time)
-    console.log(newDate+ "+" + time)
-    const newStartDateTime = newDate+ "+" + time
-    // const {end_time, duration} = sessionFields;
-    // if (date.end_time) {
-    // }
-    // end_time.setDate(date.getDate());
-    // end_time.setHours(date.getHours() + duration);
-    // end_time.setMinutes(date.getMinutes());
-
     setSessionFields({
-    	...sessionFields,
-    	start_time: date,
-    	// end_time,
+      ...sessionFields,
+      start_time: date,
     });
   };
 
-    //ANNA NOT WORKING
-    const handleTimeChange = (date) => {
-      //this is a moment object
-      console.log(date);
-      //this is current date
-      // console.log(sessionFields.start_time);
-      console.log(date[3]);
-      const work = moment(date).utc().format();
-      console.log(work)
-      console.log(sessionFields.start_time);
-      // const {end_time, duration} = sessionFields;
-      // if (date.end_time) {
-      // }
-      // end_time.setDate(date.getDate());
-      // end_time.setHours(date.getHours() + duration);
-      // end_time.setMinutes(date.getMinutes());
-  
-      setSessionFields({
-      	...sessionFields,
-      	start_time: date,
-      });
-    };
+  const handleTimeChange = (date) => {
+    setSessionFields({
+      ...sessionFields,
+      start_time: date,
+    });
+  };
 
-  //ANNA NOT WORKING
   const handleDurationSelect = (event) => {
     const { start_time } = sessionFields;
-    const newEndTime = new Date(start_time);
+    let newEndTime = calculateEndTime(event.target.value, start_time);
 
-    switch (event.target.value) {
-      case 1:
-        newEndTime.setHours(start_time.getHours() + 1);
-        break;
-      case 1.5:
-        newEndTime.setHours(start_time.getHours() + 1);
-        newEndTime.setMinutes(start_time.getMinutes() + 30);
-        break;
-      case 2:
-        newEndTime.setHours(start_time.getHours() + 2);
-        break;
-      case 0.5:
-        newEndTime.setMinutes(start_time.getMinutes() + 30);
-        break;
-      default:
-        return;
-    }
     setSessionFields({
       ...sessionFields,
       duration: event.target.value,
       end_time: newEndTime,
     });
+  };
 
-    console.log(event.target.value);
+  const calculateEndTime = (duration, startTime) => {
+    let newEndTime;
+
+    switch (duration) {
+      case 1:
+        var addTime = moment(startTime).add(1, "hours");
+        newEndTime = moment(addTime).utc().format();
+        break;
+      case 1.5:
+        var addTime = moment(startTime).add({ hours: 1, minutes: 30 });
+        newEndTime = moment(addTime).utc().format();
+        break;
+      case 2:
+        var addTime = moment(startTime).add(2, "hours");
+        newEndTime = moment(addTime).utc().format();
+        break;
+      case 0.5:
+        var addTime = moment(startTime).add(30, "minutes");
+        newEndTime = moment(addTime).utc().format();
+        break;
+      default:
+        return;
+    }
+
+    return newEndTime;
   };
 
   const onConfirmationChange = (event) => {
@@ -351,23 +341,31 @@ const EditSessionView = () => {
       ...sessionFields,
       is_confirmed: event.target.value,
     });
-    console.log(event.target.value);
   };
 
   const setFromMigration = (response) => {
+    let confirmedState;
     if (location.state === undefined) {
       history.push(
         `/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`
       );
+    } else {
+      switch (location.state.allOrCurrent) {
+        case "current": {
+          confirmedState = response.session.isConfirmed;
+          break;
+        }
+        case "all": {
+          confirmedState = response.session.course.isConfirmed;
+          break;
+        }
+      }
     }
 
-    console.log(response.session.course);
-    setEditSelection(location.state);
     const startTime = moment(response.session.startDatetime).format("h");
     const endTime = moment(response.session.endDatetime).format("h");
 
     const checkTime = moment(response.session.startDatetime).format("h:MM");
-    console.log(response.session.startDatetime);
     let durationHours = Math.abs(endTime - startTime);
     if (durationHours === 0) {
       durationHours = 1;
@@ -387,7 +385,7 @@ const EditSessionView = () => {
       room: response.session.course.room,
       duration: durationHours,
       title: response.session.title,
-      is_confirmed: response.session.course.isConfirmed,
+      is_confirmed: confirmedState,
     });
   };
 
@@ -395,75 +393,60 @@ const EditSessionView = () => {
     const {
       start_time,
       end_time,
+      room,
       is_confirmed,
       instructor,
       category,
       duration,
       title,
     } = sessionFields;
-    console.log("save click?");
-    console.log(editSelection);
+    let newEndTime = calculateEndTime(duration, start_time);
     switch (location.state.allOrCurrent) {
       case "current": {
-        console.log("we get here to current");
-        console.log(session_id);
-        // const UTCstartDatetime =  moment(start_time).utc().format().slice(0, -1);
-        const UTCstartDatetime = "2020-04-02T22:00:00+00:00"
-        // const newDate = work.slice(0,-1)
-        console.log(sessionFields.category.value)
-        console.log(is_confirmed);
-        console.log(start_time)
-        console.log(UTCstartDatetime)
-        console.log("this is course name and id", category)
-        //ANNA NEXT UPDATE endDatetime using an hour later
-        // console.log(UTCstartDatetime.toISOString())
+        const UTCstartDatetime = moment(start_time).utc().format();
+        console.log(start_time);
+
+        console.log(newEndTime);
+        console.log(UTCstartDatetime);
+
+        ///this session should be session.isConfirmed
+        //all session should be session.course.isConfirmed
+        //instructor should be from course
+
         updateSession({
           variables: {
             sessionId: session_id,
             courseCategoryId: course_id,
-            name: category.label,
+            courseId: course_id,
+            courseCategoryName: category.label,
             title: title,
-            startDatetime: start_time,
-            isConfirmed: is_confirmed,
             instructor: instructor.value,
+            room: room,
+            // startDatetime: UTCstartDatetime,
+            endDatetime: newEndTime,
+            sessionConfirmed: is_confirmed,
           },
           // startDatetime: start_time.toISOString(),
-          // endDatetime: end_time.toISOString(),
-          // sessionId: session_id,
-          // isConfirmed: is_confirmed,
-          // instructor: instructor.value,
-          // duration,
-          // title
         });
-        console.log("saved");
-        // api.patchSession(session.id, patchedSession);
         break;
       }
       case "all": {
-        console.log("we get here to all");
+        //ANNA FOR SOME REASON THIS BREAKS WITH courseConfirmed HAVE SOMEONE FOLLOW PATH WITH YOU
         updateSession({
           variables: {
             sessionId: session_id,
             courseCategoryId: course_id,
-            isConfirmed: is_confirmed,
-            instructor: instructor.value,
+            courseId: course_id,
+            courseCategoryName: category.label,
             title: title,
+            instructor: instructor.value,
+            room: room,
+            // startDatetime: start_time,
+            endDatetime: newEndTime,
+            // courseConfirmed: is_confirmed,
           },
         });
-        // const patchedCourse = {
-        //   course_category: sessionFields.category.value,
-        //   subject: sessionFields.title,
         //   start_time: start_time.toLocaleString("eng-US", timeFormat),
-        //   end_time: end_time.toLocaleString("eng-US", timeFormat),
-        //   instructor: instructor.value,
-        //   is_confirmed,
-        //   start_date: start_time.toLocaleString("sv-SE", dateFormat),
-        //   end_date: course.schedule.end_date.toLocaleString(
-        //     "sv-SE",
-        //     dateFormat
-        //   ),
-        // };
-        // api.patchCourse(course.course_id, patchedCourse);
       }
       // no default
     }
@@ -481,21 +464,18 @@ const EditSessionView = () => {
   const party = [
     {
       id: 3,
-      name: "new"
+      name: "new",
     },
     {
       id: 4,
-      name: "test"
+      name: "test",
     },
+  ];
 
-  ]
-
-  const categoriesList = party.map(
-    ({ id, name }) => ({
-      value: id,
-      label: name,
-    })
-  )
+  const categoriesList = party.map(({ id, name }) => ({
+    value: id,
+    label: name,
+  }));
   // const categoriesList = categoriesData.courseCategories.map(
   //   ({ id, name }) => ({
   //     value: id,
@@ -511,7 +491,6 @@ const EditSessionView = () => {
   const courseDurationOptions = [1, 1.5, 2, 0.5];
 
   const course = data.session.course;
-
 
   const session = data.session;
 
