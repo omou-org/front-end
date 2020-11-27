@@ -35,7 +35,7 @@ export const statusRed = "#FF6766";
 
 // Typography
 export const h1 = {
-  fontSize: '36px',
+  fontSize: '40px',
   fontWeight: 'bold',
   fontFamily: 'Roboto Slab',
   lineHeight: '48px',
@@ -49,7 +49,7 @@ export const h2 = {
   color: slateGrey
 };
 export const h3 = {
-  fontSize: '20px',
+  fontSize: '24px',
   fontWeight: '500',
   fontFamily: 'Roboto',
   lineHeight: '32px',
