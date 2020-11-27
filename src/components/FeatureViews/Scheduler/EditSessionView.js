@@ -117,6 +117,9 @@ const GET_SESSION = gql`
   }
 `;
 
+///this session should be session.isConfirmed
+//all session should be session.course.isConfirmed
+
 const UPDATE_SESSION = gql`
   mutation UpdateSession(
     $sessionId: ID!
@@ -125,6 +128,8 @@ const UPDATE_SESSION = gql`
     $isConfirmed: Boolean
     $instructor: ID
     $endDatetime: DateTime
+    $courseCategoryId: ID!
+    $name: String
   ) {
     createSession(
       id: $sessionId
@@ -150,11 +155,20 @@ const UPDATE_SESSION = gql`
         endDatetime
       }
     }
+    createCourseCategory(
+      id: $courseCategoryId
+      name: $name
+    ) {
+      courseCategory {
+        id
+        name
+      }
+    }
   }
 `;
 
 const EditSessionView = () => {
-  const { session_id } = useParams();
+  const { course_id, session_id } = useParams();
 
   const dispatch = useDispatch();
   const api = useMemo(
@@ -197,7 +211,7 @@ const EditSessionView = () => {
     update: (cache, { data }) => {
       const existingSession = cache.readQuery({
         query: GET_SESSION,
-        variables: { sessionId: session_id },
+        variables: { sessionId: session_id, courseCategoryId: course_id },
       }).session;
 
       cache.writeQuery({
@@ -205,7 +219,7 @@ const EditSessionView = () => {
         data: {
           session: [...existingSession, ...data["updateSession"].session],
         },
-        variables: { sessionId: session_id },
+        variables: { sessionId: session_id, courseCategoryId: course_id },
       });
     },
   });
@@ -301,10 +315,6 @@ const EditSessionView = () => {
       });
     };
 
-  const handleEditSelection = (event) => {
-    setEditSelection(event.target.value);
-  };
-
   //ANNA NOT WORKING
   const handleDurationSelect = (event) => {
     const { start_time } = sessionFields;
@@ -351,7 +361,7 @@ const EditSessionView = () => {
       );
     }
 
-    console.log(response.session.course.isConfirmed);
+    console.log(response.session.course);
     setEditSelection(location.state);
     const startTime = moment(response.session.startDatetime).format("h");
     const endTime = moment(response.session.endDatetime).format("h");
@@ -381,13 +391,13 @@ const EditSessionView = () => {
     });
   };
 
-  //Add dialog box here of current or all
   const handleUpdateSession = () => {
     const {
       start_time,
       end_time,
       is_confirmed,
       instructor,
+      category,
       duration,
       title,
     } = sessionFields;
@@ -404,15 +414,18 @@ const EditSessionView = () => {
         console.log(is_confirmed);
         console.log(start_time)
         console.log(UTCstartDatetime)
+        console.log("this is course name and id", category)
+        //ANNA NEXT UPDATE endDatetime using an hour later
         // console.log(UTCstartDatetime.toISOString())
         updateSession({
           variables: {
             sessionId: session_id,
+            courseCategoryId: course_id,
+            name: category.label,
             title: title,
             startDatetime: start_time,
             isConfirmed: is_confirmed,
             instructor: instructor.value,
-            title: title,
           },
           // startDatetime: start_time.toISOString(),
           // endDatetime: end_time.toISOString(),
@@ -431,6 +444,7 @@ const EditSessionView = () => {
         updateSession({
           variables: {
             sessionId: session_id,
+            courseCategoryId: course_id,
             isConfirmed: is_confirmed,
             instructor: instructor.value,
             title: title,
@@ -464,12 +478,30 @@ const EditSessionView = () => {
     return <Typography>There's been an error!</Typography>;
   }
 
-  const categoriesList = categoriesData.courseCategories.map(
+  const party = [
+    {
+      id: 3,
+      name: "new"
+    },
+    {
+      id: 4,
+      name: "test"
+    },
+
+  ]
+
+  const categoriesList = party.map(
     ({ id, name }) => ({
       value: id,
       label: name,
     })
-  );
+  )
+  // const categoriesList = categoriesData.courseCategories.map(
+  //   ({ id, name }) => ({
+  //     value: id,
+  //     label: name,
+  //   })
+  // );
 
   const instructorList = instructorsData.instructors.map((instructor) => ({
     value: instructor.user.id,
@@ -478,23 +510,11 @@ const EditSessionView = () => {
 
   const courseDurationOptions = [1, 1.5, 2, 0.5];
 
-  //   const { course, endDatetime, id, startDatetime, title } = data.session;
   const course = data.session.course;
-  //   const {
-  //     courseCategory,
-  //     dayOfWeek,
-  //     endTime,
-  //     enrollmentSet,
-  //     courseId,
-  //     instructor,
-  //     room,
-  //     startTime,
-  //   } = course;
+
 
   const session = data.session;
 
-  // const editSelection = "no";
-  // console.log(location.state)
   return (
     <Grid container className="main-session-view">
       <BackgroundPaper
@@ -561,8 +581,6 @@ const EditSessionView = () => {
                 </Select>
               </FormControl>
             </Grid>
-            {/* DANIEL HAVING TO HARD CODE THIS, I KNOW IT HAS TO DO WITH SCOPE AND ASYNC BUT CAN'T GET TO WORK */}
-            {/* Help me update editSelection */}
             {location.state.allOrCurrent === "current" && (
               <Grid item xs={6}>
                 <Typography variant="h5"> Date</Typography>
