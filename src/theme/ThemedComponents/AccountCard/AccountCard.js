@@ -2,12 +2,14 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Card, CardHeader } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
+import { stringToColor } from 'components/FeatureViews/Accounts/accountUtils';
 
 import { ReactComponent as IDIcon } from '../../../components/identifier.svg';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 
 import { makeStyles } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles({
 	cardContainer: {
@@ -52,21 +54,11 @@ const useStyles = makeStyles({
 const AccountCard = ({ accountName, role }) => {
 	const classes = useStyles();
 
-	let stripeColor;
-
-	if (role === 'Parent') {
-		stripeColor = '#D74AC8';
-	}
-
-	if (role === 'Student') {
-		stripeColor = '#9B59B6';
-	}
-
 	return (
 		<Card className={classes.cardContainer}>
 			<Grid className={classes.gridContainer} container>
 				<Grid
-					style={{ background: stripeColor }}
+					style={{ background: stringToColor(accountName) }}
 					className={classes.leftStripe}
 					item
 					xs={2}
