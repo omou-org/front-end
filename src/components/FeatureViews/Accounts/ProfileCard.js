@@ -4,8 +4,6 @@ import PropTypes from "prop-types";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
 import { NavLink } from "react-router-dom";
@@ -32,7 +30,6 @@ const useStyles = makeStyles({
         fontSize: "15px"
     },
     cardContainer: {
-        // height: '152px',
         height: '200px',
         width: '288px',
         borderRadius: '8px'
@@ -170,68 +167,6 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                     </Grid>
                 </Grid>
             </Card>
-
-// OLD PROFILE CARD STARTS HERE
-
-                // <Card className="ProfileCard">
-                //     <Grid container>
-                //         <NavLink className={classes.linkUnderline} to={route}>
-                //             <Grid component={Hidden} item md={4} xsDown>
-                //                 <UserAvatar fontSize={30} margin="20px"
-                //                     name={user.name} size="7vw" />
-                //             </Grid>
-                //         </NavLink>
-                //         <Grid item md={8} xs={12}>
-                //             <NavLink className={classes.linkUnderline} to={route}>
-                //                 <CardContent className="text">
-                //                     <Typography align="left" component="h2"
-                //                         gutterBottom variant="h6">
-                //                         {user.name}
-                //                     </Typography>
-                //                     <Typography align="left" component="p">
-                //                         <LabelBadge 
-                //                             label={capitalizeString(user.accountType)}
-                //                             variant="outline-gray"/>
-                //                     </Typography>
-                //                     <Typography>
-                //                         <Grid className="card-content" container>
-                //                             <Grid align="left" item md={3} xs={2}>
-                //                                 <IDIcon height={22} width={22} />
-                //                             </Grid>
-                //                             <Grid align="left" item md={9} xs={10}>
-                //                                 #{user.user.id}
-                //                             </Grid>
-                //                             <Grid align="left" item md={3} xs={2}>
-                //                                 <PhoneIcon />
-                //                             </Grid>
-                //                             <Grid align="left" item md={9} xs={10}>
-                //                                 {addDashes(user.phoneNumber)}
-                //                             </Grid>
-                //                             <Grid align="left" item md={3} xs={2}>
-                //                                 <EmailIcon />
-                //                             </Grid>
-                //                             <Grid align="left" item md={9} xs={10}>
-                //                                 {user.user.email}
-                //                             </Grid>
-                //                         </Grid>
-                //                     </Typography>
-                //                 </CardContent>
-                //             </NavLink>
-                //             {studentInvite &&
-                //                 <CardActions>
-                //                     <ResponsiveButton>
-                //                         <NavLink to={`/form/student/${user.user.id}`}>
-                //                             Edit
-                //                         </NavLink>
-                //                     </ResponsiveButton>
-
-                //                     <ResponsiveButton onClick={inviteStudent}>
-                //                         Invite
-                //                     </ResponsiveButton>
-                //                 </CardActions>}
-                //         </Grid>
-                //     </Grid>
-                // </Card>
             )}
         </Grid>
     );
