@@ -19,6 +19,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import "./Accounts.scss";
 import { addDashes } from "./accountUtils";
@@ -28,9 +29,7 @@ import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
 import { simpleUser } from "queryFragments";
 import UserAvatar from "./UserAvatar";
-import NewUser from "@material-ui/icons/PersonAdd";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import PersonAddIcon from '@material-ui/icons/PersonAdd'
 import { makeStyles } from "@material-ui/core";
 
 const QUERY_USERS = gql`
@@ -280,28 +279,21 @@ const Accounts = () => {
                         </Tabs>
                     </Grid>
                     <Hidden smDown>
-                        <Grid item md={1} />
-                        <Grid container item md={3}>
-                            <Grid className="toggleView" item md={6}>
+                        <Grid style={{justifyContent: 'flex-end'}} container item md={4}>
+                            <ToggleButtonGroup aria-label="list & grid view toggle buttons">
                                 <ResponsiveButton
+                                    variant='outlined'
                                     onClick={setView(true)}
-                                    variant='outlined'
-                                    startIcon={<ListView />}
-                                    >                                   
-                                        List View
-                                </ResponsiveButton>
-                            
-                            </Grid>
-                            <Grid className="toggleView" item md={6}>
+                                >
+                                    <ListView />
+                                </ResponsiveButton> 
                                 <ResponsiveButton
-                                    onClick={setView(false)}
                                     variant='outlined'
-                                    startIcon={<CardView />}
-                                    >       
-                                        Grid View
+                                    onClick={setView(false)}
+                                >       
+                                    <CardView />
                                 </ResponsiveButton>
-                                
-                            </Grid>
+                            </ToggleButtonGroup>
                         </Grid>
                     </Hidden>
                 </Grid>
