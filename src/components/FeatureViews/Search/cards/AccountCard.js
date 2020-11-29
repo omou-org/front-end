@@ -10,6 +10,7 @@ import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
+import theme from "../../../../theme/muiTheme";
 
 import { truncateStrings} from "../../../../utils";
 import {ReactComponent as IDIcon} from "../../../identifier.svg";
@@ -17,43 +18,11 @@ import {stringToColor} from "components/FeatureViews/Accounts/accountUtils";
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
-	cardContainer: {
-		height: '152px',
-		width: '288px',
-	},
-	gridContainer: {
-		height: '100%',
-	},
-	cardHeader: {
-		textAlign: 'left',
-	},
-	leftStripe: {
-		color: 'white',
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-		margin: '0 auto',
-		height: '100%',
-		borderRadius: '8px 0px 0px 8px',
-	},
-	rightInfo: {
-		width: '100%',
-		height: '100%',
-		background: '#FFFFFF',
-		boxShadow: '0px 0px 8px rgba(196, 196, 196, 0.6)',
-		borderTopRightRadius: '8px',
-		borderBottomRightRadius: '8px',
-	},
-	accountInfo: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'flex-start',
-	},
-	iconStyles: {
-		display: 'flex',
-		alignItems: 'center',
-		justifyContent: 'center',
-	}
+    cardContainer: {
+        height: '152px',
+        width: '288px',
+      },
+	...theme.accountCardStyle
 });
 
 const USER_DETAILS = gql`
@@ -127,7 +96,6 @@ const AccountCard = ({accountType, userID, isLoading}) => {
 	const [{user}] = Object.values(data);
     const fullName = `${user.firstName} ${user.lastName}`;
 
-    const stripeColor = stringToColor(fullName);
     const accountTypeLabel = accountType[0] + accountType.slice(1).toLowerCase();
 
     return (
@@ -137,14 +105,14 @@ const AccountCard = ({accountType, userID, isLoading}) => {
             <Card className={classes.cardContainer}>
 		    	<Grid className={classes.gridContainer} container>
 		    		<Grid
-		    			style={{ background: stripeColor }}
+		    			style={{ background: stringToColor(fullName) }}
 		    			className={classes.leftStripe}
 		    			item
 		    			xs={2}
 		    		>
 		    			{fullName.match(/\b(\w)/ug).join("")}
 		    		</Grid>
-		    		<Grid className={classes.rightInfo} item xs={10}>
+		    		<Grid className={classes.cardRight} item xs={10}>
 		    			<CardHeader
 		    				className={classes.cardHeader}
 		    				titleTypographyProps={{ variant: 'h4' }}
