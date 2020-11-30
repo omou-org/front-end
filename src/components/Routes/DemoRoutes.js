@@ -6,6 +6,7 @@ import TypographyDemo from "../../theme/ThemedComponents/Typography/TypographyDe
 import ButtonDemo from '../../theme/ThemedComponents/Button/ButtonDemo';
 import ColorsDemo from '../../theme/ThemedComponents/Colors/ColorsDemo';
 import TableDemo from '../../theme/ThemedComponents/Table/TableDemo';
+import AccountCardDemo from '../../theme/ThemedComponents/AccountCard/AccountCardDemo'
 import UserProfileDemo from "../../theme/ThemedComponents/UserProfileDemo/UserProfileDemo";
 
 
@@ -25,6 +26,9 @@ const DemoRoutes = () => (
         </Route>
         <Route path="/demo/table">
             <TableDemo/>
+        </Route>
+        <Route path = "/demo/accountscard">
+            <AccountCardDemo/>
         </Route>
         <Route path="/demo/user-profile">
             <UserProfileDemo/>
