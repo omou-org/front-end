@@ -7,6 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 
 import * as hooks from "actions/hooks";
 import {handleToolTip} from "../../Scheduler/SchedulerUtils";
+import { fullName } from "utils.js";
 import Loading from "components/OmouComponents/Loading";
 import {stringToColor} from "../accountUtils";
 import gql from "graphql-tag";
@@ -158,18 +159,19 @@ const InstructorSchedule = ({instructorID}) => {
 
 	console.log(teachingSessions);
 	let hoursWorked = 0;
-
+	let OOO = [];
+	
 	return (
 		<>
 			<h3 style={{float: "left"}}>
 				{hoursWorked} hour{hoursWorked !== 1 && "s"} worked this month
 			</h3>
-			{/* <FullCalendar
-				allDaySlot={allDayOOO}
-				businessHours={instructorBusinessHours}
+			<FullCalendar
+				// allDaySlot={allDayOOO}
+				// businessHours={instructorBusinessHours}
 				columnHeaderFormat={{weekday: "short"}}
 				defaultView="timeGridWeek"
-				eventColor={stringToColor(instructor.name || "")}
+				eventColor={stringToColor(fullName(instructor.user) || "")}
 				eventMouseEnter={handleToolTip}
 				events={[...teachingSessions, ...OOO]}
 				header={false}
@@ -177,7 +179,7 @@ const InstructorSchedule = ({instructorID}) => {
 				minTime="09:00:00"
 				plugins={[timeGridPlugin]}
 				slotDuration="01:00"
-			/> */}
+			/>
 		</>
 	);
 };
