@@ -15,15 +15,14 @@
     text-align: left;
     font-size: 60px;
   }
-  .tabs{
-    text-align:left;
-    left:0;
+  .tabs {
+    text-align: left;
+    left: 0;
     height: 0;
 
     .tab {
       min-width: 130px;
     }
-
   }
   .heading {
     margin: 25px 0;
@@ -47,7 +46,7 @@
       &.active {
         border: solid 2px $primaryColor !important;
         color: $primaryColor;
-        background-color: #EBFAFF;
+        background-color: #ebfaff;
       }
     }
   }
@@ -68,12 +67,12 @@
       white-space: nowrap;
     }
 
-    .accountsCell{
-      width:220px;
+    .accountsCell {
+      width: 220px;
       overflow-wrap: break-word;
     }
-    .accountsCellID{
-      width:100px;
+    .accountsCellID {
+      width: 100px;
       overflow-wrap: break-word;
     }
   }
@@ -115,8 +114,6 @@
     color: white;
   }
 }
-
-
 
 /*Profile Heading Styles*/
 .UserProfile {
@@ -250,7 +247,7 @@
 }
 
 .ProfileCard {
-  text-decoration:none;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -258,27 +255,23 @@
   color: white;
 }
 
-// .editReset {
-//   width: 160px;
-// }
-
 .editIcon {
   position: relative;
   top: -20px;
   left: 10px;
 }
 
-// .editResetDiv {
-//   border: solid 2px $primaryColor;
-//   border-radius: 10px;
-//   width: 150px;
-//   z-index: 2px;
-//   display: none;
-// }
+.editResetDiv {
+  border: solid 2px $primaryColor;
+  border-radius: 10px;
+  width: 150px;
+  z-index: 2px;
+  display: none;
+}
 
-// .editIcon:hover + .editResetDiv{
-//   display: inline;
-// }
+.editIcon:hover + .editResetDiv {
+  display: inline;
+}
 
 .editResetDiv {
   border: solid 2px $primaryColor;
@@ -287,10 +280,13 @@
   z-index: 2px;
 }
 
+.editResetDiv:hover {
+  display: inline;
+}
+
 .reset {
   border-radius: 0px 0px 8px 8px !important;
   width: 100%;
-
 }
 
 .edit {
@@ -299,26 +295,41 @@
 }
 
 .reset:hover {
-  background-color: #EBFAFF !important;
-  color: #43B5D9 !important;
+  background-color: #ebfaff !important;
+  color: #43b5d9 !important;
 }
 
 .edit:hover {
-  background-color: #EBFAFF !important;
-  color: #43B5D9 !important;
+  background-color: #ebfaff !important;
+  color: #43b5d9 !important;
 }
 
 .resetStudent {
-  
   border-radius: 0px 0px 8px 8px !important;
   width: 100%;
 }
 
 .resetBtn {
-  background-color: red !important;
+  background-color: #eb5757 !important;
   color: white !important;
   margin-left: 40px !important;
   width: 200px;
+}
+
+.cancelBtn {
+  background: #ffffff;
+  border: 2px solid #c4c4c4;
+  box-sizing: border-box;
+  border-radius: 5px;
+  color: #289fc3 !important;
+}
+
+.doneBtn {
+  background: #289fc3 !important;
+  border: 2px solid #289fc3 !important;
+  box-sizing: border-box !important;
+  border-radius: 5px !important;
+  color: white !important;
 }
 
 .center {
@@ -336,8 +347,10 @@
 }
 
 .passwordDisplay {
-  color: #43B5D9 !important;
+  color: #43b5d9 !important;
   font-size: 25px !important;
 }
 
-a { color:black; }
+a {
+  color: black;
+}
