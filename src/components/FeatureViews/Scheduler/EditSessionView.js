@@ -122,6 +122,8 @@ const GET_SESSION = gql`
 //all session should be session.course.isConfirmed
 //instructor should be from course
 
+//Need to have startDatetime for course as well??? Same thing that was done for confirmed
+
 const UPDATE_SESSION = gql`
   mutation UpdateSession(
     $sessionId: ID!
@@ -179,8 +181,6 @@ const UPDATE_SESSION = gql`
     }
   }
 `;
-
-//ANNA UPDATE ROOM??
 
 const EditSessionView = () => {
   const { course_id, session_id } = useParams();
@@ -267,7 +267,6 @@ const EditSessionView = () => {
     });
   };
 
-  //Instructor
   const handleInstructorChange = (event) => {
     setSessionFields({
       ...sessionFields,
@@ -450,6 +449,7 @@ const EditSessionView = () => {
       }
       // no default
     }
+    //ANNA DOES THIS GO BACK IN???
     // history.push("/scheduler/");
   };
 
