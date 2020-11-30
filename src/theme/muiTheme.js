@@ -100,7 +100,6 @@ export const subtitle1 = {
   fontFamily: 'Roboto',
 };
 
-
 const defaultFontProps = {
   fontFamily: 'Roboto Slab',
   fontWeight: 700,
@@ -385,6 +384,58 @@ const theme = createMuiTheme({
       }
     }
   },
+  accountCardStyle : {
+  	gridContainer: {
+      height: '100%',
+    },
+    cardHeader: {
+      textAlign: 'left',
+    },
+    leftStripe: {
+      color: 'white',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: '0 auto',
+      height: '100%',
+      borderTopLeftRadius: '8px',
+      borderBottomLeftRadius: '8px',
+    },
+    cardRight: {
+      width: '100%',
+      height: '100%',
+      background: '#FFFFFF',
+      boxShadow: '0px 0px 8px rgba(196, 196, 196, 0.6)',
+      borderTopRightRadius: '8px',
+      borderBottomRightRadius: '8px',
+    },
+    accountInfo: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+    iconStyles: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    cardActions: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
+      marginTop: '10px',
+    }
+  },
+  props: {
+    MuiCardHeader: {
+      titleTypographyProps: {
+        variant: "h4"
+      },
+      subheaderTypographyProps: {
+        variant: "body2"
+      }
+    }
+  }
 });
 
 export default theme;
