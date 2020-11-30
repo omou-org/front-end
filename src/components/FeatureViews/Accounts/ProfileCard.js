@@ -30,8 +30,13 @@ const useStyles = makeStyles({
         color: "#1F82A1",
         fontSize: "15px"
     },
-    cardContainer: {
+    studentCardContainer: {
         height: '200px',
+        width: '288px',
+        borderRadius: '8px'
+    },
+    parentCardContainer: {
+        height: '152px',
         width: '288px',
         borderRadius: '8px'
     },
@@ -46,7 +51,8 @@ const INVITE_STUDENT = gql`
         }
     }`;
 
-const ProfileCard = ({ user, route, studentInvite = false }) => {
+const ProfileCard = ({ user, route, studentInvite = false } ) => {
+
     const [invite] = useMutation(INVITE_STUDENT, {
         "ignoreResults": true,
     });
@@ -64,7 +70,7 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
     return (
         <Grid item sm={6} xs={12}>
             {user && (
-                <Card className={classes.cardContainer}>
+                <Card className={studentInvite ? classes.studentCardContainer : classes.parentCardContainer}>
                 <Grid className={classes.gridContainer} container>
                     <Grid
                         style={{ background: stringToColor(user.name) }}
