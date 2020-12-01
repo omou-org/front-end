@@ -2,13 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Redirect, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Badge from "@material-ui/core/Badge";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
-import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden/Hidden";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
@@ -22,18 +19,18 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
-
+import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
 import BackButton from "components/OmouComponents/BackButton";
 import ComponentViewer from "./ComponentViewer.js";
 import Loading from "components/OmouComponents/Loading";
-import ProfileHeading from "./ProfileHeading.js";
 import { useAccountNotes } from "actions/userActions";
-import UserAvatar from "./UserAvatar";
 import SettingsIcon from "@material-ui/icons/Settings"
 import { USER_TYPES } from "../../../utils";
+import UserProfileInfo from "./UserProfileInfo";
 
 const userTabs = {
 	instructor: [
@@ -167,6 +164,13 @@ const UserProfile = () => {
 		setTabIndex(newTabIndex);
 	}, []);
 
+	const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+		},
+	});
+	const classes = useStyles();
+
 	const tabs = useMemo(() => {
 		if (!user) {
 			return null;
@@ -206,9 +210,8 @@ const UserProfile = () => {
 		return (
 			<>
 				<Tabs
-					indicatorColor="primary"
+					classes={{ indicator: classes.MuiIndicator }}
 					onChange={handleTabChange}
-					textColor="primary"
 					value={tabIndex}
 				>
 					{displayTabs
@@ -218,9 +221,9 @@ const UserProfile = () => {
 								<Tab
 									key={tab.tab_id}
 									label={
-										<>
-											{tab.icon} {tab.tab_heading}
-										</>
+										<span>
+											{tab.tab_heading} {tab.icon}
+										</span>
 									}
 								/>
 								:
@@ -228,7 +231,7 @@ const UserProfile = () => {
 									key={tab.tab_id}
 									label={
 										<>
-											{tab.icon} {tab.tab_heading}
+											{tab.tab_heading}
 										</>
 									}
 								/>
@@ -266,9 +269,7 @@ const UserProfile = () => {
 					newTabs[notesIndex] = {
 						...newTabs[notesIndex],
 						icon: (
-							<Badge badgeContent={numImportantNotes} color="primary">
-								<NoteIcon className="TabIcon" />
-							</Badge>
+							numImportantNotes > 0 && <LabelBadge style={{ marginLeft: '8px' }} label={numImportantNotes} variant="round-count" />
 						),
 					};
 					return newTabs;
@@ -289,21 +290,7 @@ const UserProfile = () => {
 		<div className="UserProfile">
 			<BackButton warn={false} />
 			<hr />
-			<Grid className="padding" container layout="row">
-				<Grid item md={2}>
-					<Hidden smDown>
-						<UserAvatar
-							fontSize="3.5vw"
-							margin={20}
-							name={user.name}
-							size="9vw"
-						/>
-					</Hidden>
-				</Grid>
-				<Grid className="headingPadding" item md={10} xs={12}>
-					<ProfileHeading user={user} />
-				</Grid>
-			</Grid>
+			<UserProfileInfo user={user}/>
 			{tabs}
 		</div>
 	);
