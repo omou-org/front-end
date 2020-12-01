@@ -42,6 +42,7 @@ import Notes from "components/FeatureViews/Notes/Notes";
 import { useEnrollmentNotes } from "actions/userActions";
 import { useSessionsWithConfig } from "actions/calendarActions";
 import Moment from "react-moment";
+import { fullName } from "../../../../utils";
 
 const GET_ENROLLMENT = gql`
   query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -295,14 +296,13 @@ const CourseSessionStatus = () => {
             <Typography align="left">
               Student:{" "}
               <Link to={`/accounts/student/${student.id}`}>
-                {student.user.firstName} {student.user.lastName}
+                {fullName(student.user)}
               </Link>
             </Typography>
             <Typography align="left">
               Instructor:{" "}
               <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                {course.instructor.user.firstName}{" "}
-                {course.instructor.user.lastName}
+                {fullName(course.instructor.user)}
               </Link>
             </Typography>
             <Typography align="left">

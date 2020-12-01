@@ -76,7 +76,7 @@ const GET_SESSION = gql`
       course {
         id
         isConfirmed
-        dayOfWeek
+        title
         startTime
         endTime
         room
@@ -105,7 +105,6 @@ const GET_SESSION = gql`
         }
       }
       endDatetime
-      title
       startDatetime
     }
   }
@@ -115,32 +114,42 @@ const GET_SESSION = gql`
 //all session should be session.course.isConfirmed
 //instructor should be from course
 
+//ANNA
 //Need to have startDatetime for course as well??? Same thing that was done for confirmed
+
+//Should title just be on ALL? Same thing with Subject. Why change the subject on just one?
+
+//The updated session drops to the bottom. They go by id, not by date. UGH
+
+//All stuff on top of enrollmentView should be course
+//Everything else needs to be session
+
+
 
 const UPDATE_SESSION = gql`
   mutation UpdateSession(
     $sessionId: ID!
     $title: String
-    $startDatetime: DateTime
+    $sessionStartDatetime: DateTime
     $sessionConfirmed: Boolean
     $courseConfirmed: Boolean
     $room: String
     $instructor: ID
-    $endDatetime: DateTime
+    $sessionEndDatetime: DateTime
+    $courseStartDatetime: Time
+    $courseEndDatetime: Time
     $courseCategoryId: ID!
     $courseCategoryName: String
     $courseId: ID!
   ) {
     createSession(
       id: $sessionId
-      title: $title
-      startDatetime: $startDatetime
+      startDatetime: $sessionStartDatetime
       isConfirmed: $sessionConfirmed
-      endDatetime: $endDatetime
+      endDatetime: $sessionEndDatetime
     ) {
       session {
         id
-        title
         startDatetime
         isConfirmed
         endDatetime
@@ -155,12 +164,18 @@ const UPDATE_SESSION = gql`
     createCourse(
       id: $courseId
       isConfirmed: $courseConfirmed
+      title: $title
       room: $room
       instructor: $instructor
+      startTime: $courseStartDatetime
+      endTime: $courseEndDatetime
     ) {
       course {
         id
         isConfirmed
+        startTime
+        endTime
+        title
         room
         instructor {
           user {
@@ -337,6 +352,7 @@ const EditSessionView = () => {
 
   const setFromMigration = (response) => {
     let confirmedState;
+    let startDatetime;
     if (location.state === undefined) {
       history.push(
         `/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`
@@ -345,10 +361,12 @@ const EditSessionView = () => {
       switch (location.state.allOrCurrent) {
         case "current": {
           confirmedState = response.session.isConfirmed;
+          startDatetime = response.session.startDatetime
           break;
         }
         case "all": {
           confirmedState = response.session.course.isConfirmed;
+          startDatetime = response.session.course.startDatetime
           break;
         }
       }
@@ -372,11 +390,11 @@ const EditSessionView = () => {
         value: response.session.course.instructor.user.id,
         label: fullName(response.session.course.instructor.user),
       },
-      start_time: response.session.startDatetime,
+      start_time: startDatetime,
       end_time: response.session.endDatetime,
       room: response.session.course.room,
       duration: durationHours,
-      title: response.session.title,
+      title: response.session.course.title,
       is_confirmed: confirmedState,
     });
   };
@@ -414,8 +432,8 @@ const EditSessionView = () => {
             title: title,
             instructor: instructor.value,
             room: room,
-            // startDatetime: UTCstartDatetime,
-            endDatetime: newEndTime,
+            sessionStartDatetime: UTCstartDatetime,
+            sessionEndDatetime: newEndTime,
             sessionConfirmed: is_confirmed,
           },
           // startDatetime: start_time.toISOString(),
@@ -424,6 +442,8 @@ const EditSessionView = () => {
       }
       case "all": {
         //ANNA FOR SOME REASON THIS BREAKS WITH courseConfirmed HAVE SOMEONE FOLLOW PATH WITH YOU
+        //Show how false works, but not true?? Can only sessions really be confirmed??
+        //Needs to be updated to just take time, won't take date, it is startDate, not startDatetime
         updateSession({
           variables: {
             sessionId: session_id,
@@ -433,9 +453,9 @@ const EditSessionView = () => {
             title: title,
             instructor: instructor.value,
             room: room,
-            // startDatetime: start_time,
-            endDatetime: newEndTime,
-            // courseConfirmed: is_confirmed,
+            // courseStartDatetime: start_time,
+            // courseEndDatetime: newEndTime,
+            courseConfirmed: is_confirmed,
           },
         });
         //   start_time: start_time.toLocaleString("eng-US", timeFormat),

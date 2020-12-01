@@ -35,7 +35,7 @@ import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusC
 import AddSessions from "components/OmouComponents/AddSessions";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { capitalizeString } from "../../../utils";
+import { capitalizeString, fullName } from "../../../utils";
 import moment from "moment";
 
 const StyledMenu = withStyles({
@@ -81,7 +81,7 @@ const GET_SESSION = gql`
       course {
         id
         isConfirmed
-        dayOfWeek
+        title
         room
         startDate
         endTime
@@ -112,7 +112,6 @@ const GET_SESSION = gql`
         }
       }
       endDatetime
-      title
       startDatetime
     }
   }
@@ -122,11 +121,10 @@ const SessionView = () => {
   const { session_id } = useParams();
 
   // const [enrolledStudents, setEnrolledStudents] = useState(false);
-    const [edit, setEdit] = useState(false);
-    // const [unenroll, setUnenroll] = useState(false);
-    const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
-    // const [tutoringActionsAnchor, setTutoringActionsAnchor] = useState(null);
-
+  const [edit, setEdit] = useState(false);
+  // const [unenroll, setUnenroll] = useState(false);
+  const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
+  // const [tutoringActionsAnchor, setTutoringActionsAnchor] = useState(null);
 
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
@@ -135,28 +133,28 @@ const SessionView = () => {
   const handleEditToggle = (cancel) => (event) => {
     event.preventDefault();
     if (!cancel && edit) {
-        // if we're applying to edit session then toggle to edit view
-        //ANNA NEED TO UPDATE THIS FUNCTION
-        //This goes back to session view
-        handleToggleEditing(editSelection);
+      // if we're applying to edit session then toggle to edit view
+      //ANNA NEED TO UPDATE THIS FUNCTION
+      //This goes back to session view
+      handleToggleEditing(editSelection);
     } else {
-        setEdit(!edit);
+      setEdit(!edit);
     }
-};
+  };
 
-const handleToggleEditing = (editSelection) => {
-  this.setState((oldState) => {
-    return {
-      ...oldState,
-      editing: !oldState.editing,
-      editSelection: editSelection,
-    };
-  });
-};
+  const handleToggleEditing = (editSelection) => {
+    this.setState((oldState) => {
+      return {
+        ...oldState,
+        editing: !oldState.editing,
+        editSelection: editSelection,
+      };
+    });
+  };
 
-const handleEditSelection = (event) => {
-  setEditSelection(event.target.value);
-};
+  const handleEditSelection = (event) => {
+    setEditSelection(event.target.value);
+  };
 
   if (loading) {
     return <Loading />;
@@ -166,23 +164,21 @@ const handleEditSelection = (event) => {
     return <Typography>There's been an error!</Typography>;
   }
 
-  const { course, endDatetime, id, startDatetime, title } = data.session;
+  const { course, endDatetime, id, startDatetime } = data.session;
 
   var {
     courseCategory,
-    dayOfWeek,
     enrollmentSet,
     courseId,
+    title,
     instructor,
     room,
   } = course;
 
-  const instructorName =
-    instructor.user.firstName + " " + instructor.user.lastName;
   const confirmed = course.isConfirmed;
   const course_id = course.id;
 
-
+  const dayOfWeek = moment(startDatetime).format("dddd")
   const startSessionTime = moment(startDatetime).format("h:mm A");
   const endSessionTime = moment(endDatetime).format("h:mm A");
 
@@ -230,20 +226,25 @@ const handleEditSelection = (event) => {
           <Grid item xs={12}>
             <Typography variant="h5">
               Instructor
-               {confirmed ? (
+              {confirmed ? (
                 <ConfirmIcon className="confirmed course-icon" />
               ) : (
                 <UnconfirmIcon className="unconfirmed course-icon" />
-              )} 
+              )}
             </Typography>
             {course && (
               <NavLink
                 style={{ textDecoration: "none" }}
                 to={`/accounts/instructor/${instructor.user.id}`}
               >
-                <Tooltip aria-label="Instructor Name" title={instructorName}>
-                  <Avatar style={styles(instructorName)}>
-                    {instructorName.match(/\b(\w)/g).join("")}
+                <Tooltip
+                  aria-label="Instructor Name"
+                  title={fullName(instructor.user)}
+                >
+                  <Avatar style={styles(fullName(instructor.user))}>
+                    {fullName(instructor.user)
+                      .match(/\b(\w)/g)
+                      .join("")}
                   </Avatar>
                 </Tooltip>
               </NavLink>
@@ -261,25 +262,9 @@ const handleEditSelection = (event) => {
                     style={{ textDecoration: "none" }}
                     to={`/accounts/student/${student.student.user.id}/${course_id}`}
                   >
-                    <Tooltip
-                      title={
-                        student.student.user.firstName +
-                        " " +
-                        student.student.user.lastName
-                      }
-                    >
-                      <Avatar
-                        style={styles(
-                          student.student.user.firstName +
-                            " " +
-                            student.student.user.lastName
-                        )}
-                      >
-                        {(
-                          student.student.user.firstName +
-                          " " +
-                          student.student.user.lastName
-                        )
+                    <Tooltip title={fullName(student.student.user)}>
+                      <Avatar style={styles(fullName(student.student.user))}>
+                        {fullName(student.student.user)
                           .match(/\b(\w)/g)
                           .join("")}
                       </Avatar>
@@ -340,46 +325,54 @@ const handleEditSelection = (event) => {
           >
             Reschedule
           </Button>
-          <Dialog aria-describedby="form-dialog-description"
-                aria-labelledby="form-dialog-title"
-                className="session-view-modal"
-                fullWidth
-                maxWidth="xs"
-                onClose={handleEditToggle(true)}
-                open={edit}>
-                <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
-                <Divider />
-                <DialogContent>
-                    <RadioGroup aria-label="delete"
-                        name="delete"
-                        onChange={handleEditSelection}
-                        value={editSelection}>
-                        <FormControlLabel control={<Radio color="primary" />}
-                            label="This Session"
-                            labelPlacement="end"
-                            value={EDIT_CURRENT_SESSION} />
-                        <FormControlLabel control={<Radio color="primary" />}
-                            label="All Sessions"
-                            labelPlacement="end"
-                            value={EDIT_ALL_SESSIONS} />
-                    </RadioGroup>
-                </DialogContent>
-                <DialogActions>
-                    <Button color="primary" onClick={handleEditToggle(true)}>
-                        Cancel
-                    </Button>
-                    <Button
-                        color="primary"
-                        component={NavLink}
-                        to={{
-                          
-                            "pathname": `/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`
-                            , "state": { allOrCurrent: editSelection}
-                        }}>
-                        Confirm to Edit
-                    </Button>
-                </DialogActions>
-            </Dialog>
+          <Dialog
+            aria-describedby="form-dialog-description"
+            aria-labelledby="form-dialog-title"
+            className="session-view-modal"
+            fullWidth
+            maxWidth="xs"
+            onClose={handleEditToggle(true)}
+            open={edit}
+          >
+            <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
+            <Divider />
+            <DialogContent>
+              <RadioGroup
+                aria-label="delete"
+                name="delete"
+                onChange={handleEditSelection}
+                value={editSelection}
+              >
+                <FormControlLabel
+                  control={<Radio color="primary" />}
+                  label="This Session"
+                  labelPlacement="end"
+                  value={EDIT_CURRENT_SESSION}
+                />
+                <FormControlLabel
+                  control={<Radio color="primary" />}
+                  label="All Sessions"
+                  labelPlacement="end"
+                  value={EDIT_ALL_SESSIONS}
+                />
+              </RadioGroup>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={handleEditToggle(true)}>
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                component={NavLink}
+                to={{
+                  pathname: `/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`,
+                  state: { allOrCurrent: editSelection },
+                }}
+              >
+                Confirm to Edit
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
       </Grid>
     </>

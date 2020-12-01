@@ -23,7 +23,7 @@ function EnrollmentSessionRow({session, enrollmentData, highlightSession}) {
                     data-cy="view-session-link"
                     key={id}
                     to={
-                        `/scheduler/view-session/${course.id}/${id}/${course.instructor.user.id}`
+                        `/scheduler/view-session/${course.id}/${session.id}/${course.instructor.user.id}`
                     }
                     xs={12}>
                         <Paper className={`session-info
