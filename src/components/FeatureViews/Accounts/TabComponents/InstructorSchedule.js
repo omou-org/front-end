@@ -63,7 +63,10 @@ const InstructorSchedule = ({instructorID}) => {
 		const start = new Date(session.startDatetime);
 		const end = new Date(session.endDatetime);
 
-		if (start.getMonth() === today.getMonth() &&
+		if (start > Date.now()) {
+			return hours;
+		}
+		else if (start.getMonth() === today.getMonth() &&
 			start.getFullYear() === today.getFullYear()) {
 			return hours + toHours(end - start);
 		} else {
