@@ -30,15 +30,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 // import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Divider from "@material-ui/core/Divider";
-import DialogContent from "@material-ui/core/DialogContent";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
-import DialogActions from "@material-ui/core/DialogActions";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContentText from "@material-ui/core/es/DialogContentText";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+
 
 import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
@@ -52,6 +44,7 @@ import moment from "moment";
 const EDIT_ALL_SESSIONS = "all";
 const EDIT_CURRENT_SESSION = "current";
 
+//ANNA replace with fullName
 const GET_CATEGORIES = gql`
   query EditSessionCategoriesQuery {
     courseCategories {
