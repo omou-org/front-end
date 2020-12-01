@@ -12,22 +12,38 @@ import Moment from "react-moment";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "components/OmouComponents/Loading";
+import { DayAbbreviation } from "utils";
 
 export const GET_INSTRUCTOR_ENROLLMENTS = gql`
   query InstructorEnrollments($instructorID: ID!) { 
     courses(instructorId: $instructorID) {
       id
-      dayOfWeek
       description
       startDate
-      startTime
       endDate
-      endTime
       isConfirmed
       title
+      availabilityList {
+        id
+        dayOfWeek
+        endTime
+        startTime
+      }
     }
   }
 `;
+
+const checkTimes = (courseTimes) => {
+  let start = courseTimes[0].startTime;
+  let end = courseTimes[0].endTime;
+
+  for (let course of courseTimes) {
+    if (course.startTime !== start || course.endTime !== end) {
+      return false;
+    }
+  }
+  return true;
+}
 
 const InstructorCourses = ({ instructorID }) => {
 
@@ -79,7 +95,8 @@ const InstructorCourses = ({ instructorID }) => {
               new Date(courseB.startDate) -
               new Date(courseA.startDate)
           )
-          .map(({id, title, startDate, startTime, endDate, endTime, isConfirmed}) => {
+          .map(({id, title, startDate, endDate, isConfirmed, availabilityList}) => {
+
             return (
               <Grid
                 className="accounts-table-row"
@@ -109,28 +126,31 @@ const InstructorCourses = ({ instructorID }) => {
                     </Grid>
                     <Grid item xs={2}>
                       <Typography align="left">
-                        <Moment
-                            format="dddd"
-                            date={startDate}
-                        />
+                        {availabilityList.map(({dayOfWeek}, index) => {
+                          let isLast = availabilityList.length - 1 === index;
+                          return DayAbbreviation[dayOfWeek.toLowerCase()] + (!isLast ? ", " : "");
+                        })}
+                        
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                      <Typography align="left">
-                        <Moment
-                            format="h:mm a"
-                            date={
-                              startDate + " " + startTime
-                            }
-                        />
-                        {' - '}  
-                        <Moment
-                            format="h:mm a"
-                            date={
-                              endDate + " " + endTime
-                            }
-                        />
-                      </Typography>
+                      {checkTimes(availabilityList) 
+                      ? <Typography align="left">
+                          <Moment
+                              format="h:mm a"
+                              date={
+                                startDate + " " + availabilityList[0].startTime
+                              }
+                          />
+                          {' - '}   
+                          <Moment
+                              format="h:mm a"
+                              date={
+                                endDate + " " + availabilityList[0].endTime
+                              }
+                          />
+                        </Typography>
+                      : "Various"}
                     </Grid>
                     <Grid item md={1}>
                       {isConfirmed ? (
