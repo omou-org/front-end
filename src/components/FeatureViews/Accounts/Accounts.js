@@ -10,6 +10,8 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
+import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
+import GridOnOutlinedIcon from '@material-ui/icons/GridOnOutlined';
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -19,6 +21,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import "./Accounts.scss";
@@ -281,18 +284,18 @@ const Accounts = () => {
                     <Hidden smDown>
                         <Grid style={{justifyContent: 'flex-end'}} container item md={4}>
                             <ToggleButtonGroup aria-label="list & grid view toggle buttons">
-                                <ResponsiveButton
-                                    variant='outlined'
-                                    onClick={setView(true)}
-                                >
-                                    <ListView />
-                                </ResponsiveButton> 
-                                <ResponsiveButton
-                                    variant='outlined'
-                                    onClick={setView(false)}
-                                >       
+                                <ToggleButton 
+                                    onClick={setView(true)}  
+                                    selected={viewToggle && true} 
+                                    disabled={viewToggle && true}>
+                                    <ViewListOutlinedIcon />
+                                </ToggleButton>
+                                <ToggleButton 
+                                    onClick={setView(false)} 
+                                    selected={!viewToggle && true} 
+                                    disabled={!viewToggle && true}>
                                     <CardView />
-                                </ResponsiveButton>
+                                </ToggleButton>
                             </ToggleButtonGroup>
                         </Grid>
                     </Hidden>
