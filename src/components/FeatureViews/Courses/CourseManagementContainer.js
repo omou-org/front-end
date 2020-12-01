@@ -5,7 +5,6 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
 import FormControl from "@material-ui/core/FormControl";
-import Divder from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useHistory } from "react-router-dom";
@@ -14,6 +13,8 @@ import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
+import { Link } from "react-router-dom";
+import Box from "@material-ui/core/Box";
 import ListComponent, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListComponent'
 import theme, {
   highlightColor,
@@ -172,21 +173,27 @@ const ClassListItem = ({
 
 
   return (
-    <>
-      <ListComponent onClick={handleClick}>
+      <ListComponent>
         <ListContent>
             <ListHeading>
                 <ListBadge>
-                  <LabelBadge label={isActive ? "ACTIVE" : "PAST"} variant={`status-${isActive ? "active" : "past"}`} />
+                  <LabelBadge 
+                    label={isActive ? "ACTIVE" : "PAST"} 
+                    variant={`status-${isActive ? "active" : "past"}`} 
+                  />
                 </ListBadge>
-                <ListTitle>
-                  {title}
-                </ListTitle>
+                <Box onClick={handleClick}>
+                  <ListTitle>
+                    {title}
+                  </ListTitle>
+                </Box>
             </ListHeading>
             <ListDetails>
-                <ListDetailLink>
-                  {concatFullName}
-                </ListDetailLink>
+                <Link to={`/accounts/instructor/${instructor.user.id}`}>
+                  <ListDetailLink>
+                    {concatFullName}
+                  </ListDetailLink>
+                </Link>
                 <ListDivider />
                 <ListDetail>
                   {startingDate} - {endingDate}
@@ -210,7 +217,6 @@ const ClassListItem = ({
             </ListButton>
         </ListActions>
       </ListComponent>
-    </>
   );
 };
 

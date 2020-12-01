@@ -46,6 +46,7 @@ const ClearIndicator = (indicatorProps) => {
 export const GET_COURSES = gql`
 	query CourseList {
 		courses {
+            id
             endDate
             endTime
             startTime

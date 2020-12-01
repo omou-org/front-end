@@ -1,13 +1,11 @@
 import React, { Children } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import { theme } from '../../../theme/muiTheme'
 import { Typography } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton'
-import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge'
 import Divider from "@material-ui/core/Divider";
 import Link from "@material-ui/core/Link"
+import { PropTypes } from 'prop-types';
 
 export const useStyles = makeStyles({
     root: {
@@ -15,8 +13,6 @@ export const useStyles = makeStyles({
         borderBottom: '1px solid #C4C4C4',
         padding: '24px',
         height: '120px',
-    },
-    content: {
     },
     heading: {
         paddingBottom: '15px',
@@ -26,8 +22,16 @@ export const useStyles = makeStyles({
         paddingTop: '4px',
     },
     link: {
-        lineHeight: "16",
-    }
+        lineHeight: '14px',
+    },
+    status: {
+        paddingBottom: '15px'
+    },
+    pointer: {
+        "&:hover": {
+            cursor: "pointer"
+        },
+    },
   });
 
 export const ListContent = ({ children }) => {
@@ -44,7 +48,7 @@ export const ListContent = ({ children }) => {
 export const ListActions = ({ children }) => {
     return (
         <Grid item>
-            <Grid container direction="column">
+            <Grid container direction="column" justify="space-around">
                 { children }
             </Grid>
         </Grid>
@@ -63,8 +67,9 @@ export const ListHeading = ({ children }) => {
 }
 
 export const ListTitle = ({ children }) => {
+    const classes = useStyles();
     return (
-        <Grid item>
+        <Grid item className={classes.pointer}>
             <Typography variant="h3">
                 { children }
             </Typography>
@@ -94,11 +99,13 @@ export const ListDetail = ({ children }) => {
 
 export const ListDetailLink = ({ children }) => {
     return (
-        <Grid item spacing={3} lineHeight={0}>
-            <Link underline="always" variant="body1" lineHeight={0}>
+        <Link underline="always" variant="body1">
+            <Grid item spacing={3} lineHeight={0}>
+            
                 { children }
-            </Link>
-        </Grid> 
+            
+            </Grid> 
+        </Link>
     )
 }
 
@@ -120,12 +127,12 @@ export const ListBadge = ({ children }) => {
 }
 
 export const ListStatus = ({ children }) => {
+    const classes = useStyles();
     return (
-        <Grid item>
+        <Grid item className={classes.status}>
             <Typography variant="h4">
                 { children }
             </Typography>
-            { children }
         </Grid>
     )
 }
