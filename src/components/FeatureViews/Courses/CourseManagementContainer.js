@@ -77,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "1.5em",
     marginTop: "1.5em",
     border: "1px solid #43B5D9",
+    marginBottom: "16px"
   },
   dropdown: {
     border: "1px solid #43B5D9",
@@ -343,9 +344,11 @@ const CourseManagementContainer = () => {
 
   return (
     <Grid item xs={12}>
-      <Typography align="left" className="heading" variant="h3">
-        Course Management
-        </Typography>
+      <Box width="100%" marginTop="22px">
+        <Typography align="left" className="heading" variant="h3">
+          Course Management
+          </Typography>
+      </Box>
       <Paper elevation={4} className={classes.appBar}>
         <Grid
           container

@@ -1,20 +1,13 @@
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 
 import { useHistory } from "react-router-dom";
 import {fullName} from "utils";
-import Table from "@material-ui/core/Table";
-import TableRow from "@material-ui/core/TableRow";
 import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
 import Box from "@material-ui/core/Box";
 import AddIcon from '@material-ui/icons/Add';
 import moment from "moment";
