@@ -39,9 +39,335 @@
           "__typename": "StudentType"
         },
         "__typename": "EnrollmentType"
-      }
-    },
-    "loading": false,
-    "networkStatus": 7,
-    "stale": false
+      },
+      "sessions": [
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "2",
+          "endDatetime": "2020-05-07T23:00:00+00:00",
+          "startDatetime": "2020-05-07T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "3",
+          "endDatetime": "2020-05-14T23:00:00+00:00",
+          "startDatetime": "2020-05-14T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "4",
+          "endDatetime": "2020-05-21T23:00:00+00:00",
+          "startDatetime": "2020-05-21T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "5",
+          "endDatetime": "2020-05-28T23:00:00+00:00",
+          "startDatetime": "2020-05-28T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "6",
+          "endDatetime": "2020-06-04T23:00:00+00:00",
+          "startDatetime": "2020-06-04T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "7",
+          "endDatetime": "2020-06-11T23:00:00+00:00",
+          "startDatetime": "2020-06-11T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "8",
+          "endDatetime": "2020-06-18T23:00:00+00:00",
+          "startDatetime": "2020-06-18T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "9",
+          "endDatetime": "2020-06-25T23:00:00+00:00",
+          "startDatetime": "2020-06-25T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "10",
+          "endDatetime": "2020-07-02T23:00:00+00:00",
+          "startDatetime": "2020-07-02T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "11",
+          "endDatetime": "2020-07-09T23:00:00+00:00",
+          "startDatetime": "2020-07-09T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "12",
+          "endDatetime": "2020-07-16T23:00:00+00:00",
+          "startDatetime": "2020-07-16T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "13",
+          "endDatetime": "2020-07-23T23:00:00+00:00",
+          "startDatetime": "2020-07-23T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "14",
+          "endDatetime": "2020-07-30T23:00:00+00:00",
+          "startDatetime": "2020-07-30T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "15",
+          "endDatetime": "2020-08-06T23:00:00+00:00",
+          "startDatetime": "2020-08-06T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "16",
+          "endDatetime": "2020-08-13T23:00:00+00:00",
+          "startDatetime": "2020-08-13T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "17",
+          "endDatetime": "2020-08-20T23:00:00+00:00",
+          "startDatetime": "2020-08-20T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "18",
+          "endDatetime": "2020-08-27T23:00:00+00:00",
+          "startDatetime": "2020-08-27T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "19",
+          "endDatetime": "2020-09-03T23:00:00+00:00",
+          "startDatetime": "2020-09-03T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "20",
+          "endDatetime": "2020-09-10T23:00:00+00:00",
+          "startDatetime": "2020-09-10T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "21",
+          "endDatetime": "2020-09-17T23:00:00+00:00",
+          "startDatetime": "2020-09-17T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "22",
+          "endDatetime": "2020-09-24T23:00:00+00:00",
+          "startDatetime": "2020-09-24T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "23",
+          "endDatetime": "2020-10-01T23:00:00+00:00",
+          "startDatetime": "2020-10-01T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "24",
+          "endDatetime": "2020-10-08T23:00:00+00:00",
+          "startDatetime": "2020-10-08T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "25",
+          "endDatetime": "2020-10-15T23:00:00+00:00",
+          "startDatetime": "2020-10-15T22:00:00+00:00",
+          "__typename": "SessionType"
+        },
+        {
+          "course": {
+            "startTime": "15:00:00",
+            "endTime": "16:00:00",
+            "id": "1",
+            "hourlyTuition": 10,
+            "__typename": "CourseType"
+          },
+          "id": "1",
+          "endDatetime": "2020-04-23T21:00:00+00:00",
+          "startDatetime": "2020-04-23T20:00:00+00:00",
+          "__typename": "SessionType"
+        }
+      ]
+    }
+   
+    
   }
