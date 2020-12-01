@@ -25,6 +25,8 @@ const useStyles = makeStyles({
     },
     cancelButton: {
         color: '#289FC3',
+        marginRight: '1em',
+        marginLeft: '1em',
     },
 
     updateButton: {
@@ -140,6 +142,7 @@ const ClassInfo = ({
                 variables: { id: id },
             });
         },
+        //Add error
     });
 
     const classes = useStyles();
@@ -233,12 +236,14 @@ const ClassInfo = ({
                                 <Button
                                     onClick={cancelUpdate}
                                     className={classes.cancelButton}
+                                    variant="outlined"
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     onClick={updateLinkAndDescription}
                                     className={classes.updateButton}
+                                    variant="contained"
                                 >
                                     Update
                                 </Button>
@@ -258,11 +263,19 @@ const ClassInfo = ({
                                     : ' Insert course link here'}
                             </Typography>
                         </Grid>
-                        <Grid item xs={5}>
-                            <IconButton onClick={editLinkAndDescription}>
-                                <CreateIcon />
-                            </IconButton>
-                        </Grid>
+                        <AccessControlComponent
+                            permittedAccountTypes={[
+                                USER_TYPES.admin,
+                                USER_TYPES.receptionist,
+                                USER_TYPES.instructor,
+                            ]}
+                        >
+                            <Grid item xs={4}>
+                                <IconButton onClick={editLinkAndDescription}>
+                                    <CreateIcon />
+                                </IconButton>
+                            </Grid>
+                        </AccessControlComponent>
                     </Grid>
                 )}
             </Grid>

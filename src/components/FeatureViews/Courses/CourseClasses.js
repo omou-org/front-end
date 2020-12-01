@@ -636,6 +636,7 @@ const CourseClasses = () => {
                                     index={0}
                                     value={index}
                                     backgroundColor="#FFFFFF"
+                                    style={{ width: '100%' }}
                                 >
                                     <ClassInfo
                                         id={id}
