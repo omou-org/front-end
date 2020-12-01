@@ -80,19 +80,30 @@ const InstructorSchedule = ({instructorID}) => {
 
 	const teachingSessions = user.instructor.sessionSet.map(({endDatetime, startDatetime, title}) => ({
 		title: title,
-		end: new Date(endDatetime),
-		start: new Date(startDatetime),
-	}));
-
-	// Out Of Office
-	const OOO = user.instructor.instructoroutofofficeSet.map(({startDatetime, endDatetime, description}) => ({
-		title: description,
 		start: new Date(startDatetime),
 		end: new Date(endDatetime)
 	}));
 
-	console.log(teachingSessions);
-	const allDayOOO = true;
+	let allDayOOO = false;
+	// Out Of Office
+	const OOO = user.instructor.instructoroutofofficeSet.map(({startDatetime, endDatetime, description}) => {
+		let start;
+		let allDay = false;
+		// Checks to see if the start and end time span the whole day
+		if (toHours(new Date(startDatetime) - new Date(endDatetime)) >= 24 ) {
+			start = null;
+			allDay = true;
+			allDayOOO = true;
+		} else {
+			start = new Date(startDatetime);
+		}
+		return {
+			title: description,
+			start,
+			end: new Date(endDatetime),
+			allDay
+		}
+	});
 	
 	return (
 		<>

@@ -46,7 +46,7 @@ const InstructorCourses = ({ instructorID }) => {
         <Grid className="accounts-table-heading" container>
           <Grid item xs={4}>
             <Typography align="left" className="table-header">
-				Course
+				      Course
             </Typography>
           </Grid>
           <Grid item xs={3}>
