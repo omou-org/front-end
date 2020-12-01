@@ -255,7 +255,7 @@ const Accounts = () => {
                 <Hidden xsDown>
                     <hr style={{ marginTop: "15px" }} />
                 </Hidden>
-                <Typography align="left" className="heading" variant="h3">
+                <Typography align="left" className="heading" variant="h1">
                     Accounts
                 </Typography>
                 <Grid container direction="row">

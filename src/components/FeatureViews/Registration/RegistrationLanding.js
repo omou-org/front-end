@@ -195,7 +195,7 @@ const RegistrationLanding = () => {
             <Grid container layout="row">
                 <Box marginBottom="22px" width="100%">
                     <Grid item md={8} xs={12}>
-                        <Typography align="left" className="heading" variant="h3" data-cy="registration-heading">
+                        <Typography align="left" className="heading" variant="h1" data-cy="registration-heading">
                             Registration Catalog
                         </Typography>
                     </Grid>

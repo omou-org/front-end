@@ -345,7 +345,7 @@ const CourseManagementContainer = () => {
   return (
     <Grid item xs={12}>
       <Box width="100%" marginTop="22px">
-        <Typography align="left" className="heading" variant="h3">
+        <Typography align="left" className="heading" variant="h1">
           Course Management
           </Typography>
       </Box>
