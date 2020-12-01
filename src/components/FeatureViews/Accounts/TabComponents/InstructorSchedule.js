@@ -5,10 +5,12 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
+import moment from "moment";
 
 import {handleToolTip} from "../../Scheduler/SchedulerUtils";
 import { fullName } from "utils.js";
 import {stringToColor} from "../accountUtils";
+import Loading from "components/OmouComponents/Loading";
 
 const GET_INSTRUCTOR_INFO = gql`
 	query getCourses($instructorID: ID!) {
@@ -51,19 +53,19 @@ const InstructorSchedule = ({instructorID}) => {
 		variables: {instructorID}
 	})
 
-	if (loading ) return null;
+	if (loading ) return <Loading small/>;
 
 	if (error ) return "Unable to load schedule";
 
-	const { user } = data.instructor;
+	const { user, user : { instructor } } = data.instructor;
 
-	const today = new Date(Date.now());
+	const today = new Date(moment());
 
-	const hoursWorkedThisMonth = parseInt(user.instructor.sessionSet.reduce((hours, session) => {
+	const hoursWorkedThisMonth = parseInt(instructor.sessionSet.reduce((hours, session) => {
 		const start = new Date(session.startDatetime);
 		const end = new Date(session.endDatetime);
 
-		if (start > Date.now()) {
+		if (start > today) {
 			return hours;
 		}
 		else if (start.getMonth() === today.getMonth() &&
@@ -75,13 +77,13 @@ const InstructorSchedule = ({instructorID}) => {
 
 	}, 0));
 
-	const instructorBusinessHours = user.instructor.instructoravailabilitySet.map(({dayOfWeek, startTime, endTime}) => ({
+	const instructorBusinessHours = instructor.instructoravailabilitySet.map(({dayOfWeek, startTime, endTime}) => ({
 		dayOfWeek: [dayOfWeek],
 		startTime, 
 		endTime
 	}))
 
-	const teachingSessions = user.instructor.sessionSet.map(({endDatetime, startDatetime, title}) => ({
+	const teachingSessions = instructor.sessionSet.map(({endDatetime, startDatetime, title}) => ({
 		title: title,
 		start: new Date(startDatetime),
 		end: new Date(endDatetime)
@@ -89,7 +91,7 @@ const InstructorSchedule = ({instructorID}) => {
 
 	let allDayOOO = false;
 	// Out Of Office
-	const OOO = user.instructor.instructoroutofofficeSet.map(({startDatetime, endDatetime, description}) => {
+	const OOOEvents = instructor.instructoroutofofficeSet.map(({startDatetime, endDatetime, description}) => {
 		let start;
 		let allDay = false;
 		// Checks to see if the start and end time span the whole day
@@ -120,7 +122,7 @@ const InstructorSchedule = ({instructorID}) => {
 				defaultView="timeGridWeek"
 				eventColor={stringToColor(fullName(user) || "")}
 				eventMouseEnter={handleToolTip}
-				events={[...teachingSessions, ...OOO]}
+				events={[...teachingSessions, ...OOOEvents]}
 				header={false}
 				height={337}
 				minTime="09:00:00"
