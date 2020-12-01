@@ -37,7 +37,7 @@ const InstructorCourses = ({ instructorID }) => {
 
 	if (loading ) return <Loading small/>;
 
-  if (error ) return <Error/>;
+  if ( error ) return console.error(error.message);
   
   const { courses } = data;
 
