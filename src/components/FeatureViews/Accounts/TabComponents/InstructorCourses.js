@@ -11,6 +11,7 @@ import Moment from "react-moment";
 
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
+import Loading from "components/OmouComponents/Loading";
 
 export const GET_INSTRUCTOR_ENROLLMENTS = gql`
   query InstructorEnrollments($instructorID: ID!) { 
@@ -34,9 +35,9 @@ const InstructorCourses = ({ instructorID }) => {
 		variables: {instructorID}
 	})
 
-	if (loading ) return null;
+	if (loading ) return <Loading small/>;
 
-  if (error ) return "Unable to load courses";
+  if (error ) return <Error/>;
   
   const { courses } = data;
 
