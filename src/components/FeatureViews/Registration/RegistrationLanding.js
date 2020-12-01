@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import SearchSelect from "react-select";
 import Typography from "@material-ui/core/Typography";
+import Box from '@material-ui/core/Box';
 
 import {distinctObjectArray, fullName, gradeOptions} from "utils";
 import CourseList from "./CourseList";
@@ -46,6 +47,7 @@ const ClearIndicator = (indicatorProps) => {
 export const GET_COURSES = gql`
 	query CourseList {
 		courses {
+            id
             endDate
             endTime
             startTime
@@ -191,11 +193,13 @@ const RegistrationLanding = () => {
             </Grid>
             <hr/>
             <Grid container layout="row">
-                <Grid item md={8} xs={12}>
-                    <Typography align="left" className="heading" variant="h3" data-cy="registration-heading">
-                        Registration Catalog
-                    </Typography>
-                </Grid>
+                <Box marginBottom="22px" width="100%">
+                    <Grid item md={8} xs={12}>
+                        <Typography align="left" className="heading" variant="h3" data-cy="registration-heading">
+                            Registration Catalog
+                        </Typography>
+                    </Grid>
+                </Box>
                 {/*<Grid className="catalog-setting-wrapper" item>*/}
                 {/*    <Tabs*/}
                 {/*        className="catalog-setting"*/}
@@ -206,21 +210,23 @@ const RegistrationLanding = () => {
                 {/*    </Tabs>*/}
                 {/*</Grid>*/}
             </Grid>
-            {view === 0 && (
-				<Grid item container layout="row" spacing={1}>
-                    <Grid item md={4} xs={12}>
-                        {renderFilter("instructor")}
+            <Box width="100%" marginBottom="40px">
+                {view === 0 && (
+                    <Grid item container layout="row" spacing={1}>
+                        <Grid item md={4} xs={12}>
+                            {renderFilter("instructor")}
+                        </Grid>
+                        <Hidden xsDown>
+                            <Grid item md={4} xs={12}>
+                                {renderFilter("subject")}
+                            </Grid>
+                            <Grid item md={4} xs={12}>
+                                {renderFilter("grade")}
+                            </Grid>
+                        </Hidden> 
                     </Grid>
-                    <Hidden xsDown>
-                        <Grid item md={4} xs={12}>
-                            {renderFilter("subject")}
-                        </Grid>
-                        <Grid item md={4} xs={12}>
-                            {renderFilter("grade")}
-                        </Grid>
-                    </Hidden> 
-                </Grid>
-            )}
+                )}
+            </Box>
             <Grid item className="registration-table" container spacing={5}>
                 <CourseList filteredCourses={filteredCourses}/>
                 {/*{view === 0 ?*/}
