@@ -16,7 +16,7 @@ const AdminPortal = () => (
 				<hr />
 			</Grid>
 			<Grid item xs={12}>
-				<Typography align="left" variant="h3">
+				<Typography align="left" variant="h1">
 					Admin Portal
 					</Typography>
 			</Grid>

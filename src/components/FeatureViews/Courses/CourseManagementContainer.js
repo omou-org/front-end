@@ -334,7 +334,7 @@ const CourseManagementContainer = () => {
 
   return (
     <Grid item xs={12}>
-      <Typography align="left" className="heading" variant="h3">
+      <Typography align="left" className="heading" variant="h1">
         Course Management
         </Typography>
       <Paper elevation={4} className={classes.appBar}>

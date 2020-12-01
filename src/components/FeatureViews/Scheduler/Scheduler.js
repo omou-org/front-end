@@ -340,7 +340,7 @@ const Scheduler = (props) => {
     return (
         <Grid item xs={12} container>
 
-            <Typography align="left" className="scheduler-title" variant="h3">
+            <Typography align="left" className="scheduler-title" variant="h1">
                 Scheduler
 			</Typography>
             <br />
