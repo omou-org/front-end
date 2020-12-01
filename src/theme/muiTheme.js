@@ -114,7 +114,6 @@ const theme = createMuiTheme({
       "main": backgroundGrey,
       "default": backgroundGrey,
     },
-<<<<<<< HEAD
     "success": { "main": statusGreen },
     "warning": { "main": statusYellow },
     "error": { "main": statusRed },
@@ -190,37 +189,6 @@ const theme = createMuiTheme({
           "border": "rgba(40, 159, 195, 0.8)",
           "-webkit-background-clip": "padding-box",
           "background-clip": "padding-box"
-=======
-    "colors": {
-        "black": "#000000",
-        "darkGray": "#666666",
-    },
-	"typography": {
-		subtitle2: {
-			fontWeight: 500,
-			fontSize: 12,
-		}
-	},
-    "overrides": {
-        "MuiCssBaseline": {
-            "@global": {
-                "body": {
-                    "backgroundColor": neutralBackgroundColor,
-                },
-            },
-        },
-        MuiTypography: {
-            h1: defaultFontProps,
-            h2: defaultFontProps,
-            h3: defaultFontProps,
-            h4: defaultFontProps,
-            h5: defaultFontProps,
-            subtitle1: {
-                fontSize: '20px',
-                fontWeight: '300',
-                fontFamily: 'Roboto',
-            },
->>>>>>> development
         },
         "&:active": {
           "backgroundColor": buttonBlue,

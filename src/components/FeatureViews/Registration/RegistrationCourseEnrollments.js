@@ -12,13 +12,11 @@ import Typography from "@material-ui/core/Typography";
 
 import "theme/theme.scss";
 import "./registration.scss";
-import { addDashes } from "components/FeatureViews/Accounts/accountUtils";
-import { deleteEnrollment } from "actions/registrationActions";
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import gql from "graphql-tag";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import CourseEnrollmentRow from "./CourseEnrollmentRow";
 import {GET_COURSES} from "./RegistrationLanding";
+
 
 export const DELETE_ENROLLMENT = gql`mutation DeleteEnrollment($enrollmentId:ID) {
   __typename
@@ -152,6 +150,8 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity}) => {
                     }
                 </TableBody>
             </Table>
+            {/*
+            This is a TODO item to implement unenrollment
             <Dialog aria-describedby="unenroll-dialog-description"
                 aria-labelledby="unenroll-dialog-title"
                 className="session-view-modal"
@@ -191,7 +191,7 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity}) => {
                         cancel
                     </ResponsiveButton>
                 </DialogActions>
-            </Dialog>
+            </Dialog> */}
         </>
     );
 };

@@ -34,7 +34,6 @@ import ProfileCard from "./ProfileCard";
 import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { makeStyles } from "@material-ui/core";
 
 const QUERY_USERS = gql`
     query UserQuery($adminType: String) {
@@ -168,7 +167,6 @@ const Accounts = () => {
     const MAX_EMAIL_LENGTH = 21;
     const isOverMaxEmailLength = (emailLength) => emailLength > MAX_EMAIL_LENGTH;
 
-    const classes = useStyles();
     const tableView = useMemo(() => (
             <Table className="AccountsTable" resizable="false">
                 <TableHead>
