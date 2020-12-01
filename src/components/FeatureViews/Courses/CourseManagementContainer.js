@@ -293,11 +293,11 @@ const CourseManagementContainer = () => {
   const GET_COURSES = gql`
     query getCourses($accountId:ID!) {
       courses(${checkAccountForQuery}: $accountId) {
-        dayOfWeek
+        
         endDate
-        endTime
+        
         title
-        startTime
+        
         academicLevel
         startDate
         instructor {
