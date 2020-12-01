@@ -17,20 +17,27 @@ import { Redirect } from "react-router-dom";
 const GET_INSTRUCTOR_INFO = gql`
 	query getCourses($instructorID: ID!) {
 		instructor(userId: $instructorID) {
-		  accountType
-		  user {
-			firstName
-			lastName
-			id
-			instructor {
-			  sessionSet {
-				endDatetime
-				startDatetime
-				title
+			accountType
+			user {
+			  firstName
+			  lastName
+			  id
+			  instructor {
+				sessionSet {
+				  endDatetime
+				  startDatetime
+				  title
+				}
+				instructoravailabilitySet {
+				  dayOfWeek
+				  endDatetime
+				  startDatetime
+				  startTime
+				  endTime
+				}
 			  }
 			}
 		  }
-		}
 	  }
 `
 
@@ -148,18 +155,37 @@ const InstructorSchedule = ({instructorID}) => {
 
 	console.log(data);
 
-	const { instructor } = data
+	const { user } = data.instructor;
 
-	const teachingSessions = instructor.user.instructor.sessionSet.map((session) => ({
-				end: new Date(session.endDatetime),
-				start: new Date(session.startDatetime),
-				title: session.title,
+	const hoursWorked = parseInt(user.instructor.sessionSet.reduce((hours, session) => {
+		const start = new Date(session.startDatetime);
+		const end = new Date(session.endDatetime);
+		console.log(toHours(end - start));
+		if (start > Date.now()) {
+			return hours;
+		} else if (end < Date.now()) {
+			return hours + toHours(end - start);
+		}
+		return hours + toHours(end - Date.now());
+	}, 0));
+
+	const teachingSessions = user.instructor.sessionSet.map(({endDatetime, startDatetime, title}) => ({
+				end: new Date(endDatetime),
+				start: new Date(startDatetime),
+				title: title,
 			}));
-		
+
+	const instructorBusinessHours = user.instructor.instructoravailabilitySet.map(({dayOfWeek, startTime, endTime}) => ({
+		dayOfWeek: [dayOfWeek],
+		startTime, 
+		endTime
+	}))
+	
 
 	console.log(teachingSessions);
-	let hoursWorked = 0;
+	//let hoursWorked = 0;
 	let OOO = [];
+	let allDayOOO = true;
 	
 	return (
 		<>
@@ -167,11 +193,11 @@ const InstructorSchedule = ({instructorID}) => {
 				{hoursWorked} hour{hoursWorked !== 1 && "s"} worked this month
 			</h3>
 			<FullCalendar
-				// allDaySlot={allDayOOO}
-				// businessHours={instructorBusinessHours}
+				allDaySlot={allDayOOO}
+				businessHours={instructorBusinessHours}
 				columnHeaderFormat={{weekday: "short"}}
 				defaultView="timeGridWeek"
-				eventColor={stringToColor(fullName(instructor.user) || "")}
+				eventColor={stringToColor(fullName(user) || "")}
 				eventMouseEnter={handleToolTip}
 				events={[...teachingSessions, ...OOO]}
 				header={false}
