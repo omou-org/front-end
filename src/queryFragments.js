@@ -51,3 +51,23 @@ export const GET_CATEGORIES = gql`
 		}
 	  }
 	`;
+
+export const ENROLLMENT_ID = gql`
+fragment EnrollmentId on EnrollmentType {
+	id
+}
+`
+
+export const BASIC_ENROLLMENT_DATA = gql`
+fragment BasicEnrollmentData on EnrollmentType {
+    __typename
+	id
+	course {
+		id
+	}
+	student {
+		user {
+			id
+		}
+	}
+}`

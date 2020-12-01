@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import gql from "graphql-tag";
-import { Link } from "react-router-dom";
-import { useQuery } from "@apollo/react-hooks";
-import { useSelector } from "react-redux";
+import {Link} from "react-router-dom";
+import {useQuery} from "@apollo/react-hooks";
+import {useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import CardView from "@material-ui/icons/ViewModule";
@@ -12,6 +12,7 @@ import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
 import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
 import GridOnOutlinedIcon from '@material-ui/icons/GridOnOutlined';
+import {makeStyles} from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -25,18 +26,18 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import "./Accounts.scss";
-import { addDashes } from "./accountUtils";
-import { capitalizeString, USER_TYPES } from "utils";
+import {addDashes} from "./accountUtils";
+import {capitalizeString, USER_TYPES} from "utils";
 import IconButton from "@material-ui/core/IconButton";
 import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
-import { simpleUser } from "queryFragments";
+import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { makeStyles } from "@material-ui/core";
 
 const QUERY_USERS = gql`
-    query UserQuery {
+    query UserQuery($adminType: String) {
         students {
             user {
                 ...SimpleUser
@@ -54,6 +55,16 @@ const QUERY_USERS = gql`
             phoneNumber
         }
         instructors {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+         admins(adminType: $adminType) {
+            adminType
+            userUuid
             user {
                 ...SimpleUser
                 email
@@ -80,8 +91,8 @@ const stopPropagation = (event) => {
 
 const Accounts = () => {
     const isAdmin =
-        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
-    const { loading, error, data } = useQuery(QUERY_USERS);
+        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
+    const {loading, error, data} = useQuery(QUERY_USERS);
 
     const prevState = JSON.parse(sessionStorage.getItem("AccountsState"));
     const [isMobile, setIsMobile] = useState(false);
@@ -119,8 +130,7 @@ const Accounts = () => {
                 newUsersList = data.students;
                 break;
             case 3:
-                // TODO: receptionist
-                newUsersList = [];
+                newUsersList = data.admins.filter(admin => admin.adminType === USER_TYPES.receptionist);
                 break;
             case 4:
                 newUsersList = data.parents;
@@ -129,6 +139,7 @@ const Accounts = () => {
                 newUsersList = Object.values(data).flat();
         }
         return newUsersList
+            .filter(user => user.adminType !== "OWNER")
             .map((user) => ({
                 ...user,
                 "accountType": user.accountType.toLowerCase(),
@@ -154,21 +165,25 @@ const Accounts = () => {
         setViewToggle(view);
     }, []);
 
+    const MAX_EMAIL_LENGTH = 21;
+    const isOverMaxEmailLength = (emailLength) => emailLength > MAX_EMAIL_LENGTH;
+
+    const classes = useStyles();
     const tableView = useMemo(() => (
             <Table className="AccountsTable" resizable="false">
                 <TableHead>
                     <TableRow>
-                        <TableCell >
+                        <TableCell className={classes.tableCellStyle}>
                             Name
                         </TableCell>
-                        <TableCell >
+                        <TableCell className={classes.tableCellStyle}>
                             Email
                         </TableCell>
-                        <TableCell >
+                        <TableCell className={classes.tableCellStyle}>
                             Phone
                         </TableCell>
-                        <TableCell >
-                            Role
+                    <TableCell className={classes.tableCellStyle}>
+                        Role
                     </TableCell>
                         <TableCell />
                     </TableRow>
@@ -188,7 +203,10 @@ const Accounts = () => {
                             </TableCell>
                             <TableCell>
                                 <Tooltip title={row.user.email}>
-                                    <span>{row.user.email.substr(0, 20)}</span>
+                                    <span>
+                                        {row.user.email.substr(0, 20)}
+                                        {isOverMaxEmailLength(row.user.email.length) && "..."}
+                                    </span>
                                 </Tooltip>
                             </TableCell>
                             <TableCell>{addDashes(row.phoneNumber)}</TableCell>
@@ -224,7 +242,7 @@ const Accounts = () => {
             direction="row" spacing={2} xs={12}>
             {displayUsers.map((user) => (
                 <ProfileCard key={user.user_id}
-                    route={`/accounts/${user.accountType}/${user.user.id}`}
+                    route={`/accounts/${user.role}/${user.user_id}`}
                     user={user} />
             ))}
         </Grid>
@@ -236,7 +254,7 @@ const Accounts = () => {
                     <Grid item>
                         <ResponsiveButton 
                             component={Link}
-                            to="/form/student"
+                            to="/registration/form/student"
                             variant="outlined"
                         >
                             new student
@@ -253,7 +271,7 @@ const Accounts = () => {
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
-                    <hr style={{ marginTop: "15px" }} />
+                    <hr/>
                 </Hidden>
                 <Typography align="left" className="heading" variant="h1">
                     Accounts

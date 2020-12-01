@@ -78,7 +78,7 @@ const CourseClasses = () => {
   const [index, setIndex] = useState(0);
   const tabs = [
     { label: "About Course" },
-    { label: "Annoucements" },
+    { label: "Announcements" },
     { label: "Student Enrolled" },
     { label: "Sessions" },
   ];
