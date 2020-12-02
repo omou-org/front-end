@@ -130,7 +130,7 @@ const ClassInfo = ({
             const newCourseLink = data.createCourse.course;
 
             const cachedCourseLink = cache.readQuery({
-                query: GET_CLASSES[accountType],
+                query: GET_CLASSES,
                 variables: { id: id },
             }).course;
 
@@ -140,7 +140,7 @@ const ClassInfo = ({
                 data: {
                     course: { ...cachedCourseLink, ...newCourseLink },
                 },
-                query: GET_CLASSES[accountType],
+                query: GET_CLASSES,
                 variables: { id: id },
             });
         },

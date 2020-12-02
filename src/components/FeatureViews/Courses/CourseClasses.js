@@ -180,17 +180,22 @@ const CourseClasses = () => {
         error: studentError,
     } = useQuery(GET_STUDENTS, {
         variables: { accountId: user.id },
+        skip: accountType !== 'PARENT',
         onCompleted: () => {
-            studentData.parent.studentList.map(({ enrollmentSet, user }) => {
-                enrollmentSet.map(({ course }) => {
-                    if (course.id === id) {
-                        setStudentInCourse((prevState) => [
-                            ...prevState,
-                            `${user.firstName} ${user.lastName}`,
-                        ]);
+            if (accountType === 'PARENT') {
+                studentData.parent.studentList.map(
+                    ({ enrollmentSet, user }) => {
+                        enrollmentSet.map(({ course }) => {
+                            if (course.id === id) {
+                                setStudentInCourse((prevState) => [
+                                    ...prevState,
+                                    `${user.firstName} ${user.lastName}`,
+                                ]);
+                            }
+                        });
                     }
-                });
-            });
+                );
+            }
         },
     });
 
@@ -260,9 +265,11 @@ const CourseClasses = () => {
                         <BackButton />
                     </Grid>
                     <Grid item>
-                        {studentInCourse.map((student, i) => (
-                            <StudentCourseLabel label={student} key={i} />
-                        ))}
+                        {accountType === 'PARENT'
+                            ? studentInCourse.map((student, i) => (
+                                  <StudentCourseLabel label={student} key={i} />
+                              ))
+                            : ''}
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
