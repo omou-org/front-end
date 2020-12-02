@@ -433,7 +433,6 @@ const CourseManagementContainer = () => {
     const checkStudentEnrolled = (value, filter) =>
         '' === filter || JSON.parse(filter).includes(value);
     const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-
     const defaultCourseDisplay = courseData.courses
         .filter(
             (course) =>

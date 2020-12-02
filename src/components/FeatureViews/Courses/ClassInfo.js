@@ -134,8 +134,6 @@ const ClassInfo = ({
                 variables: { id: id },
             }).course;
 
-            console.log(newCourseLink, cachedCourseLink);
-
             cache.writeQuery({
                 data: {
                     course: { ...cachedCourseLink, ...newCourseLink },
