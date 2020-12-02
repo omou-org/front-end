@@ -55,7 +55,7 @@ const InstructorCourses = ({ instructorID }) => {
 
 	if (loading ) return <Loading small/>;
 
-  if ( error ) return  <Typography>There was an error {message.error}</Typography>;
+  if ( error ) return  <Typography>There was an error {error.message}</Typography>;
   
   const { courses } = data;
 

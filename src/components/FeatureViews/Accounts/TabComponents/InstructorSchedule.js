@@ -11,6 +11,7 @@ import {handleToolTip} from "../../Scheduler/SchedulerUtils";
 import { fullName } from "utils.js";
 import {stringToColor} from "../accountUtils";
 import Loading from "components/OmouComponents/Loading";
+import { Typography } from "@material-ui/core";
 
 const GET_INSTRUCTOR_INFO = gql`
 	query getCourses($instructorID: ID!) {
@@ -55,7 +56,7 @@ const InstructorSchedule = ({instructorID}) => {
 
 	if (loading ) return <Loading small/>;
 
-	if (error ) return  <Typography>There was an error {message.error}</Typography>;
+	if (error ) return  <Typography>There was an error {error.message}</Typography>;
 
 	const { user, user : { instructor } } = data.instructor;
 
