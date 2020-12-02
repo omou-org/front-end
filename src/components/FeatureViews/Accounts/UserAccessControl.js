@@ -1,6 +1,6 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import Redirect from "react-router-dom/es/Redirect";
+import {Redirect} from "react-router-dom";
 
 /**
  * @description only allow a the logged in user access to a component
