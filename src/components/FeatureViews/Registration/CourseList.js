@@ -69,6 +69,27 @@ const GET_PARENT_INTEREST = gql`
     }
 `;
 
+const ADD_PARENT_TO_INTEREST_LIST = gql`
+    mutation AddParentToInterestList($parentId: ID!, $courseId: ID!){
+        createInterest(parent: $parentId, course: $courseId) {
+            interest {
+                id
+                parent {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+                course {
+                    id
+                    title
+                }
+            }
+        }
+    }
+`
+
 const useStyles = makeStyles((theme) => ({
     "courseTitle": {
         "color": theme.palette.common.black,
