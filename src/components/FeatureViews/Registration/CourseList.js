@@ -28,6 +28,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
 import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
+import { DialogContentText } from "@material-ui/core";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -49,6 +50,25 @@ export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     }
 `;
 
+const GET_PARENT_INTEREST = gql`
+    query GetParentInterest($parentId: ID!){
+        interests(parentId: $parentId) {
+            id
+            parent {
+                user {
+                    id
+                    firstName
+                    lastName
+                }
+            }
+            course {
+                id
+                title
+            }
+        }
+    }
+`;
+
 const useStyles = makeStyles((theme) => ({
     "courseTitle": {
         "color": theme.palette.common.black,
@@ -60,7 +80,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CourseList = ({ filteredCourses, updatedParent }) => {
-    const [openCourseQuickRegistration, setOpen] = useState(false);
+    const [openCourseQuickRegistration, setOpenQuickRegister] = useState(false);
+    const [openInterestDialog, setOpenInterestDialog] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
 
@@ -68,7 +89,8 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const dispatch = useDispatch();
 
     const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const {data, loading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
+
+    const {data: studentEnrollments, loading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
         "variables": {"userIds": studentList},
         skip: !studentList
     });
@@ -81,7 +103,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
     const registrations = validRegistrations && [].concat.apply([], validRegistrations);
-    const studentOptions = data?.userInfos
+    const studentOptions = studentEnrollments?.userInfos
         .filter(({user}) => (!registrations.find(({course, student}) =>
                 (course.id === quickCourseID && user.id === student))
         ))
@@ -90,7 +112,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             "value": student.user.id,
         })) || [];
 
-    const enrolledCourseIds = data?.enrollments.map(({course}) => course.id);
+    const enrolledCourseIds = studentEnrollments?.enrollments.map(({course}) => course.id);
     const previouslyEnrolled = (courseId, enrolledCourseIds, registrations, studentList) => {
         const validRegistrations = Object.values(registrations)
             .filter(registration => registration);
@@ -105,7 +127,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
 
     const handleStartQuickRegister = (courseID) => (e) => {
         e.preventDefault();
-        setOpen(true);
+        setOpenQuickRegister(true);
         setQuickCourseID(courseID);
     };
 
@@ -117,12 +139,22 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 courseId: quickCourseID
             }
         });
-        setOpen(false);
+        setOpenQuickRegister(false);
+    }
+
+    const handleInterestRegister = () => (e) => {
+        e.preventDefault();
+        setOpenInterestDialog(true);
+
+    }
+
+    const handleAddInterest = () => {
+        console.log("I am intersted");
+        setOpenInterestDialog(false);
     }
 
     const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
-        return ((course.maxCapacity <= course.enrollmentSet.length) &&
-            (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
+        return ((previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
     }
 
     return <> <Table>
@@ -131,8 +163,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 filteredCourses
                     .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
                         (moment().diff(moment(endDate), 'days') < 0)))
-                    .map((course) => (
-                        <TableRow
+                    .map((course) => {
+                        course.enrollmentSet.length = course.maxCapacity
+
+                        return <TableRow
                             key={course.id}
                         >
                             <TableCell
@@ -183,7 +217,8 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     <span className="label">Enrolled</span>
                                 </span>
                                 {(currentParent || parentIsLoggedIn || updatedParent) && (
-                                    <Button
+                                    (course.enrollmentSet.length < course.maxCapacity) 
+                                    ?<Button
                                         disabled={shouldDisableQuickRegister({
                                             course, enrolledCourseIds,
                                             registrations, studentList
@@ -195,14 +230,22 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     >
                                         + REGISTER
                                     </Button>
+                                    : <Button
+                                        variant="outlined"
+                                        color="secondary"
+                                        onClick={handleInterestRegister()}
+                                        data-cy="add-interest-button"
+                                    >
+                                        + INTEREST
+                                    </Button>
                                 )}
                             </TableCell>
                         </TableRow>
-                    ))
+                    })
             }
         </TableBody>
     </Table>
-        <Dialog open={openCourseQuickRegistration} onClose={() => setOpen(false)}>
+        <Dialog open={openCourseQuickRegistration} onClose={() => setOpenQuickRegister(false)}>
             <DialogTitle>Which student do you want to enroll?</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth variant="outlined">
@@ -231,6 +274,35 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </Button>
                 </DialogActions>
             </DialogContent>
+        </Dialog>
+        <Dialog open={openInterestDialog} onClose={() => setOpenInterestDialog(false)}>
+            <DialogTitle>
+                <Typography variant="h3">Interested?</Typography>
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
+                    <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button 
+                    data-cy="cancel-add-interest"
+                    onClick={() => setOpenInterestDialog(false)}
+                    variant="outlined"
+                    color="primary"
+                >
+                    Cancel
+                </Button>
+                <Button
+                    data-cy="confirm-add-interest"
+                    onClick={handleAddInterest}
+                    variant="outlined"
+                    color="primary"
+                >
+                    Notify Me
+                </Button>
+            </DialogActions>
         </Dialog>
     </>
 };
