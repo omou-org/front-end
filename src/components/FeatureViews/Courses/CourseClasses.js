@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
@@ -28,6 +28,9 @@ import { gradeLvl } from '../../../utils';
 import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { USER_TYPES } from '../../../utils';
+import { StudentCourseLabel } from './StudentBadge';
+import { filterEvent } from 'actions/calendarActions';
+import { GET_STUDENTS } from './CourseManagementContainer';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -76,313 +79,75 @@ export const GET_ANNOUNCEMENTS = gql`
     }
 `;
 
-export const GET_CLASSES = {
-    ADMIN: gql`
-        query getClass($id: ID!, $email: String = "") {
-            course(courseId: $id) {
-                academicLevel
-                courseCategory {
-                    name
-                    id
+export const GET_CLASSES = gql`
+    query getClass($id: ID!) {
+        course(courseId: $id) {
+            academicLevel
+            courseCategory {
+                name
+                id
+            }
+            title
+            startDate
+            endDate
+            description
+            courseLink
+            courseLinkDescription
+            courseLinkUpdatedAt
+            instructor {
+                user {
+                    firstName
+                    lastName
                 }
-                title
-                startDate
-                endDate
-                description
-                courseLink
-                courseLinkDescription
-                courseLinkUpdatedAt
-                instructor {
+            }
+            enrollmentSet {
+                student {
                     user {
                         firstName
                         lastName
-                    }
-                }
-                enrollmentSet {
-                    student {
-                        user {
-                            firstName
-                            lastName
-                            id
-                        }
-                        primaryParent {
-                            user {
-                                firstName
-                                lastName
-                                id
-                                email
-                            }
-                            accountType
-                            phoneNumber
-                        }
-                        accountType
-                    }
-                }
-                sessionSet {
-                    startDatetime
-                    id
-                }
-                availabilityList {
-                    startTime
-                    endTime
-                    dayOfWeek
-                }
-            }
-            accountSearch(query: $email) {
-                total
-                results {
-                    ... on AdminType {
-                        userUuid
-                        user {
-                            email
-                            firstName
-                            lastName
-                            id
-                        }
-                    }
-                }
-            }
-            enrollments(courseId: $id) {
-                student {
-                    user {
                         id
                     }
+                    primaryParent {
+                        user {
+                            firstName
+                            lastName
+                            id
+                            email
+                        }
+                        accountType
+                        phoneNumber
+                    }
+                    accountType
+                }
+            }
+            sessionSet {
+                startDatetime
+                id
+            }
+            availabilityList {
+                startTime
+                endTime
+                dayOfWeek
+            }
+        }
+        enrollments(courseId: $id) {
+            student {
+                user {
+                    id
                 }
             }
         }
-    `,
-    INSTRUCTOR: gql`
-        query getClass($id: ID!, $email: String = "") {
-            course(courseId: $id) {
-                academicLevel
-                courseCategory {
-                    name
-                    id
-                }
-                title
-                startDate
-                endDate
-                description
-                courseLink
-                courseLinkDescription
-                courseLinkUpdatedAt
-                instructor {
-                    user {
-                        firstName
-                        lastName
-                    }
-                }
-                enrollmentSet {
-                    student {
-                        user {
-                            firstName
-                            lastName
-                            id
-                        }
-                        primaryParent {
-                            user {
-                                firstName
-                                lastName
-                                id
-                                email
-                            }
-                            accountType
-                            phoneNumber
-                        }
-                        accountType
-                    }
-                }
-                sessionSet {
-                    startDatetime
-                    id
-                }
-                availabilityList {
-                    startTime
-                    endTime
-                    dayOfWeek
-                }
-            }
-            accountSearch(query: $email) {
-                total
-                results {
-                    ... on InstructorType {
-                        userUuid
-                        user {
-                            email
-                            firstName
-                            lastName
-                            id
-                        }
-                    }
-                }
-            }
-            enrollments(courseId: $id) {
-                student {
-                    user {
-                        id
-                    }
-                }
-            }
-        }
-    `,
-    STUDENT: gql`
-        query getClass($id: ID!, $email: String = "") {
-            course(courseId: $id) {
-                academicLevel
-                courseCategory {
-                    name
-                    id
-                }
-                title
-                startDate
-                endDate
-                description
-                courseLink
-                courseLinkDescription
-                courseLinkUpdatedAt
-                instructor {
-                    user {
-                        firstName
-                        lastName
-                    }
-                }
-                enrollmentSet {
-                    student {
-                        user {
-                            firstName
-                            lastName
-                            id
-                        }
-                        primaryParent {
-                            user {
-                                firstName
-                                lastName
-                                id
-                                email
-                            }
-                            accountType
-                            phoneNumber
-                        }
-                        accountType
-                    }
-                }
-                sessionSet {
-                    startDatetime
-                    id
-                }
-                availabilityList {
-                    startTime
-                    endTime
-                    dayOfWeek
-                }
-            }
-            accountSearch(query: $email) {
-                total
-                results {
-                    ... on StudentType {
-                        userUuid
-                        user {
-                            email
-                            firstName
-                            lastName
-                            id
-                        }
-                    }
-                }
-            }
-            enrollments(courseId: $id) {
-                student {
-                    user {
-                        id
-                    }
-                }
-            }
-        }
-    `,
-    PARENT: gql`
-        query getParentClass($id: ID!, $email: String = "") {
-            course(courseId: $id) {
-                academicLevel
-                courseCategory {
-                    name
-                    id
-                }
-                title
-                startDate
-                endDate
-                description
-                courseLink
-                courseLinkDescription
-                courseLinkUpdatedAt
-                instructor {
-                    user {
-                        firstName
-                        lastName
-                    }
-                }
-                enrollmentSet {
-                    student {
-                        user {
-                            firstName
-                            lastName
-                            id
-                        }
-                        primaryParent {
-                            user {
-                                firstName
-                                lastName
-                                id
-                                email
-                            }
-                            accountType
-                            phoneNumber
-                        }
-                        accountType
-                    }
-                }
-                sessionSet {
-                    startDatetime
-                    id
-                }
-                availabilityList {
-                    dayOfWeek
-                    endTime
-                    startTime
-                }
-            }
-            accountSearch(query: $email) {
-                total
-                results {
-                    ... on ParentType {
-                        userUuid
-                        user {
-                            email
-                            firstName
-                            lastName
-                            id
-                        }
-                    }
-                }
-            }
-            enrollments(courseId: $id) {
-                student {
-                    user {
-                        id
-                    }
-                }
-            }
-            parent(email: $email) {
-                studentIdList
-            }
-        }
-    `,
-};
+    }
+`;
 
 const CourseClasses = () => {
     const { id } = useParams();
     const classes = useStyles();
     const [index, setIndex] = useState(0);
-    const { email, accountType } = useSelector(({ auth }) => auth) || [];
+
+    const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
+    const [studentInCourse, setStudentInCourse] = useState([]);
+
     const tabLabels =
         accountType === 'PARENT'
             ? [
@@ -397,18 +162,9 @@ const CourseClasses = () => {
                   { label: 'Sessions' },
               ];
 
-    const queryParser = (userType) =>
-        ({
-            ADMIN: 'AdminType',
-            INSTRUCTOR: 'InstructorType',
-            PARENT: 'ParentType',
-            STUDENT: 'StudentType',
-        }[userType]);
-
-    const { data, loading, error } = useQuery(GET_CLASSES[accountType], {
+    const { data, loading, error } = useQuery(GET_CLASSES, {
         variables: {
             id: id,
-            email: email,
         },
     });
 
@@ -418,8 +174,30 @@ const CourseClasses = () => {
         },
     });
 
-    if (loading || getAnnouncements.loading) return <Loading />;
+    const {
+        data: studentData,
+        loading: studentLoading,
+        error: studentError,
+    } = useQuery(GET_STUDENTS, {
+        variables: { accountId: user.id },
+        onCompleted: () => {
+            studentData.parent.studentList.map(({ enrollmentSet, user }) => {
+                enrollmentSet.map(({ course }) => {
+                    if (course.id === id) {
+                        setStudentInCourse((prevState) => [
+                            ...prevState,
+                            `${user.firstName} ${user.lastName}`,
+                        ]);
+                    }
+                });
+            });
+        },
+    });
+
+    if (loading || getAnnouncements.loading || studentLoading)
+        return <Loading />;
     if (error) return console.error(error);
+    if (studentError) return console.error(studentError);
 
     if (getAnnouncements.error)
         return console.error(getAnnouncements.error.message);
@@ -434,7 +212,6 @@ const CourseClasses = () => {
         enrollmentSet,
         startDate,
         startTime,
-
         title,
         sessionSet,
     } = data.course;
@@ -451,7 +228,7 @@ const CourseClasses = () => {
     const handleChange = (_, i) => setIndex(i);
 
     const comparison = (studentList, enrollmentArray) => {
-        if (queryParser(accountType) === 'ParentType') {
+        if (accountType === 'PARENT') {
             for (const studentId of enrollmentArray) {
                 return studentList?.includes(studentId.student.user.id);
             }
@@ -459,6 +236,10 @@ const CourseClasses = () => {
             return true;
         }
     };
+
+    // match the enrollment set course id with current course id.
+
+    // set in state students are in this class
 
     const tabSelection = () => {
         switch (index) {
@@ -474,7 +255,16 @@ const CourseClasses = () => {
     return (
         <Grid item xs={12}>
             <BackgroundPaper elevation={2}>
-                <BackButton />
+                <Grid container justify="space-between" alignContent="center">
+                    <Grid item>
+                        <BackButton />
+                    </Grid>
+                    <Grid item>
+                        {studentInCourse.map((student, i) => (
+                            <StudentCourseLabel label={student} key={i} />
+                        ))}
+                    </Grid>
+                </Grid>
                 <Hidden xsDown>
                     <hr />
                 </Hidden>
@@ -676,13 +466,11 @@ const CourseClasses = () => {
                                     <TabPanel index={2} value={index}>
                                         <ClassEnrollmentList
                                             enrollmentList={enrollmentSet}
-                                            loggedInUser={data.accountSearch}
                                         />
                                     </TabPanel>
                                     <TabPanel index={3} value={index}>
                                         <ClassSessionContainer
                                             sessionList={sessionSet}
-                                            loggedInUser={data.accountSearch}
                                         />
                                     </TabPanel>
                                 </AccessControlComponent>

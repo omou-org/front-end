@@ -99,7 +99,7 @@ const UPDATE_COURSE_LINK = gql`
             }
         ) {
             course {
-                id
+                courseId
                 courseType
                 courseLinkDescription
                 courseLinkUpdatedAt
@@ -127,12 +127,14 @@ const ClassInfo = ({
             setEditActive(false);
         },
         update: (cache, { data }) => {
-            const newCourseLink = data?.createCourse.course;
+            const newCourseLink = data.createCourse.course;
 
             const cachedCourseLink = cache.readQuery({
                 query: GET_CLASSES[accountType],
-                variables: { id: id, email: email },
+                variables: { id: id },
             }).course;
+
+            console.log(newCourseLink, cachedCourseLink);
 
             cache.writeQuery({
                 data: {
@@ -142,6 +144,7 @@ const ClassInfo = ({
                 variables: { id: id },
             });
         },
+        onError: (error) => console.log(error),
         //Add error
     });
 
@@ -170,8 +173,6 @@ const ClassInfo = ({
                 courseDescription: linkDescription,
             },
         });
-
-        setEditActive(false);
     };
 
     const handleLinkChange = (event) => {
