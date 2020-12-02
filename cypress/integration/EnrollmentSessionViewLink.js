@@ -1,7 +1,7 @@
 
 describe("Link from enrollmentview to sessionview", () => {
     before(() => {
-        cy.fixture("enrollment.json").then(({ data: {enrollment, sessions} }) => {
+        cy.fixture("enrollment.json").then(({ enrollment, sessions}) => {
             console.log(enrollment)
             console.log(sessions)
             // console.log(unpaidSessions)
@@ -11,15 +11,19 @@ describe("Link from enrollmentview to sessionview", () => {
                 "EnrollmentViewQuery": {
                     "response": {
                         "data": {
-                            ...enrollment
+                                enrollment
                             },
                             
                         },
                     "test": (variables) => {
                         Object.entries(variables).forEach(([key, value]) => {
-                            if (!["courseId", "id", "instructorId"].includes(key)) {
-                                expect(enrollment[key] || enrollment?.user[key]).equals(value);
-                            }
+                            // if (!["courseId", "id", "instructorId"].includes(key)) {
+                                expect(key).to.equal("enrollmentId");
+                                expect(value).to.equal("1");
+                        
+                            // }
+                            //key is 'enrollment', value = '1'
+                            console.log(key, value)
                         });
                     },
                 },
@@ -41,14 +45,11 @@ describe("Link from enrollmentview to sessionview", () => {
                 "GetSessions":{
                     "response": {
                         "data": {
-                            "sessions": {
-                                ...sessions,
-                            }
+                            sessions,
                         }
                     }
                 }          
               });
-            console.log(enrollment)
             cy.visitAuthenticated(`/enrollment/${enrollment.id}/`);
 
         });
@@ -57,8 +58,8 @@ describe("Link from enrollmentview to sessionview", () => {
     
     it('goes to the view-session scheduler of that session', () => {
 
-        // cy.get('[data-cy=view-session-link]').click();
-        // cy.url().should('eq', `http://localhost:3000/scheduler/view-session/${enrollment.course.id}/${enrollment.id}/${instructorId}`)
+        cy.get('[data-cy=enrollment-sessions]').first().click();
+        cy.url().should('eq', `http://localhost:3000/scheduler/view-session/1/14/5`)
 
     });
 });

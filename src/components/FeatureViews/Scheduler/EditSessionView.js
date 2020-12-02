@@ -117,13 +117,19 @@ const GET_SESSION = gql`
 //ANNA
 //Need to have startDatetime for course as well??? Same thing that was done for confirmed
 
+//remove subject update from ALL
+
 //Should title just be on ALL? Same thing with Subject. Why change the subject on just one?
+
+//Title is fine update subject
 
 //The updated session drops to the bottom. They go by id, not by date. UGH
 
 //All stuff on top of enrollmentView should be course
 //Everything else needs to be session
 
+
+//is confirmed course is not necessary, clean queries and then remove is confirmed field from all
 
 
 const UPDATE_SESSION = gql`
@@ -244,6 +250,7 @@ const EditSessionView = () => {
       cache.writeQuery({
         query: GET_SESSION,
         data: {
+          //add a sort?
           session: [...existingSession, ...data["updateSession"].session],
         },
         variables: {
@@ -441,8 +448,7 @@ const EditSessionView = () => {
         break;
       }
       case "all": {
-        //ANNA FOR SOME REASON THIS BREAKS WITH courseConfirmed HAVE SOMEONE FOLLOW PATH WITH YOU
-        //Show how false works, but not true?? Can only sessions really be confirmed??
+       //ANNA add TODO here for course availability
         //Needs to be updated to just take time, won't take date, it is startDate, not startDatetime
         updateSession({
           variables: {
@@ -455,7 +461,7 @@ const EditSessionView = () => {
             room: room,
             // courseStartDatetime: start_time,
             // courseEndDatetime: newEndTime,
-            courseConfirmed: is_confirmed,
+            
           },
         });
         //   start_time: start_time.toLocaleString("eng-US", timeFormat),
@@ -463,6 +469,7 @@ const EditSessionView = () => {
       // no default
     }
     //ANNA DOES THIS GO BACK IN???
+    //same route as back
     // history.push("/scheduler/");
   };
 

@@ -188,6 +188,7 @@ const CourseSessionStatus = () => {
     id,
   } = enrollmentData.enrollment;
 
+
   const mainContent = () => {
     switch (activeTab) {
       case 0:
@@ -221,7 +222,7 @@ const CourseSessionStatus = () => {
                 </Typography>
               </Grid>
             </Grid>
-            <Grid container spacing={1}>
+            <Grid container spacing={1} data-cy="enrollment-sessions">
               {sessionsData.sessions.length !== 0 ? (
                 sessionsData.sessions.map((session) => {
                   return (

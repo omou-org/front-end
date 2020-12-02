@@ -1,5 +1,4 @@
-{
-    "data": {
+ {
       "enrollment": {
         "id": "1",
         "enrollmentnoteSet": [],
@@ -33,7 +32,15 @@
             "id": "3",
             "firstName": "Danny",
             "lastName": "Hong",
-            "parent": null,
+            "parent": {
+              "user": {
+                "id": "1",
+                "firstName": "Anna",
+                "lastName": "Conover",
+                "__typename": "UserType"
+              },
+                "__typename": "ParentType"
+            },
             "__typename": "UserType"
           },
           "__typename": "StudentType"
@@ -370,4 +377,4 @@
     }
    
     
-  }
+  
