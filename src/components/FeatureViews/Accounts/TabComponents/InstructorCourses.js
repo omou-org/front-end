@@ -8,6 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import Moment from "react-moment";
+import moment from "moment";
 
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
@@ -90,11 +91,7 @@ const InstructorCourses = ({ instructorID }) => {
       </Grid>
       <Grid container direction="row-reverse" spacing={1}>
         {courses
-          .sort(
-            (courseA, courseB) =>
-              new Date(courseB.startDate) -
-              new Date(courseA.startDate)
-          )
+          .sort((courseA, courseB) => moment(courseB.startDate).diff(moment(courseA.startDate)))
           .map(({id, title, startDate, endDate, isConfirmed, availabilityList}) => {
 
             return (
