@@ -59,18 +59,18 @@ const InstructorSchedule = ({instructorID}) => {
 
 	const { user, user : { instructor } } = data.instructor;
 
-	const today = new Date(moment());
+	const today = moment();
 
 	const hoursWorkedThisMonth = parseInt(instructor.sessionSet.reduce((hours, session) => {
-		const start = new Date(session.startDatetime);
-		const end = new Date(session.endDatetime);
+		const start = moment(session.startDatetime);
+		const end = moment(session.endDatetime);
 
-		if (start > today) {
+		if (today.diff(start) < 0) {
 			return hours;
 		}
-		else if (start.getMonth() === today.getMonth() &&
-			start.getFullYear() === today.getFullYear()) {
-			return hours + toHours(end - start);
+		else if (start.month() === today.month() &&
+			start.year() === today.year()) {
+			return hours + toHours(end.diff(start));
 		} else {
 			return hours;
 		}
