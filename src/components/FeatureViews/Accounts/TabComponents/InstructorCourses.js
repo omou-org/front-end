@@ -34,12 +34,13 @@ export const GET_INSTRUCTOR_ENROLLMENTS = gql`
   }
 `;
 
-const checkTimes = (courseTimes) => {
-  let start = courseTimes[0].startTime;
-  let end = courseTimes[0].endTime;
 
-  for (let course of courseTimes) {
-    if (course.startTime !== start || course.endTime !== end) {
+const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
+  let start = availabilityList[0].startTime;
+  let end = availabilityList[0].endTime;
+
+  for (let availability of availabilityList) {
+    if (availability.startTime !== start || availability.endTime !== end) {
       return false;
     }
   }
@@ -54,7 +55,7 @@ const InstructorCourses = ({ instructorID }) => {
 
 	if (loading ) return <Loading small/>;
 
-  if ( error ) return console.error(error.message);
+  if ( error ) return  <Typography>There was an error {message.error}</Typography>;
   
   const { courses } = data;
 
@@ -124,14 +125,14 @@ const InstructorCourses = ({ instructorID }) => {
                     <Grid item xs={2}>
                       <Typography align="left">
                         {availabilityList.map(({dayOfWeek}, index) => {
-                          let isLast = availabilityList.length - 1 === index;
-                          return DayAbbreviation[dayOfWeek.toLowerCase()] + (!isLast ? ", " : "");
+                          let isLastSessionOfWeek = availabilityList.length - 1 === index;
+                          return DayAbbreviation[dayOfWeek.toLowerCase()] + (!isLastSessionOfWeek ? ", " : "");
                         })}
                         
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                      {checkTimes(availabilityList) 
+                      {sessionsAtSameTimeInMultiDayCourse(availabilityList) 
                       ? <Typography align="left">
                           <Moment
                               format="h:mm a"

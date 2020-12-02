@@ -55,7 +55,7 @@ const InstructorSchedule = ({instructorID}) => {
 
 	if (loading ) return <Loading small/>;
 
-	if (error ) return "Unable to load schedule";
+	if (error ) return  <Typography>There was an error {message.error}</Typography>;
 
 	const { user, user : { instructor } } = data.instructor;
 
