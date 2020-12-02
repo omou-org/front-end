@@ -65,9 +65,11 @@ const InstructorSchedule = ({instructorID}) => {
 		const start = moment(session.startDatetime);
 		const end = moment(session.endDatetime);
 
+		// Ignore sessions in the future
 		if (today.diff(start) < 0) {
 			return hours;
 		}
+		// If session is in the same month add hours
 		else if (start.month() === today.month() &&
 			start.year() === today.year()) {
 			return hours + toHours(end.diff(start));
@@ -92,20 +94,19 @@ const InstructorSchedule = ({instructorID}) => {
 	let allDayOOO = false;
 	// Out Of Office
 	const OOOEvents = instructor.instructoroutofofficeSet.map(({startDatetime, endDatetime, description}) => {
-		let start;
+		let start = new Date(startDatetime);
+		let end = new Date(endDatetime);
 		let allDay = false;
-		// Checks to see if the start and end time span the whole day
-		if (toHours(new Date(startDatetime) - new Date(endDatetime)) >= 24 ) {
+
+		if (start.diff(end, 'days') >= 1 ) {
 			start = null;
 			allDay = true;
 			allDayOOO = true;
-		} else {
-			start = new Date(startDatetime);
 		}
 		return {
 			title: description,
 			start,
-			end: new Date(endDatetime),
+			end,
 			allDay
 		}
 	});
