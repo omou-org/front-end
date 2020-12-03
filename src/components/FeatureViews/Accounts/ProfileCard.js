@@ -80,11 +80,11 @@ const ProfileCard = ({ user, route, studentInvite = false } ) => {
                                         subheader={capitalizeString(user.accountType)}
                                     />
                                 </NavLink>
-                                {studentInvite && 
+                                {/* {studentInvite && 
                                     <Button className={classes.inviteButton} onClick={inviteStudent}>
                                         Invite
                                     </Button>
-                                }
+                                } */}
                             </Grid>
                             
                         <Grid container style={{marginLeft: '2px'}}>
