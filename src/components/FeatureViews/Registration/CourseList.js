@@ -140,7 +140,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     (moment().diff(moment(endDate), 'days') < 0)))
             .map((course) => {
                 return(
-                    <ListDetailedItem>
+                    <ListDetailedItem
                         key={course.id}
                     >
 

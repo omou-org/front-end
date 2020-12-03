@@ -48,7 +48,7 @@ const ListComponentDemo = () => {
             <ListContent>
                 <ListHeading>
                     <ListBadge>
-                        <LabelBadge label="ACTIVE" variant="status-active"/>
+                        <LabelBadge variant="status-active">ACTIVE</LabelBadge>
                     </ListBadge>
                     <ListTitle>
                         Biology

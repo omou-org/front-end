@@ -20,7 +20,7 @@ function UpcomingSessionCard(props) {
                         <Typography align={"left"} variant={"subtitle2"}> November 12, 2019 | 7:00 - 9:00 </Typography>
                     </Grid>
                     <Grid item sm={5}>
-                        <LabelBadge label="Type of course" variant="outline-gray"/> 
+                        <LabelBadge variant="outline-gray">Type of course</LabelBadge> 
                     </Grid>
                     <Grid container>
                         <Grid container

@@ -4,7 +4,7 @@ import theme from "../../muiTheme";
 import { Typography } from "@material-ui/core";
 import PropTypes from "prop-types";
 
-export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
+export const LabelBadge = ({children, variant = "default", style, ...rest}) => {
     const colors = theme.colors;
 
     const badgeCategory = {
@@ -111,7 +111,7 @@ export const LabelBadge = ({label, variant = "default", style, ...rest}) => {
                                 variant={badgeStyle.labelComponent}
                                 style={{color: badgeStyle.labelColor, fontSize: badgeStyle.chipFontSize}}
                         >
-                            {label}
+                            {children}
                         </Typography>
                 } 
                 {...rest}/>
