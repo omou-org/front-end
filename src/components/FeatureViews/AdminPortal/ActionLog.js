@@ -7,7 +7,6 @@ import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import Moment from "react-moment";
-import Chip from "@material-ui/core/Chip";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from '@material-ui/core/InputLabel';
@@ -23,12 +22,16 @@ import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from "graphql-tag";
 import moment from "moment";
 import Loading from "../../OmouComponents/Loading";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { useQuery } from "@apollo/react-hooks";
 import { DateRange } from "react-date-range";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
 import ErrorIcon from '@material-ui/icons/Error';
 import { fullName } from "../../../utils";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
+
+
 
 const GET_LOGS = gql`
     query GetLogs ($action: String,
@@ -128,10 +131,10 @@ const ActionLog = () => {
     if (loading) return <Loading />;
     // if (error) return <div>error</div>;
 
-    const renderChip = (action) => ({
-        "Edit": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FFDD59" }} label="Edit" />,
-        "Add": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#78E08F" }} label="Add" />,
-        "Delete": <Chip style={{ borderRadius: 3, width: 70, backgroundColor: "#FF7675" }} label="Delete" />,
+    const badgeVariant = (action) => ({
+        "Edit": "status-warning",
+        "Add": "status-positive",
+        "Delete": "status-negative",
     }[action]);
 
     const handleSelection = (setValue) => (event) => {
@@ -193,15 +196,15 @@ const ActionLog = () => {
                     ranges={state}
                 />
                 <DialogActions>
-                    <Button onClick={handleSaveDateRange} color="primary">
+                    <ResponsiveButton onClick={handleSaveDateRange} color="primary">
                         Save & Close
-						</Button>
+					</ResponsiveButton>
                 </DialogActions>
             </Dialog>
             <div style={{ textAlign: "right", padding: 0 }}>
-                <Button onClick={resetFilters}>
+                <ResponsiveButton variant='outlined' onClick={resetFilters}>
                     Reset All Filters
-                </Button>
+                </ResponsiveButton>
             </div>
             <Table>
                 <TableHead>
@@ -430,7 +433,9 @@ const ActionLog = () => {
                                 </div>
                             </TableCell>
                             <TableCell>
-                                {renderChip(actionItem.action)}
+                                <LabelBadge variant={badgeVariant(actionItem.action)}>
+                                    {actionItem.action}
+                                </LabelBadge>
                             </TableCell>
                             <TableCell>
                                 <div style={{ textTransform: "capitalize" }}>
