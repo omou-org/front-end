@@ -2,7 +2,7 @@ import React from 'react'
 import { PropTypes } from 'prop-types';
 import Button from "@material-ui/core/Button";
 
-const buttonWidth = (label, children) => {
+const setButtonWidth = (label, children) => {
     const buttonText = label || children;
     let buttonWidth;
        if (buttonText.length < 6) {
@@ -14,7 +14,7 @@ const buttonWidth = (label, children) => {
        } else if (buttonText.length >= 17) {
            buttonWidth = 160;
        }
-       return buttonWidth;;
+       return buttonWidth;
    };
 
 /* 
@@ -31,7 +31,7 @@ export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon
     return (
         <Button
             style={{
-                width: startIcon || endIcon ? buttonWidth(buttonText) + 16 : buttonWidth(buttonText),
+                width: startIcon || endIcon ? setButtonWidth(buttonText) + 16 : setButtonWidth(buttonText),
                 border: disabled ? "2px solid #DBD7D7" : "",
             }}
             size='large'
