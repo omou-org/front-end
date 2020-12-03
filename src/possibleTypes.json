@@ -1,0 +1,42 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "INTERFACE",
+        "name": "DiscountInterface",
+        "possibleTypes": [
+          {
+            "name": "DiscountType"
+          },
+          {
+            "name": "MultiCourseDiscountType"
+          },
+          {
+            "name": "DateRangeDiscountType"
+          },
+          {
+            "name": "PaymentMethodDiscountType"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "UserInfoType",
+        "possibleTypes": [
+          {
+            "name": "StudentType"
+          },
+          {
+            "name": "ParentType"
+          },
+          {
+            "name": "InstructorType"
+          },
+          {
+            "name": "AdminType"
+          }
+        ]
+      }
+    ]
+  }
+}
