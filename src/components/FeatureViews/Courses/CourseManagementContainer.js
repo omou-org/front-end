@@ -15,7 +15,7 @@ import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
-import ListComponent, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListComponent'
+import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
 import theme, {
   highlightColor,
   activeColor,
@@ -174,7 +174,7 @@ const ClassListItem = ({
 
 
   return (
-      <ListComponent>
+      <ListDetailedItem>
         <ListContent>
             <ListHeading>
                 <ListBadge>
@@ -217,7 +217,7 @@ const ClassListItem = ({
                 
             </ListButton>
         </ListActions>
-      </ListComponent>
+      </ListDetailedItem>
   );
 };
 

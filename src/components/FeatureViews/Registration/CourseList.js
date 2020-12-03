@@ -25,7 +25,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import ListComponent, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListComponent'
+import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -140,9 +140,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     (moment().diff(moment(endDate), 'days') < 0)))
             .map((course) => {
                 return(
-                    <ListComponent
+                    <ListDetailedItem>
                         key={course.id}
                     >
+
                         <ListContent>
                             <ListHeading>
                                 <Box onClick={() => clickHandler(course.id)}>
@@ -190,7 +191,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 </ResponsiveButton>
                             </ListButton>
                         </ListActions>
-                    </ListComponent>)
+                    </ListDetailedItem>)
                                         })
         }
         </Box>
