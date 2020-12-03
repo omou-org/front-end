@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import Button from '@material-ui/core/Button';
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
@@ -25,20 +25,10 @@ const useStyles = makeStyles({
         "textDecoration": "none",
         "color": "black"
     },
-    editButton: {
-        textDecoration: "none",
-        color: "#1F82A1",
-        fontSize: "15px"
-    },
-    studentCardContainer: {
-        height: '200px',
-        width: '288px',
-        borderRadius: '8px'
-    },
-    parentCardContainer: {
-        height: '152px',
-        width: '288px',
-        borderRadius: '8px'
+    inviteButton: {
+        color: '#999999', 
+        marginBottom: '15px', 
+        marginRight:'10px'
     },
     ...theme.accountCardStyle
 });
@@ -70,7 +60,7 @@ const ProfileCard = ({ user, route, studentInvite = false } ) => {
     return (
         <Grid item sm={6} xs={12}>
             {user && (
-                <Card className={studentInvite ? classes.studentCardContainer : classes.parentCardContainer}>
+                <Card className={classes.cardContainer}>
                 <Grid className={classes.gridContainer} container>
                     <Grid
                         style={{ background: stringToColor(user.name) }}
@@ -80,16 +70,24 @@ const ProfileCard = ({ user, route, studentInvite = false } ) => {
                     >
                         {user.name[0]}{user.name[user.name.indexOf(' ') + 1]}
                     </Grid>
+                    
                     <Grid className={classes.cardRight} item xs={10}>
-                            <NavLink className={classes.linkUnderline} to={route}>
-                                <CardHeader
-                                    className={classes.cardHeader}
-                                    title={user.name}
-                                    subheader={capitalizeString(user.accountType)}
-                                />
-                            </NavLink>
-                        
-                        <Grid container>
+                            <Grid className={classes.cardHeader} container>
+                                <NavLink className={classes.linkUnderline} to={route}>
+                                    <CardHeader
+                                        style={{textAlign: 'left'}}
+                                        title={user.name}
+                                        subheader={capitalizeString(user.accountType)}
+                                    />
+                                </NavLink>
+                                {studentInvite && 
+                                    <Button className={classes.inviteButton} onClick={inviteStudent}>
+                                        Invite
+                                    </Button>
+                                }
+                            </Grid>
+                            
+                        <Grid container style={{marginLeft: '2px'}}>
                             <Grid className={classes.iconStyles} item xs={2}>
                                 <IDIcon height={22} width={20.5} />
                             </Grid>
@@ -99,7 +97,7 @@ const ProfileCard = ({ user, route, studentInvite = false } ) => {
                             </Grid>
                         </Grid>
     
-                        <Grid container>
+                        <Grid container style={{marginLeft: '4px'}}>
                             <Grid className={classes.iconStyles} item xs={2}>
                                 <PhoneIcon height={22} width={20.5} />
                             </Grid>
@@ -109,7 +107,7 @@ const ProfileCard = ({ user, route, studentInvite = false } ) => {
                             </Grid>
                         </Grid>
     
-                        <Grid container>
+                        <Grid container style={{marginLeft: '5px'}}>
                             <Grid className={classes.iconStyles} item xs={2}>
                                 <EmailIcon height={22} width={20.5} />
                             </Grid>
@@ -118,19 +116,6 @@ const ProfileCard = ({ user, route, studentInvite = false } ) => {
                                 <Typography variant='body1'>{user.user.email}</Typography>
                             </Grid>
                         </Grid>
-
-                    {studentInvite &&
-                        <Grid className={classes.cardActions} container>
-                            <ResponsiveButton variant='outlined'>
-                                <NavLink className={classes.editButton} to={`/form/student/${user.user.id}`}>
-                                    Edit
-                                </NavLink>
-                            </ResponsiveButton>
-
-                            <ResponsiveButton variant='outlined' onClick={inviteStudent}>
-                                Invite
-                            </ResponsiveButton>
-                        </Grid>}
                     </Grid>
                 </Grid>
             </Card>
