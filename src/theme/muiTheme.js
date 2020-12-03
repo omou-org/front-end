@@ -388,8 +388,15 @@ const theme = createMuiTheme({
   	gridContainer: {
       height: '100%',
     },
+    cardContainer: {
+      height: '152px',
+      width: '288px',
+      borderRadius: '8px'
+    },
     cardHeader: {
-      textAlign: 'left',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between'
     },
     leftStripe: {
       color: 'white',
