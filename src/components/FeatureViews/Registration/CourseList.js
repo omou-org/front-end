@@ -88,7 +88,11 @@ const ADD_PARENT_TO_INTEREST_LIST = gql`
             }
         }
     }
-`
+`;
+
+// const GET_PARENT_INTEREST_LIST = gql`
+
+// `;
 
 const useStyles = makeStyles((theme) => ({
     "courseTitle": {
