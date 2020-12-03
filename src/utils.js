@@ -54,9 +54,9 @@ export const DayAbbreviation = {
     "monday": "M",
     "tuesday": "T",
     "wednesday": "W",
-    "thursday": "TH",
+    "thursday": "Th",
     "friday": "F",
-    "saturday": "S",
+    "saturday": "Sa",
 }
 
 /**
