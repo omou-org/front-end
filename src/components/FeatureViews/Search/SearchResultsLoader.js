@@ -42,7 +42,7 @@ const SearchResultsLoader = ({
 								</Typography>
 							</Grid>
 							<Grid item>
-								<LabelBadge label="See All Accounts" variant="outline-gray"/>
+								<LabelBadge variant="outline-gray">See All Accounts</LabelBadge>
 							</Grid>
 						</Grid>
 						<Grid container direction="row" spacing={2}>
@@ -82,7 +82,7 @@ const SearchResultsLoader = ({
 								</Typography>
 							</Grid>
 							<Grid item style={{paddingRight: "1vh"}}>
-								<LabelBadge label="See All Courses" variant="outline-gray"/>
+								<LabelBadge variant="outline-gray">See All Courses</LabelBadge>
 							</Grid>
 						</Grid>
 						<Grid container direction="row" spacing={1}>

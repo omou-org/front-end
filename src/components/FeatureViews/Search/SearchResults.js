@@ -201,7 +201,7 @@ const SearchResults = () => {
                                                 "pathname": "/search/",
                                                 "search": `?query=${query}&filter=account`,
                                             }}>
-                                                <LabelBadge label="See All Accounts" variant="outline-gray"/>
+                                                <LabelBadge variant="outline-gray">See All Accounts</LabelBadge>
                                             </Link>
                                         </Grid>
                                     )}
@@ -255,7 +255,7 @@ const SearchResults = () => {
                                                 "pathname": "/search/",
                                                 "search": `?query=${query}&filter=course`,
                                             }}>
-                                                <LabelBadge label="See All Courses" variant="outline-gray"/>
+                                                <LabelBadge variant="outline-gray">See All Courses</LabelBadge>
                                             </Link>
                                         </Grid>
                                     )}

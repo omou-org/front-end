@@ -178,10 +178,9 @@ const ClassListItem = ({
         <ListContent>
             <ListHeading>
                 <ListBadge>
-                  <LabelBadge 
-                    label={isActive ? "ACTIVE" : "PAST"} 
-                    variant={`status-${isActive ? "active" : "past"}`} 
-                  />
+                  <LabelBadge variant={`status-${isActive ? "active" : "past"}`}>
+                    {isActive ? "ACTIVE" : "PAST"}
+                  </LabelBadge>
                 </ListBadge>
                 <Box onClick={handleClick}>
                   <ListTitle>

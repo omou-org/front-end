@@ -409,7 +409,7 @@ const CourseSessionStatus = () => {
                         ) ? (
                                 <> 
                                     Notes 
-                                    <LabelBadge style={{marginLeft: '8px'}} label='1' variant="round-count"/>
+                                    <LabelBadge style={{marginLeft: '8px'}} variant="round-count">1</LabelBadge>
                                 </>
                             ) : <> Notes </>
                     } />

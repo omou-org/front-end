@@ -228,7 +228,7 @@ const RegistrationCourse = () => {
 							numImportantNotes ? (
 								<>
 									 Notes 
-									 <LabelBadge style={{marginLeft: '8px'}} label={numImportantNotes} variant="round-count"/>
+									 <LabelBadge style={{marginLeft: '8px'}} variant="round-count">{numImportantNotes}</LabelBadge>
 								</>
 							) : <> Notes </>
 						}

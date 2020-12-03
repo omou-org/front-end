@@ -154,9 +154,9 @@ const StudentCourseViewer = ({studentID, current}) => {
 											</Typography>
 										</Grid>
 										<Grid item xs={1}>
-											<LabelBadge 
-												label={enrollment.sessionsLeft}
-												variant={paymentStatus(enrollment.sessionsLeft)}/>
+											<LabelBadge variant={paymentStatus(enrollment.sessionsLeft)}>
+												{enrollment.sessionsLeft}
+											</LabelBadge>
 										</Grid>
 									</Grid>
 								</Paper>

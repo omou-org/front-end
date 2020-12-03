@@ -433,9 +433,9 @@ const ActionLog = () => {
                                 </div>
                             </TableCell>
                             <TableCell>
-                                <LabelBadge 
-                                    label={actionItem.action}
-                                    variant={badgeVariant(actionItem.action)}/>
+                                <LabelBadge variant={badgeVariant(actionItem.action)}>
+                                    {actionItem.action}
+                                </LabelBadge>
                             </TableCell>
                             <TableCell>
                                 <div style={{ textTransform: "capitalize" }}>

@@ -81,8 +81,8 @@ const CourseCard = ({courseID, isLoading = false}) => {
                     </Grid>
                     <Grid align="left" item sm="auto">
                         {course.maxCapacity > course.enrollmentSet.length ?
-                            <LabelBadge label="Open" variant="status-new"/> :
-                            <LabelBadge label="Full" variant="status-past" />}
+                            <LabelBadge variant="status-new">Open</LabelBadge> :
+                            <LabelBadge variant="status-past">Full</LabelBadge>}
                     </Grid>
                     <Grid container item>
                         <Grid align="left" className="courseRow" item xs={12}>
