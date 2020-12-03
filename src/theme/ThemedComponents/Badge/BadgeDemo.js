@@ -28,19 +28,19 @@ const BadgeDemo = () => {
                 
                 <Grid container xs={12} spacing={3} justify="center" className={classes.row}>
                     <Grid item >
-                        <LabelBadge label="Instructor" variant="outline-gray"/>
+                        <LabelBadge variant="outline-gray">Instructor</LabelBadge>
                     </Grid>
                     <Grid item >
-                        <LabelBadge label="Parent" variant="outline-gray"/>
+                        <LabelBadge variant="outline-gray">Parent</LabelBadge>
                     </Grid>
                     <Grid item >
-                        <LabelBadge label="Receptionist" variant="outline-gray"/>
+                        <LabelBadge variant="outline-gray">Receptionist</LabelBadge>
                     </Grid>
                     <Grid item >
-                        <LabelBadge label="Admin" variant="outline-gray"/>
+                        <LabelBadge variant="outline-gray">Admin</LabelBadge>
                     </Grid>
                     <Grid item >
-                        <LabelBadge label="Student" variant="outline-gray"/>
+                        <LabelBadge variant="outline-gray">Student</LabelBadge>
                     </Grid>
                 </Grid>
 
@@ -52,10 +52,10 @@ const BadgeDemo = () => {
 
                         <Grid container item spacing={3} justify="center" className={classes.row}>
                             <Grid item>
-                                <LabelBadge label="Chemistry"/>
+                                <LabelBadge>Chemistry</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="SAT Preparation"/>
+                                <LabelBadge>SAT Preparation</LabelBadge>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -66,10 +66,10 @@ const BadgeDemo = () => {
 
                         <Grid container item spacing={3} justify="center" className={classes.row}>
                             <Grid item>
-                                <LabelBadge label="English" variant="outline"/>
+                                <LabelBadge variant="outline">English</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="Mandarin" variant="outline"/>
+                                <LabelBadge variant="outline">Mandarin</LabelBadge>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -86,13 +86,13 @@ const BadgeDemo = () => {
 
                         <Grid container item spacing={3} justify="center" className={classes.row}>
                             <Grid item>
-                                <LabelBadge label="Present" variant="status-positive"/>
+                                <LabelBadge variant="status-positive">Present</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="Tardy" variant="status-warning"/>
+                                <LabelBadge variant="status-warning">Tardy</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="Absent" variant="status-negative"/>
+                                <LabelBadge variant="status-negative">Absent</LabelBadge>
                             </Grid>
                         </Grid>
 
@@ -102,13 +102,13 @@ const BadgeDemo = () => {
 
                         <Grid container item spacing={3} justify="center" className={classes.row}>
                             <Grid item>
-                                <LabelBadge label="Medium Length" variant="status-positive"/>
+                                <LabelBadge variant="status-positive">Medium Length</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="Medium Length" variant="status-warning"/>
+                                <LabelBadge variant="status-warning">Medium Length</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="Medium Length" variant="status-negative"/>
+                                <LabelBadge variant="status-negative">Medium Length</LabelBadge>
                             </Grid>
                         </Grid>
 
@@ -118,13 +118,13 @@ const BadgeDemo = () => {
 
                         <Grid container item spacing={3} justify="center" className={classes.row}>
                             <Grid item>
-                                <LabelBadge label="1" variant="round-positive"/>
+                                <LabelBadge variant="round-positive">1</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="20" variant="round-warning"/>
+                                <LabelBadge variant="round-warning">20</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="300" variant="round-negative"/>
+                                <LabelBadge variant="round-negative">50</LabelBadge>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -139,13 +139,13 @@ const BadgeDemo = () => {
 
                         <Grid container item spacing={1} justify="center" className={classes.row}>
                         <Grid item>
-                                <LabelBadge label="ACTIVE" variant="status-active"/>
+                                <LabelBadge variant="status-active">ACTIVE</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="PAST" variant="status-past"/>
+                                <LabelBadge variant="status-past">PAST</LabelBadge>
                             </Grid>
                             <Grid item>
-                                <LabelBadge label="NEW" variant="status-new"/>
+                                <LabelBadge variant="status-new">NEW</LabelBadge>
                             </Grid>
                         </Grid>
                         <Grid container item justify="center" className={classes.row}>
@@ -153,7 +153,7 @@ const BadgeDemo = () => {
                         </Grid>
                         <Grid container item spacing={1} justify="center" className={classes.row}>
                             <Grid item>
-                                <LabelBadge label="1" variant="round-count"/>
+                                <LabelBadge variant="round-count">1</LabelBadge>
                             </Grid>
                         </Grid>
                     </Grid>
