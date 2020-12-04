@@ -67,10 +67,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
     const dispatch = useDispatch();
 
-    const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
+    const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
     const {data, loading, error} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
-        "variables": {"userIds": studentList},
-        skip: !studentList,
+        "variables": {"userIds": studentIdList},
+        skip: !studentIdList,
     });
 
     const {parentIsLoggedIn} = useValidateRegisteringParent();
@@ -82,7 +82,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
     const registrations = validRegistrations && [].concat.apply([], validRegistrations);
-    const studentOptions = studentList && data.userInfos
+    const studentOptions = studentIdList && data.userInfos
         .filter(({user}) => (!registrations.find(({course, student}) =>
                 (course.id === quickCourseID && user.id === student))
         ))
@@ -180,7 +180,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 <ResponsiveButton
                                     disabled={shouldDisableQuickRegister({
                                         course, enrolledCourseIds,
-                                        registrations, studentList
+                                        registrations, studentIdList
                                     })}                                    
                                     variant="contained"
                                     onClick={handleStartQuickRegister(course.id)}

@@ -21,8 +21,10 @@ const GET_COURSE = gql`
       course(courseId: $courseId) {
 		title
 		startDate
-		startTime
-		endTime
+        availabilityList {
+			endTime
+			startTime
+		}
 		endDate
 		instructor {
 		  user {
@@ -74,8 +76,8 @@ export default function CourseRegistrationReceipt({formData}) {
 			title: data.course.title,
 			startDate: data.course.startDate,
 			endDate: data.course.endDate,
-			startTime: data.course.startTime,
-			endTime: data.course.endTime,
+			startTime: data.course.availabilityList[0].startTime,
+			endTime: data.course.availabilityList[0].endTime,
 		}
 	}[type];
 	const CourseReceipt = ({startDate, endDate, startTime, endTime, instructor, title}) => (

@@ -36,8 +36,10 @@ export const GET_STUDENT_ENROLLMENTS = gql`
 			  title
 			  endDate
 			  startDate
-			  endTime
-			  startTime
+			  availabilityList {
+				endTime
+				startTime
+			  }
 			  id
 			}
 		}

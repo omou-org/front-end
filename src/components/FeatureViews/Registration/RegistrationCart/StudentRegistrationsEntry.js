@@ -67,8 +67,8 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 						{course.academicLevelPretty}
 						{separator()}
 						{moment(course.startDate, ["YYYY-MM-DD"]).format("ddd")} {' '}
-						{moment(course.startTime, ["HH.mm"]).format("h:mm A")}{" - "}
-						{moment(course.endTime, ["HH.mm"]).format("h:mm A")}
+						{moment(course.availabilityList[0].startTime, ["HH.mm"]).format("h:mm A")}{" - "}
+						{moment(course.availabilityList[0].endTime, ["HH.mm"]).format("h:mm A")}
 						{separator()}
 						Start Date: <Moment date={course.startDate} format="M/DD/YYYY"/>{" - "}
 						<Moment date={course.endDate} format="M/DD/YYYY"/>
