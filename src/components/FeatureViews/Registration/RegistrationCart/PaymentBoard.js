@@ -11,7 +11,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from "../../../OmouComponents/Loading";
 import {useHistory} from "react-router-dom"
 import {GET_PAYMENT} from "../PaymentReceipt";
@@ -20,6 +20,7 @@ import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
 import {GET_REGISTRATION_CART} from "../SelectParentDialog";
 import {CREATE_REGISTRATION_CART} from "./RegistrationCartContainer";
 import {GET_ENROLLMENT_DETAILS} from "../RegistrationCourseEnrollments";
+
 
 const GET_PRICE_QUOTE = gql`
 	query GetPriceQuote($method: String!, 
@@ -526,7 +527,7 @@ export default function PaymentBoard() {
 		</Grid>
 		<Grid item container justify="flex-end">
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					variant="contained"
 					color="primary"
 					disabled={priceQuote.total === "-" || priceQuote < 0}
@@ -534,7 +535,7 @@ export default function PaymentBoard() {
 					data-cy="pay-action"
 				>
 					Pay
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 		</Grid>
 	</>)

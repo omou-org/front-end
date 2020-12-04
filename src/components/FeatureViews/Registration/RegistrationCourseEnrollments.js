@@ -17,6 +17,7 @@ import {useMutation, useQuery} from "@apollo/react-hooks";
 import CourseEnrollmentRow from "./CourseEnrollmentRow";
 import {GET_COURSES} from "./RegistrationLanding";
 
+
 export const DELETE_ENROLLMENT = gql`mutation DeleteEnrollment($enrollmentId:ID) {
   __typename
   deleteEnrollment(id: $enrollmentId) {
@@ -26,6 +27,7 @@ export const DELETE_ENROLLMENT = gql`mutation DeleteEnrollment($enrollmentId:ID)
     parentBalance
   }
 }`
+
 
 export const GET_ENROLLMENT_DETAILS = gql`
 	query EnrollmentDetails($courseId: ID!){
@@ -148,6 +150,48 @@ const RegistrationCourseEnrollments = ({courseID, maxCapacity}) => {
                     }
                 </TableBody>
             </Table>
+            {/*
+            This is a TODO item to implement unenrollment
+            <Dialog aria-describedby="unenroll-dialog-description"
+                aria-labelledby="unenroll-dialog-title"
+                className="session-view-modal"
+                fullWidth
+                maxWidth="xs"
+                onClose={closeUnenrollDialog(false)}
+                open={unenroll.open}>
+                <DialogTitle id="unenroll-dialog-title">
+                    Unenroll in {courseTitle}
+                </DialogTitle>
+                <Divider />
+                <DialogContent>
+                    <DialogContentText>
+                        You are about to unenroll in <b>{courseTitle}</b> for{" "}
+                        <b>
+                            {unenroll.enrollment && fullName(enrollments.find(({ id }) => id == unenroll.enrollment).student.user)}
+                        </b>
+                        . Performing this action will credit the remaining enrollment
+                        balance back to the parent's account balance. Are you sure you want
+                        to unenroll?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton
+                        variant="outlined"
+                        color="secondary"
+                        onClick={closeUnenrollDialog(true)}
+                    >
+                        Yes, unenroll
+                    </ResponsiveButton>
+                    
+                    <ResponsiveButton
+                        variant="outlined"
+                        color="primary"
+                        onClick={closeUnenrollDialog(false)}
+                    >
+                        cancel
+                    </ResponsiveButton>
+                </DialogActions>
+            </Dialog> */}
         </>
     );
 };

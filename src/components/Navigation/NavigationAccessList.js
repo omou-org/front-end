@@ -1,11 +1,14 @@
-import EventIcon from "@material-ui/icons/CalendarToday";
+import EventOutlinedIcon from "@material-ui/icons/EventOutlined";
 import React from "react";
-import AccountsIcon from "@material-ui/icons/Contacts";
-import AdminIcon from "@material-ui/icons/Face";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import DashboardIcon from "@material-ui/icons/Dashboard"
+import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
+import ContactsOutlinedIcon from '@material-ui/icons/ContactsOutlined';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+import DashboardIcon from "@material-ui/icons/Dashboard";
 import MenuBookIcon from '@material-ui/icons/MenuBook';
-import PaymentIcon from "@material-ui/icons/Payment"
+import PaymentIcon from "@material-ui/icons/Payment";
+import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
+import {ReactComponent as NewAdminIcon} from "./newadminicon.svg";
+
 
 /**
  * Various pages accessible by different users
@@ -21,27 +24,27 @@ export const NavList = {
 		{
 			"name": "Scheduler",
 			"link": "/scheduler",
-			"icon": <EventIcon/>,
+			"icon": <EventOutlinedIcon/>,
 		},
 		{
 			"name": "Registration",
 			"link": "/registration",
-			"icon": <AssignmentIcon/>,
+			"icon": <AssignmentOutlinedIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
 		{
 			"name": "Accounts",
 			"link": "/accounts",
-			"icon": <AccountsIcon/>,
+			"icon": <ContactsOutlinedIcon/>,
 		},
 		{
 			"name": "Admin",
 			"link": "/adminportal",
-			"icon": <AdminIcon/>,
+			"icon": <NewAdminIcon/>,
 		},
 	],
 	"RECEPTIONIST": [
@@ -53,22 +56,22 @@ export const NavList = {
 		{
 			"name": "Scheduler",
 			"link": "/scheduler",
-			"icon": <EventIcon/>,
+			"icon": <EventOutlinedIcon/>,
 		},
 		{
 			"name": "Registration",
 			"link": "/registration",
-			"icon": <AssignmentIcon/>,
+			"icon": <AssignmentOutlinedIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
 		{
 			"name": "Accounts",
 			"link": "/accounts",
-			"icon": <AccountsIcon/>,
+			"icon": <ContactsOutlinedIcon/>,
 		},
 	],
 	"INSTRUCTOR": [
@@ -78,24 +81,24 @@ export const NavList = {
 		// 	"icon": <DashboardIcon/>,
 		// },
 		{
-			"name": "My Schedule",
+			"name": "Schedule",
 			"link": "/scheduler",
-			"icon": <EventIcon/>,
+			"icon": <EventOutlinedIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
 		{
-			"name": "My Availability",
+			"name": "Availability",
 			"link": "/availability",
-			"icon": <EventIcon/>,
+			"icon": <AccessTimeOutlinedIcon/>,
 		},
 		{
 			"name": "Teaching Log",
 			"link": "/teaching-log",
-			"icon": <EventIcon/>,
+			"icon": <ListAltOutlinedIcon/>,
 		},
 	],
 	"PARENT": [
@@ -104,30 +107,26 @@ export const NavList = {
 		// 	"link": "/",
 		// 	"icon": <DashboardIcon/>,
 		// },
+
 		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
+			"name": "Schedule",
+			"link": "/scheduler",
+			"icon": <EventOutlinedIcon/>,
 		},
 		{
-			"name": "Course Management",
+			"name": "Courses",
 			"link": "/coursemanagement",
 			"icon": <MenuBookIcon />
 		},
 		{
-			"name": "My Scheduler",
-			"link": "/scheduler",
-			"icon": <EventIcon/>,
+			"name": "Payments",
+			"link": "/my-payments",
+			"icon": <PaymentIcon/>,
 		},
 		{
 			"name": "Registration",
 			"link": "/registration",
-			"icon": <AssignmentIcon/>,
-		},
-		{
-			"name": "My Payments",
-			"link": "/my-payments",
-			"icon": <PaymentIcon/>,
+			"icon": <AssignmentOutlinedIcon/>,
 		},
 	],
     "STUDENT": [],

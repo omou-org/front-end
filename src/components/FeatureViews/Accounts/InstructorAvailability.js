@@ -3,6 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import PropTypes from "prop-types";
 
 import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import CalendarIcon from "@material-ui/icons/CalendarViewDay";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
@@ -16,6 +17,7 @@ import {capitalizeString, DayConverter} from "utils";
 import {instance} from "actions/apiActions";
 import {POST_INSTRUCTORAVAILABILITY_SUCCESS} from "actions/actionTypes";
 import {timeParser} from "components/Form/FormUtils";
+
 
 const formatTime = (time) => time && `${time.getHours()}:${time.getMinutes()}`;
 
@@ -139,9 +141,9 @@ const InstructorAvailability = ({instructorID, button = true}) => {
 	return (
 		<>
 			{button ? (
-				<Button onClick={toggleDialog} variant="outlined">
-					<CalendarIcon/> SET AVAILABILITY
-				</Button>
+				<ResponsiveButton onClick={toggleDialog} variant="outlined" startIcon={<CalendarIcon/>}>
+					SET AVAILABILITY
+				</ResponsiveButton>
 			) : (
 				<MenuItem onClick={toggleDialog} selected>
 					<CalendarIcon/> SET AVAILABILITY
@@ -194,10 +196,10 @@ const InstructorAvailability = ({instructorID, button = true}) => {
 					</Grid>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={toggleDialog} variant="outlined">
+					<ResponsiveButton onClick={toggleDialog} variant="outlined">
 						Cancel
-					</Button>
-					<Button
+					</ResponsiveButton>
+					<ResponsiveButton
 						className="save-availability"
 						color="primary"
 						disabled={!allValid}
@@ -205,7 +207,7 @@ const InstructorAvailability = ({instructorID, button = true}) => {
 						variant="contained"
 					>
 						Save Form
-					</Button>
+					</ResponsiveButton>
 				</DialogActions>
 			</Dialog>
 		</>
