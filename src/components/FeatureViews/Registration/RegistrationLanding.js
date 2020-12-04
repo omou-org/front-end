@@ -236,17 +236,17 @@ const RegistrationLanding = () => {
             <Box width="100%" marginBottom="40px">
                 {view === 0 && (
                     <Grid item container layout="row" spacing={1}>
-                        <Grid item >
+                        <Grid item xs={3}>
                             {renderFilter("instructor")}
                         </Grid>
                         <Hidden xsDown>
-                            <Grid item >
+                            <Grid item xs={3}>
                                 {renderFilter("subject")}
                             </Grid>
-                            <Grid item >
+                            <Grid item xs={3}>
                                 {renderFilter("grade")}
                             </Grid>
-                            <Grid item >
+                            <Grid item xs={3}>
                                 <SearchSelect
                                     className="sort-options"
                                     closeMenuOnSelect={true}
