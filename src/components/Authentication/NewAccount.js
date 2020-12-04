@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useStyles from "./styles.js";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { PHONE_NUMBER_FIELD, stringField } from "../Form/FormFormats";
 import { FORM_ERROR } from "final-form";
 import * as Yup from "yup";
@@ -115,16 +115,25 @@ const NewAccount = () => {
                         <Grid alignItems="center"
                             container
                             justify="center">
-                            <Button className="formButton"
-                                component={Link} data-cy="return" to={{
+                            <ResponsiveButton 
+                                style={{margin: '10px 20px'}}
+                                component={Link} 
+                                data-cy="return" 
+                                to={{
                                     "pathname": "/login",
                                     "state": { email },
-                                }} variant="contained">
+                                }} 
+                                variant="contained"
+                            >
                                 Back to login
-                            </Button>
-                            <Button className="formButton" color="primary" type="submit" variant="contained">
+                            </ResponsiveButton>
+                            <ResponsiveButton 
+                                style={{margin: '10px 20px'}}  
+                                type="submit" 
+                                variant="contained"
+                            >
                                 Create Account
-                            </Button>
+                            </ResponsiveButton>
                         </Grid>
                     </>
                 );
@@ -133,13 +142,19 @@ const NewAccount = () => {
                         <Typography style={{ "margin": "80px 0" }} variant="body1">
                             You can now log in to your new account.
                         </Typography>
-                        <Button className="formButton" color="primary"
-                            component={Link} data-cy="return" to={{
+                        <ResponsiveButton 
+                            className="formButton" 
+                            color="primary"
+                            component={Link} 
+                            data-cy="return" 
+                            to={{
                                 "pathname": "/login",
                                 "state": { email },
-                            }} variant="contained">
+                            }} 
+                            variant="contained"
+                        >
                             Login
-                        </Button>
+                        </ResponsiveButton>
                     </>
                 );
                 // no default
