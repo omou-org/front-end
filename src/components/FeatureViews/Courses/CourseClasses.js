@@ -97,6 +97,7 @@ const CourseClasses = () => {
     query getClass($id: ID!, $email: String = "") {
       course(courseId: $id) {
         academicLevel
+        id
         courseCategory {
           name
           id
@@ -135,6 +136,7 @@ const CourseClasses = () => {
             }
             accountType
           }
+          id
         }
         sessionSet {
           startDatetime
@@ -164,7 +166,7 @@ const CourseClasses = () => {
       }
        ${accountType === "PARENT"
       ? `parent(email: $email) {
-        studentList
+        studentIdList
       }`
       : ""
     }
@@ -186,9 +188,9 @@ const CourseClasses = () => {
 
   if (loading) return <Loading />;
   if (getAnnouncements.loading) return <Loading />;
-  if (error) return console.error(error.message);
+  if (error) return error.message;
   if (getAnnouncements.error)
-    return console.error(getAnnouncements.error.message);
+    return getAnnouncements.error.message;
 
   const {
     academicLevel,

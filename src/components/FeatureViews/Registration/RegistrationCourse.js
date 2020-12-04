@@ -140,7 +140,7 @@ const RegistrationCourse = () => {
 				<RegistrationActions courseTitle={title} />
 			</Grid>
 			<div className="course-heading">
-				<Typography align="left" variant="h3">
+				<Typography align="left" variant="h1">
 					{title}
 					{isAdmin && (
 						<ResponsiveButton
