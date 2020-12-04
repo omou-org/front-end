@@ -19,7 +19,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -108,7 +108,9 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const [openCourseQuickRegistration, setOpenQuickRegister] = useState(false);
     const [openInterestDialog, setOpenInterestDialog] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
+    const [interestCourseID, setInterestCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
+    const [addParentToInterestList, addParentToInterestListStatus] = useMutation(ADD_PARENT_TO_INTEREST_LIST);
 
     const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
     const dispatch = useDispatch();
@@ -167,14 +169,21 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         setOpenQuickRegister(false);
     }
 
-    const handleInterestRegister = () => (e) => {
+    const handleInterestRegister = (courseID) => (e) => {
         e.preventDefault();
+        setInterestCourseID(courseID);
         setOpenInterestDialog(true);
 
     }
-
+    console.log(currentParent);
     const handleAddInterest = () => {
-        console.log("I am intersted");
+
+        addParentToInterestList({
+            variables: {
+                "parentId": currentParent.user.id,
+                "courseId": interestCourseID,
+            }
+        })
         setOpenInterestDialog(false);
     }
 
@@ -258,7 +267,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     : <Button
                                         variant="outlined"
                                         color="secondary"
-                                        onClick={handleInterestRegister()}
+                                        onClick={handleInterestRegister(course.id)}
                                         data-cy="add-interest-button"
                                     >
                                         + INTEREST
@@ -301,14 +310,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             </DialogContent>
         </Dialog>
         <Dialog open={openInterestDialog} onClose={() => setOpenInterestDialog(false)}>
-            <DialogTitle>
-                <Typography variant="h3">Interested?</Typography>
-            </DialogTitle>
+            <Typography variant="h3">Interested?</Typography>
             <DialogContent>
-                <DialogContentText>
-                    <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
-                    <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
-                </DialogContentText>
+                <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
+                <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
             </DialogContent>
             <DialogActions>
                 <Button 
