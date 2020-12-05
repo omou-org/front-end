@@ -15,7 +15,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
@@ -137,12 +136,12 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const dispatch = useDispatch();
 
     const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const {data: studentEnrollments, loading: studentEnrollmentsLoading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
+    const {data: studentEnrollments, loading: studentEnrollmentsLoading, error: studentEnrollmentsError} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
         "variables": {"userIds": studentIdList},
         skip: !studentIdList,
     });
 
-    const {data: parentInterestList, loading: parentInterestListLoading} = useQuery(GET_PARENT_INTEREST, {
+    const {data: parentInterestList, loading: parentInterestListLoading, error: parentInterestError} = useQuery(GET_PARENT_INTEREST, {
         "variables": {
             "parentId": currentParent?.user.id,
         },
@@ -153,12 +152,12 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const {courseTitle, courseRow} = useStyles();
 
     if (studentEnrollmentsLoading || parentInterestListLoading) return <Loading small/>;
-    if (error) return <div>There has been an error!</div>;
+    if (studentEnrollmentsError || parentInterestError) return <div>There has been an error!</div>;
 
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
     const registrations = validRegistrations && [].concat.apply([], validRegistrations);
-    const studentOptions = studentIdList && data.userInfos
+    const studentOptions = studentEnrollments?.userInfos
         .filter(({user}) => (!registrations.find(({course, student}) =>
                 (course.id === quickCourseID && user.id === student))
         ))
@@ -167,7 +166,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             "value": student.user.id,
         })) || [];
 
-    const enrolledCourseIds = data?.enrollments.map(({course}) => course.id);
+    const enrolledCourseIds = studentEnrollments?.enrollments.map(({course}) => course.id);
     const previouslyEnrolled = (courseId, enrolledCourseIds, registrations, studentList) => {
         const validRegistrations = Object.values(registrations)
             .filter(registration => registration);
@@ -182,7 +181,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
 
     const handleStartQuickRegister = (courseID) => (e) => {
         e.preventDefault();
-        setOpen(true);
+        setOpenQuickRegister(true);
         setQuickCourseID(courseID);
     };
 
@@ -194,7 +193,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 courseId: quickCourseID
             }
         });
-        setOpen(false);
+        setOpenQuickRegister(false);
     }
 
     const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
@@ -271,7 +270,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                         })
         }
         </Box>
-        <Dialog open={openCourseQuickRegistration} onClose={() => setOpen(false)}>
+        <Dialog open={openCourseQuickRegistration} onClose={() => setOpenQuickRegister(false)}>
             <DialogTitle>Which student do you want to enroll?</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth variant="outlined">
