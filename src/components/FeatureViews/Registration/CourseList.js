@@ -10,6 +10,7 @@ import {fullName} from "utils";
 import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
 import Box from "@material-ui/core/Box";
 import AddIcon from '@material-ui/icons/Add';
+import CheckIcon from '@material-ui/icons/Check';
 import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -27,6 +28,7 @@ import * as types from "actions/actionTypes";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
 import { Button, DialogContentText } from "@material-ui/core";
+import { buttonBlue, gloom, white } from "theme/muiTheme";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -96,6 +98,9 @@ const useStyles = makeStyles((theme) => ({
     "courseRow": {
         textDecoration: "none"
     },
+    "InterestDialogRoot": {
+        padding: "32px"
+    }
 }));
 
 const CourseList = ({ filteredCourses, updatedParent }) => {
@@ -289,11 +294,23 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 >
                                     register
                                 </ResponsiveButton>
-                                : <ResponsiveButton
+                                : inParentInterestList(course.id) 
+                                ? <ResponsiveButton
                                     disabled={inParentInterestList(course.id)}                                    
-                                    variant="contained"
+                                    variant="outlined"
                                     onClick={handleInterestRegister(course.id)}
                                     data-cy="add-interest-button"
+                                    style={{color: buttonBlue, border: "none", background: white}}
+                                    startIcon={<CheckIcon />}
+                                >
+                                    interested
+                                </ResponsiveButton>
+                                    : <ResponsiveButton
+                                    disabled={inParentInterestList(course.id)}                                    
+                                    variant="outlined"
+                                    onClick={handleInterestRegister(course.id)}
+                                    data-cy="add-interest-button"
+                                    style={{color: gloom}}
                                     startIcon={<AddIcon />}
                                 >
                                     interest
@@ -342,22 +359,24 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
             </DialogContent>
             <DialogActions>
-                <Button 
+                <ResponsiveButton 
                     data-cy="cancel-add-interest"
                     onClick={() => setOpenInterestDialog(false)}
                     variant="outlined"
                     color="primary"
+                    style={{border: "none"}}
                 >
                     Cancel
-                </Button>
-                <Button
+                </ResponsiveButton>
+                <ResponsiveButton
                     data-cy="confirm-add-interest"
                     onClick={handleAddInterest}
                     variant="outlined"
                     color="primary"
+                    style={{border: "none"}}
                 >
                     Notify Me
-                </Button>
+                </ResponsiveButton>
             </DialogActions>
         </Dialog>
         </>

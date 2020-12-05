@@ -26,13 +26,14 @@ To have it on the right of label, pass through endIcon. Example: endIcon={<Icon 
 ResponsiveButtonProps: variant, label, component, to, disabled, startIcon, endIcon, onClick
 */
 
-export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon, ...ResponsiveButtonProps}) => {
+export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon, style, ...ResponsiveButtonProps}) => {
     const buttonText = label || children
     return (
         <Button
             style={{
                 width: startIcon || endIcon ? setButtonWidth(buttonText) + 16 : setButtonWidth(buttonText),
                 border: disabled ? "2px solid #DBD7D7" : "",
+                ...style
             }}
             size='large'
             disabled={disabled}
