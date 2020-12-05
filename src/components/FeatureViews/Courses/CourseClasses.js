@@ -109,16 +109,12 @@ const CourseClasses = () => {
           startTime
         }
         title
-        availabilityList {
-          endTime
-          startTime
-          dayOfWeek
-        }
         startDate
         endDate
         description
         instructor {
           user {
+            id
             firstName
             lastName
           }

@@ -28,7 +28,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel"
 import { ExpandLess, ExpandMore, Add, Check, Search } from "@material-ui/icons"
 import { BootstrapInput } from './CourseManagementContainer'
 import Loading from 'components/OmouComponents/Loading';
-import { buttonBlue, highlightColor } from "../../../theme/muiTheme";
+import { buttonThemeBlue, highlightColor } from "../../../theme/muiTheme";
 import { fullName } from '../../../utils'
 
 const useStyles = makeStyles((theme) => ({
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   attendanceButton: {
     border: '1px solid #43B5D9',
     borderRadius: 5,
-    background: buttonBlue,
+    background: buttonThemeBlue,
     color: 'white',
     paddingTop: 10,
     paddingRight: 14,
@@ -66,13 +66,13 @@ const useStyles = makeStyles((theme) => ({
   },
   checkbox: {
     borderRadius: 2,
-    backgroundColor: buttonBlue,
+    backgroundColor: buttonThemeBlue,
     color: 'white',
     width: '1em',
     height: '1em',
     marginLeft: '.5em',
     '&:hover': {
-      backgroundColor: buttonBlue
+      backgroundColor: buttonThemeBlue
     }
   },
   checkbox2: {
@@ -103,8 +103,9 @@ const useStyles = makeStyles((theme) => ({
 
 function createData(name, sessionsId, studentId) {
   return { name, ...sessionsId, studentId };
-}
+};
 
+const formatAttendancDataToRender = (name, attendanceId, studentId) => ({ name, attendanceId, studentId });
 
 const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphabet }) => {
   const classes = useStyles();
@@ -299,6 +300,26 @@ query getAttendance($courseId: ID!) {
       }
     }
   }`;
+
+export const GET_ATTENDANCE1 = gql`query getAttendance($courseId: ID!) {
+  __typename
+  attendances(courseId: $courseId) {
+    id
+    status
+    session {
+      startDatetime
+    }
+    enrollment {
+      student {
+        user {
+          lastName
+          id
+          firstName
+        }
+      }
+    }
+  }
+}`;
   
 
 
@@ -325,11 +346,49 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         },
     });
 
+    const attendance = useQuery(GET_ATTENDANCE1, {
+      variables: { courseId: id }
+    });
+
+    if(attendance.loading) return <Loading />
+    console.log(attendance.data.attendances);
     if(loading) return <Loading />;
     if(!isEdit) return <Loading />;
     if(error) return console.error(error);
     const { enrollments, sessions } = data;
 
+    // const displayAttendanceTableInfo = attendance.data.attendances.sort((a, b) => a.id - b.id).map(attendance => {
+    //   const { enrollment, id, session, status } = attendance
+    //   const { user } = enrollment.student;
+
+    //   // console.log(attendance)
+    //   // console.log(user)
+    //   // console.log(session)
+    // });
+
+    // const x = attendance.data.attendances.sort((a,b) => a.id - b.id).reduce((a, b, i) => {
+    //   console.log(b)
+    //   const { id } = b.enrollment.student.user
+    //   return [...a, {id}]
+    // }, [])
+    // const x = attendance.data.attendances.sort((a,b) => a.id - b.id)
+    // console.log(x)
+    // const x = Object.values(attendance.data.attendances.sort((a, b) => a.id - b.id).map(x => {
+    //   if
+    // }))
+    // console.log(x)
+    const result = attendance.data.attendances.sort((a,b) => a.id - b.id).reduce((r, {id, enrollment, status }) => {
+      const { user } = enrollment.student;
+      console.log(id)
+      r[user.id] = r[user.id] || {attendanceId: [], fullname: fullName(user)}
+      r[user.id].attendanceId.push({[id]: status})
+      // console.log(r[user.id])
+      return r
+    }, {});
+
+    console.log(result);
+    // console.log(enrollments)
+    // console.log(sessions)
     const handleEdit = e => {
       const sessionId = e.currentTarget.getAttribute("id")
         if(isEdit[sessionId] === false) {
@@ -418,7 +477,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       );
     
       // console.log(sortByAlphabet)
-    // console.log(studentAttendanceDisplay)
+    console.log(studentAttendanceDisplay)
     // console.log(sortStudentList)
     // console.log(currentSessionId);
     // console.log(newData)
