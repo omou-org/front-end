@@ -26,7 +26,7 @@ import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
-import { DialogContentText } from "@material-ui/core";
+import { Button, DialogContentText } from "@material-ui/core";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -334,6 +334,31 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </ ResponsiveButton>
                 </DialogActions>
             </DialogContent>
+        </Dialog>
+        <Dialog open={openInterestDialog} onClose={() => setOpenInterestDialog(false)}>
+            <Typography variant="h3">Interested?</Typography>
+            <DialogContent>
+                <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
+                <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
+            </DialogContent>
+            <DialogActions>
+                <Button 
+                    data-cy="cancel-add-interest"
+                    onClick={() => setOpenInterestDialog(false)}
+                    variant="outlined"
+                    color="primary"
+                >
+                    Cancel
+                </Button>
+                <Button
+                    data-cy="confirm-add-interest"
+                    onClick={handleAddInterest}
+                    variant="outlined"
+                    color="primary"
+                >
+                    Notify Me
+                </Button>
+            </DialogActions>
         </Dialog>
         </>
     )
