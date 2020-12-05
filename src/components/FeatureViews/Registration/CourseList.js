@@ -376,7 +376,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 onClick={handleAddInterest}
                                 variant="outlined"
                                 color="primary"
-                                style={{ border: "none", margin:"10px" }}
+                                style={{ border: "none" }}
                             >
                                 Notify Me
                             </ResponsiveButton>
