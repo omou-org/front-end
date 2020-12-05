@@ -239,7 +239,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     .filter(({ courseType, endDate, id }) => ((courseType === "CLASS") &&
                         (moment().diff(moment(endDate), 'days') < 0)))
                     .map((course) => {
-                        course.enrollmentSet.length = course.maxCapacity
+                        
                         return (
                             <ListDetailedItem
                                 key={course.id}
@@ -290,7 +290,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                                 startIcon={<AddIcon />}
                                             >
                                                 register
-                                </ResponsiveButton>
+                                            </ResponsiveButton>
                                             : inParentInterestList(course.id)
                                                 ? <ResponsiveButton
                                                     disabled={inParentInterestList(course.id)}
@@ -301,7 +301,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                                     startIcon={<CheckIcon />}
                                                 >
                                                     interested
-                                </ResponsiveButton>
+                                                </ResponsiveButton>
                                                 : <ResponsiveButton
                                                     disabled={inParentInterestList(course.id)}
                                                     variant="outlined"
@@ -311,7 +311,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                                     startIcon={<AddIcon />}
                                                 >
                                                     interest
-                                </ResponsiveButton>}
+                                                </ResponsiveButton>}
                                     </ListButton>
                                 </ListActions>
                             </ListDetailedItem>)
@@ -349,7 +349,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </DialogActions>
                 </DialogContent>
             </Dialog>
-            <Dialog open={openInterestDialog} onClose={() => setOpenInterestDialog(false)} PaperProps={{style: {"height": "310px", "width": "410px", "padding": "32px"}}}>
+            <Dialog open={openInterestDialog} onClose={() => setOpenInterestDialog(false)} PaperProps={{ style: { "height": "310px", "width": "410px", "padding": "32px" } }}>
                 <Grid container spacing={3}>
                     <Grid item>
                         <Typography variant="h3">Interested?</Typography>
@@ -357,7 +357,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     <Grid item>
                         <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
                     </Grid>
-                    <Grid item style={{"marginBottom": "20px"}}>
+                    <Grid item style={{ "marginBottom": "20px" }}>
                         <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
                     </Grid>
                     <Grid container justify={"flex-end"}>
