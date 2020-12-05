@@ -16,6 +16,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -26,6 +27,7 @@ import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
+import { DialogContentText } from "@material-ui/core";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -44,6 +46,46 @@ export const GET_STUDENTS_AND_ENROLLMENTS = gql`
           id
         }
       }
+    }
+`;
+
+const GET_PARENT_INTEREST = gql`
+    query GetParentInterest($parentId: ID!){
+        interests(parentId: $parentId) {
+            id
+            parent {
+                user {
+                    id
+                    firstName
+                    lastName
+                }
+            }
+            course {
+                id
+                title
+            }
+        }
+    }
+`;
+
+const ADD_PARENT_TO_INTEREST_LIST = gql`
+    mutation AddParentToInterestList($parentId: ID!, $courseId: ID!){
+        createInterest(parent: $parentId, course: $courseId) {
+            interest {
+                id
+                parent {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+                course {
+                    id
+                    title
+                }
+            }
+        }
     }
 `;
 
