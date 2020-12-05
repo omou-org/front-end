@@ -102,11 +102,37 @@ const useStyles = makeStyles((theme) => ({
 const CourseList = ({ filteredCourses, updatedParent }) => {
     const history = useHistory();
 
-    const [openCourseQuickRegistration, setOpen] = useState(false);
+    const [openCourseQuickRegistration, setOpenQuickRegister] = useState(false);
+    const [openInterestDialog, setOpenInterestDialog] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
+    const [interestCourseID, setInterestCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
 
     const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
+     const [addParentToInterestList, addParentToInterestListStatus] = useMutation(ADD_PARENT_TO_INTEREST_LIST, {
+
+        onCompleted: () => {
+            setOpenInterestDialog(false);
+        },
+        update: (cache, { data }) => {
+            const newInterest = data.createInterest.interest;
+            console.log(newInterest)
+            const cachedInterestList = cache.readQuery({
+                query: GET_PARENT_INTEREST,
+                variables: { "parentId": currentParent.user.id },
+            }).interests;
+            console.log(cachedInterestList);
+            cache.writeQuery({
+                data: {
+                    interests: [ ...cachedInterestList, newInterest ],
+                },
+                query: GET_PARENT_INTEREST,
+                variables: { "parentId": currentParent.user.id },
+            });
+        },
+        onError: (error) => console.log(error),
+
+    });
     const dispatch = useDispatch();
 
     const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
