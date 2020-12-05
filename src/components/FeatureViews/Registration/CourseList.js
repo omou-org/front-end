@@ -221,8 +221,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     }	    
 
     const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
-        return ((course.maxCapacity <= course.enrollmentSet.length) &&
-            (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
+        return ((previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
     }
 
 
@@ -238,6 +237,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
                     (moment().diff(moment(endDate), 'days') < 0)))
             .map((course) => {
+                course.enrollmentSet.length = course.maxCapacity
                 return(
                     <ListDetailedItem
                         key={course.id}
@@ -276,7 +276,8 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 {course.enrollmentSet.length} / {course.maxCapacity}
                             </ListStatus>
                             <ListButton>
-                                <ResponsiveButton
+                                {course.enrollmentSet.length < course.maxCapacity 
+                                ? <ResponsiveButton
                                     disabled={shouldDisableQuickRegister({
                                         course, enrolledCourseIds,
                                         registrations, studentIdList
@@ -288,6 +289,15 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 >
                                     register
                                 </ResponsiveButton>
+                                : <ResponsiveButton
+                                    disabled={inParentInterestList(course.id)}                                    
+                                    variant="contained"
+                                    onClick={handleInterestRegister(course.id)}
+                                    data-cy="add-interest-button"
+                                    startIcon={<AddIcon />}
+                                >
+                                    interest
+                                </ResponsiveButton>}
                             </ListButton>
                         </ListActions>
                     </ListDetailedItem>)
