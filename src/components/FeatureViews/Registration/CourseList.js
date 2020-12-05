@@ -133,15 +133,16 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         onError: (error) => console.log(error),
 
     });
+    const {parentIsLoggedIn} = useValidateRegisteringParent();
     const dispatch = useDispatch();
 
     const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const {data, loading, error} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
+    const {data: studentEnrollments, loading: studentEnrollmentsLoading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
         "variables": {"userIds": studentIdList},
         skip: !studentIdList,
     });
 
-    const {parentIsLoggedIn} = useValidateRegisteringParent();
+    
     const {courseTitle, courseRow} = useStyles();
 
     if (loading) return <Loading small/>;
