@@ -90,10 +90,6 @@ const ADD_PARENT_TO_INTEREST_LIST = gql`
     }
 `;
 
-// const GET_PARENT_INTEREST_LIST = gql`
-
-// `;
-
 const useStyles = makeStyles((theme) => ({
     "courseTitle": {
         "color": theme.palette.common.black,
@@ -110,22 +106,52 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [interestCourseID, setInterestCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
-    const [addParentToInterestList, addParentToInterestListStatus] = useMutation(ADD_PARENT_TO_INTEREST_LIST);
-
     const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
+    const [addParentToInterestList, addParentToInterestListStatus] = useMutation(ADD_PARENT_TO_INTEREST_LIST, {
+
+        onCompleted: () => {
+            setOpenInterestDialog(false);
+        },
+        update: (cache, { data }) => {
+            const newInterest = data.createInterest.interest;
+            console.log(newInterest)
+            const cachedInterestList = cache.readQuery({
+                query: GET_PARENT_INTEREST,
+                variables: { "parentId": currentParent.user.id },
+            }).interests;
+            console.log(cachedInterestList);
+            cache.writeQuery({
+                data: {
+                    interests: [ ...cachedInterestList, newInterest ],
+                },
+                query: GET_PARENT_INTEREST,
+                variables: { "parentId": currentParent.user.id },
+            });
+        },
+        onError: (error) => console.log(error),
+  
+    });
+
     const dispatch = useDispatch();
+    const {parentIsLoggedIn} = useValidateRegisteringParent();
 
     const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
 
-    const {data: studentEnrollments, loading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
+    const {data: studentEnrollments, loading: studentEnrollmentsLoading} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
         "variables": {"userIds": studentList},
         skip: !studentList
     });
 
-    const {parentIsLoggedIn} = useValidateRegisteringParent();
+    const {data: parentInterestList, loading: parentInterestListLoading} = useQuery(GET_PARENT_INTEREST, {
+        "variables": {
+            "parentId": currentParent?.user.id,
+        },
+        skip: !parentIsLoggedIn,
+    })
+
     const {courseTitle, courseRow} = useStyles();
 
-    if (loading) return <Loading small/>;
+    if (studentEnrollmentsLoading || parentInterestListLoading) return <Loading small/>;
 
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
@@ -175,7 +201,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         setOpenInterestDialog(true);
 
     }
-    console.log(currentParent);
+   
     const handleAddInterest = () => {
 
         addParentToInterestList({
@@ -184,7 +210,13 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 "courseId": interestCourseID,
             }
         })
-        setOpenInterestDialog(false);
+    }
+
+    const inParentInterestList = (courseID) => {
+        if (parentInterestList) {
+            return parentInterestList.interests.some((interest) => interest.course.id === courseID);
+        }
+        return false;
     }
 
     const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
@@ -269,6 +301,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                         color="secondary"
                                         onClick={handleInterestRegister(course.id)}
                                         data-cy="add-interest-button"
+                                        disabled={inParentInterestList(course.id)}
                                     >
                                         + INTEREST
                                     </Button>
