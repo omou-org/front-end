@@ -30,8 +30,6 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 // import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
-
-
 import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import BackButton from "../../OmouComponents/BackButton";
@@ -128,9 +126,7 @@ const GET_SESSION = gql`
 //All stuff on top of enrollmentView should be course
 //Everything else needs to be session
 
-
 //is confirmed course is not necessary, clean queries and then remove is confirmed field from all
-
 
 const UPDATE_SESSION = gql`
   mutation UpdateSession(
@@ -199,17 +195,6 @@ const UPDATE_SESSION = gql`
 const EditSessionView = () => {
   const { course_id, session_id } = useParams();
 
-  const dispatch = useDispatch();
-  const api = useMemo(
-    () => ({
-      ...bindActionCreators(apiActions, dispatch),
-      ...bindActionCreators(userActions, dispatch),
-      ...bindActionCreators(registrationActions, dispatch),
-      ...bindActionCreators(calendarActions, dispatch),
-    }),
-    [dispatch]
-  );
-
   const history = useHistory();
   const location = useLocation();
 
@@ -251,7 +236,7 @@ const EditSessionView = () => {
         query: GET_SESSION,
         data: {
           //add a sort?
-          session: [...existingSession, ...data["updateSession"].session],
+          session: [...existingSession, ...data["updateSession"].session].sort((a, b) => {return a.id - b.id}),
         },
         variables: {
           sessionId: session_id,
@@ -368,12 +353,12 @@ const EditSessionView = () => {
       switch (location.state.allOrCurrent) {
         case "current": {
           confirmedState = response.session.isConfirmed;
-          startDatetime = response.session.startDatetime
+          startDatetime = response.session.startDatetime;
           break;
         }
         case "all": {
           confirmedState = response.session.course.isConfirmed;
-          startDatetime = response.session.course.startDatetime
+          startDatetime = response.session.course.startDatetime;
           break;
         }
       }
@@ -448,7 +433,7 @@ const EditSessionView = () => {
         break;
       }
       case "all": {
-       //ANNA add TODO here for course availability
+        //ANNA add TODO here for course availability
         //Needs to be updated to just take time, won't take date, it is startDate, not startDatetime
         updateSession({
           variables: {
@@ -461,7 +446,6 @@ const EditSessionView = () => {
             room: room,
             // courseStartDatetime: start_time,
             // courseEndDatetime: newEndTime,
-            
           },
         });
         //   start_time: start_time.toLocaleString("eng-US", timeFormat),
@@ -470,7 +454,9 @@ const EditSessionView = () => {
     }
     //ANNA DOES THIS GO BACK IN???
     //same route as back
-    // history.push("/scheduler/");
+    history.push(
+      `/scheduler/view-session/${course_id}/${session_id}/${sessionFields.instructor.value}`
+    );
   };
 
   if (loading || categoriesLoading || instructorsLoading) {
@@ -540,17 +526,20 @@ const EditSessionView = () => {
             spacing={2}
             xs={6}
           >
-            <Grid item xs={6}>
-              <Typography variant="h5"> Subject </Typography>
-              <SearchSelect
-                className="search-options"
-                isClearable
-                onChange={handleCategoryChange}
-                options={categoriesList}
-                placeholder="Choose a Category"
-                value={sessionFields.category}
-              />
-            </Grid>
+            {location.state.allOrCurrent === "all" && (
+              <Grid item xs={6}>
+                <Typography variant="h5"> Subject </Typography>
+                <SearchSelect
+                  className="search-options"
+                  isClearable
+                  onChange={handleCategoryChange}
+                  options={categoriesList}
+                  placeholder="Choose a Category"
+                  value={sessionFields.category}
+                />
+              </Grid>
+            )}
+
             <Grid item xs={6}>
               <Typography variant="h5"> Room</Typography>
               <TextField

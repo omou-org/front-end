@@ -1,3 +1,4 @@
+const { it } = require("date-fns/locale");
 
 describe("Link from enrollmentview to sessionview", () => {
     before(() => {
@@ -61,5 +62,9 @@ describe("Link from enrollmentview to sessionview", () => {
         cy.get('[data-cy=enrollment-sessions]').first().click();
         cy.url().should('eq', `http://localhost:3000/scheduler/view-session/1/14/5`)
 
+    });
+
+    it('loads session view data', () => {
+//matches mock
     });
 });
