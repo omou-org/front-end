@@ -196,6 +196,30 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         setOpenQuickRegister(false);
     }
 
+    const handleInterestRegister = (courseID) => (e) => {
+        e.preventDefault();
+        setInterestCourseID(courseID);
+        setOpenInterestDialog(true);
+
+    }
+
+    const handleAddInterest = () => {
+
+        addParentToInterestList({
+            variables: {
+                "parentId": currentParent.user.id,
+                "courseId": interestCourseID,
+            }
+        })
+    }
+
+    const inParentInterestList = (courseID) => {
+        if (parentInterestList) {
+            return parentInterestList.interests.some((interest) => interest.course.id === courseID);
+        }
+        return false;
+    }	    
+
     const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
         return ((course.maxCapacity <= course.enrollmentSet.length) &&
             (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
