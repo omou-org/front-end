@@ -52,6 +52,9 @@ const ProfileHeading = ({ user }) => {
   //         }
   // 	}`;
 
+
+  //Talk to Ryan
+  //Anna right align the text in the buttons
   const RESET_PASSWORD = gql`
     mutation ResetPassword($password: String!, $token: String!) {
       resetPassword(newPassword: $password, token: $token) {
@@ -59,6 +62,7 @@ const ProfileHeading = ({ user }) => {
       }
     }
   `;
+
 
   const params = useSearchParams();
 

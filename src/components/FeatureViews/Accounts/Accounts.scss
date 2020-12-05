@@ -273,12 +273,6 @@
   display: inline;
 }
 
-.editResetDiv {
-  border: solid 2px $primaryColor;
-  border-radius: 10px;
-  width: 150px;
-  z-index: 2px;
-}
 
 .editResetDiv:hover {
   display: inline;
@@ -287,11 +281,15 @@
 .reset {
   border-radius: 0px 0px 8px 8px !important;
   width: 100%;
+  text-align: right;
+  justify-content: flex-end !important;
+  justify-content: left !important;
 }
 
 .edit {
   border-radius: 8px 8px 0px 0px !important;
   width: 100%;
+  justify-content: left !important;
 }
 
 .reset:hover {
