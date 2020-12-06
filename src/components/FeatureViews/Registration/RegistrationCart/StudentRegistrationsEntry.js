@@ -105,7 +105,6 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 }
 
 export default function StudentRegistrationEntry({ student, registrationList }) {
-	console.log({student})
 	return (<Grid item xs={12} container>
 		<Typography style={{fontWeight: 600}}>{fullName(student.user)}</Typography>
 		<Table>

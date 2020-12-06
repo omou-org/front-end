@@ -49,6 +49,16 @@ export const DayConverter = {
     "6": "saturday",
 };
 
+export const DayAbbreviation = {
+    "sunday": "S",
+    "monday": "M",
+    "tuesday": "T",
+    "wednesday": "W",
+    "thursday": "Th",
+    "friday": "F",
+    "saturday": "Sa",
+}
+
 /**
  * Pads a number to the desired length, filling with leading zeros
  * @param {Number} integer Number to pad

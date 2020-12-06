@@ -21,7 +21,6 @@ import Loading from "components/OmouComponents/Loading";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
-import ReadMoreText from "components/OmouComponents/ReadMoreText";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -44,16 +43,17 @@ const useStyles = makeStyles((theme) => ({
         transform: "scale(.8)",
     },
     "notePaper": {
-        height: "100%",
-    }, 
+        height: "150px"
+    },
     "notesTitle": {
         letterSpacing: "0.01071em",
         fontSize: "0.875rem",
     },
     "dateDisplay": {
+        bottom: "40px !important",
         fontSize: ".825rem",
         position: "relative",
-        paddingBottom: "40px",
+        padding: "3px",
         [theme.breakpoints.down('lg')]: {
             fontSize: ".625rem",
             fontWeight: "200px"
@@ -239,7 +239,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             } else {
                 updatedNotes[matchingIndex] = newNote;
             }
-
+            
             cache.writeQuery({
                 "data": {
                     [QUERY_KEY[ownerType]]: updatedNotes,
@@ -592,9 +592,9 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 !
                             </Avatar>
                         </Typography>
-                        <ReadMoreText textLimit = {110}>
+                        <Typography align="left" className="body">
                             {note.body}
-                        </ReadMoreText>
+                        </Typography>
                         <Grid item xs={12}>
                             <Typography className={`date ${classes.dateDisplay}`}
                                 style={{ "fontWeight": "500" }}>
@@ -658,9 +658,12 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         </div>
                     </Paper>
                 </Grid>
-                ))}
-            </Grid>
-        )
+
+            ))}
+
+
+        </Grid>
+    )
 };
 
 Notes.propTypes = {

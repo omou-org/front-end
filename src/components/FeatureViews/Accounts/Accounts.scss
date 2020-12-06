@@ -1,261 +1,267 @@
-@import "../../../theme/colors";
-@import "../../../theme/sizes";
-@import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700");
+@import '../../../theme/colors';
+@import '../../../theme/sizes';
+@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 
 /*Account Styles*/
 .Accounts {
-  .paper {
-    padding: 3%;
-  }
-  .toggleView {
-    right: 10%;
-  }
-
-  .Directory {
-    text-align: left;
-    font-size: 60px;
-  }
-  .tabs{
-    text-align:left;
-    left:0;
-    height: 0;
-
-    .tab {
-      min-width: 130px;
+    .paper {
+        padding: 3%;
+    }
+    .toggleView {
+        right: 10%;
     }
 
-  }
-  .heading {
-    margin: 25px 0;
-  }
-
-  .card-container {
-    margin-top: 20px;
-  }
-
-  .toggleView {
-    .btn {
-      color: $lightPrimaryFontColor;
-      border-radius: 5px;
-      box-sizing: border-box;
-      border: solid 2px $secondaryColor !important;
-      white-space: nowrap;
-      right: -20%;
-      margin-left: 5px;
-      width: 8rem;
-
-      &.active {
-        border: solid 2px $primaryColor !important;
-        color: $primaryColor;
-        background-color: #EBFAFF;
-      }
+    .Directory {
+        text-align: left;
+        font-size: 60px;
     }
-  }
+    .tabs {
+        text-align: left;
+        left: 0;
+        height: 0;
 
-  .AccountsTable {
-    margin-top: 20px;
-
-    .row {
-      cursor: pointer;
-      text-decoration: none;
+        .tab {
+            min-width: 130px;
+        }
+    }
+    .heading {
+        margin: 25px 0;
     }
 
-    .editButton {
-      color: $lightPrimaryFontColor;
-      border-radius: 5px;
-      box-sizing: border-box;
-      border: solid 2px $secondaryColor !important;
-      white-space: nowrap;
+    .card-container {
+        margin-top: 20px;
     }
 
-    .accountsCell{
-      width:220px;
-      overflow-wrap: break-word;
+    .toggleView {
+        .btn {
+            color: $lightPrimaryFontColor;
+            border-radius: 5px;
+            box-sizing: border-box;
+            border: solid 2px $secondaryColor !important;
+            white-space: nowrap;
+            right: -20%;
+            margin-left: 5px;
+            width: 8rem;
+
+            &.active {
+                border: solid 2px $primaryColor !important;
+                color: $primaryColor;
+                background-color: #ebfaff;
+            }
+        }
     }
-    .accountsCellID{
-      width:100px;
-      overflow-wrap: break-word;
+
+    .AccountsTable {
+        margin-top: 20px;
+
+        .row {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .editButton {
+            color: $lightPrimaryFontColor;
+            border-radius: 5px;
+            box-sizing: border-box;
+            border: solid 2px $secondaryColor !important;
+            white-space: nowrap;
+        }
+
+        .accountsCell {
+            width: 220px;
+            overflow-wrap: break-word;
+        }
+        .accountsCellID {
+            width: 100px;
+            overflow-wrap: break-word;
+        }
     }
-  }
 }
 
 .oooDialog {
-  font-family: Roboto Slab;
-  .title {
-    font-weight: bold;
-    font-size: 36px;
-    line-height: 47px;
-  }
-  .instructor {
-    font-style: normal;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 19px;
-  }
-  .button {
-    font-weight: normal;
-    font-size: 12px;
-  }
-  .select {
-    font-size: 14px;
-    line-height: 16px;
-    padding: 5% 0 5% 0;
-  }
-  .checkbox {
-    margin-top: 30px;
-  }
-  .checkboxText {
-    margin-top: 45px;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 16px;
-  }
-  .save-availability {
-    color: white;
-  }
+    font-family: Roboto Slab;
+    .title {
+        font-weight: bold;
+        font-size: 36px;
+        line-height: 47px;
+    }
+    .instructor {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 19px;
+    }
+    .button {
+        font-weight: normal;
+        font-size: 12px;
+    }
+    .select {
+        font-size: 14px;
+        line-height: 16px;
+        padding: 5% 0 5% 0;
+    }
+    .checkbox {
+        margin-top: 30px;
+    }
+    .checkboxText {
+        margin-top: 45px;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 14px;
+        line-height: 16px;
+    }
+    .save-availability {
+        color: white;
+    }
 }
-
-
 
 /*Profile Heading Styles*/
 .UserProfile {
-  .profile-component-container {
-    padding-top: 15px;
-  }
-
-  .schedule-button {
-    margin-bottom: 10px;
-  }
-
-  .paper {
-    padding: 3%;
-
-    .ActionTable {
-      margin-top: -20px;
+    .profile-component-container {
+        padding-top: 15px;
     }
 
-    .headingPadding {
-      padding-left: 3%;
+    .schedule-button {
+        margin-bottom: 10px;
     }
 
-    .gridScaling {
-      white-space: nowrap;
+    .paper {
+        padding: 3%;
+
+        .headingPadding {
+            padding-left: 3%;
+        }
+
+        .gridScaling {
+            white-space: nowrap;
+        }
+
+        .headingContainer {
+            display: grid;
+        }
+
+        .ProfileName {
+            word-break: break-word;
+        }
+
+        .emailPadding,
+        .rowPadding {
+            display: flex;
+            padding: 4px;
+            text-align: left;
+            color: grey;
+            .rowText {
+                word-break: break-word;
+            }
+            .iconScaling {
+                font-size: 24px;
+            }
+        }
+        .emailPadding {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .editButton {
+            color: $darkenPrimaryFontColor;
+            box-sizing: border-box;
+            border: solid 2px $secondaryColor !important;
+            white-space: nowrap;
+            position: relative;
+            font-size: 0.9em !important;
+            > * {
+                font-size: 0.9em !important;
+            }
+        }
     }
 
-    .headingContainer {
-      display: grid;
+    .padding {
+        padding-bottom: 4%;
+        padding-top: 3%;
     }
 
-    .ProfileName {
-      word-break: break-word;
+    .TabIcon {
+        display: inline-flex;
+        vertical-align: middle;
     }
+}
 
-    .emailPadding,
-    .rowPadding {
-      display: flex;
-      padding: 4px;
-      text-align: left;
-      color: grey;
-      .rowText {
-        word-break: break-word;
-      }
-      .iconScaling {
-        font-size: 24px;
-      }
-    }
-    .emailPadding {
-      cursor: pointer;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .editButton {
-      color: $darkenPrimaryFontColor;
-      box-sizing: border-box;
-      border: solid 2px $secondaryColor !important;
-      white-space: nowrap;
-      position: relative;
-      font-size: 0.9em !important;
-      > * {
-        font-size: 0.9em !important;
-      }
-    }
-  }
-
-  .padding {
+.padding {
     padding-bottom: 4%;
     padding-top: 3%;
-  }
+}
 
-  .TabIcon {
+.TabIcon {
     display: inline-flex;
     vertical-align: middle;
-  }
-  
-  .notification {
+}
+
+.notification {
     background-color: orange;
     position: absolute;
     top: 10px;
     left: 2.9em;
     @include respond-to(medium-screens) {
-      left: 1.4em;
+        left: 1.4em;
     }
     @include respond-to(handhelds) {
-      left: 1.4em;
+        left: 1.4em;
     }
-  }
-  .left-align {
-    margin-left: -40%;
-  }
+    .left-align {
+        margin-left: -40%;
+    }
 }
 
 .ProfileCard,
 .UserProfile {
-  .profileIcons {
-    font-size: 24px;
-  }
-
-  .card-content {
-    margin-top: 10px;
-  }
-
-  .profile-details {
-    margin: 10px 0;
-  }
-
-  .userLabel {
-    color: white;
-    font-size: 18px;
-    padding: 0 20px 0 20px;
-
-    &.instructor {
-      background-color: $instructorColor;
+    .profileIcons {
+        font-size: 24px;
     }
 
-    &.student {
-      background-color: $studentColor;
+    .card-content {
+        margin-top: 10px;
     }
 
-    &.receptionist {
-      background-color: $receptionistColor;
+    .profile-details {
+        margin: 10px 0;
     }
 
-    &.parent {
-      background-color: $parentColor;
+    .userLabel {
+        color: white;
+        font-size: 18px;
+        padding: 0 20px 0 20px;
+
+        &.instructor {
+            background-color: $instructorColor;
+        }
+
+        &.student {
+            background-color: $studentColor;
+        }
+
+        &.receptionist {
+            background-color: $receptionistColor;
+        }
+
+        &.parent {
+            background-color: $parentColor;
+        }
     }
-  }
 }
 
 .ProfileCard {
-  text-decoration:none;
-  cursor: pointer;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .avatar {
-  color: white;
+    color: white;
 }
 
+a {
+    color: black;
+}

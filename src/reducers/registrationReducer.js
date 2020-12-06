@@ -261,11 +261,10 @@ const addClassRegistration = ({courseId, studentId}) => {
   const existingEnrollmentsByStudents = Object.entries(registrationState)
       .map(([studentID, studentRegistrations]) =>
           Array.isArray(studentRegistrations) ? studentRegistrations
-              .map(registration => [Number(studentID), Number(registration.course.id)]) : []
+              .map(registration => [studentID, registration.course.id]) : []
       );
-  console.log({existingEnrollmentsByStudents, courseId, studentId})
   const isEnrolled = existingEnrollmentsByStudents.map(studentEnrollments =>
-      studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [Number(studentId), Number(courseId)])))
+      studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [studentId, courseId])))
       .some(studentEnrollments => studentEnrollments.length > 0);
   if (!isEnrolled) {
     return {...saveRegistration(studentId, courseId, registrationState)}

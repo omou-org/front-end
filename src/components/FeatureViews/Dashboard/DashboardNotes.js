@@ -1,11 +1,12 @@
 import React from "react";
+// import {useSelector} from "react-redux";
+
 import * as hooks from "actions/hooks";
 import Loading from "components/OmouComponents/Loading";
 import Notes from "./../Notes/Notes";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import {makeStyles} from "@material-ui/styles";
-// import {useSelector} from "react-redux";
+import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -42,6 +43,7 @@ if (hooks.isLoading(adminStatus)) {
                 </Notes>
             </Grid>
         </Paper>
+       
     );
 };
 
