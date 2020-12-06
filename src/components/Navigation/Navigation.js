@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useState, useEffect} from "react";
 import {useSelector} from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
@@ -18,6 +18,15 @@ import {NavList} from "./NavigationAccessList";
 import Loading from "../OmouComponents/Loading";
 import MomentUtils from "@date-io/moment";
 
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import {GoogleLogin, GoogleLogout} from "react-google-login";
+
+
 const useStyles = makeStyles({
     "navigationIconStyle": {
         "height": "50px",
@@ -29,16 +38,39 @@ const useStyles = makeStyles({
 
 const Navigation = () => {
     const classes = useStyles();
-    const { token } = useSelector(({ auth }) => auth);
+    const { token, email } = useSelector(({ auth }) => auth);
 
     const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
     const NavigationList = NavList[ACCOUNT_TYPE];
 
     const [mobileOpen, setMobileOpen] = useState(false);
 
+    const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
+
+    const [status, setStatus] = useState();
+
     const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
     }, []);
+
+    const handleClose = () => {
+        setGoogleLoginPromptOpen(false);
+    };
+
+    const responseGoogle = (response) => {
+        console.log(response);
+    }
+
+    const onSuccess = (response) => {
+        setStatus(response);
+        console.log("Success");
+    };
+
+    useEffect(() => {
+        if(email !== null){
+            setGoogleLoginPromptOpen(true);
+        }
+    }, [email]);
 
 	if ((!NavigationList || !ACCOUNT_TYPE) && token) {
         return <Loading/>
@@ -101,6 +133,38 @@ const Navigation = () => {
                     : <MuiPickersUtilsProvider utils={MomentUtils}>
                         <RootRoutes/>
                     </MuiPickersUtilsProvider>}
+            </div>
+
+            <div>
+                <Dialog
+                    open={googleLoginPromptOpen}
+                    onClose={handleClose}
+                    aria-labelledby="dialog-title"
+                    aria-describedby="dialog-description"
+                >
+                    <DialogTitle id="dialog-title">{"Sign in with Google"}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="dialog-description">
+                        Allow us to access your Google Classroom courses
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            No
+                        </Button>
+                        
+                        <Button onClick={handleClose} color="primary" autoFocus>
+                            <GoogleLogin
+                            buttonText="Login"
+                            clientId="1059849289788-0tpge112i2bfe5llak523fdopu8foul7.apps.googleusercontent.com"
+                            isSignedIn
+                            onFailure={responseGoogle}
+                            onSuccess={onSuccess}
+                            scope = "https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters"
+                            /> 
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </ThemeProvider>
     );
