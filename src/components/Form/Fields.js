@@ -110,8 +110,8 @@ const GET_STUDENTS = gql`
 `;
 
 export const StudentSelect = (props) => {
-    const {studentList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
-    const {data} = useQuery(GET_STUDENTS, {"variables": {"userIds": studentList}});
+    const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
+    const {data} = useQuery(GET_STUDENTS, {"variables": {"userIds": studentIdList}});
     const studentOptions = data?.userInfos.map((student) => ({
         "label": fullName(student.user),
         "value": student.user.id,

@@ -6,6 +6,8 @@ import Button from "@material-ui/core/Button";
 import Select from "@material-ui/core/Select/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+
 Date.daysBetween = function (date1, date2) {
 	//Get 1 day in milliseconds
 	let one_day = 1000 * 60 * 60 * 24;
@@ -200,7 +202,8 @@ class TimeSelector extends Component {
 				<InputLabel htmlFor="days-of-week">Days of the Week</InputLabel>
 				{this.state.daysOfWeek.map((day) => {
 					return (
-						<Button
+						<ResponsiveButton
+							variant='outlined'
 							onClick={(e) => {
 								e.preventDefault();
 								this.selectDayOfWeek.bind(this)(day);
@@ -208,7 +211,7 @@ class TimeSelector extends Component {
 							className={`${day.value ? "selected" : ""} button`}
 						>
 							{day.dayTitle}
-						</Button>
+						</ResponsiveButton>
 					);
 				})}
 			</div>

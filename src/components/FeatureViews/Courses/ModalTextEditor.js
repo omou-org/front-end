@@ -1,16 +1,18 @@
-import React, { useState, useCallback } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import Input from '@material-ui/core/Input';
-import { omouBlue } from '../../../theme/muiTheme';
-import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
-import { GET_SESSION_NOTES } from './ClassSessionView';
+
+import React, { useState, useCallback } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import Input from "@material-ui/core/Input";
+import { omouBlue } from "../../../theme/muiTheme";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/react-hooks";
+import { GET_SESSION_NOTES } from "./ClassSessionView";
 import { useSelector } from 'react-redux';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     rootContainer: {
@@ -212,57 +214,57 @@ const ModalTextEditor = ({
         setBody(event.target.value);
     }, []);
 
-    return (
-        <Dialog
-            PaperProps={{
-                classes: { root: classes.rootContainer },
-                square: true,
-            }}
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="form-dialog-title"
-            maxWidth="md"
+  return (
+    <Dialog
+      PaperProps={{ classes: { root: classes.rootContainer }, square: true }}
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+      maxWidth="md"
+    >
+      <DialogContent classes={{ root: classes.textArea }}>
+        <Input
+          placeholder="Subject"
+          className={classes.subjectUnderline}
+          disableUnderline
+          onChange={handleSubjectChange}
+          defaultValue={buttonState === "edit" ? noteSubject : ""}
+        />
+        <TextField
+          InputProps={{
+            disableUnderline: true,
+            classes: { inputMarginDense: classes.textBox },
+          }}
+          autoFocus
+          className={classes.textFieldStyle}
+          margin="dense"
+          id="name"
+          onChange={handleBodyChange}
+          placeholder="Body"
+          type="email"
+          fullWidth
+          defaultValue={buttonState === "edit" ? noteBody : ""}
+          multiline
+          rows={12}
+        />
+      </DialogContent>
+      <DialogActions style={{ marginBottom: "2em" }}>
+        <ResponsiveButton 
+          onClick={handleClose}
+          variant="outlined" 
         >
-            <DialogContent classes={{ root: classes.textArea }}>
-                <Input
-                    placeholder="Subject"
-                    className={classes.subjectUnderline}
-                    disableUnderline
-                    onChange={handleSubjectChange}
-                    defaultValue={buttonState === 'edit' ? noteSubject : ''}
-                />
-                <TextField
-                    InputProps={{
-                        disableUnderline: true,
-                        classes: { inputMarginDense: classes.textBox },
-                    }}
-                    autoFocus
-                    className={classes.textFieldStyle}
-                    margin="dense"
-                    id="name"
-                    onChange={handleBodyChange}
-                    placeholder="Body"
-                    type="email"
-                    fullWidth
-                    defaultValue={buttonState === 'edit' ? noteBody : ''}
-                    multiline
-                    rows={12}
-                />
-            </DialogContent>
-            <DialogActions style={{ marginBottom: '2em' }}>
-                <Button className={classes.cancelButton} onClick={handleClose}>
-                    Cancel
-                </Button>
-                <Button className={classes.submitButton} onClick={handleSubmit}>
-                    {origin === 'STUDENT_ENROLLMENT'
-                        ? 'Send Email'
-                        : buttonState === 'edit'
-                        ? 'EDIT NOTE'
-                        : 'ADD NOTE'}
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+          Cancel
+        </ResponsiveButton>
+        <ResponsiveButton 
+          variant="contained"  
+          onClick={handleSubmit}
+        >
+          {origin === "STUDENT_ENROLLMENT" ? "Send Email" : 
+          (buttonState === "edit") ? "EDIT NOTE" : "ADD NOTE"}
+        </ResponsiveButton>
+      </DialogActions>
+    </Dialog>
+  );
 };
 
 export default ModalTextEditor;

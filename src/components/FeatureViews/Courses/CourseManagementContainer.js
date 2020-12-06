@@ -25,6 +25,7 @@ import theme, {
     pastColor,
 } from '../../../theme/muiTheme';
 
+
 export const BootstrapInput = withStyles((theme) => ({
     root: {
         'label + &': {
@@ -63,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
+
     containerMargins: {
         marginTop: '1.25em',
         marginBottom: '1.25em',
@@ -124,6 +126,7 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             backgroundColor: highlightColor,
         },
+
     },
 }));
 
@@ -280,6 +283,7 @@ const ClassListItem = ({
             <Divder />
         </>
     );
+
 };
 
 const CourseFilterDropdown = ({
@@ -451,6 +455,7 @@ const CourseManagementContainer = () => {
         (currentValue, course) =>
             currentValue.instructor.user.id === course.instructor.user.id
     );
+
 
     const checkFilter = (value, filter) => '' === filter || value === filter;
     const checkStudentEnrolled = (value, filter) =>
@@ -627,6 +632,7 @@ const CourseManagementContainer = () => {
             </BackgroundPaper>
         </Grid>
     );
+
 };
 
 export default CourseManagementContainer;

@@ -3,19 +3,17 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto+Slab:400,700");
 
 .error-page{
-  .paper {
-    padding: 3%;
-    .center {
-      margin: 15% 0 15% 0;
-      font-family: Roboto Slab;
-      font-style: normal;
-      font-weight: bold;
-      font-size: 32px;
-      line-height: 42px;
-      text-align: center;
-      .space {
-        padding: 1%;
-      }
+  padding: 3%;
+  .center {
+    margin: 15% 0 15% 0;
+    font-family: Roboto Slab;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 42px;
+    text-align: center;
+    .space {
+      padding: 1%;
     }
   }
   .backButton {

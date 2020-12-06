@@ -34,6 +34,7 @@ const UnpaidSessions = () => {
         }
     `;
 
+
     const { data, loading, error } = useQuery(UNPAID_SESSION_QUERY);
 
     if (loading) {

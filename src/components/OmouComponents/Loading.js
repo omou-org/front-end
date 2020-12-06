@@ -1,27 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import "./Loading.scss";
 
-
 const Loading = ({
-    paper = false, small = false, loadingText = "",
+    small = false, loadingText = "",
 }) => {
-    if (paper) {
-        return (
-            <Paper className="paper" style={{ "height": "100vh" }}>
-                <Typography variant="h3">{loadingText}</Typography>
-                <h1>
-                    <span>o</span>
-                    <span>m</span>
-                    <span>o</span>
-                    <span>u</span>
-                </h1>
-            </Paper>
-        );
-    }
     if (small) {
         return (
             <div className="small-load-wrap">
@@ -51,7 +36,6 @@ const Loading = ({
 
 Loading.propTypes = {
     "loadingText": PropTypes.string,
-    "paper": PropTypes.bool,
     "small": PropTypes.bool,
 };
 

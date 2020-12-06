@@ -4,10 +4,11 @@ import "../../../theme/theme.scss";
 import "./scheduler.scss";
 import FullCalendar from "@fullcalendar/react";
 import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 //Material UI Imports
 import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
+
 
 function ResourceForm({ onClose, selectedValue, open }) {
 	const handleClose = () => {
@@ -64,9 +65,13 @@ function ScheduleForm() {
 		<div>
 			<Typography variant="body1"> {selectedValue}</Typography>
 			<br/>
-			<Button variant="outlined" color="primary" onClick={handleClickOpen}>
-				+ Add more times
-			</Button>
+			<ResponsiveButton 
+				variant='outlined'
+				color='primary'
+				onClick={handleClickOpen}
+			>
+				add more times	
+			</ResponsiveButton>
 			<ResourceForm
 				selectedValue={selectedValue}
 				open={open}

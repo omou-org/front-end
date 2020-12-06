@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -14,21 +12,21 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import Grid from "@material-ui/core/Grid";
 import NoListAlert from "../../../OmouComponents/NoListAlert";
-import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
-import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 import Switch from "@material-ui/core/Switch";
 import LoadingError from "./LoadingCourseError"
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../../theme/ThemedComponents/Badge/LabelBadge";
 
 import * as hooks from "actions/hooks";
 import { upcomingSession, useGoToRoute } from "utils";
 import { deleteEnrollment, initializeRegistration } from "actions/registrationActions";
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from "components/OmouComponents/AddSessions";
 import BackButton from "components/OmouComponents/BackButton";
 import Loading from "components/OmouComponents/Loading";
@@ -60,6 +58,16 @@ const CourseSessionStatus = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [highlightSession, setHighlightSession] = useState(false);
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
+
+    const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+        },
+        wrapper: {
+			flexDirection: "row"
+		}
+	});
+	const classes = useStyles();
 
     const sessionConfig = useMemo(
         () => ({
@@ -168,7 +176,7 @@ const CourseSessionStatus = () => {
             sessionStatus
         )
     ) {
-        return <Loading paper />;
+        return <Loading />;
     }
 
     if (
@@ -316,7 +324,7 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Paper className="paper" elevation={2}>
+        <Grid item xs={12} container>
             <Grid className="course-session-status" container>
                 <Grid item xs={12}>
                     <BackButton />
@@ -342,9 +350,12 @@ const CourseSessionStatus = () => {
                                 parentOfCurrentStudent={studentParent} />
                         </Grid>
                         <Grid item>
-                            <Button className="button unenroll" onClick={openUnenrollDialog}>
+                            <ResponsiveButton 
+                                className="button unenroll" 
+                                onClick={openUnenrollDialog}
+                            >
                                 Unenroll Course
-                            </Button>
+                            </ResponsiveButton>
                         </Grid>
                     </Grid>
                     <Grid className="participants" item xs={12}>
@@ -382,33 +393,28 @@ const CourseSessionStatus = () => {
                         </Grid>
                     )}
                 </Grid>
-                <Tabs className="enrollment-tabs"
-                    indicatorColor="primary"
+                <Tabs
+                    classes={{indicator: classes.MuiIndicator}} 
+                    className="enrollment-tabs"
                     onChange={handleTabChange}
                     value={activeTab}>
                     <Tab label={
-                        <>
-                            <RegistrationIcon className="NoteIcon" /> Registration
-                        </>
+                        <> Registration </>
                     } />
-                    <Tab label={
+                    <Tab
+                        classes={{wrapper: classes.wrapper}} 
+                        label={
                         Object.values(enrollment.notes).some(
                             ({ important }) => important
                         ) ? (
-                                <>
-                                    <Avatar className="notificationCourse" />
-                                    <NoteIcon className="TabIcon" /> Notes
-                            </>
-                            ) : (
-                                <>
-                                    <NoteIcon className="NoteIcon" /> Notes
+                                <> 
+                                    Notes 
+                                    <LabelBadge style={{marginLeft: '8px'}} variant="round-count">1</LabelBadge>
                                 </>
-                            )
+                            ) : <> Notes </>
                     } />
                     <Tab label={
-                        <>
-                            <PaymentIcon className="TabIcon" /> Payments
-                        </>
+                        <> Payments </>
                     } />
                 </Tabs>
                 <br />
@@ -427,23 +433,23 @@ const CourseSessionStatus = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <ResponsiveButton
                         variant="outlined"
                         color="secondary"
                         onClick={closeUnenrollDialog(true)}
                     >
                         Yes, unenroll
-                    </Button>
-                    <Button
+                    </ResponsiveButton>
+                    <ResponsiveButton
                         variant="outlined"
                         color="primary"
                         onClick={closeUnenrollDialog(false)}
                     >
                         Cancel
-                    </Button>
+                    </ResponsiveButton>
                 </DialogActions>
             </Dialog>
-        </Paper>
+        </Grid>
     );
 };
 
