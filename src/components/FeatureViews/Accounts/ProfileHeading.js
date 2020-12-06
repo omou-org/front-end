@@ -55,8 +55,10 @@ const GET_PROFILE_HEADING_QUERY = {
                     birthDate
                     accountType
                     adminType
+                    phoneNumber
                     user {
                         firstName
+                        lastName
                         lastLogin
                         email
                         id
@@ -88,6 +90,7 @@ const GET_PROFILE_HEADING_QUERY = {
                 ... on ParentType {
                     birthDate
                     accountType
+                    phoneNumber
                     balance
                     user {
                         firstName
@@ -105,6 +108,7 @@ const GET_PROFILE_HEADING_QUERY = {
                 ... on StudentType {
                     birthDate
                     accountType
+                    phoneNumber
                     grade
                     school {
                         name
@@ -156,7 +160,7 @@ const ProfileHeading = ({ ownerID }) => {
 
     const renderEditandAwayButton = () => (
         <Grid container item xs={4}>
-            {accountType === 'INSTRUCTOR' && (
+            {accountType === 'instructor' && (
                 <Grid align="left" className="schedule-button" item xs={12}>
                     <ResponsiveButton
                         aria-controls="simple-menu"
@@ -173,23 +177,20 @@ const ProfileHeading = ({ ownerID }) => {
                         onClose={handleClose}
                         open={anchorEl !== null}
                     >
-                        <InstructorAvailability
+                        {/* <InstructorAvailability
                             button={false}
-                            instructorID={loggedInUserID}
+                            instructorID={ownerID}
                         />
-                        <OutOfOffice
-                            button={false}
-                            instructorID={loggedInUserID}
-                        />
+                        <OutOfOffice button={false} instructorID={ownerID} /> */}
                     </Menu>
                 </Grid>
             )}
-            {isAdmin && isAuthUser && (
+            {(isAdmin || isAuthUser) && (
                 <>
                     <Grid component={Hidden} item mdDown xs={12}>
                         <ResponsiveButton
                             component={Link}
-                            to={`/form/${userInfo.accountType.role}/${userInfo.user.id}`}
+                            to={`/form/${userInfo.accountType}/${userInfo.user.id}`}
                             variant="outlined"
                             startIcon={<EditIcon />}
                         >
@@ -199,7 +200,7 @@ const ProfileHeading = ({ ownerID }) => {
                     <Grid component={Hidden} item lgUp xs={12}>
                         <Button
                             component={Link}
-                            to={`/form/${userInfo.accountType.role}/${userInfo.user.id}`}
+                            to={`/form/${userInfo.accountType}/${userInfo.user.id}`}
                             variant="outlined"
                         >
                             <EditIcon />
@@ -219,7 +220,7 @@ const ProfileHeading = ({ ownerID }) => {
                 },
                 Phone: {
                     icon: <PhoneIcon className={classes.icon} />,
-                    text: addDashes(userInfo.phone_number),
+                    text: addDashes(userInfo.phoneNumber),
                 },
                 Birthday: {
                     icon: <CakeOutlinedIcon className={classes.icon} />,
@@ -297,7 +298,7 @@ const ProfileHeading = ({ ownerID }) => {
                         <InfoRow variant="Birthday" />
                     </>
                 );
-            case 'INSTRUCTOR':
+            case 'instructor':
                 return (
                     <>
                         <InfoRow variant="ID" />
@@ -306,7 +307,7 @@ const ProfileHeading = ({ ownerID }) => {
                         <InfoRow variant="Birthday" />
                     </>
                 );
-            case 'PARENT':
+            case 'parent':
                 return (
                     <>
                         <InfoRow variant="ID" />

@@ -7,32 +7,25 @@ import ContactIcon from '@material-ui/icons/ContactPhoneOutlined';
 import CoursesIcon from '@material-ui/icons/SchoolOutlined';
 import CurrentSessionsIcon from '@material-ui/icons/AssignmentOutlined';
 import NoteIcon from '@material-ui/icons/NoteOutlined';
-import Paper from '@material-ui/core/Paper';
 import PastSessionsIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 import PaymentIcon from '@material-ui/icons/CreditCardOutlined';
 import ScheduleIcon from '@material-ui/icons/CalendarTodayOutlined';
 import Tab from '@material-ui/core/Tab';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Tabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import NotificationIcon from '@material-ui/icons/NotificationImportant';
 import './Accounts.scss';
-import * as hooks from 'actions/hooks';
+
 import BackButton from 'components/OmouComponents/BackButton';
 import ComponentViewer from './ComponentViewer.js';
 import Loading from 'components/OmouComponents/Loading';
-import ProfileHeading from './ProfileHeading.js';
+
 import { useAccountNotes } from 'actions/userActions';
-import UserAvatar from './UserAvatar';
+
 import SettingsIcon from '@material-ui/icons/Settings';
 import { USER_TYPES } from '../../../utils';
-import moment from 'moment';
+
 import UserProfileInfo from './UserProfileInfo';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
@@ -63,7 +56,7 @@ const userTabs = {
             tab_id: 2,
         },
         {
-            icon: <NotificationIcon className="TabIcon" />,
+            icon: <NoteIcon className="TabIcon" />,
             tab_heading: 'Notes',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -101,7 +94,7 @@ const userTabs = {
             tab_id: 5,
         },
         {
-            icon: <NoteIcon className="TabIcon" />,
+            icon: <NotificationIcon className="TabIcon" />,
             tab_heading: 'Notes',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -155,22 +148,16 @@ const userTabs = {
     ],
     admin: [
         {
-            icon: <ContactIcon className="TabIcon" />,
+            icon: '',
             tab_heading: 'Action Log',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 10,
         },
         {
-            icon: <NoteIcon className="TabIcon" />,
+            icon: '',
             tab_heading: 'Notes',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 7,
-        },
-        {
-            icon: <SettingsIcon className="SettingsIcon" />,
-            tab_heading: 'Notification Settings',
-            access_permissions: [USER_TYPES.admin],
-            tab_id: 11,
         },
     ],
 };
@@ -299,7 +286,7 @@ const UserProfile = () => {
         variables: { ownerID: accountID },
     });
 
-    if (loading) return null;
+    if (loading) return <Loading />;
 
     if (error) return <Redirect to="/PageNotFound" />;
 
