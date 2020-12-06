@@ -153,8 +153,7 @@ export const GET_STUDENTS = gql`
 const ClassListItem = ({
     title,
     endDate,
-    endTime,
-    startTime,
+    activeAvailabilityList,
     startDate,
     instructor,
     id,
@@ -163,11 +162,17 @@ const ClassListItem = ({
     const classes = useStyles();
     let history = useHistory();
     const concatFullName = fullName(instructor.user);
-    const abbreviatedDay = moment(startDate).format('ddd');
-    const startingTime = moment(startTime, 'HH:mm').format('h:mm A');
-    const endingTime = moment(endTime, 'HH:mm').format('h:mm A');
-    const startingDate = moment(startDate).calendar();
-    const endingDate = moment(endDate).calendar();
+    const abbreviatedDay = moment(startDate).format('dddd');
+    const startingTime = moment(
+        activeAvailabilityList[0].startTime,
+        'HH:mm'
+    ).format('h:mm');
+    const endingTime = moment(
+        activeAvailabilityList[0].endTime,
+        'HH:mm'
+    ).format('h:mma');
+    const startingDate = moment(startDate).format('MMM D YYYY');
+    const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
     const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
@@ -212,17 +217,14 @@ const ClassListItem = ({
                         item
                         xs={3}
                         sm={4}
-                        md={3}
+                        md={2}
                         className={classes.displayCardMargins}
                     >
                         <Typography
                             variant="body1"
                             align="left"
-                            style={{ marginLeft: '1.85em' }}
+                            style={{ marginLeft: '1em' }}
                         >
-                            <span style={{ marginRight: theme.spacing(1) }}>
-                                By:
-                            </span>
                             <span
                                 className={classes.highlightName}
                             >{`${concatFullName}`}</span>
@@ -233,14 +235,33 @@ const ClassListItem = ({
                         flexItem
                         style={{ height: '2em', marginTop: '1em' }}
                     />
-                    <Grid item xs={6} sm={7} md={6}>
+                    <Grid item>
                         <Typography
                             variant="body1"
                             align="left"
                             style={{ marginLeft: '1.2em', paddingTop: '3px' }}
                             className={classes.displayCardMargins}
                         >
-                            {`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
+                            {` ${startingDate} - ${endingDate}`}
+                        </Typography>
+                    </Grid>
+                    <Divder
+                        orientation="vertical"
+                        flexItem
+                        style={{
+                            height: '2em',
+                            marginTop: '1em',
+                            marginLeft: '1em',
+                        }}
+                    />
+                    <Grid item>
+                        <Typography
+                            variant="body1"
+                            align="left"
+                            style={{ marginLeft: '1.2em', paddingTop: '3px' }}
+                            className={classes.displayCardMargins}
+                        >
+                            {`${abbreviatedDay} ${startingTime} - ${endingTime} `}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -365,13 +386,17 @@ const CourseManagementContainer = () => {
     const GET_COURSES = gql`
     query getCourses($accountId:ID!) {
       courses(${checkAccountForQuery}: $accountId) {
-        
         endDate
-        
         title
-        
         academicLevel
         startDate
+        courseId
+        id
+        activeAvailabilityList {
+          dayOfWeek
+          endTime
+          startTime
+        }
         instructor {
           user {
             firstName
@@ -383,8 +408,6 @@ const CourseManagementContainer = () => {
           id
           name
         }
-        courseId
-        id
       }
     }
   `;
@@ -583,20 +606,16 @@ const CourseManagementContainer = () => {
                 {defaultCourseDisplay.map(
                     ({
                         title,
-                        dayOfWeek,
                         endDate,
-                        endTime,
-                        startTime,
+                        activeAvailabilityList,
                         startDate,
                         instructor,
                         id,
                     }) => (
                         <ClassListItem
                             title={title}
-                            day={dayOfWeek}
                             endDate={endDate}
-                            endTime={endTime}
-                            startTime={startTime}
+                            activeAvailabilityList={activeAvailabilityList}
                             startDate={startDate}
                             instructor={instructor}
                             id={id}

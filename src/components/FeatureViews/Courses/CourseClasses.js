@@ -94,6 +94,11 @@ export const GET_CLASSES = gql`
             courseLink
             courseLinkDescription
             courseLinkUpdatedAt
+            activeAvailabilityList {
+                dayOfWeek
+                endTime
+                startTime
+            }
             instructor {
                 user {
                     firstName
@@ -213,11 +218,10 @@ const CourseClasses = () => {
         courseLinkDescription,
         courseLinkUpdatedAt,
         endDate,
-        endTime,
         enrollmentSet,
         startDate,
-        startTime,
         title,
+        activeAvailabilityList,
         sessionSet,
     } = data.course;
 
@@ -225,8 +229,14 @@ const CourseClasses = () => {
     const { firstName, lastName } = data.course.instructor.user;
 
     const abbreviatedDay = moment(startDate).format('ddd');
-    const startingTime = moment(startTime, 'HH:mm').format('h:mm A');
-    const endingTime = moment(endTime, 'HH:mm').format('h:mm A');
+    const startingTime = moment(
+        activeAvailabilityList[0].startTime,
+        'HH:mm'
+    ).format('h:mm A');
+    const endingTime = moment(
+        activeAvailabilityList[0].endTime,
+        'HH:mm'
+    ).format('h:mm A');
     const startingDate = moment(startDate).calendar();
     const endingDate = moment(endDate).calendar();
 
@@ -241,10 +251,6 @@ const CourseClasses = () => {
             return true;
         }
     };
-
-    // match the enrollment set course id with current course id.
-
-    // set in state students are in this class
 
     const tabSelection = () => {
         switch (index) {
