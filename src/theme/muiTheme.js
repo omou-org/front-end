@@ -51,9 +51,6 @@ const theme = createMuiTheme({
             },
         },
         MuiTypography: {
-            variantMapping: {
-                subtitle1: 'h5',
-            },
             h1: defaultFontProps,
             h2: defaultFontProps,
             h3: defaultFontProps,

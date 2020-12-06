@@ -34,7 +34,8 @@ const USER_DETAILS = gql`
     email
     lastName
     firstName
-    }`;
+    id
+   }`;
 
 export const ACCOUNT_QUERIES = {
     "ADMIN": gql`
@@ -86,8 +87,8 @@ const AccountCard = ({accountType, userID, isLoading}) => {
             <Card style={{"height": "130px"}}>
                 <CardContent>
                     <Typography color="textSecondary"
-                        gutterBottom
-                        variant="h4">
+                                gutterBottom
+                                variant="h4">
                         Loading...
                     </Typography>
                 </CardContent>
