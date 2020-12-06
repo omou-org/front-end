@@ -1,6 +1,6 @@
-import React, {useMemo} from "react";
-import {Prompt, useHistory, useLocation, useParams} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import React, { useMemo } from "react";
+import { Prompt, useHistory, useLocation, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
@@ -10,16 +10,14 @@ import Typography from "@material-ui/core/Typography";
 import * as registrationActions from "actions/registrationActions";
 import BackButton from "components/OmouComponents/BackButton";
 import Loading from "components/OmouComponents/Loading";
-import {paymentToString, uniques} from "utils";
+import { paymentToString, uniques } from "utils";
 import Moment from "react-moment";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
-import {bindActionCreators} from "redux";
-import {fullName} from "../../../utils";
+import { useQuery } from "@apollo/react-hooks";
+import { bindActionCreators } from "redux";
+import { fullName } from "../../../utils";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import {closeRegistrationCart} from "../../OmouComponents/RegistrationUtils";
-
-const {useEffect} = require("react");
+import { closeRegistrationCart } from "../../OmouComponents/RegistrationUtils";
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
@@ -68,20 +66,12 @@ const PaymentReceipt = ({ paymentID }) => {
 	const location = useLocation();
 	const params = useParams();
 
-	const {data, loading, error} = useQuery(GET_PAYMENT,
-		{variables: {paymentId: params.paymentID || paymentID}}
+	const { data, loading, error } = useQuery(GET_PAYMENT,
+		{ variables: { paymentId: params.paymentID || paymentID } }
 	);
 
-	useEffect(() => {
-		const completedPaymentIDIsValid = params.paymentID
-		if (completedPaymentIDIsValid) {
-			dispatch(api.closeRegistration());
-			closeRegistrationCart();
-		}
-	}, [params.paymentID])
-
 	const currentPayingParent = useSelector(
-		({Registration}) => Registration.CurrentParent
+		({ Registration }) => Registration.CurrentParent
 	);
 
 	const dispatch = useDispatch();

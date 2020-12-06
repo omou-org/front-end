@@ -28,9 +28,8 @@ query GetRegisteringParent($userId: ID!) {
       id
       lastName
       email
-	}
-	studentIdList
-    
+    }
+    studentList
   }
 }
 `
@@ -146,7 +145,7 @@ const RegistrationActions = () => {
 					>
 						<Badge
 							data-cy="shopping-cart-num-registrations"
-							badgeContent={numberOfRegistrationsInCart || 0}
+							badgeContent={numberOfRegistrationsInCart}
 							color="primary"
 							showZero
 							anchorOrigin={{

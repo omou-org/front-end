@@ -1,18 +1,4 @@
 {
-    "student": {
-        "user": {
-            "id": 11,
-            "first_name": "James",
-            "last_name": "Wan",
-            "email": "james.wan@gmail.com",
-            "__typename": "UserType"
-        },
-        "grade": 11,
-        "birth_date": "12-07-2002",
-        "school": "Foothill High School",
-        "phone_number": "925-731-0499",
-        "__typename": "StudentType"
-    },
     "parent": {
         "__typename": "ParentType",
         "user": {
@@ -30,15 +16,6 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
-    },
-    "instructor": {
-        "__typename": "InstructorType",
-        "user": {
-            "__typename": "UserType",
-            "id": 5,
-            "firstName": "Daniel",
-            "lastName": "Huang"
-        }
     },
     "original_student_data": {
         "__typename": "StudentType",
