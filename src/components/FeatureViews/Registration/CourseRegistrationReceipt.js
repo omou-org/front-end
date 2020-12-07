@@ -14,13 +14,17 @@ import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
 const GET_COURSE = gql`
     query GetCourse($courseId: ID!) {
       course(courseId: $courseId) {
 		title
 		startDate
-		startTime
-		endTime
+        availabilityList {
+			endTime
+			startTime
+		}
 		endDate
 		instructor {
 		  user {
@@ -72,8 +76,8 @@ export default function CourseRegistrationReceipt({formData}) {
 			title: data.course.title,
 			startDate: data.course.startDate,
 			endDate: data.course.endDate,
-			startTime: data.course.startTime,
-			endTime: data.course.endTime,
+			startTime: data.course.availabilityList[0].startTime,
+			endTime: data.course.availabilityList[0].endTime,
 		}
 	}[type];
 	const CourseReceipt = ({startDate, endDate, startTime, endTime, instructor, title}) => (
@@ -116,26 +120,24 @@ export default function CourseRegistrationReceipt({formData}) {
 			  spacing={4}
 		>
 			<Grid item>
-				<Button
-					color="primary"
-					variant="outlined"
+				<ResponsiveButton 
+					variant='outlined'
 					component={NavLinkNoDup}
-					to={'/registration'}
+					to='/registration'
 					data-cy="back-to-register"
 				>
-					REGISTER MORE
-				</Button>
+					register more
+				</ResponsiveButton>
 			</Grid>
 			<Grid item>
-				<Button
-					color="primary"
-					variant="contained"
+				<ResponsiveButton 
+					variant='contained'
 					component={NavLinkNoDup}
 					to={'/registration/cart/'}
-					data-cy="register-to-checkout"
+					data-cy="back-to-register"				
 				>
-					CHECKOUT
-				</Button>
+					checkout
+				</ ResponsiveButton>
 			</Grid>
 		</Grid>
 	</Grid>)

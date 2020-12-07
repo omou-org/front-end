@@ -1,19 +1,15 @@
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import {Link} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Moment from "react-moment";
 
+import { useHistory } from "react-router-dom";
 import {fullName} from "utils";
-import Table from "@material-ui/core/Table";
-import TableRow from "@material-ui/core/TableRow";
 import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
+import Box from "@material-ui/core/Box";
+import AddIcon from '@material-ui/icons/Add';
 import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -28,6 +24,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
 import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -56,10 +54,12 @@ const useStyles = makeStyles((theme) => ({
     },
     "courseRow": {
         textDecoration: "none"
-    }
+    },
 }));
 
 const CourseList = ({ filteredCourses, updatedParent }) => {
+    const history = useHistory();
+
     const [openCourseQuickRegistration, setOpen] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
@@ -67,10 +67,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const {currentParent, ...registrationCartState} = useSelector((state) => state.Registration);
     const dispatch = useDispatch();
 
-    const {studentList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
+    const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
     const {data, loading, error} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
-        "variables": {"userIds": studentList},
-        skip: !studentList,
+        "variables": {"userIds": studentIdList},
+        skip: !studentIdList,
     });
 
     const {parentIsLoggedIn} = useValidateRegisteringParent();
@@ -82,7 +82,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
     const registrations = validRegistrations && [].concat.apply([], validRegistrations);
-    const studentOptions = studentList && data.userInfos
+    const studentOptions = studentIdList && data.userInfos
         .filter(({user}) => (!registrations.find(({course, student}) =>
                 (course.id === quickCourseID && user.id === student))
         ))
@@ -126,84 +126,75 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
     }
 
-    return <><Table>
-        <TableBody data-cy="classes-table">
-            {
-                filteredCourses
-                    .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
-                        (moment().diff(moment(endDate), 'days') < 0)))
-                    .map((course, index) => (
-                        <TableRow
-                            key={course.id}
-                        >
-                            <TableCell
-                                style={{padding: "3%"}}
-                                component={Link} to={`/registration/course/${course.id}`}
-                                className={courseRow}
-                                data-cy={`course-${index}`}
-                            >
-                                <Grid className={courseTitle}
-                                    item md={10} xs={12}
-                                    container
-                                    direction="column"
+
+    const clickHandler = (courseId) => {
+        history.push(`/registration/course/` + courseId)
+    }
+    
+    
+    return (
+        <>
+        <Box width="100%">
+        {filteredCourses
+            .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
+                    (moment().diff(moment(endDate), 'days') < 0)))
+            .map((course) => {
+                return(
+                    <ListDetailedItem
+                        key={course.id}
+                    >
+
+                        <ListContent>
+                            <ListHeading>
+                                <Box onClick={() => clickHandler(course.id)}>
+                                    <ListTitle>
+                                        {course.title}
+                                    </ListTitle>
+                                </Box>
+                            </ListHeading>
+                            <ListDetails>
+                                <Link to={`/accounts/instructor/${course.instructor.user.id}`}>
+                                <ListDetailLink>
+                                    {fullName(course.instructor.user)}
+                                </ListDetailLink>
+                                </Link>
+                                <ListDivider />
+                                <ListDetail>
+                                    {moment(course.startDate).format("MMM D YYYY")} - {moment(course.endDate).format("MMM D YYYY")}
+                                </ListDetail>
+                                <ListDivider />
+                                <ListDetail>
+                                    {moment(course.startDate).format("dddd")} {moment(course.startTime, "HH:mm").format("h:mm")} - {moment(course.endTime, "HH:mm").format("h:mm")}pm
+                                </ListDetail>
+                                <ListDivider />
+                                <ListDetail>
+                                    ${course.totalTuition}
+                                </ListDetail>
+                            </ListDetails>
+                        </ListContent>
+                        <ListActions>
+                            <ListStatus>
+                                {course.enrollmentSet.length} / {course.maxCapacity}
+                            </ListStatus>
+                            <ListButton>
+                                <ResponsiveButton
+                                    disabled={shouldDisableQuickRegister({
+                                        course, enrolledCourseIds,
+                                        registrations, studentIdList
+                                    })}                                    
+                                    variant="contained"
+                                    onClick={handleStartQuickRegister(course.id)}
+                                    data-cy="quick-register-class"
+                                    startIcon={<AddIcon />}
                                 >
-                                    <Grid item>
-                                        <Typography align="left"
-                                            className="course-heading"
-                                            style={{ fontSize: "1.5em", fontWeight: 550, margin: "10px 0" }}
-                                        >
-                                            {course.title}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item>
-                                        <Typography align="left">
-                                            By: {fullName(course.instructor.user)}
-                                            {" | "}
-                                            <Moment
-                                                date={course.startDate}
-                                                format="L" />
-                                            {" - "}
-                                            <Moment
-                                                date={course.endDate}
-                                                format="L" /> {" "}
-                                            <Moment date={`${course.startDate}T${course.startTime}`}
-                                                format="ddd h:mm " />
-                                            {" - "}
-                                            <Moment
-                                                date={`${course.startDate}T${course.endTime}`}
-                                                format="h:mm a" />
-                                            {" | "}
-                                            ${course.totalTuition}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </TableCell>
-                            <TableCell>
-                                <span style={{margin: "5px", display: "block"}}>
-                                    <span
-                                        data-cy="num-enrolled-students">{course.enrollmentSet.length}</span> / {course.maxCapacity}
-                                    <span className="label">Enrolled</span>
-                                </span>
-                                {(currentParent || parentIsLoggedIn || updatedParent) && (
-                                    <Button
-                                        disabled={shouldDisableQuickRegister({
-                                            course, enrolledCourseIds,
-                                            registrations, studentList
-                                        })}
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleStartQuickRegister(course.id)}
-                                        data-cy="quick-register-class"
-                                    >
-                                        + REGISTER
-                                    </Button>
-                                )}
-                            </TableCell>
-                        </TableRow>
-                    ))
-            }
-        </TableBody>
-    </Table>
+                                    register
+                                </ResponsiveButton>
+                            </ListButton>
+                        </ListActions>
+                    </ListDetailedItem>)
+                                        })
+        }
+        </Box>
         <Dialog open={openCourseQuickRegistration} onClose={() => setOpen(false)}>
             <DialogTitle>Which student do you want to enroll?</DialogTitle>
             <DialogContent>
@@ -225,16 +216,18 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </Select>
                 </FormControl>
                 <DialogActions>
-                    <Button data-cy="add-registration-to-cart"
-                            onClick={handleAddRegistration}
-                            disabled={!quickStudent}
+                    <ResponsiveButton 
+                        data-cy="add-registration-to-cart"
+                        onClick={handleAddRegistration}
+                        disabled={!quickStudent}
                     >
-                        ADD TO CART
-                    </Button>
+                        add to cart
+                    </ ResponsiveButton>
                 </DialogActions>
             </DialogContent>
         </Dialog>
-    </>
+        </>
+    )
 };
 
 CourseList.propTypes = {

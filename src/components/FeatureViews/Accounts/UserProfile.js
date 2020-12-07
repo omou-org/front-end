@@ -2,13 +2,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Redirect, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import Badge from "@material-ui/core/Badge";
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
 import CoursesIcon from "@material-ui/icons/SchoolOutlined";
 import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
 import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden/Hidden";
+import Hidden from "@material-ui/core/Hidden";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
@@ -22,7 +21,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
-
+import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 import "./Accounts.scss";
 import * as hooks from "actions/hooks";
@@ -307,7 +307,7 @@ const UserProfile = () => {
 									key={tab.tab_id}
 									label={
 										<>
-											{tab.icon} {tab.tab_heading}
+											{tab.tab_heading}
 										</>
 									}
 								/>
