@@ -72,9 +72,9 @@ function EnrollmentSessionRow({session, enrollmentData, highlightSession}) {
                                         <Typography align="left">${tuition}</Typography>
                                     </Grid>
                                     <Grid item xs={2}>
-                                        <SessionPaymentStatusChip enrollment={enrollmentData.enrollment}
+                                        {/* <SessionPaymentStatusChip enrollment={enrollmentData.enrollment}
                                             session={session}
-                                            setPos />
+                                            setPos /> */}
                                             
                                 </Grid>
                         </Paper>

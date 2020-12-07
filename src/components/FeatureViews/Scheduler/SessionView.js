@@ -83,10 +83,12 @@ const GET_SESSION = gql`
         isConfirmed
         title
         room
+        availabilityList {
+          startTime
+          endTime
+        }
         startDate
-        endTime
-        startTime
-        endTime
+        endDate
         courseCategory {
           id
           name

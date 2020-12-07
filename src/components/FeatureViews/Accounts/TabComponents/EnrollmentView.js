@@ -39,6 +39,51 @@ import { useSessionsWithConfig } from "actions/calendarActions";
 import Moment from "react-moment";
 import { fullName } from "../../../../utils";
 
+// const GET_ENROLLMENT = gql`
+//   query EnrollmentViewQuery($enrollmentId: ID!) {
+//     enrollment(enrollmentId: $enrollmentId) {
+//       id
+//       enrollmentnoteSet {
+//         id
+//         important
+//       }
+//       sessionsLeft
+//       enrollmentBalance
+//       course {
+//         id
+//         title
+//         courseType
+//         instructor {
+//           user {
+//             firstName
+//             id
+//             lastName
+//           }
+//         }
+//       }
+//       paymentList {
+//         id
+//         createdAt
+//       }
+//       lastPaidSessionDatetime
+//       student {
+//         user {
+//           id
+//           firstName
+//           lastName
+//           parent {
+//             user {
+//               id
+//               firstName
+//               lastName
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
+
 const GET_ENROLLMENT = gql`
   query EnrollmentViewQuery($enrollmentId: ID!) {
     enrollment(enrollmentId: $enrollmentId) {
@@ -48,7 +93,6 @@ const GET_ENROLLMENT = gql`
         important
       }
       sessionsLeft
-      enrollmentBalance
       course {
         id
         title
@@ -84,12 +128,15 @@ const GET_ENROLLMENT = gql`
   }
 `;
 
+
 const GET_SESSIONS = gql`
   query GetSessions($courseId: ID!) {
     sessions(courseId: $courseId) {
       course {
-        startTime
-        endTime
+        availabilityList {
+          startTime
+          endTime
+        }
         id
         hourlyTuition
       }
@@ -195,13 +242,19 @@ const CourseSessionStatus = () => {
   const {
     course,
     enrollmentnoteSet,
-    enrollmentBalance,
-    paymentList,
+    // enrollmentBalance,
+    // paymentList,
     student,
     id,
   } = enrollmentData.enrollment;
 
+  console.log(enrollmentData)
+  //temporary fix
+  const paymentList = {
+    id: 1,
+    createdAt: "2021-02-18T18:00:00+00:00"
 
+  }
   const mainContent = () => {
     switch (activeTab) {
       case 0:
@@ -255,14 +308,14 @@ const CourseSessionStatus = () => {
       case 1:
         return <Notes ownerID={id} ownerType="enrollment" />;
       case 2:
-        return (
-          <PaymentTable
-            courseID={course.id}
-            enrollmentID={id}
-            paymentList={paymentList}
-            type="enrollment"
-          />
-        );
+        // return (
+        //   <PaymentTable
+        //     courseID={course.id}
+        //     enrollmentID={id}
+        //     paymentList={paymentList}
+        //     type="enrollment"
+        //   />
+        // );
       default:
         return null;
     }
@@ -319,7 +372,8 @@ const CourseSessionStatus = () => {
                             </Link>
                         </Typography>
                         <Typography align="left">
-                            Enrollment Balance Left: ${enrollmentBalance}
+                            {/* Enrollment Balance Left: ${enrollmentBalance} */}
+                            Enrollment Balance Left: This isn't working
                         </Typography>
                     </Grid>
                     {activeTab === 0 && (
@@ -375,8 +429,12 @@ const CourseSessionStatus = () => {
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for{" "}
                         <b>{fullName(student.user)}</b>. Performing this
-                        action will credit <b>${enrollmentBalance}</b> back to the parent's
+                        action will credit <b>Enrollmentbalance is not working</b> back to the parent's
                         account balance. Are you sure you want to unenroll?
+                        {/* You are about to unenroll in <b>{course.title}</b> for{" "}
+                        <b>{fullName(student.user)}</b>. Performing this
+                        action will credit <b>${enrollmentBalance}</b> back to the parent's
+                        account balance. Are you sure you want to unenroll? */}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
