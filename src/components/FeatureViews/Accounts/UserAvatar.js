@@ -7,19 +7,20 @@ import "./Accounts.scss";
 import {stringToColor} from "./accountUtils";
 
 
-const UserAvatar = ({name, size = 40, fontSize = size * 0.8, margin = 0}) => {
-    const style = useMemo(() => ({
+const UserAvatar = ({name, size = 40, fontSize = size * 0.8, margin = 0, style}) => {
+    const avatarStyles = useMemo(() => ({
         "backgroundColor": stringToColor(name),
         fontSize,
         "height": size,
         margin,
         "width": size,
-    }), [name, size, fontSize, margin]);
+        ...style,
+    }), [name, size, fontSize, margin, style]);
 
     return (
         <Avatar
             className="avatar"
-            style={style}>
+            style={avatarStyles}>
             {name.match(/\b\w/ug).join("")}
         </Avatar>
     );
@@ -30,6 +31,7 @@ UserAvatar.propTypes = {
     "margin": PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     "name": PropTypes.string.isRequired,
     "size": PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    "style": PropTypes.object,
 };
 
 export default UserAvatar;

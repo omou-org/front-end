@@ -10,6 +10,8 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import ListView from "@material-ui/icons/ViewList";
+import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
+import GridOnOutlinedIcon from '@material-ui/icons/GridOnOutlined';
 import {makeStyles} from "@material-ui/core/styles";
 import Tab from "@material-ui/core/Tab";
 import Table from "@material-ui/core/Table";
@@ -20,6 +22,8 @@ import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
 import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import "./Accounts.scss";
 import {addDashes} from "./accountUtils";
@@ -29,11 +33,7 @@ import LoadingHandler from "components/OmouComponents/LoadingHandler";
 import ProfileCard from "./ProfileCard";
 import {simpleUser} from "queryFragments";
 import UserAvatar from "./UserAvatar";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
-import theme from "../../../theme/muiTheme";
-import ThemeProvider from "@material-ui/styles/ThemeProvider";
-import secondaryTheme from "../../../theme/secondaryTheme";
-import NewUser from "@material-ui/icons/PersonAdd";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const QUERY_USERS = gql`
     query UserQuery($adminType: String) {
@@ -75,22 +75,12 @@ const QUERY_USERS = gql`
     ${simpleUser}
 `;
 
-const TABS = ["ALL", "INSTRUCTORS", "STUDENTS", "RECEPTIONIST", "PARENTS"]
-    .map((label) => <Tab className="tab" key={label} label={label} />);
+const TABS = ["All", "Instructors", "Students", "Receptionist", "Parents"]
+    .map((label) => <Tab key={label} label={label} />);
 
 const useStyles = makeStyles({
-    "tableCellStyle": {
-        "color": "rgba(0, 0, 0, 0.54)",
-        "fontSize": "0.75rem",
-    },
-    "tableRowStyle": {
-        "fontSize": "0.8125rem",
-        "padding": "0px",
-    },
-    MuiTableRow: {
-        head: {
-            backgroundColor: "white"
-        }
+    MuiIndicator: {
+        height: "1px"
     }
 });
 
@@ -123,6 +113,8 @@ const Accounts = () => {
             window.removeEventListener("resize", handleResize);
         };
     }, [handleResize]);
+
+    const classes = useStyles();
 
     const displayUsers = useMemo(() => {
         if (!data) {
@@ -175,11 +167,9 @@ const Accounts = () => {
     const MAX_EMAIL_LENGTH = 21;
     const isOverMaxEmailLength = (emailLength) => emailLength > MAX_EMAIL_LENGTH;
 
-    const classes = useStyles();
-    const tableView = useMemo(() => (<ThemeProvider theme={theme}>
-        <ThemeProvider theme={secondaryTheme}>
+    const tableView = useMemo(() => (
             <Table className="AccountsTable" resizable="false">
-                <TableHead className={classes.secondaryTableHead}>
+                <TableHead>
                     <TableRow>
                         <TableCell className={classes.tableCellStyle}>
                             Name
@@ -193,59 +183,57 @@ const Accounts = () => {
                     <TableCell className={classes.tableCellStyle}>
                         Role
                     </TableCell>
-                    <TableCell />
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {displayUsers.map((row) => (
-                    <TableRow className="row" component={Link}
-                        key={row.user.id}
-                        to={`/accounts/${row.accountType}/${row.user.id}`}>
-                        <TableCell className={classes.tableRowStyle}>
-                            <Grid alignItems="center" container
-                                layout="row">
-                                <UserAvatar fontSize={14} margin={9}
-                                    name={row.name} size={38} />
-                                {row.name}
-                            </Grid>
-                        </TableCell>
-                        <TableCell>
-                            <Tooltip title={row.user.email}>
-                                <span>
-                                    {row.user.email.substr(0, 20)}
-                                    {isOverMaxEmailLength(row.user.email.length) && "..."}
-                                </span>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell>{addDashes(row.phoneNumber)}</TableCell>
-                        <TableCell>
-                            {capitalizeString(row.accountType)}
-                        </TableCell>
-                        <TableCell onClick={stopPropagation}>
-                            <Grid component={Hidden} mdDown>
-                                {(row.accountType === USER_TYPES.student ||
-                                    row.accountType === USER_TYPES.parent ||
-                                    isAdmin) && (
-                                    <IconButton component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}>
-                                        <EditIcon />
-                                    </IconButton>
-                                )}
-                            </Grid>
-                            <Grid component={Hidden} lgUp>
-                                <Button component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}
-                                        variant="outlined">
-                                    <EditIcon/>
-                                </Button>
-                            </Grid>
-                        </TableCell>
+                        <TableCell />
                     </TableRow>
-                ))}
-            </TableBody>
-            </Table>
-        </ThemeProvider>
-    </ThemeProvider>), [classes.tableCellStyle, classes.tableRowStyle, displayUsers, isAdmin]);
+                </TableHead>
+                <TableBody>
+                    {displayUsers.map((row) => (
+                        <TableRow className="row" component={Link}
+                            key={row.user.id}
+                            to={`/accounts/${row.accountType}/${row.user.id}`}>
+                            <TableCell>
+                                <Grid alignItems="center" container
+                                    layout="row">
+                                    <UserAvatar fontSize={14} margin={9}
+                                        name={row.name} size={38} />
+                                    {row.name}
+                                </Grid>
+                            </TableCell>
+                            <TableCell>
+                                <Tooltip title={row.user.email}>
+                                    <span>
+                                        {row.user.email.substr(0, 20)}
+                                        {isOverMaxEmailLength(row.user.email.length) && "..."}
+                                    </span>
+                                </Tooltip>
+                            </TableCell>
+                            <TableCell>{addDashes(row.phoneNumber)}</TableCell>
+                            <TableCell>
+                                {capitalizeString(row.accountType)}
+                            </TableCell>
+                            <TableCell onClick={stopPropagation}>
+                                <Grid component={Hidden} mdDown>
+                                    {(row.accountType === USER_TYPES.student ||
+                                        row.accountType === USER_TYPES.parent ||
+                                        isAdmin) && (
+                                            <IconButton component={Link}
+                                                to={`/form/${row.accountType}/${row.user.id}`}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        )}
+                                </Grid>
+                                <Grid component={Hidden} lgUp>
+                                    <Button component={Link}
+                                        to={`/form/${row.accountType}/${row.user.id}`}
+                                        variant="outlined">
+                                        <EditIcon />
+                                    </Button>
+                                </Grid>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>), [displayUsers, isAdmin]);
 
     const cardView = useMemo(() => (
         <Grid alignItems="center" className="card-container" container
@@ -260,56 +248,71 @@ const Accounts = () => {
 
     return (
         <Grid className="Accounts" item xs={12}>
-            <BackgroundPaper elevation={2}>
-                <Grid container alignItems="flex-start">
+                <Grid container alignItems="flex-start" spacing={4} >
                     <Grid item>
-                        <Button
-                            className="button"
-                            color="secondary"
+                        <ResponsiveButton 
                             component={Link}
                             to="/registration/form/student"
                             variant="outlined"
                         >
-                            <NewUser className="icon"/> New Student
-                        </Button>
+                            new student
+                        </ResponsiveButton>
+                    </Grid>
+                    <Grid item>
+                        <ResponsiveButton 
+                            component={Link}
+                            to="/form/parent"
+                            variant="outlined"
+                        >
+                          new  parent 
+                        </ResponsiveButton>
                     </Grid>
                 </Grid>
                 <Hidden xsDown>
                     <hr/>
                 </Hidden>
-                <Typography align="left" className="heading" variant="h3">
+                <Typography align="left" className="heading" variant="h1">
                     Accounts
                 </Typography>
                 <Grid container direction="row">
                     <Grid component={Hidden} item lgUp md={8} xs={10}>
-                        <Tabs className="tabs" ndicatorColor="primary"
-                              onChange={handleTabChange} scrollButtons="on"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs
+                            className='tabs'
+                            onChange={handleTabChange} 
+                            scrollButtons="on"
+                            value={tabIndex}
+                            variant="scrollable"
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>
                     <Grid component={Hidden} item md={8} mdDown xs={10}>
-                        <Tabs className="tabs" indicatorColor="primary"
-                            onChange={handleTabChange} scrollButtons="off"
-                            textColor="primary" value={tabIndex}
-                            variant="scrollable">
+                        <Tabs 
+                            className="tabs"
+                            classes={{indicator: classes.MuiIndicator}}
+                            onChange={handleTabChange} 
+                            scrollButtons="off"
+                            value={tabIndex}
+                        >
                             {TABS}
                         </Tabs>
                     </Grid>
                     <Hidden smDown>
-                        <Grid className="toggleView" item md={3}>
-                            <Button
-                                className={`btn list ${viewToggle && "active"}`}
-                                onClick={setView(true)}>
-                                <ListView className={`icon ${viewToggle && "active"}`} />
-                                List View
-                            </Button>
-                            <Button className={`btn card ${!viewToggle && "active"}`}
-                                onClick={setView(false)}>
-                                <CardView className={`icon ${!viewToggle && "active"}`} />
-                                Card View
-                            </Button>
+                        <Grid style={{justifyContent: 'flex-end'}} container item md={4}>
+                            <ToggleButtonGroup aria-label="list & grid view toggle buttons">
+                                <ToggleButton 
+                                    onClick={setView(true)}  
+                                    selected={viewToggle && true} 
+                                    disabled={viewToggle && true}>
+                                    <ViewListOutlinedIcon />
+                                </ToggleButton>
+                                <ToggleButton 
+                                    onClick={setView(false)} 
+                                    selected={!viewToggle && true} 
+                                    disabled={!viewToggle && true}>
+                                    <CardView />
+                                </ToggleButton>
+                            </ToggleButtonGroup>
                         </Grid>
                     </Hidden>
                 </Grid>
@@ -319,7 +322,6 @@ const Accounts = () => {
                         {isMobile || !viewToggle ? cardView : tableView}
                     </LoadingHandler>
                 </Grid>
-            </BackgroundPaper>
         </Grid>
     );
 };

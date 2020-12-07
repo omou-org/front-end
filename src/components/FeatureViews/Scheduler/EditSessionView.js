@@ -23,7 +23,8 @@ import {dateFormat, timeFormat} from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import BackButton from "../../OmouComponents/BackButton";
 import "./scheduler.scss";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
+import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
 
 const EditSessionView = ({editSelection}) => {
 	const dispatch = useDispatch();
@@ -335,9 +336,13 @@ const EditSessionView = ({editSelection}) => {
 								onSubmit={updateSession}
 							>
 								<Grid item md={6}>
-									<Button className="button" color="secondary" variant="outlined">
+									<ResponsiveButton 
+										className="button" 
+										color="secondary" 
+										variant="outlined"
+										>
 										Save
-						</Button>
+									</ResponsiveButton>
 								</Grid>
 							</InstructorConflictCheck>
 							<Grid item md={6}>

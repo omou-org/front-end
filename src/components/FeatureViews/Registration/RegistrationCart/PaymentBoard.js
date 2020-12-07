@@ -11,7 +11,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from "../../../OmouComponents/Loading";
 import {useHistory} from "react-router-dom"
 import {GET_PAYMENT} from "../PaymentReceipt";
@@ -19,6 +19,8 @@ import {GET_COURSES} from "../RegistrationLanding";
 import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
 import {GET_REGISTRATION_CART} from "../SelectParentDialog";
 import {CREATE_REGISTRATION_CART} from "./RegistrationCartContainer";
+import {GET_ENROLLMENT_DETAILS} from "../RegistrationCourseEnrollments";
+
 
 const GET_PRICE_QUOTE = gql`
 	query GetPriceQuote($method: String!, 
@@ -72,25 +74,41 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
       enrollments {
         course {
           title
-          startTime
+		  availabilityList {
+			endTime
+			startTime
+		  }
           startDate
           instructor {
             user {
+			  id
               lastName
               firstName
             }
           }
           courseId
           endDate
-          endTime
           hourlyTuition
         }
         student {
-          user {
-            id
-            firstName
-            lastName
-          }
+          primaryParent {
+                user {
+                  firstName
+                  lastName
+                  email
+                  id
+                }
+                phoneNumber
+              }
+		  user {
+			firstName
+			lastName
+			email
+			id
+		  }
+		  school {
+			name
+		  }
         }
       }
     }
@@ -103,11 +121,27 @@ const GET_PARENT_ENROLLMENTS = gql`query GetParentEnrollments($studentIds:[ID]!)
     id
     course {
       id
+      title
     }
     student {
-      user {
-        id
-      }
+      primaryParent {
+		user {
+		  firstName
+		  lastName
+		  email
+		  id
+		}
+		phoneNumber
+	  }
+	  user {
+		firstName
+		lastName
+		email
+		id
+	  }
+	  school {
+		name
+	  }
     }
   }
 }`
@@ -155,40 +189,45 @@ export default function PaymentBoard() {
 			student,
 		}));
 
-	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
+	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentIdList}})
 	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS, {
 		update: (cache, {data}) => {
 			const existingEnrollmentsFromGetParent = cache.readQuery({
 				query: GET_PARENT_ENROLLMENTS,
-				variables: {studentIds: currentParent.studentList}
+				variables: {studentIds: currentParent.studentIdList}
 			}).enrollments;
 
 			cache.writeQuery({
 				query: GET_PARENT_ENROLLMENTS,
 				data: {
+					__typename: "EnrollmentType",
 					enrollments: [
 						...existingEnrollmentsFromGetParent,
 						...data["createEnrollments"].enrollments
 					],
 				},
-				variables: {studentIds: currentParent.studentList}
+				variables: {studentIds: currentParent.studentIdList}
 			});
 			let cachedCourses = cache.readQuery({
 				query: GET_COURSES,
 			}).courses;
+
 			const newEnrollments = data.createEnrollments.enrollments.map(enrollment => {
 				return {
-					course: enrollment.course.id,
-					student: enrollment.student.user.id,
+					__typename: "EnrollmentType",
+					id: enrollment.id,
+					course: enrollment.course,
+					student: enrollment.student,
 				}
 			});
+
 			newEnrollments.forEach(newEnrollment => {
 				const matchingIndex = cachedCourses.findIndex((course) =>
-					(course.id === newEnrollment.course));
+					(course.id === newEnrollment.course.id));
 				cachedCourses[matchingIndex] = {
 					...cachedCourses[matchingIndex],
 					enrollmentSet: [...cachedCourses[matchingIndex].enrollmentSet,
-						{student: newEnrollment.student, course: newEnrollment.course}],
+						{...newEnrollment}],
 				};
 			});
 
@@ -202,7 +241,7 @@ export default function PaymentBoard() {
 			const {userInfos, enrollments} = cache.readQuery({
 				query: GET_STUDENTS_AND_ENROLLMENTS,
 				variables: {
-					userIds: currentParent.studentList
+					userIds: currentParent.studentIdList
 				}
 			});
 
@@ -223,7 +262,52 @@ export default function PaymentBoard() {
 						...newQueryEnrollments,
 					]
 				}
-			})
+			});
+
+			// get unique list of course ids from enrollments
+			const enrolledCourseIds = [...new Set(data.createEnrollments.enrollments
+				.map(enrollment => enrollment.course.id))];
+			// read enrollment details for all cached enrolled courses
+			const existingCourseEnrollmentsMatrix = enrolledCourseIds.reduce((courseEnrollmentMatrix, courseId) => {
+				try {
+					courseEnrollmentMatrix[courseId] = cache.readQuery({
+						query: GET_ENROLLMENT_DETAILS,
+						variables: {courseId: courseId}
+					}).enrollments;
+				} catch {
+					courseEnrollmentMatrix[courseId] = [];
+				}
+				return courseEnrollmentMatrix;
+			}, {});
+			// organize enrollments by courses
+			const newCourseEnrollmentsMatrix = data.createEnrollments.enrollments
+				.reduce((courseEnrollmentMatrix, enrollment) => {
+					if (Object.keys(courseEnrollmentMatrix).includes(enrollment.course.id)) {
+						const prevNewCourseEnrollments = courseEnrollmentMatrix[enrollment.course.id]
+						courseEnrollmentMatrix[enrollment.course.id] = [...prevNewCourseEnrollments, enrollment]
+					} else {
+						courseEnrollmentMatrix[enrollment.course.id] = [enrollment]
+					}
+					return courseEnrollmentMatrix;
+				}, {});
+			// console.log(existingCourseEnrollmentsMatrix, newCourseEnrollmentsMatrix);
+			// write query for each course
+			const createEnrollmentList = (enrollmentMatrix, courseId) => {
+				const anyCourseEnrollments = Object.keys(enrollmentMatrix).includes(courseId);
+				return anyCourseEnrollments ? enrollmentMatrix[courseId] : [];
+			}
+			enrolledCourseIds.forEach(courseId => {
+				cache.writeQuery({
+					query: GET_ENROLLMENT_DETAILS,
+					variables: {courseId: courseId},
+					data: {
+						enrollments: [
+							...createEnrollmentList(existingCourseEnrollmentsMatrix, courseId),
+							...createEnrollmentList(newCourseEnrollmentsMatrix, courseId),
+						]
+					}
+				});
+			});
 		}
 	});
 	const [createPayment, createPaymentResults] = useMutation(CREATE_PAYMENT, {
@@ -231,9 +315,10 @@ export default function PaymentBoard() {
 			cache.writeQuery({
 				query: GET_PAYMENT,
 				data: {
-					payment: data["payment"],
+					__typename: "PaymentType",
+					payment: data.createPayment.payment,
 				},
-				variables: {paymentId: data["payment"].id}
+				variables: {paymentId: data.createPayment.payment.id}
 			})
 		}
 	});
@@ -308,6 +393,7 @@ export default function PaymentBoard() {
 
 	const handlePayment = async () => {
 		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
+		console.log(enrollmentResponse);
 		const {data: {enrollments}} = enrollmentResponse;
 		const isSameEnrollment = ({enrollment, course, student}) =>
 			(enrollment.student.user.id === student && enrollment.course.id === course);
@@ -441,7 +527,7 @@ export default function PaymentBoard() {
 		</Grid>
 		<Grid item container justify="flex-end">
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					variant="contained"
 					color="primary"
 					disabled={priceQuote.total === "-" || priceQuote < 0}
@@ -449,7 +535,7 @@ export default function PaymentBoard() {
 					data-cy="pay-action"
 				>
 					Pay
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 		</Grid>
 	</>)

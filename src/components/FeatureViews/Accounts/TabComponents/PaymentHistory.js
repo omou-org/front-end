@@ -8,7 +8,7 @@ import gql from "graphql-tag";
 
 export const GET_PARENT_PAYMENTS = gql`
     query ParentPayments($parentId: ID!) {
-        payments(parentId: $parentId) {
+        invoices(parentId: $parentId) {
             id
             createdAt
             registrationSet {
@@ -34,11 +34,11 @@ const PaymentHistory = ({user_id}) => {
 		</Typography>
     }
 
-	const {payments} = data;
+	const {invoices} = data;
 
     return (
         <PaymentTable
-            paymentList={payments}
+            paymentList={invoices}
             type="parent" />
     );
 };
