@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom'
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import moment from "moment";
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,23 +12,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from '@material-ui/core/Divider';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import Grid from "@material-ui/core/Grid";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import TextField from "@material-ui/core/TextField";
-import InputAdornment from "@material-ui/core/InputAdornment"
-import Box from "@material-ui/core/Box";
 import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import { ExpandLess, ExpandMore, Add, Check, Search } from "@material-ui/icons"
-import { BootstrapInput } from './CourseManagementContainer'
-import Loading from 'components/OmouComponents/Loading';
-import { buttonThemeBlue, highlightColor } from "../../../theme/muiTheme";
+import { Add, Check } from "@material-ui/icons"
+import Loading from '../../OmouComponents/Loading';
+import { StudentFilterOrSortDropdown, SessionButton } from './AttendanceButtons';
+import { buttonThemeBlue } from "../../../theme/muiTheme";
 import { fullName } from '../../../utils'
 
 const useStyles = makeStyles((theme) => ({
@@ -43,26 +32,6 @@ const useStyles = makeStyles((theme) => ({
     color: 'black',
     whiteSpace: 'nowrap',
     fontWeight: 500
-  },
-  buttonDropDown: {
-    border: '1px solid #43B5D9',
-    marginLeft: '.5em',
-    width: '100%', 
-    height: 'auto',
-    maxWidth: '2em',
-    maxHeight: "2em",
-    borderRadius: 5,
-  },
-  attendanceButton: {
-    border: '1px solid #43B5D9',
-    borderRadius: 5,
-    background: buttonThemeBlue,
-    color: 'white',
-    paddingTop: 10,
-    paddingRight: 14,
-    paddingBottom: 10,
-    paddingLeft: 14,
-    letterSpacing: '0.02em'
   },
   checkbox: {
     borderRadius: 2,
@@ -79,227 +48,13 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: "rgba(39, 143, 195, 1) !important"
     }
-  },
-  dropdown: {
-    border: "1px solid #43B5D9",
-    borderRadius: "5px",
-  },
-  menuSelect: {
-    "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
-    "&:focus": highlightColor,
-  },
-  menuSelected: {
-    backgroundColor: `${highlightColor} !important`,
-  },
-  input: {
-    marginLeft: theme.spacing(1),
-    flex: 1,
-    border: "1px solid #999999"
-  },
-  iconButton: {
-    padding: 10,
-  },
+  }
 }));
 
 function createData(name, sessionsId, studentId) {
   return { name, ...sessionsId, studentId };
 };
 
-const formatAttendancDataToRender = (name, attendanceId, studentId) => ({ name, attendanceId, studentId });
-
-const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphabet }) => {
-  const classes = useStyles();
-  const [student, setStudent] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [filterValue, setFilterValue] = useState("");
-  useEffect(() => setStudent(students), [sortByAlphabet]);
-  const handleChange = (event) => setSortByAlphabet(event.target.value);
-  const handleOpen = () => {
-    setOpen(true)
-    setSortByAlphabet("")
-  };
-  const handleClose = () => {
-    setOpen(false);
-    setFilterValue("");
-  };
-  const studentNameList = student.filter(name => name.includes(filterValue));
-  const handleFilter = e => {
-    e.stopPropagation();
-    const { value } = e.target;
-    setFilterValue(value)
-    // const set = new Set(value);
-    // console.log(student.filter(name => name.includes(value)));
-  };
-  const handleInputSelect = e => {
-    e.stopPropagation();
-    setOpen(true);
-  }
-  const handleKeyDown = event => {
-    if(event.which === 13) {
-      if(!student.find(val => val === event.currentTarget.value)) {
-        setStudent(...student, event.currentTarget.value);
-      }
-      event.currentTarget.value = ""; 
-    }
-    event.stopPropagation();
-  }
-
-  // console.log(sortByAlphabet)
-
-  return (
-    <Grid item xs={3}>
-    <FormControl className={classes.margin}>
-      <Select
-        labelId="student-management-sort-tab"
-        id="student-management-sort-tab"
-        displayEmpty
-        value={sortByAlphabet}
-        open={open}
-        onChange={handleChange}
-        onOpen={handleOpen}
-        onClose={handleClose}
-        classes={{ select: classes.menuSelect }}
-        input={<BootstrapInput />}
-        MenuProps={{
-          classes: { list: classes.dropdown },
-          anchorOrigin: {
-            vertical: "bottom",
-            horizontal: "left",
-          },
-          transformOrigin: {
-            vertical: "top",
-            horizontal: "left",
-          },
-          getContentAnchorEl: null,
-        }}
-      >
-        {sortByAlphabet === "" ? <MenuItem
-          ListItemClasses={{ selected: classes.menuSelected }}
-          value=""
-        >
-          Student
-        </MenuItem> : null}
-        <MenuItem
-          ListItemClasses={{ selected: classes.menuSelected }}
-          value="desc"
-        >
-          Sort A-Z
-        </MenuItem>
-        <MenuItem
-          ListItemClasses={{ selected: classes.menuSelected }}
-          value="asc"
-        >
-          Sort Z-A
-        </MenuItem>
-        {/* <MenuItem
-          ListItemClasses={{ selected: classes.menuSelected }}
-          value="input"
-          onClick={handleInputSelect}
-        > */}
-      <TextField
-        className={classes.input}
-        onChange={handleFilter}
-        InputProps={{
-          endAdornment: (
-          <InputAdornment>
-                  <IconButton type="submit" className={classes.iconButton} aria-label="search">
-        <Search />
-      </IconButton>
-          </InputAdornment>
-          ),
-          disableUnderline: true,
-          onKeyDown: handleKeyDown,
-          onClick: handleInputSelect,
-          // onChange: handleChange,
-        }}
-        
-      />
-        {/* </MenuItem> */}
-        {studentNameList.map(studentName => (
-           <MenuItem
-           key={studentName}
-           value={studentName}
-           className={classes.menuSelect}
-           ListItemClasses={{ selected: classes.menuSelected }}
-         >
-           {studentName}
-         </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  </Grid>
-  )
-};
-
-const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, setEditState, setCurrentSessionId, sortAttendanceArray }) => {
-  const classes = useStyles();
-  const handleOpen = e => {
-    const sessionId = e.currentTarget.getAttribute("data-session-id")
-      setAttendanceRecord({[sessionId]: e.currentTarget})
-  };
-
-  const handleSort = e => {
-    const sessionId = e.currentTarget.getAttribute("data-session-id");
-    setAttendanceRecord({[sessionId]: null});
-    setCurrentSessionId(sessionId); 
-    sessionId !== null && setEditState({...editState, [sessionId]: e.target.getAttribute("value")})
-    sortAttendanceArray()
-  }
-
-  const handleClose = e => {
-    const sessionId = e.currentTarget.getAttribute("data-session-id");
-    setAttendanceRecord({[sessionId]: null});
-    setCurrentSessionId(sessionId); 
-    sessionId !== null && setEditState({...editState, [sessionId]: e.target.getAttribute("value")})
-  };
-  
-  return (
-    <>
-    <IconButton
-      aria-controls="session-action"
-      aria-haspopup="true"
-      onClick={handleOpen}
-      className={classes.buttonDropDown} 
-      data-session-id={id}
-      classes={{ root: classes.buttonDropDown}}
-    >
-    {attendanceArray[id] ? <ExpandLess /> : <ExpandMore />}
-    </IconButton>
-    <Menu
-      id="session-action"
-      anchorEl={attendanceArray[id]}
-      keepMounted
-      open={Boolean(attendanceArray[id])}
-      onClose={handleClose}
-      getContentAnchorEl={null}
-      anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-      transformOrigin={{vertical: 'top', horizontal: 'center'}}
-      data-session-id={id}
-    >
-      <MenuItem onClick={handleSort} value="sort" data-session-id={id}>Sort</MenuItem>
-      <MenuItem onClick={handleClose} value="beginEdit" data-session-id={id}>Edit</MenuItem>
-    </Menu>
-    </>
-  )
-}
-
-// export const GET_ATTENDANCE = gql`
-// query getAttendance($courseId: ID!) {
-//     __typename
-    // sessions(courseId: $courseId) {
-    //   id
-    //   startDatetime
-    // }
-    // enrollments(courseId: $courseId) {
-    //   student {
-    //     user {
-    //       firstName
-    //       id
-    //       lastName
-    //     }
-    //   }
-    // }
-//   }`;
 
 export const GET_ATTENDANCE = gql`query getAttendance($courseId: ID!) {
   __typename
@@ -334,6 +89,15 @@ export const GET_ATTENDANCE = gql`query getAttendance($courseId: ID!) {
     }
   }
 }`;
+
+export const UPDATE_ATTENDANCE_STATUS = gql`mutation UpdateAttendanceStatus($attendanceId: ID!, $status: String) {
+  __typename
+  updateAttendance(id: $attendanceId, status: $status) {
+    attendance {
+      updatedAt
+    }
+  }
+}`
   
 
 
@@ -357,9 +121,9 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "" }), {});
           const formattedAttendanceTableData = attendances.reduce((studentIdHashMap, {id, enrollment, status, session }) => {
             const { user } = enrollment.student;
-            studentIdHashMap[user.id] = studentIdHashMap[user.id]  || {attendanceId: [] };
+            studentIdHashMap[user.id] = studentIdHashMap[user.id]  || {idSet: [] };
             // studentIdHashMap[session.id] = studentIdHashMap[session.id] || {[session.id]: {attendanceId: id, status}}
-            studentIdHashMap[user.id].attendanceId.push({attendanceId: id, status});
+            studentIdHashMap[user.id].idSet.push({attendanceId: id, status, sessionId: session.id});
             return studentIdHashMap
           }, {});
           // const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id))
@@ -371,6 +135,13 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         },
     });
 
+    const [updateAttendance, updateAttendanceResult] = useMutation(UPDATE_ATTENDANCE_STATUS, {
+      error: (err) => console.error(err),
+      update: (cache, { data }) => {
+        
+      }
+    });
+  
     // const attendance = useQuery(GET_ATTENDANCE1, {
     //   variables: { courseId: id }
     // });
@@ -382,23 +153,10 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     if(!editState) return <Loading />;
     if(error) return error.message;
     const { enrollments, sessions, attendances } = data;
-    
-    const formattedAttendanceTableData = attendances.sort((firstValue, secondValue) => firstValue.id - secondValue.id).reduce((studentIdHashMap, {id, enrollment, status, session }) => {
-      const { user } = enrollment.student;
-      studentIdHashMap[user.id] = studentIdHashMap[user.id]  || {attendanceId: [], fullname: fullName(user) };
-      studentIdHashMap[user.id].attendanceId.push({[id]: status});
-      return studentIdHashMap
-    }, {});
 
-    // console.log(attendances)
-    const studentNameListRender = enrollments.map(y => formattedAttendanceTableData[y.student.user.id].fullname);
     const checkEditState = (id) => editState[id] === "noSelect" || editState[id] === "beginEdit" || editState[id] === "edited";
-    // console.log(x)
-    // console.log(data)
-    // console.log(attendances)
-    // console.log(formattedAttendanceTableData);
-    // console.log(enrollments)
-    // console.log(sessions)
+    const checkEditState2 = (id) => editState[id] === "noSelect"|| editState[id] === "edited";
+
     const handleEdit = e => {
       const sessionId = e.currentTarget.getAttribute("id")
         if(isEdit[sessionId] === false) {
@@ -408,41 +166,29 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         } else {
           setIsEdit({...isEdit, [sessionId]: false});
           setIsEditing(false);
-          studentAttendanceData.map(x => x[sessionId] !== "" && setEditState({...editState, [sessionId]: "done"}))
+          studentAttendanceData.forEach(iterate => iterate.idSet.forEach(attendance => attendance.status !== "UNSET" && setEditState({...editState, [sessionId]: "done"})))
+          console.log('mutation fires here');
         }  
     };
 
     const handleClick = (e) => {
       const attendanceValue = e.currentTarget.value;
-      const arrayIndex = e.currentTarget.getAttribute("data-arrayIndex");
-      const sessionId = e.currentTarget.getAttribute("data-keys");
-      const arrOfObj = { ...studentAttendanceData[arrayIndex], [sessionId]: attendanceValue }
-      let newArr = [...studentAttendanceData]
-      newArr[arrayIndex] = arrOfObj
+      const arrayIndex = e.currentTarget.getAttribute("data-studentIndex");
+      const attendanceIndex = e.currentTarget.getAttribute("data-attendanceIndex");
+      const attendanceId = e.currentTarget.getAttribute("data-keys");
+      const updatedAttendanceStatus = studentAttendanceData[arrayIndex].idSet.map((id) => id.attendanceId === attendanceId ? {...id, status: attendanceValue} : id);
+      const arrOfObj = { ...studentAttendanceData[arrayIndex], idSet: updatedAttendanceStatus }
+      studentAttendanceData[arrayIndex] = arrOfObj
       if(attendanceValue !== "") {
-        setStudentAttendanceData(newArr)
-        setEditState({...editState, [sessionId]: "edited"})
-      }
+        setStudentAttendanceData(studentAttendanceData)
+        setEditState({...editState, [attendanceIndex]: "edited"})
+      };
     };
 
-    // const studentsFullName = enrollments.map(({student}) => fullName(student.user));
     const studentsFullNameList = studentAttendanceData
     .map(({ name }) => name)
     .sort((firstName, secondName) => firstName.name < secondName.name ? -1 : (firstName.name > secondName.name) ? 1 : 0);
 
-    // const sortStudentList = studentAttendanceData.sort((firstEl, secondEl) => {
-    //     if(firstEl.name < secondEl.name) {
-    //       return -1;
-    //     } else if (firstEl.name > secondEl.name) {
-    //       return 1;
-    //     } else {
-    //       return 0;
-    //     }        
-    // });
-
-
-
-    // console.log(sortAttendanceList)
 
     const colorHighlight = {
       "PRESENT": '#6CE086',
@@ -450,21 +196,14 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       "ABSENT": '#FF6766'
     };
 
-    const renderAttendanceChip = (keys) => {
-      console.log(keys)
-    }
-
-    // const renderAttendanceChip = (row, keys, editState) => {
-    //   // console.log(row)
-    //   // console.log(keys)
-    //   // console.log(editState)
-    //   const renderEachButton = ["PRESENT", "TARDY", "ABSENT"].indexOf((row[keys])) >= 0 && editState[keys] !== "edited"
-    //   if(renderEachButton) {
-    //     return (<Button style={{backgroundColor: colorHighlight[row[keys]], color: 'black'}} disabled>{row[keys]}</Button>)
-    //   } else {
-    //     return null
-    //   }
-    // };
+    const renderAttendanceChip = (attendanceIdArray, attendanceId, keys, editState) => {
+      const renderEachButton = ["PRESENT", "TARDY", "ABSENT"].indexOf((attendanceIdArray[keys].status)) >= 0 && editState[keys] !== "edited";
+      if(renderEachButton) {
+        return (<Button style={{backgroundColor: colorHighlight[attendanceIdArray[keys].status], color: 'black'}} disabled>{attendanceIdArray[keys].status}</Button>)
+      } else {
+        return null
+      }
+    };
 
     const sortAttendanceArray = () => {
       const sortAttendanceList = studentAttendanceData.sort((firstEl, secondEl) => {
@@ -504,7 +243,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     // console.log(color)
     // console.log(newClassData)
     // console.log(isEdit);
-    console.log(studentAttendanceData)
+    // console.log(studentAttendanceData)
     // console.log(sessions)
     // console.log(editState)
     // console.log(attendanceRecord)
@@ -516,42 +255,9 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
             <TableCell style={{color: 'black'}}>
               <StudentFilterOrSortDropdown students={studentsFullNameList} setSortByAlphabet={setSortByAlphabet} sortByAlphabet={sortByAlphabet}/>
             </TableCell>
-            {/* {sessions
-            .sort((a,b) => a.id - b.id)
-            .map(({ startDatetime, id }, i) => (
-              <TableCell className={classes.tableCell}>
-                {`Session ${i + 1} (${moment(startDatetime).calendar()})`}
-                { (<Checkbox 
-                    checked={isEdit[id]}
-                    onChange={handleEdit}
-                    checkedIcon={<Check fontSize="small" style={{color: 'white'}} />}
-                    icon={<Add fontSize="small"/>}
-                    id={id}
-                    disableRipple
-                    classes={{ root: classes.checkbox, checked: classes.checkbox2 }}
-                  />)}
-                {checkEditState(id) ? (
-                  <Checkbox 
-                    checked={isEdit[id]}
-                    onChange={handleEdit}
-                    checkedIcon={<Check fontSize="small" style={{color: 'white'}} />}
-                    icon={<Add fontSize="small"/>}
-                    id={id}
-                    disableRipple
-                    classes={{ root: classes.checkbox, checked: classes.checkbox2 }}
-                  />
-                ) : (
-                  <SessionButton 
-                    
-                  />
-                )}
-              </TableCell>
-            ))} */}
             {sessions
             .sort((a,b) => a.id - b.id)
-            .map(({ startDatetime, id }, i) => {
-      const startingDate = moment(startDatetime).calendar();
-      return (
+            .map(({ startDatetime, id }, i) => (
         <TableCell className={classes.tableCell}>
           {`Session ${i + 1} (${moment(startDatetime).calendar()})`}
         {checkEditState(id) ? 
@@ -563,65 +269,70 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         id={id}
         disableRipple
         classes={{ root: classes.checkbox, checked: classes.checkbox2 }}
-      /> : <SessionButton attendanceArray={attendanceRecord} id={id} setAttendanceRecord={setAttendanceRecord} editState={editState} setEditState={setEditState} setCurrentSessionId={setCurrentSessionId} studentAttendanceData={studentAttendanceData} setStudentAttendanceData={setStudentAttendanceData} sortAttendanceArray={sortAttendanceArray}/>}
+      /> : <SessionButton 
+            attendanceArray={attendanceRecord} 
+            id={id} 
+            setAttendanceRecord={setAttendanceRecord} 
+            editState={editState} setEditState={setEditState} 
+            setCurrentSessionId={setCurrentSessionId} 
+            studentAttendanceData={studentAttendanceData} 
+            setStudentAttendanceData={setStudentAttendanceData} 
+            sortAttendanceArray={sortAttendanceArray}
+          />}
         </TableCell>
       )
-    })}
+    )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentAttendanceDisplay.map((row, i, arr) => {
-            return (
+          {studentAttendanceDisplay.map((row, i) => (
               <TableRow key={row.studentId}>
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                {row.attendanceId.map((id, i) => {
-                  return (
+                {row.idSet.map((id, index) => (
                     <TableCell align="right" id={row.studentId}>
-                      {/* {renderAttendanceChip(id)} */}
-                      {isEdit[i+1] && (
+                      {!checkEditState2(id.sessionId) && renderAttendanceChip(row.idSet, id.attendanceId, index, editState)}
+                      {isEdit[index + 1] && (
                         <ButtonGroup>
                           <Button 
-                            data-arrayIndex={i} 
-                            data-keys={i + 1} 
+                            data-studentIndex={i}
+                            data-attendanceIndex={index + 1} 
+                            data-keys={id.attendanceId} 
                             value="PRESENT" 
                             onClick={handleClick} 
                             style={{backgroundColor: `${id.status === "PRESENT" || id.status === "UNSET" ? '#6CE086' : '#C9FFD5'}`}}
                           >
                             <Typography style={{fontWeight: 500, color: 'black'}}>P</Typography>
                           </Button>
+                          <Button 
+                            data-studentIndex={i}
+                            data-attendanceIndex={index + 1} 
+                            data-keys={id.attendanceId} 
+                            value="TARDY" 
+                            onClick={handleClick} 
+                            style={{backgroundColor: `${id.status === "TARDY" || id.status === "UNSET" ? '#FFDD59' : '#FFF6D4'}`}}
+                          >
+                            <Typography style={{fontWeight: 500, color: 'black'}}>T</Typography>
+                          </Button>
+                          <Button 
+                            data-studentIndex={i}
+                            data-attendanceIndex={index + 1} 
+                            data-keys={id.attendanceId} 
+                            value="ABSENT" 
+                            onClick={handleClick} 
+                            style={{backgroundColor: `${id.status === "ABSENT" || id.status === "UNSET" ? '#FF6766' : '#FFD8D8'}`}}
+                          >
+                            <Typography style={{fontWeight: 500, color: 'black'}}>A</Typography>
+                          </Button>
                         </ButtonGroup>
                       )}
                     </TableCell>
                   )
-                })}
+                )}
               </TableRow>
             )
-          })}
-          {/* {studentAttendanceDisplay.map((row, i, arr) => {
-            const filteredKey = Object.keys(row).filter(name => name !== "name" && name !== "studentId");
-            return (
-              <TableRow key={row.studentId}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-                {filteredKey.map(keys => {
-                  return <TableCell align="right"id={row.studentId}>
-                    {renderAttendanceChip(row, keys, editState)}                  {
-                    isEdit[keys] && (
-                      <ButtonGroup>
-            <Button data-arrayIndex={i} data-keys={keys} value="PRESENT" onClick={handleClick} style={{backgroundColor: `${row[keys] === "PRESENT" || row[keys] === "" ? '#6CE086' : '#C9FFD5'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>P</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="TARDY" onClick={handleClick} style={{backgroundColor: `${row[keys] === "TARDY" || row[keys] === "" ? '#FFDD59' : '#FFF6D4'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>T</Typography></Button>
-      <Button data-arrayIndex={i} data-keys={keys} value="ABSENT" onClick={handleClick} style={{backgroundColor: `${row[keys] === "ABSENT" || row[keys] === "" ? '#FF6766' : '#FFD8D8'}`}}><Typography style={{fontWeight: 500, color: 'black'}}>A</Typography></Button>
-    </ButtonGroup>
-                    )
-                  }
-                  </TableCell>
-                })}
-            </TableRow>
-            )
-          })} */}
+          )}
         </TableBody>
       </Table>
     </TableContainer>
