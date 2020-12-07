@@ -20,7 +20,9 @@ const Today = (filter) => {
                     id
                     course {
                     title
-                    startTime
+                    availabilityList {
+                        startTime
+                      }
                     maxCapacity
                     id
                     enrollmentSet {
