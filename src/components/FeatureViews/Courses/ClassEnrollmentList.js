@@ -18,10 +18,7 @@ import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
-
-import axios from "axios";
-import { useGoogleLogin } from 'react-google-login'
-
+import {useSelector} from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -56,29 +53,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const { signIn, loaded } = useGoogleLogin({
-  onSuccess,
-  onAutoLoadFinished,
-  clientId,
-  cookiePolicy,
-  loginHint,
-  hostedDomain,
-  autoLoad,
-  isSignedIn,
-  fetchBasicProfile,
-  redirectUri,
-  discoveryDocs,
-  onFailure,
-  uxMode,
-  scope,
-  accessType,
-  responseType,
-  jsSrc,
-  onRequest,
-  prompt
-})
-
-
 const ClassEnrollmentList = ({
   fullStudentName,
   accountType,
@@ -92,6 +66,10 @@ const ClassEnrollmentList = ({
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const { google_access_token } = useSelector(({ auth }) => auth);
+
+  console.log(google_access_token);
+
   const handleClick = (event) => setAnchorEl(event.currentTarget);
 
   const handleClose = () => setAnchorEl(null);
@@ -104,26 +82,6 @@ const ClassEnrollmentList = ({
     setAnchorEl(null);
   };
 
-  const [courses, setCourses] = useState([]);
-
-  const handleButton = () => {
-    (async () => {
-      try {
-        const resp = await axios.get("https://classroom.googleapis.com/v1/courses", {
-            "params": {
-                "studentId": status.profileObj.googleID,
-            },
-            "headers": {
-                "Authorization": `Bearer ${status.tokenObj.access_token}`,
-            },
-        });
-        setCourses(resp.data.courses);
-      } catch {
-          alert("Error loading courses!");
-      }
-    });
-    console.log(courses);
-  }
   return (
     <TableRow key={fullStudentName} style={{ wordBreak: "break-word" }}>
       <TableCell
@@ -191,15 +149,6 @@ const ClassEnrollmentList = ({
       >
         <Button disabled>
           <ChatOutlinedIcon style={{ color: "rgb(112,105,110)" }} />
-        </Button>
-      </TableCell>
-      <TableCell
-        align="right"
-        padding="none"
-        size="small"
-        className={classes.icon}>
-        <Button onClick={handleButton} color="primary">
-          Click me
         </Button>
       </TableCell>
       <TableCell

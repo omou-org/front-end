@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useEffect} from "react";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
@@ -25,6 +25,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {GoogleLogin, GoogleLogout} from "react-google-login";
+import axios from "axios"; 
+import * as actions from "actions/actionTypes";
 
 
 const useStyles = makeStyles({
@@ -37,6 +39,8 @@ const useStyles = makeStyles({
 });
 
 const Navigation = () => {
+    const dispatch = useDispatch();
+
     const classes = useStyles();
     const { token, email } = useSelector(({ auth }) => auth);
 
@@ -46,8 +50,6 @@ const Navigation = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
-
-    const [status, setStatus] = useState();
 
     const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
@@ -62,8 +64,11 @@ const Navigation = () => {
     }
 
     const onSuccess = (response) => {
-        setStatus(response);
         console.log("Success");
+        dispatch({
+            type: actions.SET_GOOGLE_TOKEN, 
+            payload: {google_access_token: response.tokenObj.access_token}
+        })
     };
 
     useEffect(() => {

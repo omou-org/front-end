@@ -305,3 +305,5 @@ export const GET_GIF_SUCCESS = "GET_GIF_SUCCESS";
 export const GET_GIF_FAIL = "GET_GIF_FAIL";
 
 export const SET_CREDENTIALS = "SET_CREDENTIALS";
+
+export const SET_GOOGLE_TOKEN = "SET_GOOGLE_TOKEN";

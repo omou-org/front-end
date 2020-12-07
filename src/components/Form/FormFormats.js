@@ -947,6 +947,10 @@ export default {
                         ...stringField("Description"),
                     },
                     {
+                        "name": "google_classroom_code",
+                        ...stringField("[Optional] Google Classroom Code"),
+                    },
+                    {
                         "name": "instructor",
                         "label": "Instructor",
                         "component": instructorSelect("instructor"),
@@ -1036,18 +1040,18 @@ export default {
                     id
                     description
                     instructor {
-                    user {
-                        id
-                        firstName
-                        lastName
-                    }
+                        user {
+                            id
+                            firstName
+                            lastName
+                        }
                     }
                     startDate
                     startTime
                     maxCapacity
                     courseCategory {
-                    id
-                    name
+                        id
+                        name
                     }
                     academicLevel
                     endDate
@@ -1101,13 +1105,42 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
-            mutation CreateCourse($startDate:DateTime, $endDate:DateTime, $startTime:Time!, $endTime:Time!, $academicLevel:AcademicLevelEnum,$courseCategory:ID, $description:String, $hourlyTuition:Decimal, $instructor:ID, $isConfirmed:Boolean, $maxCapacity:Int, $totalTuition: Decimal, $title:String!) {
-  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
-    course {
-      id
-    }
-  }
-}
+            mutation CreateCourse(
+                $startDate: DateTime
+                $endDate: DateTime
+                $startTime: Time!
+                $endTime: Time!
+                $academicLevel: AcademicLevelEnum
+                $courseCategory: ID
+                $description: String
+                $hourlyTuition: Decimal
+                $instructor: ID
+                $isConfirmed: Boolean
+                $maxCapacity: Int
+                $totalTuition: Decimal
+                $title: String!
+            ) {
+                createCourse(
+                    endTime: $endTime
+                    startTime: $startTime
+                    title: $title
+                    maxCapacity: $maxCapacity
+                    isConfirmed: $isConfirmed
+                    instructor: $instructor
+                    hourlyTuition: $hourlyTuition
+                    academicLevel: $academicLevel
+                    courseCategory: $courseCategory
+                    courseType: CLASS
+                    description: $description
+                    endDate: $endDate
+                    startDate: $startDate
+                    totalTuition: $totalTuition
+                ) {
+                    course {
+                        id
+                    }
+                }
+            }            
             `;
 
             const { courseInfo, tuition } = formData;
