@@ -10,6 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import * as registrationActions from "actions/registrationActions";
 import {useHistory} from "react-router-dom";
 
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+
 export default function RegistrationReceipt() {
 	const Registration = useSelector(({Registration}) => Registration);
 	const registrationStatus = useSubmitRegistration(Registration.registration);
@@ -35,14 +37,14 @@ export default function RegistrationReceipt() {
 		<PaymentReceipt paymentID={registrationStatus.paymentID}/>
 		<Grid container direction="row" alignItems="flex-end">
 			<Grid item>
-				<Button variant="contained" onClick={handleCloseRegistration}>
+				<ResponsiveButton variant="contained" onClick={handleCloseRegistration}>
 					Close Registration
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 			<Grid item>
-				<Button variant="outlined" onClick={handlePrint}>
+				<ResponsiveButton variant="outlined" onClick={handlePrint}>
 					Print
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 		</Grid>
 

@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import AddIcon from "@material-ui/icons/AddOutlined";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import Delete from "@material-ui/icons/Delete";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -22,10 +21,13 @@ import Loading from "components/OmouComponents/Loading";
 import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
 import NotificationIcon from "@material-ui/icons/NotificationImportant";
 import Paper from "@material-ui/core/Paper";
+import ReadMoreText from "components/OmouComponents/ReadMoreText";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
+
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton'
 
 import "./Notes.scss";
 import {
@@ -33,7 +35,8 @@ import {
     DELETE_COURSE_NOTE_SUCCESSFUL,
     DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
 } from "actions/actionTypes";
-import { instance } from "actions/apiActions";
+import {instance} from "actions/apiActions";
+import { AddItemButton } from "components/OmouComponents/AddItemButton";
 
 const useStyles = makeStyles((theme) => ({
     "icons": {
@@ -41,17 +44,16 @@ const useStyles = makeStyles((theme) => ({
         transform: "scale(.8)",
     },
     "notePaper": {
-        height: "150px"
-    },
+        height: "100%",
+    }, 
     "notesTitle": {
         letterSpacing: "0.01071em",
         fontSize: "0.875rem",
     },
     "dateDisplay": {
-        bottom: "40px !important",
         fontSize: ".825rem",
         position: "relative",
-        padding: "3px",
+        paddingBottom: "40px",
         [theme.breakpoints.down('lg')]: {
             fontSize: ".625rem",
             fontWeight: "200px"
@@ -237,7 +239,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             } else {
                 updatedNotes[matchingIndex] = newNote;
             }
-            
+
             cache.writeQuery({
                 "data": {
                     [QUERY_KEY[ownerType]]: updatedNotes,
@@ -488,14 +490,17 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         value={noteBody} variant="filled" />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={hideWarning} variant="outlined">
+                    <ResponsiveButton onClick={hideWarning} variant="outlined">
                         Cancel
-                    </Button>
-                    <Button color="primary"
+                    </ResponsiveButton>
+                    <ResponsiveButton 
+                        color="primary"
                         disabled={!noteBody || createResults.loading}
-                        onClick={saveNote} variant="outlined">
+                        onClick={saveNote} 
+                        variant="outlined"
+                    >
                         {createResults.loading ? "Saving..." : "Save"}
-                    </Button>
+                    </ResponsiveButton>
                     {createResults.error &&
                         <span style={{ "float": "right" }}>
                             Error while saving!
@@ -515,15 +520,20 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                     }?
                 </DialogContent>
                 <DialogActions className={classes.deleteActions}>
-                    <Button color="primary" onClick={hideWarning}
-                        variant="contained">
+                    <ResponsiveButton 
+                        color="primary" 
+                        onClick={hideWarning}
+                        variant="contained"
+                    >
                         Cancel
-                    </Button>
-                    <Button className={classes.deleteButton}
+                    </ResponsiveButton>
+                    <ResponsiveButton 
+                        className={classes.deleteButton}
                         onClick={handleDelete}
-                        variant="contained">
+                        variant="contained"
+                    >
                         Delete
-                    </Button>
+                    </ResponsiveButton>
                     {deleteError &&
                         <span style={{ "float": "right" }}>
                             Error while deleting!
@@ -537,32 +547,36 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                             variant="h5"
                             style={{ marginTop: "10px" }}
                         >My Tasks
-                            </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <AssignmentTurnedInIcon fontSize="large" style={{ marginTop: "10px" }} />
-                    </Grid>
-                    <Grid
-                        item
-                        xs={12}>
-                        <div
-                            className={`addNote ${classes.addNote}`}
+                        </Typography>
+                        </Grid>
+                         <Grid item xs={3}>
+                             <AssignmentTurnedInIcon fontSize = "large" style={{marginTop: "10px"}}/>
+                         </Grid>
+                            <Grid
+                                item
+                                xs={12}>
+                                <AddItemButton
+                                    height={'100%'}
+                                    width='inherit'
+                                    style={{padding: 0}}
+                                    onClick={openNewNote}
+                                >
+                                    + Add Note
+                                </AddItemButton>
+                            </Grid>
+                    </>
+                    :
+                       <Grid item md={3}>
+                           <AddItemButton
+                            height={200}
+                            width='inherit'
                             onClick={openNewNote}
-                            style={{ "cursor": "pointer", height: "100%", backgroundColor: "white" }}>
-                            <Typography className="center" style={{ padding: 0 }}>
-                                <AddIcon /> Add Note
-                                    </Typography>
-                        </div>
-                    </Grid>
-                </>
-                : <Grid item md={3}>
-                    <div className={classes.addNote} onClick={openNewNote}>
-                        <Typography className={classes.center}>
-                            <AddIcon /><br />Add Note
-                                </Typography>
-                    </div>
-                </Grid>
-            }
+                           >
+                               + Add Note
+                           </AddItemButton>
+                        </Grid>            
+                }  
+            
 
             {notes && isDashboard && Object.values(notes).map((note) => (
                 <Grid item key={note.id || note.body} xs={12}>
@@ -578,9 +592,9 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 !
                             </Avatar>
                         </Typography>
-                        <Typography align="left" className="body">
+                        <ReadMoreText textLimit = {110}>
                             {note.body}
-                        </Typography>
+                        </ReadMoreText>
                         <Grid item xs={12}>
                             <Typography className={`date ${classes.dateDisplay}`}
                                 style={{ "fontWeight": "500" }}>
@@ -644,12 +658,9 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         </div>
                     </Paper>
                 </Grid>
-
-            ))}
-
-
-        </Grid>
-    )
+                ))}
+            </Grid>
+        )
 };
 
 Notes.propTypes = {

@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
+import EnrollmentSessionRow from "./EnrollmentSessionRow";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -16,25 +15,21 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
 import Grid from "@material-ui/core/Grid";
 import NoListAlert from "../../../OmouComponents/NoListAlert";
-import NoteIcon from "@material-ui/icons/NoteOutlined";
 import Paper from "@material-ui/core/Paper";
-import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import PaymentTable from "./PaymentTable";
-import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 import Switch from "@material-ui/core/Switch";
 import LoadingError from "./LoadingCourseError";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
-import EnrollmentSessionRow from "./EnrollmentSessionRow";
+import { makeStyles } from "@material-ui/core/styles";
+import { LabelBadge } from "../../../../theme/ThemedComponents/Badge/LabelBadge";
 
 import * as hooks from "actions/hooks";
 import { upcomingSession, useGoToRoute } from "utils";
-import {
-  deleteEnrollment,
-  initializeRegistration,
-} from "actions/registrationActions";
+import { deleteEnrollment, initializeRegistration } from "actions/registrationActions";
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from "components/OmouComponents/AddSessions";
 import BackButton from "components/OmouComponents/BackButton";
 import Loading from "components/OmouComponents/Loading";
@@ -135,6 +130,24 @@ const CourseSessionStatus = () => {
     variables: { courseId: enrollmentData?.enrollment.course.id },
     skip: enrollmentLoading || enrollmentError,
   });
+    const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+        },
+        wrapper: {
+			flexDirection: "row"
+		}
+	});
+	const classes = useStyles();
+
+    // const sessionConfig = useMemo(
+    //     () => ({
+    //         "params": {
+    //             "course_id": courseID,
+    //         },
+    //     }),
+    //     [courseID]
+    // );
 
   const [activeTab, setActiveTab] = useState(0);
   const [highlightSession, setHighlightSession] = useState(false);
@@ -255,159 +268,137 @@ const CourseSessionStatus = () => {
     }
   };
 
-  return (
-    <Paper className="paper" elevation={2}>
-      <Grid className="course-session-status" container>
-        <Grid item xs={12}>
-          <BackButton />
-          <hr />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography
-            align="left"
-            className="course-session-title"
-            variant="h3"
-          >
-            {course.title}
-          </Typography>
-        </Grid>
-        <Grid item md={12}>
-          <Grid
-            alignItems="center"
-            className="session-actions"
-            container
-            direction="row"
-            justify="flex-start"
-            spacing={2}
-          >
-            <Grid item>
-              <AddSessions
-                componentOption="button"
-                enrollment={enrollmentData}
-                parentOfCurrentStudent={student.parent}
-              />
+    return (
+        <Grid item xs={12} container>
+            <Grid className="course-session-status" container>
+                <Grid item xs={12}>
+                    <BackButton />
+                    <hr />
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography align="left"
+                        className="course-session-title"
+                        variant="h3">
+                        {course.title}
+                    </Typography>
+                </Grid>
+                <Grid item md={12}>
+                    <Grid alignItems="center"
+                        className="session-actions"
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        spacing={2}>
+                        <Grid item>
+                            <AddSessions componentOption="button"
+                                enrollment={enrollmentData}
+                                parentOfCurrentStudent={student.parent} />
+                        </Grid>
+                        <Grid item>
+                            <ResponsiveButton 
+                                className="button unenroll" 
+                                onClick={openUnenrollDialog}
+                            >
+                                Unenroll Course
+                            </ResponsiveButton>
+                        </Grid>
+                    </Grid>
+                    <Grid className="participants" item xs={12}>
+                        <Typography align="left">
+                            Student:{" "}
+                            <Link to={`/accounts/student/${student.is}`}>
+                                {/* {usersList.StudentList[studentID].name} */}
+                                {fullName(student.user)}
+                            </Link>
+                        </Typography>
+                        <Typography align="left">
+                            Instructor:{" "}
+                            <Link to={`/accounts/instructor/${course.instructor_id}`}>
+                                {/* {usersList.InstructorList[course.instructor_id].name} */}
+                                {fullName(course.instructor.user)}
+                            </Link>
+                        </Typography>
+                        <Typography align="left">
+                            Enrollment Balance Left: ${enrollmentBalance}
+                        </Typography>
+                    </Grid>
+                    {activeTab === 0 && (
+                        <Grid alignItems="flex-start" container item xs={3}>
+                            <Grid item>
+                                <FormControl component="fieldset">
+                                    <FormGroup>
+                                        <FormControlLabel control={
+                                            <Switch checked={highlightSession}
+                                                color="primary"
+                                                onChange={handleHighlightSwitch}
+                                                value="upcoming-session" />
+                                        }
+                                            label="Highlight Upcoming Session" />
+                                    </FormGroup>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    )}
+                </Grid>
+                <Tabs
+                    classes={{indicator: classes.MuiIndicator}} 
+                    className="enrollment-tabs"
+                    onChange={handleTabChange}
+                    value={activeTab}>
+                    <Tab label={
+                        <> Registration </>
+                    } />
+                    <Tab
+                        classes={{wrapper: classes.wrapper}} 
+                        label={
+                        Object.values(enrollmentnoteSet).some(
+                            ({ important }) => important
+                        ) ? (
+                                <> 
+                                    Notes 
+                                    <LabelBadge style={{marginLeft: '8px'}} variant="round-count">1</LabelBadge>
+                                </>
+                            ) : <> Notes </>
+                    } />
+                    <Tab label={
+                        <> Payments </>
+                    } />
+                </Tabs>
+                <br />
+                {mainContent()}
             </Grid>
-            <Grid item>
-              <Button className="button unenroll" onClick={openUnenrollDialog}>
-                Unenroll Course
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid className="participants" item xs={12}>
-            <Typography align="left">
-              Student:{" "}
-              <Link to={`/accounts/student/${student.id}`}>
-                {fullName(student.user)}
-              </Link>
-            </Typography>
-            <Typography align="left">
-              Instructor:{" "}
-              <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                {fullName(course.instructor.user)}
-              </Link>
-            </Typography>
-            <Typography align="left">
-              Enrollment Balance Left: ${enrollmentBalance}
-            </Typography>
-          </Grid>
-          {activeTab === 0 && (
-            <Grid alignItems="flex-start" container item xs={3}>
-              <Grid item>
-                <FormControl component="fieldset">
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={highlightSession}
-                          color="primary"
-                          onChange={handleHighlightSwitch}
-                          value="upcoming-session"
-                        />
-                      }
-                      label="Highlight Upcoming Session"
-                    />
-                  </FormGroup>
-                </FormControl>
-              </Grid>
-            </Grid>
-          )}
+            <Dialog aria-labelledby="warn-unenroll"
+                onClose={closeUnenrollDialog(false)}
+                open={unenrollWarningOpen}>
+                <DialogTitle id="warn-unenroll">Unenroll in {course.title}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        You are about to unenroll in <b>{course.title}</b> for{" "}
+                        <b>{fullName(student.user)}</b>. Performing this
+                        action will credit <b>${enrollmentBalance}</b> back to the parent's
+                        account balance. Are you sure you want to unenroll?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton
+                        variant="outlined"
+                        color="secondary"
+                        onClick={closeUnenrollDialog(true)}
+                    >
+                        Yes, unenroll
+                    </ResponsiveButton>
+                    <ResponsiveButton
+                        variant="outlined"
+                        color="primary"
+                        onClick={closeUnenrollDialog(false)}
+                    >
+                        Cancel
+                    </ResponsiveButton>
+                </DialogActions>
+            </Dialog>
         </Grid>
-        <Tabs
-          className="enrollment-tabs"
-          indicatorColor="primary"
-          onChange={handleTabChange}
-          value={activeTab}
-        >
-          <Tab
-            label={
-              <>
-                <RegistrationIcon className="NoteIcon" /> Registration
-              </>
-            }
-          />
-          <Tab
-            label={
-              Object.values(enrollmentnoteSet).some(
-                ({ important }) => important
-              ) ? (
-                <>
-                  <Avatar className="notificationCourse" />
-                  <NoteIcon className="TabIcon" /> Notes
-                </>
-              ) : (
-                <>
-                  <NoteIcon className="NoteIcon" /> Notes
-                </>
-              )
-            }
-          />
-          <Tab
-            label={
-              <>
-                <PaymentIcon className="TabIcon" /> Payments
-              </>
-            }
-          />
-        </Tabs>
-        <br />
-        {mainContent()}
-      </Grid>
-      <Dialog
-        aria-labelledby="warn-unenroll"
-        onClose={closeUnenrollDialog(false)}
-        open={unenrollWarningOpen}
-      >
-        <DialogTitle id="warn-unenroll">Unenroll in {course.title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            You are about to unenroll in <b>{course.title}</b> for{" "}
-            <b>
-              {student.user.firstName} {student.user.lastName}
-            </b>
-            . Performing this action will credit <b>${enrollmentBalance}</b>{" "}
-            back to the parent's account balance. Are you sure you want to
-            unenroll?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={closeUnenrollDialog(true)}
-          >
-            Yes, unenroll
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={closeUnenrollDialog(false)}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Paper>
-  );
+    );
+
 };
 
 CourseSessionStatus.propTypes = {};

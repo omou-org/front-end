@@ -5,6 +5,8 @@ import {Link, useHistory} from "react-router-dom";
 import NewCourse from "@material-ui/icons/School";
 import Tooltip from "@material-ui/core/Tooltip";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
 import {stringToColor} from "../Accounts/accountUtils";
@@ -28,8 +30,9 @@ query GetRegisteringParent($userId: ID!) {
       id
       lastName
       email
-    }
-    studentList
+	}
+	studentIdList
+    
   }
 }
 `
@@ -101,40 +104,36 @@ const RegistrationActions = () => {
 				<Grid item md={9}>
 					{(currentParent || parentIsLoggedIn) && (
 						<Grid item xs={2}>
-							<Button
+							<ResponsiveButton 
 								aria-controls="simple-menu"
 								aria-haspopup="true"
-								className="button"
 								color="secondary"
 								component={Link} to="/registration/form/class-registration"
 								variant="outlined"
 								data-cy="register-class"
 							>
-								<NewCourse className="icon innerIcon"/>
-								REGISTER CLASS
-							</Button>
+								register class
+							</ ResponsiveButton>
 						</Grid>
 					)}
 				</Grid>
 				<Grid item xs={2}>
 					{registeringParent ? (
 						!data && <Tooltip title="Registering Parent">
-							<Button className="button" onClick={openDialog}>
-								<div
-									className="circle-icon"
-									style={{
-										backgroundColor: stringToColor(parentName),
-									}}
-									data-cy="current-parent"
-								/>
+							<ResponsiveButton 
+								variant='contained'
+								onClick={openDialog}>
 								{parentName}
-							</Button>
+							</ResponsiveButton>
 						</Tooltip>
 					) : (
-						<Button className="button set-parent" onClick={openDialog} data-cy="select-parent">
-							<div className="circle-icon"/>
+						<ResponsiveButton 
+							variant='contained'
+							onClick={openDialog} 
+							data-cy="select-parent"
+						>
 							SET PARENT
-						</Button>
+						</ResponsiveButton>
 					)}
 				</Grid>
 				<Grid item xs={1} style={{ paddingRight: "6vh", verticalAlign: "middle" }}>
@@ -145,7 +144,7 @@ const RegistrationActions = () => {
 					>
 						<Badge
 							data-cy="shopping-cart-num-registrations"
-							badgeContent={numberOfRegistrationsInCart}
+							badgeContent={numberOfRegistrationsInCart || 0}
 							color="primary"
 							showZero
 							anchorOrigin={{

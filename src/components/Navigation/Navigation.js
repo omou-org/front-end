@@ -13,6 +13,9 @@ import {MuiPickersUtilsProvider} from "@material-ui/pickers";
 import OmouTheme from "../../theme/muiTheme";
 import {RootRoutes} from "../Routes/RootRoutes";
 
+import {useQuery} from "@apollo/react-hooks";
+import gql from "graphql-tag";
+
 import AuthenticatedNav from "../Navigation/AuthenticatedNav";
 import {NavList} from "./NavigationAccessList";
 import Loading from "../OmouComponents/Loading";
@@ -27,14 +30,23 @@ const useStyles = makeStyles({
     },
 });
 
+
+const GET_ACCOUNT_INFO_QUERY = gql`
+    query getAccountType($userID: ID!) {
+        userType(userId: $userID, adminTypes: true)
+    }`
+
 const Navigation = () => {
     const classes = useStyles();
     const { token } = useSelector(({ auth }) => auth);
 
     const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
+    const ID = useSelector(({auth}) => auth?.user?.id)
     const NavigationList = NavList[ACCOUNT_TYPE];
 
     const [mobileOpen, setMobileOpen] = useState(false);
+    const {data} = useQuery(GET_ACCOUNT_INFO_QUERY, {"variables": {"userID":ID }})
+    console.log(data)
 
     const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
@@ -44,10 +56,14 @@ const Navigation = () => {
         return <Loading/>
     }
 
+    console.log(NavigationList)
+
     const drawer = (
         <div className="DrawerList">
             <List className="list">
 				{NavigationList && NavigationList.map((NavItem) => (
+                    data?.userType!=="OWNER" && NavItem.name=="Admin" ?
+                    <div/> :
                     <ListItem
                         button
                         className={`listItem ${classes.navigationIconStyle}`}

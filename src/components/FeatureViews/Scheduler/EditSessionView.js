@@ -33,8 +33,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import BackButton from "../../OmouComponents/BackButton";
+import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
+import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
 import "./scheduler.scss";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+
 import { fullName } from "../../../utils";
 
 import moment from "moment";
@@ -627,14 +629,14 @@ const EditSessionView = () => {
                 onSubmit={updateSession}
               > */}
               <Grid item md={6}>
-                <Button
+                <ResponsiveButton
                   className="button"
                   color="secondary"
                   variant="outlined"
                   onClick={handleUpdateSession}
                 >
                   Save
-                </Button>
+                </ResponsiveButton>
               </Grid>
               {/* </InstructorConflictCheck> */}
               <Grid item md={6}>

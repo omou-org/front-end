@@ -8,7 +8,7 @@ import * as hooks from "../../actions/hooks";
 import Loading from "../OmouComponents/Loading";
 import { stringToColor } from "../FeatureViews/Accounts/accountUtils";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 export function CompleteCourseRegistration({
   registeredCourseForm,
@@ -152,19 +152,20 @@ export function CompleteCourseRegistration({
           <Grid item xs={12}>
             <Grid container direction={"row"} justify={"flex-end"}>
               <Grid item>
-                <Button className={"button"}>Add Sessions</Button>
+                <ResponsiveButton variant="outlined" className="button">Add Sessions</ResponsiveButton>
               </Grid>
               <Grid item>
-                <Button
+                <ResponsiveButton
+                  variant="outlined"
                   component={NavLink}
                   to={"/registration"}
-                  className={"button"}
+                  className="button"
                 >
                   Register More
-                  </Button>
+                </ResponsiveButton>
               </Grid>
               <Grid item>
-                <Button
+                <ResponsiveButton
                   component={NavLink}
                   to={"/registration/cart"}
                   variant="contained"
@@ -172,7 +173,7 @@ export function CompleteCourseRegistration({
                   style={{ color: "white" }}
                 >
                   Checkout
-                  </Button>
+                </ResponsiveButton>
               </Grid>
             </Grid>
           </Grid>

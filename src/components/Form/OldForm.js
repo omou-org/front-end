@@ -1533,7 +1533,7 @@ class Form extends Component {
 
     render() {
         if (!this.state.hasLoaded || !this.props.students) {
-            return <Loading paper />;
+            return <Loading />;
         }
         return (
             <Grid
