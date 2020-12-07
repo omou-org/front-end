@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {useSelector} from "react-redux";=
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -16,6 +17,8 @@ import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
+import axios from "axios"; 
+
 import theme, {
   highlightColor,
   activeColor,
@@ -169,10 +172,25 @@ const ClassListItem = ({
   const endingDate = moment(endDate).calendar();
   const currentDate = moment().format("L");
   const isActive = currentDate <= endingDate;
+  const [courses, setCourses] = useState([]);
+  const [isIntegrated, setIsIntegrated] = useState(false);
+  const { google_access_token } = useSelector(({ auth }) => auth);
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
-  
-
+  const resp = axios.get("https://classroom.googleapis.com/v1/courses", {
+                        "headers": {
+                            "Authorization": `Bearer ${google_access_token.tokenObj.access_token}`,
+                        },
+                    });
+  setCourses(resp.data.courses); 
+  function checkCourses(title){
+    courses.forEach((course, index) => {
+      if(course.name == title){
+        setIsIntegrated(true);
+      }
+    })
+  } 
+                    
   return (
     <>
       <Grid
@@ -186,6 +204,9 @@ const ClassListItem = ({
           <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
             {title}
           </Typography>
+        </Grid>
+        <Grid item xs={6} sm={9} md={6}>
+          {isIntegrated ? <img src="https://www.pua.edu.eg/wp-content/uploads/2020/03/98d3a283f98cded8e639957e935bd373.png"/> : ""} 
         </Grid>
         <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
           <Chip

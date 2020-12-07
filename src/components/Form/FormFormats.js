@@ -1025,7 +1025,7 @@ export default {
                     {
                         "name": "totalTuition",
                         "label": "Total Tuition",
-                        "required": true,
+                        // "required": true,
                         "component": <Fields.TextField />,
                         "validator": Yup.number().min(0),
                     },
@@ -1047,7 +1047,6 @@ export default {
                         }
                     }
                     startDate
-                    startTime
                     maxCapacity
                     courseCategory {
                         id
@@ -1055,7 +1054,6 @@ export default {
                     }
                     academicLevel
                     endDate
-                    endTime
                     totalTuition
                     hourlyTuition
                     isConfirmed
@@ -1082,7 +1080,6 @@ export default {
                             "value": user.id,
                         },
                         "startDate": moment(course.startDate, "YYYY-MM-DD"),
-                        "startTime": moment(course.startTime, "HH:mm:ss"),
                     },
                     "tuition": {
                         "academicLevel": course.academicLevel,
@@ -1090,9 +1087,6 @@ export default {
                             "label": course.courseCategory.name,
                             "value": course.courseCategory.id,
                         },
-                        "duration": moment(course.endTime, "HH:mm:ss").diff(
-                            moment(course.startTime, "HH:mm:ss"), "hours", true,
-                        ),
                         "numSessions": moment(course.endDate, "YYYY-MM-DD")
                             .diff(moment(course.startDate, "YYYY-MM-DD"), "weeks") + 1,
                         "hourlyTuition": course.hourlyTuition,
@@ -1108,8 +1102,6 @@ export default {
             mutation CreateCourse(
                 $startDate: DateTime
                 $endDate: DateTime
-                $startTime: Time!
-                $endTime: Time!
                 $academicLevel: AcademicLevelEnum
                 $courseCategory: ID
                 $description: String
@@ -1121,8 +1113,6 @@ export default {
                 $title: String!
             ) {
                 createCourse(
-                    endTime: $endTime
-                    startTime: $startTime
                     title: $title
                     maxCapacity: $maxCapacity
                     isConfirmed: $isConfirmed
@@ -1150,9 +1140,6 @@ export default {
                     "instructor": courseInfo.instructor.value,
                     "endDate": moment(courseInfo.startDate)
                         .add(tuition.numSessions - 1, "w"),
-                    "endTime": moment(courseInfo.startTime).add(tuition.duration, "h")
-                        .format("HH:mm"),
-                    "startTime": courseInfo.startTime.format("HH:mm"),
                 },
                 "tuition": {
                     ...tuition,
