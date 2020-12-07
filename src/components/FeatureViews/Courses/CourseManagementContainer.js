@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {useSelector} from "react-redux";=
+import {useSelector} from "react-redux";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -173,7 +173,6 @@ const ClassListItem = ({
   const currentDate = moment().format("L");
   const isActive = currentDate <= endingDate;
   const [courses, setCourses] = useState([]);
-  const [isIntegrated, setIsIntegrated] = useState(false);
   const { google_access_token } = useSelector(({ auth }) => auth);
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
@@ -183,11 +182,13 @@ const ClassListItem = ({
                         },
                     });
   setCourses(resp.data.courses); 
+
   function checkCourses(title){
     courses.forEach((course, index) => {
       if(course.name == title){
-        setIsIntegrated(true);
+        return true;
       }
+      return false;
     })
   } 
                     
@@ -206,7 +207,7 @@ const ClassListItem = ({
           </Typography>
         </Grid>
         <Grid item xs={6} sm={9} md={6}>
-          {isIntegrated ? <img src="https://www.pua.edu.eg/wp-content/uploads/2020/03/98d3a283f98cded8e639957e935bd373.png"/> : ""} 
+          {checkCourses(title) ? <img src="https://www.pua.edu.eg/wp-content/uploads/2020/03/98d3a283f98cded8e639957e935bd373.png"/> : ""} 
         </Grid>
         <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
           <Chip

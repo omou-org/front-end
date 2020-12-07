@@ -404,8 +404,8 @@ export const tuitionAmount = (courseObject, numSessions) => {
  * @returns "Amount paid"
  * */
 export const getTuitionAmount = (courseObject, numSessions) => {
-    const {startTime, endTime, hourlyTuition} = courseObject;
-    const duration = moment.duration(moment("2020-01-01T" + endTime).diff(moment("2020-01-01T" + startTime))).asHours();
+    const {availabilityList, hourlyTuition} = courseObject;
+    const duration = moment.duration(moment("2020-01-01T" + availabilityList[0].endTime).diff(moment("2020-01-01T" + availabilityList[0].startTime))).asHours();
     return (hourlyTuition * duration * numSessions).toFixed(2);
 };
 

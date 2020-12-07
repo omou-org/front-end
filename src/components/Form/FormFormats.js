@@ -1025,7 +1025,7 @@ export default {
                     {
                         "name": "totalTuition",
                         "label": "Total Tuition",
-                        // "required": true,
+                        "required": true,
                         "component": <Fields.TextField />,
                         "validator": Yup.number().min(0),
                     },
@@ -1099,38 +1099,13 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
-            mutation CreateCourse(
-                $startDate: DateTime
-                $endDate: DateTime
-                $academicLevel: AcademicLevelEnum
-                $courseCategory: ID
-                $description: String
-                $hourlyTuition: Decimal
-                $instructor: ID
-                $isConfirmed: Boolean
-                $maxCapacity: Int
-                $totalTuition: Decimal
-                $title: String!
-            ) {
-                createCourse(
-                    title: $title
-                    maxCapacity: $maxCapacity
-                    isConfirmed: $isConfirmed
-                    instructor: $instructor
-                    hourlyTuition: $hourlyTuition
-                    academicLevel: $academicLevel
-                    courseCategory: $courseCategory
-                    courseType: CLASS
-                    description: $description
-                    endDate: $endDate
-                    startDate: $startDate
-                    totalTuition: $totalTuition
-                ) {
-                    course {
-                        id
-                    }
-                }
-            }            
+            mutation CreateCourse($startDate:DateTime, $endDate:DateTime, $startTime:Time!, $endTime:Time!, $academicLevel:AcademicLevelEnum,$courseCategory:ID, $description:String, $hourlyTuition:Decimal, $instructor:ID, $isConfirmed:Boolean, $maxCapacity:Int, $totalTuition: Decimal, $title:String!) {
+  createCourse(availabilities: {endTime: $endTime, startTime: $startTime}, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
+    course {
+      id
+    }
+  }
+}
             `;
 
             const { courseInfo, tuition } = formData;

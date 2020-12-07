@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {Link, useParams} from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
@@ -131,14 +132,15 @@ const ProfileHeading = ({ ownerID }) => {
 			{(isAdmin && isAuthUser) && (
 				<>
 					<Grid component={Hidden} item mdDown xs={12}>
-						<Button
+						<ResponsiveButton
 							component={Link}
 							to={`/form/${userInfo.accountType.role}/${userInfo.user.id}`}
 							variant="outlined"
+							startIcon={<EditIcon/>}
 						>
 							<EditIcon />
 							Edit Profile
-						</Button>
+						</ResponsiveButton>
 					</Grid>
 					<Grid component={Hidden} item lgUp xs={12}>
 						<Button
@@ -286,6 +288,8 @@ const ProfileHeading = ({ ownerID }) => {
 			{renderEditandAwayButton()}
 			<Grid
 				container
+				align="left"
+				alignItems="center"
 				style={{
 					margin: "10px 0",
 				}}
