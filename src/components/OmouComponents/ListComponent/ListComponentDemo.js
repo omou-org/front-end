@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton'
 import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge'
-import ListComponent, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from './ListComponent'
+import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from './ListDetailedItem'
 
 const GET_COURSES = gql`
   query getCourses {
@@ -44,11 +44,11 @@ const ListComponentDemo = () => {
     if (error) return <p>Error :(</p>;
 
     return (
-        <ListComponent>
+        <ListDetailedItem>
             <ListContent>
                 <ListHeading>
                     <ListBadge>
-                        <LabelBadge label="ACTIVE" variant="status-active"/>
+                        <LabelBadge variant="status-active">ACTIVE</LabelBadge>
                     </ListBadge>
                     <ListTitle>
                         Biology
@@ -80,7 +80,7 @@ const ListComponentDemo = () => {
                     
                 </ListButton>
             </ListActions>
-        </ListComponent>
+        </ListDetailedItem>
     );
 }
 

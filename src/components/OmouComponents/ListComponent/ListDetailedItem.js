@@ -148,7 +148,7 @@ export const ListDivider = () => {
     )
 }
 
-const ListComponent = ({ children }) => {
+const ListDetailedItem = ({ children }) => {
     const classes = useStyles();
     return (
         <Box className={classes.root}>
@@ -159,4 +159,4 @@ const ListComponent = ({ children }) => {
     )
   };
 
-  export default ListComponent;
+  export default ListDetailedItem;

@@ -222,7 +222,7 @@ const ProfileHeading = ({ user }) => {
 				</Grid>
 				<Grid item>
 					<Hidden smDown>
-						<LabelBadge label={capitalizeString(user.role)} variant="outline-gray"/>
+						<LabelBadge variant="outline-gray">{capitalizeString(user.role)}</LabelBadge>
 					</Hidden>
 				</Grid>
 			</Grid>

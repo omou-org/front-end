@@ -15,7 +15,7 @@ import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import Box from "@material-ui/core/Box";
-import ListComponent, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListComponent'
+import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
 import theme, {
   highlightColor,
   activeColor,
@@ -116,14 +116,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const GET_COURSES = gql`
 query getCourses {
   courses {
-    dayOfWeek
     endDate
-    endTime
     title
-    startTime
+    availabilityList {
+      dayOfWeek
+      endTime
+      startTime
+    }
     academicLevel
     startDate
     instructor {
@@ -174,14 +177,13 @@ const ClassListItem = ({
 
 
   return (
-      <ListComponent>
+      <ListDetailedItem>
         <ListContent>
             <ListHeading>
                 <ListBadge>
-                  <LabelBadge 
-                    label={isActive ? "ACTIVE" : "PAST"} 
-                    variant={`status-${isActive ? "active" : "past"}`} 
-                  />
+                  <LabelBadge variant={`status-${isActive ? "active" : "past"}`}>
+                    {isActive ? "ACTIVE" : "PAST"}
+                  </LabelBadge>
                 </ListBadge>
                 <Box onClick={handleClick}>
                   <ListTitle>
@@ -217,7 +219,7 @@ const ClassListItem = ({
                 
             </ListButton>
         </ListActions>
-      </ListComponent>
+      </ListDetailedItem>
   );
 };
 
@@ -429,20 +431,18 @@ const CourseManagementContainer = () => {
       {defaultCourseDisplay.map(
         ({
           title,
-          dayOfWeek,
+          availabilityList,
           endDate,
-          endTime,
-          startTime,
           startDate,
           instructor,
           id,
         }) => (
             <ClassListItem
               title={title}
-              day={dayOfWeek}
+              day={availabilityList[0].dayOfWeek}
               endDate={endDate}
-              endTime={endTime}
-              startTime={startTime}
+              endTime={availabilityList[0].endTime}
+              startTime={availabilityList[0].startTime}
               startDate={startDate}
               instructor={instructor}
               id={id}

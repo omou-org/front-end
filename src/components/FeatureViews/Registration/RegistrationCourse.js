@@ -29,16 +29,18 @@ import UserAvatar from "../Accounts/UserAvatar";
 import { weeklySessionsParser } from "components/Form/FormUtils";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { SIMPLE_COURSE_DATA } from "queryFragments";
-import { fullName, USER_TYPES } from "utils";
+import {SIMPLE_COURSE_DATA} from "queryFragments";
+import {fullName, USER_TYPES, gradeLvl} from "utils";
 
 export const GET_COURSE_DETAILS = gql`
 	query CourseDetails($courseId: ID!){
 		course(courseId: $courseId) {
 			endDate
 			startDate
-			startTime
-			endTime
+			availabilityList {
+				endTime
+				startTime
+			  }
 			description
 			academicLevel
 			maxCapacity
@@ -105,8 +107,7 @@ const RegistrationCourse = () => {
 			title,
 			endDate,
 			startDate,
-			startTime,
-			endTime,
+			availabilityList,
 			description,
 			academicLevel,
 			maxCapacity,
@@ -139,7 +140,7 @@ const RegistrationCourse = () => {
 				<RegistrationActions courseTitle={title} />
 			</Grid>
 			<div className="course-heading">
-				<Typography align="left" variant="h3">
+				<Typography align="left" variant="h1">
 					{title}
 					{isAdmin && (
 						<ResponsiveButton
@@ -194,19 +195,19 @@ const RegistrationCourse = () => {
 						<Typography align="left" className="text">
 							<Moment
 								format="h:mm a"
-								date={startDate + "T" + startTime}
+								date={startDate + "T" + availabilityList[0].startTime}
 							/>
 							{" - "}
 							<Moment
 								format="h:mm a"
-								date={endDate + "T" + endTime}
+								date={endDate + "T" + availabilityList[0].endTime}
 							/>
 						</Typography>
 						<Typography align="left" className="text">
 							<Moment format="dddd" date={startDate} />
 						</Typography>
 						<Typography align="left" className="text">
-							Grade {academicLevel}
+							Grade {gradeLvl(academicLevel)}
 						</Typography>
 					</div>
 				</div>
@@ -228,7 +229,7 @@ const RegistrationCourse = () => {
 							numImportantNotes ? (
 								<>
 									 Notes 
-									 <LabelBadge style={{marginLeft: '8px'}} label={numImportantNotes} variant="round-count"/>
+									 <LabelBadge style={{marginLeft: '8px'}} variant="round-count">{numImportantNotes}</LabelBadge>
 								</>
 							) : <> Notes </>
 						}

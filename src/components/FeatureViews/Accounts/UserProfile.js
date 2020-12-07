@@ -269,7 +269,7 @@ const UserProfile = () => {
 					newTabs[notesIndex] = {
 						...newTabs[notesIndex],
 						icon: (
-							numImportantNotes > 0 && <LabelBadge style={{ marginLeft: '8px' }} label={numImportantNotes} variant="round-count" />
+							numImportantNotes > 0 && <LabelBadge style={{ marginLeft: '8px' }} variant="round-count" >{numImportantNotes}</LabelBadge>
 						),
 					};
 					return newTabs;
