@@ -40,8 +40,6 @@ import { fullName, USER_TYPES } from "utils";
 import generatePassword from "password-generator";
 
 
-
-
 const GET_PROFILE_HEADING_QUERY = {
 	"admin" : gql`
 	query getAdmimUserInfo($userID: ID!) {
@@ -119,8 +117,8 @@ const GET_PROFILE_HEADING_QUERY = {
 }
 
 const RESET_PASSWORD = gql`
-    mutation ResetPassword($password: String!, $token: String!) {
-      resetPassword(newPassword: $password, token: $token) {
+    mutation ResetPassword($password: String!, $userId: ID!) {
+      resetPassword(newPassword: $password, userId: $userId) {
         status
       }
     }
@@ -129,8 +127,6 @@ const RESET_PASSWORD = gql`
 
 const ProfileHeading = ({ ownerID }) => {
   const { accountType } = useParams();
-
-  const token = localStorage.getItem("token");
   
   const [open, setOpen] = useState(false);
   const [openReset, setResetOpen] = useState(false);
@@ -150,24 +146,13 @@ const ProfileHeading = ({ ownerID }) => {
 	
 	if (error) return `Error: ${error}`
   const {userInfo} = data;
-  
-  // const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
 
-  // const handleOpen = useCallback(({ currentTarget }) => {
-  //   setAnchorEl(currentTarget);
-  // }, []);
-
-  // const handleClose = useCallback(() => {
-  //   setAnchorEl(null);
-  // }, []);
+  console.log(userInfo)
+ 
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
-  //   const handleClickOpen = () => {
-  //     seResetOpen(true);
-  //   };
 
   const handleClosePassword = () => {
     setOpen(false);
@@ -179,27 +164,11 @@ const ProfileHeading = ({ ownerID }) => {
     setResetOpen(true);
     const newPassword = generatePassword(8, false, /[\w\?\-]/);
     setPassword(newPassword);
-    console.log(newPassword);
-    console.log(token);
-    // console.log(resetToken);
-    // let isInstructor;
-    // let isParent;
-    // switch (user.role) {
-    // 	case "instructor":
-    // 		isInstructor = true;
-    // 		isParent = false;
-    // 		break;
-    // 	case "parent":
-    // 		isInstructor = false;
-    // 		isParent = true;
-    // 		break;
-    // 	default:
-    // 		break;
-    // }
+   
     resetPassword({
       variables: {
         password: newPassword,
-        token: token,
+        userId: userInfo.user.id,
       },
     });
   };
@@ -207,7 +176,10 @@ const ProfileHeading = ({ ownerID }) => {
   const handleCloseReset = () => {
     setResetOpen(false);
   };
-	
+  
+  console.log(userInfo.accountType)
+
+  console.log(loggedInUserID)
 	// const isAdmin = userInfo.accountType === USER_TYPES.admin;
 	// const isAuthUser = userInfo.user.id === loggedInUserID
   
