@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
+import { TableHeadSecondary } from "theme/ThemedComponents/Table/TableHeadSecondary";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
@@ -18,6 +18,7 @@ import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
+
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -34,13 +35,6 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     width: "3vw",
-  },
-  variablesInfo: {
-    width: "15vw",
-    color: "#666666",
-    fontFamily: "Roboto",
-    fontWeight: 500,
-    fontSize: ".875rem",
   },
   menuSelected: {
     "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
@@ -181,23 +175,23 @@ const Studentenrollment = ({
   return (
     <Grid item xs={12}>
       <TableContainer>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
+        <Table className={classes.table}>
+          <TableHeadSecondary>
             <TableRow>
-              <TableCell className={classes.variablesInfo} align="left">
+              <TableCell>
                 Student
               </TableCell>
-              <TableCell className={classes.variablesInfo} align="left">
+              <TableCell>
                 Parent
               </TableCell>
-              <TableCell className={classes.variablesInfo} align="left">
+              <TableCell>
                 Phone
               </TableCell>
               <TableCell />
               <TableCell />
               <TableCell />
             </TableRow>
-          </TableHead>
+          </TableHeadSecondary>
           <TableBody>
             {enrollmentList
               .sort((firstStudent, secondStudent) =>
