@@ -37,6 +37,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { capitalizeString, fullName } from "../../../utils";
 import moment from "moment";
+import { DayAbbreviation } from "utils";
 
 const StyledMenu = withStyles({
   paper: {
@@ -84,6 +85,7 @@ const GET_SESSION = gql`
         title
         room
         availabilityList {
+          dayOfWeek
           startTime
           endTime
         }
@@ -120,24 +122,30 @@ const GET_SESSION = gql`
 `;
 
 const SessionView = () => {
+  
   const { session_id } = useParams();
-
-  // const [enrolledStudents, setEnrolledStudents] = useState(false);
   const [edit, setEdit] = useState(false);
-  // const [unenroll, setUnenroll] = useState(false);
   const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
-  // const [tutoringActionsAnchor, setTutoringActionsAnchor] = useState(null);
 
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
   });
 
+  const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
+    let start = availabilityList[0].startTime;
+    let end = availabilityList[0].endTime;
+
+    for (let availability of availabilityList) {
+      if (availability.startTime !== start || availability.endTime !== end) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleEditToggle = (cancel) => (event) => {
     event.preventDefault();
     if (!cancel && edit) {
-      // if we're applying to edit session then toggle to edit view
-      //ANNA NEED TO UPDATE THIS FUNCTION
-      //This goes back to session view
       handleToggleEditing(editSelection);
     } else {
       setEdit(!edit);
@@ -172,6 +180,7 @@ const SessionView = () => {
     courseCategory,
     enrollmentSet,
     courseId,
+    availabilityList,
     title,
     instructor,
     room,
@@ -180,7 +189,9 @@ const SessionView = () => {
   const confirmed = course.isConfirmed;
   const course_id = course.id;
 
-  const dayOfWeek = moment(startDatetime).format("dddd")
+  console.log(availabilityList);
+
+  const dayOfWeek = moment(startDatetime).format("dddd");
   const startSessionTime = moment(startDatetime).format("h:mm A");
   const endSessionTime = moment(endDatetime).format("h:mm A");
 
@@ -282,7 +293,15 @@ const SessionView = () => {
           </Grid>
           <Grid item xs={6}>
             <Typography variant="h5">Day(s)</Typography>
-            <Typography>{capitalizeString(dayOfWeek)}</Typography>
+            <Typography>
+              {availabilityList.map(({ dayOfWeek }, index) => {
+                let isLastSessionOfWeek = availabilityList.length - 1 === index;
+                return (
+                  DayAbbreviation[dayOfWeek.toLowerCase()] +
+                  (!isLastSessionOfWeek ? " / " : "")
+                );
+              })}
+            </Typography>
             <Typography>
               {new Date(startDatetime).toLocaleDateString()}
             </Typography>
@@ -290,7 +309,9 @@ const SessionView = () => {
           <Grid item xs={6}>
             <Typography variant="h5">Time</Typography>
             <Typography>
-              {startSessionTime} - {endSessionTime}
+              {sessionsAtSameTimeInMultiDayCourse(availabilityList)
+                ? startSessionTime + " - " + endSessionTime
+                : "Various"}
             </Typography>
           </Grid>
         </Grid>

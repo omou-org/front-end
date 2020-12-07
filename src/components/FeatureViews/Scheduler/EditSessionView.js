@@ -77,8 +77,11 @@ const GET_SESSION = gql`
         id
         isConfirmed
         title
-        startTime
-        endTime
+        availabilityList {
+          startTime
+          endTime
+          dayOfWeek
+        }
         room
         courseCategory {
           id
@@ -121,7 +124,7 @@ const GET_SESSION = gql`
 
 //Should title just be on ALL? Same thing with Subject. Why change the subject on just one?
 
-//Title is fine update subject
+//Title is both, subject just ALL
 
 //The updated session drops to the bottom. They go by id, not by date. UGH
 
@@ -614,6 +617,7 @@ const EditSessionView = () => {
         >
           <Grid item>
             <Grid container>
+              {/* TODO: Update InstructorConflictCheck */}
               {/* <InstructorConflictCheck
                 end={sessionFields.end_time}
                 eventID={

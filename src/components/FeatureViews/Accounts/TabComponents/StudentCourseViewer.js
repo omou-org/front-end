@@ -89,6 +89,7 @@ const StudentCourseViewer = ({ studentID, current }) => {
   }
 
   const { enrollments } = data;
+  console.log(enrollments)
 
   const filterCourseByDate = (endDate) => {
     const inputEndDate = dateTimeToDate(new Date(endDate));
@@ -97,9 +98,24 @@ const StudentCourseViewer = ({ studentID, current }) => {
     return current === inputEndDate >= today;
   };
 
+  const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
+    let start = availabilityList[0].startTime;
+    let end = availabilityList[0].endTime;
+  
+    for (let availability of availabilityList) {
+      if (availability.startTime !== start || availability.endTime !== end) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   const displayedEnrollments = enrollments.filter(({ course }) =>
     filterCourseByDate(course.endDate)
   );
+
+  const startTime = enrollments[0].course.availabilityList[0].startTime.slice(0, 5)
+  const endTime = enrollments[0].course.availabilityList[0].endTime.slice(0, 5)
 
   return (
     <>
@@ -183,7 +199,9 @@ const StudentCourseViewer = ({ studentID, current }) => {
                     </Grid>
                     <Grid item xs={2}>
                       <Typography align="left" className="accounts-table-text">
-                        {enrollment.course.availabilityList.map(
+                        {sessionsAtSameTimeInMultiDayCourse(enrollment.course.availabilityList) ? startTime + " - " + endTime : "various"}
+                        {/* {enrollment.course.availabilityList.map(
+                          
                           ({ startTime, endTime }, index) => {
                             let isFirstSessionOfWeek = 0 === index;
                             if (index === 1) {
@@ -200,7 +218,7 @@ const StudentCourseViewer = ({ studentID, current }) => {
                               endTime.slice(0, 5)
                             );
                           }
-                        )}
+                        )} */}
                       </Typography>
                     </Grid>
                     <Grid item xs={1}>
