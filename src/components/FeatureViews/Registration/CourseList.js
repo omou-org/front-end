@@ -240,7 +240,6 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
                     (moment().diff(moment(endDate), 'days') < 0)))
             .map((course) => {
-                course.enrollmentSet.length = course.maxCapacity;
                 return(
                     <ListDetailedItem
                         key={course.id}
