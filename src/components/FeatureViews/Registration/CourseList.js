@@ -117,12 +117,12 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         },
         update: (cache, { data }) => {
             const newInterest = data.createInterest.interest;
-            console.log(newInterest)
+            
             const cachedInterestList = cache.readQuery({
                 query: GET_PARENT_INTEREST,
                 variables: { "parentId": currentParent.user.id },
             }).interests;
-            console.log(cachedInterestList);
+           
             cache.writeQuery({
                 data: {
                     interests: [...cachedInterestList, newInterest],
@@ -200,7 +200,6 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
 
     const handleInterestRegister = (courseID) => (e) => {
         e.preventDefault();
-        console.log("Hello");
         setInterestCourseID(courseID);
         setOpenInterestDialog(true);
 
