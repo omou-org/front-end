@@ -349,7 +349,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 </DialogActions>
             </DialogContent>
         </Dialog>
-        <Dialog open={openInterestDialog} onClose={() => setOpenInterestDialog(false)} PaperProps={{ style: { "height": "310px", "width": "410px", "padding": "32px" } }}>
+        <Dialog 
+            open={openInterestDialog} 
+            onClose={() => setOpenInterestDialog(false)} 
+            PaperProps={{ style: { "height": "310px", "width": "410px", "padding": "32px" } }}>
                 <Grid container spacing={3}>
                     <Grid item>
                         <Typography variant="h3">Interested?</Typography>
