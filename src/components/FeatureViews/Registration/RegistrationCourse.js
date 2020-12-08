@@ -31,6 +31,7 @@ import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
 import {fullName, USER_TYPES, gradeLvl, sessionsAtSameTimeInMultiDayCourse, DayAbbreviation} from "utils";
+import CourseAvailabilites from "components/OmouComponents/CourseAvailabilities";
 
 export const GET_COURSE_DETAILS = gql`
 	query CourseDetails($courseId: ID!){
@@ -194,42 +195,7 @@ const RegistrationCourse = () => {
 								/>
 							</>
 						)}
-						<Typography align="left" className="text">
-							{sessionsAtSameTimeInMultiDayCourse(availabilityList) 
-							? <>
-								{availabilityList.map((availability, i) => {
-									return <>
-									{DayAbbreviation[availability.dayOfWeek.toLowerCase()]}
-									{i !== availabilityList.length - 1 ? " / " : ", "}
-									</>
-								})}
-								<Moment
-									format="h:mma"
-									date={startDate + "T" + availabilityList[0].startTime}
-								/>
-								{" - "}
-								<Moment
-									format="h:mma"
-									date={endDate + "T" + availabilityList[0].endTime}
-								/>
-							</>
-							 
-							: availabilityList.map((availability, i) => {
-								return <>
-								{DayAbbreviation[availability.dayOfWeek.toLowerCase()] + ", "}
-								<Moment
-									format="h:mma"
-									date={startDate + "T" + availability.startTime}
-								/>
-								{" - "}
-								<Moment
-									format="h:mma"
-									date={endDate + "T" + availability.endTime}
-								/>
-								{i !== availabilityList.length - 1 && " / "}
-								</>
-							})}
-						</Typography>
+						<CourseAvailabilites availabilityList={availabilityList}/>
 						<Typography align="left" className="text">
 							Grade {gradeLvl(academicLevel)}
 						</Typography>
