@@ -17,6 +17,7 @@ import Loading from "../../OmouComponents/Loading";
 import BackButton from "../../OmouComponents/BackButton";
 import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
+import CourseAvailabilities from "../../OmouComponents/CourseAvailabilities";
 import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
 import ClassEnrollmentList from "./ClassEnrollmentList";
@@ -290,12 +291,9 @@ const CourseClasses = () => {
           >
             Time
             </Typography>
-          <Typography
-            variant="body1"
-            align="left"
-            className={classes.dataFontDate}
-          >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}
-          </Typography>
+          <CourseAvailabilities 
+              availabilityList={availabilityList}
+              variant="body1"/>
         </Grid>
       </Grid>
       <Grid container justify="flex-start" style={{ marginTop: "2em" }}>

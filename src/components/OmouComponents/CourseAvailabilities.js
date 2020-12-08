@@ -3,7 +3,7 @@ import { Typography } from "@material-ui/core";
 import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from "utils";
 import moment from "moment";
 
-const CourseAvailabilites = ({ availabilityList, style }) => {
+const CourseAvailabilites = ({ availabilityList, variant="body2", style }) => {
 
     const formatAvailabilites = (availabilityList) => {
         let day;
@@ -35,9 +35,10 @@ const CourseAvailabilites = ({ availabilityList, style }) => {
         }
 
     }
-
+    
     return (
-        <Typography align="left" className="text" style={{...style}}>
+        <Typography align="left" 
+                    style={{...style}} variant={variant}>
             {formatAvailabilites(availabilityList)}
         </Typography>
     )
