@@ -13,7 +13,8 @@ import moment from "moment";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "components/OmouComponents/Loading";
-import { DayAbbreviation } from "utils";
+import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from "utils";
+
 
 export const GET_INSTRUCTOR_ENROLLMENTS = gql`
   query InstructorEnrollments($instructorID: ID!) { 
@@ -33,19 +34,6 @@ export const GET_INSTRUCTOR_ENROLLMENTS = gql`
     }
   }
 `;
-
-
-const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-  let start = availabilityList[0].startTime;
-  let end = availabilityList[0].endTime;
-
-  for (let availability of availabilityList) {
-    if (availability.startTime !== start || availability.endTime !== end) {
-      return false;
-    }
-  }
-  return true;
-}
 
 const InstructorCourses = ({ instructorID }) => {
 
