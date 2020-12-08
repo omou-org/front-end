@@ -29,6 +29,7 @@ import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/Respons
 import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
 import { buttonBlue, gloom, white } from "theme/muiTheme";
 import { Grid } from "@material-ui/core";
+import ParentCourseInterestBtn from "./ParentCourseInterestBtn";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -240,6 +241,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             .filter(({courseType, endDate, id}) => ((courseType === "CLASS") &&
                     (moment().diff(moment(endDate), 'days') < 0)))
             .map((course) => {
+                course.enrollmentSet.length = course.maxCapacity
                 return(
                     <ListDetailedItem
                         key={course.id}
@@ -291,27 +293,12 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     >
                                         register
                                     </ResponsiveButton>
-                                    : isCourseOnParentInterestList(course.id)
-                                        ? <ResponsiveButton
-                                            disabled={isCourseOnParentInterestList(course.id)}
-                                            variant="outlined"
-                                            onClick={handleInterestRegister(course.id)}
-                                            data-cy="add-interest-button"
-                                            style={{ color: buttonBlue, border: "none", background: white }}
-                                            startIcon={<CheckIcon />}
-                                        >
-                                            interested
-                                        </ResponsiveButton>
-                                        : <ResponsiveButton
-                                            disabled={isCourseOnParentInterestList(course.id)}
-                                            variant="outlined"
-                                            onClick={handleInterestRegister(course.id)}
-                                            data-cy="add-interest-button"
-                                            style={{ color: gloom }}
-                                            startIcon={<AddIcon />}
-                                        >
-                                            interest
-                                        </ResponsiveButton>}
+                                    :<ParentCourseInterestBtn 
+                                        courseID ={course.id}
+                                        isCourseOnParentInterestList={isCourseOnParentInterestList}
+                                        handleInterestRegister={handleInterestRegister}
+                                        />
+                                }
                             </ListButton>
                         </ListActions>
                     </ListDetailedItem>)
