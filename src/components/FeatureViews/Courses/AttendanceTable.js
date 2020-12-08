@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -90,7 +90,7 @@ export const GET_ATTENDANCE = gql`query getAttendance($courseId: ID!) {
   }
 }`;
 
-export const UPDATE_ATTENDANCE_STATUS = gql`mutation UpdateAttendanceStatus($attendanceId: ID!, $status: String) {
+export const UPDATE_ATTENDANCE_STATUS = gql`mutation UpdateAttendanceStatus($attendanceId: ID!, $status: AttendanceStatusEnum!) {
   __typename
   updateAttendance(id: $attendanceId, status: $status) {
     attendance {
@@ -110,6 +110,18 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     const [currentSessionId, setCurrentSessionId] = useState("");
     const [studentAttendanceData, setStudentAttendanceData] = useState();
     const [sortByAlphabet, setSortByAlphabet] = useState("");
+
+    useEffect(() => {
+      let tempObj = {}
+      return studentAttendanceData?.map(({ idSet }) => {
+        idSet.find(({ status, sessionId }) => {
+          if(status !== "UNSET") {
+            tempObj[sessionId] = "done"
+            setEditState({...editState, ...tempObj})
+          }
+        });
+      });
+    }, [studentAttendanceData]);
 
     const { data, loading, error} = useQuery(GET_ATTENDANCE, {
         variables: { courseId: id },
@@ -137,9 +149,6 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
 
     const [updateAttendance, updateAttendanceResult] = useMutation(UPDATE_ATTENDANCE_STATUS, {
       error: (err) => console.error(err),
-      update: (cache, { data }) => {
-        
-      }
     });
   
     // const attendance = useQuery(GET_ATTENDANCE1, {
@@ -156,7 +165,13 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
 
     const checkEditState = (id) => editState[id] === "noSelect" || editState[id] === "beginEdit" || editState[id] === "edited";
     const checkEditState2 = (id) => editState[id] === "noSelect"|| editState[id] === "edited";
-
+    const checkAttendanceValue = (attendanceArray) => {
+      return attendanceArray.reduce((a, b) => {
+        a.push(...b.idSet)
+        return a
+      },[])
+      .map(({ status }) => status !== "UNSET")
+    };
     const handleEdit = e => {
       const sessionId = e.currentTarget.getAttribute("id")
         if(isEdit[sessionId] === false) {
@@ -171,7 +186,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         }  
     };
 
-    const handleClick = (e) => {
+    const handleClick = async (e) => {
       const attendanceValue = e.currentTarget.value;
       const arrayIndex = e.currentTarget.getAttribute("data-studentIndex");
       const attendanceIndex = e.currentTarget.getAttribute("data-attendanceIndex");
@@ -179,9 +194,14 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       const updatedAttendanceStatus = studentAttendanceData[arrayIndex].idSet.map((id) => id.attendanceId === attendanceId ? {...id, status: attendanceValue} : id);
       const arrOfObj = { ...studentAttendanceData[arrayIndex], idSet: updatedAttendanceStatus }
       studentAttendanceData[arrayIndex] = arrOfObj
+      // console.log(attendanceId)
+      // console.log(attendanceValue)
       if(attendanceValue !== "") {
         setStudentAttendanceData(studentAttendanceData)
         setEditState({...editState, [attendanceIndex]: "edited"})
+        await updateAttendance({
+          variables: { attendanceId, status: attendanceValue}
+        });
       };
     };
 
@@ -243,7 +263,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     // console.log(color)
     // console.log(newClassData)
     // console.log(isEdit);
-    // console.log(studentAttendanceData)
+    console.log(studentAttendanceData)
     // console.log(sessions)
     // console.log(editState)
     // console.log(attendanceRecord)
@@ -260,7 +280,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
             .map(({ startDatetime, id }, i) => (
         <TableCell className={classes.tableCell}>
           {`Session ${i + 1} (${moment(startDatetime).calendar()})`}
-        {checkEditState(id) ? 
+        {(checkEditState(id)) ? 
         <Checkbox
         checked={isEdit[id]}
         onChange={handleEdit}
