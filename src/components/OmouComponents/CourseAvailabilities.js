@@ -3,32 +3,28 @@ import { Typography } from "@material-ui/core";
 import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from "utils";
 import moment from "moment";
 
-const CourseAvailabilites = ({ availabilityList, variant="body2", style }) => {
+const CourseAvailabilites = ({ availabilityList, variant, style, rest }) => {
 
-    const formatAvailabilites = (availabilityList) => {
-        let day;
-        let startTime;
-        let endTime;
+    const renderCourseAvailabilitiesString = (availabilityList) => {
 
         if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
 
-            let days = availabilityList.reduce((allDays, { dayOfWeek }, index) => {
+            const days = availabilityList.reduce((allDays, { dayOfWeek }, index) => {
                 return allDays + DayAbbreviation[dayOfWeek.toLowerCase()] + (index !== availabilityList.length - 1 ? " / " : ", ");
             }, "")
 
-            startTime = moment(availabilityList[0].startTime, ["HH:mm:ss"]).format("h:mma");
-            endTime = moment(availabilityList[0].endTime, ["HH:mm:ss"]).format("h:mma");
+            const startTime = moment(availabilityList[0].startTime, ["HH:mm:ss"]).format("h:mma");
+            const endTime = moment(availabilityList[0].endTime, ["HH:mm:ss"]).format("h:mma");
 
             return `${days}${startTime} - ${endTime}`;
 
         }
         else {
-            console.log("second")
             return availabilityList.reduce((allAvailabilites, availability, i) => {
 
-                day = DayAbbreviation[availability.dayOfWeek.toLowerCase()];
-                startTime = moment(availability.startTime, ["HH:mm:ss"]).format("h:mma");
-                endTime = moment(availability.endTime, ["HH:mm:ss"]).format("h:mma");
+                const day = DayAbbreviation[availability.dayOfWeek.toLowerCase()];
+                const startTime = moment(availability.startTime, ["HH:mm:ss"]).format("h:mma");
+                const endTime = moment(availability.endTime, ["HH:mm:ss"]).format("h:mma");
     
                 return allAvailabilites + `${day}, ${startTime} - ${endTime}${i !== availabilityList.length - 1 ? " / " : ""}` 
             }, "")
@@ -37,9 +33,9 @@ const CourseAvailabilites = ({ availabilityList, variant="body2", style }) => {
     }
     
     return (
-        <Typography align="left" 
+        <Typography align="left" {...rest}
                     style={{...style}} variant={variant}>
-            {formatAvailabilites(availabilityList)}
+            {renderCourseAvailabilitiesString(availabilityList)}
         </Typography>
     )
 }
