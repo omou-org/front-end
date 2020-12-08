@@ -113,6 +113,7 @@ const CourseClasses = () => {
         description
         instructor {
           user {
+            id
             firstName
             lastName
           }

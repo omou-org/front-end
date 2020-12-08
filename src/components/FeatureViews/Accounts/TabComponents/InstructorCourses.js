@@ -1,48 +1,63 @@
-import * as hooks from "actions/hooks";
-import React, {useMemo} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
 
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Grid from "@material-ui/core/Grid";
-import Loading from "components/OmouComponents/Loading";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-import LoadingError from "./LoadingCourseError";
 import Moment from "react-moment";
+import moment from "moment";
 
-import {courseDateFormat} from "utils";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
+import Loading from "components/OmouComponents/Loading";
+import { DayAbbreviation } from "utils";
 
-export const GET_INSTRUCTOR_ENROLLMENTS = `
-  query InstructorEnrollments($instructorId) { 
-    courses(filter: { instructor.user.id: $instructorId){
+export const GET_INSTRUCTOR_ENROLLMENTS = gql`
+  query InstructorEnrollments($instructorID: ID!) { 
+    courses(instructorId: $instructorID) {
+      id
+      description
+      startDate
+      endDate
+      isConfirmed
       title
+      availabilityList {
+        id
+        dayOfWeek
+        endTime
+        startTime
+      }
     }
   }
 `;
 
-const InstructorCourses = ({ instructorID }) => {
-  const courses = useSelector(({ Course }) => Course.NewCourseList);
-  const courseStatus = hooks.useCourse();
 
-  const courseIDs = useMemo(
-    () =>
-      Object.keys(courses).filter(
-        (courseID) => instructorID === courses[courseID].instructor_id
-      ),
-    [courses, instructorID]
-  );
+const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
+  let start = availabilityList[0].startTime;
+  let end = availabilityList[0].endTime;
 
-  if (Object.keys(courses).length === 0) {
-    if (hooks.isLoading(courseStatus)) {
-      return <Loading />;
-    }
-    if (hooks.isFail(courseStatus)) {
-      return <LoadingError error="courses" />;
+  for (let availability of availabilityList) {
+    if (availability.startTime !== start || availability.endTime !== end) {
+      return false;
     }
   }
+  return true;
+}
+
+const InstructorCourses = ({ instructorID }) => {
+
+  const { loading, error, data } = useQuery(GET_INSTRUCTOR_ENROLLMENTS, {
+		variables: {instructorID}
+	})
+
+	if (loading ) return <Loading small/>;
+
+  if ( error ) return  <Typography>There was an error {error.message}</Typography>;
+  
+  const { courses } = data;
 
   return (
     <Grid container>
@@ -50,7 +65,7 @@ const InstructorCourses = ({ instructorID }) => {
         <Grid className="accounts-table-heading" container>
           <Grid item xs={4}>
             <Typography align="left" className="table-header">
-				Course
+				      Course
             </Typography>
           </Grid>
           <Grid item xs={3}>
@@ -76,72 +91,67 @@ const InstructorCourses = ({ instructorID }) => {
         </Grid>
       </Grid>
       <Grid container direction="row-reverse" spacing={1}>
-        {courseIDs
-          .sort(
-            (courseA, courseB) =>
-              new Date(courses[courseB].schedule.start_date) -
-              new Date(courses[courseA].schedule.start_date)
-          )
-          .map((courseID) => {
-            const course = courses[courseID];
-            const {
-              is_confirmed,
-            } = courseDateFormat(course);
+        {courses
+          .sort((courseA, courseB) => moment(courseB.startDate).diff(moment(courseA.startDate)))
+          .map(({id, title, startDate, endDate, isConfirmed, availabilityList}) => {
+
             return (
               <Grid
                 className="accounts-table-row"
                 component={Link}
                 item
-                key={courseID}
-                to={`/registration/course/${courseID}`}
+                key={id}
+                to={`/registration/course/${id}`}
                 xs={12}
               >
                 <Paper elevation={2} square>
                   <Grid container>
                     <Grid item xs={4}>
-                      <Typography align="left">{course.title}</Typography>
+                      <Typography align="left">{title}</Typography>
                     </Grid>
                     <Grid item xs={3}>
                       <Typography align="left">
                         <Moment
                             format="MMM D YYYY"
-                            date={course.schedule.start_date}
+                            date={startDate}
                         />
                         {` - `}
                         <Moment
                             format="MMM D YYYY"
-                            date={course.schedule.end_date}
+                            date={endDate}
                         />
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
                       <Typography align="left">
-                        <Moment
-                            format="dddd"
-                            date={course.schedule.start_date}
-                        />
+                        {availabilityList.map(({dayOfWeek}, index) => {
+                          let isLastSessionOfWeek = availabilityList.length - 1 === index;
+                          return DayAbbreviation[dayOfWeek.toLowerCase()] + (!isLastSessionOfWeek ? ", " : "");
+                        })}
+                        
                       </Typography>
                     </Grid>
                     <Grid item xs={2}>
-                      <Typography align="left">
-                        <Moment
-                            format="h:mm a"
-                            date={
-                              course.schedule.start_date +
-                              course.schedule.start_time
-                            }
-                        />
-                        {` - `}
-                        <Moment
-                            format="h:mm a"
-                            date={
-                              course.schedule.end_date + course.schedule.end_time
-                            }
-                        />
-                      </Typography>
+                      {sessionsAtSameTimeInMultiDayCourse(availabilityList) 
+                      ? <Typography align="left">
+                          <Moment
+                              format="h:mm a"
+                              date={
+                                startDate + " " + availabilityList[0].startTime
+                              }
+                          />
+                          {' - '}   
+                          <Moment
+                              format="h:mm a"
+                              date={
+                                endDate + " " + availabilityList[0].endTime
+                              }
+                          />
+                        </Typography>
+                      : "Various"}
                     </Grid>
                     <Grid item md={1}>
-                      {is_confirmed ? (
+                      {isConfirmed ? (
                         <ConfirmIcon className="confirmed course-icon" />
                       ) : (
                           <UnconfirmIcon className="unconfirmed course-icon"/>
