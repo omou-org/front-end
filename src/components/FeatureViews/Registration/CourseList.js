@@ -101,6 +101,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const history = useHistory();
 
     const [openCourseQuickRegistration, setOpenQuickRegister] = useState(false);
+    const [openInterestDialog, setOpenInterestDialog] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [interestCourseID, setInterestCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
@@ -218,9 +219,8 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         return false;
     }
 
-    const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
-        return ((course.maxCapacity <= course.enrollmentSet.length) &&
-            (previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
+    const shouldDisableQuickRegister = ({ course, enrolledCourseIds, registrations, studentList }) => {
+        return ((previouslyEnrolled(course.id, enrolledCourseIds, registrations, studentList)))
     }
 
 
@@ -274,18 +274,40 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                 {course.enrollmentSet.length} / {course.maxCapacity}
                             </ListStatus>
                             <ListButton>
-                                <ResponsiveButton
-                                    disabled={shouldDisableQuickRegister({
-                                        course, enrolledCourseIds,
-                                        registrations, studentIdList
-                                    })}                                    
-                                    variant="contained"
-                                    onClick={handleStartQuickRegister(course.id)}
-                                    data-cy="quick-register-class"
-                                    startIcon={<AddIcon />}
-                                >
-                                    register
-                                </ResponsiveButton>
+                                {course.enrollmentSet.length < course.maxCapacity
+                                    ? <ResponsiveButton
+                                        disabled={shouldDisableQuickRegister({
+                                            course, enrolledCourseIds,
+                                            registrations, studentIdList
+                                        })}
+                                        variant="contained"
+                                        onClick={handleStartQuickRegister(course.id)}
+                                        data-cy="quick-register-class"
+                                        startIcon={<AddIcon />}
+                                    >
+                                        register
+                                    </ResponsiveButton>
+                                    : inParentInterestList(course.id)
+                                        ? <ResponsiveButton
+                                            disabled={inParentInterestList(course.id)}
+                                            variant="outlined"
+                                            onClick={handleInterestRegister(course.id)}
+                                            data-cy="add-interest-button"
+                                            style={{ color: buttonBlue, border: "none", background: white }}
+                                            startIcon={<CheckIcon />}
+                                        >
+                                            interested
+                                        </ResponsiveButton>
+                                        : <ResponsiveButton
+                                            disabled={inParentInterestList(course.id)}
+                                            variant="outlined"
+                                            onClick={handleInterestRegister(course.id)}
+                                            data-cy="add-interest-button"
+                                            style={{ color: gloom }}
+                                            startIcon={<AddIcon />}
+                                        >
+                                            interest
+                                        </ResponsiveButton>}
                             </ListButton>
                         </ListActions>
                     </ListDetailedItem>)
