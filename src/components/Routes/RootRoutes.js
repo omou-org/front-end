@@ -26,6 +26,7 @@ import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
+import DemoRoutes from './DemoRoutes';
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -35,6 +36,8 @@ import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
+import StudentCourseViewer from "components/FeatureViews/Accounts/TabComponents/StudentCourseViewer";
+import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
 
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 
@@ -61,6 +64,12 @@ export const RootRoutes = () => {
             <Route path="/new/:type?">
                 <NewAccount/>
             </Route>
+            
+            {/* Dahl Design Migration Demos */}
+            <Route path="/demo/:type">
+                <DemoRoutes/>
+            </Route>
+
 
             {/* Route for Testing AddItemButton */}
             <Route path="/demos/AddItemButton">
@@ -189,9 +198,6 @@ export const RootRoutes = () => {
                 <ErrorNotFoundPage />
             </AuthenticatedRoute>
             <Redirect to="/PageNotFound" />
-
-
-            
 
         </Switch>
     );
