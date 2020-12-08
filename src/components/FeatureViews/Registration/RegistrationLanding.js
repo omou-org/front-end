@@ -52,6 +52,7 @@ export const GET_COURSES = gql`
             availabilityList {
                 endTime
                 startTime
+                dayOfWeek
               }
             startDate
             title

@@ -359,14 +359,12 @@ const CourseSessionStatus = () => {
                         <Typography align="left">
                             Student:{" "}
                             <Link to={`/accounts/student/${student.is}`}>
-                                {/* {usersList.StudentList[studentID].name} */}
                                 {fullName(student.user)}
                             </Link>
                         </Typography>
                         <Typography align="left">
                             Instructor:{" "}
                             <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                                {/* {usersList.InstructorList[course.instructor_id].name} */}
                                 {fullName(course.instructor.user)}
                             </Link>
                         </Typography>
