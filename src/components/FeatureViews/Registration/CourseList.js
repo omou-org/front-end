@@ -154,7 +154,8 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const {courseTitle, courseRow} = useStyles();
 
     if (studentEnrollmentsLoading || parentInterestListLoading) return <Loading small/>;
-    if (studentEnrollmentsError || parentInterestError) return <div>There has been an error!</div>;
+    if (studentEnrollmentsError) return <div>There has been an error: {studentEnrollments.message} </div>;
+    if (parentInterestError) return <div>There has been an error: {parentInterestError.message} </div>;
 
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
