@@ -28,7 +28,7 @@ import * as types from "actions/actionTypes";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
 import { buttonBlue, gloom, white } from "theme/muiTheme";
-import { Grid } from "@material-ui/core";
+import { DialogContentText, Grid } from "@material-ui/core";
 import ParentCourseInterestBtn from "./ParentCourseInterestBtn";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
@@ -99,6 +99,12 @@ const useStyles = makeStyles((theme) => ({
     "courseRow": {
         textDecoration: "none"
     },
+    "interestDialogHeading": {
+        paddingLeft: "0px"
+    },
+    "interestDialogText": {
+        marginBottom: "20px"
+    }
 }));
 
 const CourseList = ({ filteredCourses, updatedParent }) => {
@@ -152,7 +158,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         skip: !parentIsLoggedIn,
     })
 
-    const {courseTitle, courseRow} = useStyles();
+    const classes = useStyles();
 
     if (studentEnrollmentsLoading || parentInterestListLoading) return <Loading small/>;
     if (studentEnrollmentsError) return <div>There has been an error: {studentEnrollments.message} </div>;
@@ -340,40 +346,36 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             open={openInterestDialog} 
             onClose={() => setOpenInterestDialog(false)} 
             PaperProps={{ style: { "height": "310px", "width": "410px", "padding": "32px" } }}>
-                <Grid container spacing={3}>
-                    <Grid item>
-                        <Typography variant="h3">Interested?</Typography>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
-                    </Grid>
-                    <Grid item style={{ "marginBottom": "20px" }}>
-                        <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
-                    </Grid>
-                    <Grid container justify={"flex-end"}>
-                        <DialogActions>
-                            <ResponsiveButton
-                                data-cy="cancel-add-interest"
-                                onClick={() => setOpenInterestDialog(false)}
-                                variant="outlined"
-                                color="primary"
-                                style={{ border: "none" }}
-                            >
-                                Cancel
-                            </ResponsiveButton>
-                            <ResponsiveButton
-                                data-cy="confirm-add-interest"
-                                onClick={handleAddInterest}
-                                variant="outlined"
-                                color="primary"
-                                style={{ border: "none" }}
-                            >
-                                Notify Me
-                            </ResponsiveButton>
-                        </DialogActions>
-                    </Grid>
-
-                </Grid>
+                
+            <DialogTitle disableTypography className={classes.interestDialogHeading}>
+                <Typography variant="h3">Interested?</Typography>
+            </DialogTitle>
+            <DialogContentText classname={classes.interestDialogText}>
+                <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
+            </DialogContentText>
+            <DialogContentText item classname={classes.interestDialogText}>
+                <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
+            </DialogContentText>
+            <DialogActions>
+                <ResponsiveButton
+                    data-cy="cancel-add-interest"
+                    onClick={() => setOpenInterestDialog(false)}
+                    variant="outlined"
+                    color="primary"
+                    style={{ border: "none" }}
+                >
+                    Cancel
+                </ResponsiveButton>
+                <ResponsiveButton
+                    data-cy="confirm-add-interest"
+                    onClick={handleAddInterest}
+                    variant="outlined"
+                    color="primary"
+                    style={{ border: "none" }}
+                >
+                    Notify Me
+                </ResponsiveButton>
+            </DialogActions>
             </Dialog>
         </>
     )
