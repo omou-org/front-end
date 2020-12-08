@@ -140,10 +140,17 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         skip: !studentIdList,
     });
 
+    const { data: parentInterestList, loading: parentInterestListLoading, error: parentInterestError } = useQuery(GET_PARENT_INTEREST, {
+        "variables": {
+            "parentId": currentParent?.user.id,
+        },
+        skip: !parentIsLoggedIn,
+    })
+
     const {courseTitle, courseRow} = useStyles();
 
-    if (studentEnrollmentsLoading) return <Loading small/>;
-    if (studentEnrollmentsError) return <div>There has been an error!</div>;
+    if (studentEnrollmentsLoading || parentInterestListLoading) return <Loading small/>;
+    if (studentEnrollmentsError || parentInterestError) return <div>There has been an error!</div>;
 
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
