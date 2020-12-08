@@ -216,7 +216,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         })
     }
 
-    const inParentInterestList = (courseID) => {
+    const isCourseOnParentInterestList = (courseID) => {
         if (parentInterestList) {
             return parentInterestList.interests.some((interest) => interest.course.id === courseID);
         }
@@ -291,9 +291,9 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                     >
                                         register
                                     </ResponsiveButton>
-                                    : inParentInterestList(course.id)
+                                    : isCourseOnParentInterestList(course.id)
                                         ? <ResponsiveButton
-                                            disabled={inParentInterestList(course.id)}
+                                            disabled={isCourseOnParentInterestList(course.id)}
                                             variant="outlined"
                                             onClick={handleInterestRegister(course.id)}
                                             data-cy="add-interest-button"
@@ -303,7 +303,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                             interested
                                         </ResponsiveButton>
                                         : <ResponsiveButton
-                                            disabled={inParentInterestList(course.id)}
+                                            disabled={isCourseOnParentInterestList(course.id)}
                                             variant="outlined"
                                             onClick={handleInterestRegister(course.id)}
                                             data-cy="add-interest-button"
