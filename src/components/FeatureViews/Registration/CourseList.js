@@ -130,25 +130,25 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         onError: (error) => console.log(error),
 
     });
-
+    
+    const {parentIsLoggedIn} = useValidateRegisteringParent();
     const dispatch = useDispatch();
 
     const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-    const {data, loading, error} = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
+    const { data: studentEnrollments, loading: studentEnrollmentsLoading, error: studentEnrollmentsError } = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
         "variables": {"userIds": studentIdList},
         skip: !studentIdList,
     });
 
-    const {parentIsLoggedIn} = useValidateRegisteringParent();
     const {courseTitle, courseRow} = useStyles();
 
-    if (loading) return <Loading small/>;
-    if (error) return <div>There has been an error!</div>;
+    if (studentEnrollmentsLoading) return <Loading small/>;
+    if (studentEnrollmentsError) return <div>There has been an error!</div>;
 
     const validRegistrations = Object.values(registrationCartState)
         .filter(registration => registration);
     const registrations = validRegistrations && [].concat.apply([], validRegistrations);
-    const studentOptions = studentIdList && data.userInfos
+    const studentOptions = studentIdList && studentEnrollments.userInfos
         .filter(({user}) => (!registrations.find(({course, student}) =>
                 (course.id === quickCourseID && user.id === student))
         ))
@@ -157,7 +157,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             "value": student.user.id,
         })) || [];
 
-    const enrolledCourseIds = data?.enrollments.map(({course}) => course.id);
+    const enrolledCourseIds = studentEnrollments?.enrollments.map(({course}) => course.id);
     const previouslyEnrolled = (courseId, enrolledCourseIds, registrations, studentList) => {
         const validRegistrations = Object.values(registrations)
             .filter(registration => registration);
