@@ -34,7 +34,7 @@ import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import BackButton from "../../OmouComponents/BackButton";
 import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
-import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
+import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import "./scheduler.scss";
 
 import { fullName } from "../../../utils";
@@ -73,6 +73,14 @@ const GET_SESSION = gql`
       id
       isConfirmed
       startDatetime
+      title
+      instructor {
+        user {
+          id
+          firstName
+          lastName
+        }
+      }
       course {
         id
         isConfirmed
@@ -113,38 +121,33 @@ const GET_SESSION = gql`
   }
 `;
 
-///this session should be session.isConfirmed
-//all session should be session.course.isConfirmed
-//instructor should be from course
 
 //ANNA
-//Need to have startDatetime for course as well??? Same thing that was done for confirmed
-
-//remove subject update from ALL
-
-//Should title just be on ALL? Same thing with Subject. Why change the subject on just one?
-
-//Title is both, subject just ALL
+//Need to have startTime/endTime for course as well??? 
 
 //The updated session drops to the bottom. They go by id, not by date. UGH
 
-//All stuff on top of enrollmentView should be course
-//Everything else needs to be session
+//Make room specific for each
+//CANNOT do, session does not have room query, reach out to back end
 
-//is confirmed course is not necessary, clean queries and then remove is confirmed field from all
+//Do we want to be able to update start time of all with availability list?
+
+//Time breaks current session update - still works
+//availabilityList breaks all session update - still works
 
 const UPDATE_SESSION = gql`
   mutation UpdateSession(
     $sessionId: ID!
-    $title: String
+    $sessionTitle: String
+    $courseTitle: String
     $sessionStartDatetime: DateTime
     $sessionConfirmed: Boolean
-    $courseConfirmed: Boolean
-    $room: String
-    $instructor: ID
+    $sessionRoom: String
+    $sessionInstructor: ID
+    $courseInstructor: ID
     $sessionEndDatetime: DateTime
-    $courseStartDatetime: Time
-    $courseEndDatetime: Time
+    $courseStartTime: Time
+    $courseEndTime: Time
     $courseCategoryId: ID!
     $courseCategoryName: String
     $courseId: ID!
@@ -154,12 +157,23 @@ const UPDATE_SESSION = gql`
       startDatetime: $sessionStartDatetime
       isConfirmed: $sessionConfirmed
       endDatetime: $sessionEndDatetime
+      title: $sessionTitle
+      instructor: $sessionInstructor
     ) {
       session {
         id
         startDatetime
         isConfirmed
         endDatetime
+        title
+        instructor {
+          user {
+            id
+            firstName
+            lastName
+            email
+          }
+        }
       }
     }
     createCourseCategory(id: $courseCategoryId, name: $courseCategoryName) {
@@ -170,18 +184,17 @@ const UPDATE_SESSION = gql`
     }
     createCourse(
       id: $courseId
-      isConfirmed: $courseConfirmed
-      title: $title
+      title: $courseTitle
       room: $room
-      instructor: $instructor
-      startTime: $courseStartDatetime
-      endTime: $courseEndDatetime
+      instructor: $courseInstructor
+      availabilities: { startTime: $courseStartTime, endTime: $courseEndTime }
     ) {
       course {
         id
-        isConfirmed
-        startTime
-        endTime
+        availabilityList {
+          startTime
+          endTime
+        }
         title
         room
         instructor {
@@ -241,7 +254,11 @@ const EditSessionView = () => {
         query: GET_SESSION,
         data: {
           //add a sort?
-          session: [...existingSession, ...data["updateSession"].session].sort((a, b) => {return a.id - b.id}),
+          session: [...existingSession, ...data["updateSession"].session].sort(
+            (a, b) => {
+              return a.id - b.id;
+            }
+          ),
         },
         variables: {
           sessionId: session_id,
@@ -348,8 +365,12 @@ const EditSessionView = () => {
   };
 
   const setFromMigration = (response) => {
+    console.log(response);
     let confirmedState;
     let startDatetime;
+    let checkTitle;
+    let instructorValue;
+    let instructorLabel;
     if (location.state === undefined) {
       history.push(
         `/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`
@@ -359,20 +380,25 @@ const EditSessionView = () => {
         case "current": {
           confirmedState = response.session.isConfirmed;
           startDatetime = response.session.startDatetime;
+          checkTitle = response.session.title;
+          instructorValue = response.session.instructor.user.id;
+          instructorLabel = response.session.instructor.user;
           break;
         }
         case "all": {
           confirmedState = response.session.course.isConfirmed;
           startDatetime = response.session.course.startDatetime;
+          checkTitle = response.session.course.title;
+          instructorValue = response.session.course.instructor.user.id;
+          instructorLabel = response.session.course.instructor.user;
           break;
         }
       }
     }
 
-    const startTime = moment(response.session.startDatetime).format("h");
-    const endTime = moment(response.session.endDatetime).format("h");
+    const startTime = moment(response.session.startDatetime).format("H");
+    const endTime = moment(response.session.endDatetime).format("H");
 
-    const checkTime = moment(response.session.startDatetime).format("h:MM");
     let durationHours = Math.abs(endTime - startTime);
     if (durationHours === 0) {
       durationHours = 1;
@@ -384,14 +410,14 @@ const EditSessionView = () => {
         label: response.session.course.courseCategory.name,
       },
       instructor: {
-        value: response.session.course.instructor.user.id,
-        label: fullName(response.session.course.instructor.user),
+        value: instructorValue,
+        label: fullName(instructorLabel),
       },
       start_time: startDatetime,
       end_time: response.session.endDatetime,
       room: response.session.course.room,
       duration: durationHours,
-      title: response.session.course.title,
+      title: checkTitle,
       is_confirmed: confirmedState,
     });
   };
@@ -399,7 +425,6 @@ const EditSessionView = () => {
   const handleUpdateSession = () => {
     const {
       start_time,
-      end_time,
       room,
       is_confirmed,
       instructor,
@@ -426,8 +451,8 @@ const EditSessionView = () => {
             courseCategoryId: course_id,
             courseId: course_id,
             courseCategoryName: category.label,
-            title: title,
-            instructor: instructor.value,
+            sessionTitle: title,
+            sessionInstructor: instructor.value,
             room: room,
             sessionStartDatetime: UTCstartDatetime,
             sessionEndDatetime: newEndTime,
@@ -438,27 +463,23 @@ const EditSessionView = () => {
         break;
       }
       case "all": {
-        //ANNA add TODO here for course availability
-        //Needs to be updated to just take time, won't take date, it is startDate, not startDatetime
         updateSession({
           variables: {
             sessionId: session_id,
             courseCategoryId: course_id,
             courseId: course_id,
             courseCategoryName: category.label,
-            title: title,
-            instructor: instructor.value,
+            courseTitle: title,
+            courseInstructor: instructor.value,
             room: room,
-            // courseStartDatetime: start_time,
-            // courseEndDatetime: newEndTime,
+            // courseStartTime: start_time,
+            // courseEndTime: newEndTime,
           },
         });
         //   start_time: start_time.toLocaleString("eng-US", timeFormat),
       }
       // no default
     }
-    //ANNA DOES THIS GO BACK IN???
-    //same route as back
     history.push(
       `/scheduler/view-session/${course_id}/${session_id}/${sessionFields.instructor.value}`
     );
@@ -561,18 +582,22 @@ const EditSessionView = () => {
                 placeholder="Choose an Instructor"
                 value={sessionFields.instructor}
               />
-              <FormControl style={{ marginTop: "20px", marginBottom: "10px" }}>
-                <InputLabel>Is instructor confirmed?</InputLabel>
-                <Select
-                  onChange={onConfirmationChange}
-                  value={sessionFields.is_confirmed}
+              {location.state.allOrCurrent === "current" && (
+                <FormControl
+                  style={{ marginTop: "20px", marginBottom: "10px" }}
                 >
-                  <MenuItem value>Yes, Instructor Confirmed.</MenuItem>
-                  <MenuItem value={false}>
-                    No, Instructor is NOT Confirmed.
-                  </MenuItem>
-                </Select>
-              </FormControl>
+                  <InputLabel>Is instructor confirmed?</InputLabel>
+                  <Select
+                    onChange={onConfirmationChange}
+                    value={sessionFields.is_confirmed}
+                  >
+                    <MenuItem value>Yes, Instructor Confirmed.</MenuItem>
+                    <MenuItem value={false}>
+                      No, Instructor is NOT Confirmed.
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              )}
             </Grid>
             {location.state.allOrCurrent === "current" && (
               <Grid item xs={6}>

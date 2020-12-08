@@ -109,7 +109,6 @@ const GET_ENROLLMENT = gql`
         id
         createdAt
       }
-      lastPaidSessionDatetime
       student {
         user {
           id

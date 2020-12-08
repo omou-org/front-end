@@ -32,7 +32,6 @@ export const GET_STUDENT_ENROLLMENTS = gql`
     enrollments(studentId: $studentId) {
       id
       sessionsLeft
-      lastPaidSessionDatetime
       course {
         title
         endDate
@@ -114,9 +113,6 @@ const StudentCourseViewer = ({ studentID, current }) => {
     filterCourseByDate(course.endDate)
   );
 
-  const startTime = enrollments[0].course.availabilityList[0].startTime.slice(0, 5)
-  const endTime = enrollments[0].course.availabilityList[0].endTime.slice(0, 5)
-
   return (
     <>
       <Grid className="accounts-table-heading" container>
@@ -149,10 +145,6 @@ const StudentCourseViewer = ({ studentID, current }) => {
       <Grid container spacing={1}>
         {displayedEnrollments.length !== 0 ? (
           displayedEnrollments.map((enrollment) => {
-            console.log(enrollment)
-            const firstStartTime =
-              enrollment.course.availabilityList[0].startTime;
-            const firstEndTime = enrollment.course.availabilityList[0].endTime;
             return (
               <Grid
                 className="accounts-table-row"
@@ -199,26 +191,7 @@ const StudentCourseViewer = ({ studentID, current }) => {
                     </Grid>
                     <Grid item xs={2}>
                       <Typography align="left" className="accounts-table-text">
-                        {sessionsAtSameTimeInMultiDayCourse(enrollment.course.availabilityList) ? startTime + " - " + endTime : "various"}
-                        {/* {enrollment.course.availabilityList.map(
-                          
-                          ({ startTime, endTime }, index) => {
-                            let isFirstSessionOfWeek = 0 === index;
-                            if (index === 1) {
-                              let checkEndTime = endTime;
-                              let isSameTime = checkEndTime === firstEndTime;
-                              if (isSameTime) {
-                                return;
-                              }
-                            }
-                            return (
-                              (isFirstSessionOfWeek ? "" : " / ") +
-                              startTime.slice(0, 5) +
-                              " - " +
-                              endTime.slice(0, 5)
-                            );
-                          }
-                        )} */}
+                        {sessionsAtSameTimeInMultiDayCourse(enrollment.course.availabilityList) ? enrollments[0].course.availabilityList[0].startTime.slice(0, 5) + " - " + enrollments[0].course.availabilityList[0].endTime.slice(0, 5) : "various"}
                       </Typography>
                     </Grid>
                     <Grid item xs={1}>
