@@ -10,12 +10,13 @@ import {fullName} from "utils";
 import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
 import Box from "@material-ui/core/Box";
 import AddIcon from '@material-ui/icons/Add';
+import CheckIcon from '@material-ui/icons/Check';
 import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -26,6 +27,7 @@ import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
+import { buttonBlue, gloom } from "theme/muiTheme";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
     query GetStudents($userIds: [ID]!) {
@@ -344,6 +346,41 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </ ResponsiveButton>
                 </DialogActions>
             </DialogContent>
+        </Dialog>
+        <Dialog open={openInterestDialog} onClose={() => setOpenInterestDialog(false)} PaperProps={{ style: { "height": "310px", "width": "410px", "padding": "32px" } }}>
+            <Grid container spacing={3}>
+                <Grid item>
+                    <Typography variant="h3">Interested?</Typography>
+                </Grid>
+                <Grid item>
+                    <Typography variant="body1">This will add you to the Interest List. You will be notified once a spot opens up. Enrollment is on a first come, first to enroll basis.</Typography>
+                </Grid>
+                <Grid item style={{ "marginBottom": "20px" }}>
+                    <Typography variant="body1">Being on an interest List does not guarantee an actual seat to anyone.</Typography>
+                </Grid>
+                <Grid container justify={"flex-end"}>
+                    <DialogActions>
+                        <ResponsiveButton
+                            data-cy="cancel-add-interest"
+                            onClick={() => setOpenInterestDialog(false)}
+                            variant="outlined"
+                            color="primary"
+                            style={{ border: "none" }}
+                        >
+                            Cancel
+                        </ResponsiveButton>
+                        <ResponsiveButton
+                            data-cy="confirm-add-interest"
+                            onClick={handleAddInterest}
+                            variant="outlined"
+                            color="primary"
+                            style={{ border: "none" }}
+                        >
+                            Notify Me
+                        </ResponsiveButton>
+                    </DialogActions>
+                </Grid>
+            </Grid>
         </Dialog>
         </>
     )
