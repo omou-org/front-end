@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
 const CourseList = ({ filteredCourses, updatedParent }) => {
     const history = useHistory();
 
-    const [openCourseQuickRegistration, setOpen] = useState(false);
+    const [openCourseQuickRegistration, setOpenQuickRegister] = useState(false);
     const [quickCourseID, setQuickCourseID] = useState(null);
     const [interestCourseID, setInterestCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState("");
@@ -179,7 +179,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
 
     const handleStartQuickRegister = (courseID) => (e) => {
         e.preventDefault();
-        setOpen(true);
+        setOpenQuickRegister(true);
         setQuickCourseID(courseID);
     };
 
@@ -191,7 +191,31 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                 courseId: quickCourseID
             }
         });
-        setOpen(false);
+        setOpenQuickRegister(false);
+    }
+
+    const handleInterestRegister = (courseID) => (e) => {
+        e.preventDefault();
+        setInterestCourseID(courseID);
+        setOpenInterestDialog(true);
+
+    }
+
+    const handleAddInterest = () => {
+
+        addParentToInterestList({
+            variables: {
+                "parentId": currentParent.user.id,
+                "courseId": interestCourseID,
+            }
+        })
+    }
+
+    const inParentInterestList = (courseID) => {
+        if (parentInterestList) {
+            return parentInterestList.interests.some((interest) => interest.course.id === courseID);
+        }
+        return false;
     }
 
     const shouldDisableQuickRegister = ({course, enrolledCourseIds, registrations, studentList}) => {
@@ -268,7 +292,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                         })
         }
         </Box>
-        <Dialog open={openCourseQuickRegistration} onClose={() => setOpen(false)}>
+        <Dialog open={openCourseQuickRegistration} onClose={() => setOpenQuickRegister(false)}>
             <DialogTitle>Which student do you want to enroll?</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth variant="outlined">
