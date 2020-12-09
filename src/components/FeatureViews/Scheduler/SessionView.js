@@ -68,8 +68,6 @@ const styles = (username) => ({
   marginRight: 10,
 });
 
-// const EDIT_ALL_SESSIONS = "all";
-// const EDIT_CURRENT_SESSION = "current";
 
 const EDIT_ALL_SESSIONS = "all";
 const EDIT_CURRENT_SESSION = "current";
@@ -189,8 +187,6 @@ const SessionView = () => {
   const confirmed = course.isConfirmed;
   const course_id = course.id;
 
-  console.log(availabilityList);
-
   const dayOfWeek = moment(startDatetime).format("dddd");
   const startSessionTime = moment(startDatetime).format("h:mm A");
   const endSessionTime = moment(endDatetime).format("h:mm A");
@@ -200,7 +196,7 @@ const SessionView = () => {
       <Grid className="session-view" container direction="row" spacing={1}>
         <Grid item sm={12}>
           <BackButton />
-          <Typography align="left" className="session-view-title" variant="h3">
+          <Typography align="left" className="session-view-title" variant="h1">
             {title}
           </Typography>
         </Grid>

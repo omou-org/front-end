@@ -88,7 +88,6 @@ const StudentCourseViewer = ({ studentID, current }) => {
   }
 
   const { enrollments } = data;
-  console.log(enrollments)
 
   const filterCourseByDate = (endDate) => {
     const inputEndDate = dateTimeToDate(new Date(endDate));

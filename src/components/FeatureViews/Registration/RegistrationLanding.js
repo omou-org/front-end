@@ -102,7 +102,6 @@ const RegistrationLanding = () => {
         },
         [],
     );
-    console.log(courseResponse);
     const {data, loading, error} = courseResponse
 
     if (loading) {
@@ -115,7 +114,6 @@ const RegistrationLanding = () => {
             </Typography>
         );
     }
-    console.log(data);
     const {courses} = data;
 
     const instructorOptions = distinctObjectArray(

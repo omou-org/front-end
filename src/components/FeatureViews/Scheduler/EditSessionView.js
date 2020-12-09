@@ -28,7 +28,6 @@ import SearchSelect from "react-select";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-// import {EDIT_ALL_SESSIONS, EDIT_CURRENT_SESSION} from "./SessionView";
 
 import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
@@ -41,10 +40,6 @@ import { fullName } from "../../../utils";
 
 import moment from "moment";
 
-const EDIT_ALL_SESSIONS = "all";
-const EDIT_CURRENT_SESSION = "current";
-
-//ANNA replace with fullName
 const GET_CATEGORIES = gql`
   query EditSessionCategoriesQuery {
     courseCategories {
@@ -121,36 +116,65 @@ const GET_SESSION = gql`
   }
 `;
 
-
 //ANNA
-//Need to have startTime/endTime for course as well??? 
 
-//The updated session drops to the bottom. They go by id, not by date. UGH
+//Make room ticket
 
-//Make room specific for each
-//CANNOT do, session does not have room query, reach out to back end
 
-//Do we want to be able to update start time of all with availability list?
+//Update with availability function in utils
 
-//Time breaks current session update - still works
-//availabilityList breaks all session update - still works
+
+const UPDATE_COURSE = gql`
+  mutation UpdateCourse(
+    $courseTitle: String
+    $room: String
+    $courseInstructor: ID
+    $courseCategory: ID
+    $courseStartTime: Time
+    $courseEndTime: Time
+    $courseId: ID!
+  ) {
+    createCourse(
+      id: $courseId
+      title: $courseTitle
+      room: $room
+      courseCategory: $courseCategory
+      instructor: $courseInstructor
+      availabilities: { startTime: $courseStartTime, endTime: $courseEndTime }
+    ) {
+      course {
+        id
+        availabilityList {
+          startTime
+          endTime
+        }
+        title
+        courseCategory {
+          id
+          name
+        }
+        room
+        instructor {
+          user {
+            id
+            firstName
+            lastName
+            email
+          }
+        }
+      }
+    }
+  }
+`;
 
 const UPDATE_SESSION = gql`
   mutation UpdateSession(
     $sessionId: ID!
     $sessionTitle: String
-    $courseTitle: String
     $sessionStartDatetime: DateTime
     $sessionConfirmed: Boolean
-    $sessionRoom: String
     $sessionInstructor: ID
-    $courseInstructor: ID
     $sessionEndDatetime: DateTime
-    $courseStartTime: Time
-    $courseEndTime: Time
-    $courseCategoryId: ID!
-    $courseCategoryName: String
-    $courseId: ID!
   ) {
     createSession(
       id: $sessionId
@@ -166,37 +190,6 @@ const UPDATE_SESSION = gql`
         isConfirmed
         endDatetime
         title
-        instructor {
-          user {
-            id
-            firstName
-            lastName
-            email
-          }
-        }
-      }
-    }
-    createCourseCategory(id: $courseCategoryId, name: $courseCategoryName) {
-      courseCategory {
-        id
-        name
-      }
-    }
-    createCourse(
-      id: $courseId
-      title: $courseTitle
-      room: $room
-      instructor: $courseInstructor
-      availabilities: { startTime: $courseStartTime, endTime: $courseEndTime }
-    ) {
-      course {
-        id
-        availabilityList {
-          startTime
-          endTime
-        }
-        title
-        room
         instructor {
           user {
             id
@@ -241,24 +234,56 @@ const EditSessionView = () => {
 
   const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
     update: (cache, { data }) => {
+      console.log(data.updateSession.createSession.session);
       const existingSession = cache.readQuery({
         query: GET_SESSION,
         variables: {
           sessionId: session_id,
-          courseCategoryId: course_id,
+        },
+      }).session;
+
+      //TODO: After back-end issues are resolved
+      //   let updatedSession = [...existingSession];
+      //   const matchingIndex = updatedSession.findIndex(({ id }) => id === session_id);
+      //   if (matchingIndex === -1) {
+      //     updatedSession = [...existingSession, newSession];
+      // } else {
+      //     updatedSession[matchingIndex] = newSession;
+      // }
+      cache.writeQuery({
+        query: GET_SESSION,
+        data: {
+          session: [...existingSession, ...data["updateSession"].session],
+        },
+        variables: {
+          sessionId: session_id,
+        },
+      });
+    },
+  });
+
+  const [updateCourse, updateCourseResults] = useMutation(UPDATE_COURSE, {
+    update: (cache, { data }) => {
+      console.log(data.updateCourse.createCourse.course);
+      const existingCourse = cache.readQuery({
+        query: GET_SESSION,
+        variables: {
           courseId: course_id,
         },
       }).session;
 
+      //TODO: After back-end issues are resolved
+      //   let updatedSession = [...existingSession];
+      //   const matchingIndex = updatedSession.findIndex(({ id }) => id === session_id);
+      //   if (matchingIndex === -1) {
+      //     updatedSession = [...existingSession, newSession];
+      // } else {
+      //     updatedSession[matchingIndex] = newSession;
+      // }
       cache.writeQuery({
         query: GET_SESSION,
         data: {
-          //add a sort?
-          session: [...existingSession, ...data["updateSession"].session].sort(
-            (a, b) => {
-              return a.id - b.id;
-            }
-          ),
+          session: [...existingCourse, ...data["updateCourse"].course],
         },
         variables: {
           sessionId: session_id,
@@ -302,7 +327,6 @@ const EditSessionView = () => {
       ...sessionFields,
       [field]: event.target.value,
     });
-    console.log(sessionFields.end_time);
   };
 
   const handleDateChange = (date) => {
@@ -365,7 +389,6 @@ const EditSessionView = () => {
   };
 
   const setFromMigration = (response) => {
-    console.log(response);
     let confirmedState;
     let startDatetime;
     let checkTitle;
@@ -436,49 +459,29 @@ const EditSessionView = () => {
     switch (location.state.allOrCurrent) {
       case "current": {
         const UTCstartDatetime = moment(start_time).utc().format();
-        console.log(start_time);
-
-        console.log(newEndTime);
-        console.log(UTCstartDatetime);
-
-        ///this session should be session.isConfirmed
-        //all session should be session.course.isConfirmed
-        //instructor should be from course
-
         updateSession({
           variables: {
             sessionId: session_id,
-            courseCategoryId: course_id,
-            courseId: course_id,
-            courseCategoryName: category.label,
             sessionTitle: title,
             sessionInstructor: instructor.value,
-            room: room,
             sessionStartDatetime: UTCstartDatetime,
             sessionEndDatetime: newEndTime,
             sessionConfirmed: is_confirmed,
           },
-          // startDatetime: start_time.toISOString(),
         });
         break;
       }
       case "all": {
-        updateSession({
+        updateCourse({
           variables: {
-            sessionId: session_id,
             courseCategoryId: course_id,
             courseId: course_id,
-            courseCategoryName: category.label,
             courseTitle: title,
             courseInstructor: instructor.value,
             room: room,
-            // courseStartTime: start_time,
-            // courseEndTime: newEndTime,
           },
         });
-        //   start_time: start_time.toLocaleString("eng-US", timeFormat),
       }
-      // no default
     }
     history.push(
       `/scheduler/view-session/${course_id}/${session_id}/${sessionFields.instructor.value}`
@@ -493,27 +496,12 @@ const EditSessionView = () => {
     return <Typography>There's been an error!</Typography>;
   }
 
-  const party = [
-    {
-      id: 3,
-      name: "new",
-    },
-    {
-      id: 4,
-      name: "test",
-    },
-  ];
-
-  const categoriesList = party.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  }));
-  // const categoriesList = categoriesData.courseCategories.map(
-  //   ({ id, name }) => ({
-  //     value: id,
-  //     label: name,
-  //   })
-  // );
+  const categoriesList = categoriesData.courseCategories.map(
+    ({ id, name }) => ({
+      value: id,
+      label: name,
+    })
+  );
 
   const instructorList = instructorsData.instructors.map((instructor) => ({
     value: instructor.user.id,
@@ -600,37 +588,40 @@ const EditSessionView = () => {
               )}
             </Grid>
             {location.state.allOrCurrent === "current" && (
-              <Grid item xs={6}>
-                <Typography variant="h5"> Date</Typography>
-                <DatePicker
-                  inputVariant="outlined"
-                  onChange={handleDateChange}
-                  value={sessionFields.start_time}
-                />
-              </Grid>
-            )}
-            <Grid item xs={6}>
-              <Typography variant="h5"> Start Time</Typography>
-              <TimePicker
-                inputVariant="outlined"
-                onChange={handleTimeChange}
-                value={sessionFields.start_time}
-              />
-            </Grid>
+              <>
+                <Grid item xs={6}>
+                  <Typography variant="h5"> Date</Typography>
+                  <DatePicker
+                    inputVariant="outlined"
+                    onChange={handleDateChange}
+                    value={sessionFields.start_time}
+                  />
+                </Grid>
 
-            <Grid item xs={6}>
-              <Typography variant="h5"> Duration </Typography>
-              <Select
-                onChange={handleDurationSelect}
-                value={sessionFields.duration}
-              >
-                {courseDurationOptions.map((duration, index) => (
-                  <MenuItem key={index} value={duration}>
-                    {`${duration} hour(s)`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="h5"> Start Time</Typography>
+                  <TimePicker
+                    inputVariant="outlined"
+                    onChange={handleTimeChange}
+                    value={sessionFields.start_time}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Typography variant="h5"> Duration </Typography>
+                  <Select
+                    onChange={handleDurationSelect}
+                    value={sessionFields.duration}
+                  >
+                    {courseDurationOptions.map((duration, index) => (
+                      <MenuItem key={index} value={duration}>
+                        {`${duration} hour(s)`}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+              </>
+            )}
           </Grid>
         </Grid>
 

@@ -199,7 +199,6 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
               moment().diff(moment(endDate), "days") < 0
           )
           .map((course) => {
-            console.log(course);
             return (
               <ListDetailedItem key={course.id}>
                 <ListContent>

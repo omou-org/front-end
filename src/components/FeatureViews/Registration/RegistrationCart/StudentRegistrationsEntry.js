@@ -16,6 +16,7 @@ import "./RegistrationCart.scss";
 import IconButton from "@material-ui/core/IconButton";
 import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 import {useDispatch} from "react-redux";
+import { DayAbbreviation } from "utils";
 import * as types from "../../../../actions/actionTypes";
 import NoListAlert from "../../../OmouComponents/NoListAlert";
 
@@ -42,6 +43,19 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 			}
 		});
 	};
+
+	const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
+		let start = availabilityList[0].startTime;
+		let end = availabilityList[0].endTime;
+	  
+		for (let availability of availabilityList) {
+		  if (availability.startTime !== start || availability.endTime !== end) {
+			return false;
+		  }
+		}
+		return true;
+	}
+
 	const totalCourseSessions = moment(course.endDate).diff(moment(course.startDate), "weeks") + 1;
 	return (<>
 		<TableRow>
@@ -66,9 +80,21 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 						{separator()}
 						{course.academicLevelPretty}
 						{separator()}
-						{moment(course.startDate, ["YYYY-MM-DD"]).format("ddd")} {' '}
-						{moment(course.availabilityList[0].startTime, ["HH.mm"]).format("h:mm A")}{" - "}
-						{moment(course.availabilityList[0].endTime, ["HH.mm"]).format("h:mm A")}
+						{course.availabilityList.map(
+                          ({ dayOfWeek }, index) => {
+                            let isLastSessionOfWeek =
+                              course.availabilityList.length - 1 ===
+                              index;
+                            return (
+                              DayAbbreviation[dayOfWeek.toLowerCase()] +
+                              (!isLastSessionOfWeek ? " / " : "")
+                            );
+                          }
+                        )}
+                        
+                      {sessionsAtSameTimeInMultiDayCourse(course.availabilityList) ? ", " + course.availabilityList[0].startTime.slice(0, 5) + " - " + course.availabilityList[0].endTime.slice(0, 5) : 
+                        "Various"
+                      }
 						{separator()}
 						Start Date: <Moment date={course.startDate} format="M/DD/YYYY"/>{" - "}
 						<Moment date={course.endDate} format="M/DD/YYYY"/>
@@ -105,7 +131,6 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 }
 
 export default function StudentRegistrationEntry({ student, registrationList }) {
-	console.log({student})
 	return (<Grid item xs={12} container>
 		<Typography style={{fontWeight: 600}}>{fullName(student.user)}</Typography>
 		<Table>

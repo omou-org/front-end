@@ -186,15 +186,6 @@ const CourseSessionStatus = () => {
 	});
 	const classes = useStyles();
 
-    // const sessionConfig = useMemo(
-    //     () => ({
-    //         "params": {
-    //             "course_id": courseID,
-    //         },
-    //     }),
-    //     [courseID]
-    // );
-
   const [activeTab, setActiveTab] = useState(0);
   const [highlightSession, setHighlightSession] = useState(false);
   const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
@@ -247,7 +238,6 @@ const CourseSessionStatus = () => {
     id,
   } = enrollmentData.enrollment;
 
-  console.log(enrollmentData)
   //temporary fix
   const paymentList = {
     id: 1,
@@ -330,7 +320,7 @@ const CourseSessionStatus = () => {
                 <Grid item xs={12}>
                     <Typography align="left"
                         className="course-session-title"
-                        variant="h3">
+                        variant="h1">
                         {course.title}
                     </Typography>
                 </Grid>
