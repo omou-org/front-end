@@ -138,7 +138,7 @@ const AdminActionCenter = () => {
 				<MenuItem component={NavLink} to="/form/instructor">
 					<ListItemText primary="ADD INSTRUCTOR"/>
 				</MenuItem>
-				<MenuItem component={NavLink} to="/registration/form/admin">
+				<MenuItem component={NavLink} to="/form/admin">
 					<ListItemText primary="ADD ADMIN" />
 				</MenuItem>
 			</StyledMenu>
