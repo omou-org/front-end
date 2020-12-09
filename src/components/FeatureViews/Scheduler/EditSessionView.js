@@ -120,7 +120,6 @@ const GET_SESSION = gql`
 
 //Make room ticket
 
-
 //Update with availability function in utils
 
 
