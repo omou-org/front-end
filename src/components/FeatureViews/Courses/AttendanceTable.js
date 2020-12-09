@@ -321,21 +321,21 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     }
   };
 
-  const sortAttendanceArray = () => {
-    const sortAttendanceList = courseAttendanceMatrix.sort(
-      (firstEl, secondEl) => {
-        if (!firstEl[currentSessionId] && !secondEl[currentSessionId]) return;
-        const attendanceValue = ["PRESENT", "TARDY", "ABSENT"];
-        const firstValue = attendanceValue.indexOf(firstEl[currentSessionId]);
-        const secondValue = attendanceValue.indexOf(secondEl[currentSessionId]);
-        if (firstValue === secondValue) {
-          return firstEl.name - secondEl.name;
-        }
-        return firstValue - secondValue;
-      }
-    );
-    setCourseAttendanceMatrix(sortAttendanceList);
-  };
+  // const sortAttendanceArray = () => {
+  //   const sortAttendanceList = courseAttendanceMatrix.sort(
+  //     (firstEl, secondEl) => {
+  //       if (!firstEl[currentSessionId] && !secondEl[currentSessionId]) return;
+  //       const attendanceValue = ["PRESENT", "TARDY", "ABSENT"];
+  //       const firstValue = attendanceValue.indexOf(firstEl[currentSessionId]);
+  //       const secondValue = attendanceValue.indexOf(secondEl[currentSessionId]);
+  //       if (firstValue === secondValue) {
+  //         return firstEl.name - secondEl.name;
+  //       }
+  //       return firstValue - secondValue;
+  //     }
+  //   );
+  //   setCourseAttendanceMatrix(sortAttendanceList);
+  // };
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
   const sortAscOrder = (firstEl, secondEl) => (firstEl > secondEl ? -1 : 0);
 
@@ -346,14 +346,14 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       sortByAlphabet === ""
         ? student
         : {
-            [student.name]: student.name,
+            [student.studentName]: student.studentName,
           }[sortByAlphabet]
     )
     .sort(
       (firstEl, secondEl) =>
         ({
-          asc: sortAscOrder(firstEl.name, secondEl.name),
-          desc: sortDescOrder(firstEl.name, secondEl.name),
+          asc: sortAscOrder(firstEl.studentName, secondEl.studentName),
+          desc: sortDescOrder(firstEl.studentName, secondEl.studentName),
         }[sortByAlphabet])
     );
   // console.log(studentAttendanceDisplay.map(row => row))
@@ -366,7 +366,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
   // console.log(color)
   // console.log(newClassData)
   // console.log(isEdit);
-  console.log(courseAttendanceMatrix)
+  // console.log(courseAttendanceMatrix)
   // console.log(attendanceBySession);
   // console.log(sessions)
   // console.log(attendanceEditStates)
@@ -413,7 +413,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       setCurrentSessionId={setCurrentSessionId}
                       courseAttendanceMatrix={courseAttendanceMatrix}
                       setCourseAttendanceMatrix={setCourseAttendanceMatrix}
-                      sortAttendanceArray={sortAttendanceArray}
+                      studentAttendanceDisplay={studentAttendanceDisplay}
+                      index={i}
                     />
                   )}
                 </TableCell>

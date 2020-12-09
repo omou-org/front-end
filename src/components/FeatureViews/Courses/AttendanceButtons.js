@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphabet }) => {
     const classes = useStyles();
-    const [student, setStudent] = useState([]);
+    const [student, setStudent] = useState(students);
     const [open, setOpen] = useState(false);
     const [filterValue, setFilterValue] = useState("");
     useEffect(() => setStudent(students), [sortByAlphabet]);
@@ -65,9 +65,12 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
       setOpen(false);
       setFilterValue("");
     };
+
     const studentNameList = student.filter(name => name.includes(filterValue));
+    
     const handleFilter = e => {
       e.stopPropagation();
+      e.preventDefault();
       const { value } = e.target;
       setFilterValue(value)
       // const set = new Set(value);
@@ -75,6 +78,7 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
     };
     const handleInputSelect = e => {
       e.stopPropagation();
+      e.preventDefault();
       setOpen(true);
     }
     const handleKeyDown = event => {
@@ -86,9 +90,7 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
       }
       event.stopPropagation();
     }
-  
-    // console.log(sortByAlphabet)
-  
+
     return (
       <Grid item xs={3}>
       <FormControl>
@@ -158,7 +160,7 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
           
         />
           {/* </MenuItem> */}
-          {studentNameList.map(studentName => (
+          {studentNameList.map((studentName) => (
              <MenuItem
              key={studentName}
              value={studentName}
@@ -174,27 +176,75 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
     )
   };
 
-  export const SessionButton = ({ attendanceArray, id, setAttendanceRecord, editState, setEditState, setCurrentSessionId, sortAttendanceArray }) => {
+  export const SessionButton = ({ attendanceArray, id, setAttendanceRecord, attendanceEditStates, setAttendanceEditStates, setCurrentSessionId, studentAttendanceDisplay, setCourseAttendanceMatrix, index, test }) => {
     const classes = useStyles();
     const handleOpen = e => {
       const sessionId = e.currentTarget.getAttribute("data-session-id")
         setAttendanceRecord({[sessionId]: e.currentTarget})
     };
-  
+
+    const sortStudentAttendanceListByStatus = (studentList, attendance) => {
+      return test.reduce(
+        (allStudentAttendanceRowsData, { id, enrollment, status, session }) => {
+          const studentId = enrollment.student.user.id;
+          const setInitialStudentRowData = (initalStudentRowData) =>
+            initalStudentRowData || [];
+          allStudentAttendanceRowsData[studentId] = setInitialStudentRowData(
+            allStudentAttendanceRowsData[studentId]
+          );
+          allStudentAttendanceRowsData[studentId].push({
+            attendanceId: id,
+            status,
+            sessionId: session.id,
+          });
+          return allStudentAttendanceRowsData;
+        },
+        {}
+      );
+      // return studentList.sort((firstStudentStatus, secondStudentStatus) => {
+        
+        // const attendanceStatusList = ["PRESENT", "TARDY", "ABSENT"];
+        // console.log(attendanceStatusList.indexOf(firstStudentStatus.attendanceList[0].status))
+        // console.log(attendanceStatusList.indexOf(secondStudentStatus.attendanceList[0].status))
+        // console.log(firstStudentStatus.attendanceList[0].status)
+        // console.log(secondStudentStatus.attendanceList[0].status)
+        // const compareStatus1 = (attendanceStatusList.indexOf(firstStudentStatus.attendanceList[0].status) === attendanceStatusList.indexOf(secondStudentStatus.attendanceList[0].status))
+        // console.log(compareStatus1)
+        // const compareStatus2 = (attendanceStatusList.indexOf(firstStudentStatus.attendanceList[1].status) === attendanceStatusList.indexOf(secondStudentStatus.attendanceList[1].status))
+        // console.log(compareStatus2)
+        // return compareStatus1
+      // })
+      // return studentList.map(({ attendanceList: studentAttendanceList, studentName }) => {
+      //   studentAttendanceList.sort((firstStatus, secondStatus) => {
+      //     const attendanceStatusList = ["PRESENT", "TARDY", "ABSENT"];
+      //     const compareStatus = attendanceStatusList.indexOf(firstStatus.status) === attendanceStatusList.indexOf(secondStatus.status)   
+      //     if(compareStatus) {
+      //       return studentName
+      //     }
+      //     return studentName
+      //   })
+      // })
+    }
+
     const handleSort = e => {
       const sessionId = e.currentTarget.getAttribute("data-session-id");
+      const attendanceIndex = e.currentTarget.getAttribute("data-attendanceArrayIndex");
+      console.log(attendanceIndex)
       setAttendanceRecord({[sessionId]: null});
       setCurrentSessionId(sessionId); 
-      sessionId !== null && setEditState({...editState, [sessionId]: e.target.getAttribute("value")})
-      sortAttendanceArray()
+      sessionId !== null && setAttendanceEditStates({...attendanceEditStates, [sessionId]: e.target.getAttribute("value")})
+      // studentAttendanceDisplay
+      console.log(sortStudentAttendanceListByStatus(studentAttendanceDisplay, attendanceIndex));
     }
   
     const handleClose = e => {
       const sessionId = e.currentTarget.getAttribute("data-session-id");
       setAttendanceRecord({[sessionId]: null});
       setCurrentSessionId(sessionId); 
-      sessionId !== null && setEditState({...editState, [sessionId]: e.target.getAttribute("value")})
+      sessionId !== null && setAttendanceEditStates({...attendanceEditStates, [sessionId]: e.target.getAttribute("value")})
     };
+
+    // console.log(studentAttendanceDisplay);
     
     return (
       <>
@@ -219,7 +269,7 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
         transformOrigin={{vertical: 'top', horizontal: 'center'}}
         data-session-id={id}
       >
-        <MenuItem onClick={handleSort} value="sort" data-session-id={id}>Sort</MenuItem>
+        <MenuItem onClick={handleSort} value="sort" data-session-id={id} data-attendanceArrayIndex={index} >Sort</MenuItem>
         <MenuItem onClick={handleClose} value="beginEdit" data-session-id={id}>Edit</MenuItem>
       </Menu>
       </>
