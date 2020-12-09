@@ -130,8 +130,6 @@ const UPDATE_COURSE = gql`
     $room: String
     $courseInstructor: ID
     $courseCategory: ID
-    $courseStartTime: Time
-    $courseEndTime: Time
     $courseId: ID!
   ) {
     createCourse(
@@ -140,15 +138,15 @@ const UPDATE_COURSE = gql`
       room: $room
       courseCategory: $courseCategory
       instructor: $courseInstructor
-      availabilities: { startTime: $courseStartTime, endTime: $courseEndTime }
     ) {
       course {
         id
+        title
         availabilityList {
           startTime
           endTime
+          dayOfWeek
         }
-        title
         courseCategory {
           id
           name
@@ -410,7 +408,6 @@ const EditSessionView = () => {
         }
         case "all": {
           confirmedState = response.session.course.isConfirmed;
-          startDatetime = response.session.course.startDatetime;
           checkTitle = response.session.course.title;
           instructorValue = response.session.course.instructor.user.id;
           instructorLabel = response.session.course.instructor.user;

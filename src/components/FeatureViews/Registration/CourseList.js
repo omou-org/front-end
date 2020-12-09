@@ -10,12 +10,15 @@ import { fullName } from "utils";
 import { useValidateRegisteringParent } from "../../OmouComponents/RegistrationUtils";
 import Box from "@material-ui/core/Box";
 import AddIcon from "@material-ui/icons/Add";
+import CheckIcon from "@material-ui/icons/Check";
 import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
+import { DayAbbreviation } from "utils";
+
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -23,7 +26,6 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
 import { useDispatch, useSelector } from "react-redux";
-import { DayAbbreviation } from "utils";
 import * as types from "actions/actionTypes";
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import ListDetailedItem, {
@@ -39,6 +41,9 @@ import ListDetailedItem, {
   ListStatus,
   ListDivider,
 } from "../../OmouComponents/ListComponent/ListDetailedItem";
+import { buttonBlue, gloom, white } from "theme/muiTheme";
+import { DialogContentText, Grid } from "@material-ui/core";
+import ParentCourseInterestBtn from "./ParentCourseInterestBtn";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
   query GetStudents($userIds: [ID]!) {
@@ -60,6 +65,46 @@ export const GET_STUDENTS_AND_ENROLLMENTS = gql`
   }
 `;
 
+const GET_PARENT_INTEREST = gql`
+  query GetParentInterest($parentId: ID!) {
+    interests(parentId: $parentId) {
+      id
+      parent {
+        user {
+          id
+          firstName
+          lastName
+        }
+      }
+      course {
+        id
+        title
+      }
+    }
+  }
+`;
+
+const ADD_PARENT_TO_INTEREST_LIST = gql`
+  mutation AddParentToInterestList($parentId: ID!, $courseId: ID!) {
+    createInterest(parent: $parentId, course: $courseId) {
+      interest {
+        id
+        parent {
+          user {
+            id
+            firstName
+            lastName
+          }
+        }
+        course {
+          id
+          title
+        }
+      }
+    }
+  }
+`;
+
 const useStyles = makeStyles((theme) => ({
   courseTitle: {
     color: theme.palette.common.black,
@@ -68,32 +113,85 @@ const useStyles = makeStyles((theme) => ({
   courseRow: {
     textDecoration: "none",
   },
+  interestDialogHeading: {
+    paddingLeft: "0px",
+  },
+  interestDialogText: {
+    marginBottom: "20px",
+  },
 }));
 
 const CourseList = ({ filteredCourses, updatedParent }) => {
   const history = useHistory();
 
-  const [openCourseQuickRegistration, setOpen] = useState(false);
+  const [openCourseQuickRegistration, setOpenQuickRegister] = useState(false);
+  const [openInterestDialog, setOpenInterestDialog] = useState(false);
   const [quickCourseID, setQuickCourseID] = useState(null);
+  const [interestCourseID, setInterestCourseID] = useState(null);
   const [quickStudent, setQuickStudent] = useState("");
 
   const { currentParent, ...registrationCartState } = useSelector(
     (state) => state.Registration
   );
+  const [addParentToInterestList, addParentToInterestListStatus] = useMutation(
+    ADD_PARENT_TO_INTEREST_LIST,
+    {
+      onCompleted: () => {
+        setOpenInterestDialog(false);
+      },
+      update: (cache, { data }) => {
+        const newInterest = data.createInterest.interest;
+
+        const cachedInterestList = cache.readQuery({
+          query: GET_PARENT_INTEREST,
+          variables: { parentId: currentParent.user.id },
+        }).interests;
+
+        cache.writeQuery({
+          data: {
+            interests: [...cachedInterestList, newInterest],
+          },
+          query: GET_PARENT_INTEREST,
+          variables: { parentId: currentParent.user.id },
+        });
+      },
+      onError: (error) => console.log(error),
+    }
+  );
+
+  const { parentIsLoggedIn } = useValidateRegisteringParent();
   const dispatch = useDispatch();
 
   const { studentIdList } =
     JSON.parse(sessionStorage.getItem("registrations"))?.currentParent || false;
-  const { data, loading, error } = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
+  const {
+    data: studentEnrollments,
+    loading: studentEnrollmentsLoading,
+    error: studentEnrollmentsError,
+  } = useQuery(GET_STUDENTS_AND_ENROLLMENTS, {
     variables: { userIds: studentIdList },
     skip: !studentIdList,
   });
 
-  const { parentIsLoggedIn } = useValidateRegisteringParent();
-  const { courseTitle, courseRow } = useStyles();
+  const {
+    data: parentInterestList,
+    loading: parentInterestListLoading,
+    error: parentInterestError,
+  } = useQuery(GET_PARENT_INTEREST, {
+    variables: {
+      parentId: currentParent?.user.id,
+    },
+    skip: !parentIsLoggedIn,
+  });
 
-  if (loading) return <Loading small />;
-  if (error) return <div>There has been an error!</div>;
+  const classes = useStyles();
+
+  if (studentEnrollmentsLoading || parentInterestListLoading)
+    return <Loading small />;
+  if (studentEnrollmentsError)
+    return <div>There has been an error: {studentEnrollments.message} </div>;
+  if (parentInterestError)
+    return <div>There has been an error: {parentInterestError.message} </div>;
 
   const validRegistrations = Object.values(registrationCartState).filter(
     (registration) => registration
@@ -102,7 +200,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     validRegistrations && [].concat.apply([], validRegistrations);
   const studentOptions =
     (studentIdList &&
-      data.userInfos
+      studentEnrollments.userInfos
         .filter(
           ({ user }) =>
             !registrations.find(
@@ -116,7 +214,9 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         }))) ||
     [];
 
-  const enrolledCourseIds = data?.enrollments.map(({ course }) => course.id);
+  const enrolledCourseIds = studentEnrollments?.enrollments.map(
+    ({ course }) => course.id
+  );
   const previouslyEnrolled = (
     courseId,
     enrolledCourseIds,
@@ -141,7 +241,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
 
   const handleStartQuickRegister = (courseID) => (e) => {
     e.preventDefault();
-    setOpen(true);
+    setOpenQuickRegister(true);
     setQuickCourseID(courseID);
   };
 
@@ -153,7 +253,31 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         courseId: quickCourseID,
       },
     });
-    setOpen(false);
+    setOpenQuickRegister(false);
+  };
+
+  const handleInterestRegister = (courseID) => (e) => {
+    e.preventDefault();
+    setInterestCourseID(courseID);
+    setOpenInterestDialog(true);
+  };
+
+  const handleAddInterest = () => {
+    addParentToInterestList({
+      variables: {
+        parentId: currentParent.user.id,
+        courseId: interestCourseID,
+      },
+    });
+  };
+
+  const isCourseOnParentInterestList = (courseID) => {
+    if (parentInterestList) {
+      return parentInterestList.interests.some(
+        (interest) => interest.course.id === courseID
+      );
+    }
+    return false;
   };
 
   const shouldDisableQuickRegister = ({
@@ -163,7 +287,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     studentList,
   }) => {
     return (
-      course.maxCapacity <= course.enrollmentSet.length &&
+      course.enrollmentSet.length === course.maxCapacity ||
       previouslyEnrolled(
         course.id,
         enrolledCourseIds,
@@ -180,14 +304,14 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
   const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
     let start = availabilityList[0].startTime;
     let end = availabilityList[0].endTime;
-  
+
     for (let availability of availabilityList) {
       if (availability.startTime !== start || availability.endTime !== end) {
         return false;
       }
     }
     return true;
-  }
+  };
 
   return (
     <>
@@ -222,21 +346,23 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </ListDetail>
                     <ListDivider />
                     <ListDetail>
-                    {course.availabilityList.map(
-                          ({ dayOfWeek }, index) => {
-                            let isLastSessionOfWeek =
-                              course.availabilityList.length - 1 ===
-                              index;
-                            return (
-                              DayAbbreviation[dayOfWeek.toLowerCase()] +
-                              (!isLastSessionOfWeek ? " / " : "")
-                            );
-                          }
-                        )}
-                        
-                      {sessionsAtSameTimeInMultiDayCourse(course.availabilityList) ? ", " + course.availabilityList[0].startTime.slice(0, 5) + " - " + course.availabilityList[0].endTime.slice(0, 5) : 
-                        "Various"
-                      }
+                      {course.availabilityList.map(({ dayOfWeek }, index) => {
+                        let isLastSessionOfWeek =
+                          course.availabilityList.length - 1 === index;
+                        return (
+                          DayAbbreviation[dayOfWeek.toLowerCase()] +
+                          (!isLastSessionOfWeek ? " / " : "")
+                        );
+                      })}
+
+                      {sessionsAtSameTimeInMultiDayCourse(
+                        course.availabilityList
+                      )
+                        ? ", " +
+                          course.availabilityList[0].startTime.slice(0, 5) +
+                          " - " +
+                          course.availabilityList[0].endTime.slice(0, 5)
+                        : "Various"}
                     </ListDetail>
                     <ListDivider />
                     <ListDetail>${course.totalTuition}</ListDetail>
@@ -247,27 +373,41 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     {course.enrollmentSet.length} / {course.maxCapacity}
                   </ListStatus>
                   <ListButton>
-                    <ResponsiveButton
-                      disabled={shouldDisableQuickRegister({
-                        course,
-                        enrolledCourseIds,
-                        registrations,
-                        studentIdList,
-                      })}
-                      variant="contained"
-                      onClick={handleStartQuickRegister(course.id)}
-                      data-cy="quick-register-class"
-                      startIcon={<AddIcon />}
-                    >
-                      register
-                    </ResponsiveButton>
+                    {course.enrollmentSet.length < course.maxCapacity ||
+                    !parentIsLoggedIn ? (
+                      <ResponsiveButton
+                        disabled={shouldDisableQuickRegister({
+                          course,
+                          enrolledCourseIds,
+                          registrations,
+                          studentIdList,
+                        })}
+                        variant="contained"
+                        onClick={handleStartQuickRegister(course.id)}
+                        data-cy="quick-register-class"
+                        startIcon={<AddIcon />}
+                      >
+                        register
+                      </ResponsiveButton>
+                    ) : (
+                      <ParentCourseInterestBtn
+                        courseID={course.id}
+                        isCourseOnParentInterestList={
+                          isCourseOnParentInterestList
+                        }
+                        handleInterestRegister={handleInterestRegister}
+                      />
+                    )}
                   </ListButton>
                 </ListActions>
               </ListDetailedItem>
             );
           })}
       </Box>
-      <Dialog open={openCourseQuickRegistration} onClose={() => setOpen(false)}>
+      <Dialog
+        open={openCourseQuickRegistration}
+        onClose={() => setOpenQuickRegister(false)}
+      >
         <DialogTitle>Which student do you want to enroll?</DialogTitle>
         <DialogContent>
           <FormControl fullWidth variant="outlined">
@@ -300,6 +440,52 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             </ResponsiveButton>
           </DialogActions>
         </DialogContent>
+      </Dialog>
+      <Dialog
+        open={openInterestDialog}
+        onClose={() => setOpenInterestDialog(false)}
+        PaperProps={{
+          style: { height: "310px", width: "410px", padding: "32px" },
+        }}
+      >
+        <DialogTitle
+          disableTypography
+          className={classes.interestDialogHeading}
+        >
+          <Typography variant="h3">Interested?</Typography>
+        </DialogTitle>
+        <DialogContentText classname={classes.interestDialogText}>
+          <Typography variant="body1">
+            This will add you to the Interest List. You will be notified once a
+            spot opens up. Enrollment is on a first come, first to enroll basis.
+          </Typography>
+        </DialogContentText>
+        <DialogContentText item classname={classes.interestDialogText}>
+          <Typography variant="body1">
+            Being on an interest List does not guarantee an actual seat to
+            anyone.
+          </Typography>
+        </DialogContentText>
+        <DialogActions>
+          <ResponsiveButton
+            data-cy="cancel-add-interest"
+            onClick={() => setOpenInterestDialog(false)}
+            variant="outlined"
+            color="primary"
+            style={{ border: "none" }}
+          >
+            Cancel
+          </ResponsiveButton>
+          <ResponsiveButton
+            data-cy="confirm-add-interest"
+            onClick={handleAddInterest}
+            variant="outlined"
+            color="primary"
+            style={{ border: "none" }}
+          >
+            Notify Me
+          </ResponsiveButton>
+        </DialogActions>
       </Dialog>
     </>
   );
