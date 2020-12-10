@@ -195,8 +195,16 @@ const RegistrationCourse = () => {
 								/>
 							</>
 						)}
-						<CourseAvailabilites availabilityList={availabilityList}/>
-						<Typography align="left" className="text">
+						<CourseAvailabilites 
+							availabilityList={availabilityList} 
+							variant="h4"
+							style={{marginRight:"20px"}}
+						/>
+						<Typography 
+							align="left" 
+							className="text" 
+							variant="h4"
+						>
 							Grade {gradeLvl(academicLevel)}
 						</Typography>
 					</div>
