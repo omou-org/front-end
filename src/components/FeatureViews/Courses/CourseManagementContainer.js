@@ -14,7 +14,7 @@ import Loading from "../../OmouComponents/Loading";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import { DayAbbreviation } from "utils";
+import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
 
 import Box from "@material-ui/core/Box";
 import ListDetailedItem, {
@@ -183,17 +183,6 @@ const ClassListItem = ({
   const cost = totalTuition;
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
-  const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let start = availabilityList[0].startTime;
-    let end = availabilityList[0].endTime;
-
-    for (let availability of availabilityList) {
-      if (availability.startTime !== start || availability.endTime !== end) {
-        return false;
-      }
-    }
-    return true;
-  };
 
   return (
     <ListDetailedItem>
@@ -218,20 +207,7 @@ const ClassListItem = ({
           </ListDetail>
           <ListDivider />
           <ListDetail>
-            {availabilityList.map(({ dayOfWeek }, index) => {
-              let isLastSessionOfWeek = availabilityList.length - 1 === index;
-              return (
-                DayAbbreviation[dayOfWeek.toLowerCase()] +
-                (!isLastSessionOfWeek ? " / " : "")
-              );
-            })}
-
-            {sessionsAtSameTimeInMultiDayCourse(availabilityList)
-              ? ", " +
-                availabilityList[0].startTime.slice(0, 5) +
-                " - " +
-                availabilityList[0].endTime.slice(0, 5)
-              : "Various"}
+            <CourseAvailabilites availabilityList={availabilityList} />
           </ListDetail>
           <ListDivider />
           <ListDetail>{cost}</ListDetail>

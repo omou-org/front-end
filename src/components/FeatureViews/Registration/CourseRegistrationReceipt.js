@@ -13,7 +13,8 @@ import { stringToColor } from "../Accounts/accountUtils";
 import Divider from "@material-ui/core/Divider";
 import Button from "@material-ui/core/Button";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-import { DayAbbreviation } from "utils";
+import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities"
+
 
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 
@@ -57,18 +58,6 @@ export default function CourseRegistrationReceipt({ formData }) {
   if (error) {
     return <Typography>{error.message}</Typography>;
   }
-
-  const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let start = availabilityList[0].startTime;
-    let end = availabilityList[0].endTime;
-
-    for (let availability of availabilityList) {
-      if (availability.startTime !== start || availability.endTime !== end) {
-        return false;
-      }
-    }
-    return true;
-  };
 
   //TODO: fix the dates....ugh.
   const createTutoringRegistration = (formData, courseType) => ({
@@ -124,19 +113,7 @@ export default function CourseRegistrationReceipt({ formData }) {
       <Typography align="left">
         <Moment format="MM/D/YYYY" date={startDate} /> -{" "}
         <Moment format="MM/D/YYYY" date={endDate} /> <br />
-        {availabilityList.map(({ dayOfWeek }, index) => {
-          let isLastSessionOfWeek = availabilityList.length - 1 === index;
-          return (
-            DayAbbreviation[dayOfWeek.toLowerCase()] +
-            (!isLastSessionOfWeek ? " / " : "")
-          );
-        })}
-        {sessionsAtSameTimeInMultiDayCourse(availabilityList)
-          ? ", " +
-            availabilityList[0].startTime.slice(0, 5) +
-            " - " +
-            availabilityList[0].endTime.slice(0, 5)
-          : "Various"}
+        <CourseAvailabilites availabilityList={availabilityList} />
       </Typography>{" "}
       <br />
       <Typography align="left" variant="subtitle2">

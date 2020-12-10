@@ -15,8 +15,7 @@ import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
-import { DayAbbreviation } from "utils";
-
+import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities"
 import gql from "graphql-tag";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
@@ -301,18 +300,6 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     history.push(`/registration/course/` + courseId);
   };
 
-  const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let start = availabilityList[0].startTime;
-    let end = availabilityList[0].endTime;
-
-    for (let availability of availabilityList) {
-      if (availability.startTime !== start || availability.endTime !== end) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   return (
     <>
       <Box width="100%">
@@ -346,23 +333,9 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                     </ListDetail>
                     <ListDivider />
                     <ListDetail>
-                      {course.availabilityList.map(({ dayOfWeek }, index) => {
-                        let isLastSessionOfWeek =
-                          course.availabilityList.length - 1 === index;
-                        return (
-                          DayAbbreviation[dayOfWeek.toLowerCase()] +
-                          (!isLastSessionOfWeek ? " / " : "")
-                        );
-                      })}
-
-                      {sessionsAtSameTimeInMultiDayCourse(
-                        course.availabilityList
-                      )
-                        ? ", " +
-                          course.availabilityList[0].startTime.slice(0, 5) +
-                          " - " +
-                          course.availabilityList[0].endTime.slice(0, 5)
-                        : "Various"}
+                      <CourseAvailabilites
+                        availabilityList={course.availabilityList}
+                      />
                     </ListDetail>
                     <ListDivider />
                     <ListDetail>${course.totalTuition}</ListDetail>

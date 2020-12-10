@@ -12,7 +12,7 @@ import Moment from "react-moment";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
-import { DayAbbreviation } from "utils";
+import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from "utils";
 import moment from "moment";
 
 const today = dateTimeToDate(new Date());
@@ -95,18 +95,6 @@ const StudentCourseViewer = ({ studentID, current }) => {
     // and match it appropriately with the passed filter
     return current === inputEndDate >= today;
   };
-
-  const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let start = availabilityList[0].startTime;
-    let end = availabilityList[0].endTime;
-  
-    for (let availability of availabilityList) {
-      if (availability.startTime !== start || availability.endTime !== end) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   const displayedEnrollments = enrollments.filter(({ course }) =>
     filterCourseByDate(course.endDate)

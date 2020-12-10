@@ -16,9 +16,11 @@ import "./RegistrationCart.scss";
 import IconButton from "@material-ui/core/IconButton";
 import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
 import {useDispatch} from "react-redux";
-import { DayAbbreviation } from "utils";
 import * as types from "../../../../actions/actionTypes";
 import NoListAlert from "../../../OmouComponents/NoListAlert";
+import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse  } from "utils";
+
+
 
 const separator = () => {
 	return (<Typography style={{display: "inline", paddingLeft: 30, paddingRight: 30}}>|</Typography>)
@@ -43,18 +45,6 @@ function RegistrationEntry({registration: {course, numSessions, checked}, studen
 			}
 		});
 	};
-
-	const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-		let start = availabilityList[0].startTime;
-		let end = availabilityList[0].endTime;
-	  
-		for (let availability of availabilityList) {
-		  if (availability.startTime !== start || availability.endTime !== end) {
-			return false;
-		  }
-		}
-		return true;
-	}
 
 	const totalCourseSessions = moment(course.endDate).diff(moment(course.startDate), "weeks") + 1;
 	return (<>

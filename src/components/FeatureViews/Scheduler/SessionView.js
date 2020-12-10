@@ -37,7 +37,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { capitalizeString, fullName } from "../../../utils";
 import moment from "moment";
-import { DayAbbreviation } from "utils";
+import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse  } from "utils";
 
 const StyledMenu = withStyles({
   paper: {
@@ -128,18 +128,6 @@ const SessionView = () => {
   const { data, loading, error } = useQuery(GET_SESSION, {
     variables: { sessionId: session_id },
   });
-
-  const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let start = availabilityList[0].startTime;
-    let end = availabilityList[0].endTime;
-
-    for (let availability of availabilityList) {
-      if (availability.startTime !== start || availability.endTime !== end) {
-        return false;
-      }
-    }
-    return true;
-  };
 
   const handleEditToggle = (cancel) => (event) => {
     event.preventDefault();
