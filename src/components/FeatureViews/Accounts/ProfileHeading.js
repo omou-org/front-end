@@ -11,6 +11,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Menu from "@material-ui/core/Menu";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 import Typography from "@material-ui/core/Typography";
 import Loading from "components/OmouComponents/Loading";
 import "./Accounts.scss";
@@ -156,6 +157,69 @@ const ProfileHeading = ({ ownerID }) => {
 		</Grid>
 	);
 
+	console.log(userInfo);
+	// const InfoRow = ({ variant, width = 6}) => {
+
+	// 	const type = {
+	// 		"ID": {
+	// 			icon: <IDIcon className={classes.icon}/>,
+	// 			text: `#${userInfo.user.id}`
+	// 		},
+	// 		"Phone": {
+	// 			icon: <PhoneIcon className={classes.icon}/>,
+	// 			text: addDashes(user.phone_number),
+	// 		},
+	// 		"Birthday": {
+	// 			icon: <CakeOutlinedIcon className={classes.icon}/>,
+	// 			text: user.birthday,
+	// 		},
+	// 		"Grade": {
+	// 			icon: <GradeIcon className={classes.icon}/>,
+	// 			text: `Grade ${user.grade}`,
+	// 		},
+	// 		"School": {
+	// 			icon: <SchoolIcon className={classes.icon}/>,
+	// 			text: user.school,
+	// 		},
+	// 		"Balance": {
+	// 			icon: <MoneyIcon className={classes.icon}/>,
+	// 			text: `$${user.balance}`
+	// 		},
+	// 		"Email": {
+	// 			icon: <EmailIcon className={classes.icon}/>,
+	// 			text: user.email,
+	// 		}
+	// 	}
+
+	// 	if (variant === "Email" && user.email !== "") {
+	// 		return (
+	// 			<>
+	// 				<Grid item md={1} className={classes.iconContainer}>
+	// 					<a href={`mailto:${user.email}`}>
+	// 						<EmailIcon className={classes.icon}/>
+	// 					</a>
+	// 				</Grid>
+	// 				<Grid item md={width - 1}>
+	// 					<a className={classes.link} href={`mailto:${user.email}`}>
+	// 						<Typography variant="body1" className={classes.text}>{user.email}</Typography>
+	// 					</a>
+	// 				</Grid>
+	// 			</>
+	// 		)
+	// 	} else {
+	// 		return (
+	// 			<>
+	// 				<Grid item xs={1} className={classes.iconContainer}>
+	// 					{type[variant].icon}
+	// 				</Grid>
+	// 				<Grid item xs={width - 1}>
+	// 					<Typography variant="body1" className={classes.text}>{type[variant].text}</Typography>
+	// 				</Grid>
+	// 			</> 
+	// 		)
+	// 	}
+	// }
+
 
 
 	const profileDetails = () => {
@@ -203,13 +267,35 @@ const ProfileHeading = ({ ownerID }) => {
 		const BirthdayRow = () => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<BirthdayIcon className="iconScaling" />
+					<CakeOutlinedIcon className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
 					<Typography className="rowText">{userInfo?.birthday}</Typography>
 				</Grid>
 			</>
 		);
+
+		const GradeRow = () => (
+			<>
+				<Grid className="rowPadding" item xs={1}>
+					<GradeIcon className="iconScaling" />
+				</Grid>
+				<Grid className="rowPadding" item xs={5}>
+					<Typography className="rowText">Grade {userInfo.grade}</Typography>
+				</Grid>
+			</>
+		)
+
+		const SchoolRow = () => (
+			<>
+				<Grid className="rowPadding" item xs={1}>
+					<SchoolIcon className="iconScaling" />
+				</Grid>
+				<Grid className="rowPadding" item xs={5}>
+					<Typography className="rowText">{userInfo.school?.name}</Typography>
+				</Grid>
+			</>
+		)
 
 		
 		
@@ -220,21 +306,11 @@ const ProfileHeading = ({ ownerID }) => {
 				return (
 					<>
 						<IDRow />
-						<BirthdayRow />
-						<Grid className="rowPadding" item xs={1}>
-							<GradeIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">Grade {userInfo.grade}</Typography>
-						</Grid>
+						<GradeRow />
 						<PhoneRow />
-						<Grid className="rowPadding" item xs={1}>
-							<SchoolIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">{userInfo.school?.name}</Typography>
-						</Grid>
+						<SchoolRow />
 						<EmailRow />
+						<BirthdayRow />
 					</>
 				);
 			case "INSTRUCTOR":
