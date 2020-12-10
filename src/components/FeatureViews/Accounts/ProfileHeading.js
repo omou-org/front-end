@@ -29,6 +29,7 @@ import {useQuery} from "@apollo/react-hooks";
 import { darkGrey } from "theme/muiTheme";
 import { useSelector } from "react-redux";
 import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
+import moment from "moment";
 
 const GET_PROFILE_HEADING_QUERY = {
 	"admin" : gql`
@@ -70,6 +71,7 @@ const GET_PROFILE_HEADING_QUERY = {
 			birthDate
 			accountType
 			balance
+			phoneNumber
 			user {
 			  firstName
 			  lastName
@@ -86,6 +88,7 @@ const GET_PROFILE_HEADING_QUERY = {
 			birthDate
 			accountType
 			grade
+			phoneNumber
 			school {
 			  name
 			  id
@@ -187,7 +190,7 @@ const ProfileHeading = ({ ownerID }) => {
 				</Grid>
 			</>
 		);
-
+			console.log(userInfo);
 		const PhoneRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
@@ -207,7 +210,7 @@ const ProfileHeading = ({ ownerID }) => {
 					<CakeOutlinedIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
-					<Typography className="rowText">{userInfo?.birthday}</Typography>
+					<Typography className="rowText">{moment(userInfo?.birthDate).format("MMM Do YYYY")}</Typography>
 				</Grid>
 			</>
 		);
