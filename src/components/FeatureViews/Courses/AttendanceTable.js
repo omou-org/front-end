@@ -125,9 +125,10 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       let sessionsDoneEditing = {};
       courseAttendanceMatrix.forEach((studentAttendanceRow) => {
         const { attendanceList: studentAttendanceList } = studentAttendanceRow;
-        studentAttendanceList.forEach(({ status: attendanceStatus, sessionId }) => {
-          if (attendanceStatus !== "UNSET") {
-            sessionsDoneEditing[sessionId] = "done";
+        studentAttendanceList.forEach((attendanceStatus) => {
+          const { sessionId } = attendanceStatus
+          if (attendanceStatus[sessionId] !== "UNSET") {
+            sessionsDoneEditing[sessionId] = "done"
           }
         });
       });
@@ -137,14 +138,16 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
 
   const sortByFirstName = (firstEl, secondEl) =>
   { 
-    if(firstEl.name < secondEl.name) {
+    if(firstEl.studentName < secondEl.studentName) {
       return -1
-    } else if(firstEl.name > secondEl.name) {
+    } else if(firstEl.studentName > secondEl.studentName) {
       return 1 
     } else {
       return 0
     }
   };
+
+  const sortBySessionId = (firstEl, secondEl) => firstEl.sessionId - secondEl.sessionId
 
   const { data, loading, error } = useQuery(GET_ATTENDANCE, {
     variables: { courseId: id },
@@ -181,8 +184,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
             allStudentAttendanceRowsData[studentId]
           );
           allStudentAttendanceRowsData[studentId].push({
-            [session.id]: id,
-            status,
+            attendanceId: id,
+            [session.id]: status,
             sessionId: session.id,
           });
           return allStudentAttendanceRowsData;
@@ -195,7 +198,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         .map((enrollment) =>
           createStudentAttendanceRow(
             fullName(enrollment.student.user),
-            studentAttendanceRowsData[enrollment.student.user.id],
+            studentAttendanceRowsData[enrollment.student.user.id].sort(sortBySessionId),
             enrollment.student.user.id
           )
         )
@@ -246,16 +249,20 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     } else {
       setIsEdit({ ...isEdit, [sessionId]: false });
       setIsEditing(false);
-      courseAttendanceMatrix.forEach((iterate) =>
-        iterate.attendanceList.forEach(
-          (attendance) => {
-            console.log(attendance)
+      courseAttendanceMatrix.forEach((iterate) => {
+        iterate.attendanceList.forEach((x) => {
+          if (x[sessionId] !== "UNSET") {
+            setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "done" })
           }
-            // attendance.status !== "UNSET" &&
-            // setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "done" })
-        )
-      );
-      console.log("mutation fires here");
+          }) 
+      })
+        // iterate.attendanceList.forEach(
+        //   (attendance) => 
+        //     attendance.status !== "UNSET" &&
+        //     setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "done" })
+        // )
+      // );
+      // console.log("mutation fires here");
     }
   };
 
@@ -266,11 +273,11 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       "data-attendanceIndex"
     );
     const attendanceId = e.currentTarget.getAttribute("data-keys");
+    // console.log(attendanceValue)
     // console.log(attendanceId)
     const updatedAttendanceStatus = courseAttendanceMatrix[
       arrayIndex
-    ].attendanceList.map((id) => id[id.sessionId] === attendanceId ? { ...id, status: attendanceValue } : id);
-    console.log(updatedAttendanceStatus)
+    ].attendanceList.map((id) => id.sessionId === attendanceId ? { ...id, [attendanceId]: attendanceValue} : id);
     const arrOfObj = {
       ...courseAttendanceMatrix[arrayIndex],
       attendanceList: updatedAttendanceStatus,
@@ -304,25 +311,28 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     attendanceEditStates
   ) => {
     const renderEachButton =
-      ["PRESENT", "TARDY", "ABSENT"].indexOf(attendanceIdArray[keys].status) >=
+      ["PRESENT", "TARDY", "ABSENT"].indexOf(attendanceIdArray[keys][attendanceIdArray[keys].sessionId]) >=
         0 && attendanceEditStates[keys] !== "edited";
-        // console.log(attendanceIdArray)
+        // console.log(renderEachButton)
+        // console.log(attendanceIdArray[keys][attendanceIdArray[keys].sessionId])
+        // console.log(keys)
     if (renderEachButton) {
       return (
         <Button
           style={{
-            backgroundColor: colorHighlight[attendanceIdArray[keys].status],
+            backgroundColor: colorHighlight[attendanceIdArray[keys][attendanceIdArray[keys].sessionId]],
             color: "black",
           }}
           disabled
         >
-          {attendanceIdArray[keys].status}
+          {attendanceIdArray[keys][attendanceIdArray[keys].sessionId]}
         </Button>
       );
     } else {
       return null;
     }
   };
+
 
   // const sortAttendanceArray = () => {
   //   const sortAttendanceList = courseAttendanceMatrix.sort(
@@ -339,6 +349,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
   //   );
   //   setCourseAttendanceMatrix(sortAttendanceList);
   // };
+
+
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
   const sortAscOrder = (firstEl, secondEl) => (firstEl > secondEl ? -1 : 0);
 
@@ -372,7 +384,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
   // console.log(courseAttendanceMatrix)
   // console.log(attendanceBySession);
   // console.log(sessions)
-  console.log(attendanceEditStates)
+  // console.log(attendanceEditStates)
   // console.log(attendanceRecord)
   return (
     <TableContainer className={classes.table}>
@@ -417,6 +429,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       courseAttendanceMatrix={courseAttendanceMatrix}
                       setCourseAttendanceMatrix={setCourseAttendanceMatrix}
                       studentAttendanceDisplay={studentAttendanceDisplay}
+                      setSortByAlphabet={setSortByAlphabet}
+                      // sortByAlphabet={sortByAlphabet}
                       index={i}
                     />
                   )}
@@ -444,12 +458,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       <Button
                         data-studentIndex={i}
                         data-attendanceIndex={index + 1}
-                        data-keys={id[id.sessionId]}
+                        data-keys={id.sessionId}
                         value='PRESENT'
                         onClick={handleClick}
                         style={{
                           backgroundColor: `${
-                            id.status === "PRESENT" || id.status === "UNSET"
+                            id[id.sessionId] === "PRESENT" || id[id.sessionId] === "UNSET"
                               ? "#6CE086"
                               : "#C9FFD5"
                           }`,
@@ -462,12 +476,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       <Button
                         data-studentIndex={i}
                         data-attendanceIndex={index + 1}
-                        data-keys={id[id.sessionId]}
+                        data-keys={id.sessionId}
                         value='TARDY'
                         onClick={handleClick}
                         style={{
                           backgroundColor: `${
-                            id.status === "TARDY" || id.status === "UNSET"
+                            id[id.sessionId] === "TARDY" || id[id.sessionId] === "UNSET"
                               ? "#FFDD59"
                               : "#FFF6D4"
                           }`,
@@ -480,12 +494,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       <Button
                         data-studentIndex={i}
                         data-attendanceIndex={index + 1}
-                        data-keys={id[id.sessionId]}
+                        data-keys={id.sessionId}
                         value='ABSENT'
                         onClick={handleClick}
                         style={{
                           backgroundColor: `${
-                            id.status === "ABSENT" || id.status === "UNSET"
+                            id[id.sessionId] === "ABSENT" || id[id.sessionId] === "UNSET"
                               ? "#FF6766"
                               : "#FFD8D8"
                           }`,

@@ -176,65 +176,43 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
     )
   };
 
-  export const SessionButton = ({ attendanceArray, id, setAttendanceRecord, attendanceEditStates, setAttendanceEditStates, setCurrentSessionId, studentAttendanceDisplay, setCourseAttendanceMatrix, index, test }) => {
+  export const SessionButton = ({ attendanceArray, id, setAttendanceRecord, attendanceEditStates, setAttendanceEditStates, setCurrentSessionId, studentAttendanceDisplay, setCourseAttendanceMatrix, index, setSortByAlphabet, courseAttendanceMatrix }) => {
     const classes = useStyles();
     const handleOpen = e => {
       const sessionId = e.currentTarget.getAttribute("data-session-id")
         setAttendanceRecord({[sessionId]: e.currentTarget})
     };
 
-    const sortStudentAttendanceListByStatus = (studentList, attendance) => {
-      return test.reduce(
-        (allStudentAttendanceRowsData, { id, enrollment, status, session }) => {
-          const studentId = enrollment.student.user.id;
-          const setInitialStudentRowData = (initalStudentRowData) =>
-            initalStudentRowData || [];
-          allStudentAttendanceRowsData[studentId] = setInitialStudentRowData(
-            allStudentAttendanceRowsData[studentId]
-          );
-          allStudentAttendanceRowsData[studentId].push({
-            attendanceId: id,
-            status,
-            sessionId: session.id,
-          });
-          return allStudentAttendanceRowsData;
-        },
-        {}
-      );
-      // return studentList.sort((firstStudentStatus, secondStudentStatus) => {
-        
-        // const attendanceStatusList = ["PRESENT", "TARDY", "ABSENT"];
-        // console.log(attendanceStatusList.indexOf(firstStudentStatus.attendanceList[0].status))
-        // console.log(attendanceStatusList.indexOf(secondStudentStatus.attendanceList[0].status))
-        // console.log(firstStudentStatus.attendanceList[0].status)
-        // console.log(secondStudentStatus.attendanceList[0].status)
-        // const compareStatus1 = (attendanceStatusList.indexOf(firstStudentStatus.attendanceList[0].status) === attendanceStatusList.indexOf(secondStudentStatus.attendanceList[0].status))
-        // console.log(compareStatus1)
-        // const compareStatus2 = (attendanceStatusList.indexOf(firstStudentStatus.attendanceList[1].status) === attendanceStatusList.indexOf(secondStudentStatus.attendanceList[1].status))
-        // console.log(compareStatus2)
-        // return compareStatus1
-      // })
-      // return studentList.map(({ attendanceList: studentAttendanceList, studentName }) => {
-      //   studentAttendanceList.sort((firstStatus, secondStatus) => {
-      //     const attendanceStatusList = ["PRESENT", "TARDY", "ABSENT"];
-      //     const compareStatus = attendanceStatusList.indexOf(firstStatus.status) === attendanceStatusList.indexOf(secondStatus.status)   
-      //     if(compareStatus) {
-      //       return studentName
-      //     }
-      //     return studentName
-      //   })
-      // })
+    const sortStudentAttendanceListByStatus = (studentList, sessionId, attendanceIndex) => {
+      const matrix = {
+        PRESENT: 1,
+        ABSENT: -1
+    }
+    return studentList.sort((stuA, stuB) => {
+        const attA = stuA.attendanceList[attendanceIndex][sessionId];
+        const attB = stuB.attendanceList[attendanceIndex][sessionId];
+        if (attA === attB) return 0;
+        if (attA === "PRESENT") return -1;
+        if (attA === "ABSENT") return 1;
+        return matrix[attB];
+    })
+      
     }
 
     const handleSort = e => {
       const sessionId = e.currentTarget.getAttribute("data-session-id");
       const attendanceIndex = e.currentTarget.getAttribute("data-attendanceArrayIndex");
-      console.log(attendanceIndex)
+      console.log(attendanceIndex);
+      console.log(sessionId);
       setAttendanceRecord({[sessionId]: null});
-      setCurrentSessionId(sessionId); 
+      // setCurrentSessionId(sessionId); 
+      // setSortByAlphabet(e.target.getAttribute("value"));
       sessionId !== null && setAttendanceEditStates({...attendanceEditStates, [sessionId]: e.target.getAttribute("value")})
       // studentAttendanceDisplay
-      console.log(sortStudentAttendanceListByStatus(studentAttendanceDisplay, attendanceIndex));
+      const x = sortStudentAttendanceListByStatus(courseAttendanceMatrix, sessionId, attendanceIndex)
+      // console.log(sortStudentAttendanceListByStatus(studentAttendanceDisplay, sessionId));
+      setCourseAttendanceMatrix(x)
+      setSortByAlphabet("")
     }
   
     const handleClose = e => {
