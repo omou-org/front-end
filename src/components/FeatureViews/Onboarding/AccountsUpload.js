@@ -3,6 +3,9 @@ import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { useMutation } from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -28,9 +31,26 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const UPLOAD_FILE = gql`
+    mutation UploadMutation($uploadFile: Upload!) {
+        uploadMutation(uploadFile: $uploadFile) {
+            success
+        }
+    }`;
+
 const AccountsUpload = () => {
+    const [mutate] = useMutation(UPLOAD_FILE);
+
     const classes = useStyles();
 
+    function onChange({
+        target: {
+            validity,
+            files: [file],
+        },
+    }) {
+        if (validity.valid) mutate({ variables: { file } });
+    }
     return (
         <Container>
             <Box className={classes.Text}>
@@ -39,7 +59,7 @@ const AccountsUpload = () => {
                     variant="h3">Accounts</Typography>
                 <Box fontSize="h5.fontSize" className={classes.Subtitle}>
                     <Typography 
-                    variant="p"
+                        variant="p"
                     >
                     Upload your filled-in Accounts template:
 
@@ -49,8 +69,7 @@ const AccountsUpload = () => {
             <Box className={classes.uploadField}>
                 <Typography className={classes.uploadFieldText}>Drag & Drop files here</Typography>
             </Box>
-            <input className={classes.manualUploadBtn} type="file" accept=".csv"></input>
-
+            <input className={classes.manualUploadBtn} onChange={onChange} type="file" accept=".csv"></input>
         </Container>
     );
 };

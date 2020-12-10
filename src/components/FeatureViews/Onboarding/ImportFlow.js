@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
     },
     button: {
-        marginRight: theme.spacing(1),
+        // marginRight: theme.spacing(1),
+        margin: "0 35px"
     },
     instructions: {
         marginTop: theme.spacing(1),
@@ -121,7 +122,7 @@ const ImportFlow = () => {
                 {activeStep === steps.length ? (
                     <div>
                         <Typography className={classes.instructions}>
-              All steps completed - you&apos;re finished
+              All steps completed - you're finished
                         </Typography>
                         <Button onClick={handleReset} className={classes.button}>
               Reset
