@@ -9,34 +9,53 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import LoadingError from "./LoadingCourseError";
 import {fullName} from "../../../../utils";
+import { useSelector } from "react-redux";
+import { useParams } from 'react-router-dom';
 
-const GET_PARENTS = gql`
-	query getParents($id:ID){
-		parent(userId: $id) {
-		user {
-			email
-			firstName
-			id
-			lastName
-		}
+
+
+const GET_PARENTS =	gql`
+query getParentAsStudent($userID: ID!) {
+	student(userId: $userID) {
+	  primaryParent {
 		accountType
-		phoneNumber
+		user {
+		  id
+		  firstName
+		  lastName
+		  email
+		  parent {
+			phoneNumber
+		  }
 		}
+	  }
 	}
-`
+  }`
 
-const ParentContact = ({ parent_id }) => {
-	const { data, loading, error } = useQuery(GET_PARENTS, { "variables": { "id": parent_id } });
+// I click into a student account - Take the ID from param
+// 
+
+const ParentContact = () => {
+
+	const { accountID } = useParams();
+
+	const {data,loading, error} = useQuery(GET_PARENTS, {
+		variables: {userID :accountID}
+	})
+		
 	if (loading) return <Loading loadingText="PARENT LOADING" small />;
 	if (error) return <LoadingError error="parent" />;
 
+	// Needs to take ID and check if its a parent
+	const {student} = data;
+	console.log(student)
 	const parent = {
-		"name": fullName(data.parent.user),
-		"phoneNumber": data.parent.phoneNumber,
-		"accountType": data.parent.accountType.toLowerCase(),
+		"name": fullName(student.primaryParent.user),
+		"phoneNumber": student.primaryParent.user.parent.phoneNumber,
+		"accountType": student.primaryParent.accountType.toLowerCase(),
 		"user": {
-			"id": data.parent.user.id,
-			"email": data.parent.user.email,
+			"id": student.primaryParent.user?.id,
+			"email": student.primaryParent.user?.email,
 		}
 	}
 
@@ -44,7 +63,7 @@ const ParentContact = ({ parent_id }) => {
 		<Grid item md={12}>
 			<Grid container spacing={2}>
 				<Grid item md={12} xs={10}>
-					<ProfileCard route={`/accounts/parent/${parent_id}`} user={parent} />
+					<ProfileCard route={`/accounts/parent/${accountID}`} user={parent} />
 				</Grid>
 			</Grid>
 		</Grid>
