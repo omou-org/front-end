@@ -168,13 +168,13 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
 
             {/* Onboarding Routes */}
-            <AuthenticatedRoute path="/onboarding/welcome" users={[USER_TYPES.admin]}>
-                <Welcome />
-            </AuthenticatedRoute>
+            <Route path="/onboarding/welcome" users={[USER_TYPES.admin]}>
+                <Welcome/>
+            </Route>
 
-            <AuthenticatedRoute path="/onboarding/import" users={[USER_TYPES.admin]}>
-                <ImportFlow />
-            </AuthenticatedRoute>
+            <Route path="/onboarding/import" users={[USER_TYPES.admin]}>
+                <ImportFlow/>
+            </Route>
         
             {/* Course Management Routes */}
             <AuthenticatedRoute 
