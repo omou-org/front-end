@@ -48,7 +48,6 @@ const GET_ENROLLMENT = gql`
         important
       }
       sessionsLeft
-      enrollmentBalance
       course {
         id
         title
@@ -60,10 +59,6 @@ const GET_ENROLLMENT = gql`
             lastName
           }
         }
-      }
-      paymentList {
-        id
-        createdAt
       }
       lastPaidSessionDatetime
       student {
@@ -83,6 +78,51 @@ const GET_ENROLLMENT = gql`
     }
   }
 `;
+//ANNA
+// const GET_ENROLLMENT = gql`
+//   query EnrollmentViewQuery($enrollmentId: ID!) {
+//     enrollment(enrollmentId: $enrollmentId) {
+//       id
+//       enrollmentnoteSet {
+//         id
+//         important
+//       }
+//       sessionsLeft
+//       enrollmentBalance
+//       course {
+//         id
+//         title
+//         courseType
+//         instructor {
+//           user {
+//             firstName
+//             id
+//             lastName
+//           }
+//         }
+//       }
+//       paymentList {
+//         id
+//         createdAt
+//       }
+//       lastPaidSessionDatetime
+//       student {
+//         user {
+//           id
+//           firstName
+//           lastName
+//           parent {
+//             user {
+//               id
+//               firstName
+//               lastName
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
 
 const GET_SESSIONS = gql`
   query GetSessions($courseId: ID!) {
@@ -185,11 +225,13 @@ const CourseSessionStatus = () => {
       </Typography>
     );
   }
+  sessionsData.sessions.sort((a, b) => (a.startDatetime > b.startDatetime) ? 1 : ((b.startDatetime > a.startDatetime) ? -1 : 0));
+  //ANNA
   const {
     course,
     enrollmentnoteSet,
-    enrollmentBalance,
-    paymentList,
+    // enrollmentBalance,
+    // paymentList,
     student,
     id,
   } = enrollmentData.enrollment;
@@ -247,14 +289,15 @@ const CourseSessionStatus = () => {
       case 1:
         return <Notes ownerID={id} ownerType="enrollment" />;
       case 2:
-        return (
-          <PaymentTable
-            courseID={course.id}
-            enrollmentID={id}
-            paymentList={paymentList}
-            type="enrollment"
-          />
-        );
+        // ANNA
+        // return (
+        //   <PaymentTable
+        //     courseID={course.id}
+        //     enrollmentID={id}
+        //     paymentList={paymentList}
+        //     type="enrollment"
+        //   />
+        // );
       default:
         return null;
     }
@@ -309,7 +352,9 @@ const CourseSessionStatus = () => {
                             </Link>
                         </Typography>
                         <Typography align="left">
-                            Enrollment Balance Left: ${enrollmentBalance}
+                          {/* ANNA */}
+                            {/* Enrollment Balance Left: ${enrollmentBalance} */}
+                            Enrollment Balance Left: NOT WORKING
                         </Typography>
                     </Grid>
                     {activeTab === 0 && (
@@ -365,8 +410,13 @@ const CourseSessionStatus = () => {
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for{" "}
                         <b>{fullName(student.user)}</b>. Performing this
-                        action will credit <b>${enrollmentBalance}</b> back to the parent's
+                        action will credit <b>NOTWORKING</b> back to the parent's
                         account balance. Are you sure you want to unenroll?
+                        {/* ANNA */}
+                        {/* You are about to unenroll in <b>{course.title}</b> for{" "}
+                        <b>{fullName(student.user)}</b>. Performing this
+                        action will credit <b>${enrollmentBalance}</b> back to the parent's
+                        account balance. Are you sure you want to unenroll? */}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

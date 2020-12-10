@@ -15,7 +15,6 @@ import Button from "@material-ui/core/Button";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities"
 
-
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 
 const GET_COURSE = gql`

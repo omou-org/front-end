@@ -164,6 +164,8 @@ const GET_COURSES = gql`
   }
 `;
 
+
+
 const ClassListItem = ({
   title,
   endDate,
@@ -326,7 +328,6 @@ const CourseManagementContainer = () => {
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-
   const defaultCourseDisplay = data.courses
     .filter(
       (course) =>

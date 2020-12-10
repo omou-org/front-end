@@ -39,6 +39,7 @@ import "./scheduler.scss";
 import { fullName } from "../../../utils";
 
 import moment from "moment";
+import { GET_SESSIONS_FAILED } from "actions/actionTypes";
 
 const GET_CATEGORIES = gql`
   query EditSessionCategoriesQuery {
@@ -224,6 +225,8 @@ const EditSessionView = () => {
 
   const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
     update: (cache, { data }) => {
+      console.log(data);
+      const newSession = data.createSession.session;
       const existingSession = cache.readQuery({
         query: GET_SESSION,
         variables: {
@@ -242,23 +245,31 @@ const EditSessionView = () => {
       cache.writeQuery({
         query: GET_SESSION,
         data: {
-          session: [...existingSession, ...data["updateSession"].session],
+          session: newSession,
         },
         variables: {
           sessionId: session_id,
         },
       });
+
+      // cache.writeQuery({
+      //   query: GET_SESSIONS,
+      //   data: {
+      //     session: [...existingSession, ...data["updateSession"].session]
+      //   }
+      // })
     },
   });
 
   const [updateCourse, updateCourseResults] = useMutation(UPDATE_COURSE, {
     update: (cache, { data }) => {
+      console.log(data);
       const existingCourse = cache.readQuery({
         query: GET_SESSION,
         variables: {
           courseId: course_id,
         },
-      }).session;
+      }).course;
 
       //TODO: After back-end issues are resolved
       //   let updatedSession = [...existingSession];
@@ -268,17 +279,15 @@ const EditSessionView = () => {
       // } else {
       //     updatedSession[matchingIndex] = newSession;
       // }
-      cache.writeQuery({
-        query: GET_SESSION,
-        data: {
-          session: [...existingCourse, ...data["updateCourse"].course],
-        },
-        variables: {
-          sessionId: session_id,
-          courseCategoryId: course_id,
-          courseId: course_id,
-        },
-      });
+      //   cache.writeQuery({
+      //     query: GET_SESSION,
+      //    data: {
+      //         course: newCourse,
+      //     },
+      //     variables: {
+      //       courseId: course_id,
+      //     },
+      //   });
     },
   });
 
@@ -404,32 +413,32 @@ const EditSessionView = () => {
           break;
         }
       }
+
+      const startTime = moment(response.session.startDatetime).format("H");
+      const endTime = moment(response.session.endDatetime).format("H");
+
+      let durationHours = Math.abs(endTime - startTime);
+      if (durationHours === 0) {
+        durationHours = 1;
+      }
+
+      setSessionFields({
+        category: {
+          value: response.session.course.courseCategory.id,
+          label: response.session.course.courseCategory.name,
+        },
+        instructor: {
+          value: instructorValue,
+          label: fullName(instructorLabel),
+        },
+        start_time: startDatetime,
+        end_time: response.session.endDatetime,
+        room: response.session.course.room,
+        duration: durationHours,
+        title: checkTitle,
+        is_confirmed: confirmedState,
+      });
     }
-
-    const startTime = moment(response.session.startDatetime).format("H");
-    const endTime = moment(response.session.endDatetime).format("H");
-
-    let durationHours = Math.abs(endTime - startTime);
-    if (durationHours === 0) {
-      durationHours = 1;
-    }
-
-    setSessionFields({
-      category: {
-        value: response.session.course.courseCategory.id,
-        label: response.session.course.courseCategory.name,
-      },
-      instructor: {
-        value: instructorValue,
-        label: fullName(instructorLabel),
-      },
-      start_time: startDatetime,
-      end_time: response.session.endDatetime,
-      room: response.session.course.room,
-      duration: durationHours,
-      title: checkTitle,
-      is_confirmed: confirmedState,
-    });
   };
 
   const handleUpdateSession = () => {
@@ -442,7 +451,7 @@ const EditSessionView = () => {
       duration,
       title,
     } = sessionFields;
-    let newEndTime = calculateEndTime(duration, start_time);
+    let newUTCEndTime = calculateEndTime(duration, start_time);
     switch (location.state.allOrCurrent) {
       case "current": {
         const UTCstartDatetime = moment(start_time).utc().format();
@@ -452,7 +461,7 @@ const EditSessionView = () => {
             sessionTitle: title,
             sessionInstructor: instructor.value,
             sessionStartDatetime: UTCstartDatetime,
-            sessionEndDatetime: newEndTime,
+            sessionEndDatetime: newUTCEndTime,
             sessionConfirmed: is_confirmed,
           },
         });
@@ -503,125 +512,116 @@ const EditSessionView = () => {
 
   return (
     <Grid container className="main-session-view">
-      <BackgroundPaper
-        elevation={2}
-        className="paper session"
-        mt="2em"
-        style={{ width: "100%" }}
-      >
-        <Grid className="session-button" item>
-          <BackButton />
+      <Grid className="session-button" item>
+        <BackButton />
+      </Grid>
+      <Grid className="session-view" container direction="row" spacing={2}>
+        <Grid item sm={12}>
+          <TextField
+            fullWidth
+            onChange={handleTextChange("title")}
+            value={sessionFields.title}
+          />
         </Grid>
-        <Grid className="session-view" container direction="row" spacing={2}>
-          <Grid item sm={12}>
+        <Grid
+          align="left"
+          className="session-view-details"
+          container
+          spacing={2}
+          xs={6}
+        >
+          {location.state.allOrCurrent === "all" && (
+            <Grid item xs={6}>
+              <Typography variant="h5"> Subject </Typography>
+              <SearchSelect
+                className="search-options"
+                isClearable
+                onChange={handleCategoryChange}
+                options={categoriesList}
+                placeholder="Choose a Category"
+                value={sessionFields.category}
+              />
+            </Grid>
+          )}
+          <Grid item xs={6}>
+            <Typography variant="h5"> Room</Typography>
             <TextField
-              fullWidth
-              onChange={handleTextChange("title")}
-              value={sessionFields.title}
+              onChange={handleTextChange("room")}
+              value={sessionFields.room}
             />
           </Grid>
-          <Grid
-            align="left"
-            className="session-view-details"
-            container
-            spacing={2}
-            xs={6}
-          >
-            {location.state.allOrCurrent === "all" && (
+
+          <Grid item xs={12}>
+            <Typography variant="h5"> Instructor </Typography>
+            <SearchSelect
+              onChange={handleInstructorChange}
+              options={instructorList}
+              placeholder="Choose an Instructor"
+              value={sessionFields.instructor}
+            />
+            <EditCurrentSessionField>
+              <FormControl style={{ marginTop: "20px", marginBottom: "10px" }}>
+                <InputLabel>Is instructor confirmed?</InputLabel>
+                <Select
+                  onChange={onConfirmationChange}
+                  value={sessionFields.is_confirmed}
+                >
+                  <MenuItem value>Yes, Instructor Confirmed.</MenuItem>
+                  <MenuItem value={false}>
+                    No, Instructor is NOT Confirmed.
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </EditCurrentSessionField>
+          </Grid>
+          <EditCurrentSessionField>
+            <>
               <Grid item xs={6}>
-                <Typography variant="h5"> Subject </Typography>
-                <SearchSelect
-                  className="search-options"
-                  isClearable
-                  onChange={handleCategoryChange}
-                  options={categoriesList}
-                  placeholder="Choose a Category"
-                  value={sessionFields.category}
+                <Typography variant="h5"> Date</Typography>
+                <DatePicker
+                  inputVariant="outlined"
+                  onChange={handleDateChange}
+                  value={sessionFields.start_time}
                 />
               </Grid>
-            )}
 
-            <Grid item xs={6}>
-              <Typography variant="h5"> Room</Typography>
-              <TextField
-                onChange={handleTextChange("room")}
-                value={sessionFields.room}
-              />
-            </Grid>
+              <Grid item xs={6}>
+                <Typography variant="h5"> Start Time</Typography>
+                <TimePicker
+                  inputVariant="outlined"
+                  onChange={handleTimeChange}
+                  value={sessionFields.start_time}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <Typography variant="h5"> Instructor </Typography>
-              <SearchSelect
-                onChange={handleInstructorChange}
-                options={instructorList}
-                placeholder="Choose an Instructor"
-                value={sessionFields.instructor}
-              />
-              {location.state.allOrCurrent === "current" && (
-                <FormControl
-                  style={{ marginTop: "20px", marginBottom: "10px" }}
+              <Grid item xs={6}>
+                <Typography variant="h5"> Duration </Typography>
+                <Select
+                  onChange={handleDurationSelect}
+                  value={sessionFields.duration}
                 >
-                  <InputLabel>Is instructor confirmed?</InputLabel>
-                  <Select
-                    onChange={onConfirmationChange}
-                    value={sessionFields.is_confirmed}
-                  >
-                    <MenuItem value>Yes, Instructor Confirmed.</MenuItem>
-                    <MenuItem value={false}>
-                      No, Instructor is NOT Confirmed.
+                  {courseDurationOptions.map((duration, index) => (
+                    <MenuItem key={index} value={duration}>
+                      {`${duration} hour(s)`}
                     </MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            </Grid>
-            {location.state.allOrCurrent === "current" && (
-              <>
-                <Grid item xs={6}>
-                  <Typography variant="h5"> Date</Typography>
-                  <DatePicker
-                    inputVariant="outlined"
-                    onChange={handleDateChange}
-                    value={sessionFields.start_time}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography variant="h5"> Start Time</Typography>
-                  <TimePicker
-                    inputVariant="outlined"
-                    onChange={handleTimeChange}
-                    value={sessionFields.start_time}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Typography variant="h5"> Duration </Typography>
-                  <Select
-                    onChange={handleDurationSelect}
-                    value={sessionFields.duration}
-                  >
-                    {courseDurationOptions.map((duration, index) => (
-                      <MenuItem key={index} value={duration}>
-                        {`${duration} hour(s)`}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Grid>
-              </>
-            )}
-          </Grid>
+                  ))}
+                </Select>
+              </Grid>
+            </>
+          </EditCurrentSessionField>
         </Grid>
+      </Grid>
 
-        <Grid
-          className="session-detail-action-control"
-          container
-          direction="row"
-          justify="flex-end"
-        >
-          <Grid item>
-            <Grid container>
-              {/* TODO: Update InstructorConflictCheck */}
-              {/* <InstructorConflictCheck
+      <Grid
+        className="session-detail-action-control"
+        container
+        direction="row"
+        justify="flex-end"
+      >
+        <Grid item>
+          <Grid container>
+            {/* TODO: Update InstructorConflictCheck */}
+            {/* <InstructorConflictCheck
                 end={sessionFields.end_time}
                 eventID={
                   editSelection === EDIT_CURRENT_SESSION
@@ -635,26 +635,31 @@ const EditSessionView = () => {
                 }
                 onSubmit={updateSession}
               > */}
-              <Grid item md={6}>
-                <ResponsiveButton
-                  className="button"
-                  color="secondary"
-                  variant="outlined"
-                  onClick={handleUpdateSession}
-                >
-                  Save
-                </ResponsiveButton>
-              </Grid>
-              {/* </InstructorConflictCheck> */}
-              <Grid item md={6}>
-                <BackButton warn={true} icon="cancel" label="cancel" />
-              </Grid>
+            <Grid item md={6}>
+              <ResponsiveButton
+                className="button"
+                color="secondary"
+                variant="outlined"
+                onClick={handleUpdateSession}
+              >
+                Save
+              </ResponsiveButton>
+            </Grid>
+            {/* </InstructorConflictCheck> */}
+            <Grid item md={6}>
+              <BackButton warn={true} icon="cancel" label="cancel" />
             </Grid>
           </Grid>
         </Grid>
-      </BackgroundPaper>
+      </Grid>
     </Grid>
   );
+};
+
+const EditCurrentSessionField = ({ children }) => {
+  const location = useLocation();
+  if (location.state.allOrCurrent === "current") return children;
+  else return " ";
 };
 
 export default EditSessionView;
