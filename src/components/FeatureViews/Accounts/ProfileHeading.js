@@ -297,11 +297,18 @@ const ProfileHeading = ({ ownerID }) => {
 			</>
 		)
 
-		
-		
-			
+		const PaymentRow = () => (
+			<>
+				<Grid className="rowPadding" item xs={1}>
+					<MoneyIcon className="iconScaling" />
+				</Grid>
+				<Grid className="rowPadding" item xs={5}>
+					<Typography className="rowText">${userInfo.balance}</Typography>
+				</Grid>
+			</>
+		)
 
-		switch (accountType) {
+		switch (accountType.toLowerCase()) {
 			case "student":
 				return (
 					<>
@@ -313,34 +320,31 @@ const ProfileHeading = ({ ownerID }) => {
 						<BirthdayRow />
 					</>
 				);
-			case "INSTRUCTOR":
-				return (
-					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
-						<EmailRow />
-					</>
-				);
-			case "PARENT":
+			case "instructor":
 				return (
 					<>
 						<IDRow />
-						<Grid className="rowPadding" item xs={1}>
-							<MoneyIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">${userInfo.balance}</Typography>
-						</Grid>
-						<PhoneRow width={12} />
 						<EmailRow />
+						<PhoneRow />
+						<BirthdayRow />
+					</>
+				);
+			case "parent":
+				return (
+					<>
+						<IDRow />
+						<EmailRow />
+						<PhoneRow />
+						<PaymentRow/>
 					</>
 				);
 			default:
 				return (
 					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
+						<IDRow />
+						<PhoneRow />
 						<EmailRow />
+						
 					</>
 				);;
 		}
