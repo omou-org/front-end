@@ -7,6 +7,7 @@ import "./AdminPortal.scss";
 import AdminActionCenter from "./AdminActionCenter";
 import AdminViewsRoutes from "components/Routes/AdminViewsRoutes";
 import BackButton from "components/OmouComponents/BackButton";
+import Box from '@material-ui/core/Box';
 
 const AdminPortal = () => (
 	<form>
@@ -16,9 +17,11 @@ const AdminPortal = () => (
 				<hr />
 			</Grid>
 			<Grid item xs={12}>
-				<Typography align="left" variant="h1">
-					Admin Portal
+				<Box paddingTop="16px">
+					<Typography align="left" variant="h1">
+						Admin Portal
 					</Typography>
+				</Box>
 			</Grid>
 			<Grid item xs={12}>
 				<AdminActionCenter />

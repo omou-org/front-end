@@ -188,28 +188,17 @@
         display: inline-flex;
         vertical-align: middle;
     }
-}
-
-.padding {
-    padding-bottom: 4%;
-    padding-top: 3%;
-}
-
-.TabIcon {
-    display: inline-flex;
-    vertical-align: middle;
-}
-
-.notification {
-    background-color: orange;
-    position: absolute;
-    top: 10px;
-    left: 2.9em;
-    @include respond-to(medium-screens) {
-        left: 1.4em;
-    }
-    @include respond-to(handhelds) {
-        left: 1.4em;
+    .notification {
+        background-color: orange;
+        position: absolute;
+        top: 10px;
+        left: 2.9em;
+        @include respond-to(medium-screens) {
+            left: 1.4em;
+        }
+        @include respond-to(handhelds) {
+            left: 1.4em;
+        }
     }
     .left-align {
         margin-left: -40%;
