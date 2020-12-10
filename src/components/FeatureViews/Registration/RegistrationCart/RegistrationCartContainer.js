@@ -209,7 +209,7 @@ export default function RegistrationCartContainer() {
 								.map(([studentId, registration]) =>
 									<StudentRegistrationEntry
 										key={studentId}
-										student={studentData.find(student => student.user.id == studentId)}
+										student={studentData.find(student => student.user.id === studentId)}
 										registrationList={registration}
 									/>)
 						}
@@ -218,7 +218,7 @@ export default function RegistrationCartContainer() {
 						  justify={parentIsLoggedIn ? "flex-end" : "space-between"}
 						  alignItems={parentIsLoggedIn && "flex-end"}
 						  direction={parentIsLoggedIn ? "column" : "row"}
-						  spacing={parentIsLoggedIn ? 4 : 0}
+						  spacing={parentIsLoggedIn && 4}
 						  style={{marginTop: "50px"}}
 					>
 						{parentIsLoggedIn ? <>

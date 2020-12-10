@@ -30,8 +30,9 @@ import { weeklySessionsParser } from "components/Form/FormUtils";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
-import {fullName, USER_TYPES, gradeLvl, sessionsAtSameTimeInMultiDayCourse, DayAbbreviation} from "utils";
 import CourseAvailabilites from "components/OmouComponents/CourseAvailabilities";
+import AccessControlComponent from "../../OmouComponents/AccessControlComponent.js";
+import {fullName, USER_TYPES, gradeLvl} from "utils";
 
 export const GET_COURSE_DETAILS = gql`
 	query CourseDetails($courseId: ID!){
@@ -212,7 +213,10 @@ const RegistrationCourse = () => {
 				<Typography align="left" className="description text">
 					{description}
 				</Typography>
-				<Tabs
+				<AccessControlComponent
+								permittedAccountTypes={[USER_TYPES.admin, USER_TYPES.instructor, USER_TYPES.receptionist]}
+						>
+					<Tabs
 					className="registration-course-tabs"
 					classes={{indicator: classes.MuiIndicator}}
 					onChange={handleTabChange}
@@ -245,8 +249,10 @@ const RegistrationCourse = () => {
 						<Notes ownerID={courseID} ownerType="course"/>
 					</div>
 				)}
+			
+				</AccessControlComponent>
 			</div>
-	</Grid>
+		</Grid>
 	);
 };
 
