@@ -227,6 +227,7 @@ const ClassInfo = ({
                                     style={{ width: '100%', paddingTop: '1em' }}
                                     InputProps={{
                                         className: classes.inputBorderStyle,
+                                        maxLength: 20,
                                     }}
                                     onChange={handleDescriptionChange}
                                 />

@@ -32,7 +32,6 @@ import { StudentCourseLabel } from './StudentBadge';
 import { filterEvent } from 'actions/calendarActions';
 import { GET_STUDENTS } from './CourseManagementContainer';
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -79,7 +78,6 @@ export const GET_ANNOUNCEMENTS = gql`
         }
     }
 `;
-
 
 export const GET_CLASSES = gql`
     query getClass($id: ID!) {
@@ -156,7 +154,6 @@ const CourseClasses = () => {
     const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
     const [studentInCourse, setStudentInCourse] = useState([]);
 
-
     const tabLabels =
         accountType === 'PARENT'
             ? [
@@ -182,7 +179,6 @@ const CourseClasses = () => {
             id: id,
         },
     });
-
 
     const {
         data: studentData,
@@ -229,7 +225,6 @@ const CourseClasses = () => {
         activeAvailabilityList,
         sessionSet,
     } = data.course;
-
 
     const { name } = data.course.courseCategory;
     const { firstName, lastName } = data.course.instructor.user;
