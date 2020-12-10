@@ -83,10 +83,7 @@ export const GET_CLASSES = gql`
     query getClass($id: ID!) {
         course(courseId: $id) {
             academicLevel
-            courseCategory {
-                name
-                id
-            }
+
             title
             startDate
             endDate
@@ -94,6 +91,10 @@ export const GET_CLASSES = gql`
             courseLink
             courseLinkDescription
             courseLinkUpdatedAt
+            courseCategory {
+                name
+                id
+            }
             activeAvailabilityList {
                 dayOfWeek
                 endTime
@@ -221,11 +222,12 @@ const CourseClasses = () => {
         endDate,
         enrollmentSet,
         startDate,
+        description,
         title,
         activeAvailabilityList,
         sessionSet,
     } = data.course;
-
+    console.log(data.course);
     const { name } = data.course.courseCategory;
     const { firstName, lastName } = data.course.instructor.user;
 
@@ -445,6 +447,7 @@ const CourseClasses = () => {
                                     <ClassInfo
                                         id={id}
                                         courseLink={courseLink}
+                                        description={description}
                                         courseLinkDescription={
                                             courseLinkDescription
                                         }

@@ -21,6 +21,7 @@ import { GET_CLASSES } from './CourseClasses';
 
 const useStyles = makeStyles({
     courseLink: {
+        paddingTop: '1em',
         width: '100%',
     },
     cancelButton: {
@@ -42,6 +43,8 @@ const useStyles = makeStyles({
         lineHeight: '22px',
     },
     updatedAtText: {
+        paddingTop: '10px',
+        color: '#999999',
         fontSize: '14px',
         fontStyle: 'italic',
     },
@@ -254,9 +257,13 @@ const ClassInfo = ({
                     <Grid container>
                         <Grid item xs={7} align={'left'}>
                             <a href={courseLink} target="_blank">
-                                <Typography>{courseLink}</Typography>
+                                <Typography className={classes.courseLink}>
+                                    {courseLink}
+                                </Typography>
                             </a>
-                            <Typography>{courseLinkDescription}</Typography>
+                            <Typography style={{ paddingTop: '1em' }}>
+                                {courseLinkDescription}
+                            </Typography>
                             <Typography className={classes.updatedAtText}>
                                 {courseLinkUpdatedAt
                                     ? updatedAtText(courseLinkUpdatedAt)
