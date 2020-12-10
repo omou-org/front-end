@@ -294,7 +294,7 @@ const ProfileHeading = ({ ownerID }) => {
 		<Grid alignItems="center" container item xs={12}>
 			<Grid align="left" alignItems="center" container item xs={8}>
 				<Grid className="profile-name" item style={{ paddingRight: 10 }}>
-					<Typography variant="h4">{userInfo.user.firstName} {userInfo.user.lastName}</Typography>
+					<Typography variant="h3">{userInfo.user.firstName} {userInfo.user.lastName}</Typography>
 				</Grid>
 				<Grid item>
 					<Hidden smDown>
