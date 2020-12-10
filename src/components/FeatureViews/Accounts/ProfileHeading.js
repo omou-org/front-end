@@ -23,11 +23,12 @@ import InstructorAvailability from "./InstructorAvailability";
 import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
 import { ReactComponent as SchoolIcon } from "../../school.svg";
-import { USER_TYPES } from "utils"; 
+import { capitalizeString, USER_TYPES } from "utils"; 
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
-
+import { darkGrey } from "theme/muiTheme";
 import { useSelector } from "react-redux";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 
 const GET_PROFILE_HEADING_QUERY = {
 	"admin" : gql`
@@ -157,76 +158,12 @@ const ProfileHeading = ({ ownerID }) => {
 		</Grid>
 	);
 
-	console.log(userInfo);
-	// const InfoRow = ({ variant, width = 6}) => {
-
-	// 	const type = {
-	// 		"ID": {
-	// 			icon: <IDIcon className={classes.icon}/>,
-	// 			text: `#${userInfo.user.id}`
-	// 		},
-	// 		"Phone": {
-	// 			icon: <PhoneIcon className={classes.icon}/>,
-	// 			text: addDashes(user.phone_number),
-	// 		},
-	// 		"Birthday": {
-	// 			icon: <CakeOutlinedIcon className={classes.icon}/>,
-	// 			text: user.birthday,
-	// 		},
-	// 		"Grade": {
-	// 			icon: <GradeIcon className={classes.icon}/>,
-	// 			text: `Grade ${user.grade}`,
-	// 		},
-	// 		"School": {
-	// 			icon: <SchoolIcon className={classes.icon}/>,
-	// 			text: user.school,
-	// 		},
-	// 		"Balance": {
-	// 			icon: <MoneyIcon className={classes.icon}/>,
-	// 			text: `$${user.balance}`
-	// 		},
-	// 		"Email": {
-	// 			icon: <EmailIcon className={classes.icon}/>,
-	// 			text: user.email,
-	// 		}
-	// 	}
-
-	// 	if (variant === "Email" && user.email !== "") {
-	// 		return (
-	// 			<>
-	// 				<Grid item md={1} className={classes.iconContainer}>
-	// 					<a href={`mailto:${user.email}`}>
-	// 						<EmailIcon className={classes.icon}/>
-	// 					</a>
-	// 				</Grid>
-	// 				<Grid item md={width - 1}>
-	// 					<a className={classes.link} href={`mailto:${user.email}`}>
-	// 						<Typography variant="body1" className={classes.text}>{user.email}</Typography>
-	// 					</a>
-	// 				</Grid>
-	// 			</>
-	// 		)
-	// 	} else {
-	// 		return (
-	// 			<>
-	// 				<Grid item xs={1} className={classes.iconContainer}>
-	// 					{type[variant].icon}
-	// 				</Grid>
-	// 				<Grid item xs={width - 1}>
-	// 					<Typography variant="body1" className={classes.text}>{type[variant].text}</Typography>
-	// 				</Grid>
-	// 			</> 
-	// 		)
-	// 	}
-	// }
-
-
 
 	const profileDetails = () => {
 		const IDRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<IDIcon className="iconScaling" />
+					<IDIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
 					<Typography className="rowText">
@@ -240,7 +177,7 @@ const ProfileHeading = ({ ownerID }) => {
 			<>
 				<Grid className="emailPadding" item md={1}>
 					<a href={`mailto:${userInfo.user.email}`}>
-						<EmailIcon />
+						<EmailIcon style={{color:darkGrey}} />
 					</a>
 				</Grid>
 				<Grid className="emailPadding" item md={5}>
@@ -254,7 +191,7 @@ const ProfileHeading = ({ ownerID }) => {
 		const PhoneRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<PhoneIcon className="iconScaling" />
+					<PhoneIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
 					<Typography className="rowText">
@@ -267,7 +204,7 @@ const ProfileHeading = ({ ownerID }) => {
 		const BirthdayRow = () => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<CakeOutlinedIcon className="iconScaling" />
+					<CakeOutlinedIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
 					<Typography className="rowText">{userInfo?.birthday}</Typography>
@@ -278,7 +215,7 @@ const ProfileHeading = ({ ownerID }) => {
 		const GradeRow = () => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<GradeIcon className="iconScaling" />
+					<GradeIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
 					<Typography className="rowText">Grade {userInfo.grade}</Typography>
@@ -289,7 +226,7 @@ const ProfileHeading = ({ ownerID }) => {
 		const SchoolRow = () => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<SchoolIcon className="iconScaling" />
+					<SchoolIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
 					<Typography className="rowText">{userInfo.school?.name}</Typography>
@@ -300,7 +237,7 @@ const ProfileHeading = ({ ownerID }) => {
 		const PaymentRow = () => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<MoneyIcon className="iconScaling" />
+					<MoneyIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
 					<Typography className="rowText">${userInfo.balance}</Typography>
@@ -361,7 +298,9 @@ const ProfileHeading = ({ ownerID }) => {
 				</Grid>
 				<Grid item>
 					<Hidden smDown>
-						<RoleChip role={userInfo.accountType === "ADMIN" ? userInfo.adminType : userInfo.accountType} />
+						<LabelBadge variant="outline-gray">
+							{capitalizeString((userInfo.accountType === "ADMIN" ? userInfo.adminType : userInfo.accountType).toLowerCase())}
+						</LabelBadge>
 					</Hidden>
 				</Grid>
 			</Grid>
