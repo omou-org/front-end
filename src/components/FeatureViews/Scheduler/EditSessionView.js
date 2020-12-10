@@ -116,13 +116,6 @@ const GET_SESSION = gql`
   }
 `;
 
-//ANNA
-
-//Make room ticket
-
-//Update with availability function in utils
-
-
 const UPDATE_COURSE = gql`
   mutation UpdateCourse(
     $courseTitle: String
@@ -231,7 +224,6 @@ const EditSessionView = () => {
 
   const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
     update: (cache, { data }) => {
-      console.log(data.updateSession.createSession.session);
       const existingSession = cache.readQuery({
         query: GET_SESSION,
         variables: {
@@ -261,7 +253,6 @@ const EditSessionView = () => {
 
   const [updateCourse, updateCourseResults] = useMutation(UPDATE_COURSE, {
     update: (cache, { data }) => {
-      console.log(data.updateCourse.createCourse.course);
       const existingCourse = cache.readQuery({
         query: GET_SESSION,
         variables: {

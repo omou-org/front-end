@@ -31,7 +31,9 @@ export const GET_STUDENT_ENROLLMENTS = gql`
   query StudentEnrollments($studentId: ID!) {
     enrollments(studentId: $studentId) {
       id
+      enrollmentBalance
       sessionsLeft
+      lastPaidSessionDatetime
       course {
         title
         endDate
@@ -47,29 +49,6 @@ export const GET_STUDENT_ENROLLMENTS = gql`
   }
 `;
 
-// export const GET_STUDENT_ENROLLMENTS = gql`
-// 	query StudentEnrollments($studentId: ID!) {
-// 		enrollments(studentId: $studentId) {
-// 			id
-// 			enrollmentBalance
-// 			sessionsLeft
-// 			lastPaidSessionDatetime
-// 			course {
-// 			  title
-// 			  endDate
-// 			  startDate
-// 			  availabilityList {
-// 				endTime
-// 				startTime
-// dayOfWeek
-// 			  }
-// 			  id
-// 			}
-// 		}
-// 	}
-// `;
-
-//ANNA before push update to include enrollmentBalance
 
 const StudentCourseViewer = ({ studentID, current }) => {
   const { pathname } = useLocation();
@@ -178,7 +157,19 @@ const StudentCourseViewer = ({ studentID, current }) => {
                     </Grid>
                     <Grid item xs={2}>
                       <Typography align="left" className="accounts-table-text">
-                        {sessionsAtSameTimeInMultiDayCourse(enrollment.course.availabilityList) ? enrollments[0].course.availabilityList[0].startTime.slice(0, 5) + " - " + enrollments[0].course.availabilityList[0].endTime.slice(0, 5) : "various"}
+                        {sessionsAtSameTimeInMultiDayCourse(
+                          enrollment.course.availabilityList
+                        )
+                          ? enrollments[0].course.availabilityList[0].startTime.slice(
+                              0,
+                              5
+                            ) +
+                            " - " +
+                            enrollments[0].course.availabilityList[0].endTime.slice(
+                              0,
+                              5
+                            )
+                          : "various"}
                       </Typography>
                     </Grid>
                     <Grid item xs={1}>
