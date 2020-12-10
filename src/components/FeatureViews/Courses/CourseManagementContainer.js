@@ -188,20 +188,11 @@ const ClassListItem = ({
                 onClick={handleClick}
             >
                 <Grid container md={10}>
-                    <Grid item xs={6} sm={9} md={6}>
-                        <Typography
-                            variant="h4"
-                            align="left"
-                            style={{ marginLeft: '.85em' }}
-                        >
-                            {title}
-                        </Typography>
-                    </Grid>
                     <Grid
                         item
-                        xs={6}
+                        xs={2}
                         sm={3}
-                        md={6}
+                        md={2}
                         style={{ textAlign: 'left' }}
                     >
                         <Chip
@@ -214,6 +205,16 @@ const ClassListItem = ({
                             }}
                         />
                     </Grid>
+                    <Grid item xs={10} sm={9} md={10}>
+                        <Typography
+                            variant="h3"
+                            align="left"
+                            style={{ marginLeft: '.85em' }}
+                        >
+                            {title}
+                        </Typography>
+                    </Grid>
+
                     <Grid
                         item
                         xs={3}
@@ -221,11 +222,7 @@ const ClassListItem = ({
                         md={2}
                         className={classes.displayCardMargins}
                     >
-                        <Typography
-                            variant="body1"
-                            align="left"
-                            style={{ marginLeft: '1em' }}
-                        >
+                        <Typography variant="body1" align="left">
                             <span
                                 className={classes.highlightName}
                             >{`${concatFullName}`}</span>
