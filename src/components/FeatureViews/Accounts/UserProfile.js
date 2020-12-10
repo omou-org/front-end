@@ -38,6 +38,7 @@ import moment from "moment";
 
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
+import { h2, white } from "theme/muiTheme";
 
 const userTabs = {
 	instructor: [
@@ -354,26 +355,24 @@ const UserProfile = () => {
 
 	return (
 		<div className="UserProfile">
-			<Paper className="UserProfile paper">
-				<BackButton warn={false} />
-				<hr />
-				<Grid className="padding" container layout="row">
-					<Grid item md={2}>
-						<Hidden smDown>
-							<UserAvatar
-								fontSize="3.5vw"
-								margin={20}
-								name={`${data.userInfo.user.firstName} ${data.userInfo.user.lastName}`}
-								size="9vw"
-							/>
-						</Hidden>
-					</Grid>
-					<Grid className="headingPadding" item md={10} xs={12}>
-						<ProfileHeading  ownerID={accountID} />
-					</Grid>
+			<BackButton warn={false} />
+			<hr />
+			<Grid className="padding" container layout="row">
+				<Grid item md={2}>
+					<Hidden smDown>
+						<UserAvatar
+							name={`${data.userInfo.user.firstName} ${data.userInfo.user.lastName}`}
+							margin="0"
+                    		size="136px"
+                    		style={{ ...h2, color: white }}
+						/>
+					</Hidden>
 				</Grid>
-				{tabs()}
-			</Paper>
+				<Grid className="headingPadding" item md={6} xs={12}>
+					<ProfileHeading  ownerID={accountID} />
+				</Grid>
+			</Grid>
+			{tabs()}
 		</div>
 	);
 };

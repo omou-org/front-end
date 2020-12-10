@@ -11,6 +11,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Menu from "@material-ui/core/Menu";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
+import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 import Typography from "@material-ui/core/Typography";
 import Loading from "components/OmouComponents/Loading";
 import "./Accounts.scss";
@@ -22,11 +23,13 @@ import InstructorAvailability from "./InstructorAvailability";
 import OutOfOffice from "./OutOfOffice";
 import RoleChip from "./RoleChip";
 import { ReactComponent as SchoolIcon } from "../../school.svg";
-import { USER_TYPES } from "utils"; 
+import { capitalizeString, USER_TYPES } from "utils"; 
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
-
+import { darkGrey } from "theme/muiTheme";
 import { useSelector } from "react-redux";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
+import moment from "moment";
 
 const GET_PROFILE_HEADING_QUERY = {
 	"admin" : gql`
@@ -68,6 +71,7 @@ const GET_PROFILE_HEADING_QUERY = {
 			birthDate
 			accountType
 			balance
+			phoneNumber
 			user {
 			  firstName
 			  lastName
@@ -84,6 +88,7 @@ const GET_PROFILE_HEADING_QUERY = {
 			birthDate
 			accountType
 			grade
+			phoneNumber
 			school {
 			  name
 			  id
@@ -157,12 +162,11 @@ const ProfileHeading = ({ ownerID }) => {
 	);
 
 
-
 	const profileDetails = () => {
 		const IDRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<IDIcon className="iconScaling" />
+					<IDIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
 					<Typography className="rowText">
@@ -176,7 +180,7 @@ const ProfileHeading = ({ ownerID }) => {
 			<>
 				<Grid className="emailPadding" item md={1}>
 					<a href={`mailto:${userInfo.user.email}`}>
-						<EmailIcon />
+						<EmailIcon style={{color:darkGrey}} />
 					</a>
 				</Grid>
 				<Grid className="emailPadding" item md={5}>
@@ -186,11 +190,11 @@ const ProfileHeading = ({ ownerID }) => {
 				</Grid>
 			</>
 		);
-
+			console.log(userInfo);
 		const PhoneRow = ({ width = 6 }) => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<PhoneIcon className="iconScaling" />
+					<PhoneIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={width - 1}>
 					<Typography className="rowText">
@@ -203,68 +207,84 @@ const ProfileHeading = ({ ownerID }) => {
 		const BirthdayRow = () => (
 			<>
 				<Grid className="rowPadding" item xs={1}>
-					<BirthdayIcon className="iconScaling" />
+					<CakeOutlinedIcon style={{color:darkGrey}} className="iconScaling" />
 				</Grid>
 				<Grid className="rowPadding" item xs={5}>
-					<Typography className="rowText">{userInfo?.birthday}</Typography>
+					<Typography className="rowText">{moment(userInfo?.birthDate).format("MMM Do YYYY")}</Typography>
 				</Grid>
 			</>
 		);
 
-		
-		
-			
+		const GradeRow = () => (
+			<>
+				<Grid className="rowPadding" item xs={1}>
+					<GradeIcon style={{color:darkGrey}} className="iconScaling" />
+				</Grid>
+				<Grid className="rowPadding" item xs={5}>
+					<Typography className="rowText">Grade {userInfo.grade}</Typography>
+				</Grid>
+			</>
+		)
 
-		switch (accountType) {
+		const SchoolRow = () => (
+			<>
+				<Grid className="rowPadding" item xs={1}>
+					<SchoolIcon style={{color:darkGrey}} className="iconScaling" />
+				</Grid>
+				<Grid className="rowPadding" item xs={5}>
+					<Typography className="rowText">{userInfo.school?.name}</Typography>
+				</Grid>
+			</>
+		)
+
+		const PaymentRow = () => (
+			<>
+				<Grid className="rowPadding" item xs={1}>
+					<MoneyIcon style={{color:darkGrey}} className="iconScaling" />
+				</Grid>
+				<Grid className="rowPadding" item xs={5}>
+					<Typography className="rowText">${userInfo.balance}</Typography>
+				</Grid>
+			</>
+		)
+
+		switch (accountType.toLowerCase()) {
 			case "student":
 				return (
 					<>
 						<IDRow />
-						<BirthdayRow />
-						<Grid className="rowPadding" item xs={1}>
-							<GradeIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">Grade {userInfo.grade}</Typography>
-						</Grid>
+						<GradeRow />
 						<PhoneRow />
-						<Grid className="rowPadding" item xs={1}>
-							<SchoolIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">{userInfo.school?.name}</Typography>
-						</Grid>
+						<SchoolRow />
 						<EmailRow />
+						<BirthdayRow />
 					</>
 				);
-			case "INSTRUCTOR":
-				return (
-					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
-						<EmailRow />
-					</>
-				);
-			case "PARENT":
+			case "instructor":
 				return (
 					<>
 						<IDRow />
-						<Grid className="rowPadding" item xs={1}>
-							<MoneyIcon className="iconScaling" />
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">${userInfo.balance}</Typography>
-						</Grid>
-						<PhoneRow width={12} />
 						<EmailRow />
+						<PhoneRow />
+						<BirthdayRow />
+					</>
+				);
+			case "parent":
+				return (
+					<>
+						<IDRow />
+						<EmailRow />
+						<PhoneRow />
+						<PaymentRow/>
 					</>
 				);
 			default:
 				return (
 					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
+						<IDRow />
+						<PhoneRow />
 						<EmailRow />
+						
 					</>
 				);;
 		}
@@ -277,11 +297,13 @@ const ProfileHeading = ({ ownerID }) => {
 		<Grid alignItems="center" container item xs={12}>
 			<Grid align="left" alignItems="center" container item xs={8}>
 				<Grid className="profile-name" item style={{ paddingRight: 10 }}>
-					<Typography variant="h4">{userInfo.user.firstName} {userInfo.user.lastName}</Typography>
+					<Typography variant="h3">{userInfo.user.firstName} {userInfo.user.lastName}</Typography>
 				</Grid>
 				<Grid item>
 					<Hidden smDown>
-						<RoleChip role={userInfo.accountType === "ADMIN" ? userInfo.adminType : userInfo.accountType} />
+						<LabelBadge variant="outline-gray">
+							{capitalizeString((userInfo.accountType === "ADMIN" ? userInfo.adminType : userInfo.accountType).toLowerCase())}
+						</LabelBadge>
 					</Hidden>
 				</Grid>
 			</Grid>
