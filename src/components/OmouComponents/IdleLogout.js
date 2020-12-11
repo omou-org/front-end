@@ -28,18 +28,6 @@ import gql from "graphql-tag";
 
 import { useMutation} from "@apollo/react-hooks";
 
-
-function getModalPosition() {
-    const top = 50;
-    const left = 50;
-  
-    return {
-        top: `${top}%`,
-        left: `${left}%`,
-        transform: `translate(-${top}%, -${left}%)`,
-    };
-}
-
 const useStyles = makeStyles((theme) => ({
     Idle: {
         position: 'absolute',
@@ -99,7 +87,6 @@ const IdleLogout = () => {
 
 
     const classes = useStyles();
-    const [modalPosition] = useState(getModalPosition);
     const [openModal, setOpenModal] = useState(false);
 
     // used as the modal timer.
