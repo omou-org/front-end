@@ -42,7 +42,11 @@ const FormPage = () => {
         if (id) {
             return title.edit || `${title} Editing`;
         }
+        if (title == 'Add New Class'){
+            return title.create
+        } else {
         return title.create || `${title} Registration`;
+        }
     };
 
     if (!form || (id && initialData === null)) {
