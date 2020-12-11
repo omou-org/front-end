@@ -1,5 +1,4 @@
 /*
-    This component handles 2 things.
     1. Refreshes the authentication token every 15 minutes while the user is loggeed in. This 
         ensures a logged in user always has a (relatively) fresh token
     2. Logs a user out if idle for too long (20 mins), prompting them before finally logging them out (after 18 mins)
@@ -7,6 +6,7 @@
         The user may click yes to stay logged in. If the user does not click the button after 2 minutes, they will be logged
         out
 */
+
 import React, { useEffect, useState, useCallback, useRef } from "react";
 
 import { useDispatch }  from "react-redux";
@@ -80,8 +80,6 @@ const IdleLogout = () => {
     const history = useHistory();
     const dispatch = useDispatch();
 
-
-
     const handleLogout = useCallback(() => {
         closeRegistrationCart();
         dispatch(logout());
@@ -94,6 +92,7 @@ const IdleLogout = () => {
     // Time(ms) user has to click that they're still here before they're logged out
     const modalTimeout = 180000;
 
+
     // State variable being updated by the react-idle-timer (which tracks how long it's been
     // since a user was active) When this variable reaches 0 the modal will display
     const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(idleTimeout);
@@ -103,7 +102,7 @@ const IdleLogout = () => {
     const [modalPosition] = useState(getModalPosition);
     const [openModal, setOpenModal] = useState(false);
 
-    // used as the modal timer
+    // used as the modal timer.
     const sessionTimeoutRef = useRef(null);
 
     const TOKEN_REFRESH = gql`
@@ -124,6 +123,7 @@ const IdleLogout = () => {
             }
         });
 
+
     // Reset the token in the store with the new token (result from the query)
     const resetToken = () => {
         const token = localStorage.getItem("token");
@@ -134,7 +134,8 @@ const IdleLogout = () => {
         })
     };
     
-    // Ensures active users always have a 'fresh' token
+    // Ensures active users always have a 'fresh' token 
+    // (refreshed within the last 15 minutes)
     const refreshTokenAfter15Minutes = () => {
         return new Promise(resolve => {
             setInterval(() => {
@@ -149,14 +150,8 @@ const IdleLogout = () => {
             }, 900000);
         });
     };
-
-    useEffect(() => {
-        (async () => {
-            await refreshTokenAfter15Minutes();
-        })();
-
-    }, []);
     
+
     const logoutAndCloseModal = () => {
         handleClose();
         handleLogout();
@@ -165,10 +160,7 @@ const IdleLogout = () => {
     // Opens the modal, resets the modal timeout ref
     async function handleOpen() {
         setOpenModal(true);
-        handleReset();
-        setRemainingMsUntilPrompt(modalTimeout);
-
-        sessionTimeoutRef.current = setTimeout(logoutAndCloseModal, 5 * 1000);
+        sessionTimeoutRef.current = setTimeout(logoutAndCloseModal, modalTimeout);
     }
     
     // handles all 'closing' functionality - ensuring the token and timers are reset
@@ -180,18 +172,19 @@ const IdleLogout = () => {
     };
 
     const {
-        reset,
         getRemainingTime,
     } = useIdleTimer({
         "timeout": idleTimeout
     });
     
     const handleReset = () => reset();
-    
     // Sets the intervals for how often we update the state variable of the timer
     // as per the react-idle-timer docs it should be 1 second for general use.
-    useEffect(() => {
 
+    useEffect(() => {
+        (async () => {
+            await refreshTokenAfter15Minutes();
+        })();
         // Only tracks intervals every second (1000ms) in order to not block thread... change with caution
         setInterval(() => {
             setRemainingMsUntilPrompt(getRemainingTime());
