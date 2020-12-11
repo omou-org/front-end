@@ -231,15 +231,9 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     attendanceEditStates[id] === "beginEdit" ||
     attendanceEditStates[id] === "edited";
   const checkEditState2 = (id) =>
-    attendanceEditStates[id] === "noSelect" || attendanceEditStates[id] === "edited";
-  const checkAttendanceValue = (attendanceArray) => {
-    return attendanceArray
-      .reduce((a, b) => {
-        a.push(...b.attendanceList);
-        return a;
-      }, [])
-      .map(({ status }) => status !== "UNSET");
-  };
+    ((attendanceEditStates[id] === "noSelect" || attendanceEditStates[id] === "edited") &&
+    (isEdit[id])); 
+    
   const handleEdit = (e) => {
     const sessionId = e.currentTarget.getAttribute("id");
     if (isEdit[sessionId] === false) {
@@ -253,6 +247,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         iterate.attendanceList.forEach((x) => {
           if (x[sessionId] !== "UNSET") {
             setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "done" })
+          } else {
+            setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "edited" })
           }
           }) 
       })
@@ -273,19 +269,16 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       "data-attendanceIndex"
     );
     const attendanceId = e.currentTarget.getAttribute("data-keys");
-    // console.log(attendanceValue)
-    // console.log(attendanceId)
+    console.log(attendanceId)
     const updatedAttendanceStatus = courseAttendanceMatrix[
       arrayIndex
-    ].attendanceList.map((id) => id.sessionId === attendanceId ? { ...id, [attendanceId]: attendanceValue} : id);
+    ].attendanceList.map((id) => id.sessionId === attendanceIndex ? { ...id, [attendanceIndex]: attendanceValue} : id);
     const arrOfObj = {
       ...courseAttendanceMatrix[arrayIndex],
       attendanceList: updatedAttendanceStatus,
     };
     courseAttendanceMatrix[arrayIndex] = arrOfObj;
-    // console.log(arrOfObj)
-    // console.log(attendanceId)
-    // console.log(attendanceValue)
+    // console.log(courseAttendanceMatrix)
     if (attendanceValue !== "") {
       setCourseAttendanceMatrix(courseAttendanceMatrix);
       setAttendanceEditStates({ ...attendanceEditStates, [attendanceIndex]: "edited" });
@@ -308,14 +301,9 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
   const renderAttendanceChip = (
     attendanceIdArray,
     keys,
-    attendanceEditStates
+    sessionId
   ) => {
-    const renderEachButton =
-      ["PRESENT", "TARDY", "ABSENT"].indexOf(attendanceIdArray[keys][attendanceIdArray[keys].sessionId]) >=
-        0 && attendanceEditStates[keys] !== "edited";
-        // console.log(renderEachButton)
-        // console.log(attendanceIdArray[keys][attendanceIdArray[keys].sessionId])
-        // console.log(keys)
+    const renderEachButton = ["PRESENT", "TARDY", "ABSENT"].indexOf(attendanceIdArray[keys][sessionId]) >= 0
     if (renderEachButton) {
       return (
         <Button
@@ -332,24 +320,6 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       return null;
     }
   };
-
-
-  // const sortAttendanceArray = () => {
-  //   const sortAttendanceList = courseAttendanceMatrix.sort(
-  //     (firstEl, secondEl) => {
-  //       if (!firstEl[currentSessionId] && !secondEl[currentSessionId]) return;
-  //       const attendanceValue = ["PRESENT", "TARDY", "ABSENT"];
-  //       const firstValue = attendanceValue.indexOf(firstEl[currentSessionId]);
-  //       const secondValue = attendanceValue.indexOf(secondEl[currentSessionId]);
-  //       if (firstValue === secondValue) {
-  //         return firstEl.name - secondEl.name;
-  //       }
-  //       return firstValue - secondValue;
-  //     }
-  //   );
-  //   setCourseAttendanceMatrix(sortAttendanceList);
-  // };
-
 
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
   const sortAscOrder = (firstEl, secondEl) => (firstEl > secondEl ? -1 : 0);
@@ -380,11 +350,11 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
   // console.log(newData)
   // console.log(color)
   // console.log(newClassData)
-  // console.log(isEdit);
-  // console.log(courseAttendanceMatrix)
+  console.log(isEdit);
+  console.log(courseAttendanceMatrix)
   // console.log(attendanceBySession);
   // console.log(sessions)
-  // console.log(attendanceEditStates)
+  console.log(attendanceEditStates)
   // console.log(attendanceRecord)
   return (
     <TableContainer className={classes.table}>
@@ -402,7 +372,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
               .sort((a, b) => a.id - b.id)
               .map(({ startDatetime, id }, i) => (
                 <TableCell className={classes.tableCell}>
-                  {`Session ${i + 1} (${moment(startDatetime).calendar()})`}
+                  {`Session ${i + 1} (${moment(startDatetime).format("MM/DD/YYYY")})`}
                   {checkEditState(id) ? (
                     <Checkbox
                       checked={isEdit[id]}
@@ -447,18 +417,18 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
               {row.attendanceList.map((id, index) => (
                 <TableCell align='right' id={row.studentId}>
                 {/* {console.log(!checkEditState2(id.sessionId))} */}
-                  {!checkEditState2(id.sessionId) &&
+                  {!checkEditState2(id.sessionId) ?
                     renderAttendanceChip(
                       row.attendanceList,
                       index,
-                      attendanceEditStates
-                    )}
-                  {isEdit[index + 1] && (
+                      id.sessionId
+                    )
+                  : (
                     <ButtonGroup>
                       <Button
                         data-studentIndex={i}
-                        data-attendanceIndex={index + 1}
-                        data-keys={id.sessionId}
+                        data-attendanceIndex={id.sessionId}
+                        data-keys={id.attendanceId}
                         value='PRESENT'
                         onClick={handleClick}
                         style={{
@@ -475,8 +445,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       </Button>
                       <Button
                         data-studentIndex={i}
-                        data-attendanceIndex={index + 1}
-                        data-keys={id.sessionId}
+                        data-attendanceIndex={id.sessionId}
+                        data-keys={id.attendanceId}
                         value='TARDY'
                         onClick={handleClick}
                         style={{
@@ -493,8 +463,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       </Button>
                       <Button
                         data-studentIndex={i}
-                        data-attendanceIndex={index + 1}
-                        data-keys={id.sessionId}
+                        data-attendanceIndex={id.sessionId}
+                        data-keys={id.attendanceId}
                         value='ABSENT'
                         onClick={handleClick}
                         style={{

@@ -186,7 +186,9 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
     const sortStudentAttendanceListByStatus = (studentList, sessionId, attendanceIndex) => {
       const matrix = {
         PRESENT: 1,
-        ABSENT: -1
+        TARDY: 2,
+        ABSENT: 3,
+        UNSET: 4
     }
     return studentList.sort((stuA, stuB) => {
         const attA = stuA.attendanceList[attendanceIndex][sessionId];
@@ -194,7 +196,7 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
         if (attA === attB) return 0;
         if (attA === "PRESENT") return -1;
         if (attA === "ABSENT") return 1;
-        return matrix[attB];
+        return matrix[attA] - matrix[attB];
     })
       
     }
