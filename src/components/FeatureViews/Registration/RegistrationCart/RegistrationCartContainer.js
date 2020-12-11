@@ -208,66 +208,50 @@ export default function RegistrationCartContainer() {
   if (error) return <div>There's been an error: {error.message}</div>;
   const studentData = data.userInfos;
 
-  return (
-    <RegistrationContext.Provider
-      value={{ registrationCart, currentParent, updateSession }}
-    >
-      <BackgroundPaper>
-        <Grid container>
-          <RegistrationActions />
-        </Grid>
-        <hr />
-        <Typography variant="h2" align="left">
-          Registration Cart
-        </Typography>
-        <Typography
-          style={{ fontSize: "2em" }}
-          align="left"
-          gutterBottom
-          data-cy="payment-title"
-        >
-          Pay for Course(s)
-        </Typography>
-        <Grid container item>
-          <Grid container direction="row" spacing={5}>
-            {Object.entries(registrationCart).map(
-              ([studentId, registration]) => (
-                <StudentRegistrationEntry
-                  key={studentId}
-                  student={studentData.find(
-                    (student) => student.user.id == studentId
-                  )}
-                  registrationList={registration}
-                />
-              )
-            )}
-          </Grid>
-          <Grid
-            container
-            item
-            justify={parentIsLoggedIn ? "flex-end" : "space-between"}
-            alignItems={parentIsLoggedIn && "flex-end"}
-            direction={parentIsLoggedIn ? "column" : "row"}
-            spacing={parentIsLoggedIn ? 4 : 0}
-            style={{ marginTop: "50px" }}
-          >
-            {parentIsLoggedIn ? (
-              <>
-                <Grid item xs={5}>
-                  <FormControl required error={reviewError}>
-                    <FormLabel style={{ textAlign: "left" }}>
-                      Acknowledge
-                    </FormLabel>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          checked={reviewConfirmationCheck}
-                          color="primary"
-                          onChange={handleAcknowledgement}
-                          name="checkedA"
-                        />
-                      }
-                      label="By checking this box, you confirmed that you have reviewed
+	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>
+			<BackgroundPaper>
+				<Grid container>
+					<RegistrationActions/>
+				</Grid>
+				<hr/>
+				<Typography variant="h2" align="left">Registration Cart</Typography>
+				<Typography
+					style={{fontSize: "2em"}}
+					align="left"
+					gutterBottom
+					data-cy="payment-title"
+				>
+					Pay for Course(s)
+				</Typography>
+				<Grid container item>
+					<Grid container direction="row" spacing={5}>
+						{
+							Object.entries(registrationCart)
+								.map(([studentId, registration]) =>
+									<StudentRegistrationEntry
+										key={studentId}
+										student={studentData.find(student => student.user.id === studentId)}
+										registrationList={registration}
+									/>)
+						}
+					</Grid>
+					<Grid container item
+						  justify={parentIsLoggedIn ? "flex-end" : "space-between"}
+						  alignItems={parentIsLoggedIn && "flex-end"}
+						  direction={parentIsLoggedIn ? "column" : "row"}
+						  spacing={parentIsLoggedIn && 4}
+						  style={{marginTop: "50px"}}
+					>
+						{parentIsLoggedIn ? <>
+								<Grid item xs={5}>
+									<FormControl required error={reviewError}>
+										<FormLabel style={{textAlign: "left"}}>Acknowledge</FormLabel>
+										<FormControlLabel
+											control={<Checkbox checked={reviewConfirmationCheck}
+															   color="primary"
+															   onChange={handleAcknowledgement}
+															   name="checkedA"/>}
+											label="By checking this box, you confirmed that you have reviewed
 											the registrations above."
                       style={{
                         color: omouBlue,

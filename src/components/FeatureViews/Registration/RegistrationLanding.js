@@ -79,7 +79,7 @@ export const GET_COURSES = gql`
     ${SIMPLE_COURSE_DATA}`;
 
 const RegistrationLanding = () => {
-    const courseResponse = useQuery(GET_COURSES);
+    const {data, loading, error} = useQuery(GET_COURSES);
     const {currentParent} = getRegistrationCart();
     const [view, setView] = useState(0);
     const [updatedParent, setUpdatedParent] = useState(false);
@@ -102,7 +102,6 @@ const RegistrationLanding = () => {
         },
         [],
     );
-    const {data, loading, error} = courseResponse
 
     if (loading) {
         return <Loading/>;
@@ -114,6 +113,7 @@ const RegistrationLanding = () => {
             </Typography>
         );
     }
+
     const {courses} = data;
 
     const instructorOptions = distinctObjectArray(

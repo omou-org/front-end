@@ -38,13 +38,12 @@ const GET_COURSE = gql`
   }
 `;
 
-export default function CourseRegistrationReceipt({ formData }) {
-  const { type } = useParams();
-  const { data, loading, error } = useQuery(GET_COURSE, {
-    variables: { courseId: formData.course?.class.value },
-    skip:
-      type === "tutoring-registration" || type === "small-group-registration",
-  });
+export default function CourseRegistrationReceipt({formData, format}) {
+	const {type} = useParams();
+	const {data, loading, error} = useQuery(GET_COURSE, {
+		variables: {courseId: formData.course?.class.value},
+		skip: type === "tutoring-registration" || type === "small-group-registration"
+	});
 
   const courseType = {
     "tutoring-registration": "tutoring",

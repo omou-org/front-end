@@ -180,8 +180,7 @@ const ClassListItem = ({
   const concatFullName = fullName(instructor.user);
   const startingDate = moment(startDate).format("MMM D YYYY");
   const endingDate = moment(endDate).format("MMM D YYYY");
-  const currentDate = moment().format("L");
-  const isActive = currentDate <= moment(endDate).format("L");
+  const isActive = moment().diff(moment(endDate)) < 0;
   const cost = totalTuition;
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
