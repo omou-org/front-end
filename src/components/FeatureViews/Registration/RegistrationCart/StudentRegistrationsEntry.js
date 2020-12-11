@@ -139,42 +139,40 @@ function RegistrationEntry({
   );
 }
 
-export default function StudentRegistrationEntry({
-  student,
-  registrationList,
-}) {
-  return (
-    <Grid item xs={12} container>
-      <Typography style={{ fontWeight: 600 }}>
-        {fullName(student.user)}
-      </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>Descriptions</TableCell>
-            <TableCell>Sessions</TableCell>
-            <TableCell>Tuition</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <br />
-          {registrationList.length > 0 ? (
-            registrationList
-              .filter(({ checked }) => checked)
-              .map((registration, index) => (
-                <RegistrationEntry
-                  index={index}
-                  key={registration.course.id}
-                  registration={registration}
-                  studentId={student.user.id}
-                />
-              ))
-          ) : (
-            <NoListAlert list="registrations" />
-          )}
-        </TableBody>
-      </Table>
-    </Grid>
-  );
+export default function StudentRegistrationEntry({ student, registrationList }) {
+	return (<Grid item xs={12} container>
+		<Typography style={{fontWeight: 600}}>{fullName(student.user)}</Typography>
+		<Table>
+			<TableHead>
+				<TableRow>
+					<TableCell/>
+					<TableCell>
+						Descriptions
+					</TableCell>
+					<TableCell>
+						Sessions
+					</TableCell>
+					<TableCell>
+						Tuition
+					</TableCell>
+				</TableRow>
+			</TableHead>
+			<TableBody>
+				<br />
+				{
+					registrationList.length > 0 ?
+						registrationList
+							.filter(({checked}) => checked)
+							.map((registration, index) =>
+								<RegistrationEntry
+									index={index}
+									key={registration.course.id}
+									registration={registration}
+									studentId={student.user.id}
+								/>) :
+						<NoListAlert list="registrations"/>
+				}
+			</TableBody>
+		</Table>
+	</Grid>)
 }

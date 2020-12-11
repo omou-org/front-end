@@ -98,7 +98,7 @@ const CatsPage = () => {
                     "transform": `translate(${x}px, ${y}px)`,
                     "width": `${apiImage.width}px`,
                 }}>
-                <img src={apiImage.url} alt="Random Cat Gifs"/>
+                <img src={apiImage.url} />
             </section>
         </div>
     );
