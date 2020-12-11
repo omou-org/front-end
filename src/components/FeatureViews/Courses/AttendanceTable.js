@@ -136,18 +136,16 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     }
   }, [courseAttendanceMatrix]);
 
-  const sortByFirstName = (firstEl, secondEl) =>
+  const sortByFirstName = (firstStudent, secondStudent) =>
   { 
-    if(firstEl.studentName < secondEl.studentName) {
+    if(firstStudent.studentName < secondStudent.studentName) {
       return -1
-    } else if(firstEl.studentName > secondEl.studentName) {
+    } else if(firstStudent.studentName > secondStudent.studentName) {
       return 1 
     } else {
       return 0
     }
   };
-
-  const sortBySessionId = (firstEl, secondEl) => firstEl.sessionId - secondEl.sessionId
 
   const { data, loading, error } = useQuery(GET_ATTENDANCE, {
     variables: { courseId: id },
@@ -192,6 +190,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         },
         {}
       );
+      const sortBySessionId = (firstEl, secondEl) => firstEl.sessionId - secondEl.sessionId
       // const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id))
       // .sort((firstEl, secondEl) => firstEl.name < secondEl.name ? -1 : (firstEl.name > secondEl.name) ? 1 : 0)
       const populatedCourseAttendanceMatrix = enrollments
@@ -350,12 +349,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
   // console.log(newData)
   // console.log(color)
   // console.log(newClassData)
-  console.log(isEdit);
-  console.log(courseAttendanceMatrix)
+  // console.log(isEdit);
+  // console.log(courseAttendanceMatrix)
   // console.log(attendanceBySession);
   // console.log(sessions)
-  console.log(attendanceEditStates)
-  // console.log(attendanceRecord)
+  // console.log(attendanceEditStates)
+  console.log(attendanceRecord)
   return (
     <TableContainer className={classes.table}>
       <Table aria-label='simple table'>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,24 +10,34 @@ import TextField from "@material-ui/core/TextField";
 import { ExpandLess, ExpandMore, Search } from "@material-ui/icons";
 import { makeStyles } from '@material-ui/core/styles';
 import { BootstrapInput } from './CourseManagementContainer';
-import { highlightColor } from "../../../theme/muiTheme";
+import { highlightColor, omouBlue } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
     buttonDropDown: {
-      border: '1px solid #43B5D9',
+      // border: '1px solid #43B5D9',
       marginLeft: '.5em',
-      width: '100%', 
-      height: 'auto',
-      maxWidth: '2em',
-      maxHeight: "2em",
+      // width: '100%', 
+      // height: 'auto',
+      // maxWidth: '2em',
+      // maxHeight: "2em",
       borderRadius: 5,
+      "&:hover": { backgroundColor: "white"}
+    },
+    arrowHover: {
+      "&:hover": { color: omouBlue}
+    },
+    arrowMenu: {
+      border: `1px solid ${omouBlue}`,
+      borderRadius: 5,
+      width: "6.5em",
+      padding: 0
     },
     dropdown: {
       border: "1px solid #43B5D9",
       borderRadius: "5px",
     },
     menuSelect: {
-      "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
+      "&:hover": { backgroundColor: highlightColor, borderRadius: 5 },
       "&:focus": highlightColor,
     },
     menuSelected: {
@@ -178,9 +188,14 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
 
   export const SessionButton = ({ attendanceArray, id, setAttendanceRecord, attendanceEditStates, setAttendanceEditStates, setCurrentSessionId, studentAttendanceDisplay, setCourseAttendanceMatrix, index, setSortByAlphabet, courseAttendanceMatrix }) => {
     const classes = useStyles();
+    const [open, setOpen] = useState(false);
+    const [buttonPosition, setButtonPosition] = useState();
+    const buttonRef = useRef();
     const handleOpen = e => {
-      const sessionId = e.currentTarget.getAttribute("data-session-id")
-        setAttendanceRecord({[sessionId]: e.currentTarget})
+      // const sessionId = e.currentTarget.getAttribute("data-session-id")
+      //   setAttendanceRecord({[sessionId]: e.currentTarget})
+      setOpen(true)
+      setButtonPosition(buttonRef.current)
     };
 
     const sortStudentAttendanceListByStatus = (studentList, sessionId, attendanceIndex) => {
@@ -206,7 +221,7 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
       const attendanceIndex = e.currentTarget.getAttribute("data-attendanceArrayIndex");
       console.log(attendanceIndex);
       console.log(sessionId);
-      setAttendanceRecord({[sessionId]: null});
+      // setAttendanceRecord({[sessionId]: null});
       // setCurrentSessionId(sessionId); 
       // setSortByAlphabet(e.target.getAttribute("value"));
       sessionId !== null && setAttendanceEditStates({...attendanceEditStates, [sessionId]: e.target.getAttribute("value")})
@@ -215,13 +230,15 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
       // console.log(sortStudentAttendanceListByStatus(studentAttendanceDisplay, sessionId));
       setCourseAttendanceMatrix(x)
       setSortByAlphabet("")
+      setOpen(false)
     }
   
     const handleClose = e => {
       const sessionId = e.currentTarget.getAttribute("data-session-id");
-      setAttendanceRecord({[sessionId]: null});
+      // setAttendanceRecord({[sessionId]: null});
       setCurrentSessionId(sessionId); 
       sessionId !== null && setAttendanceEditStates({...attendanceEditStates, [sessionId]: e.target.getAttribute("value")})
+      setOpen(false)
     };
 
     // console.log(studentAttendanceDisplay);
@@ -232,25 +249,29 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
         aria-controls="session-action"
         aria-haspopup="true"
         onClick={handleOpen}
+        ref={buttonRef}
+        // disableFocusRipple
+        disableRipple
         className={classes.buttonDropDown} 
         data-session-id={id}
         classes={{ root: classes.buttonDropDown}}
       >
-      {attendanceArray[id] ? <ExpandLess /> : <ExpandMore />}
+      {open ? <ExpandLess className={classes.arrowHover}/> : <ExpandMore className={classes.arrowHover}/>}
       </IconButton>
       <Menu
         id="session-action"
-        anchorEl={attendanceArray[id]}
+        anchorEl={buttonPosition}
         keepMounted
-        open={Boolean(attendanceArray[id])}
+        open={Boolean(open)}
         onClose={handleClose}
         getContentAnchorEl={null}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-        transformOrigin={{vertical: 'top', horizontal: 'center'}}
+        anchorOrigin={{vertical: 35}}
+        classes={{ list: classes.arrowMenu }}
+        // transformOrigin={{vertical: 'top', horizontal: 'center'}}
         data-session-id={id}
       >
-        <MenuItem onClick={handleSort} value="sort" data-session-id={id} data-attendanceArrayIndex={index} >Sort</MenuItem>
-        <MenuItem onClick={handleClose} value="beginEdit" data-session-id={id}>Edit</MenuItem>
+        <MenuItem onClick={handleSort} value="sort" data-session-id={id} data-attendanceArrayIndex={index} ListItemClasses={{ button: classes.menuSelect }}>Sort</MenuItem>
+        <MenuItem onClick={handleClose} value="beginEdit" data-session-id={id} ListItemClasses={{ button: classes.menuSelect }}>Edit</MenuItem>
       </Menu>
       </>
     )

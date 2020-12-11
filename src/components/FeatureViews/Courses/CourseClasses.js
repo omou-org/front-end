@@ -77,13 +77,20 @@ const CourseClasses = () => {
   const id = useParams();
   const classes = useStyles();
   const [index, setIndex] = useState(0);
-  const tabs = [
+  const adminTabLabels = [
     { label: "About Course" },
     { label: "Announcements" },
     { label: "Student Enrolled" },
     { label: "Sessions" },
     { label: "Attendance" }
   ];
+
+  const parentTabWithStudentEnrolledLabels = [
+    { label: "About Course" },
+    { label: "Announcements" },
+    { label: "Student Enrolled" },
+    { label: "Sessions" },
+  ]
 
   const { email, accountType } = useSelector(({ auth }) => auth) || [];
 
@@ -217,6 +224,17 @@ const CourseClasses = () => {
 
   const handleChange = (_, i) => setIndex(i);
 
+  const accountTypeCheck = (accountType, studentList, enrollmentArray) => {
+    switch(accountType) {
+      case "PARENT":
+        if(comparison(studentList, enrollmentArray)) {
+          return parentTabWithStudentEnrolledLabels
+        }
+        return [{ label: "About Course" }]
+      default:
+        return adminTabLabels
+    }
+  }
 
   const comparison = (studentList, enrollmentArray) => {
     if (queryParser(accountType) === "ParentType") {
@@ -232,7 +250,7 @@ const CourseClasses = () => {
     switch (index) {
       case 0:
         return classes.chromeTabStart;
-      case tabs.legth - 1:
+      case adminTabLabels.length - 1:
         return classes.chromeTabEnd;
       default:
         return classes.chromeTab;
@@ -358,9 +376,10 @@ const CourseClasses = () => {
                       tabSelection()
                     }
                     tabs={
-                      comparison(data.parent?.studentList, data.enrollments)
-                        ? tabs
-                        : [{ label: "About Course" }]
+                      accountTypeCheck(accountType, data.parent?.studentList, data.enrollments)
+                      // comparison(data.parent?.studentList, data.enrollments)
+                      //   ? accessControlParentView
+                      //   : [{ label: "About Course" }]
                     }
                     tabStyle={{
                       bgColor: "#ffffff",
