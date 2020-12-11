@@ -310,9 +310,7 @@ const CourseSessionStatus = () => {
                             </Link>
                         </Typography>
                         <Typography align="left">
-                          {/* ANNA */}
-                            {/* Enrollment Balance Left: ${enrollmentBalance} */}
-                            Enrollment Balance Left: NOT WORKING
+                            Enrollment Balance Left: ${enrollmentBalance}
                         </Typography>
                     </Grid>
                     {activeTab === 0 && (

@@ -37,7 +37,6 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { capitalizeString, fullName } from "../../../utils";
 import moment from "moment";
-import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse  } from "utils";
 
 const StyledMenu = withStyles({
   paper: {

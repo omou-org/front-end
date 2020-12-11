@@ -225,9 +225,7 @@ const EditSessionView = () => {
 
   const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
     update: (cache, { data }) => {
-      console.log(data);
       const newSession = data.createSession.session;
-      console.log(newSession);
       const existingSession = cache.readQuery({
         query: GET_SESSION,
         variables: {
@@ -268,7 +266,6 @@ const EditSessionView = () => {
 
   const [updateCourse, updateCourseResults] = useMutation(UPDATE_COURSE, {
     update: (cache, { data }) => {
-      console.log(data);
       const newCourse = data.createCourse.course;
       const existingCourse = cache.readQuery({
         query: GET_SESSION,

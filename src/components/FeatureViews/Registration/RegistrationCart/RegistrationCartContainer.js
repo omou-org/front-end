@@ -242,7 +242,8 @@ export default function RegistrationCartContainer() {
 						  spacing={parentIsLoggedIn && 4}
 						  style={{marginTop: "50px"}}
 					>
-						{parentIsLoggedIn ? <>
+            {parentIsLoggedIn ? 
+            <>
 								<Grid item xs={5}>
 									<FormControl required error={reviewError}>
 										<FormLabel style={{textAlign: "left"}}>Acknowledge</FormLabel>
@@ -271,10 +272,10 @@ export default function RegistrationCartContainer() {
                     save registration cart
                   </ResponsiveButton>
                 </Grid>
-              </>
-            ) : (
+            </>
+             : 
               <PaymentBoard />
-            )}
+            }
           </Grid>
         </Grid>
         <Dialog
