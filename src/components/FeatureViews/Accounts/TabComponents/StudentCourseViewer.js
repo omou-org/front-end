@@ -27,34 +27,11 @@ const paymentStatus = (numPaidCourses) => {
   return "round-negative";
 };
 
-//ANNA
-
-// export const GET_STUDENT_ENROLLMENTS = gql`
-//   query StudentEnrollments($studentId: ID!) {
-//     enrollments(studentId: $studentId) {
-//       id
-//       enrollmentBalance
-//       sessionsLeft
-//       lastPaidSessionDatetime
-//       course {
-//         title
-//         endDate
-//         startDate
-//         availabilityList {
-//           endTime
-//           startTime
-//           dayOfWeek
-//         }
-//         id
-//       }
-//     }
-//   }
-// `;
-
 export const GET_STUDENT_ENROLLMENTS = gql`
   query StudentEnrollments($studentId: ID!) {
     enrollments(studentId: $studentId) {
       id
+      enrollmentBalance
       sessionsLeft
       lastPaidSessionDatetime
       course {
@@ -71,8 +48,6 @@ export const GET_STUDENT_ENROLLMENTS = gql`
     }
   }
 `;
-
-
 
 const StudentCourseViewer = ({ studentID, current }) => {
   const { pathname } = useLocation();

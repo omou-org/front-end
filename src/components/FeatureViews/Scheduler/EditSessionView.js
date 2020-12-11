@@ -33,8 +33,8 @@ import { dateFormat, timeFormat } from "../../../utils";
 import InstructorConflictCheck from "components/OmouComponents/InstructorConflictCheck";
 import BackButton from "../../OmouComponents/BackButton";
 import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import "./scheduler.scss";
+import GET_SESSIONS from "../Accounts/TabComponents/EnrollmentView";
 
 import { fullName } from "../../../utils";
 
@@ -227,6 +227,7 @@ const EditSessionView = () => {
     update: (cache, { data }) => {
       console.log(data);
       const newSession = data.createSession.session;
+      console.log(newSession);
       const existingSession = cache.readQuery({
         query: GET_SESSION,
         variables: {
@@ -234,14 +235,15 @@ const EditSessionView = () => {
         },
       }).session;
 
-      //TODO: After back-end issues are resolved
-      //   let updatedSession = [...existingSession];
-      //   const matchingIndex = updatedSession.findIndex(({ id }) => id === session_id);
-      //   if (matchingIndex === -1) {
-      //     updatedSession = [...existingSession, newSession];
-      // } else {
-      //     updatedSession[matchingIndex] = newSession;
-      // }
+      let updatedSessions = [...existingSession];
+      const matchingIndex = updatedSessions.findIndex(
+        ({ id }) => id === session_id
+      );
+      if (matchingIndex === -1) {
+        updatedSessions = [...existingSession, newSession];
+      } else {
+        updatedSessions[matchingIndex] = newSession;
+      }
       cache.writeQuery({
         query: GET_SESSION,
         data: {
@@ -252,18 +254,22 @@ const EditSessionView = () => {
         },
       });
 
-      // cache.writeQuery({
-      //   query: GET_SESSIONS,
-      //   data: {
-      //     session: [...existingSession, ...data["updateSession"].session]
-      //   }
-      // })
+      cache.writeQuery({
+        query: GET_SESSIONS,
+        data: {
+          sessions: updatedSessions,
+        },
+        variables: {
+          courseId: course_id,
+        },
+      });
     },
   });
 
   const [updateCourse, updateCourseResults] = useMutation(UPDATE_COURSE, {
     update: (cache, { data }) => {
       console.log(data);
+      const newCourse = data.createCourse.course;
       const existingCourse = cache.readQuery({
         query: GET_SESSION,
         variables: {
@@ -271,23 +277,15 @@ const EditSessionView = () => {
         },
       }).course;
 
-      //TODO: After back-end issues are resolved
-      //   let updatedSession = [...existingSession];
-      //   const matchingIndex = updatedSession.findIndex(({ id }) => id === session_id);
-      //   if (matchingIndex === -1) {
-      //     updatedSession = [...existingSession, newSession];
-      // } else {
-      //     updatedSession[matchingIndex] = newSession;
-      // }
-      //   cache.writeQuery({
-      //     query: GET_SESSION,
-      //    data: {
-      //         course: newCourse,
-      //     },
-      //     variables: {
-      //       courseId: course_id,
-      //     },
-      //   });
+      cache.writeQuery({
+        query: GET_SESSION,
+        data: {
+          course: newCourse,
+        },
+        variables: {
+          courseId: course_id,
+        },
+      });
     },
   });
 

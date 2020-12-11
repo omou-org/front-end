@@ -76,6 +76,7 @@ const UnpaidSessionCard = ({unpaidStudent}) => {
                 <CardActionArea
                     component={Link}
                     //TODO: make sure this is the right path, to go to the EnrollmentView
+                    //Issue 661
                     // to={`/accounts/students/${studentId}/${courseId}`}
                     to={`/enrollment/${courseId}`}
                 >

@@ -59,12 +59,11 @@ function EnrollmentSessionRow({ session, enrollmentData, highlightSession }) {
           <Typography align="left">${tuition}</Typography>
         </Grid>
         <Grid item xs={2}>
-          {/* ANNA */}
-          {/* <SessionPaymentStatusChip
+          <SessionPaymentStatusChip
             enrollment={enrollmentData.enrollment}
             session={session}
             setPos
-          /> */}
+          />
         </Grid>
       </Paper>
     </Grid>

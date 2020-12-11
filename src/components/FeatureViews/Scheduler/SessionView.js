@@ -77,10 +77,17 @@ const GET_SESSION = gql`
     session(sessionId: $sessionId) {
       id
       startDatetime
+      title
+      instructor {
+        user {
+          id
+          firstName
+          lastName
+        }
+      }
       course {
         id
         isConfirmed
-        title
         room
         availabilityList {
           dayOfWeek
@@ -160,15 +167,12 @@ const SessionView = () => {
     return <Typography>There's been an error!</Typography>;
   }
 
-  const { course, endDatetime, id, startDatetime } = data.session;
+  const { course, endDatetime, id, title, instructor, startDatetime } = data.session;
 
   var {
     courseCategory,
     enrollmentSet,
     courseId,
-    availabilityList,
-    title,
-    instructor,
     room,
   } = course;
 
@@ -276,15 +280,9 @@ const SessionView = () => {
             </Grid>
           </Grid>
           <Grid item xs={6}>
-            <Typography variant="h5">Day(s)</Typography>
+            <Typography variant="h5">Day</Typography>
             <Typography>
-              {availabilityList.map(({ dayOfWeek }, index) => {
-                let isLastSessionOfWeek = availabilityList.length - 1 === index;
-                return (
-                  DayAbbreviation[dayOfWeek.toLowerCase()] +
-                  (!isLastSessionOfWeek ? " / " : "")
-                );
-              })}
+             {dayOfWeek}
             </Typography>
             <Typography>
               {new Date(startDatetime).toLocaleDateString()}
@@ -293,9 +291,7 @@ const SessionView = () => {
           <Grid item xs={6}>
             <Typography variant="h5">Time</Typography>
             <Typography>
-              {sessionsAtSameTimeInMultiDayCourse(availabilityList)
-                ? startSessionTime + " - " + endSessionTime
-                : "Various"}
+              {startSessionTime + " - " + endSessionTime}
             </Typography>
           </Grid>
         </Grid>
@@ -326,8 +322,6 @@ const SessionView = () => {
             className="editButton"
             color="primary"
             onClick={handleEditToggle(true)}
-            // component={NavLink}
-            // to={`/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`}
             variant="outlined"
           >
             Reschedule
