@@ -75,7 +75,7 @@ const IdleLogout = () => {
     }, [dispatch, history]);
     
     // Time(ms) before modal pops up
-    const idleTimeout = 5000; //1080000; 
+    const idleTimeout = 1080000; 
 
     // Time(ms) user has to click that they're still here before they're logged out
     const modalTimeout = 180000;
