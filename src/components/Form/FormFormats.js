@@ -83,6 +83,37 @@ const STATE_OPTIONS = [
     "WV", "WI", "WY",
 ];
 
+const DAY_OF_WEEK_OPTIONS = [
+    {
+        "label" : "Sunday",
+        "value" : "SUNDAY"
+    },
+    {
+        "label": "Monday",
+        "value": "MONDAY",
+    },
+    {
+        "label": "Tuesday",
+        "value": "TUESDAY"
+    },
+    {
+        "label": "Wednesday",
+        "value": "WEDNESDAY"
+    },
+    {
+        "label": "Thursday",
+        "value": "THURSDAY"
+    },
+    {
+        "label": "Friday",
+        "value": "FRIDAY"
+    },
+    {
+        "label": "Saturday",
+        "value": "SATURDAY"
+    },
+]
+
 export const ACADEMIC_LVL_FIELD = {
         "name": "academicLevel",
         "label": "Grade",
@@ -179,17 +210,34 @@ export const ACADEMIC_LVL_FIELD = {
         "component": <Fields.TextField />,
         "validator": Yup.number().min(0),
     },
+    DAY_OF_WEEK_FIELD = {
+        
+    },
     START_DATE_FIELD = {
         "name": "startDate",
         "label": "Start Date",
+        "required": "true",
         "component": <Fields.DatePicker format="MM/DD/YYYY" />,
         "validator": Yup.date(),
+    },
+    END_DATE_FIELD = {
+        "name" : "endDate",
+        "label" : "End Date",
+        "required": "true",
+        "component": <Fields.DatePicker format="MM/DD/YYYY" />,
+        "validator" : Yup.date(),
     },
     START_TIME_FIELD = {
         "name": "startTime",
         "label": "Start Time",
         "component": <Fields.TimePicker format="hh:mm a" />,
         "validator": Yup.date(),
+    },
+    END_TIME_FIELD = {
+        "name" : "endTime",
+        "label" : "End Time",
+        "component": <Fields.TimePicker format="hh:mm a" />,
+        "validator" : Yup.date(),
     },
     STATE_FIELD = {
         "name": "state",
@@ -922,11 +970,11 @@ export default {
         },
     },
     "course_details": {
-        "title": "Course Information",
+        "title": "Add New Class",
         "form": [
             {
-                "name": "courseInfo",
-                "label": "Course Info",
+                "name": "courseDescription",
+                "label": "Course Description",
                 "fields": [
                     {
                         "name": "title",
@@ -935,17 +983,30 @@ export default {
                     },
                     {
                         "name": "description",
-                        ...stringField("Description"),
+                        ...stringField("Course Description"),
+                    },
+                    {
+                        "name": "grade",
+                        "required": true,
+                        ...stringField("Grade")
+                    },
+                    {
+                        "name": "courseCategory",
+                        "label": "Subject",
+                        "required": "true",
+                        "component": categorySelect("courseCategory"),
+                        "validator": Yup.mixed(),
                     },
                     {
                         "name": "instructor",
-                        "label": "Instructor",
+                        "label": "Select Instructor",
                         "component": instructorSelect("instructor"),
                         "validator": Yup.mixed(),
                     },
                     INSTRUCTOR_CONFIRM_FIELD,
-                    START_DATE_FIELD,
-                    START_TIME_FIELD,
+                    //!TODO FIX TO DISPLAY N NUMBER OF OTPIONS
+                    // START_DATE_FIELD,
+                    // START_TIME_FIELD,
                     {
                         "name": "maxCapacity",
                         "label": "Capacity",
@@ -957,57 +1018,77 @@ export default {
                 "next": "tuition",
             },
             {
+                "name" : "dayAndTime",
+                "label" : "Day & Time",
+                "fields" : [
+                    START_DATE_FIELD,
+                    END_DATE_FIELD,
+                    {
+                        "name": "weekday1",
+                        "label": "Day of Week",
+                        "required": "true",
+                        ...selectField(DAY_OF_WEEK_OPTIONS)
+                    },
+                    {
+                        "name": "startTime1",
+                        "label": "Start Time",
+                        "required" : "true",
+                        "component": <Fields.TimePicker format="hh:mm a" />,
+                        "validator": Yup.date(),
+                    },
+                    {
+                        "name": "endTime1",
+                        "label": "End Time",
+                        "required" : "true",
+                        "component": <Fields.TimePicker width={50} format="hh:mm a" />,
+                        "validator": Yup.date(),
+                    },
+                    {
+                        "name": "weekday2",
+                        "label": "Day of Week",
+                        ...selectField(DAY_OF_WEEK_OPTIONS)
+                    },
+                    {
+                        "name": "startTime2",
+                        "label": "Start Time",
+                        "component": <Fields.TimePicker format="hh:mm a" />,
+                        "validator": Yup.date(),
+                    },
+                    {
+                        "name": "endTime1",
+                        "label": "End Time",
+                        "component": <Fields.TimePicker format="hh:mm a" />,
+                        "validator": Yup.date(),
+                    },
+                    {
+                        "name": "weekday3",
+                        "label": "Day of Week",
+                        ...selectField(DAY_OF_WEEK_OPTIONS)
+                    },
+                    {
+                        "name": "startTime3",
+                        "label": "Start Time",
+                        "component": <Fields.TimePicker format="hh:mm a" />,
+                        "validator": Yup.date(),
+                    },
+                    {
+                        "name": "endTime3",
+                        "label": "End Time",
+                        "component": <Fields.TimePicker format="hh:mm a" />,
+                        "validator": Yup.date(),
+                    },
+                ]
+            },
+            {
                 "name": "tuition",
                 "label": "Tuition",
                 "fields": [
                     {
-                        "name": "courseCategory",
-                        "label": "Category",
-                        "required": "true",
-                        "component": categorySelect("courseCategory"),
-                        "validator": Yup.mixed(),
-                    },
-                    {
-                        ...ACADEMIC_LVL_FIELD,
-                        "label": "Grade Level",
-                        "required": true,
-                    },
-                    {
-                        "name": "duration",
-                        "label": "Duration",
-                        "required": "true",
-                        ...selectField([
-                            {
-                                "label": "0.5 Hours",
-                                "value": 0.5,
-                            },
-                            {
-                                "label": "1 Hour",
-                                "value": 1,
-                            },
-                            {
-                                "label": "1.5 Hours",
-                                "value": 1.5,
-                            },
-                            {
-                                "label": "2 Hours",
-                                "value": 2,
-                            },
-                        ]),
-                    },
-                    {
-                        "name": "hourlyTuition",
-                        "label": "Hourly Tuition",
-                        "required": true,
-                        ...POSITIVE_NUMBER_FIELD,
-                    },
-                    {
-                        "name": "numSessions",
-                        "label": "# of Weekly Sessions",
+                        "name" : "location",
+                        "label": "Location",
                         "required": true,
                         "component": <Fields.TextField />,
-                        "validator": Yup.number().min(1)
-                            .integer(),
+                        "validator": Yup.string()
                     },
                     {
                         "name": "totalTuition",
