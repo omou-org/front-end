@@ -1,31 +1,33 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+/*
+    1. Refreshes the authentication token every 15 minutes while the user is loggeed in. This
+        ensures a logged in user always has a (relatively) fresh token
+    2. Logs a user out if idle for too long (20 mins), prompting them before finally logging them out (after 18 mins)
+        To be clear, after 18 minutes of idleness (no activity), the user will get a prompt asking "Are you still there?"
+        The user may click yes to stay logged in. If the user does not click the button after 2 minutes, they will be logged
+        out
+*/
+
+import React, { useEffect, useState, useCallback, useRef } from "react";
 
 import { useDispatch }  from "react-redux";
 import { logout } from "actions/authActions";
 import { closeRegistrationCart } from "components/OmouComponents/RegistrationUtils";
-import Navigation from "../Navigation/Navigation";
 import { Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {useIdleTimer} from 'react-idle-timer';
 import { useHistory } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import rootReducer from "../../reducers/rootReducer.js";
+import {composeWithDevTools} from "redux-devtools-extension";
+import {applyMiddleware, createStore} from "redux";
+import thunk from "redux-thunk";
+import {setToken} from "actions/authActions";
 
-function rand() {
-    return Math.round(Math.random() * 20) - 10;
-}
+import gql from "graphql-tag";
 
+import { useMutation} from "@apollo/react-hooks";
 
-function getModalStyle() {
-    const top = 50 + rand();
-    const left = 50 + rand();
-  
-    return {
-	  top: `${top}%`,
-	  left: `${left}%`,
-	  transform: `translate(-${top}%, -${left}%)`,
-    };
-}
 
 const useStyles = makeStyles((theme) => ({
     Idle: {
@@ -33,7 +35,10 @@ const useStyles = makeStyles((theme) => ({
         width: 400,
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3)
+        padding: theme.spacing(2, 4, 3),
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)'
     },
     IdleFont: {
         fontFamily: 'Arial, Helvetica Neue, Helvetica, sans-serif',
@@ -54,70 +59,127 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const store = createStore(
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk)),
+);
+
 const IdleLogout = () => {
 
     const history = useHistory();
     const dispatch = useDispatch();
 
     const handleLogout = useCallback(() => {
-        console.log("logging out...");
         closeRegistrationCart();
         dispatch(logout());
         history.push("/login");
     }, [dispatch, history]);
 
-    let timeout = 1080000;
-    const modalTimeout = 300000;
-    const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(timeout);
+    // Time(ms) before modal pops up
+    const idleTimeout = 1080000;
+
+    // Time(ms) user has to click that they're still here before they're logged out
+    const modalTimeout = 180000;
+
+
+    // State variable being updated by the react-idle-timer (which tracks how long it's been
+    // since a user was active) When this variable reaches 0 the modal will display
+    const [remainingMsUntilPrompt, setRemainingMsUntilPrompt] = useState(idleTimeout);
 
 
     const classes = useStyles();
-    // getModalStyle is not a pure function, we roll the style only on the first render
-    const [modalStyle] = useState(getModalStyle);
-    const [open, setOpen] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
 
-   
-    function logoutAfter2Minutes() {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve(logoutAndCloseModal());
-            }, modalTimeout);
+    // used as the modal timer.
+    const sessionTimeoutRef = useRef(null);
+
+    const TOKEN_REFRESH = gql`
+        mutation refreshToken($token:String) {
+            refreshToken(token:$token){
+            token
+            refreshExpiresIn
+            }
+        }
+    `;
+
+    const [refreshToken, newToken] = useMutation(TOKEN_REFRESH,
+        {
+            onCompleted: (data) => {
+                (async () => {
+                    store.dispatch(await setToken(data["refreshToken"]["token"], true));
+                })();
+            }
         });
-    }
-    
+
+
+    // Reset the token in the store with the new token (result from the query)
+    const resetToken = () => {
+        const token = localStorage.getItem("token");
+        refreshToken({
+            "variables" : {
+                "token": token
+            }
+        })
+    };
+
+    // Ensures active users always have a 'fresh' token
+    // (refreshed within the last 15 minutes)
+    const refreshTokenAfter15Minutes = () => {
+        return new Promise(resolve => {
+            setInterval(() => {
+                resolve(() => {
+                    const token = localStorage.getItem("token");
+                    refreshToken({
+                        "variables": {
+                            "token": token
+                        }
+                    });
+                });
+            }, 900000);
+        });
+    };
+
+
     const logoutAndCloseModal = () => {
         handleClose();
         handleLogout();
     };
 
+    // Opens the modal, resets the modal timeout ref
     async function handleOpen() {
-        setOpen(true);
-        handleReset();
-        setRemainingMsUntilPrompt(modalTimeout);
-        await logoutAfter2Minutes();
+        setOpenModal(true);
+        sessionTimeoutRef.current = setTimeout(logoutAndCloseModal, modalTimeout);
     }
-    
-    const handleClose = () => setOpen(false);
+
+    // handles all 'closing' functionality - ensuring the token and timers are reset
+    // and the modal is hidden
+    const handleClose = () => {
+        clearInterval(sessionTimeoutRef.current);
+        setOpenModal(false);
+        resetToken();
+    };
 
     const {
-        reset,
         getRemainingTime,
     } = useIdleTimer({
-        timeout
+        "timeout": idleTimeout
     });
-    
-    const handleReset = () => reset();
 
+    // Sets the intervals for how often we update the state variable of the timer
+    // as per the react-idle-timer docs it should be 1 second for general use.
     useEffect(() => {
-        setRemainingMsUntilPrompt(getRemainingTime());
-    
+        (async () => {
+            await refreshTokenAfter15Minutes();
+        })();
+        // Only tracks intervals every second (1000ms) in order to not block thread... change with caution
         setInterval(() => {
             setRemainingMsUntilPrompt(getRemainingTime());
         }, 1000);
     }, []);
 
-    const Body = (
-            <div style={modalStyle} 
+    const ModalBody = () => {
+        return (
+            <div
                 className={classes.Idle}
                 data-cy="activityCheckModal">
                 <p id="simple-modal-description">
@@ -137,12 +199,12 @@ const IdleLogout = () => {
             { (remainingMsUntilPrompt === 0) && handleOpen() }
         
             <Modal
-                open={open}
+                open={openModal}
                 onClose={handleClose}
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
             >
-                { Body }
+                <ModalBody />
             </Modal>
 
         </div>

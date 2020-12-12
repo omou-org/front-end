@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import SearchSelect from "react-select";
 import Typography from "@material-ui/core/Typography";
+import Box from '@material-ui/core/Box';
 
 import {distinctObjectArray, fullName, gradeOptions} from "utils";
 import CourseList from "./CourseList";
@@ -11,7 +12,6 @@ import RegistrationActions from "./RegistrationActions";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
 
 const customStyles = {
@@ -47,9 +47,13 @@ const ClearIndicator = (indicatorProps) => {
 export const GET_COURSES = gql`
 	query CourseList {
 		courses {
+            id
             endDate
-            endTime
-            startTime
+            availabilityList {
+                endTime
+                startTime
+                dayOfWeek
+              }
             startDate
             title
             totalTuition
@@ -84,6 +88,7 @@ const RegistrationLanding = () => {
         "instructor": [],
         "subject": [],
     });
+    const [sortType, setSortType] = useState(null);
 
     useEffect(() => {
         if (currentParent) {
@@ -110,7 +115,6 @@ const RegistrationLanding = () => {
     }
 
     const {courses} = data;
-
 
     const instructorOptions = distinctObjectArray(
         Object.values(courses)
@@ -145,6 +149,25 @@ const RegistrationLanding = () => {
                     return courses;
             }
         }, Object.values(courses));
+    
+    const sortedCourses = filteredCourses.sort((firstCourse, secondCourse) => {
+        switch (sortType) {
+            case "title":
+                if (firstCourse.title > secondCourse.title) return 1;
+                if (firstCourse.title < secondCourse.title) return -1;
+                return 0;
+            case "seatsLeft":
+                return  (firstCourse.maxCapacity - firstCourse.enrollmentSet.length) - (secondCourse.maxCapacity - secondCourse.enrollmentSet.length);
+            default:
+                if (firstCourse.title > secondCourse.title) return 1;
+                if (firstCourse.title < secondCourse.title) return -1;
+                return 0;
+        }
+    })
+
+    const handleSortChange = (inputValue) => {
+        setSortType(inputValue.value)
+    }
 
     const handleFilterChange = (filterType) => (filters) => {
         setCourseFilters((prevFilters) => ({
@@ -186,17 +209,19 @@ const RegistrationLanding = () => {
         setUpdatedParent(status);
     }
     return (
-        <BackgroundPaper className="RegistrationLanding" elevation={2}>
+        <Grid item xs={12} container>
             <Grid container>
                 <RegistrationActions updateRegisteringParent={handleUpdateParent} updatedParent={updatedParent}/>
             </Grid>
             <hr/>
             <Grid container layout="row">
-                <Grid item md={8} xs={12}>
-                    <Typography align="left" className="heading" variant="h3" data-cy="registration-heading">
-                        Registration Catalog
-                    </Typography>
-                </Grid>
+                <Box marginBottom="22px" width="100%">
+                    <Grid item md={8} xs={12}>
+                        <Typography align="left" className="heading" variant="h1" data-cy="registration-heading">
+                            Registration Catalog
+                        </Typography>
+                    </Grid>
+                </Box>
                 {/*<Grid className="catalog-setting-wrapper" item>*/}
                 {/*    <Tabs*/}
                 {/*        className="catalog-setting"*/}
@@ -207,28 +232,45 @@ const RegistrationLanding = () => {
                 {/*    </Tabs>*/}
                 {/*</Grid>*/}
             </Grid>
-            {view === 0 && (
-				<Grid item container layout="row" spacing={1}>
-                    <Grid item md={4} xs={12}>
-                        {renderFilter("instructor")}
+            <Box width="100%" marginBottom="40px">
+                {view === 0 && (
+                    <Grid item container layout="row" spacing={1}>
+                        <Grid item xs={3}>
+                            {renderFilter("instructor")}
+                        </Grid>
+                        <Hidden xsDown>
+                            <Grid item xs={3}>
+                                {renderFilter("subject")}
+                            </Grid>
+                            <Grid item xs={3}>
+                                {renderFilter("grade")}
+                            </Grid>
+                            <Grid item xs={3}>
+                                <SearchSelect
+                                    className="sort-options"
+                                    closeMenuOnSelect={true}
+                                    components={{ClearIndicator}}
+                                    onChange={handleSortChange}
+                                    options={[
+                                        {value: 'seatsLeft', label: 'Sort by: Seats Left'},
+                                        {value: 'title', label: 'Sort by: Course Name'}
+                                    ]}
+                                    placeholder={'Sort by: Course Name'}
+                                    styles={customStyles}
+                                />
+                            </Grid>
+                            
+                        </Hidden> 
                     </Grid>
-                    <Hidden xsDown>
-                        <Grid item md={4} xs={12}>
-                            {renderFilter("subject")}
-                        </Grid>
-                        <Grid item md={4} xs={12}>
-                            {renderFilter("grade")}
-                        </Grid>
-                    </Hidden> 
-                </Grid>
-            )}
+                )}
+            </Box>
             <Grid item className="registration-table" container spacing={5}>
-                <CourseList filteredCourses={filteredCourses}/>
+                <CourseList filteredCourses={sortedCourses}/>
                 {/*{view === 0 ?*/}
                 {/*    <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/> :*/}
                 {/*    <TutoringList />}*/}
             </Grid>
-        </BackgroundPaper>
+        </Grid>
     );
 };
 

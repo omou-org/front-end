@@ -17,7 +17,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-import {Button} from "@material-ui/core";
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const msPerWeek = 1000 * 60 * 60 * 24 * 7;
 
@@ -257,7 +257,7 @@ const ParentPayment = (props) => {
 									value={enteredDiscountCode}
 									disabled
 								/>
-								<Button disabled>Apply</Button>
+								<ResponsiveButton disabled>Apply</ResponsiveButton>
 							</div>
 						</FormControl>
 					</Grid>

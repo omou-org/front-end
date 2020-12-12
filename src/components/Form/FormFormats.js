@@ -468,10 +468,7 @@ const GET_USER_TYPE = gql`
 
 export default {
     "student": {
-        "title": {
-            "create": "Add Student",
-            "edit": "Add Student",
-        },
+        "title": "Student",
         "form": [
             {
                 "name": "student",
@@ -534,7 +531,6 @@ export default {
                         "query": GET_NAME,
                         "variables": {id},
                     });
-
                     return {
                         "student": {
                             "primaryParent": {
@@ -570,6 +566,7 @@ export default {
                             firstName
                             lastName
                             email
+                            id
                         }
                     }
                 }`;
@@ -577,7 +574,7 @@ export default {
                         "query": GET_INFO,
                         "variables": {id},
                     });
-
+                    
                     const modifiedData = {
                         ...student,
                         "firstName": student.user.firstName,
@@ -606,7 +603,8 @@ export default {
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!,
+            mutation AddStudent(
+            $firstName: String!,
             $email: String,
             $lastName: String!,
             $address: String,
@@ -630,6 +628,7 @@ export default {
                     "mutation": ADD_STUDENT,
                     "variables": {
                         ...student,
+                        id,
                         "email": student.email || "",
                         "birthDate": parseDate(student.birthDate),
                         "primaryParent": student.primaryParent.value,
@@ -809,11 +808,12 @@ export default {
             const CREATE_ADMIN = gql`
             mutation CreateAdmin(
                 $address: String,
-                $adminType: AdminTypeEnum,
+                $adminType: AdminTypeEnum!,
                 $birthDate: Date,
                 $city: String,
                 $gender: GenderEnum,
                 $phoneNumber: String,
+                $id: ID,
                 $state: String,
                 $email: String,
                 $firstName: String!,
@@ -824,7 +824,8 @@ export default {
                 createAdmin(
                     user: {
                         firstName: $firstName, lastName: $lastName,
-                        password: $password, email: $email
+                        password: $password, email: $email,
+                        id: $id,
                     },
                     address: $address,
                     adminType: $adminType,
@@ -854,14 +855,23 @@ export default {
                     "birthDate": parseDate(formData.user.birthDate),
                 },
             };
+
+            const adminMutationVariable = Object.values(modifiedData)
+            .reduce((obj, section) => ({
+                ...obj,
+                ...section,
+            }), {});
+            
+            const userUuid = `${adminMutationVariable.firstName.charAt(0).toLowerCase()}${adminMutationVariable.lastName}`
+            
             try {
                 await client.mutate({
                     "mutation": CREATE_ADMIN,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": {
+                        ...adminMutationVariable,
+                        id,
+                        userUuid
+                    }
                 });
             } catch (error) {
                 return {
@@ -1115,7 +1125,7 @@ export default {
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
             mutation CreateCourse($startDate:DateTime, $endDate:DateTime, $startTime:Time!, $endTime:Time!, $academicLevel:AcademicLevelEnum,$courseCategory:ID, $description:String, $hourlyTuition:Decimal, $instructor:ID, $isConfirmed:Boolean, $maxCapacity:Int, $totalTuition: Decimal, $title:String!) {
-  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
+  createCourse(availabilities: {endTime: $endTime, startTime: $startTime}, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
     course {
       id
     }

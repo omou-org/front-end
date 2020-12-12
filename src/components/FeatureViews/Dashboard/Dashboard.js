@@ -18,6 +18,8 @@ import Moment from 'react-moment';
 import Select from 'react-select';
 import {makeStyles} from "@material-ui/styles";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.down('md')]: {
@@ -132,7 +134,7 @@ const Dashboard = () => {
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
                     <Grid item xs={9} >
-                        <Typography variant="h4" className="dashboard-greeting">
+                        <Typography variant="h1" className="dashboard-greeting">
                             Hello {firstName}!
                         </Typography>
                         <br/>
@@ -145,16 +147,17 @@ const Dashboard = () => {
                                         {currentDate}
                                     </Moment>
                                     </Grid>
-                                    <Button 
-                                        variant="outlined" 
+                                    <ResponsiveButton 
+                                        variant='outlined' 
                                         style={{margin:"5px", float: "right"}}
                                         component={Link}
                                         to={{
                                             pathname: "/scheduler",
                                             state: { isDashboard: true}
-                                        }}
-                                        >View in Scheduler
-                                    </Button>
+                                        }} 
+                                    >
+                                        view in scheduler
+                                    </ ResponsiveButton>
                             </Grid>
                             <Grid item sm={6} md={6} lg={4}>
                                 <Select
