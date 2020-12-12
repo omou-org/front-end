@@ -7,26 +7,25 @@
         out
 */
 
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 
-import { useDispatch }  from "react-redux";
-import { logout } from "actions/authActions";
-import { closeRegistrationCart } from "components/OmouComponents/RegistrationUtils";
-import { Modal } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {useDispatch} from "react-redux";
+import {logout, setToken} from "actions/authActions";
+import {closeRegistrationCart} from "components/OmouComponents/RegistrationUtils";
+import {Modal} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import {useIdleTimer} from 'react-idle-timer';
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import rootReducer from "../../reducers/rootReducer.js";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {applyMiddleware, createStore} from "redux";
 import thunk from "redux-thunk";
-import {setToken} from "actions/authActions";
 
 import gql from "graphql-tag";
 
-import { useMutation} from "@apollo/react-hooks";
+import {useMutation} from "@apollo/react-hooks";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -77,9 +76,11 @@ const IdleLogout = () => {
 
     // Time(ms) before modal pops up
     const idleTimeout = 1080000;
+    // const idleTimeout = 15000
 
     // Time(ms) user has to click that they're still here before they're logged out
     const modalTimeout = 180000;
+    // const modalTimeout = 10000
 
 
     // State variable being updated by the react-idle-timer (which tracks how long it's been
@@ -106,7 +107,7 @@ const IdleLogout = () => {
         {
             onCompleted: (data) => {
                 (async () => {
-                    store.dispatch(await setToken(data["refreshToken"]["token"], true));
+                    const newToken = await setToken(data.refreshToken.token, true);
                 })();
             }
         });

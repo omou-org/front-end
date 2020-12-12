@@ -3,11 +3,11 @@ import React from "react";
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from "@material-ui/core/Typography";
-import { spacing } from '@material-ui/system';
-import { makeStyles } from '@material-ui/core/styles';
+import {spacing} from '@material-ui/system';
+import {makeStyles, styled} from '@material-ui/core/styles';
 // import Button from '@material-ui/core/Button';
 import MuiButton from "@material-ui/core/Button";
-import { styled } from "@material-ui/core/styles";
+
 const Button = styled(MuiButton)(spacing);
 
 const useStyles = makeStyles((theme) => ({
@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Welcome = () => {
     const classes = useStyles();
-        //className={(classes.Class1, classes.Class2)}
 
     return (
         <Container>

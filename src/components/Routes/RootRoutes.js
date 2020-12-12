@@ -36,13 +36,8 @@ import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
-import StudentCourseViewer from "components/FeatureViews/Accounts/TabComponents/StudentCourseViewer";
-import SessionPaymentStatusChip from "components/OmouComponents/SessionPaymentStatusChip";
-
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
-
-import Welcome from "../FeatureViews/Onboarding/Welcome";
-import ImportFlow from "../FeatureViews/Onboarding/ImportFlow";
+import OnboardingRoutes from "./OnboardingRoutes";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -182,15 +177,6 @@ export const RootRoutes = () => {
                 users={[USER_TYPES.admin, USER_TYPES.parent]}>
                 <FormPage />
             </AuthenticatedRoute>
-
-            {/* Onboarding Routes */}
-            <Route path="/onboarding/welcome" users={[USER_TYPES.admin]}>
-                <Welcome/>
-            </Route>
-
-            <Route path="/onboarding/import" users={[USER_TYPES.admin]}>
-                <ImportFlow/>
-            </Route>
         
             {/* Course Management Routes */}
             <AuthenticatedRoute 
@@ -200,16 +186,19 @@ export const RootRoutes = () => {
                 <CourseManagementContainer />
             </AuthenticatedRoute>
 
-            <AuthenticatedRoute 
-           path="/coursemanagement/class/:id?"
+            <AuthenticatedRoute
+                path="/coursemanagement/class/:id?"
             >
-                <CourseClasses />
+                <CourseClasses/>
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
-                <ErrorNotFoundPage />
+                <ErrorNotFoundPage/>
             </AuthenticatedRoute>
-            <Redirect to="/PageNotFound" />
+
+            <OnboardingRoutes/>
+
+            <Redirect to="/PageNotFound"/>
 
         </Switch>
     );

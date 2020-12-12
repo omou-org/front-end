@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Redirect, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, {useEffect, useState} from "react";
+import {Redirect, useParams} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 import BioIcon from "@material-ui/icons/PersonOutlined";
 import ContactIcon from "@material-ui/icons/ContactPhoneOutlined";
@@ -9,35 +9,22 @@ import CurrentSessionsIcon from "@material-ui/icons/AssignmentOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
 import NoteIcon from "@material-ui/icons/NoteOutlined";
-import Paper from "@material-ui/core/Paper";
 import PastSessionsIcon from "@material-ui/icons/AssignmentTurnedInOutlined";
 import PaymentIcon from "@material-ui/icons/CreditCardOutlined";
 import ScheduleIcon from "@material-ui/icons/CalendarTodayOutlined";
 import Tab from "@material-ui/core/Tab";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import Tabs from "@material-ui/core/Tabs";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
+import {LabelBadge} from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 import "./Accounts.scss";
-import * as hooks from "actions/hooks";
-import BackButton from "components/OmouComponents/BackButton";
 import ComponentViewer from "./ComponentViewer.js";
-import Loading from "components/OmouComponents/Loading";
 import ProfileHeading from "./ProfileHeading.js";
-import { useAccountNotes } from "actions/userActions";
 import UserAvatar from "./UserAvatar";
 import SettingsIcon from "@material-ui/icons/Settings"
-import { USER_TYPES } from "../../../utils";
-import moment from "moment";
+import {USER_TYPES} from "../../../utils";
 
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import {useQuery} from "@apollo/react-hooks";
 
 const userTabs = {
 	instructor: [
@@ -264,17 +251,18 @@ const UserProfile = () => {
 		setDisplayTabs(userTabs[accountType]);
 	}, [accountType]);
 
-	const { loading, error, data } = useQuery(QUERIES[accountType], {
-		variables: { ownerID: accountID },
+	const {loading, error, data} = useQuery(QUERIES[accountType], {
+		variables: {ownerID: accountID},
 	})
 
-	if (loading ) return null;
+	if (loading) return null;
 
-	if (error ) return <Redirect to="/PageNotFound" />;
+	if (error) return <Redirect to="/PageNotFound"/>;
 
-	const { notes } = data;
+	const {notes} = data;
 	const numImportantNotes = notes.filter(note => note.important).length;
-	const importantNotesBadge = numImportantNotes > 0 ? numImportantNotes : null
+	const importantNotesBadge = numImportantNotes > 0 &&
+		<LabelBadge variant="round-count">{numImportantNotes}</LabelBadge>
 
 	const handleTabChange = (_, newTabIndex) => {
 		setTabIndex(newTabIndex);
@@ -298,7 +286,7 @@ const UserProfile = () => {
 									key={tab.tab_id}
 									label={
 										<>
-											{tab.icon}{tab.tab_heading}{importantNotesBadge}
+											{tab.tab_heading}{importantNotesBadge}
 										</>
 									}
 								/>
@@ -354,26 +342,22 @@ const UserProfile = () => {
 
 	return (
 		<div className="UserProfile">
-			<Paper className="UserProfile paper">
-				<BackButton warn={false} />
-				<hr />
-				<Grid className="padding" container layout="row">
-					<Grid item md={2}>
-						<Hidden smDown>
-							<UserAvatar
-								fontSize="3.5vw"
-								margin={20}
-								name={`${data.userInfo.user.firstName} ${data.userInfo.user.lastName}`}
-								size="9vw"
-							/>
-						</Hidden>
-					</Grid>
-					<Grid className="headingPadding" item md={10} xs={12}>
-						<ProfileHeading  ownerID={accountID} />
-					</Grid>
+			<Grid className="padding" container layout="row">
+				<Grid item md={2}>
+					<Hidden smDown>
+						<UserAvatar
+							fontSize="3.5vw"
+							margin={20}
+							name={`${data.userInfo.user.firstName} ${data.userInfo.user.lastName}`}
+							size="9vw"
+						/>
+					</Hidden>
 				</Grid>
-				{tabs()}
-			</Paper>
+				<Grid className="headingPadding" item md={10} xs={12}>
+					<ProfileHeading ownerID={accountID}/>
+				</Grid>
+			</Grid>
+			{tabs()}
 		</div>
 	);
 };

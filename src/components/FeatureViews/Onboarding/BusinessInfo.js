@@ -18,30 +18,46 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+
 const BusinessInfo = () => {
     const classes = useStyles();
 
+
     return (
         <Container>
-        <Box className={classes.Text}>
-
-                <Typography 
+            <Box className={classes.Text}>
+                <Typography
                     variant="h3">Business Information</Typography>
                 <Box fontSize="h5.fontSize" className={classes.Subtitle}>
-                    <Typography 
-                    variant="p"
+                    <Typography
+                        variant="p"
                     >
-                    Please input the following business info, these would show up in payment receipt printouts:
-
+                        Please input the following business info, these would show up in payment receipt printouts:
                     </Typography>
                 </Box>
             </Box>
-        <form style={{width: 500, margin: "auto"}} noValidate autoComplete="off">
-  <TextField style={{marginTop: 25 }} fullWidth id="name" label="* Business Name" /> <br />
-  <TextField style={{marginTop: 25 }} fullWidth id="phone" label="* Business Phone" /><br />
-  <TextField style={{marginTop: 25 }} fullWidth id="email" label="* Business Email" /><br />
-  <TextField style={{marginTop: 25 }} fullWidth id="address" label="* Business Address" /><br />
-</form>
+            <form style={{width: 500, margin: "auto"}} autoComplete="off">
+                <TextField
+                    style={{marginTop: 25}}
+                    fullWidth
+                    id="name" label="Business Name"
+                /> <br/>
+                <TextField
+                    style={{marginTop: 25}}
+                    fullWidth
+                    id="phone" label="Business Phone"
+                /><br/>
+                <TextField
+                    style={{marginTop: 25}}
+                    fullWidth
+                    id="email" label="Business Email"
+                /><br/>
+                <TextField
+                    style={{marginTop: 25}}
+                    fullWidth
+                    id="address" label="Business Address"
+                /><br/>
+            </form>
         </Container>
     )
 };

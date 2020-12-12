@@ -1,30 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Link, useHistory, useLocation} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import gql from 'graphql-tag';
-import { useLazyQuery, useMutation } from '@apollo/react-hooks';
-
-import Button from '@material-ui/core/Button';
+import {useLazyQuery, useMutation} from '@apollo/react-hooks';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import { PasswordInput } from '../Form/Fields';
+import {PasswordInput} from '../Form/Fields';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
-import { setToken } from 'actions/authActions.js';
-import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
-import { ReactComponent as Ellipse2 } from './loginImages/ellipse2.svg';
-import { ReactComponent as Picture1 } from './loginImages/picture1.svg';
-import { ReactComponent as Ellipse3 } from './loginImages/ellipse3.svg';
-import { ReactComponent as Ellipse4 } from './loginImages/ellipse4.svg';
-import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
-import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
-import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
+import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import {setToken} from 'actions/authActions.js';
+import {ReactComponent as Ellipse1} from './loginImages/ellipse1.svg';
+import {ReactComponent as Ellipse2} from './loginImages/ellipse2.svg';
+import {ReactComponent as Picture1} from './loginImages/picture1.svg';
+import {ReactComponent as Ellipse3} from './loginImages/ellipse3.svg';
+import {ReactComponent as Ellipse4} from './loginImages/ellipse4.svg';
+import {ReactComponent as Picture2} from './loginImages/picture2.svg';
+import {ReactComponent as Picture3} from './loginImages/picture3.svg';
+import {ReactComponent as Picture4} from './loginImages/picture4.svg';
 import './LoginPage.scss';
+import Loading from "../OmouComponents/Loading";
 
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
@@ -45,7 +44,7 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const token = useSelector(({ auth }) => auth.token);
+    const {token, attemptedLogin} = useSelector(({auth}) => auth);
     const [userType, setUserType] = useState('');
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
@@ -126,7 +125,7 @@ const LoginPage = () => {
             <Ellipse2 className="picture var2" />
             <Picture1 className="picture var4" />
             <div className="logo var2">
-                <Typography className="title">omou</Typography>
+                <Typography className="title" variant="h1" style={{color: "white"}}>omou</Typography>
             </div>
             <form
                 className="Login"
@@ -318,7 +317,7 @@ const LoginPage = () => {
             </form>
         </>
     );
-
+    if (!attemptedLogin) return <Loading/>
     return userType ? renderOtherLogins() : renderEmailLogin();
 };
 

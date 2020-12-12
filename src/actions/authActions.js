@@ -82,8 +82,9 @@ export const setToken = async (token, shouldSave) => {
                 accountType,
                 email,
                 token,
-				user,
-                phoneNumber
+                user,
+                phoneNumber,
+                attemptedLogin: true
             },
             "type": types.SET_CREDENTIALS,
         };
