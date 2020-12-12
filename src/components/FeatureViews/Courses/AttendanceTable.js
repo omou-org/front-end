@@ -162,17 +162,23 @@ const AttendanceTable = ({ setIsEditing }) => {
     }
   };
 
-  const populateInitialAttendanceEditStates = (accumulatedSessionStates, session) =>  ({
+  const populateInitialAttendanceEditStates = (
+    accumulatedSessionStates,
+    session
+  ) => ({
     ...accumulatedSessionStates,
     [session.id]: "noSelect",
   });
 
-  const populateCheckBoxState = (allCheckboxStatus, { id: sessionId}) => ({
+  const populateCheckBoxState = (allCheckboxStatus, { id: sessionId }) => ({
     ...allCheckboxStatus,
-    [sessionId]: false
+    [sessionId]: false,
   });
 
-  const populateInitialCourseAttendanceMatrix = (allStudentAttendanceRowsData, attendance) => {
+  const populateInitialCourseAttendanceMatrix = (
+    allStudentAttendanceRowsData,
+    attendance
+  ) => {
     const studentId = attendance.enrollment.student.user.id;
     const setInitialStudentRowData = (initalStudentRowData) =>
       initalStudentRowData || [];
@@ -186,24 +192,16 @@ const AttendanceTable = ({ setIsEditing }) => {
     });
     return allStudentAttendanceRowsData;
   };
-  
+
   const { data, loading, error } = useQuery(GET_ATTENDANCE, {
     variables: { courseId },
     onCompleted: () => {
       const { sessions, enrollments, attendances } = data;
       setAttendanceEditStates(
-        sessions.reduce(
-          populateInitialAttendanceEditStates,
-          {}
-        )
+        sessions.reduce(populateInitialAttendanceEditStates, {})
       );
 
-      setIsCheckBoxEditing(
-        sessions.reduce(
-          populateCheckBoxState,
-          {}
-        )
-      );
+      setIsCheckBoxEditing(sessions.reduce(populateCheckBoxState, {}));
 
       const studentAttendanceRowsData = attendances.reduce(
         populateInitialCourseAttendanceMatrix,
@@ -217,7 +215,7 @@ const AttendanceTable = ({ setIsEditing }) => {
             fullName(enrollment.student.user),
             studentAttendanceRowsData[enrollment.student.user.id].sort(
               sortBySessionId
-            ),
+            )
           )
         )
         .sort(sortByFirstName);
@@ -229,7 +227,8 @@ const AttendanceTable = ({ setIsEditing }) => {
     error: (err) => console.error(err),
   });
 
-  if (loading || !isCheckBoxEditing || !attendanceEditStates) return <Loading />;
+  if (loading || !isCheckBoxEditing || !attendanceEditStates)
+    return <Loading />;
   if (error) return error.message;
   const { sessions } = data;
 
@@ -393,7 +392,8 @@ const AttendanceTable = ({ setIsEditing }) => {
 
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
   const sortAscOrder = (firstEl, secondEl) => (firstEl > secondEl ? -1 : 0);
-  const sortByRecentSession = (firstSession, secondSession) => firstSession.id - secondSession.id
+  const sortByRecentSession = (firstSession, secondSession) =>
+    firstSession.id - secondSession.id;
 
   const studentAttendanceDataToDisplay = courseAttendanceMatrix
     .filter((student) =>
@@ -452,7 +452,9 @@ const AttendanceTable = ({ setIsEditing }) => {
                       id={sessionId}
                       attendanceEditStates={attendanceEditStates}
                       setAttendanceEditStates={setAttendanceEditStates}
-                      studentAttendanceDataToDisplay={studentAttendanceDataToDisplay}
+                      studentAttendanceDataToDisplay={
+                        studentAttendanceDataToDisplay
+                      }
                       setCourseAttendanceMatrix={setCourseAttendanceMatrix}
                       setSortByAlphabet={setSortByAlphabet}
                       index={index}
@@ -470,7 +472,9 @@ const AttendanceTable = ({ setIsEditing }) => {
               </TableCell>
               {row.attendanceList.map((sessionColumn, attendanceIndex) => (
                 <TableCell align='right' key={sessionColumn.attendanceId}>
-                  {!checkAttendanceEditStateToRednerAttendanceStatus(sessionColumn.sessionId) ? (
+                  {!checkAttendanceEditStateToRednerAttendanceStatus(
+                    sessionColumn.sessionId
+                  ) ? (
                     renderAttendanceStatus(
                       row.attendanceList,
                       attendanceIndex,
