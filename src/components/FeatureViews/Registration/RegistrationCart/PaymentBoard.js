@@ -393,7 +393,6 @@ export default function PaymentBoard() {
 
 	const handlePayment = async () => {
 		const paymentMethod = paymentMethodState.find(({checked}) => checked)?.value;
-		// console.log(enrollmentResponse);
 		const {data: {enrollments}} = enrollmentResponse;
 		const isSameEnrollment = ({enrollment, course, student}) =>
 			(enrollment.student.user.id === student && enrollment.course.id === course);
@@ -440,7 +439,6 @@ export default function PaymentBoard() {
 				registrations: registrations,
 			}
 		});
-		console.log(classRegistrations)
 
 		//clean out parent registration cart
 		await createRegistrationCart({
@@ -454,8 +452,6 @@ export default function PaymentBoard() {
 	};
 
 	if (error || enrollmentResponse.error) {
-		// console.log(error)
-		// console.log(enrollmentResponse.error.message)
 		console.error(error?.message, enrollmentResponse.error.message);
 		return <div>There has been an error! : {error?.message} {enrollmentResponse.error.message}</div>
 	}

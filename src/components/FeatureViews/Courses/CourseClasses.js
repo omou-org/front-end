@@ -77,7 +77,7 @@ const CourseClasses = () => {
   const id = useParams();
   const classes = useStyles();
   const [index, setIndex] = useState(0);
-  const adminTabLabels = [
+  const adminTabs = [
     { label: "About Course" },
     { label: "Announcements" },
     { label: "Student Enrolled" },
@@ -85,12 +85,14 @@ const CourseClasses = () => {
     { label: "Attendance" }
   ];
 
-  const parentTabWithStudentEnrolledLabels = [
+  const parentTabWithStudentEnrolledTabs = [
     { label: "About Course" },
     { label: "Announcements" },
     { label: "Student Enrolled" },
     { label: "Sessions" },
-  ]
+  ];
+
+  const parentNostudentEnrolledTab = [{ label: "About Course" }]
 
   const { email, accountType } = useSelector(({ auth }) => auth) || [];
 
@@ -224,19 +226,19 @@ const CourseClasses = () => {
 
   const handleChange = (_, i) => setIndex(i);
 
-  const accountTypeCheck = (accountType, studentList, enrollmentArray) => {
+  const setTabsForAccountTypes = (accountType, studentList, enrollmentArray) => {
     switch(accountType) {
       case "PARENT":
-        if(comparison(studentList, enrollmentArray)) {
-          return parentTabWithStudentEnrolledLabels
+        if(checkIfParentHasStudentEnrolled(studentList, enrollmentArray)) {
+          return parentTabWithStudentEnrolledTabs
         }
-        return [{ label: "About Course" }]
+        return parentNostudentEnrolledTab
       default:
-        return adminTabLabels
+        return adminTabs
     }
   }
 
-  const comparison = (studentList, enrollmentArray) => {
+  const checkIfParentHasStudentEnrolled = (studentList, enrollmentArray) => {
     if (queryParser(accountType) === "ParentType") {
       for (const studentId of enrollmentArray) {
         return studentList?.includes(studentId.student.user.id);
@@ -250,7 +252,7 @@ const CourseClasses = () => {
     switch (index) {
       case 0:
         return classes.chromeTabStart;
-      case adminTabLabels.length - 1:
+      case adminTabs.length - 1:
         return classes.chromeTabEnd;
       default:
         return classes.chromeTab;
@@ -376,10 +378,7 @@ const CourseClasses = () => {
                       tabSelection()
                     }
                     tabs={
-                      accountTypeCheck(accountType, data.parent?.studentList, data.enrollments)
-                      // comparison(data.parent?.studentList, data.enrollments)
-                      //   ? accessControlParentView
-                      //   : [{ label: "About Course" }]
+                      setTabsForAccountTypes(accountType, data.parent?.studentList, data.enrollments)
                     }
                     tabStyle={{
                       bgColor: "#ffffff",
