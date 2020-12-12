@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 		width: '100%',
 	},
 	button: {
-		// marginRight: theme.spacing(1),
 		margin: "0 35px"
 	},
 	instructions: {
@@ -27,11 +26,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function getSteps() {
-	return ['Business info',
+	return [
+		'Business info',
 		'Templates',
 		'Course Categories',
 		'Accounts',
-		'Courses'];
+		'Courses'
+	];
 }
 
 function getStepContent(step) {
