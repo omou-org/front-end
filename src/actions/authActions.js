@@ -9,6 +9,14 @@ const GET_EMAIL = gql`
         }
     }`;
 
+
+const GET_STUDENT_ID_LIST = gql`
+    query GetParentStudents($id: ID!) {
+        parent(userId: $id) {
+            studentIdList
+        }
+    }`;
+
 const GET_ACCOUNT_TYPE = gql`
     query GetAccountType($username: String!) {
         userInfo(userName: $username) {
@@ -77,13 +85,29 @@ export const setToken = async (token, shouldSave) => {
         if (shouldSave) {
             localStorage.setItem("token", token);
         }
+        let finalUser = user;
+        if (accountType === "PARENT") {
+            const {"data": {parent}} = await client.query({
+                "context": {
+                    "headers": {
+                        "Authorization": `JWT ${token}`,
+                    },
+                },
+                "query": GET_STUDENT_ID_LIST,
+                "variables": {"id": user.id},
+            });
+            finalUser = {
+                ...user,
+                "studentList": parent.studentIdList,
+            };
+        }
         return {
             "payload": {
                 accountType,
                 email,
+                phoneNumber,
                 token,
-				user,
-                phoneNumber
+                "user": finalUser,
             },
             "type": types.SET_CREDENTIALS,
         };

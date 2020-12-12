@@ -67,7 +67,7 @@ const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
 
 export const CREATE_REGISTRATION_CART = gql`
 mutation CreateRegisteringCart($parent: ID!, $registrationPreferences:String) {
-  createRegistrationCart(parent: $parent, 
+  createRegistrationCart(parent: $parent,
     registrationPreferences: $registrationPreferences) {
     registrationCart {
       id
@@ -86,8 +86,7 @@ export default function RegistrationCartContainer() {
 	const [parentRegistrationConfirmation, setParentConfirmation] = useState(false);
 	const {parentIsLoggedIn} = useValidateRegisteringParent();
 	// create list of students to fetch
-	const studentIds = (Object.keys(registrationCartState).length > 0 && Object.keys(registrationCartState)) ||
-		currentParent.studentIdList;
+	const studentIds = currentParent.studentIdList || (Object.keys(registrationCartState).length > 0 && Object.keys(registrationCartState));
 	// create list of courses to fetch
 	const courseIds = Object.values(registrationCartState).filter(reg => reg).length > 0 &&
 		Object.values(registrationCartState).flat()
@@ -247,7 +246,7 @@ export default function RegistrationCartContainer() {
 										color="primary"
 									>
 										save registration cart
-									</ResponsiveButton>		
+									</ResponsiveButton>
 								</Grid>
 							</>
 							: <PaymentBoard/>}
@@ -284,14 +283,14 @@ export default function RegistrationCartContainer() {
 						</Typography>
 					</DialogContent>
 					<DialogActions>
-						<ResponsiveButton 
+						<ResponsiveButton
 							variant="outlined"
 							component={Link}
 							to="/registration"
 						>
 							done
 						</ResponsiveButton>
-						<ResponsiveButton 
+						<ResponsiveButton
 							variant="contained" color="primary"
 							component={Link}
 							to="/my-payments"
