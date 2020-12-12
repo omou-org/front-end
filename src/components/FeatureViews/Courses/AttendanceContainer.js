@@ -128,7 +128,7 @@ const AttendanceContainer = () => {
           </Grid>
         </AccordionSummary>
         <AccordionDetails>
-          <AttendanceTable setIsEditing={setIsEditing} editingState={isEditing}/>
+          <AttendanceTable setIsEditing={setIsEditing} />
         </AccordionDetails>
       </Accordion>
         </Grid>

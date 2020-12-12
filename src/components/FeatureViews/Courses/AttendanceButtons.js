@@ -14,12 +14,7 @@ import { highlightColor, omouBlue } from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
     buttonDropDown: {
-      // border: '1px solid #43B5D9',
       marginLeft: '.5em',
-      // width: '100%', 
-      // height: 'auto',
-      // maxWidth: '2em',
-      // maxHeight: "2em",
       borderRadius: 5,
       "&:hover": { backgroundColor: "white"}
     },
@@ -51,21 +46,16 @@ const useStyles = makeStyles((theme) => ({
     iconButton: {
       padding: 10,
     },
-    // margin: {
-    //     margin: theme.spacing(1.5),
-    //     minWidth: "12.8125em",
-    //     [theme.breakpoints.down("md")]: {
-    //       minWidth: "10em",
-    //     },
-    //   },
   }));
 
 export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortByAlphabet }) => {
     const classes = useStyles();
     const [student, setStudent] = useState(students);
     const [open, setOpen] = useState(false);
-    const [filterValue, setFilterValue] = useState("");
+    const [filterName, setFilterName] = useState("");
+
     useEffect(() => setStudent(students), [sortByAlphabet]);
+
     const handleChange = (event) => setSortByAlphabet(event.target.value);
     const handleOpen = () => {
       setOpen(true)
@@ -73,24 +63,23 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
     };
     const handleClose = () => {
       setOpen(false);
-      setFilterValue("");
+      setFilterName("");
     };
 
-    const studentNameList = student.filter(name => name.includes(filterValue));
+    const studentNameList = student.filter(name => name.includes(filterName));
     
     const handleFilter = e => {
       e.stopPropagation();
       e.preventDefault();
       const { value } = e.target;
-      setFilterValue(value)
-      // const set = new Set(value);
-      // console.log(student.filter(name => name.includes(value)));
+      setFilterName(value)
     };
     const handleInputSelect = e => {
       e.stopPropagation();
       e.preventDefault();
       setOpen(true);
     }
+    // This is needed to stop immediate selection of the student name when a user starts typing
     const handleKeyDown = event => {
       if(event.which === 13) {
         if(!student.find(val => val === event.currentTarget.value)) {
@@ -146,11 +135,6 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
           >
             Sort Z-A
           </MenuItem>
-          {/* <MenuItem
-            ListItemClasses={{ selected: classes.menuSelected }}
-            value="input"
-            onClick={handleInputSelect}
-          > */}
         <TextField
           className={classes.input}
           onChange={handleFilter}
@@ -165,11 +149,8 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
             disableUnderline: true,
             onKeyDown: handleKeyDown,
             onClick: handleInputSelect,
-            // onChange: handleChange,
           }}
-          
         />
-          {/* </MenuItem> */}
           {studentNameList.map((studentName) => (
              <MenuItem
              key={studentName}
@@ -186,14 +167,12 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
     )
   };
 
-  export const SessionButton = ({ attendanceArray, id, setAttendanceRecord, attendanceEditStates, setAttendanceEditStates, setCurrentSessionId, studentAttendanceDisplay, setCourseAttendanceMatrix, index, setSortByAlphabet, courseAttendanceMatrix }) => {
+  export const SessionDropdownButton = ({ id, attendanceEditStates, setAttendanceEditStates, setCourseAttendanceMatrix, index, setSortByAlphabet, courseAttendanceMatrix }) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [buttonPosition, setButtonPosition] = useState();
     const buttonRef = useRef();
-    const handleOpen = e => {
-      // const sessionId = e.currentTarget.getAttribute("data-session-id")
-      //   setAttendanceRecord({[sessionId]: e.currentTarget})
+    const handleOpen = () => {
       setOpen(true)
       setButtonPosition(buttonRef.current)
     };
@@ -221,8 +200,6 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
       const attendanceIndex = e.currentTarget.getAttribute("data-attendanceArrayIndex");
       console.log(attendanceIndex);
       console.log(sessionId);
-      // setAttendanceRecord({[sessionId]: null});
-      // setCurrentSessionId(sessionId); 
       // setSortByAlphabet(e.target.getAttribute("value"));
       sessionId !== null && setAttendanceEditStates({...attendanceEditStates, [sessionId]: e.target.getAttribute("value")})
       // studentAttendanceDisplay
@@ -235,8 +212,6 @@ export const StudentFilterOrSortDropdown = ({ students, sortByAlphabet, setSortB
   
     const handleClose = e => {
       const sessionId = e.currentTarget.getAttribute("data-session-id");
-      // setAttendanceRecord({[sessionId]: null});
-      setCurrentSessionId(sessionId); 
       sessionId !== null && setAttendanceEditStates({...attendanceEditStates, [sessionId]: e.target.getAttribute("value")})
       setOpen(false)
     };

@@ -19,7 +19,7 @@ import { Add, Check } from "@material-ui/icons";
 import Loading from "../../OmouComponents/Loading";
 import {
   StudentFilterOrSortDropdown,
-  SessionButton,
+  SessionDropdownButton,
 } from "./AttendanceButtons";
 import { buttonThemeBlue } from "../../../theme/muiTheme";
 import { fullName } from "../../../utils";
@@ -123,13 +123,11 @@ export const UPDATE_ATTENDANCE_STATUS = gql`
   }
 `;
 
-const AttendanceTable = ({ setIsEditing, editingState }) => {
+const AttendanceTable = ({ setIsEditing }) => {
   const { id } = useParams();
   const classes = useStyles();
   const [attendanceEditStates, setAttendanceEditStates] = useState();
-  const [attendanceRecord, setAttendanceRecord] = useState();
-  const [isEdit, setIsEdit] = useState();
-  const [currentSessionId, setCurrentSessionId] = useState("");
+  const [isCheckBoxEditing, setIsCheckBoxEditing] = useState();
   const [courseAttendanceMatrix, setCourseAttendanceMatrix] = useState([]);
   const [sortByAlphabet, setSortByAlphabet] = useState("");
   const [attendanceBySession, setAttendanceBySession] = useState({});
@@ -140,10 +138,10 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
       courseAttendanceMatrix.forEach((studentAttendanceRow) => {
         const { attendanceList: studentAttendanceList } = studentAttendanceRow;
         studentAttendanceList.forEach((attendanceStatus) => {
-          const { sessionId } = attendanceStatus
+          const { sessionId } = attendanceStatus;
           if (attendanceStatus[sessionId] !== "UNSET") {
-            sessionsDoneEditing[sessionId] = "done"
-          }
+            sessionsDoneEditing[sessionId] = "done";
+          };
         });
       });
       setAttendanceEditStates({ ...attendanceEditStates, ...sessionsDoneEditing });
@@ -153,12 +151,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
   const sortByFirstName = (firstStudent, secondStudent) =>
   { 
     if(firstStudent.studentName < secondStudent.studentName) {
-      return -1
+      return -1;
     } else if(firstStudent.studentName > secondStudent.studentName) {
-      return 1 
+      return 1;
     } else {
-      return 0
-    }
+      return 0;
+    };
   };
 
   const { data, loading, error } = useQuery(GET_ATTENDANCE, {
@@ -174,19 +172,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           {}
         )
       );
-      setAttendanceRecord(
+
+      setIsCheckBoxEditing(
         sessions.reduce(
-          (accum, currentValue) => ({ ...accum, [currentValue.id]: null }),
-          {}
-        )
+          (allCheckboxStatus, {id: sessionId}) => ({ ...allCheckboxStatus, [sessionId]: false }),{})
       );
-      setIsEdit(
-        sessions.reduce(
-          (accum, currentValue) => ({ ...accum, [currentValue.id]: false }),
-          {}
-        )
-      );
-      // const newClassData = sessions.reduce((accum, currentValue) => ({...accum, [currentValue.id]: "" }), {});
+
       const studentAttendanceRowsData = attendances.reduce(
         (allStudentAttendanceRowsData, { id, enrollment, status, session }) => {
           const studentId = enrollment.student.user.id;
@@ -205,8 +196,6 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         {}
       );
       const sortBySessionId = (firstEl, secondEl) => firstEl.sessionId - secondEl.sessionId
-      // const newData = enrollments.map(data => createData(fullName(data.student.user), newClassData, data.student.user.id))
-      // .sort((firstEl, secondEl) => firstEl.name < secondEl.name ? -1 : (firstEl.name > secondEl.name) ? 1 : 0)
       const populatedCourseAttendanceMatrix = enrollments
         .map((enrollment) =>
           createStudentAttendanceRow(
@@ -220,24 +209,18 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     },
   });
 
-  const [updateAttendance, updateAttendanceResult] = useMutation(
+  const [updateAttendance] = useMutation(
     UPDATE_ATTENDANCE_STATUS,
     {
       error: (err) => console.error(err),
     }
   );
 
-  // const attendance = useQuery(GET_ATTENDANCE1, {
-  //   variables: { courseId: id }
-  // });
-
-  // if(attendance.loading) return <Loading />
-  // console.log(attendance.data.attendances);
   if (loading) return <Loading />;
-  if (!isEdit) return <Loading />;
+  if (!isCheckBoxEditing) return <Loading />;
   if (!attendanceEditStates) return <Loading />;
   if (error) return error.message;
-  const { enrollments, sessions, attendances } = data;
+  const { sessions } = data;
 
   const checkEditState = (id) =>
     attendanceEditStates[id] === "noSelect" ||
@@ -245,16 +228,16 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     attendanceEditStates[id] === "edited";
   const checkEditState2 = (id) =>
     ((attendanceEditStates[id] === "noSelect" || attendanceEditStates[id] === "edited") &&
-    (isEdit[id])); 
+    (isCheckBoxEditing[id])); 
     
   const handleEdit = (e) => {
     const sessionId = e.currentTarget.getAttribute("id");
-    if (isEdit[sessionId] === false) {
-      setIsEdit({ ...isEdit, [sessionId]: true });
+    if (isCheckBoxEditing[sessionId] === false) {
+      setIsCheckBoxEditing({ ...isCheckBoxEditing, [sessionId]: true });
       setIsEditing(true);
       setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "edited" });
     } else {
-      setIsEdit({ ...isEdit, [sessionId]: false });
+      setIsCheckBoxEditing({ ...isCheckBoxEditing, [sessionId]: false });
       setIsEditing(false);
       courseAttendanceMatrix.forEach((iterate) => {
         iterate.attendanceList.forEach((x) => {
@@ -265,77 +248,92 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           }
           }) 
       })
-        // iterate.attendanceList.forEach(
-        //   (attendance) => 
-        //     attendance.status !== "UNSET" &&
-        //     setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "done" })
-        // )
-      // );
-      // console.log("mutation fires here");
     }
   };
 
   const handleClick = async (e) => {
-    const attendanceValue = e.currentTarget.value;
-    const arrayIndex = e.currentTarget.getAttribute("data-studentIndex");
-    const attendanceIndex = e.currentTarget.getAttribute(
-      "data-attendanceIndex"
-    );
-    const attendanceId = e.currentTarget.getAttribute("data-keys");
-    console.log(attendanceId)
-    const updatedAttendanceStatus = courseAttendanceMatrix[
-      arrayIndex
-    ].attendanceList.map((id) => id.sessionId === attendanceIndex ? { ...id, [attendanceIndex]: attendanceValue} : id);
-    const arrOfObj = {
-      ...courseAttendanceMatrix[arrayIndex],
+    const studentAttendanceStatus = e.currentTarget.value;
+    const studentRow = e.currentTarget.getAttribute("data-studentIndex");
+    const sessionId = e.currentTarget.getAttribute("data-sessionId");
+    const attendanceId = e.currentTarget.getAttribute("data-attendanceId");
+
+    const updatedAttendanceStatus = courseAttendanceMatrix[studentRow].attendanceList
+      .map((studentRow) => studentRow.sessionId === sessionId ? { ...studentRow, [sessionId]: studentAttendanceStatus} : studentRow);
+      const updatedStudentRow = {
+      ...courseAttendanceMatrix[studentRow],
       attendanceList: updatedAttendanceStatus,
     };
-    courseAttendanceMatrix[arrayIndex] = arrOfObj;
-    // console.log(courseAttendanceMatrix)
-    if (attendanceValue !== "") {
+    courseAttendanceMatrix[studentRow] = updatedStudentRow;
+    if (studentAttendanceStatus !== "") {
       setCourseAttendanceMatrix(courseAttendanceMatrix);
-      setAttendanceEditStates({ ...attendanceEditStates, [attendanceIndex]: "edited" });
+      setAttendanceEditStates({ ...attendanceEditStates, [sessionId]: "edited" });
       await updateAttendance({
-        variables: { attendanceId, status: attendanceValue },
+        variables: { attendanceId, status: studentAttendanceStatus },
       });
-    }
+    };
   };
 
-  const formatStatusToPascalCase = (string) => string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase()
+  const formatAttendanceStatusToPascalCase = (string) => string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
 
   const studentsFullNameList = courseAttendanceMatrix
     .map(({ studentName }) => studentName)
     .sort(sortByFirstName);
 
-  const colorHighlight = {
+  const attendanceStatusSelectColor = {
     PRESENT: "#6CE086",
     TARDY: "#FFDD59",
     ABSENT: "#FF6766",
   };
 
-  const renderAttendanceChip = (
-    attendanceIdArray,
-    keys,
+  const attendanceStatusUnselectColor = {
+    PRESENT: "#C9FFD5",
+    TARDY: "#FFF6D4",
+    ABSENT: "#FFD8D8",
+  };
+
+  const renderAttendanceStatus = (
+    studentAttendanceList,
+    attendanceListIndex,
     sessionId
   ) => {
-    const renderEachButton = ["PRESENT", "TARDY", "ABSENT"].indexOf(attendanceIdArray[keys][sessionId]) >= 0
+    const renderEachButton = ["PRESENT", "TARDY", "ABSENT"].indexOf(studentAttendanceList[attendanceListIndex][sessionId]) >= 0
     if (renderEachButton) {
       return (
         <Button
           style={{
-            backgroundColor: colorHighlight[attendanceIdArray[keys][attendanceIdArray[keys].sessionId]],
+            backgroundColor: attendanceStatusSelectColor[studentAttendanceList[attendanceListIndex][studentAttendanceList[attendanceListIndex].sessionId]],
             color: "black"
           }}
           className={classes.buttonStatusStyle}
           disabled
         >
-          {formatStatusToPascalCase(attendanceIdArray[keys][attendanceIdArray[keys].sessionId])}
+          {formatAttendanceStatusToPascalCase(studentAttendanceList[attendanceListIndex][studentAttendanceList[attendanceListIndex].sessionId])}
         </Button>
       );
     } else {
       return null;
     }
   };
+
+  const renderButtonSelection = (studentIndex, sessionColumn, value, borderTop, borderBottom) => (                      
+  <IconButton
+    data-studentIndex={studentIndex}
+    data-sessionId={sessionColumn.sessionId}
+    data-attendanceId={sessionColumn.attendanceId}
+    value={value}
+    size='small'
+    className={classes.buttonGroupStyle}
+    onClick={handleClick}
+    style={{
+      backgroundColor: `${
+        sessionColumn[sessionColumn.sessionId] === value || sessionColumn[sessionColumn.sessionId] === "UNSET"
+          ? attendanceStatusSelectColor[sessionColumn[sessionColumn.sessionId]]
+          : attendanceStatusUnselectColor[sessionColumn[sessionColumn.sessionId]]
+      }`,
+      ...borderTop,
+      ...borderBottom
+    }}
+  />)
 
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
   const sortAscOrder = (firstEl, secondEl) => (firstEl > secondEl ? -1 : 0);
@@ -357,21 +355,7 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           desc: sortDescOrder(firstEl.studentName, secondEl.studentName),
         }[sortByAlphabet])
     );
-  // console.log(studentAttendanceDisplay.map(row => row))
-  // console.log(sortByAlphabet)
-  // console.log(studentAttendanceDisplay)
-  // console.log(sortStudentList)
-  // console.log(currentSessionId);
-  // console.log(studentsFullNameList)
-  // console.log(newData)
-  // console.log(color)
-  // console.log(newClassData)
-  // console.log(isEdit);
-  // console.log(courseAttendanceMatrix)
-  // console.log(attendanceBySession);
-  // console.log(sessions)
-  // console.log(attendanceEditStates)
-  console.log(attendanceRecord)
+
   return (
     <TableContainer className={classes.table}>
       <Table aria-label='simple table'>
@@ -385,19 +369,19 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
               />
             </TableCell>
             {sessions
-              .sort((a, b) => a.id - b.id)
-              .map(({ startDatetime, id }, i) => (
+              .sort((firstSession, secondSession) => firstSession.id - secondSession.id)
+              .map(({ startDatetime, id: sessionId }, index) => (
                 <TableCell className={classes.tableCell}>
-                  {`Session ${i + 1} (${moment(startDatetime).format("MM/DD/YYYY")})`}
-                  {checkEditState(id) ? (
+                  {`Session ${index + 1} (${moment(startDatetime).format("MM/DD/YYYY")})`}
+                  {checkEditState(sessionId) ? (
                     <Checkbox
-                      checked={isEdit[id]}
+                      checked={isCheckBoxEditing[sessionId]}
                       onChange={handleEdit}
                       checkedIcon={
                         <Check fontSize='small' style={{ color: "white" }} />
                       }
                       icon={<Add fontSize='small' />}
-                      id={id}
+                      id={sessionId}
                       disableRipple
                       classes={{
                         root: classes.checkbox,
@@ -405,19 +389,14 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                       }}
                     />
                   ) : (
-                    <SessionButton
-                      attendanceArray={attendanceRecord}
-                      id={id}
-                      setAttendanceRecord={setAttendanceRecord}
+                    <SessionDropdownButton
+                      id={sessionId}
                       attendanceEditStates={attendanceEditStates}
                       setAttendanceEditStates={setAttendanceEditStates}
-                      setCurrentSessionId={setCurrentSessionId}
                       courseAttendanceMatrix={courseAttendanceMatrix}
                       setCourseAttendanceMatrix={setCourseAttendanceMatrix}
-                      studentAttendanceDisplay={studentAttendanceDisplay}
                       setSortByAlphabet={setSortByAlphabet}
-                      // sortByAlphabet={sortByAlphabet}
-                      index={i}
+                      index={index}
                     />
                   )}
                 </TableCell>
@@ -425,74 +404,24 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {studentAttendanceDisplay.map((row, i) => (
+          {studentAttendanceDisplay.map((row, studentIndex) => (
             <TableRow key={row.studentId}>
               <TableCell component='th' scope='row'>
                 {row.studentName}
               </TableCell>
-              {row.attendanceList.map((id, index) => (
+              {row.attendanceList.map((sessionColumn, attendanceIndex) => (
                 <TableCell align='right' id={row.studentId}>
-                {/* {console.log(!checkEditState2(id.sessionId))} */}
-                  {!checkEditState2(id.sessionId) ?
-                    renderAttendanceChip(
+                  {!checkEditState2(sessionColumn.sessionId) ?
+                    renderAttendanceStatus(
                       row.attendanceList,
-                      index,
-                      id.sessionId
+                      attendanceIndex,
+                      sessionColumn.sessionId
                     )
                   : (
                     <ButtonGroup>
-                      <IconButton
-                        data-studentIndex={i}
-                        data-attendanceIndex={id.sessionId}
-                        data-keys={id.attendanceId}
-                        value='PRESENT'
-                        size='small'
-                        className={classes.buttonGroupStyle}
-                        onClick={handleClick}
-                        style={{
-                          backgroundColor: `${
-                            id[id.sessionId] === "PRESENT" || id[id.sessionId] === "UNSET"
-                              ? "#6CE086"
-                              : "#C9FFD5"
-                          }`,
-                          borderTopLeftRadius: 2,
-                          borderBottomLeftRadius: 2
-                        }}
-                      />
-                      <IconButton
-                        data-studentIndex={i}
-                        data-attendanceIndex={id.sessionId}
-                        data-keys={id.attendanceId}
-                        value='TARDY'
-                        size='small'
-                        className={classes.buttonGroupStyle}
-                        onClick={handleClick}
-                        style={{
-                          backgroundColor: `${
-                            id[id.sessionId] === "TARDY" || id[id.sessionId] === "UNSET"
-                              ? "#FFDD59"
-                              : "#FFF6D4"
-                          }`,
-                        }}
-                      />
-                      <IconButton
-                        data-studentIndex={i}
-                        data-attendanceIndex={id.sessionId}
-                        data-keys={id.attendanceId}
-                        value='ABSENT'
-                        size='small'
-                        className={classes.buttonGroupStyle}
-                        onClick={handleClick}
-                        style={{
-                          backgroundColor: `${
-                            id[id.sessionId] === "ABSENT" || id[id.sessionId] === "UNSET"
-                              ? "#FF6766"
-                              : "#FFD8D8"
-                          }`,
-                          borderTopRightRadius: 2,
-                          borderBottomRightRadius: 2
-                        }}
-                      />
+                      {renderButtonSelection(studentIndex, sessionColumn, "PRESENT", {borderTopLeftRadius: 2}, {borderBottomLeftRadius: 2})}
+                      {renderButtonSelection(studentIndex, sessionColumn, "TARDY")}
+                      {renderButtonSelection(studentIndex, sessionColumn, "ABSENT", {borderTopRightRadius: 2}, {borderBottomRightRadius: 2})}  
                     </ButtonGroup>
                   )}
                 </TableCell>
