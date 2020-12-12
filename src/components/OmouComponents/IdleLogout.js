@@ -164,7 +164,7 @@ const IdleLogout = () => {
         "timeout": idleTimeout
     });
     
-    const handleReset = () => reset();
+    // const handleReset = () => reset();
     // Sets the intervals for how often we update the state variable of the timer
     // as per the react-idle-timer docs it should be 1 second for general use.
 
@@ -180,7 +180,7 @@ const IdleLogout = () => {
 
     const ModalBody = () => {
         return (
-            <div style={modalPosition} 
+            <div 
                 className={classes.Idle}
                 data-cy="activityCheckModal">
                 <p id="simple-modal-description">
