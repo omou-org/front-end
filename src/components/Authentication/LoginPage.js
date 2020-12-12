@@ -23,7 +23,6 @@ import {ReactComponent as Picture2} from './loginImages/picture2.svg';
 import {ReactComponent as Picture3} from './loginImages/picture3.svg';
 import {ReactComponent as Picture4} from './loginImages/picture4.svg';
 import './LoginPage.scss';
-import Loading from "../OmouComponents/Loading";
 
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
@@ -231,7 +230,7 @@ const LoginPage = () => {
             <Ellipse4 className="picture var4" />
             {renderUserDifferences().picture}
             <div className="logo var2">
-                <Typography className="title">omou</Typography>
+                <Typography className="title" variant="h1" style={{color: "white"}}>omou</Typography>
             </div>
             <form className="Login" onSubmit={handleLogin}>
                 <Grid container>
@@ -317,7 +316,7 @@ const LoginPage = () => {
             </form>
         </>
     );
-    if (!attemptedLogin) return <Loading/>
+
     return userType ? renderOtherLogins() : renderEmailLogin();
 };
 

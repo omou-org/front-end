@@ -130,7 +130,7 @@ const ImportFlow = () => {
 					</div>
 				) : (
 					<div>
-						<Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+						<div className={classes.instructions}>{getStepContent(activeStep)}</div>
 						<div>
 							{
 								activeStep !== 0 &&
