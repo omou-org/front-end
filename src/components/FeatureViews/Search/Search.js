@@ -276,4 +276,4 @@ Search.propTypes = {
     "onMobileType": PropTypes.func,
 };
 
-export default Search;
+export default Search; 

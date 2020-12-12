@@ -41,6 +41,9 @@ const useStyles = makeStyles({
     container: {
         maxHeight: 600,
     },
+    tableRow: {
+        backgroundColor: 'white',
+    },
 });
 
 const ActionLog = ({ ownerID }) => {
@@ -78,52 +81,54 @@ const ActionLog = ({ ownerID }) => {
 
     return (
         <>
-            <Paper elevation={2} className="paper">
-                <TableContainer className={classes.container}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Timestamp</TableCell>
-                                <TableCell
-                                    style={{
-                                        textAlign: 'center',
-                                        width: '10%',
-                                    }}
-                                >
-                                    Action
-                                </TableCell>
-                                <TableCell
-                                    style={{ paddingLeft: '6em', width: '20%' }}
-                                >
-                                    Object
-                                </TableCell>
-                                <TableCell>Details</TableCell>
-                            </TableRow>
-                        </TableHead>
+            <TableContainer className={classes.container}>
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell className={classes.tableRow}>
+                                Timestamp
+                            </TableCell>
+                            <TableCell
+                                className={classes.tableRow}
+                                style={{
+                                    textAlign: 'center',
+                                    width: '10%',
+                                }}
+                            >
+                                Action
+                            </TableCell>
+                            <TableCell
+                                className={classes.tableRow}
+                                style={{ paddingLeft: '5em', width: '20%' }}
+                            >
+                                Object
+                            </TableCell>
+                            <TableCell className={classes.tableRow}>
+                                Details
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
 
-                        <TableBody>
-                            {logs.results.map(
-                                ({ date, action, objectRepr, objectType }) => (
-                                    <TableRow>
-                                        <TableCell style={{ width: '30%' }}>
-                                            {moment(date).format('LLLL')}
-                                        </TableCell>
-                                        <TableCell>
-                                            {ActionBoxStyle(action)}
-                                        </TableCell>
-                                        <TableCell
-                                            style={{ paddingLeft: '6em' }}
-                                        >
-                                            {objectType}
-                                        </TableCell>
-                                        <TableCell>{objectRepr}</TableCell>
-                                    </TableRow>
-                                )
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
+                    <TableBody>
+                        {logs.results.map(
+                            ({ date, action, objectRepr, objectType }) => (
+                                <TableRow>
+                                    <TableCell style={{ width: '30%' }}>
+                                        {moment(date).format('LLLL')}
+                                    </TableCell>
+                                    <TableCell>
+                                        {ActionBoxStyle(action)}
+                                    </TableCell>
+                                    <TableCell style={{ paddingLeft: '6em' }}>
+                                        {objectType}
+                                    </TableCell>
+                                    <TableCell>{objectRepr}</TableCell>
+                                </TableRow>
+                            )
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </>
     );
 };
