@@ -7,26 +7,25 @@
         out
 */
 
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 
-import { useDispatch }  from "react-redux";
-import { logout } from "actions/authActions";
-import { closeRegistrationCart } from "components/OmouComponents/RegistrationUtils";
-import { Modal } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {useDispatch} from "react-redux";
+import {logout, setToken} from "actions/authActions";
+import {closeRegistrationCart} from "components/OmouComponents/RegistrationUtils";
+import {Modal} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import {useIdleTimer} from 'react-idle-timer';
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import rootReducer from "../../reducers/rootReducer.js";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {applyMiddleware, createStore} from "redux";
 import thunk from "redux-thunk";
-import {setToken} from "actions/authActions";
 
 import gql from "graphql-tag";
 
-import { useMutation} from "@apollo/react-hooks";
+import {useMutation} from "@apollo/react-hooks";
 
 const useStyles = makeStyles((theme) => ({
     Idle: {
@@ -163,8 +162,7 @@ const IdleLogout = () => {
     } = useIdleTimer({
         "timeout": idleTimeout
     });
-    
-    const handleReset = () => reset();
+
     // Sets the intervals for how often we update the state variable of the timer
     // as per the react-idle-timer docs it should be 1 second for general use.
 
@@ -180,7 +178,7 @@ const IdleLogout = () => {
 
     const ModalBody = () => {
         return (
-            <div style={modalPosition} 
+            <div
                 className={classes.Idle}
                 data-cy="activityCheckModal">
                 <p id="simple-modal-description">
