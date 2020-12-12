@@ -66,14 +66,14 @@ const CREATE_ENROLLMENTS = gql`mutation CreateEnrollments($enrollments:[Enrollme
 }`;
 
 const CREATE_PAYMENT = gql`
-    mutation CreatePayment(
+    mutation CreateInvoice(
         $method:String!, $parent:ID!, $classes:[ClassQuote]!,
         $disabledDiscounts:[ID], $priceAdjustment: Float,
         $registrations:[EnrollmentQuote]!) {
-        createPayment(method: $method, parent: $parent, classes: $classes,
+        createInvoice(method: $method, parent: $parent, classes: $classes,
         disabledDiscounts: $disabledDiscounts,
         priceAdjustment: $priceAdjustment, registrations: $registrations) {
-            payment {
+            invoice {
                 id
                 accountBalance
                 createdAt
@@ -329,10 +329,10 @@ const PaymentBoard = () => {
             cache.writeQuery({
                 "query": GET_PAYMENT,
                 "data": {
-                    "__typename": "PaymentType",
-                    "payment": data.createPayment.payment,
+                    "__typename": "InvoiceType",
+                    "invoice": data.createInvoice.invoice,
                 },
-                "variables": {"paymentId": data.createPayment.payment.id},
+                "variables": {"paymentId": data.createInvoice.invoice.id},
             });
         },
     });
@@ -428,7 +428,7 @@ const PaymentBoard = () => {
             },
         });
 
-        history.push(`/registration/receipt/${payment.data.createPayment.payment.id}`);
+        history.push(`/registration/receipt/${payment.data.createInvoice.invoice.id}`);
     };
 
     if (error || enrollmentResponse.error) {

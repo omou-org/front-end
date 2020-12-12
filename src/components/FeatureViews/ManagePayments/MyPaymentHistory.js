@@ -19,7 +19,7 @@ import Dialog from "@material-ui/core/Dialog";
 
 export const GET_PARENT_PAYMENTS_FILTERED = gql`
     query ParentPayments($parentId: ID!, $startDate: String, $endDate: String) {
-        payments(parentId: $parentId, startDate: $startDate, endDate: $endDate) {
+        invoices(parentId: $parentId, startDate: $startDate, endDate: $endDate) {
             id
             createdAt
             registrationSet {
@@ -74,7 +74,7 @@ export default function MyPaymentHistory() {
 	if (loading || !called) return <Loading/>;
 	if (error) return <div>An Error has occurred! {error.message}</div>
 
-	const {payments} = data;
+	const {invoices} = data;
 
 	return (<Grid container direction="row" spacing={4}>
 		<Grid item xs={12} container>
@@ -100,9 +100,9 @@ export default function MyPaymentHistory() {
 						ranges={state}
 					/>
 					<DialogActions>
-						<ResponsiveButton 
-							variant='contained' 
-							onClick={handleSaveDateRange} 
+						<ResponsiveButton
+							variant='contained'
+							onClick={handleSaveDateRange}
 							color="primary"
 						>
 							Save & Close
@@ -114,7 +114,7 @@ export default function MyPaymentHistory() {
 		</Grid>
 		<Grid item xs={12}>
 			<PaymentTable
-				paymentList={payments}
+				paymentList={invoices}
 				rootRoute="/my-payments/payment/"
 				type="parent"
 			/>

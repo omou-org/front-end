@@ -22,7 +22,7 @@ import ParentContact from '../Accounts/TabComponents/ParentContact';
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
-		payment(paymentId: $paymentId) {
+		invoice(invoiceId: $paymentId) {
 			id
 			createdAt
 			registrationSet {
@@ -90,8 +90,8 @@ const PaymentReceipt = ({ paymentID }) => {
 		</Typography>
 	}
 
-	const { payment } = data;
-	const { parent, registrationSet } = payment;
+	const { invoice } = data;
+	const { parent, registrationSet } = invoice;
 	const studentIDs = uniques(registrationSet.map((registration) => registration.enrollment.student.user.id));
 	// Array of student registrations (array)
 	const registrations = studentIDs.map((studentID) => registrationSet
@@ -242,7 +242,7 @@ const PaymentReceipt = ({ paymentID }) => {
 									</Typography>
 								</Grid>
 								<Grid item xs={3}>
-									<Typography align="left">{payment.id}</Typography>
+									<Typography align="left">{invoice.id}</Typography>
 								</Grid>
 								<Grid item xs={3}>
 									<Typography align="left" className="label">
@@ -268,7 +268,7 @@ const PaymentReceipt = ({ paymentID }) => {
 									<Typography align="left">
 										<Moment
 											format="M/DD/YYYY"
-											date={payment.createdAt}
+											date={invoice.createdAt}
 										/>
 									</Typography>
 								</Grid>
@@ -279,7 +279,7 @@ const PaymentReceipt = ({ paymentID }) => {
 								</Grid>
 								<Grid item xs={3}>
 									<Typography align="left">
-										{paymentToString(payment.method)}
+										{paymentToString(invoice.method)}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -297,7 +297,7 @@ const PaymentReceipt = ({ paymentID }) => {
 				</Grid>
 				<Grid className="receipt-details" item xs={12}>
 					<Grid alignItems="flex-end" container direction="column">
-						{payment.discountTotal >= 0 && (
+						{invoice.discountTotal >= 0 && (
 							<Grid item style={{ width: "100%" }} xs={3}>
 								<Grid container direction="row">
 									<Grid item xs={7}>
@@ -305,13 +305,13 @@ const PaymentReceipt = ({ paymentID }) => {
 									</Grid>
 									<Grid item xs={5}>
 										<Typography align="right" variant="subtitle1">
-											- ${payment.discountTotal}
+											- ${invoice.discountTotal}
 										</Typography>
 									</Grid>
 								</Grid>
 							</Grid>
 						)}
-						{payment.priceAdjustment > 0 && (
+						{invoice.priceAdjustment > 0 && (
 							<Grid item style={{ width: "100%" }} xs={3}>
 								<Grid container direction="row">
 									<Grid item xs={7}>
@@ -321,7 +321,7 @@ const PaymentReceipt = ({ paymentID }) => {
 									</Grid>
 									<Grid item xs={5}>
 										<Typography align="right" variant="subtitle1">
-											{payment.priceAdjustment}
+											{invoice.priceAdjustment}
 										</Typography>
 									</Grid>
 								</Grid>
@@ -336,7 +336,7 @@ const PaymentReceipt = ({ paymentID }) => {
 								</Grid>
 								<Grid item xs={5}>
 									<Typography align="right" variant="h6">
-										${payment.total}
+										${invoice.total}
 									</Typography>
 								</Grid>
 							</Grid>
@@ -347,7 +347,7 @@ const PaymentReceipt = ({ paymentID }) => {
 					<Grid container direction="row" justify="flex-end" spacing={1}>
 						{!location.pathname.includes("parent") && (
 							<Grid item>
-								<ResponsiveButton 
+								<ResponsiveButton
 									variant='contained'
 									data-cy="close-parent"
 									className="button primary"
