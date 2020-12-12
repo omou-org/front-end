@@ -13,6 +13,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     borderBottom: "1px solid black",
+    [theme.breakpoints.between('sm', 'md')]: {
+      backgroundColor: 'red',
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      backgroundColor: 'green',
+    },
   },
   heading: {
     fontSize: theme.typography.pxToRem(16),
@@ -31,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
   attendanceStatusFont: {
     fontWeight: 500,
     color: "black",
+    marginRight: '3em',
+    [theme.breakpoints.only('lg')]: {
+      marginLeft: "1em"
+    },
   },
   green: {
     backgroundColor: "#6CE086",
@@ -97,7 +107,7 @@ const AttendanceLegend = () => {
         <Checkbox disabled icon={<AttendanceIcon letter='T' />} />
       </Grid>
       <Grid item xs={1}>
-        <Typography variant='body2' className={classes.attendanceStatusFont}>
+        <Typography variant='body2' className={classes.attendanceStatusFont} style={{marginRight: "4em"}}>
           Tardy
         </Typography>
       </Grid>

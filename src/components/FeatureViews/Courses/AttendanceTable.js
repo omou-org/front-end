@@ -471,7 +471,7 @@ const AttendanceTable = ({ setIsEditing }) => {
                 {row.studentName}
               </TableCell>
               {row.attendanceList.map((sessionColumn, attendanceIndex) => (
-                <TableCell align='right' key={sessionColumn.attendanceId}>
+                <TableCell align='center' key={sessionColumn.attendanceId}>
                   {!checkAttendanceEditStateToRednerAttendanceStatus(
                     sessionColumn.sessionId
                   ) ? (

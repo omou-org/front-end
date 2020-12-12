@@ -397,28 +397,28 @@ const CourseClasses = () => {
                 </Toolbar>
                
               <Grid container>
-                <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
+                <TabPanel index={0} value={index} backgroundColor="#FFFFFF" style={{width: '100%'}}>
                   <ClassInfo description={description} />
                 </TabPanel>
-                <TabPanel index={1} value={index}>
+                <TabPanel index={1} value={index} style={{width: '100%'}}>
                   <Announcements
                     announcementsData={getAnnouncements.data.announcements}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={2} value={index}>
+                <TabPanel index={2} value={index} style={{width: '100%'}}>
                   <ClassEnrollmentList
                     enrollmentList={enrollmentSet}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={3} value={index}>
+                <TabPanel index={3} value={index} style={{width: '100%'}}>
                   <ClassSessionContainer
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={4} value={index}>
+                <TabPanel index={4} value={index} style={{width: '100%'}}>
                   <AttendanceContainer />
                 </TabPanel>
               </Grid>
