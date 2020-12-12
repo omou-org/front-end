@@ -91,7 +91,6 @@ export const LabelBadge = ({children, variant = "default", style, ...rest}) => {
             width: '16px',
             ...badgeCategory.statusRound,
             chipMinWidth: "16px",
-            height: "16px",
             chipFontSize: "10px",
         }
     }
