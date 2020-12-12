@@ -7,7 +7,7 @@ import Accounts from "../FeatureViews/Accounts/Accounts";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import CatsPage from "../CatsPage/CatsPage";
-import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
+import EnrollmentView from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
@@ -130,8 +130,8 @@ export const RootRoutes = () => {
                 <Accounts />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                path="/accounts/:accountType/:accountID/:courseID">
-                <CourseSessionStatus />
+                path="/enrollment/:enrollmentId">
+                <EnrollmentView />
             </AuthenticatedRoute>
 
             {/* Registration Routes */}

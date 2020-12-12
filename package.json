@@ -51,11 +51,12 @@
     "react-dom": "^16.13.1",
     "react-final-form": "^6.5.1",
     "react-final-form-listeners": "^1.0.2",
+    "react-idle-timer": "^4.5.0",
     "react-moment": "^0.9.7",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-router-redux": "^4.0.8",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^3.4.1",
     "react-select": "^3.1.0",
     "react-text-mask": "^5.4.3",
     "redux": "^4.0.5",
@@ -69,8 +70,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "cypress open",
-    "eject": "react-scripts eject",
-    "build-fragment": "node --experimental-modules src/possibleTypesGenerator.js"
+    "eject": "react-scripts eject"
   },
   "browserslist": {
     "production": [
@@ -85,7 +85,6 @@
     ]
   },
   "devDependencies": {
-    "cross-fetch": "^3.0.5",
     "cypress": "^4.12.1",
     "eslint": "^6.8.0",
     "eslint-plugin-cypress": "^2.11.1",

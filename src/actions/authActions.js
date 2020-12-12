@@ -57,7 +57,7 @@ const GET_ACCOUNT_TYPE = gql`
                 }
             }
         }
-    }`;
+    }`; 
 
 export const setToken = async (token, shouldSave) => {
     try {

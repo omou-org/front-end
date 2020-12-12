@@ -1,9 +1,8 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {RegistrationContext} from "./RegistrationContext";
-import {useLazyQuery, useMutation, useQuery} from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Grid from "@material-ui/core/Grid";
-import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 import Table from "@material-ui/core/Table";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
@@ -18,16 +17,14 @@ import {GET_COURSES} from "../RegistrationLanding";
 import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
 import {GET_REGISTRATION_CART} from "../SelectParentDialog";
 import {CREATE_REGISTRATION_CART} from "./RegistrationCartContainer";
-import {GET_ENROLLMENT_DETAILS} from "../RegistrationCourseEnrollments";
 
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-
+import {GET_ENROLLMENT_DETAILS} from "../RegistrationCourseEnrollments";
 
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote($method: String!,

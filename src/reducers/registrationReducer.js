@@ -119,7 +119,7 @@ export default function registration (
                 return {
                     ...state,
                     "currentParent": {
-                        "user": payload.user
+                        "user": payload.user,
                     },
                 };
             }
@@ -131,7 +131,7 @@ export default function registration (
 
 const addAStudentField = (prevState) => {
     const SmallGroupList =
-      prevState.registration_form.tutoring["Student(s)"]["Small Group"];
+        prevState.registration_form.tutoring["Student(s)"]["Small Group"];
     const NewStudentField = {
         ...SmallGroupList[0],
         "field": `Student ${(SmallGroupList.length + 1).toString()} Name`,
@@ -147,7 +147,7 @@ const addAStudentField = (prevState) => {
 const addACourseField = (prevState) => {
     const NewState = prevState;
     const CourseFieldList =
-      prevState.registration_form.course["Course Selection"];
+        prevState.registration_form.course["Course Selection"];
     const NewCourseField = {
         ...CourseFieldList[0],
         "field": `Course ${(CourseFieldList.length + 1).toString()} Name`,
@@ -276,12 +276,9 @@ const addClassRegistration = ({courseId, studentId}) => {
     const existingEnrollmentsByStudents = Object.entries(registrationState)
         .map(([studentID, studentRegistrations]) =>
             (Array.isArray(studentRegistrations) ? studentRegistrations
-                .map((registration) => [Number(studentID), Number(registration.course.id)]) : []));
-    console.log({existingEnrollmentsByStudents,
-        courseId,
-        studentId});
+                .map((registration) => [studentID, registration.course.id]) : []));
     const isEnrolled = existingEnrollmentsByStudents.map((studentEnrollments) =>
-        studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [Number(studentId), Number(courseId)])))
+        studentEnrollments.filter((enrollment) => arraysMatch(enrollment, [studentId, courseId])))
         .some((studentEnrollments) => studentEnrollments.length > 0);
     if (!isEnrolled) {
         return {...saveRegistration(studentId, courseId, registrationState)};
@@ -335,12 +332,12 @@ const addTutoringRegistration = (prevState, form) => {
                 return 2;
             }
             default:
-        // no default case
+            // no default case
         }
     };
     const instructorConfirmation =
-      form["Tutor Selection"]["Did instructor confirm?"] ===
-      "Yes, Instructor Confirm";
+        form["Tutor Selection"]["Did instructor confirm?"] ===
+        "Yes, Instructor Confirm";
     const numSessions = form.Schedule["Number of Sessions"];
     const academicLevel = academicLevelParse[form.Student["Grade Level"]];
     const category = form["Tutor Selection"].Category.value;
@@ -374,11 +371,10 @@ const addTutoringRegistration = (prevState, form) => {
             "is_confirmed": instructorConfirmation,
         },
         "student_id": studentID,
-        "course_id": `T${
-        isStudentCurrentlyRegistered ?
+        "course_id": `T${isStudentCurrentlyRegistered ?
             (prevState.registered_courses[studentID].length + 1).toString() :
             "0"
-    }`,
+            }`,
         "sessions": numSessions,
         "academic_level": academicLevel,
         category,
@@ -419,7 +415,7 @@ const addSmallGroupRegistration = (prevState, {formMain, new_course}) => {
     } = formMain;
 
     const enrollmentObject = {
-	  "course_type": "small_group",
+        "course_type": "small_group",
         "student_id": studentID,
         "course_id": new_course.id,
         "enrollment_note": "",
@@ -466,38 +462,38 @@ const addStudentRegistration = (
 
     if (isStudentCurrentlyRegistered) {
         registeredCourses[studentID] &&
-    registeredCourses[studentID].forEach((enrollment) => {
-        if (
-            courseType !== "tutoring" &&
-          enrollment.student_id === enrollmentObject.student_id &&
-          enrollment.course_id === enrollmentObject.course_id &&
-          !enrollmentObject.form.isSmallGroup
-        ) {
-            enrollmentExists = true;
-        } else if (
-            courseType === "tutoring" &&
-          enrollment.student_id === enrollmentObject.student_id &&
-          enrollment.new_course
-        ) {
-            if (
-                enrollment.new_course.subject ===
-            enrollmentObject.new_course.subject
-            ) {
-                enrollmentExists = true;
-            }
-        } else {
-        // This is a small group
-            enrollment = enrollmentObject.student_id;
-        }
-    });
+            registeredCourses[studentID].forEach((enrollment) => {
+                if (
+                    courseType !== "tutoring" &&
+                    enrollment.student_id === enrollmentObject.student_id &&
+                    enrollment.course_id === enrollmentObject.course_id &&
+                    !enrollmentObject.form.isSmallGroup
+                ) {
+                    enrollmentExists = true;
+                } else if (
+                    courseType === "tutoring" &&
+                    enrollment.student_id === enrollmentObject.student_id &&
+                    enrollment.new_course
+                ) {
+                    if (
+                        enrollment.new_course.subject ===
+                        enrollmentObject.new_course.subject
+                    ) {
+                        enrollmentExists = true;
+                    }
+                } else {
+                    // This is a small group
+                    enrollment = enrollmentObject.student_id;
+                }
+            });
         if (!enrollmentExists) {
             registeredCourses[studentID].push(enrollmentObject);
         }
     } else if (registeredCourses) {
-    // new student, same parent
+        // new student, same parent
         registeredCourses[studentID] = [enrollmentObject];
     } else {
-    // new student, first one registered by parent
+        // new student, first one registered by parent
         registeredCourses = {};
         registeredCourses[studentID] = [enrollmentObject];
     }
@@ -519,8 +515,7 @@ const stringifyStudentInformation = (form) => {
 };
 
 const dateToTimeString = (date) =>
-    `${date.getHours().toString()}:${
-        date.getMinutes() !== 0 ? date.getMinutes().toString() : "00"
+    `${date.getHours().toString()}:${date.getMinutes() !== 0 ? date.getMinutes().toString() : "00"
     }`;
 
 const initializeRegistration = (prevState, payload) => {
