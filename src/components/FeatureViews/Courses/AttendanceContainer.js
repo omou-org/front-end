@@ -13,12 +13,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     borderBottom: "1px solid black",
-    [theme.breakpoints.between('sm', 'md')]: {
-      backgroundColor: 'red',
-    },
-    [theme.breakpoints.between('xs', 'sm')]: {
-      backgroundColor: 'green',
-    },
   },
   heading: {
     fontSize: theme.typography.pxToRem(16),
@@ -40,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '3em',
     [theme.breakpoints.only('lg')]: {
       marginLeft: "1em"
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      marginLeft: "1em"
+    },
+    [theme.breakpoints.between('xs', 'sm')]: {
+      marginLeft: "1.5em"
     },
   },
   green: {

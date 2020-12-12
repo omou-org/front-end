@@ -25,11 +25,8 @@ import { fullName } from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
   table: {
-    maxWidth: "75.2vw",
+    maxWidth: "100vw",
     overflowY: "auto",
-    [theme.breakpoints.down("lg")]: {
-      maxWidth: "69vw",
-    },
   },
   tableCell: {
     color: "black",
