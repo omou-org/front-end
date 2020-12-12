@@ -47,6 +47,7 @@ const GET_INSTRUCTOR_INFO = gql`
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
+//TODO: Refactor instructor schedule to graphQL
 const InstructorSchedule = ({instructorID}) => {
 
 

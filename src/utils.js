@@ -112,8 +112,9 @@ export const courseDateFormat = ({schedule, is_confirmed}) => ({
  * @param {Date} date Date to convert
  * @returns {Date} date object without the time
  */
-export const dateTimeToDate = (date) =>
-    new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+export const dateTimeToDate = (date) => 
+    moment(date).format('YYYY/MM/DD');
+    
 
 export const courseDataParser = (course) => {
     const timeOptions = {
@@ -156,13 +157,15 @@ export const combineDateAndTime = (date, time) =>
     );
 
 export const sessionPaymentStatus = (session, enrollment) => {
-    const session_date = dateTimeToDate(new Date(session.start_datetime)),
-        last_session = dateTimeToDate(
-            new Date(enrollment.last_paid_session_datetime)
-        ),
-        first_payment = dateTimeToDate(
-            new Date(enrollment.payment_list[0].created_at)
-        );
+
+    
+    const session_date = moment(session.startDatetime).format('YYYY/MM/DD')
+    const last_session = moment(
+            enrollment.lastPaidSessionDatetime).format('YYYY/MM/DD')
+        
+    const first_payment = moment
+            (enrollment.paymentList[0].createdAt).format('YYYY/MM/DD')
+        ;
 
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date === last_session;
