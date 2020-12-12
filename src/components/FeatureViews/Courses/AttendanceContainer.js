@@ -23,9 +23,18 @@ const useStyles = makeStyles((theme) => ({
         margin: '0px !important'
     },
     iconBox: {
-      paddingLeft: "0.30em",
-      paddingRight: "0.70em",
-      borderRadius: 2
+      // paddingLeft: "0.3em",
+      // paddingRight: "0.67em",
+      // paddingTop: ".1em",
+      // paddingBottom: ".1em",
+      borderRadius: 2,
+      marginLeft: "1em",
+      minWidth: "24px",
+      minHeight: "24px"
+    },
+    attendanceStatusFont: {
+      fontWeight: 500,
+      color: 'black',
     },
     green: {
       backgroundColor: '#6CE086'
@@ -55,7 +64,7 @@ const AttendanceIcon = ({ letter }) => {
   }
   return (
     <Grid item xs={1} alignContent="center" className={`${classes.iconBox} ${renderColor()}`}>
-      <Typography variant="body1" align="left" style={{fontWeight: 500, color: 'black'}}>{letter}</Typography>
+      <Typography variant="body1" align="center" style={{fontWeight: 500, color: 'black', marginTop: ".3em"}}>{letter}</Typography>
     </Grid>
   )
 }
@@ -65,23 +74,23 @@ const AttendanceLegend = () => {
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="center">
-      <Grid item xs={1} classes={{['grid-xs-1']: classes.gridWidth}}>
+      <Grid item xs={1}>
         <Checkbox disabled icon={<AttendanceIcon letter="P"/>}/>
       </Grid>
       <Grid item xs={1}>
-        <Typography variant="body2" align="center" style={{fontWeight: 500, color: 'black'}}>Present</Typography>
+        <Typography variant="body2" align="center" className={classes.attendanceStatusFont}>Present</Typography>
       </Grid>
-      <Grid item xs={1} classes={{['grid-xs-1']: classes.gridWidth}}>
+      <Grid item xs={1}>
       <Checkbox disabled icon={<AttendanceIcon letter="T"/>}/>
       </Grid>
       <Grid item xs={1}>
-        <Typography variant="body2" style={{fontWeight: 500, color: 'black'}}>Tardy</Typography>
+        <Typography variant="body2" className={classes.attendanceStatusFont}>Tardy</Typography>
         </Grid>
-      <Grid item xs={1} classes={{['grid-xs-1']: classes.gridWidth}}>
+      <Grid item xs={1}>
       <Checkbox disabled icon={<AttendanceIcon letter="A"/>}/>
       </Grid>
       <Grid item xs={1}>
-        <Typography variant="body2" style={{fontWeight: 500, color: 'black'}}>Absent</Typography>
+        <Typography variant="body2" className={classes.attendanceStatusFont}>Absent</Typography>
         </Grid>
     </Grid>
   )

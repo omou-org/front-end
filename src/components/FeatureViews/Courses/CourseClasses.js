@@ -268,7 +268,7 @@ const CourseClasses = () => {
           <Typography
             align="left"
             className="heading"
-            variant="h3"
+            variant="h1"
             style={{ marginTop: ".65em" }}
           >
             {title}

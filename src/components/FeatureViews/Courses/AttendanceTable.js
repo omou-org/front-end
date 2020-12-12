@@ -12,6 +12,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Checkbox from "@material-ui/core/Checkbox";
 import { Add, Check } from "@material-ui/icons";
@@ -52,6 +53,19 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "rgba(39, 143, 195, 1) !important",
     },
   },
+  buttonGroupStyle: {
+    border: 'none',
+    padding: 0,
+    minWidth: "1.5em",
+    minHeight: "1.5em"
+  },
+  buttonStatusStyle: {
+    maxWidth: "5.715em",
+    width: "100%",
+    maxHeight: "2em",
+    height: "100%",
+    textTransform: "none"
+  }
 }));
 
 // If not using studentId delete it
@@ -287,6 +301,8 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
     }
   };
 
+  const formatStatusToPascalCase = (string) => string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase()
+
   const studentsFullNameList = courseAttendanceMatrix
     .map(({ studentName }) => studentName)
     .sort(sortByFirstName);
@@ -308,11 +324,12 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
         <Button
           style={{
             backgroundColor: colorHighlight[attendanceIdArray[keys][attendanceIdArray[keys].sessionId]],
-            color: "black",
+            color: "black"
           }}
+          className={classes.buttonStatusStyle}
           disabled
         >
-          {attendanceIdArray[keys][attendanceIdArray[keys].sessionId]}
+          {formatStatusToPascalCase(attendanceIdArray[keys][attendanceIdArray[keys].sessionId])}
         </Button>
       );
     } else {
@@ -424,11 +441,13 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                     )
                   : (
                     <ButtonGroup>
-                      <Button
+                      <IconButton
                         data-studentIndex={i}
                         data-attendanceIndex={id.sessionId}
                         data-keys={id.attendanceId}
                         value='PRESENT'
+                        size='small'
+                        className={classes.buttonGroupStyle}
                         onClick={handleClick}
                         style={{
                           backgroundColor: `${
@@ -436,17 +455,17 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                               ? "#6CE086"
                               : "#C9FFD5"
                           }`,
+                          borderTopLeftRadius: 2,
+                          borderBottomLeftRadius: 2
                         }}
-                      >
-                        <Typography style={{ fontWeight: 500, color: "black" }}>
-                          P
-                        </Typography>
-                      </Button>
-                      <Button
+                      />
+                      <IconButton
                         data-studentIndex={i}
                         data-attendanceIndex={id.sessionId}
                         data-keys={id.attendanceId}
                         value='TARDY'
+                        size='small'
+                        className={classes.buttonGroupStyle}
                         onClick={handleClick}
                         style={{
                           backgroundColor: `${
@@ -455,16 +474,14 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                               : "#FFF6D4"
                           }`,
                         }}
-                      >
-                        <Typography style={{ fontWeight: 500, color: "black" }}>
-                          T
-                        </Typography>
-                      </Button>
-                      <Button
+                      />
+                      <IconButton
                         data-studentIndex={i}
                         data-attendanceIndex={id.sessionId}
                         data-keys={id.attendanceId}
                         value='ABSENT'
+                        size='small'
+                        className={classes.buttonGroupStyle}
                         onClick={handleClick}
                         style={{
                           backgroundColor: `${
@@ -472,12 +489,10 @@ const AttendanceTable = ({ setIsEditing, editingState }) => {
                               ? "#FF6766"
                               : "#FFD8D8"
                           }`,
+                          borderTopRightRadius: 2,
+                          borderBottomRightRadius: 2
                         }}
-                      >
-                        <Typography style={{ fontWeight: 500, color: "black" }}>
-                          A
-                        </Typography>
-                      </Button>
+                      />
                     </ButtonGroup>
                   )}
                 </TableCell>
