@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import {useSelector} from "react-redux";
+import React, { useState, useEffect } from "react";
+import {useSelector, useDispatch} from "react-redux";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
@@ -10,7 +10,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Divder from "@material-ui/core/Divider";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
@@ -18,6 +18,10 @@ import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import axios from "axios"; 
+import * as actions from "actions/actionTypes";
+import googleClassroomLogo from "../../GoogleClassroomIcon.png";
+import Tooltip from '@material-ui/core/Tooltip';
+
 
 import theme, {
   highlightColor,
@@ -129,11 +133,8 @@ const useStyles = makeStyles((theme) => ({
 const GET_COURSES = gql`
   query getCourses {
     courses {
-      dayOfWeek
       endDate
-      endTime
       title
-      startTime
       academicLevel
       startDate
       instructor {
@@ -143,6 +144,7 @@ const GET_COURSES = gql`
           id
         }
       }
+      googleClassCode
       courseCategory {
         id
         name
@@ -161,6 +163,7 @@ const ClassListItem = ({
   startDate,
   instructor,
   id,
+  googleClassCode,
 }) => {
   const classes = useStyles();
   let history = useHistory();
@@ -172,26 +175,47 @@ const ClassListItem = ({
   const endingDate = moment(endDate).calendar();
   const currentDate = moment().format("L");
   const isActive = currentDate <= endingDate;
-  const [courses, setCourses] = useState([]);
-  const { google_access_token } = useSelector(({ auth }) => auth);
+  const { google_access_token, google_courses } = useSelector(({ auth }) => auth);
+  const [courses, setCourses] = useState();
+  const [gClassResp, setGClassResp] = useState();
+  const dispatch = useDispatch();
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
-  const resp = axios.get("https://classroom.googleapis.com/v1/courses", {
-                        "headers": {
-                            "Authorization": `Bearer ${google_access_token.tokenObj.access_token}`,
-                        },
-                    });
-  setCourses(resp.data.courses); 
 
-  function checkCourses(title){
-    courses.forEach((course, index) => {
-      if(course.name == title){
-        return true;
+  useEffect(() => {
+    (async () => {
+      setGClassResp( await axios.get("https://classroom.googleapis.com/v1/courses", {
+        "headers": {
+          "Authorization": `Bearer ${google_access_token}`,
+        },
+      }));
+    })();
+  }, [google_access_token]);
+
+  function checkCourses(googleCode){
+    var isIntegrated = false;
+    if(googleCode && gClassResp){
+      if(google_courses === undefined || google_courses == null){
+        dispatch({
+          type: actions.SET_GOOGLE_COURSES,
+          payload: {google_courses: gClassResp.data.courses}
+        })
       }
-      return false;
-    })
+      gClassResp.data.courses.forEach(function(course) {
+        if(course.enrollmentCode == googleCode){
+          isIntegrated = true;
+          console.log(course.enrollmentCode);
+          console.log({googleCode});
+        } 
+      });
+      console.log(isIntegrated);
+      return isIntegrated ? <img src={googleClassroomLogo} width="30" height="30"/> : <div></div>;
+    } 
+    else{
+      return <div></div>;
+    }
   } 
-                    
+                
   return (
     <>
       <Grid
@@ -201,15 +225,12 @@ const ClassListItem = ({
         data-active="inactive"
         onClick={handleClick}
       >
-        <Grid item xs={6} sm={9} md={6}>
+        <Grid item xs={4} sm={3} md={1}>
           <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
             {title}
           </Typography>
         </Grid>
-        <Grid item xs={6} sm={9} md={6}>
-          {checkCourses(title) ? <img src="https://www.pua.edu.eg/wp-content/uploads/2020/03/98d3a283f98cded8e639957e935bd373.png"/> : ""} 
-        </Grid>
-        <Grid item xs={6} sm={3} md={6} style={{ textAlign: "left" }}>
+        <Grid item xs={1} sm={3} md={2} style={{ textAlign: "left" }}>
           <Chip
             label={isActive ? "ACTIVE" : "PAST"}
             className={classes.chipSize}
@@ -217,6 +238,11 @@ const ClassListItem = ({
               backgroundColor: isActive ? activeColor : pastColor,
             }}
           />
+        </Grid>
+        <Grid item xs={1} sm={3} md={9} style={{ textAlign: "left" }}>
+        <Tooltip title="Integrated with Google Classroom" placement="top" arrow>
+          {checkCourses(googleClassCode)}
+        </Tooltip>
         </Grid>
         <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
           <Typography
@@ -327,10 +353,17 @@ const CourseManagementContainer = () => {
   const [gradeFilterValue, setGradeFilterValue] = useState("");
   const [subectFilterValue, setSubjectFilterValue] = useState("");
   const [instructorsFilterValue, setInstructorFilterValue] = useState("");
+  const dispatch = useDispatch();
 
   const handleChange = (event) => setSortByDate(event.target.value);
 
-  const { data, loading, error } = useQuery(GET_COURSES);
+  const { data, loading, error } = useQuery(GET_COURSES, {
+    onCompleted: (data) => {
+      dispatch({
+        type: actions.GET_GOOGLE_CLASSCODE, 
+        payload: {courses: data.courses}
+      })
+    }});
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
@@ -463,6 +496,7 @@ const CourseManagementContainer = () => {
             startDate,
             instructor,
             id,
+            googleClassCode,
           }) => (
             <ClassListItem
               title={title}
@@ -474,6 +508,7 @@ const CourseManagementContainer = () => {
               instructor={instructor}
               id={id}
               key={title}
+              googleClassCode={googleClassCode}
             />
           )
         )}

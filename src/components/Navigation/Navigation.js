@@ -31,7 +31,6 @@ import {GoogleLogin, GoogleLogout} from "react-google-login";
 import axios from "axios"; 
 import * as actions from "actions/actionTypes";
 
-
 const useStyles = makeStyles({
     "navigationIconStyle": {
         "height": "50px",
@@ -59,28 +58,30 @@ const Navigation = () => {
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const {data} = useQuery(GET_ACCOUNT_INFO_QUERY, {"variables": {"userID":ID }})
-    console.log(data)
 
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
+    const [response, setResponse] = useState();
 
     const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
     }, []);
 
-    const handleClose = () => {
-        setGoogleLoginPromptOpen(false);
-    };
-
     const responseGoogle = (response) => {
         console.log(response);
     }
 
-    const onSuccess = (response) => {
+    const handleClose = () => {
+        setGoogleLoginPromptOpen(false);
+    }
+
+    const onSuccess = (status) => {
+        setResponse(status);
         console.log("Success");
         dispatch({
             type: actions.SET_GOOGLE_TOKEN, 
             payload: {google_access_token: response.tokenObj.access_token}
         })
+        setGoogleLoginPromptOpen(false);
     };
 
     useEffect(() => {
@@ -174,16 +175,14 @@ const Navigation = () => {
                             No
                         </Button>
                         
-                        <Button onClick={handleClose} color="primary" autoFocus>
-                            <GoogleLogin
-                            buttonText="Login"
-                            clientId="1059849289788-0tpge112i2bfe5llak523fdopu8foul7.apps.googleusercontent.com"
-                            isSignedIn
-                            onFailure={responseGoogle}
-                            onSuccess={onSuccess}
-                            scope = "https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters"
-                            /> 
-                        </Button>
+                        <GoogleLogin
+                        buttonText="Login"
+                        clientId="1059849289788-0tpge112i2bfe5llak523fdopu8foul7.apps.googleusercontent.com"
+                        isSignedIn
+                        onFailure={responseGoogle}
+                        onSuccess={onSuccess}
+                        scope = "https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters "
+                        /> 
                     </DialogActions>
                 </Dialog>
             </div>

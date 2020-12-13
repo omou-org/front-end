@@ -32,6 +32,7 @@
     "cypress-waitfor": "^1.1.0",
     "date-fns": "^2.15.0",
     "dotenv": "^8.2.0",
+    "file-system": "^2.2.2",
     "final-form": "^4.20.0",
     "gapi": "0.0.3",
     "googleapis": "^39.2.0",

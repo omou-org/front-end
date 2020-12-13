@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import { TableHeadSecondary } from "theme/ThemedComponents/Table/TableHeadSecondary";
@@ -13,12 +13,13 @@ import Grid from "@material-ui/core/Grid";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 import {useSelector} from "react-redux";
+import axios from "axios"; 
 
 
 const useStyles = makeStyles((theme) => ({
@@ -55,16 +56,63 @@ const ClassEnrollmentList = ({
   parentId,
   concatFullParentName,
   phoneNumber,
+  studentEmail,
   handleOpenModal,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const { google_access_token } = useSelector(({ auth }) => auth);
-
-  console.log(google_access_token);
+  const params = useParams();
+  const { google_access_token, courses, google_courses} = useSelector(({ auth }) => auth);
 
   const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const courseId = params.id;
+  const [gClassResp, setGClassResp] = useState();
+  const [inviteStatus, setInviteStatus] = useState("Unsent");
+  const [isInviteSent, setIsInviteSent] = useState("Send Invite");
+  const googleClassCode = () => {
+    courses.forEach(function(course){
+      if(courseId == course.id){
+        console.log(course.googleClassCode)
+        return course.googleClassCode;
+      }
+    })
+  }
+
+  const googleCourseId = () => {
+    if(google_courses && googleClassCode){
+      google_courses.forEach(function(course){
+        if(course.enrollmentCode == googleClassCode){
+          console.log(course.id);
+          return course.id;
+        }
+      });
+    }
+  }
+
+  const handleInvite = async () => {
+    setIsInviteSent("Resend Invite");
+    console.log("Invite sent!");
+    console.log({studentEmail});
+    console.log({googleCourseId});
+    if(googleCourseId && studentEmail){
+      try {
+        console.log("Attempting to make API Call");
+          const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, {
+            "params": {
+              "userId": {studentEmail},
+              "courseId": {googleCourseId},
+              "role": "STUDENT"
+            },
+            "headers": {
+              "Authorization": `Bearer ${google_access_token}`,
+            },
+          });
+          setInviteStatus("Sent");
+      } catch {
+          alert("Error creating invite");
+      }
+    }
+  };
 
   const handleClose = () => setAnchorEl(null);
 
@@ -95,6 +143,14 @@ const ClassEnrollmentList = ({
         {concatFullParentName}
       </TableCell>
       <TableCell>{phoneNumber}</TableCell>
+      <TableCell>
+        {inviteStatus}
+        <Button
+          onClick={handleInvite}
+        >
+          {isInviteSent}
+        </Button>
+      </TableCell>
       <TableCell align="right" padding="none" size="small">
         <Button
           aria-controls="simple-menu"
@@ -192,6 +248,9 @@ const Studentenrollment = ({
               <TableCell>
                 Phone
               </TableCell>
+              <TableCell>
+                Invite Status
+              </TableCell>
               <TableCell />
               <TableCell />
               <TableCell />
@@ -214,6 +273,11 @@ const Studentenrollment = ({
                 const parentId = primaryParent.user.id;
                 const parentEmail = primaryParent.user.email;
 
+                console.log(students)
+
+                const studentEmail = user.username;
+                console.log(studentEmail);
+
                 return (
                   <ClassEnrollmentList
                     fullStudentName={fullStudentName}
@@ -223,6 +287,7 @@ const Studentenrollment = ({
                     parentId={parentId}
                     concatFullParentName={concatFullParentName}
                     phoneNumber={phoneNumber}
+                    studentEmail={studentEmail}
                     handleOpenModal={handleOpenModal}
                   />
                 );
