@@ -421,7 +421,7 @@ const DiscountRow = ({discount, type, classes}) => {
 			</Paper>
 			<Dialog onClose={handleDelete} open={deleteWarning}>
 				<DialogContent>
-					<DialogTitle>
+					<DialogTitle disableTypography>
 						Are you sure you want to delete {discount.name}?
 					</DialogTitle>
 					<DialogActions>
