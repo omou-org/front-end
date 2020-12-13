@@ -45,6 +45,7 @@ import theme, {
   activeColor,
   pastColor,
 } from "../../../theme/muiTheme";
+import { LabelBadge } from "theme/ThemedComponents/Badge/LabelBadge";
 
 export const BootstrapInput = withStyles((theme) => ({
   root: {
@@ -193,6 +194,7 @@ const ClassListItem = ({
   instructor,
   id,
   googleClassCode,
+  totalTuition,
 }) => {
   const classes = useStyles();
   let history = useHistory();
@@ -242,8 +244,6 @@ const ClassListItem = ({
     }
   } 
 
-  const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
-
   return (
     <ListDetailedItem>
       <ListContent>
@@ -256,8 +256,9 @@ const ClassListItem = ({
           <Box onClick={handleClick}>
             <ListTitle>{title}</ListTitle>
           </Box>
-          <Tooltip title="Integrated with Google Classroom" placement="top" arrow>           
-            {checkCourses(googleClassCode)}         
+          <ListDivider />
+          <Tooltip title="Integrated with Google Classroom" placement="top" arrow> 
+              {checkCourses(googleClassCode)}        
           </Tooltip>
         </ListHeading>
         <ListDetails>

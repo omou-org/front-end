@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useState, useEffect} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import Hidden from "@material-ui/core/Hidden";
 import Drawer from "@material-ui/core/Drawer";
@@ -56,6 +56,10 @@ export default function AuthenticatedNavigationView({UserNavigationOptions}) {
 	const handleDrawerToggle = useCallback(() => {
 		setMobileOpen((open) => !open);
 	}, []);
+
+	const handleClose = () => {
+        setGoogleLoginPromptOpen(false);
+    }
 
 	const responseGoogle = (response) => {
         console.log(response);

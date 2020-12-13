@@ -132,6 +132,7 @@ const CourseClasses = () => {
           student {
             user {
               firstName
+              email
               lastName
               id
             }

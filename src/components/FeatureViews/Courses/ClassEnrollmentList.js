@@ -6,6 +6,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
+import Typography from '@material-ui/core/Typography';
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -69,46 +70,57 @@ const ClassEnrollmentList = ({
   const [gClassResp, setGClassResp] = useState();
   const [inviteStatus, setInviteStatus] = useState("Unsent");
   const [isInviteSent, setIsInviteSent] = useState("Send Invite");
-  const googleClassCode = () => {
-    courses.forEach(function(course){
-      if(courseId == course.id){
-        console.log(course.googleClassCode)
-        return course.googleClassCode;
-      }
-    })
-  }
 
-  const googleCourseId = () => {
+  const getGoogleClassCode = (courses, courseId) => {
+    var googleClassCode;
+    if(courses){
+      courses.forEach(function(course){
+        if(courseId == course.id){
+          googleClassCode =  course.googleClassCode;
+        }
+      })
+      return googleClassCode;
+    } 
+  };
+
+  const getGoogleCourseId = (google_courses, courses, courseId) => {
+    const googleClassCode = getGoogleClassCode(courses, courseId);
+    let googleCourseId;
     if(google_courses && googleClassCode){
       google_courses.forEach(function(course){
         if(course.enrollmentCode == googleClassCode){
           console.log(course.id);
-          return course.id;
+          googleCourseId = course.id
         }
       });
+      return googleCourseId;
     }
   }
 
   const handleInvite = async () => {
     setIsInviteSent("Resend Invite");
-    console.log("Invite sent!");
-    console.log({studentEmail});
-    console.log({googleCourseId});
+    const googleCourseId = getGoogleCourseId(google_courses, courses, courseId);
+
+    console.log(googleCourseId);
+    console.log(studentEmail);
     if(googleCourseId && studentEmail){
       try {
         console.log("Attempting to make API Call");
-          const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, {
-            "params": {
-              "userId": {studentEmail},
-              "courseId": {googleCourseId},
+          const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, 
+            {
+              "userId": studentEmail,
+              "courseId": googleCourseId,
               "role": "STUDENT"
             },
-            "headers": {
-              "Authorization": `Bearer ${google_access_token}`,
-            },
-          });
+            {
+              "headers": {
+                "Authorization": `Bearer ${google_access_token}`,
+              },
+            }
+          );
           setInviteStatus("Sent");
       } catch {
+          setInviteStatus(<Typography color="error">Unsent</Typography>);
           alert("Error creating invite");
       }
     }
@@ -272,11 +284,7 @@ const Studentenrollment = ({
                 const phoneNumber = primaryParent.phoneNumber;
                 const parentId = primaryParent.user.id;
                 const parentEmail = primaryParent.user.email;
-
-                console.log(students)
-
-                const studentEmail = user.username;
-                console.log(studentEmail);
+                const studentEmail = user.email;
 
                 return (
                   <ClassEnrollmentList
