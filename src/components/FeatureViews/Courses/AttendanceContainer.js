@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "1em",
     minWidth: "24px",
     minHeight: "24px",
+    [theme.breakpoints.between('xs', 'sm')]: {
+      marginLeft: ".75em"
+    },
   },
   attendanceStatusFont: {
     fontWeight: 500,
@@ -39,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: "1em"
     },
     [theme.breakpoints.between('xs', 'sm')]: {
-      marginLeft: "1.5em"
+      marginLeft: "1em"
     },
   },
   green: {
@@ -91,7 +94,7 @@ const AttendanceLegend = () => {
 
   return (
     <Grid container direction='row' justify='flex-start' alignItems='center'>
-      <Grid item xs={1}>
+      <Grid item xs={1} >
         <Checkbox disabled icon={<AttendanceIcon letter='P' />} />
       </Grid>
       <Grid item xs={1}>
