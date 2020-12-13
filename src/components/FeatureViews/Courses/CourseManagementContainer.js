@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import InputBase from '@material-ui/core/InputBase';
@@ -15,9 +14,9 @@ import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import Loading from '../../OmouComponents/Loading';
-import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
+
 import { UserAvatarCircle, StudentCourseLabel } from './StudentBadge';
-import { fullName, gradeOptions } from '../../../utils';
+import { fullName, gradeOptions } from 'utils';
 import moment from 'moment';
 import theme, {
     highlightColor,
@@ -118,10 +117,11 @@ const useStyles = makeStyles((theme) => ({
         color: '#FFFFFF',
     },
     mainCardContainer: {
-        paddingTop: '4.25em',
-        width: '97%',
-        marginLeft: '1.5em',
-        marginTop: '.5em',
+        paddingTop: '25px',
+        paddingBottom: '25px',
+        width: '100%',
+        paddingLeft: '24px',
+        height: '115px',
         '&:hover': {
             backgroundColor: highlightColor,
         },
@@ -487,142 +487,136 @@ const CourseManagementContainer = () => {
 
     return (
         <Grid item xs={12}>
-            <BackgroundPaper elevation={2}>
-                <Grid container direction="row">
-                    <Grid item xs={6}>
-                        <Typography
-                            align="left"
-                            className="heading"
-                            variant="h3"
-                        >
-                            Course Management
-                        </Typography>
-                    </Grid>
-
-                    {accountInfo.accountType === 'PARENT' && (
-                        <Grid
-                            item
-                            align="right"
-                            style={{ paddingRight: '2em' }}
-                            xs={6}
-                        >
-                            <CourseFilterDropdown
-                                filterList={studentOptionList}
-                                initialValue="All Students"
-                                setState={setStudentFilterValue}
-                                filter={studentFilterValue}
-                                filterKey="students"
-                            />
-                        </Grid>
-                    )}
+            <Grid container direction="row">
+                <Grid item xs={6}>
+                    <Typography align="left" className="heading" variant="h1">
+                        Course Management
+                    </Typography>
                 </Grid>
 
-                <Grid
-                    container
-                    alignItems="center"
-                    className={classes.containerMargins}
-                >
-                    <Grid item xs={3}>
-                        <FormControl className={classes.margin}>
-                            <Select
-                                labelId="course-management-sort-tab"
-                                id="course-management-sort-tab"
-                                displayEmpty
-                                value={sortByDate}
-                                onChange={handleChange}
-                                classes={{ select: classes.menuSelect }}
-                                input={<BootstrapInput />}
-                                MenuProps={{
-                                    classes: { list: classes.dropdown },
-                                    anchorOrigin: {
-                                        vertical: 'bottom',
-                                        horizontal: 'left',
-                                    },
-                                    transformOrigin: {
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    },
-                                    getContentAnchorEl: null,
+                {accountInfo.accountType === 'PARENT' && (
+                    <Grid
+                        item
+                        align="right"
+                        style={{ paddingRight: '2em' }}
+                        xs={6}
+                    >
+                        <CourseFilterDropdown
+                            filterList={studentOptionList}
+                            initialValue="All Students"
+                            setState={setStudentFilterValue}
+                            filter={studentFilterValue}
+                            filterKey="students"
+                        />
+                    </Grid>
+                )}
+            </Grid>
+
+            <Grid
+                container
+                alignItems="center"
+                className={classes.containerMargins}
+            >
+                <Grid item xs={3}>
+                    <FormControl className={classes.margin}>
+                        <Select
+                            labelId="course-management-sort-tab"
+                            id="course-management-sort-tab"
+                            displayEmpty
+                            value={sortByDate}
+                            onChange={handleChange}
+                            classes={{ select: classes.menuSelect }}
+                            input={<BootstrapInput />}
+                            MenuProps={{
+                                classes: { list: classes.dropdown },
+                                anchorOrigin: {
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                },
+                                transformOrigin: {
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                },
+                                getContentAnchorEl: null,
+                            }}
+                        >
+                            {sortByDate === '' && (
+                                <MenuItem
+                                    ListItemClasses={{
+                                        selected: classes.menuSelected,
+                                    }}
+                                    value=""
+                                >
+                                    Sort By
+                                </MenuItem>
+                            )}
+                            <MenuItem
+                                className={classes.menuSelect}
+                                value={'start_date'}
+                                ListItemClasses={{
+                                    selected: classes.menuSelected,
                                 }}
                             >
-                                {sortByDate === '' && (
-                                    <MenuItem
-                                        ListItemClasses={{
-                                            selected: classes.menuSelected,
-                                        }}
-                                        value=""
-                                    >
-                                        Sort By
-                                    </MenuItem>
-                                )}
-                                <MenuItem
-                                    className={classes.menuSelect}
-                                    value={'start_date'}
-                                    ListItemClasses={{
-                                        selected: classes.menuSelected,
-                                    }}
-                                >
-                                    Start Date (Latest)
-                                </MenuItem>
-                                <MenuItem
-                                    className={classes.menuSelect}
-                                    value={'class_name'}
-                                    ListItemClasses={{
-                                        selected: classes.menuSelected,
-                                    }}
-                                >
-                                    Class Name(A-Z)
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <CourseFilterDropdown
-                        filterList={gradeOptions}
-                        initialValue="All Grades"
-                        setState={setGradeFilterValue}
-                        filter={gradeFilterValue}
-                        filterKey="grades"
-                    />
-                    <CourseFilterDropdown
-                        filterList={subjectList}
-                        initialValue="All Subjects"
-                        setState={setSubjectFilterValue}
-                        filter={subectFilterValue}
-                        filterKey="subjects"
-                    />
-                    <CourseFilterDropdown
-                        filterList={instructorsList}
-                        initialValue="All Instructors"
-                        setState={setInstructorFilterValue}
-                        filter={instructorsFilterValue}
-                        filterKey="instructors"
-                    />
+                                Start Date (Latest)
+                            </MenuItem>
+                            <MenuItem
+                                className={classes.menuSelect}
+                                value={'class_name'}
+                                ListItemClasses={{
+                                    selected: classes.menuSelected,
+                                }}
+                            >
+                                Class Name(A-Z)
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
                 </Grid>
-                <hr />
+                <CourseFilterDropdown
+                    filterList={gradeOptions}
+                    initialValue="All Grades"
+                    setState={setGradeFilterValue}
+                    filter={gradeFilterValue}
+                    filterKey="grades"
+                />
+                <CourseFilterDropdown
+                    filterList={subjectList}
+                    initialValue="All Subjects"
+                    setState={setSubjectFilterValue}
+                    filter={subectFilterValue}
+                    filterKey="subjects"
+                />
+                <CourseFilterDropdown
+                    filterList={instructorsList}
+                    initialValue="All Instructors"
+                    setState={setInstructorFilterValue}
+                    filter={instructorsFilterValue}
+                    filterKey="instructors"
+                />
+            </Grid>
+            <hr />
 
-                {/* course data is displayed here */}
-                {defaultCourseDisplay.map(
-                    ({
-                        title,
-                        endDate,
-                        activeAvailabilityList,
-                        startDate,
-                        instructor,
-                        id,
-                    }) => (
-                        <ClassListItem
-                            title={title}
-                            endDate={endDate}
-                            activeAvailabilityList={activeAvailabilityList}
-                            startDate={startDate}
-                            instructor={instructor}
-                            id={id}
-                            key={title}
-                            studentList={studentOptionList}
-                        />
-                    )
-                )}
-            </BackgroundPaper>
+            {/* course data is displayed here */}
+            {defaultCourseDisplay.map(
+                ({
+                    title,
+                    endDate,
+                    activeAvailabilityList,
+                    startDate,
+                    instructor,
+                    id,
+                }) => (
+                    <ClassListItem
+                        title={title}
+                        endDate={endDate}
+                        activeAvailabilityList={activeAvailabilityList}
+                        startDate={startDate}
+                        instructor={instructor}
+                        id={id}
+                        key={title}
+                        studentList={studentOptionList}
+                    />
+                )
+            )}
         </Grid>
     );
 };

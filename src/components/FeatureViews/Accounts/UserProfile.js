@@ -299,6 +299,9 @@ const UserProfile = () => {
         setTabIndex(newTabIndex);
     };
 
+    const tabsInViewforAccountType = (tab, accountType) =>
+        tab.access_permissions.includes(accountType);
+
     const tabs = () => {
         return (
             <>
@@ -309,25 +312,24 @@ const UserProfile = () => {
                 >
                     {displayTabs
                         .filter((tab) =>
-                            tab.access_permissions.includes(
-                                AuthUser.accountType
-                            )
+                            tabsInViewforAccountType(tab, AuthUser.accountType)
                         )
-                        .map((tab) =>
-                            tab.tab_id === 7 ? (
+                        .map((currentTab) =>
+                            currentTab.tab_id === 7 ? (
                                 <Tab
-                                    key={tab.tab_id}
+                                    key={currentTab.tab_id}
                                     label={
                                         <span>
-                                            {tab.tab_heading} {tab.icon}
+                                            {currentTab.tab_heading}{' '}
+                                            {currentTab.icon}
                                             {importantNotesBadge}
                                         </span>
                                     }
                                 />
                             ) : (
                                 <Tab
-                                    key={tab.tab_id}
-                                    label={<>{tab.tab_heading}</>}
+                                    key={currentTab.tab_id}
+                                    label={<>{currentTab.tab_heading}</>}
                                 />
                             )
                         )}
@@ -335,9 +337,7 @@ const UserProfile = () => {
                 <ComponentViewer
                     inView={
                         displayTabs.filter((tab) =>
-                            tab.access_permissions.includes(
-                                AuthUser.accountType
-                            )
+                            tabsInViewforAccountType(tab, AuthUser.accountType)
                         )[tabIndex]?.tab_id
                     }
                     user={data}

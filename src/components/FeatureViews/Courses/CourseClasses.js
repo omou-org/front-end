@@ -15,7 +15,7 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
-import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
+
 import BackButton from '../../OmouComponents/BackButton';
 import ChromeTabs from '../../OmouComponents/ChromeTabs';
 import TabPanel from '../../OmouComponents/TabPanel';
@@ -24,10 +24,10 @@ import Announcements from './Announcements';
 import ClassEnrollmentList from './ClassEnrollmentList';
 import ClassSessionContainer from './ClassSessionContainer';
 import { useSelector } from 'react-redux';
-import { gradeLvl } from '../../../utils';
+import { gradeLvl, USER_TYPES } from 'utils';
 import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { USER_TYPES } from '../../../utils';
+
 import { StudentCourseLabel } from './StudentBadge';
 import { filterEvent } from 'actions/calendarActions';
 import { GET_STUDENTS } from './CourseManagementContainer';
@@ -273,235 +273,223 @@ const CourseClasses = () => {
 
     return (
         <Grid item xs={12}>
-            <BackgroundPaper elevation={2}>
-                <Grid container justify="space-between" alignContent="center">
-                    <Grid item>
-                        <BackButton />
-                    </Grid>
-                    <Grid item>
-                        {accountType === 'PARENT'
-                            ? studentInCourse.map((student, i) => (
-                                  <StudentCourseLabel label={student} key={i} />
-                              ))
-                            : ''}
-                    </Grid>
+            <Grid container justify="space-between" alignContent="center">
+                <Grid item>
+                    <BackButton />
                 </Grid>
-                <Hidden xsDown>
-                    <hr />
-                </Hidden>
-                <Grid container>
-                    <Grid item xs={6}>
-                        <Typography
-                            align="left"
-                            className="heading"
-                            variant="h3"
-                            style={{ marginTop: '.65em' }}
+                <Grid item>
+                    {accountType === 'PARENT'
+                        ? studentInCourse.map((student, i) => (
+                              <StudentCourseLabel label={student} key={i} />
+                          ))
+                        : ''}
+                </Grid>
+            </Grid>
+            <Hidden xsDown>
+                <hr />
+            </Hidden>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Typography
+                        align="left"
+                        className="heading"
+                        variant="h1"
+                        style={{ marginTop: '.65em' }}
+                    >
+                        {title}
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <AccessControlComponent
+                        permittedAccountTypes={[
+                            USER_TYPES.admin,
+                            USER_TYPES.receptionist,
+                            USER_TYPES.instructor,
+                        ]}
+                    >
+                        <IconButton
+                            className={classes.editcoursebutton}
+                            size="small"
+                            component={Link}
+                            to={`/registration/form/course_details/${id}`}
                         >
-                            {title}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <AccessControlComponent
-                            permittedAccountTypes={[
-                                USER_TYPES.admin,
-                                USER_TYPES.receptionist,
-                                USER_TYPES.instructor,
-                            ]}
-                        >
-                            <IconButton
-                                className={classes.editcoursebutton}
-                                size="small"
-                                component={Link}
-                                to={`/registration/form/course_details/${id}`}
+                            <EditIcon />
+                        </IconButton>
+                    </AccessControlComponent>
+                </Grid>
+            </Grid>
+            <Grid container justify="flex-start" style={{ marginTop: '2.5em' }}>
+                <Grid item xs={2} md={4} lg={3} xl={2}>
+                    <Typography
+                        variant="body2"
+                        align="left"
+                        className={classes.alignTitleLeft}
+                    >
+                        Date
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        align="left"
+                        className={classes.dataFontDate}
+                    >
+                        {`${startingDate} - ${endingDate}`}
+                    </Typography>
+                </Grid>
+                <Grid item xs={2} md={4} lg={3} xl={2}>
+                    <Typography
+                        variant="body2"
+                        align="left"
+                        className={classes.alignTitleLeft}
+                    >
+                        Time
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        align="left"
+                        className={classes.dataFontDate}
+                    >
+                        {`${abbreviatedDay} ${startingTime} - ${endingTime}`}
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid container justify="flex-start" style={{ marginTop: '2em' }}>
+                <Grid item xs={2} md={4} lg={2} xl={2}>
+                    <Typography
+                        variant="body2"
+                        align="left"
+                        className={classes.alignTitleLeft}
+                    >
+                        Instructor
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        align="left"
+                        className={classes.dataFontDate}
+                    >
+                        {`${firstName} ${lastName}`}
+                    </Typography>
+                </Grid>
+                <Grid item xs={2} md={4} lg={2} xl={2}>
+                    <Typography
+                        variant="body2"
+                        align="left"
+                        className={classes.alignTitleLeft}
+                    >
+                        Grade
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        align="left"
+                        className={classes.dataFontDate}
+                    >
+                        {gradeLvl(academicLevel)}
+                    </Typography>
+                </Grid>
+                <Grid item xs={2} md={4} lg={2} xl={2}>
+                    <Typography
+                        variant="body2"
+                        align="left"
+                        className={classes.alignTitleLeft}
+                    >
+                        Subject
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        align="left"
+                        className={classes.dataFontDate}
+                    >
+                        {name}
+                    </Typography>
+                </Grid>
+            </Grid>
+
+            <Grid container style={{ marginTop: '2.5em' }}>
+                <Grid item xs={12} sm={12}>
+                    <ThemeProvider theme={theme}>
+                        <Toolbar disableGutters>
+                            <ChromeTabs
+                                className={tabSelection()}
+                                tabs={
+                                    comparison(
+                                        data.parent?.studentList,
+                                        data.enrollments
+                                    )
+                                        ? tabLabels
+                                        : [{ label: 'About Course' }]
+                                }
+                                tabStyle={{
+                                    bgColor: '#ffffff',
+                                    selectedBgColor: '#EBFAFF',
+                                    color: 'rgba(102, 102, 102, 0.87)',
+                                    topMargin: '1.1em',
+                                    leftValue: 0,
+                                    rightValue: 0,
+                                }}
+                                tabProps={{
+                                    disableRipple: true,
+                                }}
+                                value={index}
+                                onChange={handleChange}
+                            />
+                        </Toolbar>
+                        <Divider classes={{ root: classes.dividerColor }} />
+                        <Grid container>
+                            <TabPanel
+                                index={0}
+                                value={index}
+                                backgroundColor="#FFFFFF"
+                                style={{ width: '100%' }}
                             >
-                                <EditIcon />
-                            </IconButton>
-                        </AccessControlComponent>
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    justify="flex-start"
-                    style={{ marginTop: '2.5em' }}
-                >
-                    <Grid item xs={2} md={4} lg={3} xl={2}>
-                        <Typography
-                            variant="body2"
-                            align="left"
-                            className={classes.alignTitleLeft}
-                        >
-                            Date
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            align="left"
-                            className={classes.dataFontDate}
-                        >
-                            {`${startingDate} - ${endingDate}`}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2} md={4} lg={3} xl={2}>
-                        <Typography
-                            variant="body2"
-                            align="left"
-                            className={classes.alignTitleLeft}
-                        >
-                            Time
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            align="left"
-                            className={classes.dataFontDate}
-                        >
-                            {`${abbreviatedDay} ${startingTime} - ${endingTime}`}
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid
-                    container
-                    justify="flex-start"
-                    style={{ marginTop: '2em' }}
-                >
-                    <Grid item xs={2} md={4} lg={2} xl={2}>
-                        <Typography
-                            variant="body2"
-                            align="left"
-                            className={classes.alignTitleLeft}
-                        >
-                            Instructor
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            align="left"
-                            className={classes.dataFontDate}
-                        >
-                            {`${firstName} ${lastName}`}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2} md={4} lg={2} xl={2}>
-                        <Typography
-                            variant="body2"
-                            align="left"
-                            className={classes.alignTitleLeft}
-                        >
-                            Grade
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            align="left"
-                            className={classes.dataFontDate}
-                        >
-                            {gradeLvl(academicLevel)}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2} md={4} lg={2} xl={2}>
-                        <Typography
-                            variant="body2"
-                            align="left"
-                            className={classes.alignTitleLeft}
-                        >
-                            Subject
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            align="left"
-                            className={classes.dataFontDate}
-                        >
-                            {name}
-                        </Typography>
-                    </Grid>
-                </Grid>
-
-                <Grid container style={{ marginTop: '2.5em' }}>
-                    <Grid item xs={12} sm={12}>
-                        <ThemeProvider theme={theme}>
-                            <Toolbar disableGutters>
-                                <ChromeTabs
-                                    className={tabSelection()}
-                                    tabs={
-                                        comparison(
-                                            data.parent?.studentList,
-                                            data.enrollments
-                                        )
-                                            ? tabLabels
-                                            : [{ label: 'About Course' }]
+                                <ClassInfo
+                                    id={id}
+                                    courseLink={courseLink}
+                                    description={description}
+                                    courseLinkDescription={
+                                        courseLinkDescription
                                     }
-                                    tabStyle={{
-                                        bgColor: '#ffffff',
-                                        selectedBgColor: '#EBFAFF',
-                                        color: 'rgba(102, 102, 102, 0.87)',
-                                        topMargin: '1.1em',
-                                        leftValue: 0,
-                                        rightValue: 0,
-                                    }}
-                                    tabProps={{
-                                        disableRipple: true,
-                                    }}
-                                    value={index}
-                                    onChange={handleChange}
+                                    courseLinkUpdatedAt={courseLinkUpdatedAt}
+                                    courseLinkUser={courseLinkUser}
                                 />
-                            </Toolbar>
-                            <Divider classes={{ root: classes.dividerColor }} />
-                            <Grid container>
-                                <TabPanel
-                                    index={0}
-                                    value={index}
-                                    backgroundColor="#FFFFFF"
-                                    style={{ width: '100%' }}
-                                >
-                                    <ClassInfo
-                                        id={id}
-                                        courseLink={courseLink}
-                                        description={description}
-                                        courseLinkDescription={
-                                            courseLinkDescription
-                                        }
-                                        courseLinkUpdatedAt={
-                                            courseLinkUpdatedAt
-                                        }
-                                        courseLinkUser={courseLinkUser}
+                            </TabPanel>
+
+                            <TabPanel index={1} value={index}>
+                                <Announcements
+                                    announcementsData={
+                                        getAnnouncements.data.announcements
+                                    }
+                                    loggedInUser={data.accountSearch}
+                                />
+                            </TabPanel>
+                            <AccessControlComponent
+                                permittedAccountTypes={[USER_TYPES.parent]}
+                            >
+                                <TabPanel index={2} value={index}>
+                                    <h1>Hello</h1>
+                                </TabPanel>
+                            </AccessControlComponent>
+
+                            <AccessControlComponent
+                                permittedAccountTypes={[
+                                    USER_TYPES.admin,
+                                    USER_TYPES.receptionist,
+                                    USER_TYPES.instructor,
+                                ]}
+                            >
+                                <TabPanel index={2} value={index}>
+                                    <ClassEnrollmentList
+                                        enrollmentList={enrollmentSet}
                                     />
                                 </TabPanel>
-
-                                <TabPanel index={1} value={index}>
-                                    <Announcements
-                                        announcementsData={
-                                            getAnnouncements.data.announcements
-                                        }
-                                        loggedInUser={data.accountSearch}
+                                <TabPanel index={3} value={index}>
+                                    <ClassSessionContainer
+                                        sessionList={sessionSet}
                                     />
                                 </TabPanel>
-                                <AccessControlComponent
-                                    permittedAccountTypes={[USER_TYPES.parent]}
-                                >
-                                    <TabPanel index={2} value={index}>
-                                        <h1>Hello</h1>
-                                    </TabPanel>
-                                </AccessControlComponent>
-
-                                <AccessControlComponent
-                                    permittedAccountTypes={[
-                                        USER_TYPES.admin,
-                                        USER_TYPES.receptionist,
-                                        USER_TYPES.instructor,
-                                    ]}
-                                >
-                                    <TabPanel index={2} value={index}>
-                                        <ClassEnrollmentList
-                                            enrollmentList={enrollmentSet}
-                                        />
-                                    </TabPanel>
-                                    <TabPanel index={3} value={index}>
-                                        <ClassSessionContainer
-                                            sessionList={sessionSet}
-                                        />
-                                    </TabPanel>
-                                </AccessControlComponent>
-                            </Grid>
-                        </ThemeProvider>
-                    </Grid>
+                            </AccessControlComponent>
+                        </Grid>
+                    </ThemeProvider>
                 </Grid>
-            </BackgroundPaper>
+            </Grid>
         </Grid>
     );
 };

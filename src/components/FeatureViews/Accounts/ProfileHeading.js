@@ -23,8 +23,8 @@ import OutOfOffice from './OutOfOffice';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { ReactComponent as SchoolIcon } from '../../school.svg';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
-import { USER_TYPES } from 'utils';
-import { capitalizeString } from 'utils';
+
+import { capitalizeString, fullName, USER_TYPES } from 'utils';
 import { darkGrey } from 'theme/muiTheme';
 import Loading from 'components/OmouComponents/Loading';
 import gql from 'graphql-tag';
@@ -338,7 +338,7 @@ const ProfileHeading = ({ ownerID }) => {
             <Grid align="left" alignItems="center" container item xs={8}>
                 <Grid className="profile-name" item style={{ marginRight: 20 }}>
                     <Typography variant="h3">
-                        {userInfo.user.firstName} {userInfo.user.lastName}
+                        {fullName(userInfo.user)}
                     </Typography>
                 </Grid>
                 <Grid item>
