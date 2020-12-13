@@ -3,6 +3,7 @@ import React from 'react';
 import { h2, white } from 'theme/muiTheme';
 import ProfileHeading from './ProfileHeading';
 import UserAvatar from './UserAvatar';
+import { fullName } from 'utils';
 
 const useStyles = makeStyles({
     profileInfo: {
@@ -20,7 +21,7 @@ const UserProfileInfo = ({ user }) => {
                 <Hidden smDown>
                     <UserAvatar
                         margin="0"
-                        name={`${user.user.firstName} ${user.user.lastName}`}
+                        name={fullName(user.user)}
                         size="136px"
                         style={{ ...h2, color: white }}
                     />

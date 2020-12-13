@@ -297,17 +297,11 @@
     color: white;
 }
 
-.editIcon {
-  position: relative;
-  top: 0px;
-  left: 70px;
-}
-
 .editResetDiv {
   border: solid 2px $primaryColor;
   position: relative;
   top: 23px;
-  left: 55px;
+  left: -10px;
   border-radius: 10px;
   width: 170px;
   display: none;
