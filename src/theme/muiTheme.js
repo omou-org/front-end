@@ -6,32 +6,33 @@ const breakpoints = createBreakpoints({});
 const tabBorderRadius = '10px';
 
 // Font Colors
-export const lightPrimaryFontColor = '#767474';
-export const secondaryFontColor = '#228eb2';
-export const highlightColor = '#EBFAFF';
-export const errorRed = '#c0392b';
-export const activeColor = '#6FCF97';
-export const pastColor = '#BDBDBD';
+export const lightPrimaryFontColor = "#767474";
+export const secondaryFontColor = "#228eb2";
+export const highlightColor = "#EBFAFF";
+export const errorRed = "#c0392b";
+export const activeColor = "#6FCF97";
+export const pastColor = "#BDBDBD";
+export const buttonBlue = "#278FC3";
 
 // Theme Colors
-export const omouBlue = '#43B5D9';
-export const skyBlue = '#EBFAFF';
-export const outlineGrey = '#E0E0E0';
-export const black = '#000000';
-export const darkGrey = '#666666';
-export const darkBlue = '#1F82A1';
-export const white = '#FFFFFF';
-export const goth = '#000000';
-export const charcoal = '#333333';
-export const slateGrey = '#666666';
-export const gloom = '#999999';
-export const cloudy = '#C4C4C4';
-export const lightGrey = '#D3D3D3';
-export const buttonBlue = '#289FC3';
-export const backgroundGrey = '#FAFAFA';
-export const statusGreen = '#6CE086';
-export const statusYellow = '#FFDD59';
-export const statusRed = '#FF6766';
+export const omouBlue = "#43B5D9";
+export const skyBlue = "#EBFAFF";
+export const outlineGrey = "#E0E0E0";
+export const black = "#000000";
+export const darkGrey = "#666666";
+export const darkBlue = "#1F82A1";
+export const white = "#FFFFFF";
+export const goth = "#000000";
+export const charcoal = "#333333";
+export const slateGrey = "#666666";
+export const gloom = "#999999";
+export const cloudy = "#C4C4C4";
+export const lightGrey = "#D3D3D3";
+export const buttonThemeBlue = "#289FC3";
+export const backgroundGrey = "#FAFAFA";
+export const statusGreen = "#6CE086";
+export const statusYellow = "#FFDD59";
+export const statusRed = "#FF6766";
 
 // Typography
 export const h1 = {
