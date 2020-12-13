@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {useCallback, useContext, useState} from "react";
 import {RegistrationContext} from "./RegistrationContext";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
@@ -11,7 +11,6 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
 import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
 import Loading from "../../../OmouComponents/Loading";
-import {useHistory} from "react-router-dom";
 import {GET_PAYMENT} from "../PaymentReceipt";
 import {GET_COURSES} from "../RegistrationLanding";
 import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
@@ -73,6 +72,8 @@ const CREATE_PAYMENT = gql`
         createInvoice(method: $method, parent: $parent, classes: $classes,
         disabledDiscounts: $disabledDiscounts,
         priceAdjustment: $priceAdjustment, registrations: $registrations) {
+            stripeCheckoutId
+            stripeConnectedAccount
             invoice {
                 id
                 accountBalance
@@ -81,7 +82,6 @@ const CREATE_PAYMENT = gql`
                 enrollments {
                     course {
                         title
-                        startTime
                         startDate
                         instructor {
                             user {
@@ -92,7 +92,6 @@ const CREATE_PAYMENT = gql`
                         }
                         courseId
                         endDate
-                        endTime
                         hourlyTuition
                     }
                     student {
@@ -177,6 +176,8 @@ const paymentOptions = [
         "value": "intl_credit_card",
     },
 ];
+
+const STRIPE_API_KEY = process.env.REACT_APP_STRIPE_KEY;
 
 const PaymentBoard = () => {
     const {registrationCart, currentParent} = useContext(RegistrationContext);
@@ -325,19 +326,28 @@ const PaymentBoard = () => {
         },
     });
     const [createPayment] = useMutation(CREATE_PAYMENT, {
+        "onCompleted": ({createInvoice}) => {
+            // eslint-disable-next-line no-undef
+            const stripe = Stripe(STRIPE_API_KEY, {
+                "stripeAccount": createInvoice.stripeConnectedAccount,
+            });
+            stripe.redirectToCheckout({
+                "sessionId": createInvoice.stripeCheckoutId,
+            });
+        },
         "update": (cache, {data}) => {
             cache.writeQuery({
-                "query": GET_PAYMENT,
                 "data": {
                     "__typename": "InvoiceType",
                     "invoice": data.createInvoice.invoice,
                 },
+                "query": GET_PAYMENT,
                 "variables": {"paymentId": data.createInvoice.invoice.id},
             });
         },
     });
     const [createRegistrationCart] = useMutation(CREATE_REGISTRATION_CART, {
-        "variables": {"parent": currentParent?.user.id},
+        "onError": ({message}) => console.error(message),
         "update": (cache, {data}) => {
             cache.writeQuery({
                 "query": GET_REGISTRATION_CART,
@@ -345,9 +355,8 @@ const PaymentBoard = () => {
                 "data": {"registrationCart": data.createRegistrationCart.registrationCart},
             });
         },
-        "onError": ({message}) => console.error(message),
+        "variables": {"parent": currentParent?.user.id},
     });
-    const history = useHistory();
 
     const handleMethodChange = useCallback((_, value) => {
         setPaymentMethod(value);
@@ -387,48 +396,50 @@ const PaymentBoard = () => {
                     registration.student === enrollment.student.user.id).id,
             }));
 
-        const newEnrollmentIDs = await createEnrollments({
-            "variables": {
-                "enrollments": enrollmentsToCreate,
-            },
-        });
+        try {
+            const newEnrollmentIDs = await createEnrollments({
+                "variables": {
+                    "enrollments": enrollmentsToCreate,
+                },
+            });
 
-        const registrations = [
-            ...newEnrollmentIDs.data.createEnrollments.enrollments.map((enrollment) => ({
-                "enrollment": enrollment.id,
-                "numSessions": classRegistrations.find(({course, student}) =>
-                    isSameEnrollment({
-                        course,
-                        enrollment,
-                        student,
-                    })).sessions,
-            })),
-            ...existingEnrollments.map((enrollment) => ({
-                "enrollment": enrollment.id,
-                "numSessions": enrollment.sessions,
-            })),
-        ];
+            const registrations = [
+                ...newEnrollmentIDs.data.createEnrollments.enrollments.map((enrollment) => ({
+                    "enrollment": enrollment.id,
+                    "numSessions": classRegistrations.find(({course, student}) =>
+                        isSameEnrollment({
+                            course,
+                            enrollment,
+                            student,
+                        })).sessions,
+                })),
+                ...existingEnrollments.map((enrollment) => ({
+                    "enrollment": enrollment.id,
+                    "numSessions": enrollment.sessions,
+                })),
+            ];
 
-        const payment = await createPayment({
-            "variables": {
-                "parent": currentParent.user.id,
-                "method": paymentMethod,
-                "classes": classRegistrations,
-                "disabledDiscounts": [],
-                "priceAdjustment": Number(priceAdjustment),
-                registrations,
-            },
-        });
+            await createPayment({
+                "variables": {
+                    "parent": currentParent.user.id,
+                    "method": paymentMethod,
+                    "classes": classRegistrations,
+                    "disabledDiscounts": [],
+                    "priceAdjustment": Number(priceAdjustment),
+                    registrations,
+                },
+            });
 
-        // clean out parent registration cart
-        await createRegistrationCart({
-            "variables": {
-                "parent": currentParent.user.id,
-                "registrationPreferences": "",
-            },
-        });
-
-        history.push(`/registration/receipt/${payment.data.createInvoice.invoice.id}`);
+            // clean out parent registration cart
+            await createRegistrationCart({
+                "variables": {
+                    "parent": currentParent.user.id,
+                    "registrationPreferences": "",
+                },
+            });
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     if (error || enrollmentResponse.error) {
