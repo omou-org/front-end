@@ -26,7 +26,7 @@ const NotEnrolledStudentsDialog = (props) => {
                 className="notEnrolledStudentDialog"
             >
                 <ErrorOutlineIcon className="warningIcon"/>
-                <DialogTitle id="alert-dialog-title">{"OOPS!"}</DialogTitle>
+                <DialogTitle disableTypography id="alert-dialog-title">{"OOPS!"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         It looks like there are no students Enrolled in that class. Please go back and choose another. (Clicking outside of the box will take you back)

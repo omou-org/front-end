@@ -163,7 +163,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                 {submitError &&
                     <Dialog className="error" onClose={() => setOpenError(false)}
                         open={openError}>
-                        <DialogTitle>
+                        <DialogTitle disableTypography>
                             An error occurred while submitting. Try again.
                         </DialogTitle>
                         <DialogContent>

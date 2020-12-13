@@ -13,7 +13,6 @@ import EditIcon from "@material-ui/icons/EditOutlined";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import Menu from "@material-ui/core/Menu";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
@@ -27,92 +26,92 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { useSearchParams } from "actions/hooks";
 import Loading from "components/OmouComponents/Loading";
 import "./Accounts.scss";
-import { addDashes } from "./accountUtils";
-import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
-import { ReactComponent as GradeIcon } from "../../grade.svg";
-import { ReactComponent as IDIcon } from "../../identifier.svg";
-import InstructorAvailability from "./InstructorAvailability";
-import OutOfOffice from "./OutOfOffice";
+import {addDashes} from "./accountUtils";
+import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
+import {ReactComponent as GradeIcon} from "../../grade.svg";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
 import RoleChip from "./RoleChip";
-import { ReactComponent as SchoolIcon } from "../../school.svg";
-import { fullName, USER_TYPES } from "utils";
+import {ReactComponent as SchoolIcon} from "../../school.svg";
+import {USER_TYPES} from "utils";
 
+import { fullName, USER_TYPES } from "utils";
 import generatePassword from "password-generator";
 
 const GET_PROFILE_HEADING_QUERY = {
-  admin: gql`
-    query getAdmimUserInfo($userID: ID!) {
-      userInfo(userId: $userID) {
-        ... on AdminType {
-          birthDate
-          accountType
-          adminType
-          user {
-            firstName
-            lastLogin
-            email
-            id
-          }
-        }
-      }
-    }
-  `,
-  instructor: gql`
-    query getInstructorUserInfo($userID: ID!) {
-      userInfo(userId: $userID) {
-        ... on InstructorType {
-          birthDate
-          accountType
-          phoneNumber
-          user {
-            firstName
-            lastName
-            email
-            id
-          }
-        }
-      }
-    }
-  `,
-  parent: gql`
-    query getParentUserInfo($userID: ID!) {
-      userInfo(userId: $userID) {
-        ... on ParentType {
-          birthDate
-          accountType
-          balance
-          user {
-            firstName
-            lastName
-            email
-            id
-          }
-        }
-      }
-    }
-  `,
-  student: gql`
-    query getStudentUserInfo($userID: ID!) {
-      userInfo(userId: $userID) {
-        ... on StudentType {
-          birthDate
-          accountType
-          grade
-          school {
-            name
-            id
-          }
-          user {
-            firstName
-            lastName
-            email
-            id
-          }
-        }
-      }
-    }
-  `,
-};
+	"admin": gql`
+	query getAdmimUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on AdminType {
+			birthDate
+			accountType
+			adminType
+			user {
+			  firstName
+			  lastLogin
+			  email
+			  id
+			}
+		  }
+		}
+	  }
+	  `,
+	  "instructor": gql`
+	  query getInstructorUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on InstructorType {
+			birthDate
+			accountType
+			phoneNumber
+			user {
+			  firstName
+			  lastName
+			  email
+			  id
+			}
+		  }
+		}
+	  }`,
+	  "parent" : gql`query getParentUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on ParentType {
+			birthDate
+			accountType
+			balance
+			user {
+			  firstName
+			  lastName
+			  email
+			  id
+			}
+		  }
+		}
+	  }`,
+	  "student" : gql`
+	  query getStudentUserInfo($userID: ID!) {
+		userInfo(userId: $userID) {
+		  ... on StudentType {
+			birthDate
+			accountType
+			grade
+			school {
+			  name
+			  id
+			}
+			user {
+			  firstName
+			  lastName
+			  email
+			  id
+			}
+		  }
+		}
+	  }
+	  
+	  
+	 
+	  `
+
+}
 
 const RESET_PASSWORD = gql`
   mutation ResetPassword($password: String!, $userId: ID!) {

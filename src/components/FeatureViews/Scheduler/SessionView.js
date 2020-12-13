@@ -1,19 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {useState} from "react";
 import Grid from "@material-ui/core/Grid";
-import { NavLink, Redirect, useParams } from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
-
-import { bindActionCreators } from "redux";
-import * as registrationActions from "../../../actions/registrationActions";
-import { useDispatch, useSelector } from "react-redux";
-import { Tooltip, Typography, withStyles } from "@material-ui/core";
+import {useQuery} from "@apollo/react-hooks";
+import {Tooltip, Typography, withStyles} from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Button from "@material-ui/core/Button";
 import Loading from "../../OmouComponents/Loading";
 import Avatar from "@material-ui/core/Avatar";
-import { stringToColor } from "../Accounts/accountUtils";
+import {stringToColor} from "../Accounts/accountUtils";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -21,21 +17,11 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import Radio from "@material-ui/core/Radio";
 import DialogActions from "@material-ui/core/DialogActions";
 import Dialog from "@material-ui/core/Dialog";
-import { dayOfWeek } from "../../Form/FormUtils";
-import * as hooks from "actions/hooks";
 import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
-import DialogContentText from "@material-ui/core/es/DialogContentText";
-import LoadingError from "../Accounts/TabComponents/LoadingCourseError";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import BackButton from "components/OmouComponents/BackButton";
-
-import InstructorSchedule from "../Accounts/TabComponents/InstructorSchedule";
-import SessionPaymentStatusChip from "../../OmouComponents/SessionPaymentStatusChip";
-import AddSessions from "components/OmouComponents/AddSessions";
 import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import { capitalizeString, fullName } from "../../../utils";
+import {fullName} from "../../../utils";
 import moment from "moment";
 
 const StyledMenu = withStyles({
@@ -126,7 +112,6 @@ const GET_SESSION = gql`
 `;
 
 const SessionView = () => {
-  
   const { session_id } = useParams();
   const [edit, setEdit] = useState(false);
   const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
@@ -334,7 +319,7 @@ const SessionView = () => {
             onClose={handleEditToggle(true)}
             open={edit}
           >
-            <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
+            <DialogTitle  disableTypography id="form-dialog-title">Edit Session</DialogTitle>
             <Divider />
             <DialogContent>
               <RadioGroup
