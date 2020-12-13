@@ -76,13 +76,6 @@
         margin-top: 20px;
     }
 
-    // .accountsCell {
-    //   width: 220px;
-    //   overflow-wrap: break-word;
-    // }
-    // .accountsCellID {
-    //   width: 100px;
-    //   overflow-wrap: break-word;
     .toggleView {
         .btn {
             color: $lightPrimaryFontColor;
@@ -306,14 +299,17 @@
 
 .editIcon {
   position: relative;
-  top: -20px;
-  left: 10px;
+  top: 0px;
+  left: 70px;
 }
 
 .editResetDiv {
   border: solid 2px $primaryColor;
+  position: relative;
+  top: 23px;
+  left: 55px;
   border-radius: 10px;
-  width: 160px;
+  width: 170px;
   display: none;
 }
 
@@ -332,6 +328,7 @@
   text-align: right;
   justify-content: flex-end !important;
   justify-content: left !important;
+  border: none !important;
 }
 
 .edit {
@@ -351,11 +348,6 @@
   color: #43b5d9 !important;
 }
 
-.resetStudent {
-  border-radius: 0px 0px 8px 8px !important;
-  width: 100%;
-}
-
 .resetBtn {
   background-color: #eb5757 !important;
   color: white !important;
@@ -369,7 +361,7 @@
   box-sizing: border-box;
   border-radius: 5px;
   color: #289fc3 !important;
-  height: 37px;
+  height: 43px;
 }
 
 .doneBtn {

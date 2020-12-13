@@ -26,92 +26,90 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { useSearchParams } from "actions/hooks";
 import Loading from "components/OmouComponents/Loading";
 import "./Accounts.scss";
-import {addDashes} from "./accountUtils";
-import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
-import {ReactComponent as GradeIcon} from "../../grade.svg";
-import {ReactComponent as IDIcon} from "../../identifier.svg";
+import { addDashes } from "./accountUtils";
+import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
+import { ReactComponent as GradeIcon } from "../../grade.svg";
+import { ReactComponent as IDIcon } from "../../identifier.svg";
 import RoleChip from "./RoleChip";
-import {ReactComponent as SchoolIcon} from "../../school.svg";
-import {USER_TYPES} from "utils";
+import { ReactComponent as SchoolIcon } from "../../school.svg";
 
 import { fullName, USER_TYPES } from "utils";
 import generatePassword from "password-generator";
 
 const GET_PROFILE_HEADING_QUERY = {
-	"admin": gql`
-	query getAdmimUserInfo($userID: ID!) {
-		userInfo(userId: $userID) {
-		  ... on AdminType {
-			birthDate
-			accountType
-			adminType
-			user {
-			  firstName
-			  lastLogin
-			  email
-			  id
-			}
-		  }
-		}
-	  }
-	  `,
-	  "instructor": gql`
-	  query getInstructorUserInfo($userID: ID!) {
-		userInfo(userId: $userID) {
-		  ... on InstructorType {
-			birthDate
-			accountType
-			phoneNumber
-			user {
-			  firstName
-			  lastName
-			  email
-			  id
-			}
-		  }
-		}
-	  }`,
-	  "parent" : gql`query getParentUserInfo($userID: ID!) {
-		userInfo(userId: $userID) {
-		  ... on ParentType {
-			birthDate
-			accountType
-			balance
-			user {
-			  firstName
-			  lastName
-			  email
-			  id
-			}
-		  }
-		}
-	  }`,
-	  "student" : gql`
-	  query getStudentUserInfo($userID: ID!) {
-		userInfo(userId: $userID) {
-		  ... on StudentType {
-			birthDate
-			accountType
-			grade
-			school {
-			  name
-			  id
-			}
-			user {
-			  firstName
-			  lastName
-			  email
-			  id
-			}
-		  }
-		}
-	  }
-	  
-	  
-	 
-	  `
-
-}
+  admin: gql`
+    query getAdmimUserInfo($userID: ID!) {
+      userInfo(userId: $userID) {
+        ... on AdminType {
+          birthDate
+          accountType
+          adminType
+          user {
+            firstName
+            lastLogin
+            email
+            id
+          }
+        }
+      }
+    }
+  `,
+  instructor: gql`
+    query getInstructorUserInfo($userID: ID!) {
+      userInfo(userId: $userID) {
+        ... on InstructorType {
+          birthDate
+          accountType
+          phoneNumber
+          user {
+            firstName
+            lastName
+            email
+            id
+          }
+        }
+      }
+    }
+  `,
+  parent: gql`
+    query getParentUserInfo($userID: ID!) {
+      userInfo(userId: $userID) {
+        ... on ParentType {
+          birthDate
+          accountType
+          balance
+          user {
+            firstName
+            lastName
+            email
+            id
+          }
+        }
+      }
+    }
+  `,
+  student: gql`
+    query getStudentUserInfo($userID: ID!) {
+      userInfo(userId: $userID) {
+        ... on StudentType {
+          birthDate
+          accountType
+          grade
+          school {
+            name
+            id
+          }
+          user {
+            firstName
+            lastName
+            email
+            id
+          }
+        }
+      }
+    }
+  `,
+};
 
 const RESET_PASSWORD = gql`
   mutation ResetPassword($password: String!, $userId: ID!) {
@@ -173,6 +171,8 @@ const ProfileHeading = ({ ownerID }) => {
 
   const isAdmin = loggedInAuth.accountType === USER_TYPES.admin;
   const isUser = loggedInAuth.user.id === userInfo.user.id;
+  const isStudentProfile = userInfo.accountType === "STUDENT";
+  console.log(isStudentProfile);
 
   const renderEditandAwayButton = () => (
     <Grid container item xs={4}>
@@ -183,32 +183,31 @@ const ProfileHeading = ({ ownerID }) => {
             <div className="editResetDiv">
               <ResponsiveButton
                 component={Link}
-                to={`/form/${userInfo.accountType.role}/${userInfo.user.id}`}
+                to={`/form/${userInfo.accountType.toLowerCase()}/${
+                  userInfo.user.id
+                }`}
                 className="edit"
               >
                 Edit Profile
               </ResponsiveButton>
-              {isAdmin &&
-                (userInfo.accountType.role === "student" ? (
-                  <ResponsiveButton
-                    className="resetStudent"
-                    disabled
-                    onClick={handleClickOpen}
-                  >
-                    Reset Password
-                  </ResponsiveButton>
-                ) : (
-                  <ResponsiveButton className="reset" onClick={handleClickOpen}>
-                    Reset Password
-                  </ResponsiveButton>
-                ))}
+              {isAdmin && (
+                <ResponsiveButton
+                  className="reset"
+                  disabled={isStudentProfile}
+                  onClick={handleClickOpen}
+                >
+                  Reset Password
+                </ResponsiveButton>
+              )}
             </div>
             <ResetDialog />
           </Grid>
           <Grid component={Hidden} item lgUp xs={12}>
             <Button
               component={Link}
-              to={`/form/${userInfo.accountType.role}/${userInfo.user.id}`}
+              to={`/form/${userInfo.accountType.toLowerCase()}/${
+                userInfo.user.id
+              }`}
               variant="outlined"
             >
               <EditIcon />
@@ -228,8 +227,8 @@ const ProfileHeading = ({ ownerID }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className="center dialog-padding">
-          {"Do you want to reset this user's password?"}
+        <DialogTitle disableTypography id="alert-dialog-title" className="center dialog-padding">
+          Do you want to reset this user's password?
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description" className="center">
@@ -241,20 +240,20 @@ const ProfileHeading = ({ ownerID }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="dialog-actions">
-          <Button
+          <ResponsiveButton
             onClick={handleClosePassword}
             variant="outlined"
             className="cancelBtn"
           >
             cancel
-          </Button>
-          <Button
+          </ResponsiveButton>
+          <ResponsiveButton
             onClick={handleClosePasswordReset}
             className="resetBtn"
             autoFocus
           >
             reset password
-          </Button>
+          </ResponsiveButton>
         </DialogActions>
       </Dialog>
       <Dialog
@@ -263,8 +262,8 @@ const ProfileHeading = ({ ownerID }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title" className="center">
-          {"Password has been reset."}
+        <DialogTitle disableTypography id="alert-dialog-title" className="center">
+          Password has been reset.
         </DialogTitle>
         <DialogContent className="center dialog-padding">
           <DialogContentText id="alert-dialog-description">
@@ -282,9 +281,9 @@ const ProfileHeading = ({ ownerID }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="dialog-actions">
-          <Button onClick={handleCloseReset} className="doneBtn">
+          <ResponsiveButton onClick={handleCloseReset} className="doneBtn">
             done
-          </Button>
+          </ResponsiveButton>
         </DialogActions>
       </Dialog>
     </>
