@@ -1,7 +1,7 @@
 import React from "react";
 import Chip from "@material-ui/core/Chip";
 import theme from "../../muiTheme";
-import { Typography } from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import PropTypes from "prop-types";
 
 export const LabelBadge = ({children, variant = "default", style, ...rest}) => {
@@ -91,13 +91,11 @@ export const LabelBadge = ({children, variant = "default", style, ...rest}) => {
             width: '16px',
             ...badgeCategory.statusRound,
             chipMinWidth: "16px",
-            height: "16px",
             chipFontSize: "10px",
         }
     }
 
     const badgeStyle = badgeType[variant];
-
     return <Chip 
                 variant={badgeStyle.chipVariant}
                 style={{
@@ -118,7 +116,6 @@ export const LabelBadge = ({children, variant = "default", style, ...rest}) => {
 }
 
 LabelBadge.propTypes = {
-    label: PropTypes.string.isRequired,
     variant: PropTypes.oneOf([
                             "default",
                             "outline",

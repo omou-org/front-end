@@ -57,7 +57,7 @@ const GET_ACCOUNT_TYPE = gql`
                 }
             }
         }
-    }`; 
+    }`;
 
 export const setToken = async (token, shouldSave) => {
     try {
@@ -104,6 +104,7 @@ export const setToken = async (token, shouldSave) => {
         return {
             "payload": {
                 accountType,
+                "attemptedLogin": true,
                 email,
                 phoneNumber,
                 token,

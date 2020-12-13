@@ -10,11 +10,10 @@ import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
 import {ApolloClient} from 'apollo-client';
 import {InMemoryCache} from "apollo-cache-inmemory";
-import {HttpLink} from "apollo-link-http";
 import {onError} from "apollo-link-error";
 import {ApolloLink} from "apollo-link";
 
-
+import {createUploadLink} from "apollo-upload-client";
 import {ApolloProvider} from "@apollo/react-hooks";
 import {setContext} from "apollo-link-context";
 
@@ -36,7 +35,7 @@ const httpLink = ApolloLink.from([
             console.error(networkError);
         }
     }),
-    new HttpLink({
+    new createUploadLink({
         "uri": `${process.env.REACT_APP_DOMAIN}/graphql`,
     }),
 ]);
