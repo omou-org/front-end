@@ -95,11 +95,10 @@ const UPDATE_COURSE_LINK = gql`
             courseLink: $courseLink
             courseLinkDescription: $courseDescription
             id: $id
-            availabilities: {
-                dayOfWeek: MONDAY
-                endTime: "10:00"
-                startTime: "12:00"
-            }
+            availabilities: [
+                { dayOfWeek: SATURDAY, startTime: "01:00", endTime: "09:00" }
+                { dayOfWeek: SUNDAY, startTime: "01:00", endTime: "09:00" }
+            ]
         ) {
             course {
                 courseId
@@ -107,6 +106,10 @@ const UPDATE_COURSE_LINK = gql`
                 courseLinkDescription
                 courseLinkUpdatedAt
                 courseLink
+                courseLinkUser {
+                    firstName
+                    lastName
+                }
             }
         }
     }
@@ -118,12 +121,12 @@ const ClassInfo = ({
     courseLinkDescription,
     courseLinkUpdatedAt,
     id,
+    courseLinkUser,
 }) => {
     const [courseURL, setCourseURL] = useState('');
     const [linkDescription, setLinkDescription] = useState('');
     const [updatedAt, setUpdatedAt] = useState('');
     const [isEditActive, setEditActive] = useState(false);
-    const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
 
     const [updateCourseLink, { data }] = useMutation(UPDATE_COURSE_LINK, {
         onCompleted: () => {
@@ -131,7 +134,6 @@ const ClassInfo = ({
         },
         update: (cache, { data }) => {
             const newCourseLink = data.createCourse.course;
-
             const cachedCourseLink = cache.readQuery({
                 query: GET_CLASSES,
                 variables: { id: id },
@@ -166,7 +168,6 @@ const ClassInfo = ({
     };
 
     const updateLinkAndDescription = () => {
-        // Should take the form input and pass that into a graphql mutaion
         updateCourseLink({
             variables: {
                 id: id,
@@ -188,7 +189,7 @@ const ClassInfo = ({
         return (
             moment(time).format('[Last updated on] MMM D YYYY [at] h:mm:a') +
             ' ' +
-            fullName(user)
+            fullName(courseLinkUser)
         );
     };
 

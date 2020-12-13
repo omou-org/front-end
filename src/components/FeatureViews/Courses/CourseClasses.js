@@ -91,6 +91,10 @@ export const GET_CLASSES = gql`
             courseLink
             courseLinkDescription
             courseLinkUpdatedAt
+            courseLinkUser {
+                firstName
+                lastName
+            }
             courseCategory {
                 name
                 id
@@ -226,8 +230,9 @@ const CourseClasses = () => {
         title,
         activeAvailabilityList,
         sessionSet,
+        courseLinkUser,
     } = data.course;
-    console.log(data.course);
+
     const { name } = data.course.courseCategory;
     const { firstName, lastName } = data.course.instructor.user;
 
@@ -240,8 +245,8 @@ const CourseClasses = () => {
         activeAvailabilityList[0].endTime,
         'HH:mm'
     ).format('h:mm A');
-    const startingDate = moment(startDate).calendar();
-    const endingDate = moment(endDate).calendar();
+    const startingDate = moment(startDate).format('L');
+    const endingDate = moment(endDate).format('L');
 
     const handleChange = (_, i) => setIndex(i);
 
@@ -454,6 +459,7 @@ const CourseClasses = () => {
                                         courseLinkUpdatedAt={
                                             courseLinkUpdatedAt
                                         }
+                                        courseLinkUser={courseLinkUser}
                                     />
                                 </TabPanel>
 
