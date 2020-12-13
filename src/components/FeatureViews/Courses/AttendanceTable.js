@@ -113,7 +113,21 @@ export const UPDATE_ATTENDANCE_STATUS = gql`
     __typename
     updateAttendance(id: $attendanceId, status: $status) {
       attendance {
-        updatedAt
+        id
+        status
+        session {
+          id
+          startDatetime
+        }
+        enrollment {
+          student {
+            user {
+              firstName
+              id
+              lastName
+            }
+          }
+        }
       }
     }
   }
@@ -222,6 +236,25 @@ const AttendanceTable = ({ setIsEditing }) => {
 
   const [updateAttendance] = useMutation(UPDATE_ATTENDANCE_STATUS, {
     error: (err) => console.error(err),
+    update: (cache, { data }) => {
+      const [newAttendanceStatus] = Object.values(data.updateAttendance);
+      const cachedAttendanceStatus = cache.readQuery({
+        query: GET_ATTENDANCE,
+        variables: { courseId }
+      })["attendances"];
+      let updatedAttendanceStatus = [...cachedAttendanceStatus];
+      const matchingIndex = updatedAttendanceStatus.findIndex(
+        ({ id }) => id === newAttendanceStatus.id
+      );
+      updatedAttendanceStatus[matchingIndex] = newAttendanceStatus;
+      cache.writeQuery({
+        data: {
+          ['attendances']: updatedAttendanceStatus,
+        },
+        query: GET_ATTENDANCE,
+        variables: { courseId },
+      });
+    },
   });
 
   if (loading || !isCheckBoxEditing || !attendanceEditStates)
