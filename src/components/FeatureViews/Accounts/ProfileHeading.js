@@ -200,7 +200,6 @@ const ProfileHeading = ({ ownerID }) => {
 
     const isAdmin = loggedInAuth.accountType === USER_TYPES.admin;
     const isAuthUser = userInfo.user.id === loggedInUserID;
-    // const isUser = loggedInAuth.user.id === userInfo.user.id;
     const isStudentProfile = userInfo.accountType === "STUDENT";
 
     const renderEditandAwayButton = () => (
