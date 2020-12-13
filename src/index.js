@@ -9,14 +9,12 @@ import ReactDOM from "react-dom";
 import rootReducer from "./reducers/rootReducer.js";
 import thunk from "redux-thunk";
 import {ApolloClient} from 'apollo-client';
-import {InMemoryCache, IntrospectionFragmentMatcher} from "apollo-cache-inmemory";
-import {HttpLink} from "apollo-link-http";
+import {InMemoryCache} from "apollo-cache-inmemory";
 import {onError} from "apollo-link-error";
 import {ApolloLink} from "apollo-link";
 
-
+import {createUploadLink} from "apollo-upload-client";
 import {ApolloProvider} from "@apollo/react-hooks";
-import introspectionQueryResultData from 'possibleTypes.json';
 import {setContext} from "apollo-link-context";
 
 import {setToken} from "actions/authActions";
@@ -27,9 +25,6 @@ const store = createStore(
     composeWithDevTools(applyMiddleware(thunk)),
 );
 
-const fragmentMatcher = new IntrospectionFragmentMatcher({
-    introspectionQueryResultData
-})
 
 const httpLink = ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
@@ -40,7 +35,7 @@ const httpLink = ApolloLink.from([
             console.error(networkError);
         }
     }),
-    new HttpLink({
+    new createUploadLink({
         "uri": `${process.env.REACT_APP_DOMAIN}/graphql`,
     }),
 ]);

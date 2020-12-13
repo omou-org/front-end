@@ -23,6 +23,23 @@ import googleClassroomLogo from "../../GoogleClassroomIcon.png";
 import Tooltip from '@material-ui/core/Tooltip';
 
 
+import { Link } from "react-router-dom";
+import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
+
+import Box from "@material-ui/core/Box";
+import ListDetailedItem, {
+  ListContent,
+  ListActions,
+  ListHeading,
+  ListTitle,
+  ListDetails,
+  ListDetail,
+  ListDetailLink,
+  ListButton,
+  ListBadge,
+  ListStatus,
+  ListDivider,
+} from "../../OmouComponents/ListComponent/ListDetailedItem";
 import theme, {
   highlightColor,
   activeColor,
@@ -83,6 +100,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "1.5em",
     marginTop: "1.5em",
     border: "1px solid #43B5D9",
+    marginBottom: "16px",
   },
   dropdown: {
     border: "1px solid #43B5D9",
@@ -135,6 +153,11 @@ const GET_COURSES = gql`
     courses {
       endDate
       title
+      availabilityList {
+        dayOfWeek
+        endTime
+        startTime
+      }
       academicLevel
       startDate
       instructor {
@@ -142,24 +165,30 @@ const GET_COURSES = gql`
           firstName
           lastName
           id
+          __typename
         }
+        __typename
       }
       googleClassCode
       courseCategory {
         id
         name
+        __typename
       }
       courseId
       id
+      __typename
+      totalTuition
     }
   }
 `;
 
+
+
 const ClassListItem = ({
   title,
   endDate,
-  endTime,
-  startTime,
+  availabilityList,
   startDate,
   instructor,
   id,
@@ -168,13 +197,10 @@ const ClassListItem = ({
   const classes = useStyles();
   let history = useHistory();
   const concatFullName = fullName(instructor.user);
-  const abbreviatedDay = moment(startDate).format("ddd");
-  const startingTime = moment(startTime, "HH:mm").format("h:mm A");
-  const endingTime = moment(endTime, "HH:mm").format("h:mm A");
-  const startingDate = moment(startDate).calendar();
-  const endingDate = moment(endDate).calendar();
-  const currentDate = moment().format("L");
-  const isActive = currentDate <= endingDate;
+  const startingDate = moment(startDate).format("MMM D YYYY");
+  const endingDate = moment(endDate).format("MMM D YYYY");
+  const isActive = moment().diff(moment(endDate)) < 0;
+  const cost = totalTuition;
   const { google_access_token, google_courses } = useSelector(({ auth }) => auth);
   const [courses, setCourses] = useState();
   const [gClassResp, setGClassResp] = useState();
@@ -215,63 +241,46 @@ const ClassListItem = ({
       return <div></div>;
     }
   } 
-                
+
+  const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
+
   return (
-    <>
-      <Grid
-        container
-        justify="flex-start"
-        className={classes.mainCardContainer}
-        data-active="inactive"
-        onClick={handleClick}
-      >
-        <Grid item xs={4} sm={3} md={1}>
-          <Typography variant="h4" align="left" style={{ marginLeft: ".85em" }}>
-            {title}
-          </Typography>
-        </Grid>
-        <Grid item xs={1} sm={3} md={2} style={{ textAlign: "left" }}>
-          <Chip
-            label={isActive ? "ACTIVE" : "PAST"}
-            className={classes.chipSize}
-            style={{
-              backgroundColor: isActive ? activeColor : pastColor,
-            }}
-          />
-        </Grid>
-        <Grid item xs={1} sm={3} md={9} style={{ textAlign: "left" }}>
-        <Tooltip title="Integrated with Google Classroom" placement="top" arrow>
-          {checkCourses(googleClassCode)}
-        </Tooltip>
-        </Grid>
-        <Grid item xs={3} sm={4} md={3} className={classes.displayCardMargins}>
-          <Typography
-            variant="body1"
-            align="left"
-            style={{ marginLeft: "1.85em" }}
-          >
-            <span style={{ marginRight: theme.spacing(1) }}>By:</span>
-            <span className={classes.highlightName}>{`${concatFullName}`}</span>
-          </Typography>
-        </Grid>
-        <Divder
-          orientation="vertical"
-          flexItem
-          style={{ height: "2em", marginTop: "1em" }}
-        />
-        <Grid item xs={6} sm={7} md={6}>
-          <Typography
-            variant="body1"
-            align="left"
-            style={{ marginLeft: "1.2em", paddingTop: "3px" }}
-            className={classes.displayCardMargins}
-          >
-            {`Time: ${startingDate} - ${endingDate} ${abbreviatedDay} ${startingTime} - ${endingTime} `}
-          </Typography>
-        </Grid>
-      </Grid>
-      <Divder />
-    </>
+    <ListDetailedItem>
+      <ListContent>
+        <ListHeading>
+          <ListBadge>
+            <LabelBadge variant={`status-${isActive ? "active" : "past"}`}>
+              {isActive ? "ACTIVE" : "PAST"}
+            </LabelBadge>
+          </ListBadge>
+          <Box onClick={handleClick}>
+            <ListTitle>{title}</ListTitle>
+          </Box>
+          <Tooltip title="Integrated with Google Classroom" placement="top" arrow>           
+            {checkCourses(googleClassCode)}         
+          </Tooltip>
+        </ListHeading>
+        <ListDetails>
+          <Link to={`/accounts/instructor/${instructor.user.id}`}>
+            <ListDetailLink>{concatFullName}</ListDetailLink>
+          </Link>
+          <ListDivider />
+          <ListDetail>
+            {startingDate} - {endingDate}
+          </ListDetail>
+          <ListDivider />
+          <ListDetail>
+            <CourseAvailabilites availabilityList={availabilityList} />
+          </ListDetail>
+          <ListDivider />
+          <ListDetail>{cost}</ListDetail>
+        </ListDetails>
+      </ListContent>
+      <ListActions>
+        <ListStatus></ListStatus>
+        <ListButton></ListButton>
+      </ListActions>
+    </ListDetailedItem>
   );
 };
 
@@ -367,7 +376,7 @@ const CourseManagementContainer = () => {
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-
+  
   const createFilteredListFromCourses = (filterCondition) =>
     data.courses.reduce(
       (accumulator, currentValue) =>
@@ -387,7 +396,6 @@ const CourseManagementContainer = () => {
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-
   const defaultCourseDisplay = data.courses
     .filter(
       (course) =>
@@ -409,110 +417,100 @@ const CourseManagementContainer = () => {
         <Typography align="left" className="heading" variant="h3">
           Course Management
         </Typography>
-        <Paper elevation={4} className={classes.appBar}>
-          <Grid
-            container
-            alignItems="center"
-            className={classes.containerMargins}
-          >
-            <Grid item xs={3}>
-              <FormControl className={classes.margin}>
-                <Select
-                  labelId="course-management-sort-tab"
-                  id="course-management-sort-tab"
-                  displayEmpty
-                  value={sortByDate}
-                  onChange={handleChange}
-                  classes={{ select: classes.menuSelect }}
-                  input={<BootstrapInput />}
-                  MenuProps={{
-                    classes: { list: classes.dropdown },
-                    anchorOrigin: {
-                      vertical: "bottom",
-                      horizontal: "left",
-                    },
-                    transformOrigin: {
-                      vertical: "top",
-                      horizontal: "left",
-                    },
-                    getContentAnchorEl: null,
-                  }}
-                >
-                  {sortByDate === "" && (
-                    <MenuItem
-                      ListItemClasses={{ selected: classes.menuSelected }}
-                      value=""
-                    >
-                      Sort By
-                    </MenuItem>
-                  )}
+      </BackgroundPaper>
+      <Paper elevation={4} className={classes.appBar}>
+        <Grid
+          container
+          alignItems="center"
+          className={classes.containerMargins}
+        >
+          <Grid item xs={3}>
+            <FormControl className={classes.margin}>
+              <Select
+                labelId="course-management-sort-tab"
+                id="course-management-sort-tab"
+                displayEmpty
+                value={sortByDate}
+                onChange={handleChange}
+                classes={{ select: classes.menuSelect }}
+                input={<BootstrapInput />}
+                MenuProps={{
+                  classes: { list: classes.dropdown },
+                  anchorOrigin: {
+                    vertical: "bottom",
+                    horizontal: "left",
+                  },
+                  transformOrigin: {
+                    vertical: "top",
+                    horizontal: "left",
+                  },
+                  getContentAnchorEl: null,
+                }}
+              >
+                {sortByDate === "" && (
                   <MenuItem
                     className={classes.menuSelect}
                     value={"start_date"}
                     ListItemClasses={{ selected: classes.menuSelected }}
                   >
-                    Start Date (Latest)
+                    Sort By
                   </MenuItem>
-                  <MenuItem
-                    className={classes.menuSelect}
-                    value={"class_name"}
-                    ListItemClasses={{ selected: classes.menuSelected }}
-                  >
-                    Class Name(A-Z)
-                  </MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <CourseFilterDropdown
-              filterList={gradeOptions}
-              initialValue="All Grades"
-              setState={setGradeFilterValue}
-              filter={gradeFilterValue}
-              filterKey="grades"
-            />
-            <CourseFilterDropdown
-              filterList={subjectList}
-              initialValue="All Subjects"
-              setState={setSubjectFilterValue}
-              filter={subectFilterValue}
-              filterKey="subjects"
-            />
-            <CourseFilterDropdown
-              filterList={instructorsList}
-              initialValue="All Instructors"
-              setState={setInstructorFilterValue}
-              filter={instructorsFilterValue}
-              filterKey="instructors"
-            />
+                )}
+                <MenuItem
+                  className={classes.menuSelect}
+                  value={"start_date"}
+                  ListItemClasses={{ selected: classes.menuSelected }}
+                >
+                  Start Date (Latest)
+                </MenuItem>
+                <MenuItem
+                  className={classes.menuSelect}
+                  value={"class_name"}
+                  ListItemClasses={{ selected: classes.menuSelected }}
+                >
+                  Class Name(A-Z)
+                </MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
-        </Paper>
-        {defaultCourseDisplay.map(
-          ({
-            title,
-            dayOfWeek,
-            endDate,
-            endTime,
-            startTime,
-            startDate,
-            instructor,
-            id,
-            googleClassCode,
-          }) => (
-            <ClassListItem
-              title={title}
-              day={dayOfWeek}
-              endDate={endDate}
-              endTime={endTime}
-              startTime={startTime}
-              startDate={startDate}
-              instructor={instructor}
-              id={id}
-              key={title}
-              googleClassCode={googleClassCode}
-            />
-          )
-        )}
-      </BackgroundPaper>
+          <CourseFilterDropdown
+            filterList={gradeOptions}
+            initialValue="All Grades"
+            setState={setGradeFilterValue}
+            filter={gradeFilterValue}
+            filterKey="grades"
+          />
+          <CourseFilterDropdown
+            filterList={subjectList}
+            initialValue="All Subjects"
+            setState={setSubjectFilterValue}
+            filter={subectFilterValue}
+            filterKey="subjects"
+          />
+          <CourseFilterDropdown
+            filterList={instructorsList}
+            initialValue="All Instructors"
+            setState={setInstructorFilterValue}
+            filter={instructorsFilterValue}
+            filterKey="instructors"
+          />
+        </Grid>
+      </Paper>
+      {defaultCourseDisplay.map(
+        ({ title, availabilityList, endDate, startDate, instructor, id, googleClassCode }) => (
+          <ClassListItem
+            title={title}
+            day={availabilityList[0].dayOfWeek}
+            availabilityList={availabilityList}
+            endDate={endDate}
+            startDate={startDate}
+            instructor={instructor}
+            id={id}
+            googleClassCode={googleClassCode}
+            key={title}
+          />
+        )
+      )}
     </Grid>
   );
 };

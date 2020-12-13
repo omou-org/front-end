@@ -49,7 +49,7 @@ const GET_ACCOUNT_TYPE = gql`
                 }
             }
         }
-    }`;
+    }`; 
 
 export const setToken = async (token, shouldSave) => {
     try {
@@ -82,8 +82,9 @@ export const setToken = async (token, shouldSave) => {
                 accountType,
                 email,
                 token,
-				user,
-                phoneNumber
+                user,
+                phoneNumber,
+                attemptedLogin: true
             },
             "type": types.SET_CREDENTIALS,
         };
