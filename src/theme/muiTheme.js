@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 const breakpoints = createBreakpoints({});
@@ -115,7 +115,6 @@ const theme = createMuiTheme({
             default: backgroundGrey,
         },
         success: { main: statusGreen },
-        warning: { main: statusYellow },
         error: { main: statusRed },
     },
     colors: {
@@ -369,6 +368,11 @@ const theme = createMuiTheme({
                 color: 'inherit',
                 height: '48px',
             },
+        },
+        MuiDialogTitle: {
+            root: {
+                subtitle1,
+            }
         },
         MuiTableCell: {
             root: {

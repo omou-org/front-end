@@ -1,35 +1,30 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import {Link, useParams} from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import CalendarIcon from "@material-ui/icons/CalendarToday";
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import EditIcon from "@material-ui/icons/EditOutlined";
 import EmailIcon from "@material-ui/icons/EmailOutlined";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import Menu from "@material-ui/core/Menu";
 import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
 import PhoneIcon from "@material-ui/icons/PhoneOutlined";
 import Typography from "@material-ui/core/Typography";
 import Loading from "components/OmouComponents/Loading";
 import "./Accounts.scss";
-import { addDashes } from "./accountUtils";
-import { ReactComponent as BirthdayIcon } from "../../birthday.svg";
-import { ReactComponent as GradeIcon } from "../../grade.svg";
-import { ReactComponent as IDIcon } from "../../identifier.svg";
-import InstructorAvailability from "./InstructorAvailability";
-import OutOfOffice from "./OutOfOffice";
+import {addDashes} from "./accountUtils";
+import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
+import {ReactComponent as GradeIcon} from "../../grade.svg";
+import {ReactComponent as IDIcon} from "../../identifier.svg";
 import RoleChip from "./RoleChip";
-import { ReactComponent as SchoolIcon } from "../../school.svg";
-import { USER_TYPES } from "utils"; 
+import {ReactComponent as SchoolIcon} from "../../school.svg";
+import {USER_TYPES} from "utils";
 import gql from "graphql-tag";
 import {useQuery} from "@apollo/react-hooks";
 
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 const GET_PROFILE_HEADING_QUERY = {
-	"admin" : gql`
+	"admin": gql`
 	query getAdmimUserInfo($userID: ID!) {
 		userInfo(userId: $userID) {
 		  ... on AdminType {
@@ -138,7 +133,6 @@ const ProfileHeading = ({ ownerID }) => {
 							variant="outlined"
 							startIcon={<EditIcon/>}
 						>
-							<EditIcon />
 							Edit Profile
 						</ResponsiveButton>
 					</Grid>
@@ -262,11 +256,11 @@ const ProfileHeading = ({ ownerID }) => {
 			default:
 				return (
 					<>
-						<IDRow width={12} />
-						<PhoneRow width={12} />
-						<EmailRow />
+						<IDRow width={12}/>
+						<PhoneRow width={12}/>
+						<EmailRow/>
 					</>
-				);;
+				);
 		}
 	};
 
