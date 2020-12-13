@@ -84,8 +84,12 @@ const AuthenticatedNavBar = ({toggleDrawer}) => {
                     </Avatar>
                 </Tooltip>
                 {name === "NeLSoN" &&
-                <Typography className="catsButton" component={NavLinkNoDup} style={{marginLeft: "-2rem"}}
-                            to="/cats">
+                <Typography
+                    className="catsButton"
+                    style={{marginLeft: "-2rem"}}
+                    component={NavLinkNoDup}
+                    to="/cats"
+                >
                     CATS
                 </Typography>
                 }

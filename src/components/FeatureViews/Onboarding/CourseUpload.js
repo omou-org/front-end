@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -32,25 +32,19 @@ const CourseUpload = () => {
 
     return (
         <Container>
-        <Box className={classes.Text}>
-
-            <Typography 
-                variant="h3">Courses</Typography>
-            <Box fontSize="h5.fontSize" className={classes.Subtitle}>
-                <Typography 
-                variant="p"
-                >
-                Upload your filled-in Courses template:
-
-                </Typography>
+            <Box className={classes.Text}>
+                <Typography variant="h3">Courses</Typography>
+                <Box fontSize="h5.fontSize" className={classes.Subtitle}>
+                    <Typography variant="p">
+                        Upload your filled-in Courses template:
+                    </Typography>
+                </Box>
             </Box>
-        </Box>
-        <Box className={classes.uploadField}>
-            <Typography className={classes.uploadFieldText}>Drag & Drop files here</Typography>
-        </Box>
-        <input className={classes.manualUploadBtn} type="file" accept=".csv"></input>
-
-    </Container>
+            <Box className={classes.uploadField}>
+                <Typography className={classes.uploadFieldText}>Drag & Drop files here</Typography>
+            </Box>
+            <input className={classes.manualUploadBtn} type="file" accept=".csv"></input>
+        </Container>
     );
 };
 

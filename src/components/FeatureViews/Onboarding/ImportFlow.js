@@ -3,7 +3,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import DownloadTemplate from "./DownloadTemplates";
@@ -11,6 +10,7 @@ import CourseUpload from "./CourseUpload";
 import BusinessInfo from "./BusinessInfo";
 import CategorySelect from "./CategorySelect";
 import AccountsUpload from "./AccountsUpload";
+import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -48,7 +48,7 @@ function getStepContent(step) {
 		case 4:
 			return <CourseUpload/>;
 		default:
-			return 'Unknown step';
+			return 'Error: Invalid step. No content to display';
 	}
 }
 
@@ -125,9 +125,9 @@ const ImportFlow = () => {
 						<Typography className={classes.instructions}>
 							All steps completed - you're finished
 						</Typography>
-						<Button onClick={handleReset} className={classes.button}>
+						<ResponsiveButton onClick={handleReset} className={classes.button}>
 							Reset
-						</Button>
+						</ResponsiveButton>
 					</div>
 				) : (
 					<div>
@@ -135,33 +135,33 @@ const ImportFlow = () => {
 						<div>
 							{
 								activeStep !== 0 &&
-								<Button
+								<ResponsiveButton
 									disabled={activeStep === 0}
 									onClick={handleBack}
 									className={classes.button}
 								>
 									Back
-								</Button>
+								</ResponsiveButton>
 							}
 							{isStepOptional(activeStep) && (
-								<Button
+								<ResponsiveButton
 									variant="contained"
 									color="primary"
 									onClick={handleSkip}
 									className={classes.button}
 								>
 									Skip
-								</Button>
+								</ResponsiveButton>
 							)}
 
-							<Button
+							<ResponsiveButton
 								variant="contained"
 								color="primary"
 								onClick={handleNext}
 								className={classes.button}
 							>
 								{activeStep === steps.length - 1 ? 'Finish' : 'Submit & Continue'}
-							</Button>
+							</ResponsiveButton>
 						</div>
 					</div>
 				)}
