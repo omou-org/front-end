@@ -1,132 +1,131 @@
-import React, {useMemo} from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
 
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import { useQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import moment from "moment";
 
-import * as hooks from "actions/hooks";
 import {handleToolTip} from "../../Scheduler/SchedulerUtils";
-import Loading from "components/OmouComponents/Loading";
+import { fullName } from "utils.js";
 import {stringToColor} from "../accountUtils";
+import Loading from "components/OmouComponents/Loading";
+import { Typography } from "@material-ui/core";
+
+const GET_INSTRUCTOR_INFO = gql`
+	query getCourses($instructorID: ID!) {
+		instructor(userId: $instructorID) {
+			accountType
+			user {
+			  firstName
+			  lastName
+			  id
+			  instructor {
+				sessionSet {
+				  endDatetime
+				  startDatetime
+				  title
+				}
+				instructoravailabilitySet {
+				  dayOfWeek
+				  endDatetime
+				  startDatetime
+				  startTime
+				  endTime
+				}
+				instructoroutofofficeSet {
+					endDatetime
+					startDatetime
+					description
+				  }
+			  }
+			}
+		  }
+	  }
+`
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
+//TODO: Refactor instructor schedule to graphQL
 const InstructorSchedule = ({instructorID}) => {
-	const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
-	const instructor = useSelector(
-		({Users}) => Users.InstructorList[instructorID]
-	);
-	const OOOstatus = hooks.useOutOfOffice();
-	const availabilityStatus = hooks.useInstructorAvailability(instructorID);
-	const classEnrollmentStatus = hooks.useClassSessionsInPeriod("week");
-	const tutoringEnrollmentStatus = hooks.useTutoringSessionsInPeriod("week");
 
-	const teachingSessions = useMemo(
-		() =>
-			Object.values(sessions[instructorID] || {}).map((session) => ({
-				end: new Date(session.end_datetime),
-				start: new Date(session.start_datetime),
-				title: session.title,
-			})),
-		[sessions, instructorID]
-	);
 
-	const OOO = useMemo(
-		() =>
-			instructor
-				? Object.values(instructor.schedule.time_off).map(
-				({all_day, description, start, end}) => {
-					const endDate = new Date(end);
-					// since the end date for allDay events is EXCLUSIVE
-					// must add one day to include the end specified by user
-					if (all_day) {
-						endDate.setDate(endDate.getDate() + 1);
-					}
-					return {
-						allDay: all_day,
-						end: endDate,
-						start,
-						title: description || "Out of Office",
-					};
-				}
-				)
-				: [],
-		[instructor]
-	);
+	const { loading, error, data } = useQuery(GET_INSTRUCTOR_INFO, {
+		variables: {instructorID}
+	})
 
-	const allDayOOO = useMemo(() => OOO.some(({allDay}) => allDay), [OOO]);
+	if (loading ) return <Loading small/>;
 
-	const hoursWorked = useMemo(
-		() =>
-			Math.round(
-				Object.values(sessions[instructorID] || []).reduce((hours, session) => {
-					const start = new Date(session.start_datetime);
-					const end = new Date(session.end_datetime);
-					if (start > Date.now()) {
-						return hours;
-					} else if (end < Date.now()) {
-						return hours + toHours(end - start);
-					}
-					return hours + toHours(end - Date.now());
-				}, 0) * 100
-			) / 100,
-		[sessions, instructorID]
-	);
+	if (error ) return  <Typography>There was an error {error.message}</Typography>;
 
-	const instructorBusinessHours = useMemo(
-		() =>
-			instructor
-				? Object.values(instructor.schedule.work_hours).map(
-				({day, start, end}) => ({
-					daysOfWeek: [day],
-					endTime: end,
-					startTime: start,
-				})
-				)
-				: [],
-		[instructor]
-	);
+	const { user, user : { instructor } } = data.instructor;
 
-	if (
-		teachingSessions.length === 0 &&
-		instructorBusinessHours.length === 0 &&
-		OOO.length === 0
-	) {
-		if (
-			hooks.isLoading(
-				tutoringEnrollmentStatus,
-				OOOstatus,
-				classEnrollmentStatus,
-				availabilityStatus
-			)
-		) {
-			return <Loading/>;
-		} else if (
-			hooks.isFail(
-				tutoringEnrollmentStatus,
-				OOOstatus,
-				classEnrollmentStatus,
-				availabilityStatus
-			)
-		) {
-			return "Unable to load schedule!";
+	const today = moment();
+
+	const hoursWorkedThisMonth = parseInt(instructor.sessionSet.reduce((hours, session) => {
+		const start = moment(session.startDatetime);
+		const end = moment(session.endDatetime);
+
+		// Ignore sessions in the future
+		if (today.diff(start) < 0) {
+			return hours;
 		}
-	}
+		// If session is in the same month add hours
+		else if (start.month() === today.month() &&
+			start.year() === today.year()) {
+			return hours + toHours(end.diff(start));
+		} else {
+			return hours;
+		}
 
+	}, 0));
+
+	const instructorBusinessHours = instructor.instructoravailabilitySet.map(({dayOfWeek, startTime, endTime}) => ({
+		dayOfWeek: [dayOfWeek],
+		startTime, 
+		endTime
+	}))
+
+	const teachingSessions = instructor.sessionSet.map(({endDatetime, startDatetime, title}) => ({
+		title: title,
+		start: new Date(startDatetime),
+		end: new Date(endDatetime)
+	}));
+
+	let allDayOOO = false;
+	// Out Of Office
+	const OOOEvents = instructor.instructoroutofofficeSet.map(({startDatetime, endDatetime, description}) => {
+		let start = new Date(startDatetime);
+		let end = new Date(endDatetime);
+		let allDay = false;
+
+		if (start.diff(end, 'days') >= 1 ) {
+			start = null;
+			allDay = true;
+			allDayOOO = true;
+		}
+		return {
+			title: description,
+			start,
+			end,
+			allDay
+		}
+	});
+	
 	return (
 		<>
 			<h3 style={{float: "left"}}>
-				{hoursWorked} hour{hoursWorked !== 1 && "s"} worked this month
+				{hoursWorkedThisMonth} hour{hoursWorkedThisMonth !== 1 && "s"} worked this month
 			</h3>
 			<FullCalendar
 				allDaySlot={allDayOOO}
 				businessHours={instructorBusinessHours}
 				columnHeaderFormat={{weekday: "short"}}
 				defaultView="timeGridWeek"
-				eventColor={stringToColor(instructor.name || "")}
+				eventColor={stringToColor(fullName(user) || "")}
 				eventMouseEnter={handleToolTip}
-				events={[...teachingSessions, ...OOO]}
+				events={[...teachingSessions, ...OOOEvents]}
 				header={false}
 				height={337}
 				minTime="09:00:00"

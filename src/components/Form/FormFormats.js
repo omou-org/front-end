@@ -70,7 +70,7 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 const instructorSelect = (name) => (
     <Fields.DataSelect name={name} 
         optionsMap={userMap}
-        request={SEARCH_INSTRUCTORS} 
+        request={SEARCH_INSTRUCTORS}
         noOptionsText="No instructors available"/>
 );
 
@@ -211,7 +211,7 @@ export const ACADEMIC_LVL_FIELD = {
         "validator": Yup.number().min(0),
     },
     DAY_OF_WEEK_FIELD = {
-        
+
     },
     START_DATE_FIELD = {
         "name": "startDate",
@@ -341,6 +341,28 @@ const STUDENT_INFO_FIELDS = {
         },
     ],
 };
+const BUSINESS_INFO_FIELDS = [
+    {
+        "name": "name",
+        "required": "true",
+        ...stringField("Business Info")
+    },
+    {
+        "name": "phone",
+        "required": "true",
+        ...stringField("Business Phone")
+    },
+    {
+        "name": "email",
+        "required": "true",
+        ...stringField("Business Email")
+    },
+    {
+        "name": "address",
+        "required": "true",
+        ...stringField("Business Address")
+    }
+]
 
 const TUTORING_COURSE_SECTIONS = [
     {
@@ -431,7 +453,7 @@ const GET_COURSES = gql`
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} 
         optionsMap={userMap}
-        request={SEARCH_PARENTS} 
+        request={SEARCH_PARENTS}
         noOptionsText="No parents available"/>
 );
 
@@ -456,7 +478,7 @@ const categoryMap = ({courseCategories}) => courseCategories
 const categorySelect = (name) => (
     <Fields.DataSelect name={name} 
         optionsMap={categoryMap}
-        request={GET_CATEGORIES} 
+        request={GET_CATEGORIES}
         noOptionsText="No categories available"/>
 );
 
@@ -476,7 +498,7 @@ const GET_SCHOOLS = gql`
 const schoolSelect = (name) => (
     <Fields.DataSelect name={name} 
         optionsMap={schoolMap}
-        request={GET_SCHOOLS} 
+        request={GET_SCHOOLS}
         noOptionsText="No schools available"/>
 );
 
@@ -494,10 +516,7 @@ const GET_USER_TYPE = gql`
 
 export default {
     "student": {
-        "title": {
-            "create": "Add Student",
-            "edit": "Add Student",
-        },
+        "title": "Student",
         "form": [
             {
                 "name": "student",
@@ -560,7 +579,6 @@ export default {
                         "query": GET_NAME,
                         "variables": {id},
                     });
-
                     return {
                         "student": {
                             "primaryParent": {
@@ -596,6 +614,7 @@ export default {
                             firstName
                             lastName
                             email
+                            id
                         }
                     }
                 }`;
@@ -632,7 +651,8 @@ export default {
         },
         "submit": async ({student}, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent($firstName: String!,
+            mutation AddStudent(
+            $firstName: String!,
             $email: String,
             $lastName: String!,
             $address: String,
@@ -656,6 +676,7 @@ export default {
                     "mutation": ADD_STUDENT,
                     "variables": {
                         ...student,
+                        id,
                         "email": student.email || "",
                         "birthDate": parseDate(student.birthDate),
                         "primaryParent": student.primaryParent.value,
@@ -835,11 +856,12 @@ export default {
             const CREATE_ADMIN = gql`
             mutation CreateAdmin(
                 $address: String,
-                $adminType: AdminTypeEnum,
+                $adminType: AdminTypeEnum!,
                 $birthDate: Date,
                 $city: String,
                 $gender: GenderEnum,
                 $phoneNumber: String,
+                $id: ID,
                 $state: String,
                 $email: String,
                 $firstName: String!,
@@ -850,7 +872,8 @@ export default {
                 createAdmin(
                     user: {
                         firstName: $firstName, lastName: $lastName,
-                        password: $password, email: $email
+                        password: $password, email: $email,
+                        id: $id,
                     },
                     address: $address,
                     adminType: $adminType,
@@ -880,14 +903,23 @@ export default {
                     "birthDate": parseDate(formData.user.birthDate),
                 },
             };
+
+            const adminMutationVariable = Object.values(modifiedData)
+            .reduce((obj, section) => ({
+                ...obj,
+                ...section,
+            }), {});
+
+            const userUuid = `${adminMutationVariable.firstName.charAt(0).toLowerCase()}${adminMutationVariable.lastName}`
+
             try {
                 await client.mutate({
                     "mutation": CREATE_ADMIN,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": {
+                        ...adminMutationVariable,
+                        id,
+                        userUuid
+                    }
                 });
             } catch (error) {
                 return {
@@ -1246,7 +1278,7 @@ export default {
 
             })();
             const modifiedData = {
-    
+
                 "courseDescription": {
                     ...courseDescription,
                     "instructor": courseDescription.instructor.value,
@@ -1474,6 +1506,34 @@ export default {
             });
         },
     },
+    "business-info": {
+        "title": "Business Information",
+        "form": [
+            BUSINESS_INFO_FIELDS
+        ],
+        "load": async (id) => {
+            const GET_BUSINESS_INFO = gql`
+
+            `
+        },
+        "submit": async(formData, id) => {
+            const CREATE_BUSINESS = gql`
+                mutation createBusiness($name: String, $phone: String, $email: String, $address: String) {
+                    createBusiness(name: $name, phone: $phone, email: $email, address: $address){
+                        business{
+                            id
+                        }
+                    }
+                }
+            `;
+            const {businessInfo} = formData;
+            const modifiedData = {
+                "businessInfo": {
+                    ...businessInfo
+                }
+            }
+        }
+    },
     "class-registration": {
         "title": "Class",
         "form": [
@@ -1499,7 +1559,7 @@ export default {
                         "label": "Class",
                         "component": <Fields.DataSelect name="Classes" 
                             optionsMap={openCourseMap}
-                            request={GET_COURSES} 
+                            request={GET_COURSES}
                             noOptionsText="No classes available"/>,
                         "validator": Yup.mixed(),
                     },

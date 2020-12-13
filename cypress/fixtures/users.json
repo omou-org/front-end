@@ -1,14 +1,4 @@
 {
-    "student": {
-        "id": 2,
-        "first_name": "James",
-        "last_name": "Wan",
-        "gender": "male",
-        "grade": 11,
-        "birth_date": "12-07-2002",
-        "school": "Foothill High School",
-        "phone_number": "925-731-0499"
-    },
     "parent": {
         "__typename": "ParentType",
         "user": {
@@ -26,6 +16,112 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
+    },
+    "original_student_data": {
+        "__typename": "StudentType",
+        "address": "543 W. Linda Vista Ave",
+        "birthDate": "2002-12-12",
+        "city": "Alhambra",
+        "gender": "MALE",
+        "grade": 12,
+        "phoneNumber": "6262846535",
+        "primaryParent": {
+            "user": {
+                "firstName": "John",
+                "id": 5,
+                "lastName": "Oliver",
+                "__typename": "UserType"
+            },
+            "__typename": "ParentType"
+        },
+        "school": {
+            "id": 1,
+            "name": "Alhambra High School",
+            "__typename": "SchoolType"
+    },
+        "state": "CA",
+        "user": {
+            "email": "Aaron@Ao.com",
+            "firstName": "Aaron",
+            "lastName": "Ao",
+            "id": 1,
+            "__typename": "UserType"
+        },
+        "zipcode": "91801"
+    },
+    "accountType": {
+        "accountType": "STUDENT",
+        "__typename": "StudentType"
+    },
+    "updated_student_data": {
+        "__typename": "StudentType",
+        "address": "543 W. Santa Anita Ave",
+        "birthDate": "2002-12-12",
+        "city": "Temple City",
+        "gender": "MALE",
+        "grade": 12,
+        "phoneNumber": "6262846535",
+        "primaryParent": {
+            "user": {
+                "firstName": "John",
+                "id": 5,
+                "lastName": "Oliver",
+                "__typename": "UserType"
+            },
+            "__typename": "ParentType"
+        },
+        "school": {
+            "id": 1,
+            "name": "Alhambra High School",
+            "__typename": "SchoolType"
+    },
+        "state": "CA",
+        "user": {
+            "email": "Aaron@Ao.com",
+            "firstName": "Aaron",
+            "lastName": "Ao",
+            "id": 1,
+            "__typename": "UserType"
+        },
+        "zipcode": "91801"
+    },
+    "original_receptionist_data": {
+        "address": "742 Los Robles Ave.",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "Ross@Gellar.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "rGellar",
+        "zipcode": "91801",
+        "__typename": "AdminType"
+    },
+    "updated_receptionist_data": {
+        "address": "342 Los Robles Ave.",
+        "adminType": "RECEPTIONIST",
+        "birthDate": "1987-12-30",
+        "city": "Pasadena",
+        "gender": "MALE",
+        "phoneNumber": "2358476213",
+        "state": "CA",
+        "user": {
+            "email": "DrRoss@Gellar.com",
+            "firstName": "Ross",
+            "id": 9,
+            "lastName": "Gellar",
+            "__typename": "UserType"
+        },
+        "userUuid": "rGellar",
+        "zipcode": "91003",
+        "__typename": "AdminType"
     },
     "original_instructor_data": {
         "address": "123 Main St",
@@ -80,5 +176,21 @@
     "inviteInstructorConfirmationResponse": {
         "status": "failed",
         "__typename": "InviteInstructor"
+    "admin": {
+        "__typename": "AdminType",
+        "user": {
+            "__typename": "UserType",
+            "email": "maggie@summit.com",
+            "firstName": "maggie",
+            "lastName": "Huang",
+            "id": 1
+        },
+        "gender": "FEMALE",
+        "phoneNumber": "1112223333",
+        "birthDate": "1965-11-15",
+        "address": "1234 Peak Rd",
+        "city": "Mountain View",
+        "state": "CA",
+        "zipcode": "55555"
     }
 }

@@ -14,12 +14,12 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import moment from "moment";
 import Loading from "../../OmouComponents/Loading";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import BackButton from "../../OmouComponents/BackButton";
 import ChromeTabs from "../../OmouComponents/ChromeTabs";
 import TabPanel from "../../OmouComponents/TabPanel";
 import ClassInfo from "./ClassInfo";
 import Announcements from "./Announcements";
+import AttendanceContainer from './AttendanceContainer';
 import ClassEnrollmentList from "./ClassEnrollmentList";
 import ClassSessionContainer from "./ClassSessionContainer";
 import { useSelector } from "react-redux";
@@ -77,12 +77,22 @@ const CourseClasses = () => {
   const id = useParams();
   const classes = useStyles();
   const [index, setIndex] = useState(0);
-  const tabs = [
+  const adminTabs = [
+    { label: "About Course" },
+    { label: "Announcements" },
+    { label: "Student Enrolled" },
+    { label: "Sessions" },
+    { label: "Attendance" }
+  ];
+
+  const parentTabWithStudentEnrolledTabs = [
     { label: "About Course" },
     { label: "Announcements" },
     { label: "Student Enrolled" },
     { label: "Sessions" },
   ];
+
+  const parentNostudentEnrolledTab = [{ label: "About Course" }]
 
   const { email, accountType } = useSelector(({ auth }) => auth) || [];
 
@@ -98,19 +108,22 @@ const CourseClasses = () => {
     query getClass($id: ID!, $email: String = "") {
       course(courseId: $id) {
         academicLevel
+        id
         courseCategory {
           name
           id
         }
+        availabilityList {
+          endTime
+          startTime
+        }
         title
-        startTime
         startDate
-        endTime
         endDate
-        dayOfWeek
         description
         instructor {
           user {
+            id
             firstName
             lastName
           }
@@ -134,6 +147,7 @@ const CourseClasses = () => {
             }
             accountType
           }
+          id
         }
         sessionSet {
           startDatetime
@@ -161,16 +175,16 @@ const CourseClasses = () => {
           }
         }
       }
-       ${
-         accountType === "PARENT"
-           ? `parent(email: $email) {
-        studentList
+       ${accountType === "PARENT"
+      ? `parent(email: $email) {
+        studentIdList
       }`
-           : ""
-       }
+      : ""
+    }
     }
   `;
 
+  // Change studentList to studentIdList
   const { data, loading, error } = useQuery(GET_CLASSES, {
     variables: {
       id: id.id,
@@ -186,22 +200,21 @@ const CourseClasses = () => {
 
   if (loading) return <Loading />;
   if (getAnnouncements.loading) return <Loading />;
-  if (error) return console.error(error.message);
+  if (error) return error.message;
   if (getAnnouncements.error)
-    return console.error(getAnnouncements.error.message);
+    return getAnnouncements.error.message;
 
   const {
     academicLevel,
     description,
     endDate,
-    endTime,
+    availabilityList,
     enrollmentSet,
     startDate,
-    startTime,
     title,
     sessionSet,
   } = data.course;
-
+  const { startTime, endTime } = availabilityList[0];
   const { name } = data.course.courseCategory;
   const { firstName, lastName } = data.course.instructor.user;
 
@@ -213,8 +226,19 @@ const CourseClasses = () => {
 
   const handleChange = (_, i) => setIndex(i);
 
+  const setTabsForAccountTypes = (accountType, studentList, enrollmentArray) => {
+    switch(accountType) {
+      case "PARENT":
+        if(checkIfParentHasStudentEnrolled(studentList, enrollmentArray)) {
+          return parentTabWithStudentEnrolledTabs
+        }
+        return parentNostudentEnrolledTab
+      default:
+        return adminTabs
+    }
+  }
 
-  const comparison = (studentList, enrollmentArray) => {
+  const checkIfParentHasStudentEnrolled = (studentList, enrollmentArray) => {
     if (queryParser(accountType) === "ParentType") {
       for (const studentId of enrollmentArray) {
         return studentList?.includes(studentId.student.user.id);
@@ -225,10 +249,10 @@ const CourseClasses = () => {
   };
 
   const tabSelection = () => {
-    switch(index) {
+    switch (index) {
       case 0:
         return classes.chromeTabStart;
-      case tabs.legth - 1: 
+      case adminTabs.length - 1:
         return classes.chromeTabEnd;
       default:
         return classes.chromeTab;
@@ -237,114 +261,113 @@ const CourseClasses = () => {
 
   return (
     <Grid item xs={12}>
-      <BackgroundPaper elevation={2}>
-        <BackButton />
-        <Hidden xsDown>
-          <hr />
-        </Hidden>
-        <Grid container>
-          <Grid item xs={6}>
-            <Typography
-              align="left"
-              className="heading"
-              variant="h3"
-              style={{ marginTop: ".65em" }}
-            >
-              {title}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <IconButton
-              className={classes.editcoursebutton}
-              size="small"
-              component={Link}
-              to={`/registration/form/course_details/${id.id}`}
-            >
-              <EditIcon />
-            </IconButton>
-          </Grid>
+      <BackButton />
+      <Hidden xsDown>
+        <hr />
+      </Hidden>
+      <Grid container>
+        <Grid item xs={6}>
+          <Typography
+            align="left"
+            className="heading"
+            variant="h1"
+            style={{ marginTop: ".65em" }}
+          >
+            {title}
+          </Typography>
         </Grid>
-        <Grid container justify="flex-start" style={{ marginTop: "2.5em" }}>
-          <Grid item xs={2} md={4} lg={3} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Date
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >{`${startingDate} - ${endingDate}`}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} md={4} lg={3} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Time
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}
-            </Typography>
-          </Grid>
+        <Grid item xs={6}>
+          <IconButton
+            className={classes.editcoursebutton}
+            size="small"
+            component={Link}
+            to={`/registration/form/course_details/${id.id}`}
+          >
+            <EditIcon />
+          </IconButton>
         </Grid>
-        <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
-          <Grid item xs={2} md={4} lg={2} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Instructor
+      </Grid>
+      <Grid container justify="flex-start" style={{ marginTop: "2.5em" }}>
+        <Grid item xs={2} md={4} lg={3} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Date
             </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >{`${firstName} ${lastName}`}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} md={4} lg={2} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Grade
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >
-              {gradeLvl(academicLevel)}
-            </Typography>
-          </Grid>
-          <Grid item xs={2} md={4} lg={2} xl={2}>
-            <Typography
-              variant="body2"
-              align="left"
-              className={classes.alignTitleLeft}
-            >
-              Subject
-            </Typography>
-            <Typography
-              variant="body1"
-              align="left"
-              className={classes.dataFontDate}
-            >
-              {name}
-            </Typography>
-          </Grid>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >{`${startingDate} - ${endingDate}`}
+          </Typography>
         </Grid>
+        <Grid item xs={2} md={4} lg={3} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Time
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >{`${abbreviatedDay} ${startingTime} - ${endingTime}`}
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container justify="flex-start" style={{ marginTop: "2em" }}>
+        <Grid item xs={2} md={4} lg={2} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Instructor
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >{`${firstName} ${lastName}`}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} md={4} lg={2} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Grade
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >
+            {gradeLvl(academicLevel)}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} md={4} lg={2} xl={2}>
+          <Typography
+            variant="body2"
+            align="left"
+            className={classes.alignTitleLeft}
+          >
+            Subject
+            </Typography>
+          <Typography
+            variant="body1"
+            align="left"
+            className={classes.dataFontDate}
+          >
+            {name}
+          </Typography>
+        </Grid>
+      </Grid>
 
         <Grid container style={{ marginTop: "2.5em" }}>
           <Grid item xs={12} sm={12}>
@@ -355,9 +378,7 @@ const CourseClasses = () => {
                       tabSelection()
                     }
                     tabs={
-                      comparison(data.parent?.studentList, data.enrollments)
-                        ? tabs
-                        : [{ label: "About Course" }]
+                      setTabsForAccountTypes(accountType, data.parent?.studentList, data.enrollments)
                     }
                     tabStyle={{
                       bgColor: "#ffffff",
@@ -374,34 +395,36 @@ const CourseClasses = () => {
                     onChange={handleChange}
                   />
                 </Toolbar>
-                <Divider classes={{ root: classes.dividerColor }} />
+               
               <Grid container>
-                <TabPanel index={0} value={index} backgroundColor="#FFFFFF">
+                <TabPanel index={0} value={index} backgroundColor="#FFFFFF" style={{width: '100%'}}>
                   <ClassInfo description={description} />
                 </TabPanel>
-                <TabPanel index={1} value={index}>
+                <TabPanel index={1} value={index} style={{width: '100%'}}>
                   <Announcements
                     announcementsData={getAnnouncements.data.announcements}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={2} value={index}>
+                <TabPanel index={2} value={index} style={{width: '100%'}}>
                   <ClassEnrollmentList
                     enrollmentList={enrollmentSet}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
-                <TabPanel index={3} value={index}>
+                <TabPanel index={3} value={index} style={{width: '100%'}}>
                   <ClassSessionContainer
                     sessionList={sessionSet}
                     loggedInUser={data.accountSearch}
                   />
                 </TabPanel>
+                <TabPanel index={4} value={index} style={{width: '100%'}}>
+                  <AttendanceContainer />
+                </TabPanel>
               </Grid>
             </ThemeProvider>
           </Grid>
         </Grid>
-      </BackgroundPaper>
     </Grid>
   );
 };

@@ -17,6 +17,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import {fullName} from "../../../utils";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const GET_PARENTS_QUERY = gql`
 query GetParents($query: String!) {
@@ -29,7 +30,7 @@ query GetParents($query: String!) {
           id
           email
         }
-        studentList
+        studentIdList
       }
     }
   }
@@ -140,7 +141,7 @@ const SelectParentDialog = ({onClose, open}) => {
 			onClose={handleClose}
 			open={open}
 		>
-			<DialogTitle id="simple-dialog-title">Currently helping</DialogTitle>
+			<DialogTitle disableTypography id="simple-dialog-title">Currently helping</DialogTitle>
 			<DialogContent>
 				{(currentParent) ? (
 					<div className="active-parent-dialog-content">
@@ -176,17 +177,21 @@ const SelectParentDialog = ({onClose, open}) => {
 			</DialogContent>
 			<DialogActions>
 				{currentParent ?
-					<Button
+					<ResponsiveButton
+						variant='outlined'
 						onClick={handleExitParent}
 						data-cy="exit-parent-action"
 					>
-						Exit Parent
-					</Button>
-					: <Button
+						exit parent
+					</ResponsiveButton>
+					: 
+					<ResponsiveButton
+						variant='outlined'
 						data-cy="set-parent-action"
-						onClick={handleClose}>
-						Set Parent
-					</Button>
+						onClick={handleClose}
+					>
+						set parent
+					</ResponsiveButton>
 				}
 			</DialogActions>
 		</Dialog>

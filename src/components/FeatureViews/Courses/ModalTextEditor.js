@@ -10,6 +10,7 @@ import { omouBlue } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { GET_SESSION_NOTES } from "./ClassSessionView";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -241,13 +242,19 @@ const ModalTextEditor = ({
         />
       </DialogContent>
       <DialogActions style={{ marginBottom: "2em" }}>
-        <Button className={classes.cancelButton} onClick={handleClose}>
+        <ResponsiveButton 
+          onClick={handleClose}
+          variant="outlined" 
+        >
           Cancel
-        </Button>
-        <Button className={classes.submitButton} onClick={handleSubmit}>
+        </ResponsiveButton>
+        <ResponsiveButton 
+          variant="contained"  
+          onClick={handleSubmit}
+        >
           {origin === "STUDENT_ENROLLMENT" ? "Send Email" : 
           (buttonState === "edit") ? "EDIT NOTE" : "ADD NOTE"}
-        </Button>
+        </ResponsiveButton>
       </DialogActions>
     </Dialog>
   );

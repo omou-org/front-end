@@ -4,6 +4,7 @@ import gql from "graphql-tag"
 import {useLazyQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from "@material-ui/core/Grid";
 import {fullName, getDuration} from "../../../utils";
 import Typography from "@material-ui/core/Typography";
@@ -217,25 +218,29 @@ export default function TeachingLogContainer() {
 							ranges={state}
 						/>
 						<DialogActions>
-							<Button onClick={handleSaveDateRange} color="primary">
+							<ResponsiveButton variant='outlined' onClick={handleSaveDateRange}>
 								Save & Close
-							</Button>
+							</ResponsiveButton>
 						</DialogActions>
 					</Dialog>
 				</Grid>
 				<Grid item>
-					<ButtonGroup variant="contained">
+					<ButtonGroup >
 						<CSVLink
 							headers={teachingLogHeader}
 							data={teachingLogCSVData}
 							filename={fileName}
 							style={{textDecorationLine: 'none'}}
 						>
-							<Button>
+							<ResponsiveButton 
+							variant='outlined'
+							>
 								Download
-							</Button>
+							</ResponsiveButton>
 						</CSVLink>
-						<Button>Print</Button>
+						<ResponsiveButton 
+						variant='outlined'
+						>Print</ResponsiveButton>
 					</ButtonGroup>
 				</Grid>
 			</Grid>
@@ -279,7 +284,11 @@ export default function TeachingLogContainer() {
 									<b>Total Hours</b>
 								</TableCell>
 								<TableCell>
-									{sessions.length > 0 && summaryLog.reduce((acc, course) => (acc.hours + course.hours))}
+									{sessions.length > 0 && 
+									summaryLog.reduce((totalHours, course) => totalHours + course.hours, 0) === Number.NaN
+									? "Error"
+									: summaryLog.reduce((totalHours, course) => totalHours + course.hours, 0)
+									}
 								</TableCell>
 							</TableRow>
 						</TableBody>

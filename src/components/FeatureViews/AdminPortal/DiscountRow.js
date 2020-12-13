@@ -24,9 +24,13 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import {withStyles} from "@material-ui/core/styles";
 
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+
 import * as adminActions from "actions/adminActions";
 import {dateParser} from "../../Form/FormUtils";
 import {DatePicker} from "@material-ui/pickers";
+
+
 
 const styles = () => ({
 	colorBar: {},
@@ -417,14 +421,16 @@ const DiscountRow = ({discount, type, classes}) => {
 			</Paper>
 			<Dialog onClose={handleDelete} open={deleteWarning}>
 				<DialogContent>
-					<DialogTitle>
+					<DialogTitle disableTypography>
 						Are you sure you want to delete {discount.name}?
 					</DialogTitle>
 					<DialogActions>
-						<Button onClick={handleDeleteDiscount(discount.id, type)}>
+						<ResponsiveButton variant='outlined' onClick={handleDeleteDiscount(discount.id, type)}>
 							Yes, DELETE
-						</Button>
-						<Button onClick={handleDelete}>No, Exit</Button>
+						</ResponsiveButton>
+						<ResponsiveButton variant='outlined' onClick={handleDelete}>
+							No, Exit
+						</ResponsiveButton>
 					</DialogActions>
 				</DialogContent>
 			</Dialog>

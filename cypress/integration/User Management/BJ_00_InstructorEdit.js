@@ -49,7 +49,9 @@ describe("As an admin, edit existing instructor account", () => {
             cy.get("[data-cy=basicInfo-address-input]")
                 .should("have.value", original_instructor_data.address);
             cy.get("[data-cy=basicInfo-phoneNumber-input]")
-                .should("have.value", original_instructor_data.phoneNumber);
+                .should("have.value", original_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"))
+                .click()
+                .type("1");
             cy.get("[data-cy=basicInfo-nextButton]").should("be.enabled");
         });
     });
@@ -94,7 +96,7 @@ describe("As an admin, edit existing instructor account", () => {
                 .should("be.enabled")
                 .click();
             cy.get("[data-cy=basicInfo-phoneNumber-input]")
-                .should("have.value", updated_instructor_data.phoneNumber);    
+                .should("have.value", updated_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"));    
             cy.get("[data-cy=basicInfo-nextButton]")
                 .should("be.enabled")
                 .click();   
@@ -138,7 +140,7 @@ describe("As an admin, edit existing instructor account", () => {
                 .should("be.enabled")
                 .click();
             cy.get("[data-cy=basicInfo-phoneNumber-input]")
-                .should("have.value", updated_instructor_data.phoneNumber);    
+                .should("have.value", updated_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"));    
             cy.get("[data-cy=basicInfo-nextButton]")
                 .should("be.enabled")
                 .click();   

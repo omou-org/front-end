@@ -1,8 +1,7 @@
-import React, { useMemo } from "react";
-import { Prompt, useHistory, useLocation, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useMemo, useEffect} from "react";
+import {Prompt, useHistory, useLocation, useParams} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
 
-import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -18,6 +17,8 @@ import { bindActionCreators } from "redux";
 import { fullName } from "../../../utils";
 import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { closeRegistrationCart } from "../../OmouComponents/RegistrationUtils";
+import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
+import ParentContact from '../Accounts/TabComponents/ParentContact';
 
 export const GET_PAYMENT = gql`
 	query Payment($paymentId:ID!){
@@ -346,13 +347,14 @@ const PaymentReceipt = ({ paymentID }) => {
 					<Grid container direction="row" justify="flex-end" spacing={1}>
 						{!location.pathname.includes("parent") && (
 							<Grid item>
-								<Button
+								<ResponsiveButton 
+									variant='contained'
 									data-cy="close-parent"
 									className="button primary"
 									onClick={handleCloseReceipt()}
 								>
-									CLOSE PARENT
-								</Button>
+									close parent
+								</ ResponsiveButton>
 							</Grid>
 						)}
 					</Grid>
