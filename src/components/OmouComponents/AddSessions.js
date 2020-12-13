@@ -123,7 +123,7 @@ const AddSessions = ({
 				onClose={closeDiscardParentWarning(false)}
 				open={discardParentWarning}
 			>
-				<DialogTitle id="warn-discard-parent">
+				<DialogTitle disableTypography id="warn-discard-parent">
 					"Finished registering parent?"
 				</DialogTitle>
 				<DialogContent>

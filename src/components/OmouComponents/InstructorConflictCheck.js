@@ -86,7 +86,7 @@ const InstructorConflictCheck = ({
                 <Dialog
                     onClose={closeDialog}
                     open={open}>
-                    <DialogTitle>Scheduling Conflict</DialogTitle>
+                    <DialogTitle disableTypography>Scheduling Conflict</DialogTitle>
                     <DialogContent>
                         {conflictText}
                         Are you sure you want to continue?

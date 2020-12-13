@@ -380,7 +380,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
     //             maxWidth="xs"
     //             onClose={hideWarning}
     //             open={alert}>
-    //             <DialogTitle>
+    //             <DialogTitle disableTypography>
     //                 <TextField
     //                     className="textfield"
     //                     id="standard-name"
@@ -433,7 +433,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
     //             maxWidth="xs"
     //             onClose={hideWarning}
     //             open={deleteID !== null}>
-    //             <DialogTitle>
+    //             <DialogTitle disableTypography>
     //                 Confirm Delete
     //             </DialogTitle>
     //             <DialogContent>
@@ -470,7 +470,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             <Dialog aria-describedby="simple-modal-description"
                 aria-labelledby="simple-modal-title" className="popup" fullWidth
                 maxWidth="xs" onClose={hideWarning} open={alert}>
-                <DialogTitle>
+                <DialogTitle disableTypography>
                     <TextField className="textfield" id="standard-name"
                         onChange={handleTitleUpdate} placeholder="Title"
                         value={noteTitle} />
@@ -509,7 +509,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                 aria-labelledby="simple-modal-title" className="delete-popup"
                 fullWidth maxWidth="xs" onClose={hideWarning}
                 open={deleteID !== null}>
-                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogTitle disableTypography>Confirm Delete</DialogTitle>
                 <DialogContent>
                     Are you sure you want to delete {
                         getNoteByID(deleteID)?.title ?
