@@ -14,8 +14,22 @@ import Loading from "../../OmouComponents/Loading";
 import { fullName, gradeOptions } from "../../../utils";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
+
 import Box from "@material-ui/core/Box";
-import ListDetailedItem, { ListContent, ListActions, ListHeading, ListTitle, ListDetails, ListDetail, ListDetailLink, ListButton, ListBadge, ListStatus, ListDivider } from '../../OmouComponents/ListComponent/ListDetailedItem'
+import ListDetailedItem, {
+  ListContent,
+  ListActions,
+  ListHeading,
+  ListTitle,
+  ListDetails,
+  ListDetail,
+  ListDetailLink,
+  ListButton,
+  ListBadge,
+  ListStatus,
+  ListDivider,
+} from "../../OmouComponents/ListComponent/ListDetailedItem";
 import theme, {
   highlightColor,
   activeColor,
@@ -77,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "1.5em",
     marginTop: "1.5em",
     border: "1px solid #43B5D9",
-    marginBottom: "16px"
+    marginBottom: "16px",
   },
   dropdown: {
     border: "1px solid #43B5D9",
@@ -116,46 +130,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const GET_COURSES = gql`
-query getCourses {
-  courses {
-    endDate
-    title
-    availabilityList {
-      dayOfWeek
-      endTime
-      startTime
-    }
-    academicLevel
-    startDate
-    instructor {
-      user {
-        firstName
-        lastName
-        id
+  query getCourses {
+    courses {
+      endDate
+      title
+      availabilityList {
+        dayOfWeek
+        endTime
+        startTime
+      }
+      academicLevel
+      startDate
+      instructor {
+        user {
+          firstName
+          lastName
+          id
+          __typename
+        }
         __typename
       }
-      __typename
-    }
-    courseCategory {
+      courseCategory {
+        id
+        name
+        __typename
+      }
+      courseId
       id
-      name
       __typename
+      totalTuition
     }
-    courseId
-    id
-    __typename
-    totalTuition
   }
-}
 `;
+
+
 
 const ClassListItem = ({
   title,
   endDate,
-  endTime,
-  startTime,
+  availabilityList,
   startDate,
   instructor,
   id,
@@ -164,62 +178,47 @@ const ClassListItem = ({
   const classes = useStyles();
   let history = useHistory();
   const concatFullName = fullName(instructor.user);
-  const abbreviatedDay = moment(startDate).format("dddd");
-  const startingTime = moment(startTime, "HH:mm").format("h:mm");
-  const endingTime = moment(endTime, "HH:mm").format("h:mm");
   const startingDate = moment(startDate).format("MMM D YYYY");
   const endingDate = moment(endDate).format("MMM D YYYY");
-  const currentDate = moment().format("L");
-  const isActive = currentDate <= moment(endDate).format("L");
+  const isActive = moment().diff(moment(endDate)) < 0;
   const cost = totalTuition;
 
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
 
-
   return (
-      <ListDetailedItem>
-        <ListContent>
-            <ListHeading>
-                <ListBadge>
-                  <LabelBadge variant={`status-${isActive ? "active" : "past"}`}>
-                    {isActive ? "ACTIVE" : "PAST"}
-                  </LabelBadge>
-                </ListBadge>
-                <Box onClick={handleClick}>
-                  <ListTitle>
-                    {title}
-                  </ListTitle>
-                </Box>
-            </ListHeading>
-            <ListDetails>
-                <Link to={`/accounts/instructor/${instructor.user.id}`}>
-                  <ListDetailLink>
-                    {concatFullName}
-                  </ListDetailLink>
-                </Link>
-                <ListDivider />
-                <ListDetail>
-                  {startingDate} - {endingDate}
-                </ListDetail>
-                <ListDivider />
-                <ListDetail>
-                  {abbreviatedDay} {startingTime} - {endingTime}pm
-                </ListDetail>
-                <ListDivider />
-                <ListDetail>
-                  {cost}
-                </ListDetail>
-            </ListDetails>
-        </ListContent>
-        <ListActions>
-            <ListStatus>
-                
-            </ListStatus>
-            <ListButton>
-                
-            </ListButton>
-        </ListActions>
-      </ListDetailedItem>
+    <ListDetailedItem>
+      <ListContent>
+        <ListHeading>
+          <ListBadge>
+            <LabelBadge variant={`status-${isActive ? "active" : "past"}`}>
+              {isActive ? "ACTIVE" : "PAST"}
+            </LabelBadge>
+          </ListBadge>
+          <Box onClick={handleClick}>
+            <ListTitle>{title}</ListTitle>
+          </Box>
+        </ListHeading>
+        <ListDetails>
+          <Link to={`/accounts/instructor/${instructor.user.id}`}>
+            <ListDetailLink>{concatFullName}</ListDetailLink>
+          </Link>
+          <ListDivider />
+          <ListDetail>
+            {startingDate} - {endingDate}
+          </ListDetail>
+          <ListDivider />
+          <ListDetail>
+            <CourseAvailabilites availabilityList={availabilityList} />
+          </ListDetail>
+          <ListDivider />
+          <ListDetail>{cost}</ListDetail>
+        </ListDetails>
+      </ListContent>
+      <ListActions>
+        <ListStatus></ListStatus>
+        <ListButton></ListButton>
+      </ListActions>
+    </ListDetailedItem>
   );
 };
 
@@ -328,7 +327,6 @@ const CourseManagementContainer = () => {
 
   const checkFilter = (value, filter) => "" === filter || value === filter;
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
-
   const defaultCourseDisplay = data.courses
     .filter(
       (course) =>
@@ -349,7 +347,7 @@ const CourseManagementContainer = () => {
       <Box width="100%" marginTop="22px">
         <Typography align="left" className="heading" variant="h1">
           Course Management
-          </Typography>
+        </Typography>
       </Box>
       <Paper elevation={4} className={classes.appBar}>
         <Grid
@@ -394,14 +392,14 @@ const CourseManagementContainer = () => {
                   ListItemClasses={{ selected: classes.menuSelected }}
                 >
                   Start Date (Latest)
-                  </MenuItem>
+                </MenuItem>
                 <MenuItem
                   className={classes.menuSelect}
                   value={"class_name"}
                   ListItemClasses={{ selected: classes.menuSelected }}
                 >
                   Class Name(A-Z)
-                  </MenuItem>
+                </MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -429,26 +427,18 @@ const CourseManagementContainer = () => {
         </Grid>
       </Paper>
       {defaultCourseDisplay.map(
-        ({
-          title,
-          availabilityList,
-          endDate,
-          startDate,
-          instructor,
-          id,
-        }) => (
-            <ClassListItem
-              title={title}
-              day={availabilityList[0].dayOfWeek}
-              endDate={endDate}
-              endTime={availabilityList[0].endTime}
-              startTime={availabilityList[0].startTime}
-              startDate={startDate}
-              instructor={instructor}
-              id={id}
-              key={title}
-            />
-          )
+        ({ title, availabilityList, endDate, startDate, instructor, id }) => (
+          <ClassListItem
+            title={title}
+            day={availabilityList[0].dayOfWeek}
+            availabilityList={availabilityList}
+            endDate={endDate}
+            startDate={startDate}
+            instructor={instructor}
+            id={id}
+            key={title}
+          />
+        )
       )}
     </Grid>
   );

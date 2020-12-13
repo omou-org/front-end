@@ -49,6 +49,34 @@ export const DayConverter = {
     "6": "saturday",
 };
 
+export const DayAbbreviation = {
+    "sunday": "S",
+    "monday": "M",
+    "tuesday": "T",
+    "wednesday": "W",
+    "thursday": "Th",
+    "friday": "F",
+    "saturday": "Sa",
+}
+
+// Determines if availabilities for a course are at the same time 
+// for each day they are held
+// ex. M/W 10:00 AM - 11:00 AM -> true
+// vs.
+// M 10:00 AM - 11:00 AM and W 2:00 PM - 3:00 PM -> false
+export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
+    let firstAvailabilityStartTime = availabilityList[0].startTime;
+    let firstAvailabilityEndTime = availabilityList[0].endTime;
+  
+    for (let availability of availabilityList) {
+      if (availability.startTime !== firstAvailabilityStartTime || 
+          availability.endTime !== firstAvailabilityEndTime) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 /**
  * Pads a number to the desired length, filling with leading zeros
  * @param {Number} integer Number to pad
@@ -84,8 +112,9 @@ export const courseDateFormat = ({schedule, is_confirmed}) => ({
  * @param {Date} date Date to convert
  * @returns {Date} date object without the time
  */
-export const dateTimeToDate = (date) =>
-    new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+export const dateTimeToDate = (date) => 
+    moment(date).format('YYYY/MM/DD');
+    
 
 export const courseDataParser = (course) => {
     const timeOptions = {
@@ -128,13 +157,15 @@ export const combineDateAndTime = (date, time) =>
     );
 
 export const sessionPaymentStatus = (session, enrollment) => {
-    const session_date = dateTimeToDate(new Date(session.start_datetime)),
-        last_session = dateTimeToDate(
-            new Date(enrollment.last_paid_session_datetime)
-        ),
-        first_payment = dateTimeToDate(
-            new Date(enrollment.payment_list[0].created_at)
-        );
+
+    
+    const session_date = moment(session.startDatetime).format('YYYY/MM/DD')
+    const last_session = moment(
+            enrollment.lastPaidSessionDatetime).format('YYYY/MM/DD')
+        
+    const first_payment = moment
+            (enrollment.paymentList[0].createdAt).format('YYYY/MM/DD')
+        ;
 
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date === last_session;
