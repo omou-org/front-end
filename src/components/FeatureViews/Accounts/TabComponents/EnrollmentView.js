@@ -361,7 +361,7 @@ const CourseSessionStatus = () => {
             <Dialog aria-labelledby="warn-unenroll"
                 onClose={closeUnenrollDialog(false)}
                 open={unenrollWarningOpen}>
-                <DialogTitle id="warn-unenroll">Unenroll in {course.title}</DialogTitle>
+                <DialogTitle disableTypography id="warn-unenroll">Unenroll in {course.title}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for{" "}

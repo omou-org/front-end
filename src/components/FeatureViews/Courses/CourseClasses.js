@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme } from "@material-ui/core";
+import React, {useState} from "react";
+import {Link, useParams} from "react-router-dom";
+import {makeStyles} from "@material-ui/core/styles";
+import {ThemeProvider} from "@material-ui/styles";
 import IconButton from "@material-ui/core/IconButton";
 import Hidden from "@material-ui/core/Hidden";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Toolbar from "@material-ui/core/Toolbar";
-import Divider from "@material-ui/core/Divider";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import {useQuery} from "@apollo/react-hooks";
 import moment from "moment";
 import Loading from "../../OmouComponents/Loading";
 import BackButton from "../../OmouComponents/BackButton";
@@ -22,8 +20,8 @@ import Announcements from "./Announcements";
 import AttendanceContainer from './AttendanceContainer';
 import ClassEnrollmentList from "./ClassEnrollmentList";
 import ClassSessionContainer from "./ClassSessionContainer";
-import { useSelector } from "react-redux";
-import { gradeLvl } from "../../../utils";
+import {useSelector} from "react-redux";
+import {gradeLvl} from "../../../utils";
 import theme from "../../../theme/muiTheme";
 
 const useStyles = makeStyles((theme) => ({
@@ -279,10 +277,10 @@ const CourseClasses = () => {
         </Grid>
         <Grid item xs={6}>
           <IconButton
-            className={classes.editcoursebutton}
-            size="small"
-            component={Link}
-            to={`/registration/form/course_details/${id.id}`}
+              className={classes.editcoursebutton}
+              size="small"
+              component={Link}
+              to={`/form/course_details/${id.id}`}
           >
             <EditIcon />
           </IconButton>

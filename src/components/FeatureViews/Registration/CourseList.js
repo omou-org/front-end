@@ -381,7 +381,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
         open={openCourseQuickRegistration}
         onClose={() => setOpenQuickRegister(false)}
       >
-        <DialogTitle>Which student do you want to enroll?</DialogTitle>
+        <DialogTitle disableTypography>Which student do you want to enroll?</DialogTitle>
         <DialogContent>
           <FormControl fullWidth variant="outlined">
             <InputLabel id="select-student-quick-registration">
