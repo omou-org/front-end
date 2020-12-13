@@ -1,27 +1,25 @@
 import React, { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import CheckBoxOutlineBlankOutlinedIcon from "@material-ui/icons/CheckBoxOutlineBlankOutlined";
-import Input from "@material-ui/core/Input";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutlineBlankOutlined';
+import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { makeStyles } from "@material-ui/core/styles";
-import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
-import { omouBlue } from "../../../theme/muiTheme";
-import { GET_ANNOUNCEMENTS } from "./CourseClasses";
+import { makeStyles } from '@material-ui/core/styles';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/react-hooks';
+import { omouBlue } from '../../../theme/muiTheme';
+import { GET_ANNOUNCEMENTS } from './CourseClasses';
 import { useSelector } from 'react-redux';
-
-
 
 const useStyles = makeStyles((theme) => ({
     rootContainer: {
@@ -137,7 +135,6 @@ const NewAnnouncementsModal = ({
     subject,
     id,
     body,
-    userId,
     buttonState,
 }) => {
     const classes = useStyles();
@@ -214,91 +211,99 @@ const NewAnnouncementsModal = ({
         });
     };
 
-
-  return (
-    <Dialog
-      PaperProps={{ classes: { root: classes.rootContainer }, square: true }}
-      open={open}
-      onClose={handleCloseForm}
-      aria-labelledby="form-dialog-title"
-      maxWidth="md"
-    >
-      <DialogContent classes={{ root: classes.textArea }}>
-        <Input
-          placeholder="Subject"
-          disableUnderline
-          onChange={handleSubjectChange}
-          defaultValue={buttonState === "edit" ? subject : ""}
-          className={classes.subjectUnderline}
-        />
-        <TextField
-          InputProps={{
-            disableUnderline: true,
-            classes: { inputMarginDense: classes.textBox },
-          }}
-          autoFocus
-          onChange={handleBodyChange}
-          className={classes.textFieldStyle}
-          margin="dense"
-          id="name"
-          placeholder="Body"
-          defaultValue={buttonState === "edit" ? body : ""}
-          type="email"
-          fullWidth
-          multiline
-          rows={12}
-        />
-      </DialogContent>
-      <FormGroup className={classes.buttonGroup}>
-        <FormControlLabel
-          style={{ fontSize: ".5rem" }}
-          control={
-            <Checkbox
-              checked={sendEmailCheckbox}
-              onChange={handleCheckboxChange(setSendEmailCheckbox)}
-              name="email"
-              className={classes.checkBoxPseudo}
-              checkedIcon={<CheckBoxIcon className={classes.checkBox} />}
-              icon={<CheckBoxOutlineBlankOutlinedIcon />}
-              color="primary"
-            />
-          }
-          label={
-            <Typography className={classes.checkboxLabel}>
-              Send as email to parent of students enrolled in class
-            </Typography>
-          }
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={sendSMSCheckbox}
-              onChange={handleCheckboxChange(setSendSMSCheckbox)}
-              name="sms"
-              className={classes.checkBoxPseudo}
-              checkedIcon={<CheckBoxIcon className={classes.checkBox} />}
-              icon={<CheckBoxOutlineBlankOutlinedIcon />}
-              color="primary"
-            />
-          }
-          label={
-            <Typography className={classes.checkboxLabel}>
-              Send as SMS to parents of students enrolled in class
-            </Typography>
-          }
-        />
-      </FormGroup>
-      <DialogActions style={{ marginBottom: "2em" }}>
-        <ResponsiveButton variant='outlined' onClick={handleCloseForm}>
-          Cancel
-        </ResponsiveButton>
-        <ResponsiveButton variant='contained' onClick={handlePostForm}>
-          {buttonState === "post" ? "Post" : "Edit"}
-        </ResponsiveButton>
-      </DialogActions>
-    </Dialog>
-  );
-
+    return (
+        <Dialog
+            PaperProps={{
+                classes: { root: classes.rootContainer },
+                square: true,
+            }}
+            open={open}
+            onClose={handleCloseForm}
+            aria-labelledby="form-dialog-title"
+            maxWidth="md"
+        >
+            <DialogContent classes={{ root: classes.textArea }}>
+                <Input
+                    placeholder="Subject"
+                    disableUnderline
+                    onChange={handleSubjectChange}
+                    defaultValue={buttonState === 'edit' ? subject : ''}
+                    className={classes.subjectUnderline}
+                />
+                <TextField
+                    InputProps={{
+                        disableUnderline: true,
+                        classes: { inputMarginDense: classes.textBox },
+                    }}
+                    autoFocus
+                    onChange={handleBodyChange}
+                    className={classes.textFieldStyle}
+                    margin="dense"
+                    id="name"
+                    placeholder="Body"
+                    defaultValue={buttonState === 'edit' ? body : ''}
+                    type="email"
+                    fullWidth
+                    multiline
+                    rows={12}
+                />
+            </DialogContent>
+            <FormGroup className={classes.buttonGroup}>
+                <FormControlLabel
+                    style={{ fontSize: '.5rem' }}
+                    control={
+                        <Checkbox
+                            checked={sendEmailCheckbox}
+                            onChange={handleCheckboxChange(
+                                setSendEmailCheckbox
+                            )}
+                            name="email"
+                            className={classes.checkBoxPseudo}
+                            checkedIcon={
+                                <CheckBoxIcon className={classes.checkBox} />
+                            }
+                            icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                            color="primary"
+                        />
+                    }
+                    label={
+                        <Typography className={classes.checkboxLabel}>
+                            Send as email to parent of students enrolled in
+                            class
+                        </Typography>
+                    }
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={sendSMSCheckbox}
+                            onChange={handleCheckboxChange(setSendSMSCheckbox)}
+                            name="sms"
+                            className={classes.checkBoxPseudo}
+                            checkedIcon={
+                                <CheckBoxIcon className={classes.checkBox} />
+                            }
+                            icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                            color="primary"
+                        />
+                    }
+                    label={
+                        <Typography className={classes.checkboxLabel}>
+                            Send as SMS to parents of students enrolled in class
+                        </Typography>
+                    }
+                />
+            </FormGroup>
+            <DialogActions style={{ marginBottom: '2em' }}>
+                <ResponsiveButton variant="outlined" onClick={handleCloseForm}>
+                    Cancel
+                </ResponsiveButton>
+                <ResponsiveButton variant="contained" onClick={handlePostForm}>
+                    {buttonState === 'post' ? 'Post' : 'Edit'}
+                </ResponsiveButton>
+            </DialogActions>
+        </Dialog>
+    );
 };
 
 export default NewAnnouncementsModal;

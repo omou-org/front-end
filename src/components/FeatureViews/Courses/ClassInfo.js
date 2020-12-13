@@ -8,6 +8,7 @@ import {
     InputBase,
     fade,
     withStyles,
+    Link,
 } from '@material-ui/core/';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { useSelector } from 'react-redux';
@@ -257,11 +258,16 @@ const ClassInfo = ({
                 ) : (
                     <Grid container>
                         <Grid item xs={7} align={'left'}>
-                            <a href={courseLink} target="_blank">
-                                <Typography className={classes.courseLink}>
+                            <Typography className={classes.courseLink}>
+                                <Link
+                                    href={courseLink}
+                                    color="inherit"
+                                    target="_blank"
+                                >
                                     {courseLink}
-                                </Typography>
-                            </a>
+                                </Link>
+                            </Typography>
+
                             <Typography style={{ paddingTop: '1em' }}>
                                 {courseLinkDescription}
                             </Typography>

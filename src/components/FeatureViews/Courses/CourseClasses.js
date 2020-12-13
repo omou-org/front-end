@@ -27,7 +27,7 @@ import { useSelector } from 'react-redux';
 import { gradeLvl, USER_TYPES, fullName } from 'utils';
 import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-
+import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
 import { filterEvent } from 'actions/calendarActions';
 import { GET_STUDENTS } from './CourseManagementContainer';
@@ -159,19 +159,22 @@ const CourseClasses = () => {
     const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
     const [studentInCourse, setStudentInCourse] = useState([]);
 
-    const tabLabels =
-        accountType === 'PARENT'
-            ? [
-                  { label: 'About Course' },
-                  { label: 'Announcements' },
-                  { label: 'Attendance' },
-              ]
-            : [
-                  { label: 'About Course' },
-                  { label: 'Announcements' },
-                  { label: 'Student Enrolled' },
-                  { label: 'Sessions' },
-              ];
+    const adminTabs = [
+        { label: 'About Course' },
+        { label: 'Announcements' },
+        { label: 'Student Enrolled' },
+        { label: 'Sessions' },
+        { label: 'Attendance' },
+    ];
+
+    const parentTabWithStudentEnrolledTabs = [
+        { label: 'About Course' },
+        { label: 'Announcements' },
+        { label: 'Student Enrolled' },
+        { label: 'Sessions' },
+    ];
+
+    const parentNostudentEnrolledTab = [{ label: 'About Course' }];
 
     const { data, loading, error } = useQuery(GET_CLASSES, {
         variables: {
@@ -234,7 +237,6 @@ const CourseClasses = () => {
     } = data.course;
 
     const { name: courseCategory } = data.course.courseCategory;
-    const { firstName, lastName } = data.course.instructor.user;
 
     const abbreviatedDay = moment(startDate).format('ddd');
     const startingTime = moment(
@@ -247,10 +249,31 @@ const CourseClasses = () => {
     ).format('h:mm A');
     const startingDate = moment(startDate).format('L');
     const endingDate = moment(endDate).format('L');
-
+    console.log(data.course);
     const handleChange = (_, i) => setIndex(i);
 
-    const comparison = (studentList, enrollmentArray) => {
+    const setTabsForAccountTypes = (
+        accountType,
+        studentList,
+        enrollmentArray
+    ) => {
+        switch (accountType) {
+            case 'PARENT':
+                if (
+                    checkIfParentHasStudentEnrolled(
+                        studentList,
+                        enrollmentArray
+                    )
+                ) {
+                    return parentTabWithStudentEnrolledTabs;
+                }
+                return parentNostudentEnrolledTab;
+            default:
+                return adminTabs;
+        }
+    };
+
+    const checkIfParentHasStudentEnrolled = (studentList, enrollmentArray) => {
         if (accountType === 'PARENT') {
             for (const studentId of enrollmentArray) {
                 return studentList?.includes(studentId.student.user.id);
@@ -264,7 +287,7 @@ const CourseClasses = () => {
         switch (index) {
             case 0:
                 return classes.chromeTabStart;
-            case tabLabels.length - 1:
+            case adminTabs.length - 1:
                 return classes.chromeTabEnd;
             default:
                 return classes.chromeTab;
@@ -278,11 +301,10 @@ const CourseClasses = () => {
                     <BackButton />
                 </Grid>
                 <Grid item>
-                    {accountType === 'PARENT'
-                        ? studentInCourse.map((student, i) => (
-                              <StudentCourseLabel label={student} key={i} />
-                          ))
-                        : ''}
+                    {accountType === 'PARENT' &&
+                        studentInCourse.map((student, i) => (
+                            <StudentCourseLabel label={student} key={i} />
+                        ))}
                 </Grid>
             </Grid>
             <Hidden xsDown>
@@ -409,14 +431,11 @@ const CourseClasses = () => {
                         <Toolbar disableGutters>
                             <ChromeTabs
                                 className={tabSelection()}
-                                tabs={
-                                    comparison(
-                                        data.parent?.studentList,
-                                        data.enrollments
-                                    )
-                                        ? tabLabels
-                                        : [{ label: 'About Course' }]
-                                }
+                                tabs={setTabsForAccountTypes(
+                                    accountType,
+                                    data.parent?.studentList,
+                                    data.enrollments
+                                )}
                                 tabStyle={{
                                     bgColor: '#ffffff',
                                     selectedBgColor: '#EBFAFF',
@@ -457,35 +476,27 @@ const CourseClasses = () => {
                                     announcementsData={
                                         getAnnouncements.data.announcements
                                     }
-                                    loggedInUser={data.accountSearch}
                                 />
                             </TabPanel>
-                            <AccessControlComponent
-                                permittedAccountTypes={[USER_TYPES.parent]}
-                            >
-                                <TabPanel index={2} value={index}>
-                                    <h1>Hello</h1>
-                                </TabPanel>
-                            </AccessControlComponent>
 
-                            <AccessControlComponent
-                                permittedAccountTypes={[
-                                    USER_TYPES.admin,
-                                    USER_TYPES.receptionist,
-                                    USER_TYPES.instructor,
-                                ]}
+                            <TabPanel index={2} value={index}>
+                                <ClassEnrollmentList
+                                    enrollmentList={enrollmentSet}
+                                />
+                            </TabPanel>
+                            <TabPanel index={3} value={index}>
+                                <ClassSessionContainer
+                                    sessionList={sessionSet}
+                                />
+                            </TabPanel>
+
+                            <TabPanel
+                                index={4}
+                                value={index}
+                                style={{ width: '100%' }}
                             >
-                                <TabPanel index={2} value={index}>
-                                    <ClassEnrollmentList
-                                        enrollmentList={enrollmentSet}
-                                    />
-                                </TabPanel>
-                                <TabPanel index={3} value={index}>
-                                    <ClassSessionContainer
-                                        sessionList={sessionSet}
-                                    />
-                                </TabPanel>
-                            </AccessControlComponent>
+                                <AttendanceContainer />
+                            </TabPanel>
                         </Grid>
                     </ThemeProvider>
                 </Grid>

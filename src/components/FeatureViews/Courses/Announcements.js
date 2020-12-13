@@ -130,7 +130,7 @@ const AnnouncementCard = ({
     );
 };
 
-const Announcements = ({ announcementsData, loggedInUser }) => {
+const Announcements = ({ announcementsData }) => {
     const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
     const [announcementId, setAnnouncementId] = useState();
     const [announcementSubject, setAnnouncementSubject] = useState('');
@@ -246,7 +246,6 @@ const Announcements = ({ announcementsData, loggedInUser }) => {
                 id={announcementId}
                 subject={announcementSubject}
                 body={announcementBody}
-                userId={loggedInUser}
                 buttonState={editOrPost}
             />
         </Grid>
