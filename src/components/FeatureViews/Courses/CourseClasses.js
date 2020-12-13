@@ -24,7 +24,7 @@ import Announcements from './Announcements';
 import ClassEnrollmentList from './ClassEnrollmentList';
 import ClassSessionContainer from './ClassSessionContainer';
 import { useSelector } from 'react-redux';
-import { gradeLvl, USER_TYPES } from 'utils';
+import { gradeLvl, USER_TYPES, fullName } from 'utils';
 import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 
@@ -233,7 +233,7 @@ const CourseClasses = () => {
         courseLinkUser,
     } = data.course;
 
-    const { name } = data.course.courseCategory;
+    const { name: courseCategory } = data.course.courseCategory;
     const { firstName, lastName } = data.course.instructor.user;
 
     const abbreviatedDay = moment(startDate).format('ddd');
@@ -366,7 +366,7 @@ const CourseClasses = () => {
                         align="left"
                         className={classes.dataFontDate}
                     >
-                        {`${firstName} ${lastName}`}
+                        {fullName(data.course.instructor.user)}
                     </Typography>
                 </Grid>
                 <Grid item xs={2} md={4} lg={2} xl={2}>
@@ -398,7 +398,7 @@ const CourseClasses = () => {
                         align="left"
                         className={classes.dataFontDate}
                     >
-                        {name}
+                        {courseCategory}
                     </Typography>
                 </Grid>
             </Grid>
