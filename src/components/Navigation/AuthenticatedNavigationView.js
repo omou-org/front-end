@@ -38,7 +38,7 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
 
     const { accountType } = useSelector(({ auth }) => auth) || [];
     const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
-        skip: accountType === 'PARENT',
+        skip: accountType !== 'ADMIN',
     });
 
     const handleDrawerToggle = useCallback(() => {
