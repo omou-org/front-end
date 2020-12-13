@@ -156,8 +156,8 @@ const Announcements = ({
     }
   `;
 
-  const announcementQuery = {
-    gqlquery: gql`
+  const editAnnouncementQuery = {
+    editGqlQuery: gql`
     query EditAnnouncement($announcementId: ID!) {
       announcement(announcementId: $announcementId) {
         body
@@ -165,9 +165,16 @@ const Announcements = ({
         id
       }
     }`,
-    queryVariables: {
+    editQueryVariables: {
       announcementId
     }
+  }
+
+  const announcementQuery = {
+    gqlquery: GET_ANNOUNCEMENTS,
+    queryVariables: {
+      id,
+    },
   };
   
   const announcementMutation = {
@@ -207,6 +214,10 @@ const Announcements = ({
       courseId: id,
       shouldEmail: false,
     },
+  };
+
+  const skipConditionCheck = (query, queryVariable) => {
+    return typeof query === "undefined" || typeof queryVariable.announcementId === "undefined" || queryVariable.announcementId === null
   };
 
   const { data, loading, error, refetch} = useQuery(GET_ANNOUNCEMENTS, {
@@ -336,12 +347,14 @@ const Announcements = ({
         handleCloseForm={handleClose}
         open={openNewAnnouncementForm}
         announcementId={announcementId}
+        editPost={editAnnouncementQuery}
         origin="ANNOUNCEMENTS"
         posterId={loggedInUser}
         buttonState={editOrPost}
         mutation={announcementMutation}
         query={announcementQuery}
-        iconArray={icons}        
+        iconArray={icons}
+        shouldSkip={skipConditionCheck(editAnnouncementQuery.editGqlQuery, editAnnouncementQuery.editQueryVariables)}        
       />
     </Grid>
   );
