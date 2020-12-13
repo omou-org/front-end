@@ -1001,7 +1001,7 @@ export default {
         },
     },
     "course_details": {
-        "title": "Add New Class",
+        "title": "Class",
         "form": [
             {
                 "name": "courseDescription",
@@ -1137,22 +1137,20 @@ export default {
                     id
                     description
                     instructor {
-                    user {
-                        id
-                        firstName
-                        lastName
-                    }
+                        user {
+                            id
+                            firstName
+                            lastName
+                        }
                     }
                     startDate
-                    startTime
                     maxCapacity
                     courseCategory {
-                    id
-                    name
+                        id
+                        name
                     }
                     academicLevel
                     endDate
-                    endTime
                     totalTuition
                     hourlyTuition
                     isConfirmed
@@ -1169,7 +1167,7 @@ export default {
 
                 const {"instructor": {user}} = course;
                 return {
-                    "courseInfo": {
+                    "courseDescription": {
                         "title": course.title,
                         "description": course.description,
                         "isConfirmed": course.isConfirmed,
@@ -1197,17 +1195,20 @@ export default {
                     },
                 };
             } catch (error) {
+                console.log(error)
                 return null;
             }
         },
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
             mutation	createCourse(
+                $id: ID,
                 $startDate: DateTime, $endDate: DateTime
                 $availabilities: [CourseAvailabilityInput], $academicLevel: AcademicLevelEnum, $courseCategory: ID,
                 $description: String, $instructor:ID, $isConfirmed:Boolean, $maxCapacity: Int, $totalTuition: Decimal,
                 $title: String!) {
             createCourse(
+                  id: $id,
                   title: $title,
                   description:$description,
                   courseType: CLASS,
@@ -1222,6 +1223,7 @@ export default {
                   isConfirmed: $isConfirmed,
                   availabilities: $availabilities
               ) {
+                  created
                   course {
                       academicLevelPretty
                       id
@@ -1273,12 +1275,10 @@ export default {
 
             })();
             const modifiedData = {
-
                 "courseDescription": {
                     ...courseDescription,
                     "instructor": courseDescription.instructor.value,
                     "courseCategory": courseDescription.courseCategory.value,
-
                 },
                 "dayAndTime": {
                     "startDate": dayAndTime.startDate,
@@ -1287,17 +1287,22 @@ export default {
                 },
                 "tuition": {
                     ...tuition,
+                    "courseCategory": courseDescription.courseCategory.value,
                 },
             };
-
+            const courseFormFields = Object.values(modifiedData)
+                .reduce((obj, section) => ({
+                    ...obj,
+                    ...section,
+                }), {});
+            const editedCourseFormFields = {
+                id,
+                ...courseFormFields,
+            }
             try {
                 await client.mutate({
                     "mutation": CREATE_COURSE,
-                    "variables": Object.values(modifiedData)
-                        .reduce((obj, section) => ({
-                            ...obj,
-                            ...section,
-                        }), {}),
+                    "variables": id ? editedCourseFormFields : courseFormFields,
                 });
             } catch (error) {
                 return {
