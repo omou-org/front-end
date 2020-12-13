@@ -13,10 +13,18 @@ import Grid from "@material-ui/core/Grid";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import FormatBoldIcon from "@material-ui/icons/FormatBold";
+import FormatItalicIcon from "@material-ui/icons/FormatItalic";
+import FormatUnderlinedIcon from "@material-ui/icons/FormatUnderlined";
+import StrikethroughSIcon from "@material-ui/icons/StrikethroughS";
+import ListIcon from "@material-ui/icons/List";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { Link } from "react-router-dom";
+import gql from "graphql-tag";
 import { fullName, USER_TYPES } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
-import SessionEmailOrNotesModal from "./ModalTextEditor";
+import ModalTextEditor from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 
 
@@ -70,6 +78,7 @@ const ClassEnrollmentList = ({
     handleOpenModal(currentValue, dataType);
     setAnchorEl(null);
   };
+  
 
   return (
     <TableRow key={fullStudentName} style={{ wordBreak: "break-word" }}>
@@ -159,18 +168,80 @@ const Studentenrollment = ({
   loggedInUser,
 }) => {
   const classes = useStyles();
-
   const [modalOpen, setModalOpen] = useState(false);
   const [typeOfAccount, setTypeOfAccount] = useState();
-  const [userId, setUserId] = useState();
+  const [recipientId, setRecipientId] = useState();
+  const poster_id = loggedInUser.results[0].user.id
+  
+  const emailMutation = {
+    gqlmutation: gql`
+    mutation SendEmail(
+      $body: String!
+      $subject: String!
+      $userId: ID!
+      $posterId: ID!
+    ) {
+      __typename
+      sendEmail(
+        body: $body
+        posterId: $posterId
+        userId: $userId
+        subject: $subject
+      ) {
+        created
+      }
+    }`,
+    mutationVariables: {
+      userId: recipientId,
+      posterId: poster_id,
+    }
+  }
 
   const handleOpenModal = (currentValue, dataType) => {
-    setUserId(currentValue);
+    setRecipientId(currentValue);
     setTypeOfAccount(dataType);
     setModalOpen(true);
   };
 
   const handleCloseModal = () => setModalOpen(false);
+
+  const icons = [
+    {
+      "name": "bold",
+      "style": "BOLD",
+      "icon": <FormatBoldIcon />
+    },
+    {
+      "name": "italic",
+      "style": "ITALIC",
+      "icon": <FormatItalicIcon />
+    },
+    {
+      "name": "underline",
+      "style": "UNDERLINE",
+      "icon": <FormatUnderlinedIcon />
+    },
+    {
+      "name": "strikethrough",
+      "style": "STRIKETHROUGH",
+      "icon": <StrikethroughSIcon />
+    },
+    {
+      "name": "unordered-list-item",
+      "style": "unordered-list-item",
+      "icon": <ListIcon />
+    },
+    {
+      "name": "ordered-list-item",
+      "style": "ordered-list-item",
+      "icon": <FormatListNumberedIcon />
+    },
+    {
+      "name": "highlight",
+      "style": "HIGHLIGHT",
+      "icon": <BorderColorIcon />
+    },
+  ];
 
   return (
     <Grid item xs={12}>
@@ -225,13 +296,12 @@ const Studentenrollment = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <SessionEmailOrNotesModal
+      <ModalTextEditor
         open={modalOpen}
         handleCloseForm={handleCloseModal}
-        accountType={typeOfAccount}
-        userId={userId}
         origin="STUDENT_ENROLLMENT"
-        posterId={loggedInUser}
+        mutation={emailMutation}
+        iconArray={icons}
       />
     </Grid>
   );

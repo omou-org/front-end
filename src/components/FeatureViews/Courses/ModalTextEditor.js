@@ -1,18 +1,32 @@
 import React, { useState, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { EditorState, RichUtils, convertToRaw, convertFromRaw } from "draft-js";
+import Editor from "draft-js-plugins-editor";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import IconButton from "@material-ui/core/IconButton";
+import Checkbox from "@material-ui/core/Checkbox";
+import CheckBoxOutlineBlankOutlinedIcon from "@material-ui/icons/CheckBoxOutlineBlankOutlined";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+import Grid from "@material-ui/core/Grid";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Typography from "@material-ui/core/Typography";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import Input from "@material-ui/core/Input";
-import { omouBlue } from "../../../theme/muiTheme";
+import { omouBlue, styleMap } from "../../../theme/muiTheme";
+import { getOperationAST } from 'graphql';
+import { newUpdatedCache } from '../../../utils';
+import Loading from "../../OmouComponents/Loading";
 import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
+import "./ModalTextEditor.scss";
 import { GET_SESSION_NOTES } from "./ClassSessionView";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   rootContainer: {
     width: "37%",
     [theme.breakpoints.between("md", "lg")]: {
@@ -67,196 +81,261 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "1px solid #666666",
     paddingRight: "3em",
   },
+  textfield: {
+    border: "1px solid #000",
+    borderRadius: "4px",
+    padding: "10px 10px 0px 10px",
+    overflowY: "auto",
+  },
+  buttonGroup: {
+    marginLeft: "5em",
+    marginBottom: "3.5em",
+  },
 }));
 
 const ModalTextEditor = ({
   open,
   handleCloseForm,
-  userId,
   origin,
-  posterId,
-  sessionId,
-  noteId,
-  noteSubject,
-  noteBody,
   buttonState,
+  editPost,
+  mutation,
+  query,
+  iconArray
 }) => {
   const classes = useStyles();
-  const [subject, setSubject] = useState(noteSubject);
-  const [body, setBody] = useState(noteBody);
-  const poster_id = posterId.results[0].user.id;
+  const [sendEmailCheckbox, setSendEmailCheckbox] = useState(false);
+  const [sendSMSCheckbox, setSendSMSCheckbox] = useState(false);
+  const [subject, setSubject] = useState();
+  const [body, setBody] = useState(EditorState.createEmpty());
+  const isDisabled = convertToRaw(body.getCurrentContent())?.blocks
+  .reduce((accum, currentValue) => {
+    return {...accum, text: currentValue.text} 
+  }, {}).text === "" || subject === "" ? true : false;
+  const plainText = convertToRaw(body.getCurrentContent())?.blocks.reduce((accum, currentValue) => ({...accum, text: currentValue.text}), {}).text; 
+  const { gqlquery, queryVariables } = query || {};
+  const { gqlmutation, mutationVariables } = mutation || {};
+  const { editGqlQuery, editQueryVariables } = editPost || {};
 
-  const SEND_EMAIL = gql`
-    mutation SendEmail(
-      $body: String!
-      $subject: String!
-      $userId: ID!
-      $posterId: ID!
-    ) {
-      __typename
-      sendEmail(
-        body: $body
-        posterId: $posterId
-        userId: $userId
-        subject: $subject
-      ) {
-        created
-      }
-    }
-  `;
 
-  const CREATE_SESSION_NOTE = gql`
-    mutation createSessionNote(
-      $body: String!
-      $subject: String!
-      $user: ID!
-      $sessionId: ID!
-      $id: ID
-    ) {
-      __typename
-      createSessionNote(
-        body: $body
-        user: $user
-        subject: $subject
-        sessionId: $sessionId
-        id: $id
-      ) {
-        sessionNote {
-          id
-          body
-          subject
-          poster {
-            firstName
-            lastName
-            id
-          }
-          createdAt
-          updatedAt
-        }
-      }
-    }
-  `;
+  const MUTATION_VARIABLES = {
+    ...mutationVariables,
+    subject,
+    body: origin === "STUDENT_ENROLLMENT" ? plainText
+    : convertToRaw(body.getCurrentContent()),
+  };
 
-  const [sendEmail, sendEmailResult] = useMutation(SEND_EMAIL, {
-    onCompleted: () => handleClose(false),
-    error: (err) => console.error(err),
-  });
 
-  const [createSessionNote, createSessionNoteResult] = useMutation(
-    CREATE_SESSION_NOTE,
+  const QUERY_VARIABLES = {
+    ...queryVariables
+  };
+
+  const { data, loading, error } = useQuery(
+    editGqlQuery, 
     {
-      onCompleted: () => handleClose(false),
-      error: (err) => console.error(err),
-      update: (cache, { data }) => {
-        const [newSessionNote] = Object.values(data.createSessionNote);
-        const cachedSessionNote = cache.readQuery({
-          query: GET_SESSION_NOTES,
-          variables: { sessionId: sessionId },
-        })["sessionNotes"];
-        let updatedSessionNotes = [...cachedSessionNote];
-        const matchingIndex = updatedSessionNotes.findIndex(
-          ({ id }) => id === newSessionNote.id
-        );
-        if (matchingIndex === -1) {
-          updatedSessionNotes = [...cachedSessionNote, newSessionNote];
-        } else {
-          updatedSessionNotes[matchingIndex] = newSessionNote;
-        }
-        cache.writeQuery({
-          data: {
-            ["sessionNotes"]: updatedSessionNotes,
-          },
-          query: GET_SESSION_NOTES,
-          variables: { sessionId: sessionId },
-        });
+      variables: editQueryVariables || null,
+      skip: typeof editGqlQuery === "undefined" || typeof editQueryVariables.announcementId === "undefined" || editQueryVariables.announcementId === null,
+      onCompleted: () => {
+        if(!data) return
+        const { body, subject } = data.announcement
+        setBody(EditorState.createWithContent(convertFromRaw(JSON.parse(body.replace(/'/g, '"')))));
+        setSubject(subject)
       },
-    }
+    },
   );
 
-  const handleClose = () => handleCloseForm(false);
+  
+  const [mutateTextEditor, createResults] = useMutation(gqlmutation, {
+    onCompleted: () => handleClose(false),
+    update: (cache, { data }) => {
+      const queryTitle = getOperationAST(gqlquery).selectionSet.selections[0].name.value;
+      const mutationTitle = getOperationAST(gqlmutation).selectionSet.selections[1].name.value;
+      const [newTextData] = Object.values(data[mutationTitle]);
+      const cachedTextData = cache.readQuery({
+        query: gqlquery,
+        variables: QUERY_VARIABLES,
+      })[queryTitle];
+      cache.writeQuery({
+        data: {
+          [queryTitle]: newUpdatedCache(newTextData, cachedTextData),
+        },
+        query: gqlquery,
+        variables: QUERY_VARIABLES,
+      });
+    },
+  });
 
-  const handleSubmit = async (e) => {
+  const handleClose = () => {
+    handleCloseForm(false);
+    setBody(EditorState.createEmpty());
+  };
+
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (origin === "STUDENT_ENROLLMENT") {
-      const sentEmail = await sendEmail({
-        variables: {
-          subject: subject,
-          body: body,
-          userId: userId,
-          posterId: poster_id,
-        },
-      });
+    await mutateTextEditor({
+      variables: MUTATION_VARIABLES,
+    });
+    setBody(EditorState.createEmpty())
+  };
+
+  const toggleInlineStyles = e => {
+    e.preventDefault();
+    const style = e.currentTarget.getAttribute("data-style");
+    const { toggleInlineStyle, toggleBlockType } = RichUtils
+    
+    if(style === "ordered-list-item" || style === "unordered-list-item") {
+        setBody(toggleBlockType(body, style))
     } else {
-      const createdSessionNote = await createSessionNote({
-        variables: {
-          subject: subject,
-          body: body,
-          user: poster_id,
-          sessionId: sessionId,
-          id: noteId,
-        },
-      });
+      setBody(toggleInlineStyle(body, style))
     }
   };
 
-  const handleSubjectChange = useCallback((event) => {
+  const handleKeyCommand = (command, body) => {
+    const newState = RichUtils.handleKeyCommand(body, command);
+    if (newState) {
+      setBody(newState);
+    }
+  };
+ 
+
+  const handleCheckboxChange = setCheckbox => e =>
+    setCheckbox(e.target.checked);
+
+  const handleSubjectChange = useCallback(event => {
     setSubject(event.target.value);
   }, []);
 
-  const handleBodyChange = useCallback((event) => {
-    setBody(event.target.value);
+  const handleBodyChange = useCallback(event => {
+    setBody(event);
   }, []);
 
+  const renderButtonText = () => {
+    switch (buttonState) {
+      case "edit":
+        return "EDIT";
+      case "post":
+        return "POST";
+      case "addNote":
+        return "ADD NOTE";
+      default:
+        return "FINISH";
+    }
+  };
+
+  if(loading) return <Loading />
+  if(error) return console.error(error)
+
   return (
-    <Dialog
-      PaperProps={{ classes: { root: classes.rootContainer }, square: true }}
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-      maxWidth="md"
-    >
-      <DialogContent classes={{ root: classes.textArea }}>
-        <Input
-          placeholder="Subject"
-          className={classes.subjectUnderline}
-          disableUnderline
-          onChange={handleSubjectChange}
-          defaultValue={buttonState === "edit" ? noteSubject : ""}
-        />
-        <TextField
-          InputProps={{
-            disableUnderline: true,
-            classes: { inputMarginDense: classes.textBox },
+    <Grid container>
+      <Grid item xs={12}>
+        <Dialog
+          PaperProps={{
+            classes: { root: classes.rootContainer },
+            square: true,
           }}
-          autoFocus
-          className={classes.textFieldStyle}
-          margin="dense"
-          id="name"
-          onChange={handleBodyChange}
-          placeholder="Body"
-          type="email"
-          fullWidth
-          defaultValue={buttonState === "edit" ? noteBody : ""}
-          multiline
-          rows={12}
-        />
-      </DialogContent>
-      <DialogActions style={{ marginBottom: "2em" }}>
-        <ResponsiveButton 
-          onClick={handleClose}
-          variant="outlined" 
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="form-dialog-title"
+          maxWidth="md"
         >
-          Cancel
-        </ResponsiveButton>
-        <ResponsiveButton 
-          variant="contained"  
-          onClick={handleSubmit}
-        >
-          {origin === "STUDENT_ENROLLMENT" ? "Send Email" : 
-          (buttonState === "edit") ? "EDIT NOTE" : "ADD NOTE"}
-        </ResponsiveButton>
-      </DialogActions>
-    </Dialog>
+          <DialogContent classes={{ root: classes.textArea }}>
+            <Grid container>
+              <Grid item xs={7}>
+                <Input
+                  placeholder="Subject"
+                  className={classes.subjectUnderline}
+                  disableUnderline
+                  onChange={handleSubjectChange}
+                  defaultValue={buttonState === "edit" ? subject : ""}
+                  data-cy="text-editor-subject"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <ButtonGroup
+                  color="primary"
+                  aria-label="outlined primary button group"
+                >
+                  {
+                    iconArray?.map(icons => (
+                    <IconButton onClick={toggleInlineStyles} data-style={icons.style} data-cy={`text-editor-${icons.name}`}>
+                      {icons.icon}
+                    </IconButton>
+                    ))
+                  }
+                </ButtonGroup>
+              </Grid>
+              <Grid item xs={12}>
+                <div className={classes.textfield} data-cy="text-editor-body">
+                  <Editor
+                    editorState={body}
+                    onChange={handleBodyChange}
+                    handleKeyCommand={handleKeyCommand}
+                    customStyleMap={styleMap}
+                  />
+                </div>
+              </Grid>
+            </Grid>
+          </DialogContent>
+          {origin === "ANNOUNCEMENTS" && (
+            <FormGroup className={classes.buttonGroup}>
+              <FormControlLabel
+                style={{ fontSize: ".5rem" }}
+                control={
+                  <Checkbox
+                    checked={sendEmailCheckbox}
+                    onChange={handleCheckboxChange(setSendEmailCheckbox)}
+                    name="email"
+                    className={classes.checkBoxPseudo}
+                    checkedIcon={<CheckBoxIcon className={classes.checkBox} />}
+                    icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                    color="primary"
+                    data-cy="text-editor-email-checkbox"
+                  />
+                }
+                label={
+                  <Typography className={classes.checkboxLabel}>
+                    Send as email to parent of students enrolled in class
+                  </Typography>
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={sendSMSCheckbox}
+                    onChange={handleCheckboxChange(setSendSMSCheckbox)}
+                    name="sms"
+                    className={classes.checkBoxPseudo}
+                    checkedIcon={<CheckBoxIcon className={classes.checkBox} />}
+                    icon={<CheckBoxOutlineBlankOutlinedIcon />}
+                    color="primary"
+                    data-cy="text-editor-sms-checkbox"
+                  />
+                }
+                label={
+                  <Typography className={classes.checkboxLabel}>
+                    Send as SMS to parents of students enrolled in class
+                  </Typography>
+                }
+              />
+            </FormGroup>
+          )}
+          <DialogActions style={{ marginBottom: "2em" }}>
+            <Button className={classes.cancelButton} onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button 
+              className={classes.submitButton} 
+              data-cy="text-editor-post-button"
+              onClick={handleSubmit} 
+              disabled={isDisabled}>
+              {origin === "STUDENT_ENROLLMENT"
+                ? "Send Email"
+                : renderButtonText()}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Grid>
+    </Grid>
   );
 };
 

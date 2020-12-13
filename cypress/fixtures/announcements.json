@@ -1,0 +1,17 @@
+{
+  "announcements": [
+    {
+      "body": "Welcome to the first day of School! We will be holding tutoring sessions in room 104!",
+      "createdAt": "2020-10-10T16:44:45.298480+00:00",
+      "id": 2,
+      "poster": {
+        "firstName": "John",
+        "lastName": "Smith",
+        "__typename": "UserType"
+      },
+      "subject": "Hi Everyone!",
+      "updatedAt": "2020-10-10T16:44:45.298480+00:00",
+      "__typename": "AnnouncementType"
+    }
+  ]
+}

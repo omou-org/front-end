@@ -12,6 +12,11 @@ export const highlightColor = "#EBFAFF";
 export const errorRed = "#c0392b";
 export const activeColor = "#6FCF97";
 export const pastColor = "#BDBDBD";
+export const styleMap = {
+  HIGHLIGHT: {
+    backgroundColor: "yellow",
+  },
+}
 export const buttonBlue = "#278FC3";
 
 // Theme Colors

@@ -5,17 +5,27 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { Create, Cancel } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
+import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
+import Editor from "draft-js-plugins-editor";
+import FormatBoldIcon from "@material-ui/icons/FormatBold";
+import FormatItalicIcon from "@material-ui/icons/FormatItalic";
+import FormatUnderlinedIcon from "@material-ui/icons/FormatUnderlined";
+import StrikethroughSIcon from "@material-ui/icons/StrikethroughS";
+import ListIcon from "@material-ui/icons/List";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { highlightColor } from "../../../theme/muiTheme";
 import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import moment from "moment";
-import NewAnnouncementModal from "./NewAnnoucementsModal";
+import ModelTextEditor from "./ModalTextEditor";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
 
 import  AddIcon from '@material-ui/icons/Add';
 import { GET_ANNOUNCEMENTS } from "./CourseClasses";
 import { fullName, USER_TYPES, sortTime } from "../../../utils";
 import theme, { omouBlue } from "../../../theme/muiTheme";
+import Loading from "components/OmouComponents/Loading";
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
@@ -47,6 +57,12 @@ const useStyles = makeStyles({
   },
 });
 
+const styleMap = {
+  HIGHLIGHT: {
+    backgroundColor: "yellow",
+  },
+};
+
 const AnnouncementCard = ({
   id,
   fullName,
@@ -56,17 +72,14 @@ const AnnouncementCard = ({
   handleEdit,
   handleDelete,
 }) => {
+  const editorState = EditorState.createWithContent(convertFromRaw(JSON.parse(body)));
   const classes = useStyles();
   const date = moment(updatedAt).format("MM/DD");
   const time = moment(updatedAt).format("h:mma");
   const subjectRef = useRef();
-  const bodyRef = useRef();
   const handleOpenForm = () => {
-    const currentSubject = subjectRef.current.textContent;
-    const currentBody = bodyRef.current.textContent;
-    handleEdit(true, id, currentSubject, currentBody);
+    handleEdit(true, id);
   };
-
   const handleDeleteForm = () => handleDelete(id);
 
   return (
@@ -98,9 +111,7 @@ const AnnouncementCard = ({
       </AccessControlComponent>
       </Grid>
       <Grid item xs={12} className={classes.announcementBody}>
-        <Typography variant="body1" align="left" ref={bodyRef}>
-          {body}
-        </Typography>
+      <Editor editorState={editorState} customStyleMap={styleMap} readOnly/>
       </Grid>
       <Grid item xs={12}>
         <Typography variant="subtitle2" align="left">
@@ -130,11 +141,10 @@ const Announcements = ({
 }) => {
   const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
   const [announcementId, setAnnouncementId] = useState();
-  const [announcementSubject, setAnnouncementSubject] = useState("");
-  const [announcementBody, setAnnouncementBody] = useState("");
   const [editOrPost, setEditOrPost] = useState("post");
   const classes = useStyles();
-  const courseId = useParams();
+  const { id } = useParams();
+  const userId = loggedInUser.results[0].user.id;
 
   const DELETE_ANNOUNCEMENT = gql`
     mutation removeAnnouncement($id: ID!) {
@@ -146,6 +156,110 @@ const Announcements = ({
     }
   `;
 
+  const editAnnouncementQuery = {
+    editGqlQuery: gql`
+    query EditAnnouncement($announcementId: ID!) {
+      announcement(announcementId: $announcementId) {
+        body
+        subject
+        id
+      }
+    }`,
+    editQueryVariables: {
+      announcementId
+    }
+  }
+
+  const announcementQuery = {
+    gqlquery: GET_ANNOUNCEMENTS,
+    queryVariables: {
+      id,
+    },
+  };
+  
+  const announcementMutation = {
+    gqlmutation: gql`mutation CreateAnnouncement(
+      $subject: String!
+      $body: String!
+      $courseId: ID!
+      $userId: ID!
+      $shouldEmail: Boolean
+      $id: ID
+    ) {
+      __typename
+      createAnnouncement(
+        body: $body
+        course: $courseId
+        subject: $subject
+        user: $userId
+        shouldEmail: $shouldEmail
+        id: $id
+      ) {
+        announcement {
+          subject
+          id
+          body
+          createdAt
+          updatedAt
+          poster {
+            firstName
+            lastName
+          }
+        }
+      }
+    }`,
+    mutationVariables: {
+      id: announcementId,
+      userId,
+      courseId: id,
+      shouldEmail: false,
+    },
+  };
+
+  const { data, loading, error, refetch} = useQuery(GET_ANNOUNCEMENTS, {
+    variables: {
+      id,
+    },
+  });
+
+  const icons = [
+    {
+      "name": "bold",
+      "style": "BOLD",
+      "icon": <FormatBoldIcon />
+    },
+    {
+      "name": "italic",
+      "style": "ITALIC",
+      "icon": <FormatItalicIcon />
+    },
+    {
+      "name": "underline",
+      "style": "UNDERLINE",
+      "icon": <FormatUnderlinedIcon />
+    },
+    {
+      "name": "strikethrough",
+      "style": "STRIKETHROUGH",
+      "icon": <StrikethroughSIcon />
+    },
+    {
+      "name": "unordered-list-item",
+      "style": "unordered-list-item",
+      "icon": <ListIcon />
+    },
+    {
+      "name": "ordered-list-item",
+      "style": "ordered-list-item",
+      "icon": <FormatListNumberedIcon />
+    },
+    {
+      "name": "highlight",
+      "style": "HIGHLIGHT",
+      "icon": <BorderColorIcon />
+    },
+  ];
+
   const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
     DELETE_ANNOUNCEMENT,
     {
@@ -153,7 +267,7 @@ const Announcements = ({
       update: (cache, { data: { deleteAnnouncement: { id } }}) => {
         const cachedAnnouncement = cache.readQuery({
           query: GET_ANNOUNCEMENTS,
-          variables: { id: courseId.id },
+          variables: { id },
         })["announcements"];
         let updatedAnnouncements = [...cachedAnnouncement];
         const removedIndex = updatedAnnouncements.findIndex(announcement => announcement.id === id);
@@ -163,7 +277,7 @@ const Announcements = ({
             ["announcements"]: updatedAnnouncements,
           },
           query: GET_ANNOUNCEMENTS,
-          variables: { id: courseId.id },
+          variables: { id },
         });
       },
     }
@@ -173,20 +287,24 @@ const Announcements = ({
     setEditOrPost("edit");
     setAnnouncementId(id);
     setNewAnnouncementForm(boolean);
-    setAnnouncementSubject(subject);
-    setAnnouncementBody(body);
   };
 
-  const handleClose = (boolean) => setNewAnnouncementForm(boolean);
+  const handleClose = (boolean) => {
+    setNewAnnouncementForm(boolean)
+    setAnnouncementId(null)
+    refetch()
+  };
 
   const handleDeleteAnnouncement = async (id) => {
     const deletedAnnouncement = await deleteAnnouncement({
       variables: { id: id },
     });
   };
-
+  
   const announcementRender = announcementsData
   .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
+
+  if(loading) return <Loading />
 
   return (
     <Grid container justify="flex-start" data-active="inactive">
@@ -200,36 +318,38 @@ const Announcements = ({
         <ResponsiveButton
           variant="outlined"
           className={classes.newNoteButton}
-          onClick={() => setNewAnnouncementForm(true, setEditOrPost("post"))}
+          onClick={() => {setNewAnnouncementForm(true, setEditOrPost("post")); setAnnouncementId(null)}}
           value="post"
           name="post"
+          data-cy="new-announcement-button"
           startIcon={<AddIcon />}
         >
            New Announcement
         </ResponsiveButton>
       </AccessControlComponent>
       {announcementRender.map(({ poster, subject, body, updatedAt, id }) => (
-        <>
           <AnnouncementCard
             key={id}
             id={id}
             fullName={fullName(poster)}
             subject={subject}
-            body={body}
+            body={body.replace(/'/g, '"')}
             updatedAt={updatedAt}
             handleEdit={handleEdit}
             handleDelete={handleDeleteAnnouncement}
           />
-        </>
       ))}
-      <NewAnnouncementModal
-        handleClose={handleClose}
+      <ModelTextEditor 
+        handleCloseForm={handleClose}
         open={openNewAnnouncementForm}
-        id={announcementId}
-        subject={announcementSubject}
-        body={announcementBody}
-        userId={loggedInUser}
+        announcementId={announcementId}
+        editPost={editAnnouncementQuery}
+        origin="ANNOUNCEMENTS"
+        posterId={loggedInUser}
         buttonState={editOrPost}
+        mutation={announcementMutation}
+        query={announcementQuery}
+        iconArray={icons}        
       />
     </Grid>
   );

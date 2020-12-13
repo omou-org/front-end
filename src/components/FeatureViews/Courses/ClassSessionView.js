@@ -7,6 +7,13 @@ import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import FormatBoldIcon from "@material-ui/icons/FormatBold";
+import FormatItalicIcon from "@material-ui/icons/FormatItalic";
+import FormatUnderlinedIcon from "@material-ui/icons/FormatUnderlined";
+import StrikethroughSIcon from "@material-ui/icons/StrikethroughS";
+import ListIcon from "@material-ui/icons/List";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
+import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { Create, ExpandMore } from "@material-ui/icons";
 import ModalTextEditor from "./ModalTextEditor";
 import moment from "moment";
@@ -92,10 +99,55 @@ const ClassSessionView = ({
   const [noteBody, setNoteBody] = useState("");
   const [noteSubject, setNoteSubject] = useState("");
   const [buttonState, setButtonState] = useState("");
+  const poster_id = loggedInUser.results[0].user.id
 
   const { data, loading, error } = useQuery(GET_SESSION_NOTES, {
     variables: { sessionId: sessionId, },
   });
+
+  const sessionNoteMutation = {
+    gqlmutation: gql`mutation createSessionNote(
+      $body: String!
+      $subject: String!
+      $user: ID!
+      $sessionId: ID!
+      $id: ID
+    ) {
+      __typename
+      createSessionNote(
+        body: $body
+        user: $user
+        subject: $subject
+        sessionId: $sessionId
+        id: $id
+      ) {
+        sessionNote {
+          id
+          body
+          subject
+          poster {
+            firstName
+            lastName
+            id
+          }
+          createdAt
+          updatedAt
+        }
+      }
+    }`,
+    mutationVariables: {
+      user: poster_id,
+      sessionId,
+      id: noteId,
+    },
+  };
+
+  const sessionNoteQuery = {
+    gqlquery: GET_SESSION_NOTES,
+    variables: {
+      sessionId
+    }
+  }
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
@@ -124,6 +176,44 @@ const ClassSessionView = ({
 
   const sessionNotesRender = data.sessionNotes
   .sort((firstVal, secondVal) => sortTime(firstVal.updatedAt, secondVal.updatedAt))
+
+  const icons = [
+    {
+      "name": "bold",
+      "style": "BOLD",
+      "icon": <FormatBoldIcon />
+    },
+    {
+      "name": "italic",
+      "style": "ITALIC",
+      "icon": <FormatItalicIcon />
+    },
+    {
+      "name": "underline",
+      "style": "UNDERLINE",
+      "icon": <FormatUnderlinedIcon />
+    },
+    {
+      "name": "strikethrough",
+      "style": "STRIKETHROUGH",
+      "icon": <StrikethroughSIcon />
+    },
+    {
+      "name": "unordered-list-item",
+      "style": "unordered-list-item",
+      "icon": <ListIcon />
+    },
+    {
+      "name": "ordered-list-item",
+      "style": "ordered-list-item",
+      "icon": <FormatListNumberedIcon />
+    },
+    {
+      "name": "highlight",
+      "style": "HIGHLIGHT",
+      "icon": <BorderColorIcon />
+    },
+  ];
 
   return (
     <Grid container>
@@ -234,12 +324,15 @@ const ClassSessionView = ({
             open={open}
             handleCloseForm={handleCloseForm}
             posterId={loggedInUser}
-            sessionId={sessionId}
+            currentId={sessionId}
             origin="COURSE_SESSIONS"
             noteId={noteId}
-            noteSubject={noteSubject}
-            noteBody={noteBody}
+            textSubject={noteSubject}
+            textBody={{body: noteBody, setBody: setNoteBody}}
             buttonState={buttonState}
+            mutation={sessionNoteMutation}
+            query={sessionNoteQuery}
+            iconArray={icons}
           />
         </div>
       </Grid>

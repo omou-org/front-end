@@ -78,11 +78,11 @@ const CourseClasses = () => {
   const classes = useStyles();
   const [index, setIndex] = useState(0);
   const adminTabs = [
-    { label: "About Course" },
-    { label: "Announcements" },
-    { label: "Student Enrolled" },
-    { label: "Sessions" },
-    { label: "Attendance" }
+    { label: "About Course", "data-cy": "description" },
+    { label: "Announcements", "data-cy": "announcements" },
+    { label: "Student Enrolled", "data-cy": "student-enrollment" },
+    { label: "Sessions", "data-cy": "sessions" },
+    { label: "Attendance", "data-cy": "attendance" }
   ];
 
   const parentTabWithStudentEnrolledTabs = [
