@@ -232,7 +232,7 @@ const handleClose = () => {
       {(isAdmin || isUser) && (
         <>
           <Grid component={Hidden} item mdDown xs={12}>
-            <EditIcon />
+            <EditIcon className="editIcon" />
             <div className="editResetDiv">
               <ResponsiveButton
                 component={Link}
