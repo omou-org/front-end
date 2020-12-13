@@ -116,10 +116,6 @@ const CREATE_PAYMENT = gql`
                     }
                 }
             }
-          }
-          courseId
-          endDate
-          hourlyTuition
         }
     }`;
 
