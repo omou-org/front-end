@@ -69,7 +69,7 @@ const ClassEnrollmentList = ({
   const courseId = params.id;
   const [gClassResp, setGClassResp] = useState();
   const [inviteStatus, setInviteStatus] = useState("Unsent");
-  const [isInviteSent, setIsInviteSent] = useState("Send Invite");
+  const [googleClassroomInviteStatusMessage, setGoogleClassroomInviteStatusMessage] = useState("Send Invite");
 
   const getGoogleClassCode = (courses, courseId) => {
     var googleClassCode;
@@ -89,7 +89,6 @@ const ClassEnrollmentList = ({
     if(google_courses && googleClassCode){
       google_courses.forEach(function(course){
         if(course.enrollmentCode == googleClassCode){
-          console.log(course.id);
           googleCourseId = course.id
         }
       });
@@ -98,14 +97,10 @@ const ClassEnrollmentList = ({
   }
 
   const handleInvite = async () => {
-    setIsInviteSent("Resend Invite");
+    setGoogleClassroomInviteStatusMessage("Resend Invite");
     const googleCourseId = getGoogleCourseId(google_courses, courses, courseId);
-
-    console.log(googleCourseId);
-    console.log(studentEmail);
     if(googleCourseId && studentEmail){
       try {
-        console.log("Attempting to make API Call");
           const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, 
             {
               "userId": studentEmail,
@@ -157,10 +152,8 @@ const ClassEnrollmentList = ({
       <TableCell>{phoneNumber}</TableCell>
       <TableCell>
         {inviteStatus}
-        <Button
-          onClick={handleInvite}
-        >
-          {isInviteSent}
+        <Button onClick={handleInvite}>
+          {GoogleClassroomInviteStatusMessage}
         </Button>
       </TableCell>
       <TableCell align="right" padding="none" size="small">

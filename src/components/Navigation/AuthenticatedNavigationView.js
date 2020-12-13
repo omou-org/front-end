@@ -49,7 +49,6 @@ export default function AuthenticatedNavigationView({UserNavigationOptions}) {
 	const {data, loading, error} = useQuery(CHECK_BUSINESS_EXISTS);
 
 	const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
-	const [response, setResponse] = useState();
 	const { email } = useSelector(({ auth }) => auth);
 
 
@@ -62,12 +61,9 @@ export default function AuthenticatedNavigationView({UserNavigationOptions}) {
     }
 
 	const responseGoogle = (response) => {
-        console.log(response);
 	}
 	
-	const onSuccess = (status) => {
-        setResponse(status);
-        console.log("Success");
+	const onSuccess = (response) => {
         dispatch({
             type: actions.SET_GOOGLE_TOKEN, 
             payload: {google_access_token: response.tokenObj.access_token}
@@ -119,11 +115,11 @@ export default function AuthenticatedNavigationView({UserNavigationOptions}) {
 					aria-labelledby="dialog-title"
 					aria-describedby="dialog-description"
 				>
-					<DialogTitle id="dialog-title">{"Sign in with Google"}</DialogTitle>
+					<DialogTitle disableTypography id="dialog-title">{"Sign in with Google"}</DialogTitle>
 					<DialogContent>
-					<DialogContentText id="dialog-description">
-						Allow us to access your Google Classroom courses
-					</DialogContentText>
+						<DialogContentText id="dialog-description">
+							Allow us to access your Google Classroom courses
+						</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button onClick={handleClose} color="primary">

@@ -211,16 +211,18 @@ const ClassListItem = ({
   const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
 
   useEffect(() => {
-    (async () => {
-      setGClassResp( await axios.get("https://classroom.googleapis.com/v1/courses", {
-        "headers": {
-          "Authorization": `Bearer ${google_access_token}`,
-        },
-      }));
-    })();
+    if(gClassResp === null || gClassResp === undefined){
+      (async () => {
+        setGClassResp( await axios.get("https://classroom.googleapis.com/v1/courses", {
+          "headers": {
+            "Authorization": `Bearer ${google_access_token}`,
+          },
+        }));
+      })();
+    }
   }, [google_access_token]);
 
-  function checkCourses(googleCode){
+  function GoogleClassroomIntegrationIcon(googleCode){
     var isIntegrated = false;
     if(googleCode && gClassResp){
       if(google_courses === undefined || google_courses == null){
@@ -232,16 +234,11 @@ const ClassListItem = ({
       gClassResp.data.courses.forEach(function(course) {
         if(course.enrollmentCode == googleCode){
           isIntegrated = true;
-          console.log(course.enrollmentCode);
-          console.log({googleCode});
         } 
       });
-      console.log(isIntegrated);
       return isIntegrated ? <img src={googleClassroomLogo} width="30" height="30"/> : <div></div>;
     } 
-    else{
-      return <div></div>;
-    }
+    return;
   } 
 
   return (
@@ -258,7 +255,7 @@ const ClassListItem = ({
           </Box>
           <ListDivider />
           <Tooltip title="Integrated with Google Classroom" placement="top" arrow> 
-              {checkCourses(googleClassCode)}        
+              {GoogleClassroomIntegrationIcon(googleClassCode)}        
           </Tooltip>
         </ListHeading>
         <ListDetails>
@@ -414,11 +411,9 @@ const CourseManagementContainer = () => {
 
   return (
     <Grid item xs={12}>
-      <BackgroundPaper elevation={2}>
-        <Typography align="left" className="heading" variant="h3">
-          Course Management
-        </Typography>
-      </BackgroundPaper>
+      <Typography align="left" className="heading" variant="h3">
+        Course Management
+      </Typography>
       <Paper elevation={4} className={classes.appBar}>
         <Grid
           container
