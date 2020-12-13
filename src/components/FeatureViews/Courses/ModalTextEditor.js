@@ -25,6 +25,7 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import "./ModalTextEditor.scss";
 import { GET_SESSION_NOTES } from "./ClassSessionView";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { GET_ANNOUNCEMENTS } from './CourseClasses';
 
 const useStyles = makeStyles(theme => ({
   rootContainer: {
@@ -98,7 +99,6 @@ const ModalTextEditor = ({
   handleCloseForm,
   origin,
   buttonState,
-  editPost,
   mutation,
   query,
   iconArray
@@ -115,8 +115,6 @@ const ModalTextEditor = ({
   const plainText = convertToRaw(body.getCurrentContent())?.blocks.reduce((accum, currentValue) => ({...accum, text: currentValue.text}), {}).text; 
   const { gqlquery, queryVariables } = query || {};
   const { gqlmutation, mutationVariables } = mutation || {};
-  const { editGqlQuery, editQueryVariables } = editPost || {};
-
 
   const MUTATION_VARIABLES = {
     ...mutationVariables,
@@ -130,11 +128,25 @@ const ModalTextEditor = ({
     ...queryVariables
   };
 
+  console.log(QUERY_VARIABLES)
+
+ 
+  const skipConditionCheckWithNoQuery = (query, queryVariable) => {
+    return typeof query === "undefined" || typeof queryVariable.announcementId === "undefined" || queryVariable.announcementId === null
+  };
+  console.log(skipConditionCheckWithNoQuery(gqlquery, queryVariables))
+  // console.log(queryVariables)
+
   const { data, loading, error } = useQuery(
-    editGqlQuery, 
+    gqlquery || gql`query MyQuery {
+      parents {
+        createdAt
+      }
+    }
+    `, 
     {
-      variables: editQueryVariables || null,
-      skip: typeof editGqlQuery === "undefined" || typeof editQueryVariables.announcementId === "undefined" || editQueryVariables.announcementId === null,
+      variables: QUERY_VARIABLES,
+      skip: skipConditionCheckWithNoQuery(gqlquery, queryVariables),
       onCompleted: () => {
         if(!data) return
         const { body, subject } = data.announcement

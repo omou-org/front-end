@@ -156,8 +156,8 @@ const Announcements = ({
     }
   `;
 
-  const editAnnouncementQuery = {
-    editGqlQuery: gql`
+  const announcementQuery = {
+    gqlquery: gql`
     query EditAnnouncement($announcementId: ID!) {
       announcement(announcementId: $announcementId) {
         body
@@ -165,16 +165,9 @@ const Announcements = ({
         id
       }
     }`,
-    editQueryVariables: {
+    queryVariables: {
       announcementId
     }
-  }
-
-  const announcementQuery = {
-    gqlquery: GET_ANNOUNCEMENTS,
-    queryVariables: {
-      id,
-    },
   };
   
   const announcementMutation = {
@@ -343,7 +336,6 @@ const Announcements = ({
         handleCloseForm={handleClose}
         open={openNewAnnouncementForm}
         announcementId={announcementId}
-        editPost={editAnnouncementQuery}
         origin="ANNOUNCEMENTS"
         posterId={loggedInUser}
         buttonState={editOrPost}
