@@ -6,17 +6,56 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveButton";
 import Dialog from "@material-ui/core/Dialog";
 import {closeRegistrationCart} from "./RegistrationUtils";
-import {logout} from "../../actions/authActions";
+import {logout, setToken} from "../../actions/authActions";
 import {useIdleTimer} from "react-idle-timer";
 import {useHistory} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import gql from "graphql-tag";
+import {useMutation} from "@apollo/react-hooks";
+
+const REFRESH_TOKEN = gql`
+mutation RefreshToken($token:String!) {
+  __typename
+  refreshToken(token: $token) {
+    token
+  }
+}`
 
 export default function IdleTimerPrompt() {
+	const savedToken = useSelector(({auth}) => auth.token);
 	const [openIdlePrompt, setIdlePrompt] = useState(false);
 	const history = useHistory();
 	const dispatch = useDispatch();
+	const [refreshToken] = useMutation(REFRESH_TOKEN, {
+		onCompleted: async (data) => {
+			console.log({data});
+			dispatch(await setToken(data.refreshToken.token, true));
+		}
+	});
+
 	const handleOnIdle = event => {
 		setIdlePrompt(true);
+	}
+
+	const handleOnActive = event => {
+		const refreshTokenTime = 1000 * 60 * 5;
+		const remainingTimeBeforeLogout = getRemainingTime();
+		if (remainingTimeBeforeLogout <= refreshTokenTime && !openIdlePrompt) {
+			refreshToken({
+				variables: {
+					token: savedToken,
+				}
+			});
+		}
+	}
+
+	const handleOnPromptClose = () => {
+		setIdlePrompt(false);
+		refreshToken({
+			variables: {
+				token: savedToken,
+			}
+		});
 	}
 
 	const handleLogout = useCallback(() => {
@@ -32,11 +71,12 @@ export default function IdleTimerPrompt() {
 				handleLogout();
 			}, 1000 * 60 * 2)
 		}
-	}, [openIdlePrompt])
+	}, [openIdlePrompt]);
 
-	useIdleTimer({
+	const {getRemainingTime} = useIdleTimer({
 		timeout: 1000 * 60 * 18,
 		onIdle: handleOnIdle,
+		onActive: handleOnActive,
 		debounce: 500
 	});
 
@@ -52,7 +92,7 @@ export default function IdleTimerPrompt() {
 		</DialogContent>
 		<DialogActions>
 			<ResponsiveButton
-				onClick={() => setIdlePrompt(false)}
+				onClick={handleOnPromptClose}
 				color="primary"
 				variant="contained"
 			>
