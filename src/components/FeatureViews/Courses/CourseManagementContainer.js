@@ -223,9 +223,9 @@ const ClassListItem = ({
                         className={classes.displayCardMargins}
                     >
                         <Typography variant="body1" align="left">
-                            <span
-                                className={classes.highlightName}
-                            >{`${concatFullName}`}</span>
+                            <span className={classes.highlightName}>
+                                {concatFullName}
+                            </span>
                         </Typography>
                     </Grid>
                     <Divder
