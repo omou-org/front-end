@@ -373,10 +373,7 @@ const theme = createMuiTheme({
     //Must use disable typography in the tag on your component
     MuiDialogTitle: {
       root: {
-        fontSize: "16px",
-        fontWeight: "500",
-        fontFamily: "Roboto",
-        lineHeight: "16px",
+          ...h4
       },
     },
     MuiTableCell: {
