@@ -1,20 +1,18 @@
-
-import React, {useCallback, useEffect, useState} from "react";
-import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden";
-import SearchSelect from "react-select";
-import Typography from "@material-ui/core/Typography";
+import React, { useCallback, useEffect, useState } from 'react';
+import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
+import SearchSelect from 'react-select';
+import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import {distinctObjectArray, fullName, gradeOptions} from "utils";
-import CourseList from "./CourseList";
-import Loading from "components/OmouComponents/Loading";
-import RegistrationActions from "./RegistrationActions";
-import gql from "graphql-tag";
-import {useQuery} from "@apollo/react-hooks";
-import {SIMPLE_COURSE_DATA} from "queryFragments";
-import {getRegistrationCart} from "../../OmouComponents/RegistrationUtils";
-
+import { distinctObjectArray, fullName, gradeOptions } from 'utils';
+import CourseList from './CourseList';
+import Loading from 'components/OmouComponents/Loading';
+import RegistrationActions from './RegistrationActions';
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
+import { SIMPLE_COURSE_DATA } from 'queryFragments';
+import { getRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 
 const customStyles = {
     clearIndicator: (base, state) => ({
@@ -48,15 +46,16 @@ const ClearIndicator = (indicatorProps) => {
 };
 
 export const GET_COURSES = gql`
-	query CourseList {
-		courses {
+    query CourseList {
+        courses {
             id
 
             endDate
             availabilityList {
                 endTime
                 startTime
-              }
+                dayOfWeek
+            }
             startDate
             title
             totalTuition
@@ -83,9 +82,8 @@ export const GET_COURSES = gql`
 `;
 
 const RegistrationLanding = () => {
-
-    const courseResponse = useQuery(GET_COURSES);
-    const {currentParent} = getRegistrationCart();
+    const { data, loading, error } = useQuery(GET_COURSES);
+    const { currentParent } = getRegistrationCart();
 
     const [view, setView] = useState(0);
     const [updatedParent, setUpdatedParent] = useState(false);
@@ -108,8 +106,6 @@ const RegistrationLanding = () => {
         },
         []
     );
-    console.log(courseResponse);
-    const {data, loading, error} = courseResponse
 
     if (loading) {
         return <Loading />;
@@ -122,9 +118,7 @@ const RegistrationLanding = () => {
         );
     }
 
-
     const { courses } = data;
-
 
     const instructorOptions = distinctObjectArray(
         Object.values(courses)
@@ -240,10 +234,14 @@ const RegistrationLanding = () => {
             </Grid>
             <hr />
             <Grid container layout="row">
-
                 <Box marginBottom="22px" width="100%">
                     <Grid item md={8} xs={12}>
-                        <Typography align="left" className="heading" variant="h1" data-cy="registration-heading">
+                        <Typography
+                            align="left"
+                            className="heading"
+                            variant="h1"
+                            data-cy="registration-heading"
+                        >
                             Registration Catalog
                         </Typography>
                     </Grid>
@@ -263,31 +261,36 @@ const RegistrationLanding = () => {
                 {view === 0 && (
                     <Grid item container layout="row" spacing={1}>
                         <Grid item xs={3}>
-                            {renderFilter("instructor")}
+                            {renderFilter('instructor')}
                         </Grid>
                         <Hidden xsDown>
                             <Grid item xs={3}>
-                                {renderFilter("subject")}
+                                {renderFilter('subject')}
                             </Grid>
                             <Grid item xs={3}>
-                                {renderFilter("grade")}
+                                {renderFilter('grade')}
                             </Grid>
                             <Grid item xs={3}>
                                 <SearchSelect
                                     className="sort-options"
                                     closeMenuOnSelect={true}
-                                    components={{ClearIndicator}}
+                                    components={{ ClearIndicator }}
                                     onChange={handleSortChange}
                                     options={[
-                                        {value: 'seatsLeft', label: 'Sort by: Seats Left'},
-                                        {value: 'title', label: 'Sort by: Course Name'}
+                                        {
+                                            value: 'seatsLeft',
+                                            label: 'Sort by: Seats Left',
+                                        },
+                                        {
+                                            value: 'title',
+                                            label: 'Sort by: Course Name',
+                                        },
                                     ]}
                                     placeholder={'Sort by: Course Name'}
                                     styles={customStyles}
                                 />
                             </Grid>
-                            
-                        </Hidden> 
+                        </Hidden>
                     </Grid>
                 )}
             </Box>
