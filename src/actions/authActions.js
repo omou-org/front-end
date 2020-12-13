@@ -73,6 +73,7 @@ export const setToken = async (token, shouldSave) => {
             "query": GET_ACCOUNT_TYPE,
             "variables": {"username": email},
         });
+
         const {accountType, user, phoneNumber} = userInfo;
         if (shouldSave) {
             localStorage.setItem("token", token);
