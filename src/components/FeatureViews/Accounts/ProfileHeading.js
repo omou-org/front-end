@@ -172,7 +172,6 @@ const ProfileHeading = ({ ownerID }) => {
   const isAdmin = loggedInAuth.accountType === USER_TYPES.admin;
   const isUser = loggedInAuth.user.id === userInfo.user.id;
   const isStudentProfile = userInfo.accountType === "STUDENT";
-  console.log(isStudentProfile);
 
   const renderEditandAwayButton = () => (
     <Grid container item xs={4}>
@@ -183,9 +182,7 @@ const ProfileHeading = ({ ownerID }) => {
             <div className="editResetDiv">
               <ResponsiveButton
                 component={Link}
-                to={`/form/${userInfo.accountType.toLowerCase()}/${
-                  userInfo.user.id
-                }`}
+                to={`/form/${userInfo.accountType.toLowerCase()}/${userInfo.user.id}`}
                 className="edit"
               >
                 Edit Profile
@@ -205,9 +202,7 @@ const ProfileHeading = ({ ownerID }) => {
           <Grid component={Hidden} item lgUp xs={12}>
             <Button
               component={Link}
-              to={`/form/${userInfo.accountType.toLowerCase()}/${
-                userInfo.user.id
-              }`}
+              to={`/form/${userInfo.accountType.toLowerCase()}/${userInfo.user.id}`}
               variant="outlined"
             >
               <EditIcon />
