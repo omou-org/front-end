@@ -249,7 +249,7 @@ const CourseClasses = () => {
     ).format('h:mm A');
     const startingDate = moment(startDate).format('L');
     const endingDate = moment(endDate).format('L');
-    console.log(data.course);
+
     const handleChange = (_, i) => setIndex(i);
 
     const setTabsForAccountTypes = (
