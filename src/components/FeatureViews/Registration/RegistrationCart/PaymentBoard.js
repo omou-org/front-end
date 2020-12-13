@@ -84,7 +84,7 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
               firstName
             }
           }
-          courseId
+		  courseId
           endDate
           hourlyTuition
         }
@@ -370,8 +370,8 @@ export default function PaymentBoard() {
 	};
 
 	if (error || enrollmentResponse.error) {
-		console.error(error.message, enrollmentResponse.error.message);
-		return <div>There has been an error! : {error.message} {enrollmentResponse.error.message}</div>
+		console.error(error?.message, enrollmentResponse.error.message);
+		return <div>There has been an error! : {error?.message} {enrollmentResponse.error.message}</div>
 	}
 
 	const priceQuote = data?.priceQuote || {

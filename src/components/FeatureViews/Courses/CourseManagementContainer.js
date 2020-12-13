@@ -307,7 +307,7 @@ const CourseManagementContainer = () => {
 
   if (loading) return <Loading />;
   if (error) return console.error(error.message);
-
+  
   const createFilteredListFromCourses = (filterCondition) =>
     data.courses.reduce(
       (accumulator, currentValue) =>
