@@ -1173,7 +1173,6 @@ export default {
             }
         },
         "submit": async (formData, id) => {
-            //!TODO CourseAvailability?
             const CREATE_COURSE = gql`
             mutation	createCourse($availabilities: [CourseAvailabilityInput], $academicLevel: AcademicLevelEnum, $courseCategory: ID,
                 $description: String, $instructor:ID, $isConfirmed:Boolean, $maxCapacity: Int, $totalTuition: Decimal,
@@ -1211,8 +1210,38 @@ export default {
               }
             `;
 
-            const { courseDescription, tuition, dayAndTime } = formData;
+            const { courseDescription, dayAndTime, tuition  } = formData;
+            const availabilities = (() => {
+                const availabilityList = [
+                    {
+                        "dayOfWeek": dayAndTime.weekday1,
+                        "startTime": dayAndTime.startTime1.format("HH:mm"),
+                        "endTime":  dayAndTime.endTime1.format("HH:mm"),
+                    }
+                ]
+                if (dayAndTime.weekday2 && dayAndTime.startTime2 && dayAndTime.EndTime2){
+                    availabilities.push(
+                        {
+                            "dayOfWeek": dayAndTime.weekday2,
+                            "startTime": dayAndTime.startTime2 ? dayAndTime.startTime2.format("HH:mm") : null,
+                            "endTime": dayAndTime.endTime2 ? dayAndTime.endTime2.format("HH:mm") : null,
+                        }
+                    );
+                }
+                if (dayAndTime.weekday3 && dayAndTime.startTime3 && dayAndTime.EndTime3) {
+                    availabilities.push(
+                        {
+                            "dayOfWeek": dayAndTime.weekday3,
+                            "startTime": dayAndTime.startTime3 ? dayAndTime.startTime3.format("HH:mm"): null,
+                            "endTime": dayAndTime.endTime3 ? dayAndTime.endTime3.format("HH:mm"): null
+                        }
+                    );
+                }
+                return availabilityList;
+
+            })();
             const modifiedData = {
+    
                 "courseDescription": {
                     ...courseDescription,
                     "instructor": courseDescription.instructor.value,
@@ -1221,12 +1250,24 @@ export default {
                 },
                 "dayAndTime": {
                     ...dayAndTime,
-                    "startTime1": dayAndTime.startTime1.format("HH:mm"),
-                    "endTime1": dayAndTime.endTime1.format("HH:mm"),
-                    "startTime2": dayAndTime.startTime2.format("HH:mm"),
-                    "endTime2": dayAndTime.endTime2.format("HH:mm"),
-                    "startTime3": dayAndTime.startTime3.format("HH:mm"),
-                    "endTime3": dayAndTime.endTime3.format("HH:mm")
+                    availabilities,
+                    // "availabilities": [
+                    //     {
+                    //         "dayOfWeek": dayAndTime.weekday1,
+                    //         "startTime": dayAndTime.startTime1.format("HH:mm"),
+                    //         "endTime":  dayAndTime.endTime1.format("HH:mm"),
+                    //     },
+                    //     {
+                    //         "dayOfWeek": dayAndTime.weekday2,
+                    //         "startTime": dayAndTime.startTime2 ? dayAndTime.startTime2.format("HH:mm") : null,
+                    //         "endTime": dayAndTime.endTime2 ? dayAndTime.endTime2.format("HH:mm") : null,
+                    //     },
+                    //     {
+                    //         "dayOfWeek": dayAndTime.weekday3,
+                    //         "startTime": dayAndTime.startTime3 ? dayAndTime.startTime3.format("HH:mm"): null,
+                    //         "endTime": dayAndTime.endTime3 ? dayAndTime.endTime3.format("HH:mm"): null
+                    //     }
+                    // ],
                 },
                 "tuition": {
                     ...tuition,
