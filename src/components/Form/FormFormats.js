@@ -209,9 +209,6 @@ export const ACADEMIC_LVL_FIELD = {
         "component": <Fields.TextField />,
         "validator": Yup.number().min(0),
     },
-    DAY_OF_WEEK_FIELD = {
-
-    },
     START_DATE_FIELD = {
         "name": "startDate",
         "label": "Start Date",
