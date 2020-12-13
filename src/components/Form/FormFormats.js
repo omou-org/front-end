@@ -1,6 +1,5 @@
 import * as types from "actions/actionTypes";
-import {createTutoringDetails, submitRegistration} from
-    "../OmouComponents/RegistrationUtils";
+import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
 import {instance} from "actions/apiActions";
 import React from "react";
 import {FORM_ERROR} from "final-form";
@@ -1018,14 +1017,8 @@ export default {
                         ...stringField("Course Description"),
                     },
                     {
-                        "name": "grade",
-                        "label": "Grade",
-                        "component": <Fields.TextField />,
-                        "validator": Yup.number()
-                            .typeError("Grade must be a number.")
-                            .integer()
-                            .min(1)
-                            .max(13),
+                        ...ACADEMIC_LVL_FIELD,
+                        "required": true,
                     },
                     {
                         "name": "courseCategory",
@@ -1042,8 +1035,6 @@ export default {
                     },
                     INSTRUCTOR_CONFIRM_FIELD,
                     //!TODO FIX TO DISPLAY N NUMBER OF OTPIONS
-                    // START_DATE_FIELD,
-                    // START_TIME_FIELD,
                     {
                         "name": "maxCapacity",
                         "label": "Capacity",
@@ -1122,17 +1113,17 @@ export default {
                 "label": "Tuition",
                 "fields": [
                     {
-                        "name" : "location",
-                        "label": "Location",
+                        "name": "room",
+                        "label": "Room",
                         "required": true,
-                        "component": <Fields.TextField />,
-                        "validator": Yup.string()
+                        "component": <Fields.TextField/>,
+                        "validator": Yup.string(),
                     },
                     {
                         "name": "totalTuition",
                         "label": "Total Tuition",
                         "required": true,
-                        "component": <Fields.TextField />,
+                        "component": <Fields.TextField/>,
                         "validator": Yup.number().min(0),
                     },
                 ],
@@ -1211,7 +1202,9 @@ export default {
         },
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
-            mutation	createCourse($availabilities: [CourseAvailabilityInput], $academicLevel: AcademicLevelEnum, $courseCategory: ID,
+            mutation	createCourse(
+                $startDate: DateTime, $endDate: DateTime
+                $availabilities: [CourseAvailabilityInput], $academicLevel: AcademicLevelEnum, $courseCategory: ID,
                 $description: String, $instructor:ID, $isConfirmed:Boolean, $maxCapacity: Int, $totalTuition: Decimal,
                 $title: String!) {
             createCourse(
@@ -1220,12 +1213,12 @@ export default {
                   courseType: CLASS,
                   academicLevel: $academicLevel,
                   instructor: $instructor,
-          
+                  startDate: $startDate,
+                  endDate: $endDate,
                   room: "Stanford Room",
                   maxCapacity: $maxCapacity,
                   courseCategory: $courseCategory,
                   totalTuition: $totalTuition,
-                  
                   isConfirmed: $isConfirmed,
                   availabilities: $availabilities
               ) {
@@ -1236,6 +1229,8 @@ export default {
                       description
                       courseType
                       academicLevel
+                      startDate
+                      endDate
                       instructor {
                           user {
                               firstName
@@ -1286,7 +1281,8 @@ export default {
 
                 },
                 "dayAndTime": {
-                    ...dayAndTime,
+                    "startDate": dayAndTime.startDate,
+                    "endDate": dayAndTime.endDate,
                     availabilities,
                 },
                 "tuition": {
