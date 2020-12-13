@@ -987,8 +987,13 @@ export default {
                     },
                     {
                         "name": "grade",
-                        "required": true,
-                        ...stringField("Grade")
+                        "label": "Grade",
+                        "component": <Fields.TextField />,
+                        "validator": Yup.number()
+                            .typeError("Grade must be a number.")
+                            .integer()
+                            .min(1)
+                            .max(13),
                     },
                     {
                         "name": "courseCategory",
@@ -1251,23 +1256,6 @@ export default {
                 "dayAndTime": {
                     ...dayAndTime,
                     availabilities,
-                    // "availabilities": [
-                    //     {
-                    //         "dayOfWeek": dayAndTime.weekday1,
-                    //         "startTime": dayAndTime.startTime1.format("HH:mm"),
-                    //         "endTime":  dayAndTime.endTime1.format("HH:mm"),
-                    //     },
-                    //     {
-                    //         "dayOfWeek": dayAndTime.weekday2,
-                    //         "startTime": dayAndTime.startTime2 ? dayAndTime.startTime2.format("HH:mm") : null,
-                    //         "endTime": dayAndTime.endTime2 ? dayAndTime.endTime2.format("HH:mm") : null,
-                    //     },
-                    //     {
-                    //         "dayOfWeek": dayAndTime.weekday3,
-                    //         "startTime": dayAndTime.startTime3 ? dayAndTime.startTime3.format("HH:mm"): null,
-                    //         "endTime": dayAndTime.endTime3 ? dayAndTime.endTime3.format("HH:mm"): null
-                    //     }
-                    // ],
                 },
                 "tuition": {
                     ...tuition,
