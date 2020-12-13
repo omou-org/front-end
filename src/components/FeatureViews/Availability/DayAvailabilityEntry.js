@@ -177,7 +177,7 @@ export default function DayAvailabilityEntry({dayOfWeek, availabilities, dayInde
 			open={conflictErrorDialogOpen}
 			onClose={handleDialogClose}
 		>
-			<DialogTitle style={{color: errorRed}}>
+			<DialogTitle disableTypography style={{color: errorRed}}>
 				Sorry, the times don't quite make sense. Please check again!
 			</DialogTitle>
 			<DialogContent>

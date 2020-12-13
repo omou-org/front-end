@@ -291,7 +291,7 @@ const RegistrationCourseEnrollments = ({
                 maxWidth="xs"
                 onClose={closeUnenrollDialog(false)}
                 open={unenroll.open}>
-                <DialogTitle id="unenroll-dialog-title">
+                <DialogTitle disableTypography id="unenroll-dialog-title">
                     Unenroll in {courseTitle}
                 </DialogTitle>
                 <Divider />

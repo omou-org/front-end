@@ -282,7 +282,7 @@ export default function RegistrationCartContainer() {
           open={parentRegistrationConfirmation}
           onClose={() => setParentConfirmation(false)}
         >
-          <DialogTitle>
+          <DialogTitle disableTypography>
             <Grid
               container
               direction="row"
