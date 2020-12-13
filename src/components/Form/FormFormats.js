@@ -293,6 +293,28 @@ const STUDENT_INFO_FIELDS = {
         },
     ],
 };
+const BUSINESS_INFO_FIELDS = [
+    {
+        "name": "name",
+        "required": "true",
+        ...stringField("Business Info")
+    },
+    {
+        "name": "phone",
+        "required": "true",
+        ...stringField("Business Phone")
+    },
+    {
+        "name": "email",
+        "required": "true",
+        ...stringField("Business Email")
+    },
+    {
+        "name": "address",
+        "required": "true",
+        ...stringField("Business Address")
+    }
+]
 
 const TUTORING_COURSE_SECTIONS = [
     {
@@ -1103,7 +1125,7 @@ export default {
         "submit": async (formData, id) => {
             const CREATE_COURSE = gql`
             mutation CreateCourse($startDate:DateTime, $endDate:DateTime, $startTime:Time!, $endTime:Time!, $academicLevel:AcademicLevelEnum,$courseCategory:ID, $description:String, $hourlyTuition:Decimal, $instructor:ID, $isConfirmed:Boolean, $maxCapacity:Int, $totalTuition: Decimal, $title:String!) {
-  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
+  createCourse(availabilities: {endTime: $endTime, startTime: $startTime}, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
     course {
       id
     }
@@ -1340,6 +1362,34 @@ export default {
                 },
             });
         },
+    },
+    "business-info": {
+        "title": "Business Information",
+        "form": [
+            BUSINESS_INFO_FIELDS
+        ],
+        "load": async (id) => {
+            const GET_BUSINESS_INFO = gql`
+
+            `
+        },
+        "submit": async(formData, id) => {
+            const CREATE_BUSINESS = gql`
+                mutation createBusiness($name: String, $phone: String, $email: String, $address: String) {
+                    createBusiness(name: $name, phone: $phone, email: $email, address: $address){
+                        business{
+                            id
+                        }
+                    }
+                }
+            `;
+            const {businessInfo} = formData;
+            const modifiedData = {
+                "businessInfo": {
+                    ...businessInfo
+                }
+            }
+        }
     },
     "class-registration": {
         "title": "Class",

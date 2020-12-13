@@ -25,8 +25,10 @@ const UnpaidSessions = () => {
 		  course {
 			id
 			title
-			startTime
-			endTime
+			availabilityList {
+				endTime
+				startTime
+			  }
 			hourlyTuition
 		  }
 		  sessionsLeft

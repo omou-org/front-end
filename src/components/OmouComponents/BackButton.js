@@ -3,10 +3,11 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import BackArrow from '@material-ui/icons/ArrowBackIos';
 import Modal from "@material-ui/core/Modal";
-import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden/Hidden";
 import { Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 
 const BackButton = (props) => {
@@ -22,10 +23,10 @@ const BackButton = (props) => {
 	const label = () => {
 		var label = "";
 		if (props.label == null) {
-			label = "Back";
+			label = "back";
 		}
 		if (props.label == "cancel") {
-			label = "Cancel";
+			label = "cancel";
 		}
 		return label;
 	};
@@ -68,7 +69,7 @@ const BackButton = (props) => {
 
 	const renderIcon = () => {
 		if (props.icon == null) {
-			return <BackArrow fontSize="small" className="icon" />
+			return <BackArrow style={{transform: "scale(0.8)"}}/>
 		}
 		if (props.icon == "cancel") {
 			return null;
@@ -77,15 +78,15 @@ const BackButton = (props) => {
 
 	return (
 		<Hidden mdDown>
-			<Button
+			<ResponsiveButton
+				style={{display: 'flex'}} 
+				variant='outlined'
 				className="control course button"
 				onClick={() => { handleClick() }}
+				startIcon={renderIcon()}
 			>
-				<Grid container>
-					{renderIcon()}
-					<span className="label">{label()}</span>
-				</Grid>
-			</Button>
+				{label()}
+			</ResponsiveButton>
 			<Modal
 				aria-labelledby="simple-modal-title"
 				aria-describedby="simple-modal-description"
@@ -97,7 +98,7 @@ const BackButton = (props) => {
 						{props.alertMessage ||
 							"Are you sure you want to leave unsaved changes?"}
 					</Typography>
-					<Button
+					<ResponsiveButton
 						onClick={(e) => {
 							e.preventDefault();
 							(denyAction());
@@ -106,8 +107,8 @@ const BackButton = (props) => {
 						className="button secondary"
 					>
 						{props.alertDenyText || "No, leave me here"}
-					</Button>
-					<Button
+					</ResponsiveButton>
+					<ResponsiveButton
 						onClick={(e) => {
 							e.preventDefault();
 							(confirmAction());
@@ -116,7 +117,7 @@ const BackButton = (props) => {
 						className="button primary"
 					>
 						{props.alertConfirmText || "Yes, take me back"}
-					</Button>
+					</ResponsiveButton>
 				</div>
 			</Modal>
 		</Hidden>

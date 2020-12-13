@@ -143,5 +143,41 @@
       }
     ],
     "__typename": "CourseType"
-  }
+  },
+    "geometry": {
+        "course": {
+            "academicLevel": "MIDDLE_LVL",
+            "courseType": "CLASS",
+            "description": "This is a course to help students increase their understanding of geometric principles",
+            "endDate": "2020-12-16",
+            "endTime": "16:00:00",
+            "id": "3",
+            "instructor": {
+                "user": {
+                    "id": "5",
+                    "firstNamer": "Jim",
+                    "lastName": "Neutron",
+                    "__typename": "UserType"
+                },
+                "__typename": "InstructorType"
+            },
+            "isConfirmed": true,
+            "maxCapacity": 6,
+            "startDate": "2020-10-30",
+            "startTime": "15:00:00",
+            "title": "Physics",
+            "__typename": "CourseType"
+        },
+        "courseNotes": [
+            {
+                "body": "Do your homework",
+                "complete": false,
+                "id": 1,
+                "important": false,
+                "timestamp": "2020-11-10T03:43:56.864821+00:00",
+                "title": "This is a note for the class",
+                "__typename": "CourseNoteType"
+            }
+        ]
+    }
 }

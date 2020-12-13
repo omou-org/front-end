@@ -11,6 +11,7 @@ import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 import {Link, Redirect, useHistory, useLocation} from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -18,6 +19,7 @@ import Typography from "@material-ui/core/Typography";
 import {ReactComponent as Ellipse1} from "./loginImages/ellipse1.svg";
 import {ReactComponent as Ellipse2} from "./loginImages/ellipse2.svg";
 import {ReactComponent as Picture1} from "./loginImages/picture1.svg";
+
 
 const useStyles = makeStyles((theme) => ({
     "info": {
@@ -69,13 +71,17 @@ const ForgotPassword = () => {
     }
 
     const SubmittedContent = (
-        <Button className={classes.primaryButton} color="primary"
-            component={Link} data-cy="return" to={{
+        <ResponsiveButton 
+            component={Link} 
+            data-cy="return" 
+            to={{
                 "pathname": "/login",
                 "state": {email},
-            }} variant="contained">
+            }} 
+            variant="contained"
+            >
             Back to login
-        </Button>
+        </ResponsiveButton>
     );
 
     const ResetForm = (
@@ -98,18 +104,25 @@ const ForgotPassword = () => {
             <Grid className="buttonContainer" container item>
                 <Grid item md={2} />
                 <Grid item md={4} >
-                    <Button className="createAccountButton"
-                        data-cy="reset" type="submit">
+                    <ResponsiveButton 
+                        data-cy="reset" 
+                        type="submit"
+                        variant="contained"
+                    >
                         SEND RESET EMAIL
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
                 <Grid item md={4}>
-                    <Button className="signInButton" component={Link} to={{
+                    <ResponsiveButton 
+                        component={Link} 
+                        to={{
                         "pathname": "/login",
                         "state": {email},
-                    }}>
+                        }}
+                        variant="outlined"
+                    >
                         BACK TO LOGIN
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
                 <Grid item md={2} />
             </Grid>

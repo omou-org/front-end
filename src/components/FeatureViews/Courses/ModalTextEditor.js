@@ -23,6 +23,8 @@ import Loading from "../../OmouComponents/Loading";
 import gql from "graphql-tag";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import "./ModalTextEditor.scss";
+import { GET_SESSION_NOTES } from "./ClassSessionView";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles(theme => ({
   rootContainer: {

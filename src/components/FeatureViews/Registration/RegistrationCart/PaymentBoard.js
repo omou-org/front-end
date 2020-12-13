@@ -11,7 +11,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TextField from "@material-ui/core/TextField/TextField";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from "../../../OmouComponents/Loading";
 import {useHistory} from "react-router-dom"
 import {GET_PAYMENT} from "../PaymentReceipt";
@@ -19,6 +19,7 @@ import {GET_COURSES} from "../RegistrationLanding";
 import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
 import {GET_REGISTRATION_CART} from "../SelectParentDialog";
 import {CREATE_REGISTRATION_CART} from "./RegistrationCartContainer";
+
 
 const GET_PRICE_QUOTE = gql`
 	query GetPriceQuote($method: String!, 
@@ -72,7 +73,10 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
       enrollments {
         course {
           title
-          startTime
+		  availabilityList {
+			endTime
+			startTime
+		  }
           startDate
           instructor {
             user {
@@ -80,9 +84,8 @@ const CREATE_PAYMENT = gql`mutation CreatePayment($method:String!, $parent:ID!, 
               firstName
             }
           }
-          courseId
+		  courseId
           endDate
-          endTime
           hourlyTuition
         }
         student {
@@ -155,12 +158,12 @@ export default function PaymentBoard() {
 			student,
 		}));
 
-	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentList}})
+	const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {variables: {studentIds: currentParent.studentIdList}})
 	const [createEnrollments, createEnrollmentResults] = useMutation(CREATE_ENROLLMENTS, {
 		update: (cache, {data}) => {
 			const existingEnrollmentsFromGetParent = cache.readQuery({
 				query: GET_PARENT_ENROLLMENTS,
-				variables: {studentIds: currentParent.studentList}
+				variables: {studentIds: currentParent.studentIdList}
 			}).enrollments;
 
 			cache.writeQuery({
@@ -171,7 +174,7 @@ export default function PaymentBoard() {
 						...data["createEnrollments"].enrollments
 					],
 				},
-				variables: {studentIds: currentParent.studentList}
+				variables: {studentIds: currentParent.studentIdList}
 			});
 			let cachedCourses = cache.readQuery({
 				query: GET_COURSES,
@@ -202,7 +205,7 @@ export default function PaymentBoard() {
 			const {userInfos, enrollments} = cache.readQuery({
 				query: GET_STUDENTS_AND_ENROLLMENTS,
 				variables: {
-					userIds: currentParent.studentList
+					userIds: currentParent.studentIdList
 				}
 			});
 
@@ -367,8 +370,8 @@ export default function PaymentBoard() {
 	};
 
 	if (error || enrollmentResponse.error) {
-		console.error(error.message, enrollmentResponse.error.message);
-		return <div>There has been an error! : {error.message} {enrollmentResponse.error.message}</div>
+		console.error(error?.message, enrollmentResponse.error.message);
+		return <div>There has been an error! : {error?.message} {enrollmentResponse.error.message}</div>
 	}
 
 	const priceQuote = data?.priceQuote || {
@@ -441,7 +444,7 @@ export default function PaymentBoard() {
 		</Grid>
 		<Grid item container justify="flex-end">
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					variant="contained"
 					color="primary"
 					disabled={priceQuote.total === "-" || priceQuote < 0}
@@ -449,7 +452,7 @@ export default function PaymentBoard() {
 					data-cy="pay-action"
 				>
 					Pay
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 		</Grid>
 	</>)
