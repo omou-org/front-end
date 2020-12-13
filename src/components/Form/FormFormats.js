@@ -69,9 +69,9 @@ const userMap = ({accountSearch}) => accountSearch.results.map(({user}) => ({
 
 const instructorSelect = (name) => (
     <Fields.DataSelect name={name} 
-                       optionsMap={userMap}
-                       request={SEARCH_INSTRUCTORS} 
-                       noOptionsText="No instructors available"/>
+        optionsMap={userMap}
+        request={SEARCH_INSTRUCTORS} 
+        noOptionsText="No instructors available"/>
 );
 
 
@@ -430,9 +430,9 @@ const GET_COURSES = gql`
 
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} 
-                       optionsMap={userMap}
-                       request={SEARCH_PARENTS} 
-                       noOptionsText="No parents available"/>
+        optionsMap={userMap}
+        request={SEARCH_PARENTS} 
+        noOptionsText="No parents available"/>
 );
 
 const courseMap = ({courses}) => courses.map(({title, instructor, id}) =>
@@ -455,9 +455,9 @@ const categoryMap = ({courseCategories}) => courseCategories
 
 const categorySelect = (name) => (
     <Fields.DataSelect name={name} 
-                       optionsMap={categoryMap}
-                       request={GET_CATEGORIES} 
-                       noOptionsText="No categories available"/>
+        optionsMap={categoryMap}
+        request={GET_CATEGORIES} 
+        noOptionsText="No categories available"/>
 );
 
 const schoolMap = ({schools}) => schools.map(({name, id}) => ({
@@ -475,9 +475,9 @@ const GET_SCHOOLS = gql`
 
 const schoolSelect = (name) => (
     <Fields.DataSelect name={name} 
-                       optionsMap={schoolMap}
-                       request={GET_SCHOOLS} 
-                       noOptionsText="No schools available"/>
+        optionsMap={schoolMap}
+        request={GET_SCHOOLS} 
+        noOptionsText="No schools available"/>
 );
 
 const GET_USER_TYPE = gql`
@@ -1015,7 +1015,7 @@ export default {
                             .integer(),
                     },
                 ],
-                "next": "tuition",
+                "next": "dayAndTime",
             },
             {
                 "name" : "dayAndTime",
@@ -1055,7 +1055,7 @@ export default {
                         "validator": Yup.date(),
                     },
                     {
-                        "name": "endTime1",
+                        "name": "endTime2",
                         "label": "End Time",
                         "component": <Fields.TimePicker format="hh:mm a" />,
                         "validator": Yup.date(),
@@ -1077,7 +1077,8 @@ export default {
                         "component": <Fields.TimePicker format="hh:mm a" />,
                         "validator": Yup.date(),
                     },
-                ]
+                ],
+                "next": "tuition",
             },
             {
                 "name": "tuition",
@@ -1172,31 +1173,63 @@ export default {
             }
         },
         "submit": async (formData, id) => {
+            //!TODO CourseAvailability?
             const CREATE_COURSE = gql`
-            mutation CreateCourse($startDate:DateTime, $endDate:DateTime, $startTime:Time!, $endTime:Time!, $academicLevel:AcademicLevelEnum,$courseCategory:ID, $description:String, $hourlyTuition:Decimal, $instructor:ID, $isConfirmed:Boolean, $maxCapacity:Int, $totalTuition: Decimal, $title:String!) {
-  createCourse(endTime: $endTime, startTime: $startTime, title: $title, maxCapacity: $maxCapacity, isConfirmed: $isConfirmed, instructor: $instructor, hourlyTuition: $hourlyTuition, academicLevel: $academicLevel, courseCategory: $courseCategory, courseType: CLASS, description: $description, endDate: $endDate, startDate: $startDate, totalTuition: $totalTuition) {
-    course {
-      id
-    }
-  }
-}
+            mutation	createCourse($availabilities: [CourseAvailabilityInput], $academicLevel: AcademicLevelEnum, $courseCategory: ID,
+                $description: String, $instructor:ID, $isConfirmed:Boolean, $maxCapacity: Int, $totalTuition: Decimal,
+                $title: String!) {
+            createCourse(
+                  title: $title,
+                  description:$description,
+                  courseType: CLASS,
+                  academicLevel: $academicLevel,
+                  instructor: $instructor,
+          
+                  room: "Stanford Room",
+                  maxCapacity: $maxCapacity,
+                  courseCategory: $courseCategory,
+                  totalTuition: $totalTuition,
+                  
+                  isConfirmed: $isConfirmed,
+                  availabilities: $availabilities
+              ) {
+                  course {
+                      academicLevelPretty
+                      id
+                      title
+                      description
+                      courseType
+                      academicLevel
+                      instructor {
+                          user {
+                              firstName
+                              lastName
+                          }
+                      }
+                      }
+                  }
+              }
             `;
 
-            const { courseInfo, tuition } = formData;
+            const { courseDescription, tuition, dayAndTime } = formData;
             const modifiedData = {
-                "courseInfo": {
-                    ...courseInfo,
-                    "instructor": courseInfo.instructor.value,
-                    "endDate": moment(courseInfo.startDate)
-                        .add(tuition.numSessions - 1, "w"),
-                    "endTime": moment(courseInfo.startTime).add(tuition.duration, "h")
-                        .format("HH:mm"),
-                    "startTime": courseInfo.startTime.format("HH:mm"),
+                "courseDescription": {
+                    ...courseDescription,
+                    "instructor": courseDescription.instructor.value,
+                    "courseCategory": courseDescription.courseCategory.value,
+
+                },
+                "dayAndTime": {
+                    ...dayAndTime,
+                    "startTime1": dayAndTime.startTime1.format("HH:mm"),
+                    "endTime1": dayAndTime.endTime1.format("HH:mm"),
+                    "startTime2": dayAndTime.startTime2.format("HH:mm"),
+                    "endTime2": dayAndTime.endTime2.format("HH:mm"),
+                    "startTime3": dayAndTime.startTime3.format("HH:mm"),
+                    "endTime3": dayAndTime.endTime3.format("HH:mm")
                 },
                 "tuition": {
                     ...tuition,
-                    "courseCategory": tuition.courseCategory.value,
-                    "duration": formData.tuition.duration.value,
                 },
             };
 
@@ -1384,12 +1417,12 @@ export default {
             };
 
             const instructorMutationVariable = Object.values(modifiedData)
-            .reduce((obj, section) => {
-                return ({
-                ...obj,
-                ...section,
-            })
-        }, {});
+                .reduce((obj, section) => {
+                    return ({
+                        ...obj,
+                        ...section,
+                    })
+                }, {});
             try {
                 await client.mutate({
                     "mutation": CREATE_INSTRUCTOR,
@@ -1436,15 +1469,15 @@ export default {
                         "name": "class",
                         "label": "Class",
                         "component": <Fields.DataSelect name="Classes" 
-                                                        optionsMap={openCourseMap}
-                                                        request={GET_COURSES} 
-                                                        noOptionsText="No classes available"/>,
+                            optionsMap={openCourseMap}
+                            request={GET_COURSES} 
+                            noOptionsText="No classes available"/>,
                         "validator": Yup.mixed(),
                     },
                 ],
             },
         ],
-		"submit": (formData) => {
+        "submit": (formData) => {
             const {dispatch} = window.store;
             dispatch({
                 type: types.ADD_CLASS_REGISTRATION,
@@ -1478,31 +1511,31 @@ export default {
             submitRegistration(formData.selectStudent, course);
         },
 
-	},
-	"small-group-registration": {
-		"title": "New Small Group Tutoring",
-		"form": [
-			{
-				"name": "student",
-				"label": "Student",
-				"fields": [
-					{
-						"name": "student",
-						"label": "Student",
-						"component": <StudentSelect/>,
-						"validator": Yup.mixed(),
-					},
-				],
-			},
-			STUDENT_INFO_FIELDS,
-			...TUTORING_COURSE_SECTIONS,
-		],
-		"submit": (formData) => {
-			console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
-			const course = createTutoringDetails("smallGroup", formData);
-			submitRegistration(formData.selectStudent, course);
-		}
-	},
+    },
+    "small-group-registration": {
+        "title": "New Small Group Tutoring",
+        "form": [
+            {
+                "name": "student",
+                "label": "Student",
+                "fields": [
+                    {
+                        "name": "student",
+                        "label": "Student",
+                        "component": <StudentSelect/>,
+                        "validator": Yup.mixed(),
+                    },
+                ],
+            },
+            STUDENT_INFO_FIELDS,
+            ...TUTORING_COURSE_SECTIONS,
+        ],
+        "submit": (formData) => {
+            console.log(formData, moment(formData.tutoring_details.startDate, "DD-MM-YYYY").add(formData.sessions, 'weeks'));
+            const course = createTutoringDetails("smallGroup", formData);
+            submitRegistration(formData.selectStudent, course);
+        }
+    },
     "course_category": {
         "title": "Course",
         "form": [
