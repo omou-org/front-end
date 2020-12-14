@@ -394,7 +394,10 @@ const AttendanceTable = ({ setIsEditing }) => {
     value,
     borderTop,
     borderBottom
-  ) => (
+  ) => {
+    // Icon button does not render background color due to not having an UNSET key in the 'attendanceStatusSelectColor'.
+    // Did a quick fix but will have to come back and revist the code to better optimize it.
+    return(
     <IconButton
       data-studentIndex={studentIndex}
       data-sessionId={sessionColumn.sessionId}
@@ -405,11 +408,16 @@ const AttendanceTable = ({ setIsEditing }) => {
       onClick={handleClick}
       style={{
         backgroundColor: `${
-          sessionColumn[sessionColumn.sessionId] === value ||
-          sessionColumn[sessionColumn.sessionId] === "UNSET"
+          sessionColumn[sessionColumn.sessionId] === value 
             ? attendanceStatusSelectColor[
                 sessionColumn[sessionColumn.sessionId]
               ]
+            : (sessionColumn[sessionColumn.sessionId] === "UNSET" && value === "PRESENT") 
+            ? "#6CE086"
+            : (sessionColumn[sessionColumn.sessionId] === "UNSET" && value === "TARDY") 
+            ? "#FFDD59"
+            : (sessionColumn[sessionColumn.sessionId] === "UNSET" && value === "ABSENT") 
+            ? "#FF6766"
             : attendanceStatusUnselectColor[
                 sessionColumn[sessionColumn.sessionId]
               ]
@@ -418,7 +426,7 @@ const AttendanceTable = ({ setIsEditing }) => {
         ...borderBottom,
       }}
     />
-  );
+  )};
 
   const sortDescOrder = (firstEl, secondEl) => (firstEl < secondEl ? -1 : 0);
   const sortAscOrder = (firstEl, secondEl) => (firstEl > secondEl ? -1 : 0);
