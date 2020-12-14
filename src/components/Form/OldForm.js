@@ -1604,7 +1604,7 @@ class Form extends Component {
                                 });
                             }}
                             open={this.props.submitStatus === "fail"}>
-                            <DialogTitle id="alert-dialog-title">Failed to Submit</DialogTitle>
+                            <DialogTitle disableTypography id="alert-dialog-title">Failed to Submit</DialogTitle>
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
                                     There was an error submitting the form. Check all fields and try again.

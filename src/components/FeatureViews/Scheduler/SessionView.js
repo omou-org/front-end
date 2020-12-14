@@ -319,7 +319,7 @@ const SessionView = () => {
             onClose={handleEditToggle(true)}
             open={edit}
           >
-            <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
+            <DialogTitle  disableTypography id="form-dialog-title">Edit Session</DialogTitle>
             <Divider />
             <DialogContent>
               <RadioGroup

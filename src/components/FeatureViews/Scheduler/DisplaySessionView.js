@@ -340,7 +340,7 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                 maxWidth="xs"
                 onClose={handleEditToggle(true)}
                 open={edit}>
-                <DialogTitle id="form-dialog-title">Edit Session</DialogTitle>
+                <DialogTitle disableTypography id="form-dialog-title">Edit Session</DialogTitle>
                 <Divider />
                 <DialogContent>
                     <RadioGroup aria-label="delete"
@@ -381,7 +381,7 @@ const DisplaySessionView = ({ course, session, handleToggleEditing }) => {
                 maxWidth="xs"
                 onClose={closeUnenrollDialog(false)}
                 open={unenroll}>
-                <DialogTitle id="unenroll-dialog-title">
+                <DialogTitle disableTypography id="unenroll-dialog-title">
                     Unenroll in {course.title}
                 </DialogTitle>
                 <Divider />

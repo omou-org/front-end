@@ -38,14 +38,11 @@ const FormPage = () => {
         },
     }), {});
 
-    const getTitle = () => {
+    const getTitle = (title) => {
         if (id) {
-            return title.edit || `${title} Editing`;
-        }
-        if (title == 'Add New Class'){
-            return title.create
+            return title.edit || `Edit ${title}`;
         } else {
-        return title.create || `${title} Registration`;
+            return title.create || `Add New ${title}`;
         }
     };
 
@@ -55,9 +52,9 @@ const FormPage = () => {
     
     return (
         <Fragment>
-            <BackButton />
+            <BackButton/>
             <Form base={form} initialData={withDefaultData} onSubmit={onSubmit}
-                title={getTitle()} />
+                  title={getTitle(title)}/>
         </Fragment>
     );
 };

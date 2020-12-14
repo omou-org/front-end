@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import React, {useCallback, useState} from "react";
+import {useSelector} from "react-redux";
 
 import CalendarIcon from "@material-ui/icons/CalendarTodayRounded";
 import Chip from "@material-ui/core/Chip";
@@ -8,30 +8,29 @@ import ConfirmIcon from "@material-ui/icons/CheckCircle";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import Notes from "../Notes/Notes";
-import RegistrationIcon from "@material-ui/icons/PortraitOutlined";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import Typography from "@material-ui/core/Typography";
 import UnconfirmIcon from "@material-ui/icons/Cancel";
 import Moment from "react-moment";
-import { makeStyles } from "@material-ui/core/styles";
-import { LabelBadge } from "../../../theme/ThemedComponents/Badge/LabelBadge";
+import {makeStyles} from "@material-ui/core/styles";
+import {LabelBadge} from "../../../theme/ThemedComponents/Badge/LabelBadge";
 
 
 import "./registration.scss";
-import { Link, useRouteMatch } from "react-router-dom";
+import {Link, useRouteMatch} from "react-router-dom";
 import BackButton from "../../OmouComponents/BackButton.js";
 import Loading from "components/OmouComponents/Loading";
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import RegistrationActions from "./RegistrationActions";
 import RegistrationCourseEnrollments from "./RegistrationCourseEnrollments";
 import UserAvatar from "../Accounts/UserAvatar";
-import { weeklySessionsParser } from "components/Form/FormUtils";
-import { useQuery } from "@apollo/react-hooks";
+import {weeklySessionsParser} from "components/Form/FormUtils";
+import {useQuery} from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import {SIMPLE_COURSE_DATA} from "queryFragments";
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent.js";
-import {fullName, USER_TYPES, gradeLvl} from "utils";
+import {fullName, gradeLvl, USER_TYPES} from "utils";
 
 export const GET_COURSE_DETAILS = gql`
 	query CourseDetails($courseId: ID!){
@@ -148,7 +147,7 @@ const RegistrationCourse = () => {
 							className="button"
 							variant='outlined'
 							component={Link}
-							to={`/registration/form/course_details/${courseID}`}
+							to={`/form/course_details/${courseID}`}
 						>
 							edit course
 						</ ResponsiveButton>

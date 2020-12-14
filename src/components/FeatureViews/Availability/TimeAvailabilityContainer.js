@@ -228,7 +228,7 @@ export default function TimeAvailabilityContainer() {
 			</Table>
 		</Grid>
 		<Dialog open={openSaveAvailability} onClose={() => setOpenSaveAvailability(false)}>
-			<DialogTitle>
+			<DialogTitle disableTypography>
 				Successfully updated availability hours!
 			</DialogTitle>
 			<DialogContent>
