@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React from "react";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -7,7 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
-import { fullName, USER_TYPES } from "utils";
+import { fullName } from "utils";
 
 
 const ResetPasswordDialogs = ({userInfo, open, openReset, password, handleClosePassword, handleClosePasswordReset, handleCloseReset}) => {
