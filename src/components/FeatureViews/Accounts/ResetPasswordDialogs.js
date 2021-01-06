@@ -69,8 +69,8 @@ const ResetPasswordDialogs = ({ userInfo, isStudentProfile }) => {
         open={open}
         onClose={handleClosePassword}
         maxWidth="xs"
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        aria-labelledby="step1-confirm-reset-user-password-alert"
+        aria-describedby="Opens password reset confirmation dialog"
       >
         <DialogTitle
           disableTypography
@@ -108,8 +108,8 @@ const ResetPasswordDialogs = ({ userInfo, isStudentProfile }) => {
       <Dialog
         open={openReset}
         onClose={handleCloseReset}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        aria-labelledby="step2-display-user-password-dialog"
+        aria-describedby="Display's user's new password"
       >
         <DialogTitle
           disableTypography
