@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import gql from "graphql-tag";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 
-import Button from "@material-ui/core/Button";
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
 import EditIcon from "@material-ui/icons/EditOutlined";
@@ -22,11 +21,7 @@ import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { darkGrey } from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import ResetPasswordDialogs from "./ResetPasswordDialogs"
 
 import { useSearchParams } from "actions/hooks";
 import Loading from "components/OmouComponents/Loading";
@@ -38,6 +33,7 @@ import { ReactComponent as SchoolIcon } from "../../school.svg";
 
 import { fullName, USER_TYPES } from "utils";
 import generatePassword from "password-generator";
+import UserProfileInfo from "./UserProfileInfo";
 const useStyles = makeStyles({
     icon: {
         fill: darkGrey,
@@ -252,7 +248,16 @@ const ProfileHeading = ({ ownerID }) => {
                 </ResponsiveButton>
               )}
             </div>
-            <ResetDialog />
+            <ResetPasswordDialogs
+                userInfo = {userInfo}
+                handleClosePassword = {handleClosePassword}
+                handleClosePasswordReset = {handleClosePasswordReset}
+                handleCloseReset = {handleCloseReset}
+                open = {open}
+                openReset = {openReset}
+                password = {password}
+
+             />
                     </Grid>
                     <Grid component={Hidden} item lgUp xs={12}>
                         <ResponsiveButton
@@ -266,77 +271,6 @@ const ProfileHeading = ({ ownerID }) => {
                 </>
             )}
         </Grid>
-    );
-
-    const ResetDialog = () => (
-      <>
-        <Dialog
-          open={open}
-          onClose={handleClosePassword}
-          maxWidth="xs"
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle disableTypography id="alert-dialog-title" className="center dialog-padding">
-            Do you want to reset this user's password?
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description" className="center">
-              When you reset the password, a randomly generated password will
-              become the user's new password. This action cannot be reverted. An
-              automatic email will be sent out notifying the user that their
-              password has been reset. The user can also reset their own password
-              through the portal login page.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="dialog-actions">
-            <ResponsiveButton
-              onClick={handleClosePassword}
-              variant="outlined"
-              className="cancelBtn"
-            >
-              cancel
-            </ResponsiveButton>
-            <ResponsiveButton
-              onClick={handleClosePasswordReset}
-              className="resetBtn"
-              autoFocus
-            >
-              reset password
-            </ResponsiveButton>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={openReset}
-          onClose={handleCloseReset}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle disableTypography id="alert-dialog-title" className="center">
-            Password has been reset.
-          </DialogTitle>
-          <DialogContent className="center dialog-padding">
-            <DialogContentText id="alert-dialog-description">
-              The new password for {fullName(userInfo.user)} ID #
-              {userInfo.user.id} is
-            </DialogContentText>
-            <DialogContentText
-              id="alert-dialog-description"
-              className="passwordDisplay"
-            >
-              {password}
-            </DialogContentText>
-            <DialogContentText id="alert-dialog-description">
-              Please write it down since you will not be able to access it later
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="dialog-actions">
-            <ResponsiveButton onClick={handleCloseReset} className="doneBtn">
-              done
-            </ResponsiveButton>
-          </DialogActions>
-        </Dialog>
-      </>
     );
 
     const profileDetails = () => {
