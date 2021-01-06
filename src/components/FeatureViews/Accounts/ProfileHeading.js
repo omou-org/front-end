@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 
 import gql from "graphql-tag";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import CalendarIcon from "@material-ui/icons/CalendarToday";
@@ -32,7 +32,7 @@ import { ReactComponent as IDIcon } from "../../identifier.svg";
 import { ReactComponent as SchoolIcon } from "../../school.svg";
 
 import { fullName, USER_TYPES } from "utils";
-import generatePassword from "password-generator";
+
 import UserProfileInfo from "./UserProfileInfo";
 const useStyles = makeStyles({
     icon: {
@@ -127,22 +127,11 @@ const GET_PROFILE_HEADING_QUERY = {
         }
     `,
 };
-const RESET_PASSWORD = gql`
-  mutation ResetPassword($password: String!, $userId: ID!) {
-    resetPassword(newPassword: $password, userId: $userId) {
-      status
-    }
-  }
-`;
 
 const ProfileHeading = ({ ownerID }) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const { accountType } = useParams();
-
-    const [open, setOpen] = useState(false);
-    const [openReset, setResetOpen] = useState(false);
-    const [password, setPassword] = useState();
 
     const loggedInUserID = useSelector(({ auth }) => auth.user.id);
     const loggedInAuth = useSelector(({ auth }) => auth);
@@ -153,38 +142,10 @@ const ProfileHeading = ({ ownerID }) => {
             variables: { userID: ownerID },
         }
     );
-  const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
     if (loading) return <Loading />;
 
     if (error) return `Error: ${error}`;
     const { userInfo } = data;
-
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClosePassword = () => {
-      setOpen(false);
-    };
-  
-    const handleClosePasswordReset = () => {
-      setOpen(false);
-      setResetOpen(true);
-      const newPassword = generatePassword(8, false, /[\w\?\-]/);
-      setPassword(newPassword);
-  
-      resetPassword({
-        variables: {
-          password: newPassword,
-          userId: userInfo.user.id,
-        },
-      });
-    };
-
-    const handleCloseReset = () => {
-      setResetOpen(false);
-    };
-
 
     const handleOpen = ({ currentTarget }) => {
         setAnchorEl(currentTarget);
@@ -239,25 +200,12 @@ const ProfileHeading = ({ ownerID }) => {
                             Edit Profile
                         </ResponsiveButton>
                         {isAdmin && (
-                <ResponsiveButton
-                  className="reset"
-                  disabled={isStudentProfile}
-                  onClick={handleClickOpen}
-                >
-                  Reset Password
-                </ResponsiveButton>
+                <ResetPasswordDialogs
+                isStudentProfile = {isStudentProfile}
+                userInfo = {userInfo}
+             />
               )}
             </div>
-            <ResetPasswordDialogs
-                userInfo = {userInfo}
-                handleClosePassword = {handleClosePassword}
-                handleClosePasswordReset = {handleClosePasswordReset}
-                handleCloseReset = {handleCloseReset}
-                open = {open}
-                openReset = {openReset}
-                password = {password}
-
-             />
                     </Grid>
                     <Grid component={Hidden} item lgUp xs={12}>
                         <ResponsiveButton

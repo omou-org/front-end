@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -6,14 +6,65 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/react-hooks";
+
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import { fullName } from "utils";
+import generatePassword from "password-generator";
 
 
-const ResetPasswordDialogs = ({userInfo, open, openReset, password, handleClosePassword, handleClosePasswordReset, handleCloseReset}) => {
+const RESET_PASSWORD = gql`
+  mutation ResetPassword($password: String!, $userId: ID!) {
+    resetPassword(newPassword: $password, userId: $userId) {
+      status
+    }
+  }
+`;
 
-    return (
+const ResetPasswordDialogs = ({ userInfo, isStudentProfile }) => {
+  const [open, setOpen] = useState(false);
+  const [openReset, setResetOpen] = useState(false);
+  const [password, setPassword] = useState();
+
+  const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
+
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClosePassword = () => {
+    setOpen(false);
+  };
+
+  const handleCloseReset = () => {
+    setResetOpen(false);
+  };
+
+  const handleClosePasswordReset = () => {
+    setOpen(false);
+    setResetOpen(true);
+    const newPassword = generatePassword(8, false, /[\w\?\-]/);
+    setPassword(newPassword);
+
+    resetPassword({
+      variables: {
+        password: newPassword,
+        userId: userInfo.user.id,
+      },
+    });
+  };
+
+  return (
     <>
+      <ResponsiveButton
+        className="reset"
+        disabled={isStudentProfile}
+        onClick={handleClickOpen}
+      >
+        Reset Password
+      </ResponsiveButton>
       <Dialog
         open={open}
         onClose={handleClosePassword}
@@ -21,7 +72,11 @@ const ResetPasswordDialogs = ({userInfo, open, openReset, password, handleCloseP
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle disableTypography id="alert-dialog-title" className="center dialog-padding">
+        <DialogTitle
+          disableTypography
+          id="alert-dialog-title"
+          className="center dialog-padding"
+        >
           Do you want to reset this user's password?
         </DialogTitle>
         <DialogContent>
@@ -56,7 +111,11 @@ const ResetPasswordDialogs = ({userInfo, open, openReset, password, handleCloseP
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle disableTypography id="alert-dialog-title" className="center">
+        <DialogTitle
+          disableTypography
+          id="alert-dialog-title"
+          className="center"
+        >
           Password has been reset.
         </DialogTitle>
         <DialogContent className="center dialog-padding">
@@ -81,6 +140,7 @@ const ResetPasswordDialogs = ({userInfo, open, openReset, password, handleCloseP
         </DialogActions>
       </Dialog>
     </>
-  )}
+  );
+};
 
-  export default ResetPasswordDialogs;
+export default ResetPasswordDialogs;
