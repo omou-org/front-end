@@ -184,7 +184,7 @@ const LoginPage = () => {
                             </Grid>
                             <Grid item md={4}>
                                 <ResponsiveButton
-                                    data-cy="nextButton"
+                                    data-cy="signInButton"
                                     onClick={handleCheck}
                                     variant="outlined"
                                 >
