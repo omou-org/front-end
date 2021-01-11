@@ -5,6 +5,7 @@ export default {
 		"token": null,
 		"email": null,
 		"accountType": null,
+		attemptedLogin: false,
 	},
 	RegistrationForms: {},
 	SignUpForm: initSignUpForm(),

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import {DatePicker, TimePicker} from "@material-ui/pickers";
 import AwayIcon from "@material-ui/icons/EventBusy";
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -79,11 +79,12 @@ const OutOfOffice = ({instructorID, button}) => {
         <>
             {
                 button
-                    ? <Button
+                    ? <ResponsiveButton
                         onClick={toggleDialog}
-                        variant="outlined">
-                        <AwayIcon /> SET OOO
-                    </Button>
+                        variant="outlined"
+                        startIcon={<AwayIcon /> }>
+                        SET OOO
+                    </ResponsiveButton>
                     : <MenuItem
                         onClick={toggleDialog}>
                         <AwayIcon /> SET OOO
@@ -190,24 +191,24 @@ const OutOfOffice = ({instructorID, button}) => {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button
+                    <ResponsiveButton
                         className="button"
                         onClick={toggleDialog}
                         variant="outlined">
                         Cancel
-                    </Button>
+                    </ResponsiveButton>
                     <InstructorConflictCheck
                         end={end}
                         ignoreAvailablity
                         instructorID={instructorID}
                         onSubmit={handleSave}
                         start={start}>
-                        <Button
+                        <ResponsiveButton
                             className="button"
                             disabled={!canSubmit}
                             variant="outlined">
                             Save OOO
-                        </Button>
+                        </ResponsiveButton>
                     </InstructorConflictCheck>
                 </DialogActions>
             </Dialog>

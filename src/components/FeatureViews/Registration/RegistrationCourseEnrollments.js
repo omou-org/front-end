@@ -1,7 +1,7 @@
-import React, { Fragment, useCallback, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+import React, { Fragment, useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -32,14 +32,28 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import ClassEnrollmentList from '../Courses/ClassEnrollmentList';
 
-import "theme/theme.scss";
-import "./registration.scss";
-import { addDashes } from "components/FeatureViews/Accounts/accountUtils";
-import { deleteEnrollment } from "actions/registrationActions";
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
-import { fullName } from "../../../utils";
+import 'theme/theme.scss';
+import './registration.scss';
+import { addDashes } from 'components/FeatureViews/Accounts/accountUtils';
+import { deleteEnrollment } from 'actions/registrationActions';
+import gql from 'graphql-tag';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { GET_COURSES } from './RegistrationLanding';
+import { fullName } from '../../../utils';
+
+export const DELETE_ENROLLMENT = gql`
+    mutation DeleteEnrollment($enrollmentId: ID) {
+        __typename
+        deleteEnrollment(id: $enrollmentId) {
+            id
+            deleted
+            parent
+            parentBalance
+        }
+    }
+`;
 
 const useStyles = makeStyles({
   MuiTableCell: {
@@ -96,6 +110,7 @@ export const GET_ENROLLMENT_DETAILS = gql`
             email
             id
           }
+          accountType
           phoneNumber
         }
         user {
@@ -104,6 +119,8 @@ export const GET_ENROLLMENT_DETAILS = gql`
           email
           id
         }
+        accountType
+        phoneNumber
         studentschoolinfoSet {
           textbook
           teacher
@@ -115,17 +132,17 @@ export const GET_ENROLLMENT_DETAILS = gql`
   }
 `;
 
-const TableToolbar = (
-  <TableHead>
-    <TableRow>
-      {["Student", "Parent", "Phone", "", "", "", "", ""].map((heading) => (
-        <TableCell align="left" color="color" key={heading} padding="default">
-          {heading}
-        </TableCell>
-      ))}
-    </TableRow>
-  </TableHead>
-);
+// const TableToolbar = (
+//   <TableHead>
+//     <TableRow>
+//       {["Student", "Parent", "Phone", "", "", "", "", ""].map((heading) => (
+//         <TableCell align="left" color="color" key={heading} padding="default">
+//           {heading}
+//         </TableCell>
+//       ))}
+//     </TableRow>
+//   </TableHead>
+// );
 
 const RegistrationCourseEnrollments = ({
   courseID,
@@ -168,7 +185,7 @@ const RegistrationCourseEnrollments = ({
     },
     []
   );
-  console.log(data);
+  
   const closeUnenrollDialog = useCallback(
     (toUnenroll) => () => {
       if (toUnenroll) {
@@ -194,9 +211,7 @@ const RegistrationCourseEnrollments = ({
   }
 
   const { enrollments } = data;
-  console.log("THIS IS ENROLLMENTS");
-  console.log(enrollments);
-  console.log(enrollments[0].student.school);
+  
 
   return (
     <>
@@ -213,7 +228,7 @@ const RegistrationCourseEnrollments = ({
           variant="buffer"
         />
       </div>
-      <Table>{TableToolbar}</Table>
+      {/* <Table>{TableToolbar}</Table>
       <Table>
         <TableBody>
           {enrollments.map(({ student, id }) => {
@@ -230,6 +245,7 @@ const RegistrationCourseEnrollments = ({
                       <ExpandMoreIcon className={classes.arrowIcon} />
                     }
                     aria-controls="panel1a-content"
+                    id="panel1a-header"
                   >
                     <GridList cols={1}>
                       <Grid
@@ -262,7 +278,7 @@ const RegistrationCourseEnrollments = ({
                         className={classes.actionsAccordionSpacing}
                       >
                         {addDashes(primaryParent.phoneNumber)}
-                      </Grid>
+                      </Grid> */}
                       {/* <Grid item xs={3}> */}
                       {/* <div style={{ "width": "40px" }}> */}
                       {/*<SessionPaymentStatusChip className="session-status-chip"*/}
@@ -270,7 +286,7 @@ const RegistrationCourseEnrollments = ({
                       {/*    session={upcomingSess} />*/}
                       {/* </div> */}
                       {/* </Grid> */}
-                    </GridList>
+                    {/* </GridList>
                     <div className={classes.iconsAccordionSpacing}>
                       <div className="actions" key={student.user.id}>
                         <IconButton
@@ -307,7 +323,7 @@ const RegistrationCourseEnrollments = ({
                       </div>
                     </div>
                   </AccordionSummary>
-
+                  
                   <AccordionDetails className={classes.accordionNotesBorder}>
                     <Typography
                       className={classes.accordionNotes}
@@ -331,7 +347,10 @@ const RegistrationCourseEnrollments = ({
             );
           })}
         </TableBody>
-      </Table>
+      </Table> */}
+      <ClassEnrollmentList
+        enrollmentList={enrollments}
+      />
       <Dialog
         aria-describedby="unenroll-dialog-description"
         aria-labelledby="unenroll-dialog-title"

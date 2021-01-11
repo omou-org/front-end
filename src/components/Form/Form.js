@@ -16,7 +16,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
-
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
     "buttons": {
@@ -118,23 +118,28 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                     }))}
                 <div className={classes.buttons}>
                     {index > 0 && index < sections.length &&
-                    <Button data-cy="backButton" onClick={handleBack}
-                        variant="outlined">
+                    <ResponsiveButton 
+                        data-cy="backButton" 
+                        onClick={handleBack}
+                        variant="outlined"
+                    >
                         Back
-                    </Button>}
+                    </ResponsiveButton>}
                     {index < sections.length - 1 &&
-                        <Button data-cy={`${name}-nextButton`}
+                        <ResponsiveButton data-cy={`${name}-nextButton`}
                                 disabled={Boolean(errors[name])}
                                 onClick={handleNext}
                                 variant="outlined">
                             Next
-                        </Button>}
+                        </ResponsiveButton>}
                     {index === sections.length - 1 &&
-                    <Button data-cy="submitButton"
+                    <ResponsiveButton 
+                        data-cy="submitButton"
                         disabled={Boolean(errors[name]) || submitting}
-                        type="submit" variant="outlined">
+                        type="submit" variant="outlined"
+                    >
                         {submitting ? "Submitting" : "Submit"}
-                    </Button>}
+                    </ResponsiveButton>}
                 </div>
             </StepContent>
         </Step>
@@ -158,16 +163,16 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                 {submitError &&
                     <Dialog className="error" onClose={() => setOpenError(false)}
                         open={openError}>
-                        <DialogTitle>
+                        <DialogTitle disableTypography>
                             An error occurred while submitting. Try again.
                         </DialogTitle>
                         <DialogContent>
                             {submitError.message}
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={() => setOpenError(false)}>
+                            <ResponsiveButton variant='outlined' onClick={() => setOpenError(false)}>
                                 Close
-                            </Button>
+                            </ResponsiveButton>
                         </DialogActions>
                     </Dialog>}
             </form>

@@ -2,18 +2,19 @@ import React, {useEffect, useMemo, useState} from "react";
 import {NavLink, useLocation} from "react-router-dom";
 import {useDispatch} from "react-redux";
 
-import Button from "@material-ui/core/Button";
-import CourseIcon from "@material-ui/icons/Class";
 import Grid from "@material-ui/core/Grid";
 import ListItemText from "@material-ui/core/ListItemText";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import NewInstructor from "@material-ui/icons/PersonAdd";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import "./AdminPortal.scss";
 import {initializeRegistration} from "actions/registrationActions";
 
 import {withStyles} from "@material-ui/core";
+
+
 
 const StyledMenu = withStyles({
 	paper: {
@@ -73,38 +74,38 @@ const AdminActionCenter = () => {
 	return (
 		<Grid className="admin-actions-wrapper" container spacing={2}>
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					aria-controls="simple-menu"
 					aria-haspopup="true"
 					className={`button ${tabState.user && "active"}`}
 					onClick={handleClick(setUserAnchor)}
+					variant='outlined'
 				>
-					<NewInstructor className="admin-action-icon" />
 					Add Users
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					aria-controls="simple-menu"
 					aria-haspopup="true"
 					className={`button ${tabState.course && "active"}`}
 					onClick={handleClick(setCourseAnchor)}
-				>
-					<CourseIcon className="admin-action-icon" />
+					variant='outlined'
+				>					
 					Manage Course
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 			<Grid item>
-				<Button
+				<ResponsiveButton
 					aria-controls="simple-menu"
 					aria-haspopup="true"
 					className={`button ${tabState.course && "active"}`}
 					component={NavLink} 
 					to="/adminportal/actionlog"
+					variant='outlined'
 				>
-					<CourseIcon className="admin-action-icon" />
 					Action Log
-				</Button>
+				</ResponsiveButton>
 			</Grid>
 			{/*<Grid item>*/}
 			{/*	<Button*/}
@@ -137,7 +138,7 @@ const AdminActionCenter = () => {
 				<MenuItem component={NavLink} to="/form/instructor">
 					<ListItemText primary="ADD INSTRUCTOR"/>
 				</MenuItem>
-				<MenuItem component={NavLink} to="/registration/form/admin">
+				<MenuItem component={NavLink} to="/form/admin">
 					<ListItemText primary="ADD ADMIN" />
 				</MenuItem>
 			</StyledMenu>

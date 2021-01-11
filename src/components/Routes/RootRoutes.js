@@ -7,7 +7,7 @@ import Accounts from "../FeatureViews/Accounts/Accounts";
 import AdminPortal from "../FeatureViews/AdminPortal/AdminPortal";
 import AuthenticatedRoute from "./AuthenticatedRoute";
 import CatsPage from "../CatsPage/CatsPage";
-import CourseSessionStatus from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
+import EnrollmentView from "../FeatureViews/Accounts/TabComponents/EnrollmentView";
 import EditSessionView from "../FeatureViews/Scheduler/EditSessionView";
 import ErrorNotFoundPage from "../ErrorNotFoundPage/ErrorNotFoundPage";
 import ForgotPassword from "../Authentication/ForgotPassword";
@@ -26,6 +26,7 @@ import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
 import CourseClasses from "../FeatureViews/Courses/CourseClasses"
+import DemoRoutes from './DemoRoutes';
 
 import {resetSubmitStatus} from "actions/registrationActions";
 import {USER_TYPES} from "utils";
@@ -35,8 +36,8 @@ import DashboardSwitch from "../FeatureViews/Dashboard/DashboardSwitch";
 import TeachingLogContainer from "../FeatureViews/TeachingLog/TeachingLogContainer";
 import AvailabilityContainer from "../FeatureViews/Availability/AvailabilityContainer";
 import ManagePayments from "../FeatureViews/ManagePayments/ManagePayments";
-
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
+import OnboardingRoutes from "./OnboardingRoutes";
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -61,6 +62,12 @@ export const RootRoutes = () => {
             <Route path="/new/:type?">
                 <NewAccount/>
             </Route>
+            
+            {/* Dahl Design Migration Demos */}
+            <Route path="/demo/:type">
+                <DemoRoutes/>
+            </Route>
+
 
             {/* Route for Testing AddItemButton */}
             <Route path="/demos/AddItemButton">
@@ -121,8 +128,8 @@ export const RootRoutes = () => {
                 <Accounts />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact
-                path="/accounts/:accountType/:accountID/:courseID">
-                <CourseSessionStatus />
+                path="/enrollment/:enrollmentId">
+                <EnrollmentView />
             </AuthenticatedRoute>
 
             {/* Registration Routes */}
@@ -130,8 +137,7 @@ export const RootRoutes = () => {
                 <RegistrationForm />
             </AuthenticatedRoute>
             <AuthenticatedRoute
-                path="/registration/course/:courseID?/:courseTitle?"
-                users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
+                path="/registration/course/:courseID?/:courseTitle?">
                 <RegistrationCourse />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/registration/cart/">
@@ -171,7 +177,7 @@ export const RootRoutes = () => {
                 users={[USER_TYPES.admin, USER_TYPES.parent]}>
                 <FormPage />
             </AuthenticatedRoute>
-
+        
             {/* Course Management Routes */}
             <AuthenticatedRoute 
             path="/coursemanagement"
@@ -180,19 +186,19 @@ export const RootRoutes = () => {
                 <CourseManagementContainer />
             </AuthenticatedRoute>
 
-            <AuthenticatedRoute 
-           path="/coursemanagement/class/:id?"
+            <AuthenticatedRoute
+                path="/coursemanagement/class/:id?"
             >
-                <CourseClasses />
+                <CourseClasses/>
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
-                <ErrorNotFoundPage />
+                <ErrorNotFoundPage/>
             </AuthenticatedRoute>
-            <Redirect to="/PageNotFound" />
 
+            <OnboardingRoutes/>
 
-            
+            <Redirect to="/PageNotFound"/>
 
         </Switch>
     );

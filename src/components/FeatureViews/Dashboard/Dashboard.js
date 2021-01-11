@@ -9,7 +9,6 @@ import UnpaidSessions from './../AdminPortal/UnpaidSessions';
 import Loading from "components/OmouComponents/Loading";
 
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from "@material-ui/core/Paper";
 import DashboardNotes from './DashboardNotes';
@@ -17,6 +16,8 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
 import {makeStyles} from "@material-ui/styles";
+
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -131,30 +132,31 @@ const Dashboard = () => {
         <Grid container>
             <Paper className="dashboard-paper" elevation={3}>
                 <Grid container justify="space-around">
-                    <Grid item xs={9} >
-                        <Typography variant="h4" className="dashboard-greeting">
+                    <Grid item xs={9}>
+                        <Typography variant="h1" align="left">
                             Hello {firstName}!
                         </Typography>
                         <br/>
                         <Paper className="today-paper" container>
                             <Grid container className="today-header-container">
-                                    <Grid item xs={7}>
-                                    <Moment 
+                                <Grid item xs={7}>
+                                    <Moment
                                         className={`dashboard-date ${classes.date}`}
                                         format="dddd, MMMM DD">
                                         {currentDate}
                                     </Moment>
-                                    </Grid>
-                                    <Button 
-                                        variant="outlined" 
-                                        style={{margin:"5px", float: "right"}}
-                                        component={Link}
-                                        to={{
-                                            pathname: "/scheduler",
-                                            state: { isDashboard: true}
-                                        }}
-                                        >View in Scheduler
-                                    </Button>
+                                </Grid>
+                                <ResponsiveButton
+                                    variant='outlined'
+                                    style={{margin: "5px", float: "right"}}
+                                    component={Link}
+                                    to={{
+                                        pathname: "/scheduler",
+                                        state: {isDashboard: true}
+                                    }}
+                                >
+                                    view in scheduler
+                                </ ResponsiveButton>
                             </Grid>
                             <Grid item sm={6} md={6} lg={4}>
                                 <Select
@@ -166,33 +168,33 @@ const Dashboard = () => {
                                     placeholder={'Choose a Category'}
                                     onValueClick={(e) => e.preventDefault()}
                                     onChange={handleChange}
-                                    />
+                                />
                             </Grid>
-                            <Grid 
-                                container 
-                                className="today-container" 
-                                wrap = "nowrap"
-                                direction = "row">
+                            <Grid
+                                container
+                                className="today-container"
+                                wrap="nowrap"
+                                direction="row">
                                 <Today
-                                filter = {currentFilter.filter}
+                                    filter={currentFilter.filter}
                                 />
                             </Grid>
                         </Paper>
                         <Paper className='OP-paper'>
-                            <Typography variant='h5' className="OP-label">
+                            <Typography variant='h3' className="OP-label">
                                 Outstanding Payments
                             </Typography>
                             <Grid
                                 container
                                 className="unpaid-container"
-                                wrap = "nowrap">
+                                wrap="nowrap">
                                 <UnpaidSessions/>
                             </Grid>
                         </Paper>
                     </Grid>
                     <Grid item xs={3} className={`db-notes-container ${classes.root}`}>
                         <DashboardNotes
-                            key = {id}
+                            key={id}
                             id={id}
                             first_name={firstName}
                         />

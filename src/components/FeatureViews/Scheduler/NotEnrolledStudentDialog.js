@@ -5,10 +5,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withRouter } from "react-router-dom";
-import Button from "@material-ui/core/Button"
-import BackArrow from "@material-ui/icons/ArrowBack";
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'; 
 import "./scheduler.scss";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const NotEnrolledStudentsDialog = (props) => {
     const [open, setOpen] = React.useState(true);
@@ -27,7 +26,7 @@ const NotEnrolledStudentsDialog = (props) => {
                 className="notEnrolledStudentDialog"
             >
                 <ErrorOutlineIcon className="warningIcon"/>
-                <DialogTitle id="alert-dialog-title">{"OOPS!"}</DialogTitle>
+                <DialogTitle disableTypography id="alert-dialog-title">{"OOPS!"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         It looks like there are no students Enrolled in that class. Please go back and choose another. (Clicking outside of the box will take you back)
@@ -35,13 +34,12 @@ const NotEnrolledStudentsDialog = (props) => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button
-                        className="control course button"
+                    <ResponsiveButton 
                         onClick={handleClose}
+                        variant='outlined'
                     >
-                        <BackArrow className="icon" />
-                        <span className="label">Back</span>
-                    </Button>
+                        back
+                    </ ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </div>

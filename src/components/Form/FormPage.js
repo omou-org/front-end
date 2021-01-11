@@ -1,8 +1,7 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useState} from "react";
 import {Redirect, useParams} from "react-router-dom";
 
 import BackButton from "components/OmouComponents/BackButton.js";
-import BackgroundPaper from "../OmouComponents/BackgroundPaper";
 import Form from "./Form";
 import Forms from "./FormFormats";
 
@@ -39,11 +38,12 @@ const FormPage = () => {
         },
     }), {});
 
-    const getTitle = () => {
+    const getTitle = (title) => {
         if (id) {
-            return title.edit || `${title} Editing`;
+            return title.edit || `Edit ${title}`;
+        } else {
+            return title.create || `Add New ${title}`;
         }
-        return title.create || `${title} Registration`;
     };
 
     if (!form || (id && initialData === null)) {
@@ -51,11 +51,11 @@ const FormPage = () => {
     }
     
     return (
-        <BackgroundPaper>
-            <BackButton />
+        <Fragment>
+            <BackButton/>
             <Form base={form} initialData={withDefaultData} onSubmit={onSubmit}
-                title={getTitle()} />
-        </BackgroundPaper>
+                  title={getTitle(title)}/>
+        </Fragment>
     );
 };
 
