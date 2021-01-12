@@ -54,6 +54,11 @@ const useStyles = makeStyles((theme) => ({
     color: "#43B5D9",
     fontSize: "large",
   },
+  accordionNotes: {
+    textAlign: "left",
+    fontSize: "12 px !important",
+    display: "inline-block",
+  },
 }));
 
 const ClassEnrollmentList = ({
@@ -187,9 +192,41 @@ const ClassEnrollmentList = ({
           </TableCell>
         </TableRow>
       </AccordionSummary>
-      <ClassEnrollmentAccordion 
+      <AccordionDetails>
+       
+      {/* <ClassEnrollmentAccordion 
               studentInfo={studentInfo}
-            />
+            /> */}
+          <Typography className={classes.accordionNotes} variant="body">
+          {studentInfo ? (
+            <>
+              <p>
+                <b>School:</b> {studentInfo.studentschoolinfoSet.school}
+              </p>
+              <p>
+                <b>School Teacher:</b>{" "}
+                {studentInfo.studentschoolinfoSet.teacher}
+              </p>
+              <p>
+                <b>Textbook used:</b>{" "}
+                {studentInfo.studentschoolinfoSet.textbook}
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                <b>School:</b> Add a school to {fullStudentName}'s info!
+              </p>
+              <p>
+                <b>School Teacher:</b> Add a school to your student's info!
+              </p>
+              <p>
+                <b>Textbook used:</b> Add a school to your student's info!
+              </p>
+            </>
+          )}
+          </Typography>
+          </AccordionDetails>
     </Accordion>
   );
 };
