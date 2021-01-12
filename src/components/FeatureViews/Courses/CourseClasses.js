@@ -198,6 +198,11 @@ export const GET_CLASSES = gql`
                         phoneNumber
                     }
                     accountType
+                    studentschoolinfoSet {
+                        textbook
+                        teacher
+                        name
+                      }
                 }
             }
             sessionSet {
@@ -290,7 +295,6 @@ const CourseClasses = () => {
 
     if (getAnnouncements.error)
         return console.error(getAnnouncements.error.message);
-
     const {
         academicLevel,
         courseLink,
@@ -305,7 +309,6 @@ const CourseClasses = () => {
         sessionSet,
         courseLinkUser,
     } = data.course;
-
     const { name: courseCategory } = data.course.courseCategory;
 
     const abbreviatedDay = moment(startDate).format('ddd');
@@ -363,7 +366,6 @@ const CourseClasses = () => {
                 return classes.chromeTab;
         }
     };
-
     return (
         <Grid item xs={12}>
             <Grid container justify="space-between" alignContent="center">

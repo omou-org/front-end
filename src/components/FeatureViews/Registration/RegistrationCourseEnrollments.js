@@ -132,18 +132,6 @@ export const GET_ENROLLMENT_DETAILS = gql`
   }
 `;
 
-// const TableToolbar = (
-//   <TableHead>
-//     <TableRow>
-//       {["Student", "Parent", "Phone", "", "", "", "", ""].map((heading) => (
-//         <TableCell align="left" color="color" key={heading} padding="default">
-//           {heading}
-//         </TableCell>
-//       ))}
-//     </TableRow>
-//   </TableHead>
-// );
-
 const RegistrationCourseEnrollments = ({
   courseID,
   maxCapacity,
