@@ -39,9 +39,6 @@ const useStyles = makeStyles((theme) => ({
   carrot: {
     width: "4vw",
   },
-  icon: {
-    width: "3vw",
-  },
   menuSelected: {
     "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
     "&:focus": { backgroundColor: highlightColor },
@@ -54,10 +51,49 @@ const useStyles = makeStyles((theme) => ({
     color: "#43B5D9",
     fontSize: "large",
   },
+  noBorderBottom: {
+    borderBottom: "none"
+  },
+  borderBottom: {
+    borderBottom: "1px solid rgba(224, 224, 224, 1);"
+  },
   accordionNotes: {
     textAlign: "left",
     fontSize: "12 px !important",
     display: "inline-block",
+  },
+  accordionNotesBorder: {
+    border: "1px #E0E0E0 solid",
+    borderRadius: "25px",
+    margin: "0px 24px 25px 24px",
+    paddingTop: "0px",
+  },
+  studentAccordionSpacing: {
+    width: "220px",
+    paddingLeft: "31px",
+  },
+  studentRenderAccordionSpacing: {
+    width: "202px",
+  },
+  parentAccordionSpacing: {
+    width: "200px",
+  },
+  parentRenderAccordionSpacing: {
+    width: "200px"
+  },
+  actionsRenderAccordionSpacing: {
+    width: "200px!important",
+    position: "relative",
+    left: "2.5em",
+  },
+  emailRenderAccordionSpacing: {
+    position: "relative",
+    left: "9.5em",
+  },
+  notesRenderAccordionSpacing: {
+    position: "relative",
+    left: "10.5em",
+    width: "3vw",
   },
 }));
 
@@ -94,16 +130,10 @@ const ClassEnrollmentList = ({
   };
 
   return (
-    // <AccordionSummary
-    //   expandIcon={
-    //     <ExpandMoreIcon style={{ color: omouBlue }} fontSize="large" />
-    //   }
-    //   aria-controls="panel1a-content"
-    //   id="panel1a-header"
-    // >
     <Accordion
       expanded={expanded === `${studentId}`}
       onChange={handleChange(`${studentId}`)}
+      classes={{root: classes.MuiAccordionroot}}
     >
       <AccordionSummary
         expandIcon={
@@ -120,6 +150,7 @@ const ClassEnrollmentList = ({
             component={Link}
             to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
             style={{ textDecoration: "none", fontWeight: 700 }}
+            className={`${classes.studentRenderAccordionSpacing} ${classes.noBorderBottom}`}
           >
             {fullStudentName}
           </TableCell>
@@ -127,15 +158,21 @@ const ClassEnrollmentList = ({
             component={Link}
             to={`/accounts/${parentAccountType.toLowerCase()}/${parentId}`}
             style={{ textDecoration: "none" }}
+            className={`${classes.parentRenderAccordionSpacing} ${classes.noBorderBottom}`}
           >
             {concatFullParentName}
           </TableCell>
-          <TableCell>{phoneNumber}</TableCell>
-          <TableCell align="right" padding="none" size="small">
+          <TableCell
+            className={classes.actionsRenderAccordionSpacing, classes.noBorderBottom}
+          >{phoneNumber}</TableCell>
+          <TableCell align="right" padding="none" size="small"
+            className={classes.noBorderBottom}
+          >
             <Button
               aria-controls="simple-menu"
               aria-haspopup="true"
               onClick={handleClick}
+              className={classes.emailRenderAccordionSpacing, classes.noBorderBottom}
             >
               <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
             </Button>
@@ -177,7 +214,8 @@ const ClassEnrollmentList = ({
             align="right"
             padding="none"
             size="small"
-            className={classes.icon}
+            className={classes.emailRenderAccordionSpacing, classes.noBorderBottom}
+
           >
             <Button disabled>
               <ChatOutlinedIcon style={{ color: "rgb(112,105,110)" }} />
@@ -187,16 +225,12 @@ const ClassEnrollmentList = ({
             align="right"
             padding="none"
             size="small"
-            className={classes.carrot}
+            className={classes.carrot, classes.noBorderBottom}
           >
           </TableCell>
         </TableRow>
       </AccordionSummary>
-      <AccordionDetails>
-       
-      {/* <ClassEnrollmentAccordion 
-              studentInfo={studentInfo}
-            /> */}
+      <AccordionDetails className={classes.accordionNotesBorder}>
           <Typography className={classes.accordionNotes} variant="body">
           {studentInfo ? (
             <>
@@ -237,7 +271,6 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [typeOfAccount, setTypeOfAccount] = useState();
   const [userId, setUserId] = useState();
-  // const [expanded, setExpanded] = React.useState(false);
 
   const handleOpenModal = (currentValue, dataType) => {
     setUserId(currentValue);
@@ -247,24 +280,21 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
 
   const handleCloseModal = () => setModalOpen(false);
 
-  // const handleChange = (panel) => (event, isExpanded) => {
-  //   setExpanded(isExpanded ? panel : false);
-  // };
-
   return (
     <Grid item xs={12}>
       <TableContainer>
-        <Table className={classes.table}>
+        <Table>
           <TableHeadSecondary>
-            <TableRow>
-              <TableCell>Student</TableCell>
-              <TableCell>Parent</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell />
-              <TableCell />
-              <TableCell />
+            <TableRow className={classes.borderBottom} >
+              <TableCell className={`${classes.studentAccordionSpacing} ${classes.noBorderBottom}`}>Student</TableCell>
+              <TableCell className={`${classes.parentAccordionSpacing} ${classes.noBorderBottom}`}>Parent</TableCell>
+              <TableCell className={classes.noBorderBottom}>Phone</TableCell>
             </TableRow>
           </TableHeadSecondary>
+        </Table>
+      </TableContainer>
+      <TableContainer>
+        <Table className={classes.table}>   
           <TableBody>
             {enrollmentList
               .sort((firstStudent, secondStudent) =>
@@ -303,13 +333,6 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
                     />
                 );
               })}
-            {/* <AccordionSummary 
-            expandIcon={
-              <ExpandMoreIcon style={{ color: omouBlue }} fontSize="large" />
-            }
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-            /> */}
           </TableBody>
         </Table>
       </TableContainer>
@@ -321,13 +344,6 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
         origin="STUDENT_ENROLLMENT"
         posterId={loggedInUser}
       />
-      {/* <AccordionSummary 
-            expandIcon={
-              <ExpandMoreIcon style={{ color: omouBlue }} fontSize="large" />
-            }
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-            /> */}
     </Grid>
   );
 };

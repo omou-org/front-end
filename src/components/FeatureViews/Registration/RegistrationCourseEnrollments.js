@@ -56,14 +56,14 @@ export const DELETE_ENROLLMENT = gql`
 `;
 
 const useStyles = makeStyles({
-  MuiTableCell: {
-    root: {
-      borderBottom: "none",
-    },
-  },
-  MuiTableCell: {
-    borderBottom: "none",
-  },
+  // MuiTableCell: {
+  //   root: {
+  //     borderBottom: "none",
+  //   },
+  // },
+  // MuiTableCell: {
+  //   borderBottom: "none",
+  // },
 
   accordionNotes: {
     textAlign: "left",
