@@ -338,6 +338,8 @@ const RegistrationCourseEnrollments = ({
       </Table> */}
       <ClassEnrollmentList
         enrollmentList={enrollments}
+        courseID={courseID}
+        enrollmentID={data.id}
       />
       <Dialog
         aria-describedby="unenroll-dialog-description"
