@@ -142,6 +142,7 @@ const RegistrationCourse = () => {
 			<div className="course-heading">
 				<Typography align="left" variant="h1">
 					{title}
+				</Typography>
 					{isAdmin && (
 						<ResponsiveButton
 							className="button"
@@ -152,7 +153,6 @@ const RegistrationCourse = () => {
 							edit course
 						</ ResponsiveButton>
 					)}
-				</Typography>
 				<div className="date">
 					<CalendarIcon align="left" className="icon" />
 					<Typography align="left" className="sessions-text">

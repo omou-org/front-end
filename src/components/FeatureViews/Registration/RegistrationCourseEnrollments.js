@@ -17,20 +17,11 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/es/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Divider from "@material-ui/core/Divider";
-import EmailIcon from "@material-ui/icons/Email";
-import IconButton from "@material-ui/core/IconButton";
+
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Loading from "components/OmouComponents/Loading";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import MobileMenu from "@material-ui/icons/MoreVert";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ClassEnrollmentList from '../Courses/ClassEnrollmentList';
 
@@ -54,50 +45,6 @@ export const DELETE_ENROLLMENT = gql`
         }
     }
 `;
-
-const useStyles = makeStyles({
-  // MuiTableCell: {
-  //   root: {
-  //     borderBottom: "none",
-  //   },
-  // },
-  // MuiTableCell: {
-  //   borderBottom: "none",
-  // },
-
-  accordionNotes: {
-    textAlign: "left",
-    fontSize: "12 px !important",
-    display: "inline-block",
-  },
-  accordionNotesBorder: {
-    border: "1px #E0E0E0 solid",
-    borderRadius: "25px",
-    margin: "0px 24px 25px 24px",
-    paddingTop: "0px",
-  },
-  studentAccordionSpacing: {
-    width: "320px!important",
-    height: "30px!important",
-    textAlign: "left",
-  },
-  parentAccordionSpacing: {
-    height: "30px!important",
-    textAlign: "left",
-  },
-  actionsAccordionSpacing: {
-    width: "309px!important",
-    height: "30px!important",
-    textAlign: "left",
-  },
-  iconsAccordionSpacing: {
-    height: "60px!important",
-    paddingLeft: "25px",
-  },
-  arrowIcon: {
-    color: "#43B5D9",
-  },
-});
 
 export const GET_ENROLLMENT_DETAILS = gql`
   query EnrollmentDetails($courseId: ID!) {
@@ -155,24 +102,6 @@ const RegistrationCourseEnrollments = ({
   // const sessionStatus = useSessions("month", 0)
   // const currentMonthSessions = sessionArray(sessions);
   // const upcomingSess = upcomingSession(currentMonthSessions || [], courseID);
-
-  const handleClick = useCallback(({ currentTarget }) => {
-    setStudentMenuAnchorEl(currentTarget);
-  }, []);
-
-  const handleClose = useCallback(() => {
-    setStudentMenuAnchorEl(null);
-  }, []);
-
-  const handleUnenroll = useCallback(
-    (enrollment) => () => {
-      setUnenroll({
-        enrollment,
-        open: true,
-      });
-    },
-    []
-  );
   
   const closeUnenrollDialog = useCallback(
     (toUnenroll) => () => {
@@ -188,7 +117,6 @@ const RegistrationCourseEnrollments = ({
     [dispatch, unenroll.enrollment]
   );
 
-  const classes = useStyles();
   if (loading) {
     return <Loading />;
   }
@@ -216,126 +144,6 @@ const RegistrationCourseEnrollments = ({
           variant="buffer"
         />
       </div>
-      {/* <Table>{TableToolbar}</Table>
-      <Table>
-        <TableBody>
-          {enrollments.map(({ student, id }) => {
-            const { primaryParent } = student;
-            return (
-              <Fragment key={student.user.id}>
-                <Accordion
-                  classes={{
-                    root: classes.MuiAccordionroot,
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={
-                      <ExpandMoreIcon className={classes.arrowIcon} />
-                    }
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                  >
-                    <GridList cols={1}>
-                      <Grid
-                        item
-                        xs={3}
-                        className={classes.studentAccordionSpacing}
-                      >
-                        <Link
-                          className="no-underline"
-                          to={`/accounts/student/${student.user.id}`}
-                        >
-                          {fullName(student.user)}
-                        </Link>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={3}
-                        className={classes.parentAccordionSpacing}
-                      >
-                        <Link
-                          className="no-underline"
-                          to={`/accounts/parent/${primaryParent.user.id}`}
-                        >
-                          {fullName(primaryParent.user)}
-                        </Link>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={3}
-                        className={classes.actionsAccordionSpacing}
-                      >
-                        {addDashes(primaryParent.phoneNumber)}
-                      </Grid> */}
-                      {/* <Grid item xs={3}> */}
-                      {/* <div style={{ "width": "40px" }}> */}
-                      {/*<SessionPaymentStatusChip className="session-status-chip"*/}
-                      {/*    enrollment={enrollment}*/}
-                      {/*    session={upcomingSess} />*/}
-                      {/* </div> */}
-                      {/* </Grid> */}
-                    {/* </GridList>
-                    <div className={classes.iconsAccordionSpacing}>
-                      <div className="actions" key={student.user.id}>
-                        <IconButton
-                          component={Link}
-                          to={`mailto:${primaryParent.user.email}`}
-                        >
-                          <EmailIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-controls="simple-menu"
-                          aria-haspopup="true"
-                          onClick={handleClick}
-                        >
-                          <MobileMenu />
-                        </IconButton>
-                        <Menu
-                          anchorEl={studentMenuAnchorEl}
-                          id="simple-menu"
-                          keepMounted
-                          onClose={handleClose}
-                          open={studentMenuAnchorEl !== null}
-                        >
-                          <MenuItem
-                            component={Link}
-                            onClick={handleClose}
-                            to={`/accounts/student/${student.user.id}/${courseID}`}
-                          >
-                            View Enrollment
-                          </MenuItem>
-                          <MenuItem onClick={handleUnenroll(id)}>
-                            Unenroll
-                          </MenuItem>
-                        </Menu>
-                      </div>
-                    </div>
-                  </AccordionSummary>
-                  
-                  <AccordionDetails className={classes.accordionNotesBorder}>
-                    <Typography
-                      className={classes.accordionNotes}
-                      variant="body"
-                    >
-                      <p>
-                        <b>School:</b> {student.studentschoolinfoSet.school}
-                      </p>
-                      <p>
-                        <b>School Teacher:</b>{" "}
-                        {student.studentschoolinfoSet.teacher}
-                      </p>
-                      <p>
-                        <b>Textbook used:</b>{" "}
-                        {student.studentschoolinfoSet.textbook}
-                      </p>
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-              </Fragment>
-            );
-          })}
-        </TableBody>
-      </Table> */}
       <ClassEnrollmentList
         enrollmentList={enrollments}
         courseID={courseID}

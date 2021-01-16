@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react";
-import { useDispatch } from 'react-redux';
 
-import {Link, Redirect, useParams, useHistory, useLocation} from "react-router-dom";
+import {Link, useParams, useHistory } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -22,24 +21,19 @@ import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./ModalTextEditor";
 import IconButton from "@material-ui/core/IconButton";
 import MobileMenu from "@material-ui/icons/MoreVert";
-import { deleteEnrollment } from 'actions/registrationActions';
-
-
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/es/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-
-
 
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
-
 import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
-import ClassEnrollmentAccordion from "./ClassEnrollmentAccordion";
+import StudentEnrollmentBackground from "./ClassEnrollmentAccDetails";
+
+//ANNA
+//centering on registration
+//prevent default not working
+//break out both?
+
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -51,20 +45,17 @@ const useStyles = makeStyles((theme) => ({
       minWidth: 677,
     },
   },
-  carrot: {
-    width: "4vw",
-  },
   menuSelected: {
     "&:hover": { backgroundColor: highlightColor, color: "#28ABD5" },
     "&:focus": { backgroundColor: highlightColor },
   },
+  // center: {
+  //   position: "relative",
+  //   top: "-15px"
+  // },
   dropdown: {
     border: "1px solid #43B5D9",
     borderRadius: "5px",
-  },
-  arrowIcon: {
-    color: "#43B5D9",
-    fontSize: "large",
   },
   noBorderBottom: {
     borderBottom: "none",
@@ -74,8 +65,8 @@ const useStyles = makeStyles((theme) => ({
   },
   accordionNotes: {
     textAlign: "left",
-    fontSize: "12 px !important",
     display: "inline-block",
+    marginTop: "10px"
   },
   accordionNotesBorder: {
     border: "1px #E0E0E0 solid",
@@ -97,22 +88,18 @@ const useStyles = makeStyles((theme) => ({
     width: "200px",
   },
   actionsRenderAccordionSpacing: {
-    width: "200px!important",
-    position: "relative",
-    left: "2.5em",
+    width: "200px",
   },
-  emailRenderAccordionSpacing: {
+  iconRenderAccordionSpacing: {
     position: "relative",
-    left: "9.5em",
+    left: "6.5em",
   },
-  notesRenderAccordionSpacing: {
-    position: "relative",
-    left: "10.5em",
-    width: "3vw",
-  },
+  studentInfoSpacing: {
+    margin: "15px"
+  }
 }));
 
-const ClassEnrollmentList = ({
+const ClassEnrollmentRow = ({
   fullStudentName,
   accountType,
   studentId,
@@ -125,18 +112,12 @@ const ClassEnrollmentList = ({
   enrollmentID
 }) => {
 
-  const dispatch = useDispatch();
   const { location } = useHistory();
   const paramsID = useParams();
   let courseID;
-  
-  // console.log(paramsID)
-
-  console.log(location)
 
   paramsID.id ?  courseID = paramsID.id: courseID = paramsID.courseID;
 
-  console.log(courseID)
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const [expanded, setExpanded] = React.useState(false);
@@ -158,8 +139,9 @@ const ClassEnrollmentList = ({
     setAnchorEl(null);
   };
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleChange = () => {
+    console.log("work?")
+    setExpanded(!expanded);
   };
 
   const handleClickStudentMenu = useCallback(({ currentTarget }) => {
@@ -180,35 +162,24 @@ const ClassEnrollmentList = ({
     []
   );
 
-  const closeUnenrollDialog = useCallback(
-    (toUnenroll) => () => {
-      if (toUnenroll) {
-        deleteEnrollment(unenroll.enrollment)(dispatch);
-      }
-      setUnenroll({
-        enrollment: null,
-        open: false,
-      });
-      setStudentMenuAnchorEl(null);
-    },
-    [dispatch, unenroll.enrollment]
-  );
-
   return (
     <Accordion
-      expanded={expanded === `${studentId}`}
-      onChange={handleChange(`${studentId}`)}
+      expanded={expanded}
+      // onChange={handleChange(`${studentId}`)}
       classes={{ root: classes.MuiAccordionroot }}
     >
       <AccordionSummary
         expandIcon={
-          <ExpandMoreIcon style={{ color: omouBlue }} fontSize="large" />
+          <ExpandMoreIcon style={{ color: omouBlue }} fontSize="large" 
+          onClick={handleChange}  />
         }
-        aria-controls="panel1a-content"
+        
+        aria-controls={"studentinfo-" + studentId + "-content"}
         id={"studentinfo-" + studentId + "-details"}
         eventKey={"studentinfo-" + studentId + "-details"}
-      >
-        <TableRow key={fullStudentName} style={{ wordBreak: "break-word" }}>
+        >
+      
+        <TableRow key={fullStudentName} className={classes.center} style={{ wordBreak: "break-word" }}>
           <TableCell
             component="th"
             scope="row"
@@ -229,7 +200,7 @@ const ClassEnrollmentList = ({
           </TableCell>
           <TableCell
             className={
-              (classes.actionsRenderAccordionSpacing, classes.noBorderBottom)
+              (`${classes.actionsRenderAccordionSpacing} ${classes.noBorderBottom}`)
             }
           >
             {phoneNumber}
@@ -245,7 +216,7 @@ const ClassEnrollmentList = ({
               aria-haspopup="true"
               onClick={handleClick}
               className={
-                (classes.emailRenderAccordionSpacing, classes.noBorderBottom)
+                (`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`)
               }
             >
               <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
@@ -284,14 +255,13 @@ const ClassEnrollmentList = ({
               </Menu>
             </AccessControlComponent>
           </TableCell>
-          {/* This is where the operator for registration/course render goes */}
           {location.pathname === `/coursemanagement/class/${courseID}` ? (
           <TableCell
             align="right"
             padding="none"
             size="small"
             className={
-              (classes.emailRenderAccordionSpacing, classes.noBorderBottom)
+              (`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`)
             }
           >
             <Button disabled>
@@ -299,7 +269,10 @@ const ClassEnrollmentList = ({
             </Button>
           </TableCell>
           ) : (
-          <TableCell>
+          <TableCell
+          className={
+            (`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`)
+          }>
             <IconButton
               aria-controls="simple-menu"
               aria-haspopup="true"
@@ -329,46 +302,49 @@ const ClassEnrollmentList = ({
             align="right"
             padding="none"
             size="small"
-            className={(classes.carrot, classes.noBorderBottom)}
+            className={classes.noBorderBottom}
           ></TableCell>
         </TableRow>
       </AccordionSummary>
-      <AccordionDetails className={classes.accordionNotesBorder}>
+      {/* <AccordionDetails className={classes.accordionNotesBorder}>
         <Typography className={classes.accordionNotes} variant="body">
           {studentInfo ? (
             <>
-              <p>
-                <b>School:</b> {studentInfo.studentschoolinfoSet.school}
-              </p>
-              <p>
-                <b>School Teacher:</b>{" "}
-                {studentInfo.studentschoolinfoSet.teacher}
-              </p>
-              <p>
-                <b>Textbook used:</b>{" "}
-                {studentInfo.studentschoolinfoSet.textbook}
-              </p>
+              <Typography className={classes.studentInfoSpacing}>
+                <b>School:</b> {studentInfo.name}
+              </Typography>
+              <Typography className={classes.studentInfoSpacing}>
+                <b>School Teacher:</b>
+                {studentInfo.teacher}
+              </Typography>
+              <Typography className={classes.studentInfoSpacing}>
+                <b>Textbook used:</b>
+                {studentInfo.textbook}
+              </Typography>
             </>
           ) : (
             <>
-              <p>
-                <b>School:</b> Add a school to {fullStudentName}'s info!
-              </p>
-              <p>
-                <b>School Teacher:</b> Add a school to your student's info!
-              </p>
-              <p>
-                <b>Textbook used:</b> Add a school to your student's info!
-              </p>
+              <Typography className={classes.studentInfoSpacing}>
+                <b>School:</b> N/A
+              </Typography>
+              <Typography className={classes.studentInfoSpacing}>
+                <b>School Teacher:</b> N/A
+              </Typography>
+              <Typography className={classes.studentInfoSpacing}>
+                <b>Textbook used:</b> N/A
+              </Typography>
             </>
           )}
         </Typography>
-      </AccordionDetails>
+      </AccordionDetails> */}
+      <StudentEnrollmentBackground
+        studentInfo={studentInfo}
+        />
     </Accordion>
   );
 };
 
-const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
+const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
   const classes = useStyles();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -431,7 +407,7 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
                 const studentInfo = studentschoolinfoSet;
 
                 return (
-                  <ClassEnrollmentList
+                  <ClassEnrollmentRow
                     fullStudentName={fullStudentName}
                     accountType={accountType}
                     studentId={studentId}
@@ -454,53 +430,8 @@ const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
         origin="STUDENT_ENROLLMENT"
         posterId={loggedInUser}
       />
-      {/* <Dialog
-        aria-describedby="unenroll-dialog-description"
-        aria-labelledby="unenroll-dialog-title"
-        className="session-view-modal"
-        fullWidth
-        maxWidth="xs"
-        onClose={closeUnenrollDialog(false)}
-        open={unenroll.open}
-      >
-        <DialogTitle id="unenroll-dialog-title">
-          Unenroll in {courseTitle}
-        </DialogTitle>
-        <Divider />
-        <DialogContent>
-          <DialogContentText>
-            You are about to unenroll in <b>{courseTitle}</b> for{" "}
-            <b>
-              {unenroll.enrollment &&
-                fullName(
-                  enrollments.find(({ id }) => id == unenroll.enrollment)
-                    .student.user
-                )}
-            </b>
-            . Performing this action will credit the remaining enrollment
-            balance back to the parent's account balance. Are you sure you want
-            to unenroll?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={closeUnenrollDialog(true)}
-          >
-            Yes, unenroll
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={closeUnenrollDialog(false)}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog> */}
     </Grid>
   );
 };
 
-export default Studentenrollment;
+export default ClassEnrollmentList;
