@@ -1,18 +1,30 @@
 import React, { useState, useCallback } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { deleteEnrollment } from 'actions/registrationActions';
+
+
 import { makeStyles } from "@material-ui/core/styles";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import Button from "@material-ui/core/Button";
+import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
+
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { USER_TYPES } from "../../../utils";
+import { USER_TYPES, fullName } from "../../../utils";
 import { omouBlue, highlightColor } from "../../../theme/muiTheme";
 import IconButton from "@material-ui/core/IconButton";
 import MobileMenu from "@material-ui/icons/MoreVert";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/es/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Divider from "@material-ui/core/Divider";
 
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
@@ -83,10 +95,14 @@ const ClassEnrollmentRow = ({
   concatFullParentName,
   phoneNumber,
   handleOpenModal,
+  enrollmentList,
   enrollmentID,
+  courseTitle
 }) => {
   const { location } = useHistory();
   const paramsID = useParams();
+  const dispatch = useDispatch();
+
   let courseID;
 
   paramsID.id ? (courseID = paramsID.id) : (courseID = paramsID.courseID);
@@ -113,7 +129,6 @@ const ClassEnrollmentRow = ({
   };
 
   const handleChange = () => {
-    console.log("work?");
     setExpanded(!expanded);
   };
 
@@ -135,7 +150,22 @@ const ClassEnrollmentRow = ({
     []
   );
 
+  const closeUnenrollDialog = useCallback(
+    (toUnenroll) => () => {
+      if (toUnenroll) {
+        deleteEnrollment(unenroll.enrollment)(dispatch);
+      }
+      setUnenroll({
+        enrollment: null,
+        open: false,
+      });
+      setStudentMenuAnchorEl(null);
+    },
+    [dispatch, unenroll.enrollment]
+  );
+
   return (
+    <>
     <Accordion expanded={expanded} classes={{ root: classes.MuiAccordionroot }}>
       <AccordionSummary
         expandIcon={
@@ -187,14 +217,14 @@ const ClassEnrollmentRow = ({
             size="small"
             className={classes.noBorderBottom}
           >
-            <Button
+            <ResponsiveButton
               aria-controls="simple-menu"
               aria-haspopup="true"
               onClick={handleClick}
               className={`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`}
             >
               <MailOutlineIcon style={{ color: "rgb(112,105,110)" }} />
-            </Button>
+            </ResponsiveButton>
             <AccessControlComponent
               permittedAccountTypes={[
                 USER_TYPES.admin,
@@ -236,9 +266,9 @@ const ClassEnrollmentRow = ({
               size="small"
               className={`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`}
             >
-              <Button disabled>
+              <ResponsiveButton disabled>
                 <ChatOutlinedIcon style={{ color: "rgb(112,105,110)" }} />
-              </Button>
+              </ResponsiveButton>
             </TableCell>
           ) : (
             <TableCell
@@ -281,6 +311,52 @@ const ClassEnrollmentRow = ({
       </AccordionSummary>
       <StudentEnrollmentBackground studentInfo={studentInfo} />
     </Accordion>
+     <Dialog
+     aria-describedby="unenroll-dialog-description"
+     aria-labelledby="unenroll-dialog-title"
+     className="session-view-modal"
+     fullWidth
+     maxWidth="xs"
+     onClose={closeUnenrollDialog(false)}
+     open={unenroll.open}
+   >
+     <DialogTitle id="unenroll-dialog-title">
+       Unenroll in {courseTitle}
+     </DialogTitle>
+     <Divider />
+     <DialogContent>
+       <DialogContentText>
+         You are about to unenroll in <b>{courseTitle}</b> for{" "}
+         <b>
+           {unenroll.enrollment &&
+             fullName(
+               enrollmentList.find(({ id }) => id == unenroll.enrollment)
+                 .student.user
+             )}
+         </b>
+         . Performing this action will credit the remaining enrollment
+         balance back to the parent's account balance. Are you sure you want
+         to unenroll?
+       </DialogContentText>
+     </DialogContent>
+     <DialogActions>
+       <ResponsiveButton
+         variant="outlined"
+         color="secondary"
+         onClick={closeUnenrollDialog(true)}
+       >
+         Yes, unenroll
+       </ResponsiveButton>
+       <ResponsiveButton
+         variant="outlined"
+         color="primary"
+         onClick={closeUnenrollDialog(false)}
+       >
+         Cancel
+       </ResponsiveButton>
+     </DialogActions>
+   </Dialog>
+   </>
   );
 };
 
