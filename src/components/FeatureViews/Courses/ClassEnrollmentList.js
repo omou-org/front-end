@@ -13,13 +13,6 @@ import { highlightColor } from "../../../theme/muiTheme";
 import SessionEmailOrNotesModal from "./ModalTextEditor";
 import ClassEnrollmentRow from "./ClassEnrollmentRow";
 
-
-//ANNA
-//centering on registration
-//break out both?
-//render styling class based on registration/course
-
-
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 1460,
@@ -125,6 +118,7 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                     concatFullParentName={concatFullParentName}
                     phoneNumber={phoneNumber}
                     handleOpenModal={handleOpenModal}
+                    studentInfo={studentInfo}
                   />
                 );
               })}
