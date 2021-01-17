@@ -17,6 +17,7 @@ import * as registrationActions from "actions/registrationActions";
 import {dateParser, weeklySessionsParser} from "components/Form/FormUtils";
 import Payment from "./RegistrationCartPayment";
 import Moment from "react-moment"
+import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
 
 const RegistrationCart = () => {
   const dispatch = useDispatch();
@@ -328,10 +329,14 @@ const RegistrationCart = () => {
 				  <Grid item xs={12}>
 					  <Grid container>
 						  <Grid item={3}>
-							  <Button className="button" component={Link} to="/registration">
-								  <BackArrow/>
-								  Register
-							  </Button>
+							<ResponsiveButton 
+								variant="outlined" 
+								component={Link} 
+								to="/registration"
+								label='register'
+							>
+								register
+							</ ResponsiveButton>
 						  </Grid>
 					  </Grid>
 					  <hr/>

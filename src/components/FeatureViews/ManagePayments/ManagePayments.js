@@ -7,6 +7,7 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import {useHistory} from "react-router-dom";
 import ActiveInvoices from "./ActiveInvoices";
+import { makeStyles } from "@material-ui/core/styles";
 
 function TabPanel(props) {
 	const {children, value, index, ...other} = props;
@@ -38,9 +39,22 @@ export default function ManagePayments() {
 		if (newTab === 1) history.push("/my-payments/history")
 	}, [setValue])
 
+	const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+		}
+	});
+	
+	const classes = useStyles();
+
 	return (<BackgroundPaper>
 		<Typography variant="h3" align="left">My Payments</Typography>
-		<Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+		<Tabs
+			classes={{indicator: classes.MuiIndicator}} 
+			value={value} 
+			onChange={handleChange} 
+			aria-label="simple tabs example"
+		>
 			<Tab label="Outstanding Invoice"/>
 			<Tab label="Payment History"/>
 		</Tabs>

@@ -7,6 +7,9 @@ import Tab from "@material-ui/core/Tab";
 import TimeAvailabilityContainer from "./TimeAvailabilityContainer";
 import RequestOutOfOfficeContainer from "./RequestOutOfOfficeContainer";
 import Box from "@material-ui/core/Box";
+import { makeStyles } from "@material-ui/core/styles";
+
+
 
 function TabPanel({ children, value, index, ...other }) {
 	return (
@@ -32,6 +35,14 @@ export default function AvailabilityContainer() {
 		setTab(newValue);
 	}, [setTab]);
 
+	const useStyles = makeStyles({
+		MuiIndicator: {
+			height: "1px"
+		}
+	});
+	
+	const classes = useStyles();
+
 	return (<BackgroundPaper>
 		<Grid container direction="row" spacing={4}>
 			<Grid item>
@@ -43,6 +54,7 @@ export default function AvailabilityContainer() {
 			<Grid item container xs={12}>
 				<Grid item xs={12}>
 					<Tabs
+						classes={{indicator: classes.MuiIndicator}}
 						value={tab}
 						onChange={handleChangeTab}
 						aria-label="Instructor availability tabs"

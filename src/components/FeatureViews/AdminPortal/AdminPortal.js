@@ -7,29 +7,29 @@ import "./AdminPortal.scss";
 import AdminActionCenter from "./AdminActionCenter";
 import AdminViewsRoutes from "components/Routes/AdminViewsRoutes";
 import BackButton from "components/OmouComponents/BackButton";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
+import Box from '@material-ui/core/Box';
 
 const AdminPortal = () => (
 	<form>
-		<BackgroundPaper className="registration-cart">
-			<Grid container layout="row">
-				<Grid item xs={12}>
-					<BackButton/>
-					<hr/>
-				</Grid>
-				<Grid item xs={12}>
-					<Typography align="left" variant="h3">
+		<Grid container layout="row">
+			<Grid item xs={12}>
+				<BackButton />
+				<hr />
+			</Grid>
+			<Grid item xs={12}>
+				<Box paddingTop="16px">
+					<Typography align="left" variant="h1">
 						Admin Portal
 					</Typography>
-				</Grid>
-				<Grid item xs={12}>
-					<AdminActionCenter/>
-				</Grid>
-				<Grid item xs={12}>
-					<AdminViewsRoutes/>
-				</Grid>
+				</Box>
 			</Grid>
-		</BackgroundPaper>
+			<Grid item xs={12}>
+				<AdminActionCenter />
+			</Grid>
+			<Grid item xs={12}>
+				<AdminViewsRoutes />
+			</Grid>
+		</Grid>
 	</form>
 );
 

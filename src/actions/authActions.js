@@ -49,7 +49,7 @@ const GET_ACCOUNT_TYPE = gql`
                 }
             }
         }
-    }`;
+    }`; 
 
 export const setToken = async (token, shouldSave) => {
     try {
@@ -73,6 +73,7 @@ export const setToken = async (token, shouldSave) => {
             "query": GET_ACCOUNT_TYPE,
             "variables": {"username": email},
         });
+
         const {accountType, user, phoneNumber} = userInfo;
         if (shouldSave) {
             localStorage.setItem("token", token);
@@ -82,8 +83,9 @@ export const setToken = async (token, shouldSave) => {
                 accountType,
                 email,
                 token,
-				user,
-                phoneNumber
+                user,
+                phoneNumber,
+                attemptedLogin: true
             },
             "type": types.SET_CREDENTIALS,
         };

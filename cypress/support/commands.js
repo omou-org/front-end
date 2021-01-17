@@ -48,6 +48,8 @@ Cypress.Commands.add("mockGraphQL", (operationMocks) => {
             const { operationName, variables } = JSON.parse(body);
             if (operationMocks.hasOwnProperty(operationName)) {
                 const { test, response } = operationMocks[operationName];
+                console.log(response)
+                console.log(test)
                 if (typeof test === "function") {
                     test(variables);
                 }

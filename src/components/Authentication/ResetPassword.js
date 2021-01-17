@@ -46,7 +46,7 @@ const RESET_PASSWORD = gql`
 
 const ResetPassword = ({isSet}) => {
     const params = useSearchParams();
-    const resetToken = params.get("token");
+    const resetToken = params.get("token"); 
     const isStudent = Boolean(params.get("student"));
     const isInstructor = Boolean(params.get("instructor"));
     const history = useHistory();
