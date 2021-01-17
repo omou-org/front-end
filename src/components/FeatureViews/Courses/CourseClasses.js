@@ -91,10 +91,7 @@ export const GET_CLASSES = gql`
       courseLink
       courseLinkDescription
       courseLinkUpdatedAt
-      courseLinkUser {
-        firstName
-        lastName
-      }
+
       courseCategory {
         name
         id
@@ -127,6 +124,11 @@ export const GET_CLASSES = gql`
             accountType
             phoneNumber
           }
+          studentschoolinfoSet{
+            textbook
+            teacher
+            name
+          }
           accountType
         }
       }
@@ -150,6 +152,85 @@ export const GET_CLASSES = gql`
     }
   }
 `;
+
+// Anna
+// export const GET_CLASSES = gql`
+//   query getClass($id: ID!) {
+//     course(courseId: $id) {
+//       academicLevel
+
+//       title
+//       startDate
+//       endDate
+//       description
+//       courseLink
+//       courseLinkDescription
+//       courseLinkUpdatedAt
+//       courseLinkUser {
+//         firstName
+//         lastName
+//       }
+//       courseCategory {
+//         name
+//         id
+//       }
+//       activeAvailabilityList {
+//         dayOfWeek
+//         endTime
+//         startTime
+//       }
+//       instructor {
+//         user {
+//           firstName
+//           lastName
+//         }
+//       }
+//       enrollmentSet {
+//         student {
+//           user {
+//             firstName
+//             lastName
+//             id
+//           }
+//           primaryParent {
+//             user {
+//               firstName
+//               lastName
+//               id
+//               email
+//             }
+//             accountType
+//             phoneNumber
+//           }
+
+// studentschoolinfoSet{
+//   textbook
+//   teacher
+//   name
+// }
+//           accountType
+//         }
+//       }
+//       sessionSet {
+//         startDatetime
+//         id
+//       }
+
+//       availabilityList {
+//         startTime
+//         endTime
+//         dayOfWeek
+//       }
+//     }
+//     enrollments(courseId: $id) {
+//       student {
+//         user {
+//           id
+//         }
+//       }
+//     }
+//   }
+// `;
 
 const CourseClasses = () => {
   const { id } = useParams();
@@ -447,14 +528,15 @@ const CourseClasses = () => {
                 backgroundColor="#FFFFFF"
                 style={{ width: "100%" }}
               >
-                <ClassInfo
+                {/* Anna */}
+                {/* <ClassInfo
                   id={id}
                   courseLink={courseLink}
                   description={description}
                   courseLinkDescription={courseLinkDescription}
                   courseLinkUpdatedAt={courseLinkUpdatedAt}
                   courseLinkUser={courseLinkUser}
-                />
+                /> */}
               </TabPanel>
 
               <TabPanel index={1} value={index}>

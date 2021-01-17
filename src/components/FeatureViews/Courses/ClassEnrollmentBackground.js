@@ -27,33 +27,15 @@ const StudentEnrollmentBackground = ({ studentInfo }) => {
   return (
     <AccordionDetails className={classes.accordionNotesBorder}>
       <Typography className={classes.accordionNotes} variant="body">
-        {studentInfo ? (
-          <>
             <Typography className={classes.studentInfoSpacing}>
-              <b>School:</b> {studentInfo.name}
+              <b>School:</b> {studentInfo.name ? studentInfo.name : "N/A"}
             </Typography>
             <Typography className={classes.studentInfoSpacing}>
-              <b>School Teacher:</b>
-              {studentInfo.teacher}
+              <b>School Teacher:</b> {studentInfo.teacher ? studentInfo.teacher : "N/A"}
             </Typography>
             <Typography className={classes.studentInfoSpacing}>
-              <b>Textbook used:</b>
-              {studentInfo.textbook}
+              <b>Textbook used:</b> {studentInfo.textbook ? studentInfo.textbook : "N/A"}
             </Typography>
-          </>
-        ) : (
-          <>
-            <Typography className={classes.studentInfoSpacing}>
-              <b>School:</b> N/A
-            </Typography>
-            <Typography className={classes.studentInfoSpacing}>
-              <b>School Teacher:</b> N/A
-            </Typography>
-            <Typography className={classes.studentInfoSpacing}>
-              <b>Textbook used:</b> N/A
-            </Typography>
-          </>
-        )}
       </Typography>
     </AccordionDetails>
   );

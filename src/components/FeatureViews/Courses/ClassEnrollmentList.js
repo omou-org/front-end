@@ -107,7 +107,6 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                 const parentId = primaryParent.user.id;
                 const parentEmail = primaryParent.user.email;
                 const studentInfo = studentschoolinfoSet;
-
                 return (
                   <ClassEnrollmentRow
                     fullStudentName={fullStudentName}

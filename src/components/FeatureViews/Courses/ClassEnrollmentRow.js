@@ -97,15 +97,13 @@ const ClassEnrollmentRow = ({
   handleOpenModal,
   enrollmentList,
   enrollmentID,
-  courseTitle
+  courseTitle,
 }) => {
   const { location } = useHistory();
   const paramsID = useParams();
   const dispatch = useDispatch();
 
-  let courseID;
-
-  paramsID.id ? (courseID = paramsID.id) : (courseID = paramsID.courseID);
+  let courseID = paramsID.id ?  paramsID.id : paramsID.courseID;
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -266,7 +264,7 @@ const ClassEnrollmentRow = ({
               size="small"
               className={`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`}
             >
-              <ResponsiveButton disabled>
+              <ResponsiveButton disabled style={{ border: 'none'}}>
                 <ChatOutlinedIcon style={{ color: "rgb(112,105,110)" }} />
               </ResponsiveButton>
             </TableCell>
