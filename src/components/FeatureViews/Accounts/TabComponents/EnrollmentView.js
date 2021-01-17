@@ -84,6 +84,7 @@ const GET_ENROLLMENT = gql`
   }
 `;
 
+
 export const GET_SESSIONS = gql`
   query GetSessions($courseId: ID!) {
     sessions(courseId: $courseId) {
@@ -310,7 +311,7 @@ const CourseSessionStatus = () => {
                             </Link>
                         </Typography>
                         <Typography align="left">
-                            Enrollment Balance Left: ${enrollmentBalance}
+                            Enrollment Balance Left: ${enrollmentBalance} 
                         </Typography>
                     </Grid>
                     {activeTab === 0 && (
