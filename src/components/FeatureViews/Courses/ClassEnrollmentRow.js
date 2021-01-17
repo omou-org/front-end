@@ -180,9 +180,7 @@ const ClassEnrollmentRow = ({
         <TableRow
           key={fullStudentName}
           className={
-            location.pathname === `/coursemanagement/class/${courseID}`
-              ? ""
-              : classes.center
+            location.pathname !== `/coursemanagement/class/${courseID}` && classes.center
           }
           style={{ wordBreak: "break-word" }}
         >
