@@ -45,7 +45,7 @@ describe("sets 20 min timeout and checks for prompt and followed by automatic lo
         cy.get("[data-cy=activityModalSubmit]").click()
         setTimeout(function() {console.log("waiting 2 mins..."); }, 120000);
         cy.url().should("not.include", '/login')
-    };
+    });
     it("idles for 20 mins and logs out", () => {
         setTimeout(function() { console.log("waiting for 20 mins..."); }, 1200000 + 300000);
         cy.url().should("include", "/login");
