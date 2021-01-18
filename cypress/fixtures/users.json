@@ -176,6 +176,7 @@
     "inviteInstructorConfirmationResponse": {
         "status": "failed",
         "__typename": "InviteInstructor"
+    },
     "admin": {
         "__typename": "AdminType",
         "user": {

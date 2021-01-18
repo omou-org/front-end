@@ -33,7 +33,7 @@ describe("sets 20 min timeout and checks for prompt and followed by automatic lo
                         expect(id).equals(admin.user.id.toString(), "Check ID passed");
                     },
                 },
-            });
+            );
             cy.visitAuthenticated(`/form/admin/${admin.user.id}`);
         });
     
