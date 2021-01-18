@@ -219,12 +219,12 @@ const NewAnnouncementsModal = ({
             }}
             open={open}
             onClose={handleCloseForm}
-            aria-labelledby="form-dialog-title"
-            maxWidth="md"
+            aria-labelledby='form-dialog-title'
+            maxWidth='md'
         >
             <DialogContent classes={{ root: classes.textArea }}>
                 <Input
-                    placeholder="Subject"
+                    placeholder='Subject'
                     disableUnderline
                     onChange={handleSubjectChange}
                     defaultValue={buttonState === 'edit' ? subject : ''}
@@ -238,11 +238,11 @@ const NewAnnouncementsModal = ({
                     autoFocus
                     onChange={handleBodyChange}
                     className={classes.textFieldStyle}
-                    margin="dense"
-                    id="name"
-                    placeholder="Body"
+                    margin='dense'
+                    id='name'
+                    placeholder='Body'
                     defaultValue={buttonState === 'edit' ? body : ''}
-                    type="email"
+                    type='email'
                     fullWidth
                     multiline
                     rows={12}
@@ -257,13 +257,13 @@ const NewAnnouncementsModal = ({
                             onChange={handleCheckboxChange(
                                 setSendEmailCheckbox
                             )}
-                            name="email"
+                            name='email'
                             className={classes.checkBoxPseudo}
                             checkedIcon={
                                 <CheckBoxIcon className={classes.checkBox} />
                             }
                             icon={<CheckBoxOutlineBlankOutlinedIcon />}
-                            color="primary"
+                            color='primary'
                         />
                     }
                     label={
@@ -278,13 +278,13 @@ const NewAnnouncementsModal = ({
                         <Checkbox
                             checked={sendSMSCheckbox}
                             onChange={handleCheckboxChange(setSendSMSCheckbox)}
-                            name="sms"
+                            name='sms'
                             className={classes.checkBoxPseudo}
                             checkedIcon={
                                 <CheckBoxIcon className={classes.checkBox} />
                             }
                             icon={<CheckBoxOutlineBlankOutlinedIcon />}
-                            color="primary"
+                            color='primary'
                         />
                     }
                     label={
@@ -295,10 +295,10 @@ const NewAnnouncementsModal = ({
                 />
             </FormGroup>
             <DialogActions style={{ marginBottom: '2em' }}>
-                <ResponsiveButton variant="outlined" onClick={handleCloseForm}>
+                <ResponsiveButton variant='outlined' onClick={handleCloseForm}>
                     Cancel
                 </ResponsiveButton>
-                <ResponsiveButton variant="contained" onClick={handlePostForm}>
+                <ResponsiveButton variant='contained' onClick={handlePostForm}>
                     {buttonState === 'post' ? 'Post' : 'Edit'}
                 </ResponsiveButton>
             </DialogActions>

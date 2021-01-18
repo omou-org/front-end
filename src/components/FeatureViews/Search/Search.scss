@@ -1,167 +1,165 @@
-@import "../../../theme/colors";
-@import "../../../theme/sizes";
+@import '../../../theme/colors';
+@import '../../../theme/sizes';
 .search {
-  .primary-filter {
-    outline: none;
-  }
-  .input {
-    outline: none;
-  }
-  .search-input {
-    outline: none;
-  }
+    .primary-filter {
+        outline: none;
+    }
+    .input {
+        outline: none;
+    }
+    .search-input {
+        outline: none;
+    }
 }
 .search-input {
-  .main-search__menu{
-    text-align: left !important;
-  }
-
-  .main-search__control {
-    border-radius: 0 5px 5px 0;
-    background-color: #eeeeee;
-
-    .main-search__value-container {
-      color: $secondaryFontColor;
+    .main-search__menu {
+        text-align: left !important;
     }
-  }
 
-  .main-search__indicator-separator {
-    display:none;
-  }
+    .main-search__control {
+        border-radius: 0 5px 5px 0;
+        background-color: #eeeeee;
 
-  .main-search__indicator {
-    border-radius: 0 5px 5px 0;
-  }
+        .main-search__value-container {
+            color: $secondaryFontColor;
+        }
+    }
+
+    .main-search__indicator-separator {
+        display: none;
+    }
+
+    .main-search__indicator {
+        border-radius: 0 5px 5px 0;
+    }
 }
 
 .AccountCard {
-  .userLabel {
-    color: white;
-    font-size: 10px;
-    padding: -5%;
-    width: 80px;
-    height: 20px;
-    &.instructor {
-      background-color: $instructorColor;
+    .userLabel {
+        color: white;
+        font-size: 10px;
+        padding: -5%;
+        width: 80px;
+        height: 20px;
+        &.instructor {
+            background-color: $instructorColor;
+        }
+        &.student {
+            background-color: $studentColor;
+        }
+        &.receptionist {
+            background-color: $receptionistColor;
+        }
+        &.parent {
+            background-color: $parentColor;
+        }
     }
-    &.student {
-      background-color: $studentColor;
+    .cardText {
+        font-size: 10px;
+        text-align: left;
     }
-    &.receptionist {
-      background-color: $receptionistColor;
-    }
-    &.parent {
-      background-color: $parentColor;
-    }
-  }
-  .cardText {
-    font-size: 10px;
-    text-align: left;
-  }
 }
 
 .CourseCard {
-  padding: 5%;
-  .courseRow {
-    padding-top: 2%;
-    .courseText {
-      font-size: 12px;
+    padding: 5%;
+    .courseRow {
+        padding-top: 2%;
+        .courseText {
+            font-size: 12px;
+        }
     }
-  }
 }
 
 .UpcomingSessionCard {
-  padding: 5%;
-  .sessionRow {
-    padding-top: 2%;
-    .sessionText {
-      font-size: 12px;
+    padding: 5%;
+    .sessionRow {
+        padding-top: 2%;
+        .sessionText {
+            font-size: 12px;
+        }
     }
-  }
 }
 
-
 #menu-primary-filter {
-  z-index: 10000;
+    z-index: 10000;
 }
 
 .button-background {
-  background-color: #43b5d9 !important;
-  border-radius: 0 5px 5px 0 !important;
+    background-color: #43b5d9 !important;
+    border-radius: 0 5px 5px 0 !important;
 }
 
 .searchIcon {
-  color: #eeeeee;
+    color: #eeeeee;
 }
 
 .search-results {
-  padding: 15px;
-  .searchChip {
-    background: #ffffff;
-    border: 1px solid #dadada;
-    cursor: pointer;
-  }
-  .main-search-view {
-    padding: $paperPadding;
-    background-color: $bioBackgroundColor;
-
-    .searchResults {
-      .search-title{
-        margin-bottom:10px;
-      }
-      .resultsColor {
-        color: #666666;
-        font-size: 24px;
-      }
+    padding: 15px;
+    .searchChip {
+        background: #ffffff;
+        border: 1px solid #dadada;
+        cursor: pointer;
     }
-  }
+    .main-search-view {
+        padding: $paperPadding;
+        background-color: $bioBackgroundColor;
+
+        .searchResults {
+            .search-title {
+                margin-bottom: 10px;
+            }
+            .resultsColor {
+                color: #666666;
+                font-size: 24px;
+            }
+        }
+    }
 }
 
-// Filters 
+// Filters
 
-  .account-dropdown-title{
+.account-dropdown-title {
     top: -15px;
     left: 7px;
-  }
-
-.accountFilters{
-  display : flex;
-  padding-top: 20px;
-
 }
 
-
-.courseFilters{
-  display : flex;
-  padding-top: 20px;
-  .spacing{
-    margin-right: 10px;
-  }
-  .input-title{
-    top: -15px;
-    left: 7px;
-  }
- 
+.accountFilters {
+    display: flex;
+    padding-top: 20px;
 }
 
-.search-filter-wrapper{
-  width: 100%;
-  .label{
-    padding-left: 10px;
-  }
+.courseFilters {
+    display: flex;
+    padding-top: 20px;
+    .spacing {
+        margin-right: 10px;
+    }
+    .input-title {
+        top: -15px;
+        left: 7px;
+    }
 }
 
-.results-nav{
-  margin-top:15px;
-
-  .less, .more{
-    margin-top: -2px;
-    margin-right: 3px;
-    margin-left: 3px;
-  }
+.search-filter-wrapper {
+    width: 100%;
+    .label {
+        padding-left: 10px;
+    }
 }
 
-.account-results-wrapper, .course-results-wrapper {
-  padding-top:10px;
-  padding-bottom:8px;
+.results-nav {
+    margin-top: 15px;
+
+    .less,
+    .more {
+        margin-top: -2px;
+        margin-right: 3px;
+        margin-left: 3px;
+    }
+}
+
+.account-results-wrapper,
+.course-results-wrapper {
+    padding-top: 10px;
+    padding-bottom: 8px;
 }

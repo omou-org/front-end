@@ -110,7 +110,7 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                                     item
                                     xs={10}
                                 >
-                                    <Typography variant="body1">
+                                    <Typography variant='body1'>
                                         #{user.user.id}
                                     </Typography>
                                 </Grid>
@@ -130,7 +130,7 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                                     item
                                     xs={10}
                                 >
-                                    <Typography variant="body1">
+                                    <Typography variant='body1'>
                                         {addDashes(user.phoneNumber)}
                                     </Typography>
                                 </Grid>
@@ -150,7 +150,7 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                                     item
                                     xs={10}
                                 >
-                                    <Typography variant="body1">
+                                    <Typography variant='body1'>
                                         {user.user.email}
                                     </Typography>
                                 </Grid>

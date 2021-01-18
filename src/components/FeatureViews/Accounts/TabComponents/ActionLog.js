@@ -48,7 +48,7 @@ const ActionLog = ({ ownerID }) => {
     });
 
     if (loading) return null;
-    if (error) return <Redirect to="/PageNotFound" />;
+    if (error) return <Redirect to='/PageNotFound' />;
 
     const { logs } = data;
 

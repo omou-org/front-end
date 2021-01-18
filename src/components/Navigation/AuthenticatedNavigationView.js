@@ -53,27 +53,27 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     return (
         <AuthenticatedComponent>
             {isBusinessDataValid ? (
-                <div className="Navigation">
+                <div className='Navigation'>
                     <AuthenticatedNavBar toggleDrawer={handleDrawerToggle} />
-                    <nav className="OmouDrawer">
-                        <Hidden implementation="css" smUp>
+                    <nav className='OmouDrawer'>
+                        <Hidden implementation='css' smUp>
                             <Drawer
                                 classes={{ paper: classes.navigationLeftList }}
                                 onClose={handleDrawerToggle}
                                 open={mobileOpen}
-                                variant="temporary"
+                                variant='temporary'
                             >
                                 {UserNavigationOptions}
                             </Drawer>
                         </Hidden>
-                        <Hidden implementation="css" mdDown>
-                            <Drawer open variant="permanent">
+                        <Hidden implementation='css' mdDown>
+                            <Drawer open variant='permanent'>
                                 {UserNavigationOptions}
                             </Drawer>
                         </Hidden>
                     </nav>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <main className="OmouMain">
+                        <main className='OmouMain'>
                             <RootRoutes />
                         </main>
                     </MuiPickersUtilsProvider>

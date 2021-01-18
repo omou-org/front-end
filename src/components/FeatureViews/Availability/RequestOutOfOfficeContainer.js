@@ -7,7 +7,7 @@ import { UpcomingOOO, LogOOO } from './UpcomingLogOOO';
 
 export default function RequestOutOfOfficeContainer() {
     return (
-        <Grid container direction="row" style={{ width: 'auto' }} spacing={2}>
+        <Grid container direction='row' style={{ width: 'auto' }} spacing={2}>
             <Grid item xs={8}>
                 <OutlinedContainer
                     styles={{ backgroundColor: skyBlue, border: 'none' }}
@@ -16,7 +16,7 @@ export default function RequestOutOfOfficeContainer() {
                 </OutlinedContainer>
             </Grid>
             <Grid item xs={4}>
-                <Grid item container direction="column">
+                <Grid item container direction='column'>
                     <Grid item>
                         <OutlinedContainer>
                             <UpcomingOOO />

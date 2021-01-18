@@ -1,24 +1,31 @@
-import * as types from "./actionTypes";
-import {instance, MISC_FAIL, REQUEST_ALL, REQUEST_STARTED} from "./apiActions";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useDispatch} from "react-redux";
-import {useLocation} from "react-router-dom";
+import * as types from './actionTypes';
+import {
+    instance,
+    MISC_FAIL,
+    REQUEST_ALL,
+    REQUEST_STARTED,
+} from './apiActions';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 export const isFail = (...statuses) =>
     statuses.some(
-        (status) => status && status !== REQUEST_STARTED &&
+        (status) =>
+            status &&
+            status !== REQUEST_STARTED &&
             (status < 200 || status >= 300)
     );
 
 export const isLoading = (...statuses) =>
     statuses.some((status) => !status || status === REQUEST_STARTED) &&
-        !isFail(...statuses);
+    !isFail(...statuses);
 
 export const isSuccessful = (...statuses) =>
     statuses.every((status) => status && status >= 200 && status < 300);
 
 const getConfig = (config, id) =>
-    typeof config === "function" ? config(id) : config;
+    typeof config === 'function' ? config(id) : config;
 
 const getURL = (endpoint, id, noURLID) =>
     !noURLID && id ? `${endpoint}${id}/` : endpoint;
@@ -55,7 +62,7 @@ export const wrapUseEndpoint = (endpoint, successType) => (
     useEffect(() => {
         let aborted = false;
         // no id passed
-        if (typeof id === "undefined" || id === null) {
+        if (typeof id === 'undefined' || id === null) {
             (async () => {
                 try {
                     setStatus(REQUEST_STARTED);
@@ -65,11 +72,11 @@ export const wrapUseEndpoint = (endpoint, successType) => (
                     );
                     if (!aborted) {
                         dispatch({
-                            "payload": {
-                                "id": REQUEST_ALL,
+                            payload: {
+                                id: REQUEST_ALL,
                                 response,
                             },
-                            "type": successType,
+                            type: successType,
                         });
                         setStatus(response.status);
                     }
@@ -90,11 +97,11 @@ export const wrapUseEndpoint = (endpoint, successType) => (
                     );
                     if (!aborted) {
                         dispatch({
-                            "payload": {
+                            payload: {
                                 id,
                                 response,
                             },
-                            "type": successType,
+                            type: successType,
                         });
                         setStatus(response.status);
                     }
@@ -114,26 +121,27 @@ export const wrapUseEndpoint = (endpoint, successType) => (
                             instance.get(
                                 getURL(endpoint, individual, noURLID),
                                 getConfig(config, individual)
-                            ))
+                            )
+                        )
                     );
                     if (!aborted) {
                         dispatch({
-                            "payload": {
+                            payload: {
                                 id,
                                 response,
                             },
-                            "type": successType,
+                            type: successType,
                         });
                         setStatus(
                             response.reduce(
-                                (finalStatus, {status}) =>
+                                (finalStatus, { status }) =>
                                     isFail(status)
                                         ? status
                                         : isFail(finalStatus)
-                                            ? finalStatus
-                                            : isLoading(status)
-                                                ? status
-                                                : finalStatus,
+                                        ? finalStatus
+                                        : isLoading(status)
+                                        ? status
+                                        : finalStatus,
                                 200
                             )
                         );
@@ -175,7 +183,7 @@ export const wrapUseNote = (endpoint, successType, payloadInfo) => (
     useEffect(() => {
         let aborted = false;
         // no id passed
-        if (typeof id === "undefined" || id === null) {
+        if (typeof id === 'undefined' || id === null) {
             // if not to be optimized (i.e. a request_all is wanted)
             if (!noFetchOnUndef) {
                 (async () => {
@@ -184,12 +192,12 @@ export const wrapUseNote = (endpoint, successType, payloadInfo) => (
                         const response = await instance.get(endpoint, config);
                         if (!aborted) {
                             dispatch({
-                                "payload": {
+                                payload: {
                                     ...payloadInfo,
-                                    "id": REQUEST_ALL,
+                                    id: REQUEST_ALL,
                                     response,
                                 },
-                                "type": successType,
+                                type: successType,
                             });
                             setStatus(response.status);
                         }
@@ -205,15 +213,18 @@ export const wrapUseNote = (endpoint, successType, payloadInfo) => (
             (async () => {
                 try {
                     setStatus(REQUEST_STARTED);
-                    const response = await instance.get(`${endpoint}${id}/`, config);
+                    const response = await instance.get(
+                        `${endpoint}${id}/`,
+                        config
+                    );
                     if (!aborted) {
                         dispatch({
-                            "payload": {
+                            payload: {
                                 ...payloadInfo,
                                 id,
                                 response,
                             },
-                            "type": successType,
+                            type: successType,
                         });
                         setStatus(response.status);
                     }
@@ -230,27 +241,28 @@ export const wrapUseNote = (endpoint, successType, payloadInfo) => (
                     setStatus(REQUEST_STARTED);
                     const response = await Promise.all(
                         id.map((individual) =>
-                            instance.get(`${endpoint}${individual}/`, config))
+                            instance.get(`${endpoint}${individual}/`, config)
+                        )
                     );
                     if (!aborted) {
                         dispatch({
-                            "payload": {
+                            payload: {
                                 ...payloadInfo,
                                 id,
                                 response,
                             },
-                            "type": successType,
+                            type: successType,
                         });
                         setStatus(
                             response.reduce(
-                                (finalStatus, {status}) =>
+                                (finalStatus, { status }) =>
                                     isFail(status)
                                         ? status
                                         : isFail(finalStatus)
-                                            ? finalStatus
-                                            : isLoading(status)
-                                                ? status
-                                                : finalStatus,
+                                        ? finalStatus
+                                        : isLoading(status)
+                                        ? status
+                                        : finalStatus,
                                 200
                             )
                         );
@@ -273,62 +285,62 @@ export const wrapUseNote = (endpoint, successType, payloadInfo) => (
 };
 
 export const useStudent = wrapUseEndpoint(
-    "/account/student/",
+    '/account/student/',
     types.FETCH_STUDENT_SUCCESSFUL
 );
 
 export const useParent = wrapUseEndpoint(
-    "/account/parent/",
+    '/account/parent/',
     types.FETCH_PARENT_SUCCESSFUL
 );
 
 export const useInstructor = wrapUseEndpoint(
-    "/account/instructor/",
+    '/account/instructor/',
     types.FETCH_INSTRUCTOR_SUCCESSFUL
 );
 
 export const useAdmin = wrapUseEndpoint(
-    "/account/admin/",
+    '/account/admin/',
     types.FETCH_ADMIN_SUCCESSFUL
 );
 
 export const useNote = wrapUseEndpoint(
-    "/account/note",
-    types.FETCH_ACCOUNT_NOTE_SUCCESSFUL    
+    '/account/note',
+    types.FETCH_ACCOUNT_NOTE_SUCCESSFUL
 );
 
 export const useCourse = wrapUseEndpoint(
-    "/course/catalog/",
+    '/course/catalog/',
     types.FETCH_COURSE_SUCCESSFUL
 );
 
 export const useEnrollment = wrapUseEndpoint(
-    "/course/enrollment/",
+    '/course/enrollment/',
     types.FETCH_ENROLLMENT_SUCCESSFUL
 );
 
 export const useCategory = wrapUseEndpoint(
-    "/course/categories/",
+    '/course/categories/',
     types.GET_CATEGORY_SUCCESS
 );
 
 export const usePriceRules = wrapUseEndpoint(
-    "/pricing/rule/",
+    '/pricing/rule/',
     types.GET_PRICE_RULE_SUCCESS
 );
 
 export const useOutOfOffice = wrapUseEndpoint(
-    "/account/instructor-out-of-office/",
+    '/account/instructor-out-of-office/',
     types.FETCH_OOO_SUCCESS
 );
 
 export const useEnrollmentByCourse = (courseID) =>
-    wrapUseEndpoint("/course/enrollment/", types.FETCH_ENROLLMENT_SUCCESSFUL)(
+    wrapUseEndpoint('/course/enrollment/', types.FETCH_ENROLLMENT_SUCCESSFUL)(
         null,
         useMemo(
             () => ({
-                "params": {
-                    "course_id": courseID,
+                params: {
+                    course_id: courseID,
                 },
             }),
             [courseID]
@@ -336,12 +348,12 @@ export const useEnrollmentByCourse = (courseID) =>
     );
 
 export const useEnrollmentByStudent = (studentID) =>
-    wrapUseEndpoint("/course/enrollment/", types.FETCH_ENROLLMENT_SUCCESSFUL)(
+    wrapUseEndpoint('/course/enrollment/', types.FETCH_ENROLLMENT_SUCCESSFUL)(
         null,
         useMemo(
             () => ({
-                "params": {
-                    "student_id": studentID,
+                params: {
+                    student_id: studentID,
                 },
             }),
             [studentID]
@@ -349,12 +361,12 @@ export const useEnrollmentByStudent = (studentID) =>
     );
 
 export const usePaymentByParent = (parentID) =>
-    wrapUseEndpoint("/payment/payment/", types.GET_PAYMENT_PARENT_SUCCESS)(
+    wrapUseEndpoint('/payment/payment/', types.GET_PAYMENT_PARENT_SUCCESS)(
         null,
         useMemo(
             () => ({
-                "params": {
-                    "parent": parentID,
+                params: {
+                    parent: parentID,
                 },
             }),
             [parentID]
@@ -362,12 +374,12 @@ export const usePaymentByParent = (parentID) =>
     );
 
 export const usePaymentByEnrollment = (enrollmentID) =>
-    wrapUseEndpoint("/payment/payment/", types.GET_PAYMENT_ENROLLMENT_SUCCESS)(
+    wrapUseEndpoint('/payment/payment/', types.GET_PAYMENT_ENROLLMENT_SUCCESS)(
         null,
         useMemo(
             () => ({
-                "params": {
-                    "enrollment": enrollmentID,
+                params: {
+                    enrollment: enrollmentID,
                 },
             }),
             [enrollmentID]
@@ -375,14 +387,14 @@ export const usePaymentByEnrollment = (enrollmentID) =>
     );
 
 export const useClassSessionsInPeriod = (time_frame, time_shift) =>
-    wrapUseEndpoint("/scheduler/session/", types.GET_SESSIONS_SUCCESS)(
+    wrapUseEndpoint('/scheduler/session/', types.GET_SESSIONS_SUCCESS)(
         null,
         useMemo(
             () => ({
-                "params": {
+                params: {
                     time_frame,
                     time_shift,
-                    "view_option": "class",
+                    view_option: 'class',
                 },
             }),
             [time_frame, time_shift]
@@ -390,14 +402,14 @@ export const useClassSessionsInPeriod = (time_frame, time_shift) =>
     );
 
 export const useTutoringSessionsInPeriod = (time_frame, time_shift) =>
-    wrapUseEndpoint("/scheduler/session/", types.GET_SESSIONS_SUCCESS)(
+    wrapUseEndpoint('/scheduler/session/', types.GET_SESSIONS_SUCCESS)(
         null,
         useMemo(
             () => ({
-                "params": {
+                params: {
                     time_frame,
                     time_shift,
-                    "view_option": "tutoring",
+                    view_option: 'tutoring',
                 },
             }),
             [time_frame, time_shift]
@@ -405,11 +417,11 @@ export const useTutoringSessionsInPeriod = (time_frame, time_shift) =>
     );
 
 export const useSessionsInPeriod = (time_frame, time_shift) =>
-    wrapUseEndpoint("/scheduler/session/", types.GET_SESSIONS_SUCCESS)(
+    wrapUseEndpoint('/scheduler/session/', types.GET_SESSIONS_SUCCESS)(
         null,
         useMemo(
             () => ({
-                "params": {
+                params: {
                     time_frame,
                     time_shift,
                 },
@@ -420,14 +432,14 @@ export const useSessionsInPeriod = (time_frame, time_shift) =>
 
 export const useInstructorAvailability = (instructorID) =>
     wrapUseEndpoint(
-        "/account/instructor-availability/",
+        '/account/instructor-availability/',
         types.FETCH_INSTRUCTOR_AVAILABILITY_SUCCESS
     )(
         null,
         useMemo(
             () => ({
-                "params": {
-                    "instructor_id": instructorID,
+                params: {
+                    instructor_id: instructorID,
                 },
             }),
             [instructorID]
@@ -435,10 +447,10 @@ export const useInstructorAvailability = (instructorID) =>
     );
 
 export const useUnpaidSessions = wrapUseEndpoint(
-    "/payment/unpaid-sessions/",
+    '/payment/unpaid-sessions/',
     types.GET_UNPAID_SUCCESS
 );
-    
+
 // Hook
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable
@@ -455,6 +467,6 @@ export const usePrevious = (value) => {
 };
 
 export const useSearchParams = () => {
-    const {search} = useLocation();
+    const { search } = useLocation();
     return useMemo(() => new URLSearchParams(search), [search]);
 };

@@ -72,13 +72,13 @@ const AnnouncementCard = ({
         <Grid
             className={classes.announcementContainer}
             container
-            justify="flex-start"
-            data-active="inactive"
+            justify='flex-start'
+            data-active='inactive'
         >
             <Grid item xs={6}>
                 <Typography
-                    variant="h6"
-                    align="left"
+                    variant='h6'
+                    align='left'
                     gutterBottom
                     ref={subjectRef}
                 >
@@ -93,7 +93,7 @@ const AnnouncementCard = ({
                         USER_TYPES.instructor,
                     ]}
                 >
-                    <Button onClick={handleOpenForm} name="edit" value="edit">
+                    <Button onClick={handleOpenForm} name='edit' value='edit'>
                         <Create style={{ color: omouBlue }} />
                     </Button>
                     <Button onClick={handleDeleteForm}>
@@ -102,12 +102,12 @@ const AnnouncementCard = ({
                 </AccessControlComponent>
             </Grid>
             <Grid item xs={12} className={classes.announcementBody}>
-                <Typography variant="body1" align="left" ref={bodyRef}>
+                <Typography variant='body1' align='left' ref={bodyRef}>
                     {body}
                 </Typography>
             </Grid>
             <Grid item xs={12}>
-                <Typography variant="subtitle2" align="left">
+                <Typography variant='subtitle2' align='left'>
                     Posted by:
                     <span
                         style={{
@@ -202,7 +202,7 @@ const Announcements = ({ announcementsData }) => {
     );
 
     return (
-        <Grid container justify="flex-start" data-active="inactive">
+        <Grid container justify='flex-start' data-active='inactive'>
             <AccessControlComponent
                 permittedAccountTypes={[
                     USER_TYPES.admin,
@@ -211,13 +211,13 @@ const Announcements = ({ announcementsData }) => {
                 ]}
             >
                 <ResponsiveButton
-                    variant="outlined"
+                    variant='outlined'
                     className={classes.newNoteButton}
                     onClick={() =>
                         setNewAnnouncementForm(true, setEditOrPost('post'))
                     }
-                    value="post"
-                    name="post"
+                    value='post'
+                    name='post'
                     startIcon={<AddIcon />}
                 >
                     <span className={classes.plusSpan}>+</span> New Announcement

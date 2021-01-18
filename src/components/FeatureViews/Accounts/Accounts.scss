@@ -4,50 +4,6 @@
 
 /*Account Styles*/
 .Accounts {
-  .paper {
-    padding: 3%;
-  }
-  .toggleView {
-    right: 10%;
-  }
-
-  .Directory {
-    text-align: left;
-    font-size: 60px;
-  }
-  .tabs {
-    text-align: left;
-    left: 0;
-    height: 0;
-
-    .tab {
-      min-width: 130px;
-    }
-  }
-  .heading {
-    margin: 25px 0;
-  }
-
-  .card-container {
-    margin-top: 20px;
-  }
-
-  .toggleView {
-    .btn {
-      color: $lightPrimaryFontColor;
-      border-radius: 5px;
-      box-sizing: border-box;
-      border: solid 2px $secondaryColor !important;
-      white-space: nowrap;
-      right: -20%;
-      margin-left: 5px;
-      width: 8rem;
-
-      &.active {
-        border: solid 2px $primaryColor !important;
-        color: $primaryColor;
-        background-color: #ebfaff;
-      }
     .paper {
         padding: 3%;
     }
@@ -92,36 +48,80 @@
                 color: $primaryColor;
                 background-color: #ebfaff;
             }
+            .paper {
+                padding: 3%;
+            }
+            .toggleView {
+                right: 10%;
+            }
+
+            .Directory {
+                text-align: left;
+                font-size: 60px;
+            }
+            .tabs {
+                text-align: left;
+                left: 0;
+                height: 0;
+
+                .tab {
+                    min-width: 130px;
+                }
+            }
+            .heading {
+                margin: 25px 0;
+            }
+
+            .card-container {
+                margin-top: 20px;
+            }
+
+            .toggleView {
+                .btn {
+                    color: $lightPrimaryFontColor;
+                    border-radius: 5px;
+                    box-sizing: border-box;
+                    border: solid 2px $secondaryColor !important;
+                    white-space: nowrap;
+                    right: -20%;
+                    margin-left: 5px;
+                    width: 8rem;
+
+                    &.active {
+                        border: solid 2px $primaryColor !important;
+                        color: $primaryColor;
+                        background-color: #ebfaff;
+                    }
+                }
+            }
+
+            .AccountsTable {
+                margin-top: 20px;
+
+                .row {
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+
+                .editButton {
+                    color: $lightPrimaryFontColor;
+                    border-radius: 5px;
+                    box-sizing: border-box;
+                    border: solid 2px $secondaryColor !important;
+                    white-space: nowrap;
+                }
+
+                .accountsCell {
+                    width: 220px;
+                    overflow-wrap: break-word;
+                }
+                .accountsCellID {
+                    width: 100px;
+                    overflow-wrap: break-word;
+                }
+            }
         }
     }
-
-    .AccountsTable {
-        margin-top: 20px;
-
-        .row {
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .editButton {
-            color: $lightPrimaryFontColor;
-            border-radius: 5px;
-            box-sizing: border-box;
-            border: solid 2px $secondaryColor !important;
-            white-space: nowrap;
-        }
-
-        .accountsCell {
-            width: 220px;
-            overflow-wrap: break-word;
-        }
-        .accountsCellID {
-            width: 100px;
-            overflow-wrap: break-word;
-        }
-    }
-    }
-  }  
 }
 
 .oooDialog {
@@ -298,93 +298,92 @@
 }
 
 .editResetDiv {
-  border: solid 2px $primaryColor;
-  position: relative;
-  top: 22px;
-  left: -10px;
-  border-radius: 10px;
-  width: 170px;
-  display: none;
+    border: solid 2px $primaryColor;
+    position: relative;
+    top: 22px;
+    left: -10px;
+    border-radius: 10px;
+    width: 170px;
+    display: none;
 }
 
 .editIcon:hover + .editResetDiv {
-  display: inline;
+    display: inline;
 }
 
-
 .editResetDiv:hover {
-  display: inline;
+    display: inline;
 }
 
 .reset {
-  border-radius: 0px 0px 8px 8px !important;
-  width: 100%;
-  text-align: right;
-  justify-content: flex-end !important;
-  justify-content: left !important;
-  border: none !important;
+    border-radius: 0px 0px 8px 8px !important;
+    width: 100%;
+    text-align: right;
+    justify-content: flex-end !important;
+    justify-content: left !important;
+    border: none !important;
 }
 
 .edit {
-  border-radius: 8px 8px 0px 0px !important;
-  width: 100%;
-  height: 40px;
-  justify-content: left !important;
+    border-radius: 8px 8px 0px 0px !important;
+    width: 100%;
+    height: 40px;
+    justify-content: left !important;
 }
 
 .reset:hover {
-  background-color: #ebfaff !important;
-  color: #43b5d9 !important;
+    background-color: #ebfaff !important;
+    color: #43b5d9 !important;
 }
 
 .edit:hover {
-  background-color: #ebfaff !important;
-  color: #43b5d9 !important;
+    background-color: #ebfaff !important;
+    color: #43b5d9 !important;
 }
 
 .resetBtn {
-  background-color: #eb5757 !important;
-  color: white !important;
-  margin-left: 40px !important;
-  width: 200px;
+    background-color: #eb5757 !important;
+    color: white !important;
+    margin-left: 40px !important;
+    width: 200px;
 }
 
 .cancelBtn {
-  background: #ffffff;
-  border: 2px solid #c4c4c4;
-  box-sizing: border-box;
-  border-radius: 5px;
-  color: #289fc3 !important;
-  height: 43px;
+    background: #ffffff;
+    border: 2px solid #c4c4c4;
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: #289fc3 !important;
+    height: 43px;
 }
 
 .doneBtn {
-  background: #289fc3 !important;
-  border: 2px solid #289fc3 !important;
-  box-sizing: border-box !important;
-  border-radius: 5px !important;
-  color: white !important;
+    background: #289fc3 !important;
+    border: 2px solid #289fc3 !important;
+    box-sizing: border-box !important;
+    border-radius: 5px !important;
+    color: white !important;
 }
 
 .center {
-  text-align: center;
+    text-align: center;
 }
 
 .dialog-padding {
-  padding: 20px 40px 5px 40px !important;
+    padding: 20px 40px 5px 40px !important;
 }
 
 .dialog-actions {
-  padding-bottom: 30px !important;
-  padding-top: 0px !important;
-  margin: auto;
+    padding-bottom: 30px !important;
+    padding-top: 0px !important;
+    margin: auto;
 }
 
 .passwordDisplay {
-  color: #43b5d9 !important;
-  font-size: 25px !important;
+    color: #43b5d9 !important;
+    font-size: 25px !important;
 }
 
 a {
-  color: black;
+    color: black;
 }

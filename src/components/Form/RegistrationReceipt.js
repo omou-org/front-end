@@ -36,17 +36,17 @@ export default function RegistrationReceipt() {
     return (
         <>
             <PaymentReceipt paymentID={registrationStatus.paymentID} />
-            <Grid container direction="row" alignItems="flex-end">
+            <Grid container direction='row' alignItems='flex-end'>
                 <Grid item>
                     <ResponsiveButton
-                        variant="contained"
+                        variant='contained'
                         onClick={handleCloseRegistration}
                     >
                         Close Registration
                     </ResponsiveButton>
                 </Grid>
                 <Grid item>
-                    <ResponsiveButton variant="outlined" onClick={handlePrint}>
+                    <ResponsiveButton variant='outlined' onClick={handlePrint}>
                         Print
                     </ResponsiveButton>
                 </Grid>
