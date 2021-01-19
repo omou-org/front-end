@@ -123,7 +123,7 @@ const SearchResults = () => {
             case "course":
                 return numCourseResults;
             default:
-                return numAccResults + numCourseResults;
+                return (numAccResults || 0) + (numCourseResults || 0);
         }
     }, [filter, numAccResults, numCourseResults]);
 
@@ -148,7 +148,7 @@ const SearchResults = () => {
                     <CourseCard isLoading />
                 </Grid>
             )) :
-        courseQuery.data.courseSearch.results.map(({id}) => (
+        courseQuery.data?.courseSearch.results.map(({id}) => (
             <Grid item key={id} sm={3}>
                 <CourseCard courseID={id} />
             </Grid>

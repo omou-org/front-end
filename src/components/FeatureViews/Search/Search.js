@@ -103,7 +103,8 @@ const ACCOUNT_SEARCH = gql`
 const Search = ({onMobileType = () => {}}) => {
     const history = useHistory();
     const [query, setQuery] = useState("");
-    const [filter, setFilter] = useState("all");
+    // const [filter, setFilter] = useState("all");
+    const [filter, setFilter] = useState("account");
     const [mobileSearching, setMobileSearching] = useState(false);
     const [placeholder, setPlaceholder] = useState(getPlaceholder());
     const client = useApolloClient();
@@ -245,9 +246,9 @@ const Search = ({onMobileType = () => {}}) => {
                                     }}
                                     onChange={changeFilter}
                                     value={filter}>
-                                    <MenuItem value="all">All</MenuItem>
+                                    {/* <MenuItem value="all">All</MenuItem> */}
                                     <MenuItem value="account">Account</MenuItem>
-                                    <MenuItem value="course">Course</MenuItem>
+                                    {/* <MenuItem value="course">Course</MenuItem> */}
                                 </Select>
                             </FormControl>
                         </Grid>
