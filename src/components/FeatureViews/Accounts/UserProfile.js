@@ -147,12 +147,12 @@ const userTabs = {
         },
     ],
     admin: [
-        {
-            icon: '',
-            tab_heading: 'Action Log',
-            access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
-            tab_id: 10,
-        },
+        // {
+        //     icon: '',
+        //     tab_heading: 'Action Log',
+        //     access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
+        //     tab_id: 10,
+        // },
         {
             icon: '',
             tab_heading: 'Notes',
