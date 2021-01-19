@@ -304,12 +304,21 @@ const Accounts = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
+                        to="/form/admin"
+                        variant="outlined"
+                    >
+                        new admin
+                    </ResponsiveButton>
+                </Grid>
+                {/* <Grid item>
+                    <ResponsiveButton
+                        component={Link}
                         to="/form/parent"
                         variant="outlined"
                     >
                         new parent
                     </ResponsiveButton>
-                </Grid>
+                </Grid> */}
             </Grid>
             <Hidden xsDown>
                 <hr />
