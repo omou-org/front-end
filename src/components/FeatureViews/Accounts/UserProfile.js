@@ -111,29 +111,29 @@ const userTabs = {
         },
     ],
     student: [
-        {
-            icon: <CurrentSessionsIcon className="TabIcon" />,
-            tab_heading: 'Current Course(s)',
-            access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
-            tab_id: 3,
-        },
-        {
-            icon: <PastSessionsIcon className="TabIcon" />,
-            access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
-            tab_heading: 'Past Course(s)',
-            tab_id: 4,
-        },
-        {
-            icon: <ContactIcon className="TabIcon" />,
-            access_permissions: [
-                USER_TYPES.receptionist,
-                USER_TYPES.admin,
-                USER_TYPES.student,
-                USER_TYPES.parent,
-            ],
-            tab_heading: 'Parent Contact',
-            tab_id: 6,
-        },
+        // {
+        //     icon: <CurrentSessionsIcon className="TabIcon" />,
+        //     tab_heading: 'Current Course(s)',
+        //     access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
+        //     tab_id: 3,
+        // },
+        // {
+        //     icon: <PastSessionsIcon className="TabIcon" />,
+        //     access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
+        //     tab_heading: 'Past Course(s)',
+        //     tab_id: 4,
+        // },
+        // {
+        //     icon: <ContactIcon className="TabIcon" />,
+        //     access_permissions: [
+        //         USER_TYPES.receptionist,
+        //         USER_TYPES.admin,
+        //         USER_TYPES.student,
+        //         USER_TYPES.parent,
+        //     ],
+        //     tab_heading: 'Parent Contact',
+        //     tab_id: 6,
+        // },
         {
             icon: <NoteIcon className="TabIcon" />,
             access_permissions: [
