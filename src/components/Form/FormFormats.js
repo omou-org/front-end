@@ -518,35 +518,35 @@ export default {
                 "name": "student",
                 "label": "Student Information",
                 "fields": [
-                    {
-                        "name": "primaryParent",
-                        "label": "Parent",
-                        "component": parentSelect("primaryParent"),
-                        "validator": Yup.mixed(),
-                    },
+                    // {
+                    //     "name": "primaryParent",
+                    //     "label": "Parent",
+                    //     "component": parentSelect("primaryParent"),
+                    //     "validator": Yup.mixed(),
+                    // },
                     ...NAME_FIELDS,
                     {
                         ...EMAIL_FIELD,
                         "required": false,
                     },
                     GENDER_FIELD,
-                    {
-                        "name": "grade",
-                        "label": "Grade",
-                        "component": <Fields.TextField />,
-                        "validator": Yup.number()
-                            .typeError("Grade must be a number.")
-                            .integer()
-                            .min(1)
-                            .max(13),
-                    },
+                    // {
+                    //     "name": "grade",
+                    //     "label": "Grade",
+                    //     "component": <Fields.TextField />,
+                    //     "validator": Yup.number()
+                    //         .typeError("Grade must be a number.")
+                    //         .integer()
+                    //         .min(1)
+                    //         .max(13),
+                    // },
                     BIRTH_DATE_FIELD,
-                    {
-                        "name": "school",
-                        "label": "School",
-                        "component": schoolSelect("school"),
-                        "validator": Yup.mixed(),
-                    },
+                    // {
+                    //     "name": "school",
+                    //     "label": "School",
+                    //     "component": schoolSelect("school"),
+                    //     "validator": Yup.mixed(),
+                    // },
                     PHONE_NUMBER_FIELD,
                     ADDRESS_FIELD,
                     CITY_FIELD,
@@ -646,6 +646,26 @@ export default {
             return null;
         },
         "submit": async ({student}, id) => {
+//             const ADD_STUDENT = gql`
+//             mutation AddStudent(
+//             $firstName: String!,
+//             $email: String,
+//             $lastName: String!,
+//             $address: String,
+//             $birthDate:Date,
+//             $city:String,
+//             $gender:GenderEnum,
+//             $grade:Int,
+//             $phoneNumber:String,
+//             $primaryParent:ID,
+//             $school:ID,
+//             $zipcode:String,
+//             $state:String,
+//             $id: ID) {
+//   createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
+//       created
+//   }
+//     }`;
             const ADD_STUDENT = gql`
             mutation AddStudent(
             $firstName: String!,
@@ -655,17 +675,14 @@ export default {
             $birthDate:Date,
             $city:String,
             $gender:GenderEnum,
-            $grade:Int,
             $phoneNumber:String,
-            $primaryParent:ID,
-            $school:ID,
             $zipcode:String,
             $state:String,
             $id: ID) {
-  createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
-      created
-  }
-    }`;
+                createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, gender: $gender, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
+                created
+            }
+        }`;
 
             try {
                 await client.mutate({
@@ -675,8 +692,8 @@ export default {
                         id,
                         "email": student.email || "",
                         "birthDate": parseDate(student.birthDate),
-                        "primaryParent": student.primaryParent.value,
-                        "school": student.school.value,
+                        //"primaryParent": student.primaryParent.value,
+                        //"school": student.school.value,
                     },
                 });
             } catch (error) {
