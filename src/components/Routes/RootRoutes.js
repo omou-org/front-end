@@ -78,12 +78,13 @@ export const RootRoutes = () => {
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path="/">
                 {
-                    {
-                        [USER_TYPES.receptionist]: <DashboardSwitch/>,
-                        [USER_TYPES.admin]: <DashboardSwitch/>,
-                        [USER_TYPES.parent]: <Scheduler/>,
-                        [USER_TYPES.instructor]: <Scheduler/>,
-                    }[AuthUser.accountType]
+                    <Redirect to="/accounts"/>
+                    // {
+                    //     [USER_TYPES.receptionist]: <DashboardSwitch/>,
+                    //     [USER_TYPES.admin]: <DashboardSwitch/>,
+                    //     [USER_TYPES.parent]: <Scheduler/>,
+                    //     [USER_TYPES.instructor]: <Scheduler/>,
+                    // }[AuthUser.accountType]
                 }
 
             </AuthenticatedRoute>

@@ -16,36 +16,36 @@ import {ReactComponent as NewAdminIcon} from "./newadminicon.svg";
 
 export const NavList = {
 	"ADMIN": [
-		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
-		{
-			"name": "Scheduler",
-			"link": "/scheduler",
-			"icon": <EventOutlinedIcon/>,
-		},
-		{
-			"name": "Registration",
-			"link": "/registration",
-			"icon": <AssignmentOutlinedIcon/>,
-		},
-		{
-			"name": "Courses",
-			"link": "/coursemanagement",
-			"icon": <MenuBookIcon />
-		},
+		// {
+		// 	"name": "Dashboard",
+		// 	"link": "/",
+		// 	"icon": <DashboardIcon/>,
+		// },
+		// {
+		// 	"name": "Scheduler",
+		// 	"link": "/scheduler",
+		// 	"icon": <EventOutlinedIcon/>,
+		// },
+		// {
+		// 	"name": "Registration",
+		// 	"link": "/registration",
+		// 	"icon": <AssignmentOutlinedIcon/>,
+		// },
+		// {
+		// 	"name": "Courses",
+		// 	"link": "/coursemanagement",
+		// 	"icon": <MenuBookIcon />
+		// },
 		{
 			"name": "Accounts",
-			"link": "/accounts",
+			"link": "/",
 			"icon": <ContactsOutlinedIcon/>,
 		},
-		{
-			"name": "Admin",
-			"link": "/adminportal",
-			"icon": <NewAdminIcon/>,
-		},
+		// {
+		// 	"name": "Admin",
+		// 	"link": "/adminportal",
+		// 	"icon": <NewAdminIcon/>,
+		// },
 	],
 	"RECEPTIONIST": [
 		{
