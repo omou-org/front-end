@@ -38,7 +38,7 @@ export const NavList = {
 		// },
 		{
 			"name": "Accounts",
-			"link": "/",
+			"link": "/accounts",
 			"icon": <ContactsOutlinedIcon/>,
 		},
 		// {
@@ -48,26 +48,26 @@ export const NavList = {
 		// },
 	],
 	"RECEPTIONIST": [
-		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
-		{
-			"name": "Scheduler",
-			"link": "/scheduler",
-			"icon": <EventOutlinedIcon/>,
-		},
-		{
-			"name": "Registration",
-			"link": "/registration",
-			"icon": <AssignmentOutlinedIcon/>,
-		},
-		{
-			"name": "Courses",
-			"link": "/coursemanagement",
-			"icon": <MenuBookIcon />
-		},
+		// {
+		// 	"name": "Dashboard",
+		// 	"link": "/",
+		// 	"icon": <DashboardIcon/>,
+		// },
+		// {
+		// 	"name": "Scheduler",
+		// 	"link": "/scheduler",
+		// 	"icon": <EventOutlinedIcon/>,
+		// },
+		// {
+		// 	"name": "Registration",
+		// 	"link": "/registration",
+		// 	"icon": <AssignmentOutlinedIcon/>,
+		// },
+		// {
+		// 	"name": "Courses",
+		// 	"link": "/coursemanagement",
+		// 	"icon": <MenuBookIcon />
+		// },
 		{
 			"name": "Accounts",
 			"link": "/accounts",
