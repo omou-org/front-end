@@ -2,10 +2,10 @@ export const addDashes = (string) => {
     if (string && string.length === 10 &&
         string.match(/^[0-9]{10}$/u) !== null) {
         return (
-            `${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 10)}`
+            `(${string.slice(0, 3)}) ${string.slice(3, 6)}-${string.slice(6, 10)}`
         );
     }
-    return "";
+    return string;
 };
 
 export const stringToColor = (string) => {
