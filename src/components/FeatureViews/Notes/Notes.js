@@ -207,7 +207,7 @@ const MUTATION_KEY = {
 };
 
 // eslint-disable-next-line max-statements
-const Notes = ({ ownerType, ownerID, isDashboard }) => {
+const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
     const dispatch = useDispatch();
 
     const [alert, setAlert] = useState(false);
@@ -290,6 +290,16 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
         setDeleteID(null);
         setDeleteError(false);
     }, []);
+
+    const getNoteHeight = (type = '') => {
+        switch (type) {
+            case 'dashboard':
+            case 'profile': 
+                return '100%';
+            default:
+                return '200px';
+        }
+    }
 
     const notificationColor = useMemo(() => ({
         "color": important ? "red" : "grey",
@@ -554,7 +564,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 item
                                 xs={12}>
                                 <AddItemButton
-                                    height={'100%'}
+                                    height={getNoteHeight('dashboard')}
                                     width='inherit'
                                     style={{padding: 0}}
                                     onClick={openNewNote}
@@ -566,7 +576,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                     :
                        <Grid item md={3}>
                            <AddItemButton
-                            height={200}
+                            height={getNoteHeight(isProfile ? 'profile' : '')}
                             width='inherit'
                             onClick={openNewNote}
                            >
