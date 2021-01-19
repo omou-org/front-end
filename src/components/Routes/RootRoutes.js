@@ -64,15 +64,15 @@ export const RootRoutes = () => {
             </Route>
             
             {/* Dahl Design Migration Demos */}
-            <Route path="/demo/:type">
+            {/* <Route path="/demo/:type">
                 <DemoRoutes/>
-            </Route>
+            </Route> */}
 
 
             {/* Route for Testing AddItemButton */}
-            <Route path="/demos/AddItemButton">
+            {/* <Route path="/demos/AddItemButton">
                 <AddItemButtonTestDemo />
-            </Route>
+            </Route> */}
             
 
             {/* Main Feature Views */}
@@ -88,15 +88,15 @@ export const RootRoutes = () => {
                 }
 
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact
+            {/* <AuthenticatedRoute exact
                                 path="/registration"
                                 users={[USER_TYPES.admin, USER_TYPES.receptionist, USER_TYPES.parent]}
             >
                 <Registration/>
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
 
             {/* Scheduler Routes */}
-            <AuthenticatedRoute exact path="/scheduler">
+            {/* <AuthenticatedRoute exact path="/scheduler">
                 <Scheduler/>
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/view-session/:course_id/:session_id/:instructor_id">
@@ -104,7 +104,7 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path="/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit">
                 <EditSessionView />
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
 
             <AuthenticatedRoute exact path="/search">
                 <SearchResults />
@@ -120,21 +120,21 @@ export const RootRoutes = () => {
             <AuthenticatedRoute exact path="/accounts/:accountType/:accountID">
                 <UserProfile />
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact
+            {/* <AuthenticatedRoute exact
                 path="/accounts/parent/payment/:paymentID">
                 <PaymentReceipt />
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
             <AuthenticatedRoute exact path="/accounts"
                 users={[USER_TYPES.admin, USER_TYPES.receptionist]}>
                 <Accounts />
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact
+            {/* <AuthenticatedRoute exact
                 path="/enrollment/:enrollmentId">
                 <EnrollmentView />
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
 
             {/* Registration Routes */}
-            <AuthenticatedRoute path="/registration/form/:type/:id?">
+            {/* <AuthenticatedRoute path="/registration/form/:type/:id?">
                 <RegistrationForm />
             </AuthenticatedRoute>
             <AuthenticatedRoute
@@ -149,38 +149,38 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/NotEnrolledStudent">
                 <NotEnrolledStudentsDialog />
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
 
             {/* Instructor Routes */}
-            <AuthenticatedRoute path="/teaching-log"
+            {/* <AuthenticatedRoute path="/teaching-log"
                 users={[USER_TYPES.instructor]}>
                 <TeachingLogContainer />
             </AuthenticatedRoute>
             <AuthenticatedRoute path="/availability"
                 users={[USER_TYPES.instructor]}>
                 <AvailabilityContainer />
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
 
             {/* Parent Routes */}
-            <AuthenticatedRoute path="/my-payments/:view?/:paymentId?"
+            {/* <AuthenticatedRoute path="/my-payments/:view?/:paymentId?"
                                 users={[USER_TYPES.parent]}
             >
                 <ManagePayments/>
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
 
             {/* Admin Routes */}
-            <AuthenticatedRoute exact
+            {/* <AuthenticatedRoute exact
                                 path="/adminportal/:view?/:type?/:id?/:edit?"
                                 users={[USER_TYPES.admin]}>
                 <AdminPortal/>
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
             <AuthenticatedRoute exact path="/form/:type/:id?"
                 users={[USER_TYPES.admin, USER_TYPES.parent]}>
                 <FormPage />
             </AuthenticatedRoute>
         
             {/* Course Management Routes */}
-            <AuthenticatedRoute 
+            {/* <AuthenticatedRoute 
             path="/coursemanagement"
             exact
             >
@@ -191,7 +191,7 @@ export const RootRoutes = () => {
                 path="/coursemanagement/class/:id?"
             >
                 <CourseClasses/>
-            </AuthenticatedRoute>
+            </AuthenticatedRoute> */}
 
             <AuthenticatedRoute path="/PageNotFound">
                 <ErrorNotFoundPage/>
