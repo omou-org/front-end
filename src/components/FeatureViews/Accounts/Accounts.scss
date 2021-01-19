@@ -300,26 +300,21 @@
 .editResetDiv {
   border: solid 2px $primaryColor;
   position: relative;
-  top: 22px;
-  left: -10px;
+  top: -5px;
+  left: 20px;
   border-radius: 10px;
   width: 170px;
-  display: none;
+  font-size: 20px;
 }
 
-.editIcon:hover + .editResetDiv {
-  display: inline;
-}
-
-
-.editResetDiv:hover {
-  display: inline;
+.editIcon:hover {
+  cursor: pointer;
 }
 
 .reset {
   border-radius: 0px 0px 8px 8px !important;
   width: 100%;
-  text-align: right;
+  text-align: left;
   justify-content: flex-end !important;
   justify-content: left !important;
   border: none !important;
@@ -330,6 +325,7 @@
   width: 100%;
   height: 40px;
   justify-content: left !important;
+  font-size: 0.8rem !important;
 }
 
 .reset:hover {
@@ -347,6 +343,7 @@
   color: white !important;
   margin-left: 40px !important;
   width: 200px;
+  font-size: 0.8rem !important;
 }
 
 .cancelBtn {

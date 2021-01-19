@@ -131,6 +131,7 @@ const GET_PROFILE_HEADING_QUERY = {
 const ProfileHeading = ({ ownerID }) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [editButtonActive, setEditButtonActive] = useState(false);
     const { accountType } = useParams();
 
     const loggedInUserID = useSelector(({ auth }) => auth.user.id);
@@ -160,65 +161,70 @@ const ProfileHeading = ({ ownerID }) => {
     const isStudentProfile = userInfo.accountType === "STUDENT";
 
     const renderEditandAwayButton = () => (
-        <Grid container item xs={4}>
-            {accountType === 'instructor' && (
-                <Grid align="left" className="schedule-button" item xs={12}>
-                    <ResponsiveButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleOpen}
-                        variant="outlined"
-                        startIcon={<CalendarIcon />}
-                    >
-                        Schedule Options
-                    </ResponsiveButton>
-                    <Menu
-                        anchorEl={anchorEl}
-                        keepMounted
-                        onClose={handleClose}
-                        open={anchorEl !== null}
-                    >
-                        {/* <InstructorAvailability
+      <Grid container item xs={4}>
+        {accountType === "instructor" && (
+          <Grid align="left" className="schedule-button" item xs={12}>
+            <ResponsiveButton
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleOpen}
+              variant="outlined"
+              startIcon={<CalendarIcon />}
+            >
+              Schedule Options
+            </ResponsiveButton>
+            <Menu
+              anchorEl={anchorEl}
+              keepMounted
+              onClose={handleClose}
+              open={anchorEl !== null}
+            >
+              {/* <InstructorAvailability
                             button={false}
                             instructorID={ownerID}
                         />
                         <OutOfOffice button={false} instructorID={ownerID} /> */}
-                    </Menu>
-                </Grid>
-            )}
-            {(isAdmin || isAuthUser) && (
-                <>
-                    <Grid component={Hidden} item mdDown xs={12}>
-                        
-                    <EditIcon className="editIcon" />
-                    <div className="editResetDiv">
-                        <ResponsiveButton
-                            component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${userInfo.user.id}`}
-                            className="edit"
-                        >
-                            Edit Profile
-                        </ResponsiveButton>
-                        {isAdmin && (
-                <ResetPasswordDialogs
-                isStudentProfile = {isStudentProfile}
-                userInfo = {userInfo}
-             />
+            </Menu>
+          </Grid>
+        )}
+        {(isAdmin || isAuthUser) && (
+          <>
+            <Grid component={Hidden} item mdDown xs={12}>
+              <EditIcon className="editIcon" onClick={() => {setEditButtonActive(!editButtonActive)}}/>
+              {editButtonActive && (
+                <div className="editResetDiv">
+                  <ResponsiveButton
+                    component={Link}
+                    to={`/form/${userInfo.accountType.toLowerCase()}/${
+                      userInfo.user.id
+                    }`}
+                    className="edit"
+                  >
+                    Edit Profile
+                  </ResponsiveButton>
+                  {isAdmin && (
+                    <ResetPasswordDialogs
+                      isStudentProfile={isStudentProfile}
+                      userInfo={userInfo}
+                    />
+                  )}
+                </div>
               )}
-            </div>
-                    </Grid>
-                    <Grid component={Hidden} item lgUp xs={12}>
-                        <ResponsiveButton
-                            component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${userInfo.user.id}`}
-                            variant="outlined"
-                        >
-                            <EditIcon />
-                        </ResponsiveButton>
-                    </Grid>
-                </>
-            )}
-        </Grid>
+            </Grid>
+            <Grid component={Hidden} item lgUp xs={12}>
+              <ResponsiveButton
+                component={Link}
+                to={`/form/${userInfo.accountType.toLowerCase()}/${
+                  userInfo.user.id
+                }`}
+                variant="outlined"
+              >
+                <EditIcon />
+              </ResponsiveButton>
+            </Grid>
+          </>
+        )}
+      </Grid>
     );
 
     const profileDetails = () => {
@@ -338,40 +344,45 @@ const ProfileHeading = ({ ownerID }) => {
     };
 
     return (
-        <Grid
-            alignItems="center"
+      <Grid
+        alignItems="flex-start"
+        container
+        item
+        direction="row"
+        xs={12}
+        style={{ margin: accountType === "INSTRUCTOR" ? "-20px 0" : "0" }}
+      >
+        <Grid xs={7}>
+          <Grid align="left" alignItems="center" container item xs={7}>
+            <Grid className="profile-name" item style={{ marginRight: 20 }}>
+              <Typography variant="h3">{fullName(userInfo.user)}</Typography>
+            </Grid>
+            <Grid item>
+              <Hidden smDown>
+                <LabelBadge variant="outline-gray">{accountType}</LabelBadge>
+              </Hidden>
+            </Grid>
+          </Grid>
+          <Grid
             container
-            item
-            xs={12}
-            style={{ margin: accountType === 'INSTRUCTOR' ? '-20px 0' : '0' }}
-        >
-            <Grid align="left" alignItems="center" container item xs={8}>
-                <Grid className="profile-name" item style={{ marginRight: 20 }}>
-                    <Typography variant="h3">
-                        {fullName(userInfo.user)}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Hidden smDown>
-                        <LabelBadge variant="outline-gray">
-                            {accountType}
-                        </LabelBadge>
-                    </Hidden>
-                </Grid>
-            </Grid>
-            {renderEditandAwayButton()}
-            <Grid
-                container
-                align="left"
-                alignItems="center"
-                style={{
-                    width: '430px',
-                    margin: accountType === 'INSTRUCTOR' ? '-10px 0' : '10px 0',
-                }}
-            >
-                {profileDetails()}
-            </Grid>
+            align="left"
+            alignItems="center"
+            style={{
+              width: "430px",
+              margin: accountType === "INSTRUCTOR" ? "-10px 0" : "10px 0",
+            }}
+          >
+            {profileDetails()}
+          </Grid>
         </Grid>
+        <Grid 
+            xs={5} 
+            
+
+        >
+            {renderEditandAwayButton()}
+        </Grid>
+      </Grid>
     );
 };
 
