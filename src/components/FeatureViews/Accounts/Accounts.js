@@ -75,11 +75,18 @@ const QUERY_USERS = gql`
 
 const TABS = [
     'All',
-    'Instructors',
+    // 'Instructors',
     'Students',
-    'Receptionist',
-    'Parents',
-].map((label) => <Tab key={label} label={label} />);
+    'Teaching Assistants',
+    // 'Receptionist',
+    // 'Parents',
+].map((label) => {
+    let key = label;
+    if (label === 'Teaching Assistants') {
+        key = 'Receptionist';
+    }
+    return <Tab key={key} label={label} />
+});
 
 const useStyles = makeStyles({
     MuiIndicator: {
@@ -126,21 +133,32 @@ const Accounts = () => {
         let newUsersList = [];
         switch (tabIndex) {
             case 1:
-                newUsersList = data.instructors;
-                break;
-            case 2:
                 newUsersList = data.students;
                 break;
-            case 3:
+            case 2:
                 newUsersList = data.admins.filter(
                     (admin) => admin.adminType === USER_TYPES.receptionist
                 );
                 break;
-            case 4:
-                newUsersList = data.parents;
-                break;
             default:
                 newUsersList = Object.values(data).flat();
+        // switch (tabIndex) {
+        //     case 1:
+        //         newUsersList = data.instructors;
+        //         break;
+        //     case 2:
+        //         newUsersList = data.students;
+        //         break;
+        //     case 3:
+        //         newUsersList = data.admins.filter(
+        //             (admin) => admin.adminType === USER_TYPES.receptionist
+        //         );
+        //         break;
+        //     case 4:
+        //         newUsersList = data.parents;
+        //         break;
+        //     default:
+        //         newUsersList = Object.values(data).flat();
         }
         return newUsersList
             .filter((user) => user.adminType !== 'OWNER')
