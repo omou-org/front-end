@@ -261,7 +261,7 @@ const Accounts = () => {
                                         isAdmin) && (
                                         <IconButton
                                             component={Link}
-                                            to={`/registration/form/${row.accountType}/${row.user.id}`}
+                                            to={`/form/${row.accountType}/${row.user.id}`}
                                         >
                                             <EditIcon />
                                         </IconButton>
@@ -270,7 +270,7 @@ const Accounts = () => {
                                 <Grid component={Hidden} lgUp>
                                     <Button
                                         component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}
+                                        to={`/form/${row.accountType}/${row.user.id}`}
                                         variant="outlined"
                                     >
                                         <EditIcon />
