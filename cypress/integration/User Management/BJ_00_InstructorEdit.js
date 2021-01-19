@@ -52,7 +52,7 @@ describe("As an admin, edit existing instructor account", () => {
                 .should("have.value", original_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"))
                 .click()
                 .type("1");
-            cy.get("[data-cy=basicInfo-nextButton]").should("be.enabled");
+            cy.get("[data-cy=nextButton]").should("be.enabled");
         });
     });
 
@@ -61,20 +61,20 @@ describe("As an admin, edit existing instructor account", () => {
             cy.get("[data-cy=basicInfo-phoneNumber-input]")
                 .clear()
                 .fastType("0");
-            cy.get("[data-cy=basicInfo-nextButton]").should("be.disabled");
+            cy.get("[data-cy=nextButton]").should("be.disabled");
             cy.get("[data-cy=basicInfo-phoneNumber-input]").clear();
             cy.get("[data-cy=basicInfo-phoneNumber-input]").fastType(updated_instructor_data.phoneNumber);
             cy.get("[data-cy=basicInfo-address-input]")
                 .clear()
                 .fastType(updated_instructor_data.address)
                 .should("have.value", updated_instructor_data.address)
-            cy.get("[data-cy=basicInfo-nextButton]").should("be.enabled");
+            cy.get("[data-cy=nextButton]").should("be.enabled");
         }); 
     });
 
     it("Loads instructor data into next experience section of the form", () => {
         cy.fixture("users.json").then(({original_instructor_data}) => {
-            cy.get("[data-cy=basicInfo-nextButton]").click();
+            cy.get("[data-cy=nextButton]").click();
             cy.get("[data-cy=experience-subjects]")
                 .children()
                 .find("span")
@@ -86,7 +86,7 @@ describe("As an admin, edit existing instructor account", () => {
                 .should("have.value", original_instructor_data.biography);
             cy.get("[data-cy=experience-language-input]")
                 .should("have.value", original_instructor_data.language);
-            cy.get("[data-cy=basicInfo-nextButton]").should("be.enabled");
+            cy.get("[data-cy=nextButton]").should("be.enabled");
         });
     });
 
@@ -96,8 +96,8 @@ describe("As an admin, edit existing instructor account", () => {
                 .should("be.enabled")
                 .click();
             cy.get("[data-cy=basicInfo-phoneNumber-input]")
-                .should("have.value", updated_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"));    
-            cy.get("[data-cy=basicInfo-nextButton]")
+                .should("have.value", updated_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"));
+            cy.get("[data-cy=nextButton]")
                 .should("be.enabled")
                 .click();   
         }); 
@@ -108,7 +108,7 @@ describe("As an admin, edit existing instructor account", () => {
             cy.get("[data-cy=backButton]")
                 .should("be.enabled")
                 .click();
-            cy.get("[data-cy=basicInfo-nextButton]")
+            cy.get("[data-cy=nextButton]")
                 .should("be.enabled")
                 .click();            
             cy.get("[data-cy=experience-experience-input")
@@ -140,25 +140,25 @@ describe("As an admin, edit existing instructor account", () => {
                 .should("be.enabled")
                 .click();
             cy.get("[data-cy=basicInfo-phoneNumber-input]")
-                .should("have.value", updated_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"));    
-            cy.get("[data-cy=basicInfo-nextButton]")
+                .should("have.value", updated_instructor_data.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3"));
+            cy.get("[data-cy=nextButton]")
                 .should("be.enabled")
-                .click();   
+                .click();
             cy.get("[data-cy=experience-experience-input")
                 .should("have.value", updated_instructor_data.experience);
             cy.get("[data-cy=experience-biography-input")
                 .should("have.value", updated_instructor_data.biography);
             cy.get("[data-cy=experience-language-input")
-                .should("have.value", updated_instructor_data.language);  
-        }); 
+                .should("have.value", updated_instructor_data.language);
+        });
     });
 
-    it("Submits the instructor form and displays the results page", () => {
-        cy.fixture("users.json").then(({ updated_instructor_data }) => {
-            cy.get("[data-cy=submitButton]")
-                .click();
-            cy.contains("submitted");
-            cy.contains(updated_instructor_data.user.firstName);
-        })
-    })
+    // it("Submits the instructor form and displays the results page", () => {
+    //     cy.fixture("users.json").then(({ updated_instructor_data }) => {
+    //         cy.get("[data-cy=submitButton]")
+    //             .click();
+    //         cy.contains("submitted");
+    //         cy.contains(updated_instructor_data.user.firstName);
+    //     })
+    // })
 });
