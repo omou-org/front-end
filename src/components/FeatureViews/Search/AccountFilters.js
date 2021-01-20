@@ -63,8 +63,8 @@ const AccountFilters = () => {
                         value={searchParams.get("profile") || "user"}>
                         <MenuItem value="user">User</MenuItem>
                         <MenuItem value="student">Student</MenuItem>
-                        <MenuItem value="parent">Parent</MenuItem>
-                        <MenuItem value="instructor">Instructor</MenuItem>
+                        {/* <MenuItem value="parent">Parent</MenuItem>
+                        <MenuItem value="instructor">Instructor</MenuItem> */}
                         <MenuItem value="receptionist">Receptionist</MenuItem>
                         <MenuItem value="admin">Administrator</MenuItem>
                     </Select>
