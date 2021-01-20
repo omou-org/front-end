@@ -132,7 +132,8 @@ const Search = ({onMobileType = () => {}}) => {
         if (URLfilter === "account" || URLfilter === "course") {
             setFilter(URLfilter);
         } else {
-            setFilter("all");
+            // setFilter("all");
+            setFilter("account");
         }
     }, [searchParams]);
 
