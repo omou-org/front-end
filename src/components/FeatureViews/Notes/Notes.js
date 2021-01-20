@@ -201,7 +201,7 @@ const QUERY_KEY = {
 };
 
 const MUTATION_KEY = {
-    "account": "createNote",
+    "account": "createAccountNote",
     "course": "createCourseNote",
     "enrollment": "createEnrollmentNote",
 };
