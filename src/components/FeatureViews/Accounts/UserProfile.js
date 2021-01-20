@@ -163,7 +163,7 @@ const userTabs = {
 };
 
 const GET_ACCOUNT_NOTES = `
-	notes(userId: $ownerID) {
+	accountNotes(userId: $ownerID) {
 		id
 		body
 		complete
@@ -290,8 +290,8 @@ const UserProfile = () => {
 
     if (error) return <Redirect to="/PageNotFound" />;
 
-    const { notes } = data;
-    const numImportantNotes = notes.filter((note) => note.important).length;
+    const { accountNotes } = data;
+    const numImportantNotes = accountNotes.filter((note) => note.important).length;
     const importantNotesBadge =
         numImportantNotes > 0 ? numImportantNotes : null;
 

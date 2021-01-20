@@ -160,6 +160,7 @@ const LoginPage = () => {
                             inputProps={{ 'data-cy': 'emailField' }}
                             margin="normal"
                             onChange={handleTextInput(setEmail)}
+                            data-cy="emailField-input"
                             placeholder="E-Mail"
                             value={email}
                             variant="outlined"
@@ -184,7 +185,7 @@ const LoginPage = () => {
                             </Grid>
                             <Grid item md={4}>
                                 <ResponsiveButton
-                                    data-cy="nextButton"
+                                    data-cy="signInButton"
                                     onClick={handleCheck}
                                     variant="outlined"
                                 >

@@ -44,7 +44,7 @@ describe("Editing an existing Receptionist account details", () => {
                 .should("have.value", original_receptionist_data.user.lastName);
             cy.get("[data-cy=login-email-input]")
                 .should("have.value", original_receptionist_data.user.email);
-            cy.get("[data-cy=login-nextButton]")
+            cy.get("[data-cy=nextButton]")
                 .should("be.disabled");
         });
     });
@@ -53,11 +53,11 @@ describe("Editing an existing Receptionist account details", () => {
         cy.fixture("users.json").then(({ updated_receptionist_data }) => {
             cy.get("[data-cy=login-email-input]")
                 .clear()
-            cy.get("[data-cy=login-nextButton]")
+            cy.get("[data-cy=nextButton]")
                 .should("be.disabled");
             cy.get("[data-cy=login-email-input]")
                 .fastType(updated_receptionist_data.user.email);
-            cy.get("[data-cy=login-nextButton]")
+            cy.get("[data-cy=nextButton]")
                 .should("be.disabled");
             cy.get("[data-cy=login-password-input]")
                 .should("be.empty")
@@ -70,7 +70,7 @@ describe("Editing an existing Receptionist account details", () => {
 
     it("Loads receptionist data into User Information section of receptionist editing form", () => {
         cy.fixture("users.json").then(({ original_receptionist_data }) => {
-            cy.get("[data-cy=login-nextButton")
+            cy.get("[data-cy=nextButton]")
                 .should("be.enabled")
                 .click();
             cy.get("[data-cy=user-adminType-select]")
@@ -94,7 +94,7 @@ describe("Editing an existing Receptionist account details", () => {
                 .click();
             cy.get("[data-cy=login-email-input]")
                 .should("have.value", updated_receptionist_data.user.email);
-            cy.get("[data-cy=login-nextButton]")
+            cy.get("[data-cy=nextButton]")
                 .should("be.enabled")
                 .click();  
         })
@@ -115,11 +115,11 @@ describe("Editing an existing Receptionist account details", () => {
         });
     });
 
-    it("Submits the receptionist form and displays the results page", () => {
-        cy.fixture("users.json").then(({ updated_receptionist_data }) => {
-            cy.get("[data-cy=submitButton]").click();
-            cy.contains("submitted");
-            cy.contains(updated_receptionist_data.address);
-        });
-    });
+    // it("Submits the receptionist form and displays the results page", () => {
+    //     cy.fixture("users.json").then(({ updated_receptionist_data }) => {
+    //         cy.get("[data-cy=submitButton]").click();
+    //         cy.contains("submitted");
+    //         cy.contains(updated_receptionist_data.address);
+    //     });
+    // });
 });

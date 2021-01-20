@@ -51,10 +51,10 @@ export const RootRoutes = () => {
                 <ForgotPassword />
             </Route>
             <Route path="/resetpassword">
-                <ResetPassword />
+                <ResetPassword/>
             </Route>
-            <Route path="/setpassword">
-                <ResetPassword isSet />
+            <Route exact path="/setpassword">
+                <ResetPassword isSet/>
             </Route>
             <Route path="/login">
                 <LoginPage/>

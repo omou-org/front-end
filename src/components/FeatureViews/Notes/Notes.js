@@ -110,7 +110,7 @@ const numericDateString = (date) => new Date(date).toLocaleTimeString("en-US", {
 const QUERIES = {
     "account": gql`
         query AccountNotesQuery($ownerID: ID!) {
-            notes(userId: $ownerID) {
+            accountNotes(userId: $ownerID) {
                 id
                 body
                 complete
@@ -150,9 +150,9 @@ const MUTATIONS = {
     "account": gql`
         mutation CreateAccountNote($ownerID: ID!, $title: String, $body: String,
             $complete: Boolean, $important: Boolean, $id: ID) {
-            createNote(userId: $ownerID, title: $title, important: $important,
+            createAccountNote(userId: $ownerID, title: $title, important: $important,
                 body: $body, complete: $complete, id: $id) {
-                note {
+                accountNote {
                     id
                     body
                     complete
@@ -195,13 +195,13 @@ const MUTATIONS = {
 };
 
 const QUERY_KEY = {
-    "account": "notes",
+    "account": "accountNotes",
     "course": "courseNotes",
     "enrollment": "enrollmentNotes",
 };
 
 const MUTATION_KEY = {
-    "account": "createNote",
+    "account": "createAccountNote",
     "course": "createCourseNote",
     "enrollment": "createEnrollmentNote",
 };
