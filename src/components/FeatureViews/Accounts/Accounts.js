@@ -85,6 +85,10 @@ const useStyles = makeStyles({
     MuiIndicator: {
         height: '1px',
     },
+    AccountsTable: {
+        textDecoration: 'none',
+    }
+    
 });
 
 const stopPropagation = (event) => {
@@ -183,7 +187,7 @@ const Accounts = () => {
         () => (
             <Table className="AccountsTable" resizable="false">
                 <TableHead>
-                    <TableRow>
+                    <TableRow textDecoration="none">
                         <TableCell className={classes.tableCellStyle}>
                             Name
                         </TableCell>
@@ -199,7 +203,8 @@ const Accounts = () => {
                         <TableCell />
                     </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody textDecoration="none">
+
                     {displayUsers.map((row) => (
                         <TableRow
                             className="row"
@@ -207,7 +212,7 @@ const Accounts = () => {
                             key={row.user.id}
                             to={`/accounts/${row.accountType}/${row.user.id}`}
                         >
-                            <TableCell className={classes.tableRowStyle}>
+                            <TableCell className={classes.tableRowStyle} textDecoration="none">
                                 <Grid
                                     alignItems="center"
                                     container
