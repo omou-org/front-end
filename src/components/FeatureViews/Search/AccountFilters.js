@@ -70,7 +70,7 @@ const AccountFilters = () => {
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
                 <FormControl className="search-filter-wrapper">
                     <Select
                         disabled={searchParams.get("profile") !== "student"}
@@ -93,7 +93,7 @@ const AccountFilters = () => {
                         <MenuItem value="12">12+ Grades</MenuItem>
                     </Select>
                 </FormControl>
-            </Grid>
+            </Grid> */}
             <Grid item>
                 <Typography variant="subtitle1">Sort | </Typography>
             </Grid>
