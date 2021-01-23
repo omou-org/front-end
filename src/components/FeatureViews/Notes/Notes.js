@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "deleteButton": {
         "backgroundColor": theme.palette.error.main,
+        "borderColor": theme.palette.error.main,
     },
     "notesTitle": {
         "fontSize": "0.875rem",
