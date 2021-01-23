@@ -161,7 +161,7 @@ const ProfileHeading = ({ ownerID }) => {
     const isStudentProfile = userInfo.accountType === "STUDENT";
 
     const renderEditandAwayButton = () => (
-      <Grid container item xs={4}>
+      <Grid container item xs={4} justify="flex-end">
         {accountType === "instructor" && (
           <Grid align="left" className="schedule-button" item xs={12}>
             <ResponsiveButton
@@ -377,7 +377,7 @@ const ProfileHeading = ({ ownerID }) => {
         </Grid>
         <Grid 
             xs={5} 
-            
+            className="moreActions"
 
         >
             {renderEditandAwayButton()}

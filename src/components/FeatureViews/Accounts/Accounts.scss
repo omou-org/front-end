@@ -300,11 +300,16 @@
 .editResetDiv {
   border: solid 2px $primaryColor;
   position: relative;
-  top: -5px;
+  top: 3px;
   left: 20px;
   border-radius: 10px;
   width: 170px;
   font-size: 20px;
+}
+
+.moreActions {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .editIcon:hover {
@@ -318,6 +323,8 @@
   justify-content: flex-end !important;
   justify-content: left !important;
   border: none !important;
+  font-size: 0.8rem !important;
+  text-transform: capitalize !important;
 }
 
 .edit {
@@ -326,6 +333,7 @@
   height: 40px;
   justify-content: left !important;
   font-size: 0.8rem !important;
+  text-transform: capitalize !important;
 }
 
 .reset:hover {
