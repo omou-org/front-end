@@ -199,12 +199,12 @@ const ProfileHeading = ({ ownerID }) => {
                         >
                             Edit Profile
                         </ResponsiveButton>
-                        {isAdmin && (
+                        {/* {isAdmin && (
                 <ResetPasswordDialogs
                 isStudentProfile = {isStudentProfile}
                 userInfo = {userInfo}
              />
-              )}
+              )} */}
             </div>
                     </Grid>
                     <Grid component={Hidden} item lgUp xs={12}>
