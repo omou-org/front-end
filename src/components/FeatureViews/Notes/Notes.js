@@ -195,6 +195,27 @@ const MUTATIONS = {
         }`,
 };
 
+const DELETE_MUTATIONS = {
+    "account": gql`
+        mutation DeleteAccountNote($deleteID: ID!) {
+            deleteAccountNote(id: $deleteID) {
+                deleted
+            }
+        }`,
+    "course": gql`
+        mutation DeleteCourseNote($deleteID: ID!) {
+            deleteCourseNote(id: $deleteID) {
+                deleted
+            }
+        }`,
+    "enrollment": gql`
+        mutation DeleteEnrollmentNote($deleteID: ID!) {
+            deleteEnrollmentNote(id: $deleteID) {
+                deleted
+            }
+        }`
+}
+
 const QUERY_KEY = {
     "account": "accountNotes",
     "course": "courseNotes",
@@ -246,8 +267,36 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
                 "query": QUERIES[ownerType],
                 "variables": { ownerID },
             });
+
+            setDeleteID(null)
         },
     });
+
+    const [deleteNote, isNoteDeleted] = useMutation(DELETE_MUTATIONS[ownerType], {
+       "onCompleted": () => {
+           hideWarning()
+       },
+       "update": (cache, { data }) => {
+
+            const cachedNotes = cache.readQuery({
+                "query": QUERIES[ownerType],
+                "variables": { ownerID },
+            })[QUERY_KEY[ownerType]];
+            let updatedNotes = [...cachedNotes];
+            let indexToBeDeleted = updatedNotes.findIndex(({id}) => id === deleteID);
+            if(indexToBeDeleted !== -1) {
+                updatedNotes.splice(indexToBeDeleted, 1)
+            }
+
+            cache.writeQuery({
+                "data": {
+                    [QUERY_KEY[ownerType]]: updatedNotes,
+                },
+                "query": QUERIES[ownerType],
+                "variables": { ownerID },
+            })
+       }
+    })
 
     const query = useQuery(QUERIES[ownerType], {
         "variables": { ownerID },
@@ -334,39 +383,13 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
         });
     }, [mutateNote, ownerID, getNoteByID]);
 
-    const handleDelete = useCallback(async () => {
-        let URL = "",
-            type = "";
-        switch (ownerType) {
-            case "course":
-                URL = "/course/catalog_note/";
-                type = DELETE_COURSE_NOTE_SUCCESSFUL;
-                break;
-            case "enrollment":
-                URL = "/course/enrollment_note/";
-                type = DELETE_ENROLLMENT_NOTE_SUCCESSFUL;
-                break;
-            default:
-                URL = "/account/note/";
-                type = DELETE_ACCOUNT_NOTE_SUCCESSFUL;
-                break;
-        }
-        try {
-            await instance.delete(`${URL}${deleteID}/`);
-            dispatch({
-                "payload": {
-                    "noteID": deleteID,
-                    ownerID,
-                    ownerType,
-                },
-                type,
-            });
-            hideWarning();
-        } catch {
-            // if note not actually deleted
-            setDeleteError(true);
-        }
-    }, [deleteID, dispatch, hideWarning, ownerID, ownerType]);
+    const handleDelete = useCallback(() => {
+        deleteNote({
+            "variables": {
+                deleteID
+            }
+        })
+    }, [deleteNote, deleteID]);
 
     if (query.loading) {
         return <Loading loadingText="NOTES LOADING" small />;
