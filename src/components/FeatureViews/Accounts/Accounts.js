@@ -83,7 +83,7 @@ const TABS = [
 ].map((label) => {
     let key = label;
     if (label === 'Teaching Assistants') {
-        key = 'Receptionist';
+        key = 'Assistant';
     }
     return <Tab key={key} label={label} />
 });
@@ -137,7 +137,7 @@ const Accounts = () => {
                 break;
             case 2:
                 newUsersList = data.admins.filter(
-                    (admin) => admin.adminType === USER_TYPES.receptionist
+                    (admin) => admin.adminType === USER_TYPES.assistant
                 );
                 break;
             default:

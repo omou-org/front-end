@@ -8,6 +8,7 @@ export const USER_TYPES = {
     "instructor": "INSTRUCTOR",
     "parent": "PARENT",
     "receptionist": "RECEPTIONIST",
+    "assistant": "ASSISTANT",
     "student": "STUDENT",
 };
 
