@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     "icons": {
         padding: "3px",
         transform: "scale(.8)",
+        cursor: "pointer",
     },
     "notePaper": {
         height: "150px"
