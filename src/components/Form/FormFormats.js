@@ -727,26 +727,51 @@ export default {
                     "update": (cache, { data }) => {
                         const newStudent = data.createStudent;
 
-                        const cachedStudents = cache.readQuery({
-                            query: GET_ALL_STUDENTS
-                        })["students"] || [];
-
-                        const matchingIndex = updatedStudents.findIndex(({id}) => id === newStudent.id);
-                        
-                        let updatedStudents;
-
-                        if (matchingIndex === -1) {
-                            updatedStudents = [...cachedStudents, newStudent];
-                        } else {
-                            updatedStudents[matchingIndex] = newStudent;
-                        }
-
+                        const cachedStudent = cache.readQuery({
+                            query: USER_QUERIES["student"],
+                            variables: {
+                                "ownerID": newStudent.student.user.id,
+                            }
+                        });
                         cache.writeQuery({
                             data: {
-                                "students": updatedStudents
+                                "student": {
+                                    ...cachedStudent,
+                                    user: {...newStudent.student.user,},
+                                    birthDate: newStudent.student.birthDate,
+                                },
                             },
-                            query: GET_ALL_STUDENTS
+                            query: USER_QUERIES["student"],
+                            variables: {
+                                ownerId: newStudent.student.user.id,
+                            }
                         });
+                        // NOTE: Hacky way to check if the students cache exists yet.
+                        // if it doesn't exist then don't update the list. No better way of doing this according to stackoverflow
+                        // https://github.com/apollographql/apollo-client/issues/1701
+                        if (cache.data.data.ROOT_QUERY.students) {
+                            const cachedStudents = cache.readQuery({
+                                query: GET_ALL_STUDENTS
+                            }).students || [];
+
+                            const matchingIndex = cachedStudents.findIndex(({user: {id}}) =>
+                                id === newStudent.student.user.id);
+
+                            let updatedStudents = cachedStudents;
+
+                            if (matchingIndex === -1) {
+                                updatedStudents = [...cachedStudents, newStudent];
+                            } else {
+                                updatedStudents[matchingIndex] = newStudent;
+                            }
+                            console.log("about to update list of students")
+                            cache.writeQuery({
+                                data: {
+                                    "students": updatedStudents
+                                },
+                                query: GET_ALL_STUDENTS
+                            });
+                        }
                     }
                 });
             } catch (error) {
