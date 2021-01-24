@@ -724,11 +724,17 @@ export default {
                         
                         const cachedStudents = cache.readQuery({
                             query: GET_ALL_STUDENTS
-                        })["students"] || []
+                        })["students"] || [];
 
-                        let updatedStudents = [...cachedStudents];
+                        const matchingIndex = updatedStudents.findIndex(({id}) => id === newStudent.id);
+                        
+                        let updatedStudents;
 
-                        updatedStudents.push(newStudent);
+                        if (matchingIndex === -1) {
+                            updatedStudents = [...cachedStudents, newStudent];
+                        } else {
+                            updatedStudents[matchingIndex] = newStudent;
+                        }
 
                         cache.writeQuery({
                             data: {
@@ -1008,13 +1014,21 @@ export default {
                             phoneNumber: admin.phoneNumber,
                             user: admin.user,
                             userUuid: admin.userUuid
-                        }
+                        };
 
                         const cachedAdmins = cache.readQuery({
                             query: GET_ALL_ADMINS
-                        })["admins"] || []
-                        
-                        let updatedAdmins = [...cachedAdmins, newAdmin]
+                        })["admins"] || [];
+
+                        const matchingIndex = cachedAdmins.findIndex(({user: {id}}) => newAdmin.user.id === id)
+
+                        let updatedAdmins;
+
+                        if (matchingIndex !== -1) {
+                            updatedAdmins = [...cachedAdmins, newAdmin];
+                        } else {
+                            updatedAdmins[matchingIndex] = newAdmin;
+                        }
 
                         cache.writeQuery({
                             data: {

@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     "icons": {
         padding: "3px",
         transform: "scale(.8)",
+        cursor: "pointer",
     },
     "notePaper": {
         height: "150px"
@@ -345,7 +346,7 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
         switch (type) {
             case 'dashboard':
             case 'profile': 
-                return '100%';
+                return '250px';
             default:
                 return '200px';
         }
@@ -600,7 +601,7 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
                     :
                        <Grid item md={3}>
                            <AddItemButton
-                            height={getNoteHeight(isProfile ? 'profile' : '')}
+                            height={'250px'}
                             width='inherit'
                             onClick={openNewNote}
                            >

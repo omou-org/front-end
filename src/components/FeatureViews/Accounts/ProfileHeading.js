@@ -34,6 +34,7 @@ import { ReactComponent as SchoolIcon } from "../../school.svg";
 import { fullName, USER_TYPES } from "utils";
 
 import UserProfileInfo from "./UserProfileInfo";
+import moment from "moment";
 const useStyles = makeStyles({
     icon: {
         fill: darkGrey,
@@ -245,7 +246,7 @@ const ProfileHeading = ({ ownerID }) => {
                 },
                 Birthday: {
                     icon: <CakeOutlinedIcon className={classes.icon} />,
-                    text: userInfo.birthday,
+                    text: moment(userInfo.birthDate).format('MMM Do, YYYY'),
                 },
                 Grade: {
                     icon: <GradeIcon className={classes.icon} />,
