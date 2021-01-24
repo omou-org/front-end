@@ -600,7 +600,7 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
                     :
                        <Grid item md={3}>
                            <AddItemButton
-                            height={getNoteHeight(isProfile ? 'profile' : '')}
+                            height={'250px'}
                             width='inherit'
                             onClick={openNewNote}
                            >
