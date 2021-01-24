@@ -1,19 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {Redirect, useParams} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 import BioIcon from '@material-ui/icons/PersonOutlined';
-import ContactIcon from '@material-ui/icons/ContactPhoneOutlined';
 import CoursesIcon from '@material-ui/icons/SchoolOutlined';
 import CurrentSessionsIcon from '@material-ui/icons/AssignmentOutlined';
 import NoteIcon from '@material-ui/icons/NoteOutlined';
-import PastSessionsIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 import PaymentIcon from '@material-ui/icons/CreditCardOutlined';
 import ScheduleIcon from '@material-ui/icons/CalendarTodayOutlined';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import { makeStyles } from '@material-ui/core/styles';
-import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
+import {makeStyles} from '@material-ui/core/styles';
 import NotificationIcon from '@material-ui/icons/NotificationImportant';
 import './Accounts.scss';
 
@@ -21,14 +18,12 @@ import BackButton from 'components/OmouComponents/BackButton';
 import ComponentViewer from './ComponentViewer.js';
 import Loading from 'components/OmouComponents/Loading';
 
-import { useAccountNotes } from 'actions/userActions';
-
 import SettingsIcon from '@material-ui/icons/Settings';
-import { USER_TYPES } from '../../../utils';
+import {USER_TYPES} from '../../../utils';
 
 import UserProfileInfo from './UserProfileInfo';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import {useQuery} from '@apollo/react-hooks';
 
 const userTabs = {
     instructor: [
@@ -172,7 +167,7 @@ const GET_ACCOUNT_NOTES = `
 		title
 	}`;
 
-const QUERIES = {
+export const USER_QUERIES = {
     student: gql`query StudentInfoQuery($ownerID: ID!) {
 		userInfo(userId: $ownerID) {
 		  ... on StudentType {
@@ -282,8 +277,8 @@ const UserProfile = () => {
         setDisplayTabs(userTabs[accountType]);
     }, [accountType]);
 
-    const { loading, error, data } = useQuery(QUERIES[accountType], {
-        variables: { ownerID: accountID },
+    const {loading, error, data} = useQuery(USER_QUERIES[accountType], {
+        variables: {ownerID: accountID},
     });
 
     if (loading) return <Loading />;
