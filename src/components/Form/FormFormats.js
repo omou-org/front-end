@@ -11,6 +11,27 @@ import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
+
+export const GET_ADMIN = gql`
+            query GetAdmin($userID: ID!) {
+                admin(userId: $userID) {
+                    user {
+                        id
+                        email
+                        firstName
+                        lastName
+                    }
+                    adminType
+                    gender
+                    phoneNumber
+                    birthDate
+                    address
+                    city
+                    state
+                    zipcode
+                }
+            }`;
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
     return this.test('unique', message, function (list) {
@@ -863,25 +884,7 @@ export default {
             },
         ],
         "load": async (id) => {
-            const GET_ADMIN = gql`
-            query GetAdmin($userID: ID!) {
-                admin(userId: $userID) {
-                    user {
-                        id
-                        email
-                        firstName
-                        lastName
-                    }
-                    adminType
-                    gender
-                    phoneNumber
-                    birthDate
-                    address
-                    city
-                    state
-                    zipcode
-                }
-            }`;
+
             try {
                 const {"data": {admin}} = await client.query({
                     "query": GET_ADMIN,
@@ -999,26 +1002,47 @@ export default {
                             userUuid: admin.userUuid
                         };
 
-                        const cachedAdmins = cache.readQuery({
-                            query: GET_ALL_ADMINS
-                        })["admins"] || [];
-
-                        const matchingIndex = cachedAdmins.findIndex(({user: {id}}) => newAdmin.user.id === id)
-
-                        let updatedAdmins;
-
-                        if (matchingIndex !== -1) {
-                            updatedAdmins = [...cachedAdmins, newAdmin];
-                        } else {
-                            updatedAdmins[matchingIndex] = newAdmin;
-                        }
-
+                        const cachedAdmin = cache.readQuery({
+                            query: USER_QUERIES.admin,
+                            variables: {
+                                ownerID: admin.user.id
+                            }
+                        })
                         cache.writeQuery({
                             data: {
-                                "admins": updatedAdmins
+                                admin: {
+                                    ...cachedAdmin,
+                                    ...newAdmin
+                                },
                             },
-                            query: GET_ALL_ADMINS
-                        })
+                            query: GET_ADMIN,
+                            variables: {
+                                ownerID: admin.user.id,
+                            }
+                        });
+
+                        if (cache.data.data.ROOT_QUERY.admins) {
+                            const cachedAdmins = cache.readQuery({
+                                query: GET_ALL_ADMINS
+                            })["admins"] || [];
+
+                            const matchingIndex = cachedAdmins.findIndex(({user: {id}}) => newAdmin.user.id === id)
+
+                            let updatedAdmins = cachedAdmins;
+
+                            if (matchingIndex !== -1) {
+                                updatedAdmins = [...cachedAdmins, newAdmin];
+                            } else {
+                                updatedAdmins[matchingIndex] = newAdmin;
+                            }
+
+                            cache.writeQuery({
+                                data: {
+                                    "admins": updatedAdmins
+                                },
+                                query: GET_ALL_ADMINS
+                            });
+                        }
                     }
                 });
             } catch (error) {
