@@ -34,7 +34,7 @@ import UserAvatar from './UserAvatar';
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const QUERY_USERS = gql`
-    query UserQuery($adminType: String) {
+    query UserQuery {
         students {
             user {
                 ...SimpleUser
@@ -59,7 +59,7 @@ const QUERY_USERS = gql`
             accountType
             phoneNumber
         }
-        admins(adminType: $adminType) {
+        admins {
             adminType
             userUuid
             user {

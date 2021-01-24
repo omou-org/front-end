@@ -681,8 +681,32 @@ export default {
             $id: ID) {
                 createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, gender: $gender, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
                 created
+                student {
+                    accountType
+                    phoneNumber
+                    user {
+                      email
+                      lastName
+                      firstName
+                      id
+                    }
+                }  
             }
         }`;
+
+        const GET_ALL_STUDENTS = gql`
+        query GetAllStudents {
+            students {
+              accountType
+              phoneNumber
+              user {
+                email
+                lastName
+                firstName
+                id
+              }
+            }
+          }`
 
             try {
                 await client.mutate({
@@ -695,6 +719,24 @@ export default {
                         //"primaryParent": student.primaryParent.value,
                         //"school": student.school.value,
                     },
+                    "update": (cache, { data }) => {
+                        const newStudent = data.createStudent;
+                        
+                        const cachedStudents = cache.readQuery({
+                            query: GET_ALL_STUDENTS
+                        })["students"] || []
+
+                        let updatedStudents = [...cachedStudents];
+
+                        updatedStudents.push(newStudent);
+
+                        cache.writeQuery({
+                            data: {
+                                "students": updatedStudents
+                            },
+                            query: GET_ALL_STUDENTS
+                        });
+                    }
                 });
             } catch (error) {
                 return {
@@ -898,6 +940,8 @@ export default {
                     zipcode: $zipcode
                 ) {
                     admin {
+                        accountType
+                        adminType
                         userUuid
                         birthDate
                         address
@@ -905,10 +949,34 @@ export default {
                         phoneNumber
                         state
                         zipcode
+                        user {
+                            email
+                            firstName
+                            id
+                            lastName
+                        }
                     }
                 }
             }
             `;
+
+            const GET_ALL_ADMINS = gql`
+            query GetAllAdmins {
+                admins {
+                  accountType
+                  adminType
+                  phoneNumber
+                  user {
+                    email
+                    firstName
+                    id
+                    lastName
+                  }
+                  userUuid
+                }
+              }
+            `
+
             const modifiedData = {
                 ...formData,
                 "user": {
@@ -932,6 +1000,28 @@ export default {
                         ...adminMutationVariable,
                         id,
                         userUuid
+                    },
+                    "update": (cache, { data: { createAdmin: { admin } } }) => {
+                        const newAdmin = {
+                            accountType: admin.accountType,
+                            adminType: admin.adminType,
+                            phoneNumber: admin.phoneNumber,
+                            user: admin.user,
+                            userUuid: admin.userUuid
+                        }
+
+                        const cachedAdmins = cache.readQuery({
+                            query: GET_ALL_ADMINS
+                        })["admins"] || []
+                        
+                        let updatedAdmins = [...cachedAdmins, newAdmin]
+
+                        cache.writeQuery({
+                            data: {
+                                "admins": updatedAdmins
+                            },
+                            query: GET_ALL_ADMINS
+                        })
                     }
                 });
             } catch (error) {
