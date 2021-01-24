@@ -345,7 +345,7 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
         switch (type) {
             case 'dashboard':
             case 'profile': 
-                return '100%';
+                return '250px';
             default:
                 return '200px';
         }
