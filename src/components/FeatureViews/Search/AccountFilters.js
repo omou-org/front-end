@@ -65,7 +65,7 @@ const AccountFilters = () => {
                         <MenuItem value="student">Student</MenuItem>
                         {/* <MenuItem value="parent">Parent</MenuItem>
                         <MenuItem value="instructor">Instructor</MenuItem> */}
-                        <MenuItem value="receptionist">Receptionist</MenuItem>
+                        {/* <MenuItem value="receptionist">Receptionist</MenuItem> */}
                         <MenuItem value="admin">Administrator</MenuItem>
                     </Select>
                 </FormControl>
