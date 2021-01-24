@@ -296,11 +296,13 @@ const Accounts = () => {
                 xs={12}
             >
                 {displayUsers.map((user) => (
-                    <ProfileCard
-                        key={user.user_id}
-                        route={`/accounts/${user.role}/${user.user_id}`}
-                        user={user}
-                    />
+                    <Grid item sm={"auto"}>
+                        <ProfileCard
+                            key={user.user_id}
+                            route={`/accounts/${user.accountType}/${user.user.id}`}
+                            user={user}
+                        />
+                    </Grid>
                 ))}
             </Grid>
         ),
