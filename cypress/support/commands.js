@@ -1,4 +1,5 @@
 import * as types from "../../src/actions/actionTypes";
+import { CREATE_ADMIN_FOR_TEST, CREATE_RECEIPTION_FOR_TEST } from '../../src/mutations/AccountsMutation/AccountsMutation';
 
 const token = "e2c6fe2e04f5e658d179e051096aefc419f1212f";
 const DEFAULT_USER = {
@@ -96,67 +97,8 @@ Cypress.Commands.add("visitAuthenticated", (url, user) => {
 Cypress.Commands.add("signUpAdminAndLogin", (userType, options = {}) => {
     // setup some basic users
     const types = {
-        "admin": `
-        mutation CreateOwner {
-              __typename
-              createAdmin(adminType: OWNER,
-                user: {
-                  email: "b@starkindustries.com",
-                  firstName: "Tony",
-                  lastName: "Stark",
-                  password: "Ironman3000!"
-                },
-                birthDate: "1970-05-29",
-                address: "10880 Malibu Point",
-                city: "Point Dume",
-                gender: MALE,
-                phoneNumber: "1234567890",
-                state: "CA",
-                zipcode: "90265") {
-                admin {
-                  address
-                  adminType
-                  user {
-                    email
-                    firstName
-                    id
-                    isStaff
-                    isSuperuser
-                    lastName
-                    username
-                    password
-                  }
-                }
-              }
-            }
-        `,
-        "receptionist": `
-        mutation CreateReceptionist {
-          createAdmin(
-          adminType: RECEPTIONIST,
-          user: {
-            email: "pepper@starkindustries.com",
-            firstName: "Pepper",
-            lastName: "Potts",
-            password: "Ironman3000!"
-            },
-            phoneNumber: "1234567890",
-            state: "CA") {
-            admin {
-              address
-              adminType
-              user {
-                email
-                firstName
-                id
-                lastName
-                username
-                password
-              }
-            }
-          }
-        }
-        `,
+        "admin": CREATE_ADMIN_FOR_TEST,
+        "receptionist": CREATE_RECEIPTION_FOR_TEST,
     };
 
     const user = types[userType];

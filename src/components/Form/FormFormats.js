@@ -11,6 +11,7 @@ import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import { ADD_STUDENT, CREATE_INSTRUCTOR, CREATE_ADMIN } from '../../mutations/AccountsMutation/AccountsMutation';
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
     return this.test('unique', message, function (list) {
@@ -646,27 +647,6 @@ export default {
             return null;
         },
         "submit": async ({student}, id) => {
-            const ADD_STUDENT = gql`
-            mutation AddStudent(
-            $firstName: String!,
-            $email: String,
-            $lastName: String!,
-            $address: String,
-            $birthDate:Date,
-            $city:String,
-            $gender:GenderEnum,
-            $grade:Int,
-            $phoneNumber:String,
-            $primaryParent:ID,
-            $school:ID,
-            $zipcode:String,
-            $state:String,
-            $id: ID) {
-  createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
-      created
-  }
-    }`;
-
             try {
                 await client.mutate({
                     "mutation": ADD_STUDENT,
@@ -849,49 +829,7 @@ export default {
             }
         },
         "submit": async (formData, id) => {
-            const CREATE_ADMIN = gql`
-            mutation CreateAdmin(
-                $address: String,
-                $adminType: AdminTypeEnum!,
-                $birthDate: Date,
-                $city: String,
-                $gender: GenderEnum,
-                $phoneNumber: String,
-                $id: ID,
-                $state: String,
-                $email: String,
-                $firstName: String!,
-                $lastName: String!,
-                $password: String,
-                $zipcode: String
-            ) {
-                createAdmin(
-                    user: {
-                        firstName: $firstName, lastName: $lastName,
-                        password: $password, email: $email,
-                        id: $id,
-                    },
-                    address: $address,
-                    adminType: $adminType,
-                    birthDate: $birthDate,
-                    city: $city,
-                    gender: $gender,
-                    phoneNumber: $phoneNumber,
-                    state: $state,
-                    zipcode: $zipcode
-                ) {
-                    admin {
-                        userUuid
-                        birthDate
-                        address
-                        city
-                        phoneNumber
-                        state
-                        zipcode
-                    }
-                }
-            }
-            `;
+            
             const modifiedData = {
                 ...formData,
                 "user": {
@@ -1407,52 +1345,7 @@ export default {
             }
         },
         "submit": async (formData, id) => {
-            const CREATE_INSTRUCTOR = gql`
-            mutation CreateInstructor(
-            $id: ID,
-            $firstName: String!,
-            $lastName: String!,
-            $email: String,
-            $phoneNumber: String,
-            $gender: GenderEnum,
-            $address: String,
-            $city: String,
-            $state: String,
-            $subjects: [ID],
-            $experience: String,
-            $biography: String,
-            $language: String,
-            $birthDate: Date,
-            $zipcode: String,
-            ) {
-                createInstructor(
-                user: {
-                    firstName: $firstName,
-                    lastName: $lastName,
-                    email: $email,
-                    password: "abcdefg",
-                    id: $id
-                },
-                address: $address,
-                biography: $biography,
-                birthDate: $birthDate,
-                city: $city,
-                experience: $experience,
-                gender: $gender,
-                language: $language,
-                phoneNumber: $phoneNumber,
-                subjects: $subjects,
-                state: $state,
-                zipcode: $zipcode
-                ) {
-                    created
-                    instructor {
-                        user {
-                          id
-                        }
-                      }
-                }
-            }`;
+            
 
             const INVITE_INSTRUCTOR = gql`
             mutation InviteInstructor($email:String!) {

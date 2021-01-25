@@ -1,5 +1,6 @@
 import { client } from "index";
 import gql from "graphql-tag";
+import { ADD_SCHOOL, UPDATE_SCHOOL } from '../../../mutations/AccountsMutation/AccountsMutation';
 
 const discountInfo = gql`
     fragment DiscountInfo on DiscountInterface {
@@ -144,17 +145,7 @@ const MUTATION_ADD = {
           }
         }
     }`,
-    "schools": gql`
-        mutation createSchool($zipcode: String, $name: String, $district:String) {
-          createSchool(zipcode: $zipcode, name: $name, district:$district) {
-            school {
-              id
-              name
-              zipcode
-              district
-            }
-          }
-        }`,
+    "schools": ADD_SCHOOL,
     "bulkDiscounts": gql`
     mutation CreateBulkDiscount($active: Boolean, $description:String, $name:String,
         $amount:Float, $amountType:AmountTypeEnum, $numSessions: Int) {
@@ -277,17 +268,7 @@ const MUTATION_UPDATE = {
         }
     }
     ${discountInfo}`,
-    "schools": gql`
-    mutation updateSchool($id: ID!,$name: String!, $zipcode: String, $district: String, ) {
-        createSchool(id: $id , name: $name, zipcode: $zipcode, district: $district ) {
-          school {
-            district
-            id
-            name
-            zipcode
-          }
-        }
-      }`,
+    "schools": UPDATE_SCHOOL,
     "tuitionRules": gql`
       mutation updatePriceRule(
           $id:ID!

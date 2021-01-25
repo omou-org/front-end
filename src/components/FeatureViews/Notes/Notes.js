@@ -23,6 +23,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
+import { CREATE_NOTES } from '../../../mutations/AccountsMutation/AccountsMutation';
 
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton'
 
@@ -147,21 +148,7 @@ const QUERIES = {
 };
 
 const MUTATIONS = {
-    "account": gql`
-        mutation CreateAccountNote($ownerID: ID!, $title: String, $body: String,
-            $complete: Boolean, $important: Boolean, $id: ID) {
-            createAccountNote(userId: $ownerID, title: $title, important: $important,
-                body: $body, complete: $complete, id: $id) {
-                accountNote {
-                    id
-                    body
-                    complete
-                    important
-                    timestamp
-                    title
-                }
-            }
-        }`,
+    "account": CREATE_NOTES,
     "course": gql`
         mutation CreateCourseNote($ownerID: ID!, $title: String, $body: String,
             $complete: Boolean, $important: Boolean, $id: ID) {
