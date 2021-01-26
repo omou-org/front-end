@@ -53,7 +53,6 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
           width: 1,
           zIndex: 1,
           marginTop: spacing(0.5),
-          backgroundColor: "#EEEEEE"
         }
       },
       "& + $selected:before": {

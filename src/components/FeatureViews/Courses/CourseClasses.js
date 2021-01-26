@@ -9,7 +9,6 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import EditIcon from "@material-ui/icons/EditOutlined";
 import Toolbar from "@material-ui/core/Toolbar";
-import Divider from "@material-ui/core/Divider";
 import gql from "graphql-tag";
 
 import { useQuery } from "@apollo/react-hooks";
@@ -444,7 +443,6 @@ const CourseClasses = () => {
                 onChange={handleChange}
               />
             </Toolbar>
-            <Divider classes={{ root: classes.dividerColor }} />
             <Grid container>
               <TabPanel
                 index={0}

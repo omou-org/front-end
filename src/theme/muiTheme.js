@@ -306,7 +306,6 @@ const theme = createMuiTheme({
             width: 1,
             zIndex: 1,
             marginTop: "0.5em",
-            backgroundColor: "#EEEEEE",
           },
         },
         "& + $selected:before": {
