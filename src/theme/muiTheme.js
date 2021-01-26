@@ -268,6 +268,9 @@ const theme = createMuiTheme({
       root: {
         color: "#000000",
       },
+      indicator: {
+        display: "none",
+      },
     },
     MuiTab: {
       root: {
@@ -346,10 +349,7 @@ const theme = createMuiTheme({
         marginTop: "0.5em",
         textTransform: "initial",
       },
-      indicator: {
-        display: "none",
-        marginTop: "1.1em",
-      },
+
     },
     MuiStepIcon: {
       text: {

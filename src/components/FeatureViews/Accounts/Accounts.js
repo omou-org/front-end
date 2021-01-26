@@ -81,11 +81,7 @@ const TABS = [
     'Parents',
 ].map((label) => <Tab key={label} label={label} />);
 
-const useStyles = makeStyles({
-    MuiIndicator: {
-        height: '1px',
-    },
-});
+const useStyles = makeStyles();
 
 const stopPropagation = (event) => {
     event.stopPropagation();
@@ -332,7 +328,6 @@ const Accounts = () => {
                 <Grid component={Hidden} item md={8} mdDown xs={10}>
                     <Tabs
                         className="tabs"
-                        classes={{ indicator: classes.MuiIndicator }}
                         onChange={handleTabChange}
                         scrollButtons="off"
                         value={tabIndex}
