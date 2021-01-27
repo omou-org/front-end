@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import gql from 'graphql-tag';
-import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
-import { useSelector } from 'react-redux';
-
-import Button from '@material-ui/core/Button';
+import {Link} from 'react-router-dom';
+import {useQuery} from '@apollo/react-hooks';
+import {useSelector} from 'react-redux';
 import CardView from '@material-ui/icons/ViewModule';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -24,14 +22,14 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import './Accounts.scss';
-import { addDashes } from './accountUtils';
-import { capitalizeString, USER_TYPES } from 'utils';
+import {addDashes} from './accountUtils';
+import {capitalizeString, USER_TYPES} from 'utils';
 import IconButton from '@material-ui/core/IconButton';
 import LoadingHandler from 'components/OmouComponents/LoadingHandler';
 import ProfileCard from './ProfileCard';
-import { simpleUser } from 'queryFragments';
+import {simpleUser} from 'queryFragments';
 import UserAvatar from './UserAvatar';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -320,7 +318,7 @@ const Accounts = () => {
                         to="/form/admin"
                         variant="outlined"
                     >
-                        new admin
+                        new staff
                     </ResponsiveButton>
                 </Grid>
                 {/* <Grid item>
