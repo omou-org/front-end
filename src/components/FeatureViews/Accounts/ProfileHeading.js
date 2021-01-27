@@ -31,7 +31,7 @@ import { ReactComponent as GradeIcon } from '../../grade.svg';
 import { ReactComponent as IDIcon } from '../../identifier.svg';
 import { ReactComponent as SchoolIcon } from '../../school.svg';
 
-import { fullName, USER_TYPES } from 'utils';
+import { fullName, USER_TYPES, capitalizeString } from 'utils';
 
 import UserProfileInfo from './UserProfileInfo';
 const useStyles = makeStyles({
@@ -384,7 +384,7 @@ const ProfileHeading = ({ ownerID }) => {
                 <Grid item>
                     <Hidden smDown>
                         <LabelBadge variant="outline-gray">
-                            {accountType}
+                            {capitalizeString(accountType)}
                         </LabelBadge>
                     </Hidden>
                 </Grid>

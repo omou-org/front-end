@@ -291,7 +291,8 @@ const UserProfile = () => {
     if (error) return <Redirect to="/PageNotFound" />;
 
     const { accountNotes } = data;
-    const numImportantNotes = accountNotes.filter((note) => note.important).length;
+    const numImportantNotes = accountNotes.filter((note) => note.important)
+        .length;
     const importantNotesBadge =
         numImportantNotes > 0 ? numImportantNotes : null;
 
@@ -349,8 +350,6 @@ const UserProfile = () => {
 
     return (
         <div className="UserProfile">
-            <BackButton warn={false} />
-            <hr />
             <UserProfileInfo user={data.userInfo} />
             {tabs()}
         </div>
