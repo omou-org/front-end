@@ -34,7 +34,6 @@ export const ResponsiveButton = ({ label, children, disabled, startIcon, endIcon
                 width: startIcon || endIcon ? setButtonWidth(buttonText) + 16 : setButtonWidth(buttonText),
                 border: disabled ? "2px solid #DBD7D7" : "",
             }}
-            size='large'
             disabled={disabled}
             startIcon={startIcon}
             endIcon={endIcon}

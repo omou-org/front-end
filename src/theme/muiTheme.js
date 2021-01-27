@@ -201,6 +201,7 @@ const theme = createMuiTheme({
       outlined: {
         ...h5,
         color: buttonBlue,
+        paddingBottom: "7px",
         backgroundColor: white,
         border: `1px solid ${cloudy}`,
         boxSizing: "border-box",
@@ -345,7 +346,6 @@ const theme = createMuiTheme({
       },
       wrapper: {
         zIndex: 2,
-        marginTop: "0.5em",
         textTransform: "initial",
       },
 

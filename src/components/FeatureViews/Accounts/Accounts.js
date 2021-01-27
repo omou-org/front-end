@@ -10,7 +10,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -32,6 +32,7 @@ import ProfileCard from './ProfileCard';
 import {simpleUser} from 'queryFragments';
 import UserAvatar from './UserAvatar';
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { buttonBlue } from '../../../theme/muiTheme';
 
 const QUERY_USERS = gql`
     query UserQuery($adminType: String) {
@@ -73,15 +74,33 @@ const QUERY_USERS = gql`
     ${simpleUser}
 `;
 
+const AccountTab = withStyles({
+    root: {
+        background: '#FFFFFF',
+        borderTop: '1px solid #43B5D9',
+        borderLeft: '1px solid #43B5D9',
+        color: buttonBlue,
+        fontWeight: "500",
+        borderRadius: "0px",
+        "&$selected": {
+            borderRadius: "0px",
+        },
+        "&:last-of-type": {
+            borderRight: '1px solid #43B5D9',
+        }
+    },
+    selected: {}
+})((props) => <Tab {...props}></Tab>)
+
 const TABS = [
     'All',
     'Instructors',
     'Students',
     'Receptionist',
     'Parents',
-].map((label) => <Tab key={label} label={label} />);
+].map((label) => <AccountTab key={label} label={label} />);
 
-const useStyles = makeStyles();
+const useStyles = makeStyles({});
 
 const stopPropagation = (event) => {
     event.stopPropagation();
@@ -313,7 +332,7 @@ const Accounts = () => {
             <Typography align="left" className="heading" variant="h1">
                 Accounts
             </Typography>
-            <Grid container direction="row">
+            <Grid style={{marginBottom: "48px"}} container direction="row">
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
                         className="tabs"
