@@ -1,39 +1,39 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
-import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 
-import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
-import CalendarIcon from "@material-ui/icons/CalendarToday";
-import EditIcon from "@material-ui/icons/EditOutlined";
-import EmailIcon from "@material-ui/icons/EmailOutlined";
-import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden";
-import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
-import PhoneIcon from "@material-ui/icons/PhoneOutlined";
-import Typography from "@material-ui/core/Typography";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import CalendarIcon from '@material-ui/icons/CalendarToday';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import EmailIcon from '@material-ui/icons/EmailOutlined';
+import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
+import MoneyIcon from '@material-ui/icons/LocalAtmOutlined';
+import PhoneIcon from '@material-ui/icons/PhoneOutlined';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { darkGrey } from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
-import ResetPasswordDialogs from "./ResetPasswordDialogs"
+import ResetPasswordDialogs from './ResetPasswordDialogs';
 
-import { useSearchParams } from "actions/hooks";
-import Loading from "components/OmouComponents/Loading";
-import "./Accounts.scss";
-import { addDashes } from "./accountUtils";
-import { ReactComponent as GradeIcon } from "../../grade.svg";
-import { ReactComponent as IDIcon } from "../../identifier.svg";
-import { ReactComponent as SchoolIcon } from "../../school.svg";
+import { useSearchParams } from 'actions/hooks';
+import Loading from 'components/OmouComponents/Loading';
+import './Accounts.scss';
+import { addDashes } from './accountUtils';
+import { ReactComponent as GradeIcon } from '../../grade.svg';
+import { ReactComponent as IDIcon } from '../../identifier.svg';
+import { ReactComponent as SchoolIcon } from '../../school.svg';
 
-import { fullName, USER_TYPES } from "utils";
+import { fullName, USER_TYPES } from 'utils';
 
-import UserProfileInfo from "./UserProfileInfo";
+import UserProfileInfo from './UserProfileInfo';
 const useStyles = makeStyles({
     icon: {
         fill: darkGrey,
@@ -155,68 +155,98 @@ const ProfileHeading = ({ ownerID }) => {
         setAnchorEl(null);
     };
 
+    // Validation
+    const isInstructor = loggedInAuth.accountType === USER_TYPES.instructor;
     const isAdmin = loggedInAuth.accountType === USER_TYPES.admin;
     const isAuthUser = userInfo.user.id === loggedInUserID;
-    const isStudentProfile = userInfo.accountType === "STUDENT";
+    const isStudentProfile = userInfo.accountType === 'STUDENT';
+    const canViewScheduleOptions = isAdmin || isInstructor;
+    const isStudentOrParent =
+        accountType === 'student' || accountType === 'parent';
 
     const renderEditandAwayButton = () => (
         <Grid container item xs={4}>
             {accountType === 'instructor' && (
                 <Grid align="left" className="schedule-button" item xs={12}>
-                    <ResponsiveButton
-                        aria-controls="simple-menu"
-                        aria-haspopup="true"
-                        onClick={handleOpen}
-                        variant="outlined"
-                        startIcon={<CalendarIcon />}
-                    >
-                        Schedule Options
-                    </ResponsiveButton>
-                    <Menu
-                        anchorEl={anchorEl}
-                        keepMounted
-                        onClose={handleClose}
-                        open={anchorEl !== null}
-                    >
-                        {/* <InstructorAvailability
+                    {canViewScheduleOptions && (
+                        <>
+                            <ResponsiveButton
+                                aria-controls="simple-menu"
+                                aria-haspopup="true"
+                                onClick={handleOpen}
+                                variant="outlined"
+                                startIcon={<CalendarIcon />}
+                            >
+                                Schedule Options
+                            </ResponsiveButton>
+                            <Menu
+                                anchorEl={anchorEl}
+                                keepMounted
+                                onClose={handleClose}
+                                open={anchorEl !== null}
+                            >
+                                {/* <InstructorAvailability
                             button={false}
                             instructorID={ownerID}
                         />
                         <OutOfOffice button={false} instructorID={ownerID} /> */}
-                    </Menu>
+                            </Menu>
+                        </>
+                    )}
                 </Grid>
             )}
-            {(isAdmin || isAuthUser) && (
+
+            {isAdmin && isAuthUser && (
                 <>
                     <Grid component={Hidden} item mdDown xs={12}>
-                        
-                    <EditIcon className="editIcon" />
-                    <div className="editResetDiv">
-                        <ResponsiveButton
-                            component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${userInfo.user.id}`}
-                            className="edit"
-                        >
-                            Edit Profile
-                        </ResponsiveButton>
-                        {isAdmin && (
-                <ResetPasswordDialogs
-                isStudentProfile = {isStudentProfile}
-                userInfo = {userInfo}
-             />
-              )}
-            </div>
+                        <EditIcon className="editIcon" />
+                        <div className="editResetDiv">
+                            <ResponsiveButton
+                                component={Link}
+                                to={`/form/${userInfo.accountType.toLowerCase()}/${
+                                    userInfo.user.id
+                                }`}
+                                className="edit"
+                            >
+                                Edit Profile
+                            </ResponsiveButton>
+                            {isAdmin && (
+                                <ResetPasswordDialogs
+                                    isStudentProfile={isStudentProfile}
+                                    userInfo={userInfo}
+                                />
+                            )}
+                        </div>
                     </Grid>
                     <Grid component={Hidden} item lgUp xs={12}>
                         <ResponsiveButton
                             component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${userInfo.user.id}`}
+                            to={`/form/${userInfo.accountType.toLowerCase()}/${
+                                userInfo.user.id
+                            }`}
                             variant="outlined"
                         >
                             <EditIcon />
                         </ResponsiveButton>
                     </Grid>
                 </>
+            )}
+
+            {isStudentOrParent && (
+                <Grid component={Hidden} item mdDown xs={12}>
+                    <EditIcon className="editIcon" />
+                    <div className="editResetDiv">
+                        <ResponsiveButton
+                            component={Link}
+                            to={`/form/${userInfo.accountType.toLowerCase()}/${
+                                userInfo.user.id
+                            }`}
+                            className="edit"
+                        >
+                            Edit Profile
+                        </ResponsiveButton>
+                    </div>
+                </Grid>
             )}
         </Grid>
     );
