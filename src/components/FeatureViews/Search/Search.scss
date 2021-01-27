@@ -102,14 +102,12 @@
     cursor: pointer;
   }
   .main-search-view {
-    padding: $paperPadding;
-    background-color: $bioBackgroundColor;
-
     .searchResults {
       .search-title{
         margin-bottom:10px;
       }
       .resultsColor {
+      
         color: #666666;
         font-size: 24px;
       }
