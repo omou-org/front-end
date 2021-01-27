@@ -38,7 +38,7 @@ const {DropdownIndicator} = components;
 
 const searchIcon = (props) => (
     <DropdownIndicator {...props}>
-        <SearchIcon className="search-icon-main" />
+        <SearchIcon className="search-icon-main" style={{color: "#43B5D9"}} />
     </DropdownIndicator>
 );
 

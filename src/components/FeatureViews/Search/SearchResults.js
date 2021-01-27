@@ -162,8 +162,7 @@ const SearchResults = () => {
 
     return (
         <Grid className="search-results" container>
-            <Grid item xs={12}>
-                <Paper align="left" className="main-search-view" elevation={2}>
+            <Grid item xs={12} className="main-search-view">
                     {filter &&
                         <Grid className="prevResults" item xs={12}>
                             <BackButton btnText="To All Search Results"
@@ -236,16 +235,17 @@ const SearchResults = () => {
                                     <CourseFilters />
                                 </Grid>
                             )}
-                            {numCourseResults !== 0 && <hr />}
+                            {numCourseResults !== 0 && <hr style={{marginBottom: "48px"}} />}
                             <Grid item xs={12}>
                                 <Grid alignItems="center" container
                                     direction="row" justify="space-between">
                                     <Grid className="searchResults" item>
                                         <Typography align="left"
                                             className="resultsColor">
-                                            {numCourseResults > 0 &&
+                                            {numAccResults > 0 && "Courses"}
+                                            {/* {numCourseResults > 0 &&
                                                 filter !== "course" &&
-                                                "Courses"}
+                                                "Courses"} */}
                                         </Typography>
                                     </Grid>
                                     {numCourseResults > 0 &&
@@ -281,7 +281,7 @@ const SearchResults = () => {
                             )}
                         </div>
                     )}
-                </Paper>
+            
             </Grid>
         </Grid>
     );
