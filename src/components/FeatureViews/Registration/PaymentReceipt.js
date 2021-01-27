@@ -15,7 +15,6 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import { bindActionCreators } from "redux";
 import { fullName } from "../../../utils";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { closeRegistrationCart } from "../../OmouComponents/RegistrationUtils";
 import { ResponsiveButton } from "theme/ThemedComponents/Button/ResponsiveButton";
 import ParentContact from '../Accounts/TabComponents/ParentContact';
@@ -208,7 +207,7 @@ const PaymentReceipt = ({ paymentID }) => {
 	};
 
 	return (
-		<BackgroundPaper elevation={2} className="registration-receipt">
+		<div className="registration-receipt">
 			{params.paymentID && (
 				<>
 					<BackButton />
@@ -360,7 +359,7 @@ const PaymentReceipt = ({ paymentID }) => {
 					</Grid>
 				</Grid>
 			</Grid>
-		</BackgroundPaper>
+		</div>
 	);
 };
 

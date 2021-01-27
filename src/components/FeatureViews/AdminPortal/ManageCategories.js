@@ -15,7 +15,6 @@ import * as adminActions from "actions/adminActions";
 import * as hooks from "actions/hooks";
 import Loading from "components/OmouComponents/Loading";
 import NoListAlert from "components/OmouComponents/NoListAlert";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 
 
 
@@ -55,8 +54,7 @@ const ManageCategories = () => {
 	}, [api, categoryName, categoryDescription]);
 
 	const categoryForm = () => (
-		<BackgroundPaper className="category-row new-category">
-			<Grid alignItems="center" container>
+			<Grid alignItems="center" container className="category-row new-category">
 				<Grid item xs={3}>
 					<TextField
 						className="field"
@@ -87,7 +85,6 @@ const ManageCategories = () => {
 					</ResponsiveButton>
 				</Grid>
 			</Grid>
-		</BackgroundPaper>
 	);
 
 	const displayCategories = () => (

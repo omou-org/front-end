@@ -6,7 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import BackButton from "../../../OmouComponents/BackButton";
 import Grid from "@material-ui/core/Grid";
-import BackgroundPaper from "../../../OmouComponents/BackgroundPaper";
 
 const useStyles = makeStyles({
 	"root": {
@@ -47,7 +46,7 @@ const NoResultsPage = () => {
 	return (
 		<Grid container className={classes.root} >
 			<Grid item xs={12}>
-				<BackgroundPaper elevation={2}>
+				<div elevation={2}>
 					<BackButton />
 					<hr />
 					<div className={classes.center}>
@@ -68,7 +67,7 @@ const NoResultsPage = () => {
 							</Typography>
 						</div>
 					</div>
-				</BackgroundPaper>
+				</div>
 			</Grid>
 		</Grid>
 	);

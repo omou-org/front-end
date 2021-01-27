@@ -3,7 +3,6 @@ import {useSelector} from "react-redux";
 import gql from "graphql-tag"
 import {useLazyQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from "@material-ui/core/Grid";
 import {fullName, getDuration} from "../../../utils";
@@ -193,7 +192,7 @@ export default function TeachingLogContainer() {
 		.format("MMDD")}-${moment(state[0].endDate).format("MMDD")}_${moment(state[0].endDate)
 		.format("YYYY")}_log.csv`;
 
-	return (<BackgroundPaper>
+	return (<div>
 		<Grid container direction="row" spacing={4}>
 			<Grid item container justify="space-between">
 				<Grid item>
@@ -317,5 +316,5 @@ export default function TeachingLogContainer() {
 				}
 			</Grid>
 		</Grid>
-	</BackgroundPaper>)
+	</div>)
 }

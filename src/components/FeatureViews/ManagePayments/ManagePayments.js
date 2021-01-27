@@ -1,6 +1,5 @@
 import React, {useCallback, useState} from "react";
 import MyPaymentsRoutes from "../../Routes/MyPaymentsRoutes";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import Typography from "@material-ui/core/Typography";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -47,22 +46,23 @@ export default function ManagePayments() {
 	
 	const classes = useStyles();
 
-	return (<BackgroundPaper>
-		<Typography variant="h3" align="left">My Payments</Typography>
-		<Tabs
-			classes={{indicator: classes.MuiIndicator}} 
-			value={value} 
-			onChange={handleChange} 
-			aria-label="simple tabs example"
-		>
-			<Tab label="Outstanding Invoice"/>
-			<Tab label="Payment History"/>
-		</Tabs>
-		<TabPanel value={value} index={0}>
-			<ActiveInvoices/>
-		</TabPanel>
-		<TabPanel value={value} index={1}>
-			<MyPaymentsRoutes/>
-		</TabPanel>
-	</BackgroundPaper>)
+	return (
+		<div>
+			<Typography variant="h3" align="left">My Payments</Typography>
+			<Tabs
+				classes={{indicator: classes.MuiIndicator}} 
+				value={value} 
+				onChange={handleChange} 
+				aria-label="simple tabs example"
+			>
+				<Tab label="Outstanding Invoice"/>
+				<Tab label="Payment History"/>
+			</Tabs>
+			<TabPanel value={value} index={0}>
+				<ActiveInvoices/>
+			</TabPanel>
+			<TabPanel value={value} index={1}>
+				<MyPaymentsRoutes/>
+			</TabPanel>
+		</div>)
 }

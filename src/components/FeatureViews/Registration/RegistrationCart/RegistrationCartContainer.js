@@ -3,7 +3,6 @@ import { useValidateRegisteringParent } from "../../../OmouComponents/Registrati
 import gql from "graphql-tag";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import Loading from "../../../OmouComponents/Loading";
-import BackgroundPaper from "../../../OmouComponents/BackgroundPaper";
 import { ResponsiveButton } from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -209,7 +208,7 @@ export default function RegistrationCartContainer() {
   const studentData = data.userInfos;
 
 	return (<RegistrationContext.Provider value={{registrationCart, currentParent, updateSession}}>
-			<BackgroundPaper>
+			<div>
 				<Grid container>
 					<RegistrationActions/>
 				</Grid>
@@ -344,7 +343,7 @@ export default function RegistrationCartContainer() {
             </ResponsiveButton>
           </DialogActions>
         </Dialog>
-      </BackgroundPaper>
+      </div>
     </RegistrationContext.Provider>
   );
 }

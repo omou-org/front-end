@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Tabs from "@material-ui/core/Tabs";
@@ -43,7 +42,7 @@ export default function AvailabilityContainer() {
 	
 	const classes = useStyles();
 
-	return (<BackgroundPaper>
+	return (
 		<Grid container direction="row" spacing={4}>
 			<Grid item>
 				<Typography variant="h5" align="left">Summit Tutoring Business Hours</Typography>
@@ -77,6 +76,5 @@ export default function AvailabilityContainer() {
 				</Grid>
 			</Grid>
 
-		</Grid>
-	</BackgroundPaper>)
+		</Grid>)
 }
