@@ -1547,7 +1547,7 @@ class Form extends Component {
                     <Paper className="registration-form paper">
                         {
                             !this.props.location.pathname.includes("adminportal") &&
-                            <BackButton onBack={this.onBack} />
+                           
                         }
                         <Typography
                             align="left"

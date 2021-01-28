@@ -111,7 +111,7 @@ const ActionLog = ({ ownerID }) => {
                                         {moment(date).format('LLLL')}
                                     </TableCell>
                                     <TableCell>{ActionLabel(action)}</TableCell>
-                                    <TableCell style={{ paddingLeft: '6em' }}>
+                                    <TableCell style={{ paddingLeft: '6em' , textTransform: "capitalize" }}>
                                         {objectType}
                                     </TableCell>
                                     <TableCell>{objectRepr}</TableCell>

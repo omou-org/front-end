@@ -102,7 +102,7 @@ const ComponentViewer = ({ inView, user, id }) => {
                 },
                 {
                     component: (
-                        <Notes ownerID={id} ownerType="account" key={7} />
+                        <Notes ownerID={id} ownerType="account" isProfile={true} key={7} />
                     ),
                     access_permissions: [
                         USER_TYPES.receptionist,

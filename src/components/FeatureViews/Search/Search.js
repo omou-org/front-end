@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import {useApolloClient} from "@apollo/react-hooks";
 import {useHistory} from "react-router-dom";
 import {useSearchParams} from "actions/hooks";
-
+import {omouBlue} from "../../../theme/muiTheme"
 import AsyncCreatableSelect from "react-select/async-creatable";
 import {components} from "react-select";
 import FormControl from "@material-ui/core/FormControl";
@@ -38,7 +38,7 @@ const {DropdownIndicator} = components;
 
 const searchIcon = (props) => (
     <DropdownIndicator {...props}>
-        <SearchIcon className="search-icon-main" />
+        <SearchIcon className="search-icon-main" style={{color: omouBlue}} />
     </DropdownIndicator>
 );
 

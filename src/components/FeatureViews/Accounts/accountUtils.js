@@ -5,7 +5,7 @@ export const addDashes = (string) => {
             `${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 10)}`
         );
     }
-    return "";
+    return string;
 };
 
 export const stringToColor = (string) => {

@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import gql from 'graphql-tag';
-import {Link} from 'react-router-dom';
-import {useQuery} from '@apollo/react-hooks';
-import {useSelector} from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/react-hooks';
+import { useSelector } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import CardView from '@material-ui/icons/ViewModule';
@@ -10,7 +10,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -24,17 +24,17 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import './Accounts.scss';
-import {addDashes} from './accountUtils';
-import {capitalizeString, USER_TYPES} from 'utils';
+import { addDashes } from './accountUtils';
+import { capitalizeString, USER_TYPES } from 'utils';
 import IconButton from '@material-ui/core/IconButton';
 import LoadingHandler from 'components/OmouComponents/LoadingHandler';
 import ProfileCard from './ProfileCard';
-import {simpleUser} from 'queryFragments';
+import { simpleUser } from 'queryFragments';
 import UserAvatar from './UserAvatar';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const QUERY_USERS = gql`
-    query UserQuery($adminType: String) {
+    query UserQuery {
         students {
             user {
                 ...SimpleUser
@@ -59,7 +59,7 @@ const QUERY_USERS = gql`
             accountType
             phoneNumber
         }
-        admins(adminType: $adminType) {
+        admins {
             adminType
             userUuid
             user {
@@ -92,8 +92,8 @@ const stopPropagation = (event) => {
 };
 
 const Accounts = () => {
-    const isAdmin =
-        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
+    const userID = useSelector(({ auth }) => auth.user.id);
+
     const { loading, error, data } = useQuery(QUERY_USERS);
 
     const prevState = JSON.parse(sessionStorage.getItem('AccountsState'));
@@ -237,26 +237,19 @@ const Accounts = () => {
                                 {capitalizeString(row.accountType)}
                             </TableCell>
                             <TableCell onClick={stopPropagation}>
-                                <Grid component={Hidden} mdDown>
-                                    {(row.accountType === USER_TYPES.student ||
-                                        row.accountType === USER_TYPES.parent ||
-                                        isAdmin) && (
+                                <Grid>
+                                    {(row.accountType.toUpperCase() ===
+                                        USER_TYPES.student ||
+                                        row.accountType.toUpperCase() ===
+                                            USER_TYPES.parent ||
+                                        row.user.id === userID) && (
                                         <IconButton
                                             component={Link}
-                                            to={`/registration/form/${row.accountType}/${row.user.id}`}
+                                            to={`/form/${row.accountType}/${row.user.id}`}
                                         >
                                             <EditIcon />
                                         </IconButton>
                                     )}
-                                </Grid>
-                                <Grid component={Hidden} lgUp>
-                                    <Button
-                                        component={Link}
-                                        to={`/registration/form/${row.accountType}/${row.user.id}`}
-                                        variant="outlined"
-                                    >
-                                        <EditIcon />
-                                    </Button>
                                 </Grid>
                             </TableCell>
                         </TableRow>
@@ -264,7 +257,7 @@ const Accounts = () => {
                 </TableBody>
             </Table>
         ),
-        [displayUsers, isAdmin]
+        [displayUsers]
     );
 
     const cardView = useMemo(
@@ -317,7 +310,7 @@ const Accounts = () => {
             <Typography align="left" className="heading" variant="h1">
                 Accounts
             </Typography>
-            <Grid container direction="row">
+            <Grid container direction="row" justify='space-between'>
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
                         className="tabs"
@@ -345,7 +338,7 @@ const Accounts = () => {
                         style={{ justifyContent: 'flex-end' }}
                         container
                         item
-                        md={4}
+                        md={1}
                     >
                         <ToggleButtonGroup aria-label="list & grid view toggle buttons">
                             <ToggleButton

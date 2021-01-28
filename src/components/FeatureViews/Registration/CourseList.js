@@ -1,47 +1,41 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, {useState} from "react";
+import {makeStyles} from "@material-ui/core/styles";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
-import Moment from "react-moment";
-
-import { useHistory } from "react-router-dom";
-import { fullName } from "utils";
-import { useValidateRegisteringParent } from "../../OmouComponents/RegistrationUtils";
+import {fullName} from "utils";
+import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
 import Box from "@material-ui/core/Box";
 import AddIcon from "@material-ui/icons/Add";
-import CheckIcon from "@material-ui/icons/Check";
 import moment from "moment";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities"
 import gql from "graphql-tag";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 import Loading from "../../OmouComponents/Loading";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import DialogActions from "@material-ui/core/DialogActions";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import * as types from "actions/actionTypes";
-import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
+import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import ListDetailedItem, {
-  ListContent,
   ListActions,
-  ListHeading,
-  ListTitle,
-  ListDetails,
+  ListButton,
+  ListContent,
   ListDetail,
   ListDetailLink,
-  ListButton,
-  ListBadge,
-  ListStatus,
+  ListDetails,
   ListDivider,
+  ListHeading,
+  ListStatus,
+  ListTitle,
 } from "../../OmouComponents/ListComponent/ListDetailedItem";
-import { buttonBlue, gloom, white } from "theme/muiTheme";
-import { DialogContentText, Grid } from "@material-ui/core";
+import {DialogContentText} from "@material-ui/core";
 import ParentCourseInterestBtn from "./ParentCourseInterestBtn";
 
 export const GET_STUDENTS_AND_ENROLLMENTS = gql`
@@ -302,17 +296,17 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
 
   return (
     <>
-      <Box width="100%">
+      <Box width="100%" data-cy="classes-table">
         {filteredCourses
-          .filter(
-            ({ courseType, endDate, id }) =>
-              courseType === "CLASS" &&
-              moment().diff(moment(endDate), "days") < 0
-          )
-          .map((course) => {
-            return (
-              <ListDetailedItem key={course.id}>
-                <ListContent>
+            .filter(
+                ({courseType, endDate, id}) =>
+                    courseType === "CLASS" &&
+                    moment().diff(moment(endDate), "days") < 0
+            )
+            .map((course) => {
+              return (
+                  <ListDetailedItem key={course.id}>
+                    <ListContent>
                   <ListHeading>
                     <Box onClick={() => clickHandler(course.id)}>
                       <ListTitle>{course.title}</ListTitle>
