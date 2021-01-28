@@ -1,19 +1,37 @@
-import * as types from 'actions/actionTypes';
-import {
-    createTutoringDetails,
-    submitRegistration,
-} from '../OmouComponents/RegistrationUtils';
-import { instance } from 'actions/apiActions';
-import React from 'react';
-import { FORM_ERROR } from 'final-form';
-import * as Fields from './Fields';
-import { StudentSelect } from './Fields';
-import * as Yup from 'yup';
-import * as moment from 'moment';
-import { client } from 'index';
-import gql from 'graphql-tag';
-import { fullName } from '../../utils';
-import TutoringPriceQuote from './TutoringPriceQuote';
+import * as types from "actions/actionTypes";
+import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
+import {instance} from "actions/apiActions";
+import React from "react";
+import {FORM_ERROR} from "final-form";
+import * as Fields from "./Fields";
+import {StudentSelect} from "./Fields";
+import * as Yup from "yup";
+import * as moment from "moment";
+import {client} from "index";
+import gql from "graphql-tag";
+import {fullName} from "../../utils";
+import TutoringPriceQuote from "./TutoringPriceQuote";
+import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
+
+export const GET_ADMIN = gql`
+            query GetAdmin($userID: ID!) {
+                admin(userId: $userID) {
+                    user {
+                        id
+                        email
+                        firstName
+                        lastName
+                    }
+                    adminType
+                    gender
+                    phoneNumber
+                    birthDate
+                    address
+                    city
+                    state
+                    zipcode
+                }
+            }`;
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = (a) => a) {
     return this.test('unique', message, function (list) {
@@ -731,44 +749,49 @@ export default {
         },
         submit: async ({ student }, id) => {
             const ADD_STUDENT = gql`
-                mutation AddStudent(
-                    $firstName: String!
-                    $email: String
-                    $lastName: String!
-                    $address: String
-                    $birthDate: Date
-                    $city: String
-                    $gender: GenderEnum
-                    $grade: Int
-                    $phoneNumber: String
-                    $primaryParent: ID
-                    $school: ID
-                    $zipcode: String
-                    $state: String
-                    $id: ID
-                ) {
-                    createStudent(
-                        user: {
-                            firstName: $firstName
-                            id: $id
-                            lastName: $lastName
-                            email: $email
-                        }
-                        address: $address
-                        birthDate: $birthDate
-                        school: $school
-                        grade: $grade
-                        gender: $gender
-                        primaryParent: $primaryParent
-                        phoneNumber: $phoneNumber
-                        city: $city
-                        state: $state
-                        zipcode: $zipcode
-                    ) {
-                        created
-                    }
+            mutation AddStudent(
+            $firstName: String!,
+            $email: String,
+            $lastName: String!,
+            $address: String,
+            $birthDate:Date,
+            $city:String,
+            $gender:GenderEnum,
+            $grade:Int,
+            $phoneNumber:String,
+            $primaryParent:ID,
+            $school:ID,
+            $zipcode:String,
+            $state:String,
+            $id: ID) {
+                createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
+                    created
+                    student {
+                      accountType
+                      phoneNumber
+                      user {
+                        email
+                        lastName
+                        firstName
+                        id
+                      }
+                    }  
                 }
-            `;
+            }`;
+
+            const GET_ALL_STUDENTS = gql`
+                query GetAllStudents {
+                    students {
+                      accountType
+                      phoneNumber
+                      user {
+                        email
+                        lastName
+                        firstName
+                        id
+                      }
+                    }
+                }`
 
             try {
                 await client.mutate({
@@ -778,9 +801,57 @@ export default {
                         id,
                         email: student.email || '',
                         birthDate: parseDate(student.birthDate),
-                        primaryParent: student.primaryParent.value,
-                        school: student.school.value,
+                        primaryParent: student.primaryParent?.value,
+                        school: student.school?.value,
                     },
+                    "update": (cache, { data }) => {
+                        const newStudent = data.createStudent;
+
+                        const cachedStudent = cache.readQuery({
+                            query: USER_QUERIES["student"],
+                            variables: {
+                                "ownerID": newStudent.student.user.id,
+                            }
+                        });
+                        cache.writeQuery({
+                            data: {
+                                "student": {
+                                    ...cachedStudent,
+                                    user: {...newStudent.student.user,},
+                                    birthDate: newStudent.student.birthDate,
+                                },
+                            },
+                            query: USER_QUERIES["student"],
+                            variables: {
+                                ownerId: newStudent.student.user.id,
+                            }
+                        });
+                        // NOTE: Hacky way to check if the students cache exists yet.
+                        // if it doesn't exist then don't update the list. No better way of doing this according to stackoverflow
+                        // https://github.com/apollographql/apollo-client/issues/1701
+                        if (cache.data.data.ROOT_QUERY.students) {
+                            const cachedStudents = cache.readQuery({
+                                query: GET_ALL_STUDENTS
+                            }).students || [];
+
+                            const matchingIndex = cachedStudents.findIndex(({user: {id}}) =>
+                                id === newStudent.student.user.id);
+
+                            let updatedStudents = cachedStudents;
+
+                            if (matchingIndex === -1) {
+                                updatedStudents = [...cachedStudents, newStudent];
+                            } else {
+                                updatedStudents[matchingIndex] = newStudent;
+                            }
+                            cache.writeQuery({
+                                data: {
+                                    "students": updatedStudents
+                                },
+                                query: GET_ALL_STUDENTS
+                            });
+                        }
+                    }
                 });
             } catch (error) {
                 return {
@@ -936,27 +1007,8 @@ export default {
                 ],
             },
         ],
-        load: async (id) => {
-            const GET_ADMIN = gql`
-                query GetAdmin($userID: ID!) {
-                    admin(userId: $userID) {
-                        user {
-                            id
-                            email
-                            firstName
-                            lastName
-                        }
-                        adminType
-                        gender
-                        phoneNumber
-                        birthDate
-                        address
-                        city
-                        state
-                        zipcode
-                    }
-                }
-            `;
+        "load": async (id) => {
+
             try {
                 const {
                     data: { admin },
@@ -976,50 +1028,73 @@ export default {
         },
         submit: async (formData, id) => {
             const CREATE_ADMIN = gql`
-                mutation CreateAdmin(
-                    $address: String
-                    $adminType: AdminTypeEnum!
-                    $birthDate: Date
-                    $city: String
-                    $gender: GenderEnum
-                    $phoneNumber: String
-                    $id: ID
-                    $state: String
-                    $email: String
-                    $firstName: String!
-                    $lastName: String!
-                    $password: String
-                    $zipcode: String
+            mutation CreateAdmin(
+                $address: String,
+                $adminType: AdminTypeEnum!,
+                $birthDate: Date,
+                $city: String,
+                $gender: GenderEnum,
+                $phoneNumber: String,
+                $id: ID,
+                $state: String,
+                $email: String,
+                $firstName: String!,
+                $lastName: String!,
+                $password: String,
+                $zipcode: String
+            ) {
+                createAdmin(
+                    user: {
+                        firstName: $firstName, lastName: $lastName,
+                        password: $password, email: $email,
+                        id: $id,
+                    },
+                    address: $address,
+                    adminType: $adminType,
+                    birthDate: $birthDate,
+                    city: $city,
+                    gender: $gender,
+                    phoneNumber: $phoneNumber,
+                    state: $state,
+                    zipcode: $zipcode
                 ) {
-                    createAdmin(
-                        user: {
-                            firstName: $firstName
-                            lastName: $lastName
-                            password: $password
-                            email: $email
-                            id: $id
-                        }
-                        address: $address
-                        adminType: $adminType
-                        birthDate: $birthDate
-                        city: $city
-                        gender: $gender
-                        phoneNumber: $phoneNumber
-                        state: $state
-                        zipcode: $zipcode
-                    ) {
-                        admin {
-                            userUuid
-                            birthDate
-                            address
-                            city
-                            phoneNumber
-                            state
-                            zipcode
+                    admin {
+                        accountType
+                        adminType
+                        userUuid
+                        birthDate
+                        address
+                        city
+                        phoneNumber
+                        state
+                        zipcode
+                        user {
+                            email
+                            firstName
+                            id
+                            lastName
                         }
                     }
                 }
+            }
             `;
+
+            const GET_ALL_ADMINS = gql`
+                query GetAllAdmins {
+                    admins {
+                      accountType
+                      adminType
+                      phoneNumber
+                      user {
+                        email
+                        firstName
+                        id
+                        lastName
+                      }
+                      userUuid
+                    }
+                  }`;
+
             const modifiedData = {
                 ...formData,
                 user: {
@@ -1046,8 +1121,59 @@ export default {
                     variables: {
                         ...adminMutationVariable,
                         id,
-                        userUuid,
+                        userUuid
                     },
+                    "update": (cache, { data: { createAdmin: { admin } } }) => {
+                        const newAdmin = {
+                            accountType: admin.accountType,
+                            adminType: admin.adminType,
+                            phoneNumber: admin.phoneNumber,
+                            user: admin.user,
+                            userUuid: admin.userUuid
+                        };
+
+                        const cachedAdmin = cache.readQuery({
+                            query: USER_QUERIES.admin,
+                            variables: {
+                                ownerID: admin.user.id
+                            }
+                        })
+                        cache.writeQuery({
+                            data: {
+                                admin: {
+                                    ...cachedAdmin,
+                                    ...newAdmin
+                                },
+                            },
+                            query: GET_ADMIN,
+                            variables: {
+                                ownerID: admin.user.id,
+                            }
+                        });
+
+                        if (cache.data.data.ROOT_QUERY.admins) {
+                            const cachedAdmins = cache.readQuery({
+                                query: GET_ALL_ADMINS
+                            })["admins"] || [];
+
+                            const matchingIndex = cachedAdmins.findIndex(({user: {id}}) => newAdmin.user.id === id)
+
+                            let updatedAdmins = cachedAdmins;
+
+                            if (matchingIndex !== -1) {
+                                updatedAdmins = [...cachedAdmins, newAdmin];
+                            } else {
+                                updatedAdmins[matchingIndex] = newAdmin;
+                            }
+
+                            cache.writeQuery({
+                                data: {
+                                    "admins": updatedAdmins
+                                },
+                                query: GET_ALL_ADMINS
+                            });
+                        }
+                    }
                 });
             } catch (error) {
                 return {

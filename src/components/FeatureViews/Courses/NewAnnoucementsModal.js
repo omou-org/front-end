@@ -1,7 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-
-import Button from '@material-ui/core/Button';
+import React, {useCallback, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -13,13 +11,13 @@ import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutline
 import Input from '@material-ui/core/Input';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { makeStyles } from '@material-ui/core/styles';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {makeStyles} from '@material-ui/core/styles';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
-import { omouBlue } from '../../../theme/muiTheme';
-import { GET_ANNOUNCEMENTS } from './CourseClasses';
-import { useSelector } from 'react-redux';
+import {useMutation} from '@apollo/react-hooks';
+import {omouBlue} from '../../../theme/muiTheme';
+import {GET_ANNOUNCEMENTS} from './CourseClass';
+import {useSelector} from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     rootContainer: {

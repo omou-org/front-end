@@ -34,7 +34,7 @@ import UserAvatar from './UserAvatar';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const QUERY_USERS = gql`
-    query UserQuery($adminType: String) {
+    query UserQuery {
         students {
             user {
                 ...SimpleUser
@@ -59,7 +59,7 @@ const QUERY_USERS = gql`
             accountType
             phoneNumber
         }
-        admins(adminType: $adminType) {
+        admins {
             adminType
             userUuid
             user {
@@ -310,7 +310,7 @@ const Accounts = () => {
             <Typography align="left" className="heading" variant="h1">
                 Accounts
             </Typography>
-            <Grid container direction="row">
+            <Grid container direction="row" justify='space-between'>
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
                         className="tabs"
@@ -338,7 +338,7 @@ const Accounts = () => {
                         style={{ justifyContent: 'flex-end' }}
                         container
                         item
-                        md={4}
+                        md={1}
                     >
                         <ToggleButtonGroup aria-label="list & grid view toggle buttons">
                             <ToggleButton

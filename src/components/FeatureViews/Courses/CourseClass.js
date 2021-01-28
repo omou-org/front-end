@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
-import { createMuiTheme } from '@material-ui/core';
+import React, {useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
+import {makeStyles} from '@material-ui/core/styles';
+import {ThemeProvider} from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
-import Hidden from '@material-ui/core/Hidden';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/EditOutlined';
@@ -12,25 +10,22 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 import gql from 'graphql-tag';
 
-import { useQuery } from '@apollo/react-hooks';
+import {useQuery} from '@apollo/react-hooks';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
-
-import BackButton from '../../OmouComponents/BackButton';
 import ChromeTabs from '../../OmouComponents/ChromeTabs';
 import TabPanel from '../../OmouComponents/TabPanel';
 import ClassInfo from './ClassInfo';
 import Announcements from './Announcements';
 import ClassEnrollmentList from './ClassEnrollmentList';
 import ClassSessionContainer from './ClassSessionContainer';
-import { useSelector } from 'react-redux';
-import { gradeLvl, USER_TYPES, fullName } from 'utils';
+import {useSelector} from 'react-redux';
+import {fullName, gradeLvl, USER_TYPES} from 'utils';
 import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
-import { StudentCourseLabel } from './StudentBadge';
-import { filterEvent } from 'actions/calendarActions';
-import { GET_STUDENTS } from './CourseManagementContainer';
+import {StudentCourseLabel} from './StudentBadge';
+import {GET_STUDENTS} from './CourseManagementContainer';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -79,7 +74,7 @@ export const GET_ANNOUNCEMENTS = gql`
     }
 `;
 
-export const GET_CLASSES = gql`
+export const GET_CLASS = gql`
     query getClass($id: ID!) {
         course(courseId: $id) {
             academicLevel
@@ -156,17 +151,17 @@ export const GET_CLASSES = gql`
     }
 `;
 
-const CourseClasses = () => {
-    const { id } = useParams();
+const CourseClass = () => {
+    const {id} = useParams();
     const classes = useStyles();
     const [index, setIndex] = useState(0);
 
-    const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
+    const {email, accountType, user} = useSelector(({auth}) => auth) || [];
     const [studentInCourse, setStudentInCourse] = useState([]);
 
     const adminTabs = [
-        { label: 'About Course' },
-        { label: 'Announcements' },
+        {label: 'About Course'},
+        {label: 'Announcements'},
         { label: 'Student Enrolled' },
         { label: 'Sessions' },
         { label: 'Attendance' },
@@ -181,7 +176,7 @@ const CourseClasses = () => {
 
     const parentNostudentEnrolledTab = [{ label: 'About Course' }];
 
-    const { data, loading, error } = useQuery(GET_CLASSES, {
+    const {data, loading, error} = useQuery(GET_CLASS, {
         variables: {
             id: id,
         },
@@ -299,17 +294,14 @@ const CourseClasses = () => {
     return (
         <Grid item xs={12}>
             <Grid container justify="space-between" alignContent="center">
-                <Grid item></Grid>
+                <Grid item/>
                 <Grid item>
                     {accountType === 'PARENT' &&
-                        studentInCourse.map((student, i) => (
-                            <StudentCourseLabel label={student} key={i} />
-                        ))}
+                    studentInCourse.map((student, i) => (
+                        <StudentCourseLabel label={student} key={i}/>
+                    ))}
                 </Grid>
             </Grid>
-            <Hidden xsDown>
-                <hr />
-            </Hidden>
             <Grid container>
                 <Grid item xs={6}>
                     <Typography
@@ -505,4 +497,4 @@ const CourseClasses = () => {
     );
 };
 
-export default CourseClasses;
+export default CourseClass;

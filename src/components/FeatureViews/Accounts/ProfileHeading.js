@@ -1,12 +1,11 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import React, {useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import {useQuery} from '@apollo/react-hooks';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
@@ -15,25 +14,23 @@ import Hidden from '@material-ui/core/Hidden';
 import MoneyIcon from '@material-ui/icons/LocalAtmOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core';
+import {makeStyles} from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
-import { darkGrey } from 'theme/muiTheme';
+import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
+import {darkGrey} from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
 import ResetPasswordDialogs from './ResetPasswordDialogs';
-
-import { useSearchParams } from 'actions/hooks';
 import Loading from 'components/OmouComponents/Loading';
 import './Accounts.scss';
-import { addDashes } from './accountUtils';
-import { ReactComponent as GradeIcon } from '../../grade.svg';
-import { ReactComponent as IDIcon } from '../../identifier.svg';
-import { ReactComponent as SchoolIcon } from '../../school.svg';
+import {addDashes} from './accountUtils';
+import {ReactComponent as GradeIcon} from '../../grade.svg';
+import {ReactComponent as IDIcon} from '../../identifier.svg';
+import {ReactComponent as SchoolIcon} from '../../school.svg';
 
-import { fullName, USER_TYPES, capitalizeString } from 'utils';
+import {capitalizeString, fullName, USER_TYPES} from 'utils';
+import moment from "moment";
 
-import UserProfileInfo from './UserProfileInfo';
 const useStyles = makeStyles({
     icon: {
         fill: darkGrey,
@@ -131,6 +128,7 @@ const GET_PROFILE_HEADING_QUERY = {
 const ProfileHeading = ({ ownerID }) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [editButtonActive, setEditButtonActive] = useState(false);
     const { accountType } = useParams();
 
     const loggedInUserID = useSelector(({ auth }) => auth.user.id);
@@ -165,7 +163,7 @@ const ProfileHeading = ({ ownerID }) => {
         accountType === 'student' || accountType === 'parent';
 
     const renderEditandAwayButton = () => (
-        <Grid container item xs={4}>
+        <>
             {accountType === 'instructor' && (
                 <Grid align="left" className="schedule-button" item xs={12}>
                     {canViewScheduleOptions && (
@@ -199,7 +197,6 @@ const ProfileHeading = ({ ownerID }) => {
             {isAdmin && isAuthUser && (
                 <>
                     <Grid component={Hidden} item mdDown xs={12}>
-                        <EditIcon className="editIcon" />
                         <div className="editResetDiv">
                             <ResponsiveButton
                                 component={Link}
@@ -234,21 +231,18 @@ const ProfileHeading = ({ ownerID }) => {
 
             {isStudentOrParent && (
                 <Grid component={Hidden} item mdDown xs={12}>
-                    <EditIcon className="editIcon" />
-                    <div className="editResetDiv">
-                        <ResponsiveButton
-                            component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${
-                                userInfo.user.id
-                            }`}
-                            className="edit"
-                        >
-                            Edit Profile
-                        </ResponsiveButton>
-                    </div>
+                    <ResponsiveButton
+                        component={Link}
+                        to={`/form/${userInfo.accountType.toLowerCase()}/${
+                            userInfo.user.id
+                        }`}
+                        variant="outlined"
+                    >
+                        Edit Profile
+                    </ResponsiveButton>
                 </Grid>
             )}
-        </Grid>
+        </>
     );
 
     const profileDetails = () => {
@@ -264,7 +258,7 @@ const ProfileHeading = ({ ownerID }) => {
                 },
                 Birthday: {
                     icon: <CakeOutlinedIcon className={classes.icon} />,
-                    text: userInfo.birthday,
+                    text: moment(userInfo.birthDate).format('MMM Do, YYYY'),
                 },
                 Grade: {
                     icon: <GradeIcon className={classes.icon} />,
@@ -371,25 +365,24 @@ const ProfileHeading = ({ ownerID }) => {
         <Grid
             alignItems="center"
             container
-            item
-            xs={12}
-            style={{ margin: accountType === 'INSTRUCTOR' ? '-20px 0' : '0' }}
+            item xs={12}
+
+            style={{margin: accountType === 'INSTRUCTOR' ? '-20px 0' : '0'}}
         >
-            <Grid align="left" alignItems="center" container item xs={8}>
-                <Grid className="profile-name" item style={{ marginRight: 20 }}>
-                    <Typography variant="h3">
+            <Grid align="left" alignItems="center" justify="space-between" container item xs={12}>
+                <Grid className="profile-name" item>
+                    <Typography variant="h3" style={{marginRight: "20px", display: "inline-block"}}>
                         {fullName(userInfo.user)}
                     </Typography>
-                </Grid>
-                <Grid item>
                     <Hidden smDown>
-                        <LabelBadge variant="outline-gray">
+                        <LabelBadge variant="outline-gray" style={{marginBottom: "10px"}}>
                             {capitalizeString(accountType)}
                         </LabelBadge>
                     </Hidden>
                 </Grid>
+                {renderEditandAwayButton()}
             </Grid>
-            {renderEditandAwayButton()}
+
             <Grid
                 container
                 align="left"
