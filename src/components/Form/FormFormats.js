@@ -793,7 +793,6 @@ export default {
                     }
                 }`
 
-
             try {
                 await client.mutate({
                     mutation: ADD_STUDENT,
@@ -802,8 +801,8 @@ export default {
                         id,
                         email: student.email || '',
                         birthDate: parseDate(student.birthDate),
-                        primaryParent: student.primaryParent.value,
-                        school: student.school.value,
+                        primaryParent: student.primaryParent?.value,
+                        school: student.school?.value,
                     },
                     "update": (cache, { data }) => {
                         const newStudent = data.createStudent;

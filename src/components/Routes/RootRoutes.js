@@ -25,7 +25,7 @@ import SearchResults from "../FeatureViews/Search/SearchResults";
 import SessionView from "../FeatureViews/Scheduler/SessionView";
 import UserProfile from "../FeatureViews/Accounts/UserProfile";
 import CourseManagementContainer from "../FeatureViews/Courses/CourseManagementContainer";
-import CourseClasses from "../FeatureViews/Courses/CourseClasses"
+import CourseClass from "../FeatureViews/Courses/CourseClass"
 import DemoRoutes from './DemoRoutes';
 
 import {resetSubmitStatus} from "actions/registrationActions";
@@ -189,7 +189,7 @@ export const RootRoutes = () => {
             <AuthenticatedRoute
                 path="/coursemanagement/class/:id?"
             >
-                <CourseClasses/>
+                <CourseClass/>
             </AuthenticatedRoute>
 
             <AuthenticatedRoute path="/PageNotFound">
