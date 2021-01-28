@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -8,21 +8,16 @@ import InputBase from '@material-ui/core/InputBase';
 import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import {useQuery} from '@apollo/react-hooks';
 import Loading from '../../OmouComponents/Loading';
 
-import { UserAvatarCircle, StudentCourseLabel } from './StudentBadge';
-import { fullName, gradeOptions } from 'utils';
+import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
+import {fullName, gradeOptions} from 'utils';
 import moment from 'moment';
-import theme, {
-    highlightColor,
-    activeColor,
-    pastColor,
-} from '../../../theme/muiTheme';
+import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -124,6 +119,7 @@ const useStyles = makeStyles((theme) => ({
         height: '115px',
         '&:hover': {
             backgroundColor: highlightColor,
+            cursor: "pointer"
         },
     },
 }));
@@ -176,7 +172,7 @@ const ClassListItem = ({
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
-    const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
+    const handleClick = (e) => history.push(`/courses/class/${id}`);
 
     return (
         <>

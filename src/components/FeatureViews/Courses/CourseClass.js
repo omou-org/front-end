@@ -325,7 +325,7 @@ const CourseClass = () => {
                             className={classes.editcoursebutton}
                             size="small"
                             component={Link}
-                            to={`/registration/form/course_details/${id}`}
+                            to={`/form/course_details/${id}`}
                         >
                             <EditIcon />
                         </IconButton>

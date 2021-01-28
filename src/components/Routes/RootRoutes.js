@@ -179,15 +179,15 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
         
             {/* Course Management Routes */}
-            <AuthenticatedRoute 
-            path="/coursemanagement"
-            exact
+            <AuthenticatedRoute
+                path="/courses"
+                exact
             >
                 <CourseManagementContainer />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute
-                path="/coursemanagement/class/:id?"
+                path="/courses/class/:id?"
             >
                 <CourseClass/>
             </AuthenticatedRoute>

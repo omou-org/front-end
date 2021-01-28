@@ -50,6 +50,16 @@ const NavigationContainer = () => {
         return active;
     }
 
+    const isCourseFormActive = (location, NavItem) => {
+        let active = false;
+        if (location) {
+            if (location.pathname.includes("course_details") && NavItem.name === "Courses") {
+                active = true;
+            }
+        }
+        return active;
+    }
+
     if ((!NavigationList || !ACCOUNT_TYPE) && token) {
         return <Loading/>;
     }
@@ -67,6 +77,7 @@ const NavigationContainer = () => {
                             return (
                                 match?.url ||
                                 isAccountFormActive(location, NavItem) ||
+                                isCourseFormActive(location, NavItem) ||
                                 (NavItem.name === 'Dashboard' &&
                                     location.pathname === '/'))
                         }
