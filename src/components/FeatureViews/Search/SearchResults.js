@@ -196,154 +196,131 @@ const SearchResults = () => {
     return <NoResultsPage />;
   }
 
-  return (
-    <Grid className="search-results" container>
-      <Grid item xs={12} align="left" className="main-search-view">
-        {filter && (
-          <Grid className="prevResults" item xs={12}>
-            <BackButton
-              btnText="To All Search Results"
-              style={{ marginBottom: "2vh" }}
-            />
-          </Grid>
-        )}
-        <Grid className="searchResults" item xs={12}>
-          <Typography align="left" className="search-title" variant="h3">
-            {numResults} Search Result{numResults !== 1 && "s"} for{" "}
-            {filter && capitalizeString(filter)} "{query}"
-          </Typography>
+    return (
+        <Grid className="search-results" container>
+            <Grid item xs={12} className="main-search-view">
+                    {filter &&
+                        <Grid className="prevResults" item xs={12}>
+                            <BackButton btnText="To All Search Results"
+                                style={{"marginBottom": "2vh"}} />
+                        </Grid>}
+                    <Grid className="searchResults" item xs={12}>
+                        <Typography align="left" className="search-title"
+                            variant="h3">
+                            {numResults} Search Result{numResults !== 1 && "s"} for {filter && capitalizeString(filter)} "
+                            {query}"
+                        </Typography>
+                    </Grid>
+                    {filter !== "course" && (
+                        <div className="account-results-wrapper">
+                            {filter === "account" && (
+                                <Grid item xs={12}>
+                                    <AccountFilters />
+                                </Grid>
+                            )}
+                            {numAccResults !== 0 && <hr />}
+                            <Grid item xs={12}>
+                                <Grid alignItems="center" container
+                                    direction="row" justify="space-between">
+                                    <Grid className="searchResults" item>
+                                        <Typography align="left"
+                                            className="resultsColor"
+                                            gutterBottom>
+                                            {numAccResults > 0 && "Accounts"}
+                                        </Typography>
+                                    </Grid>
+                                    {numAccResults > 0 &&
+                                        filter !== "account" && (
+                                        <Grid item>
+                                            <Link to={{
+                                                "pathname": "/search/",
+                                                "search": `?query=${query}&filter=account`,
+                                            }}>
+                                                <LabelBadge variant="outline-gray">See All Accounts</LabelBadge>
+                                            </Link>
+                                        </Grid>
+                                    )}
+                                </Grid>
+                                <Grid container direction="row" spacing={2}>
+                                    {renderAccounts}
+                                </Grid>
+                                {numAccResults > getPageSize(filter) && (
+                                    <div className="results-nav">
+                                        <IconButton
+                                            className="less"
+                                            disabled={accountsPage === 1}
+                                            onClick={changePage(setAccountsPage, -1)}>
+                                            <LessResultsIcon />
+                                        </IconButton>
+                                        {accountsPage}
+                                        <IconButton
+                                            className="more"
+                                            disabled={accountsPage * getPageSize(filter) >= numAccResults}
+                                            onClick={changePage(setAccountsPage, 1)}>
+                                            <MoreResultsIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
+                            </Grid>
+                        </div>
+                    )}
+                    {filter !== "account" && (
+                        <div className="course-results-wrapper">
+                            {filter === "course" && (
+                                <Grid item xs={12}>
+                                    <CourseFilters />
+                                </Grid>
+                            )}
+                            {numCourseResults !== 0 && <hr style={{marginBottom: "48px"}} />}
+                            <Grid item xs={12}>
+                                <Grid alignItems="center" container
+                                    direction="row" justify="space-between">
+                                    <Grid className="searchResults" item>
+                                        <Typography align="left"
+                                            className="resultsColor">
+                                            {numAccResults > 0 && "Courses"}
+                                            {/* {numCourseResults > 0 &&
+                                                filter !== "course" &&
+                                                "Courses"} */}
+                                        </Typography>
+                                    </Grid>
+                                    {numCourseResults > 0 &&
+                                        filter !== "course" && (
+                                        <Grid item>
+                                            <Link to={{
+                                                "pathname": "/search/",
+                                                "search": `?query=${query}&filter=course`,
+                                            }}>
+                                                <LabelBadge variant="outline-gray">See All Courses</LabelBadge>
+                                            </Link>
+                                        </Grid>
+                                    )}
+                                </Grid>
+                                <Grid container direction="row" spacing={1}>
+                                    {renderCourses}
+                                </Grid>
+                            </Grid>
+                            {numCourseResults > getPageSize(filter) && (
+                                <div className="results-nav">
+                                    <IconButton className="less"
+                                        disabled={coursePage === 1}
+                                        onClick={changePage(setCoursePage, -1)}>
+                                        <LessResultsIcon />
+                                    </IconButton>
+                                    {coursePage}
+                                    <IconButton className="more"
+                                        disabled={coursePage * getPageSize(filter) >= numCourseResults}
+                                        onClick={changePage(setCoursePage, 1)}>
+                                        <MoreResultsIcon />
+                                    </IconButton>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+            </Grid>
         </Grid>
-        {filter !== "course" && (
-          <div className="account-results-wrapper">
-            {filter === "account" && (
-              <Grid item xs={12}>
-                <AccountFilters />
-              </Grid>
-            )}
-            {numAccResults !== 0 && <hr />}
-            <Grid item xs={12}>
-              <Grid
-                alignItems="center"
-                container
-                direction="row"
-                justify="space-between"
-              >
-                <Grid className="searchResults" item>
-                  <Typography
-                    align="left"
-                    className="resultsColor"
-                    gutterBottom
-                  >
-                    {numAccResults > 0 && "Accounts"}
-                  </Typography>
-                </Grid>
-                {numAccResults > 0 && filter !== "account" && (
-                  <Grid item>
-                    <Link
-                      to={{
-                        pathname: "/search/",
-                        search: `?query=${query}&filter=account`,
-                      }}
-                    >
-                      <LabelBadge variant="outline-gray">
-                        See All Accounts
-                      </LabelBadge>
-                    </Link>
-                  </Grid>
-                )}
-              </Grid>
-              <Grid container direction="row" spacing={2}>
-                {renderAccounts}
-              </Grid>
-              {numAccResults > getPageSize(filter) && (
-                <div className="results-nav">
-                  <IconButton
-                    className="less"
-                    disabled={accountsPage === 1}
-                    onClick={changePage(setAccountsPage, -1)}
-                  >
-                    <LessResultsIcon />
-                  </IconButton>
-                  {accountsPage}
-                  <IconButton
-                    className="more"
-                    disabled={
-                      accountsPage * getPageSize(filter) >= numAccResults
-                    }
-                    onClick={changePage(setAccountsPage, 1)}
-                  >
-                    <MoreResultsIcon />
-                  </IconButton>
-                </div>
-              )}
-            </Grid>
-          </div>
-        )}
-        {filter !== "account" && (
-          <div className="course-results-wrapper">
-            {filter === "course" && (
-              <Grid item xs={12}>
-                <CourseFilters />
-              </Grid>
-            )}
-            {numCourseResults !== 0 && <hr />}
-            <Grid item xs={12}>
-              <Grid
-                alignItems="center"
-                container
-                direction="row"
-                justify="space-between"
-              >
-                <Grid className="searchResults" item>
-                  <Typography align="left" className="resultsColor">
-                    {numCourseResults > 0 && filter !== "course" && "Courses"}
-                  </Typography>
-                </Grid>
-                {numCourseResults > 0 && filter !== "course" && (
-                  <Grid item>
-                    <Link
-                      to={{
-                        pathname: "/search/",
-                        search: `?query=${query}&filter=course`,
-                      }}
-                    >
-                      <LabelBadge variant="outline-gray">
-                        See All Courses
-                      </LabelBadge>
-                    </Link>
-                  </Grid>
-                )}
-              </Grid>
-              <Grid container direction="row" spacing={1}>
-                {renderCourses}
-              </Grid>
-            </Grid>
-            {numCourseResults > getPageSize(filter) && (
-              <div className="results-nav">
-                <IconButton
-                  className="less"
-                  disabled={coursePage === 1}
-                  onClick={changePage(setCoursePage, -1)}
-                >
-                  <LessResultsIcon />
-                </IconButton>
-                {coursePage}
-                <IconButton
-                  className="more"
-                  disabled={
-                    coursePage * getPageSize(filter) >= numCourseResults
-                  }
-                  onClick={changePage(setCoursePage, 1)}
-                >
-                  <MoreResultsIcon />
-                </IconButton>
-              </div>
-            )}
-          </div>
-        )}
-      </Grid>
-    </Grid>
-  );
+    );
 };
 
 export default SearchResults;
