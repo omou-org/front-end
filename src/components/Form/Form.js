@@ -8,6 +8,8 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import Typography from "@material-ui/core/Typography";
 import FormReceipt from "./FormReceipt";
+import {Prompt} from 'react-router-dom';
+import BackButton from "../OmouComponents/BackButton";
 
 import {makeValidate} from "mui-rff";
 import * as Yup from "yup";
@@ -134,6 +136,22 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                     >
                         Next
                     </ResponsiveButton>}
+                    
+
+                    <BackButton 
+                        data-cy="cancelButton"
+                        variant="contained"
+                        icon="cancel"
+                        label="cancel"
+                    />
+
+
+
+                    <Prompt
+                        message="Are you sure you want to continue?"
+                    />
+
+
                     {index === sections.length - 1 &&
                     <ResponsiveButton 
                         data-cy="submitButton"
@@ -142,6 +160,8 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                     >
                         {submitting ? "Submitting" : "Submit"}
                     </ResponsiveButton>}
+
+                  
                 </div>
             </StepContent>
         </Step>
