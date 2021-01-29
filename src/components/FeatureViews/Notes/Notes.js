@@ -230,7 +230,8 @@ const MUTATION_KEY = {
 };
 
 // eslint-disable-next-line max-statements
-const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
+// Jan 29, 2021 - Plan to refactor Dashboard notes
+const Notes = ({ ownerType, ownerID, isDashboard }) => {
     const dispatch = useDispatch();
 
     const [alert, setAlert] = useState(false);
@@ -341,16 +342,6 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
         setDeleteID(null);
         setDeleteError(false);
     }, []);
-
-    const getNoteHeight = (type = '') => {
-        switch (type) {
-            case 'dashboard':
-            case 'profile': 
-                return '250px';
-            default:
-                return '200px';
-        }
-    }
 
     const notificationColor = useMemo(() => ({
         "color": important ? "red" : "grey",
@@ -589,7 +580,7 @@ const Notes = ({ ownerType, ownerID, isDashboard, isProfile = false }) => {
                                 item
                                 xs={12}>
                                 <AddItemButton
-                                    height={getNoteHeight('dashboard')}
+                                    height={'50px'}
                                     width='inherit'
                                     style={{padding: 0}}
                                     onClick={openNewNote}
