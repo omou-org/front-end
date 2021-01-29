@@ -1314,67 +1314,23 @@ export default {
                     START_DATE_FIELD,
                     END_DATE_FIELD,
                     {
-                        name: '',
-                        label: '',
+                        name: 'CourseAvailability1',
+                        label: 'CourseAvailability1',
                         component: <CourseAvailabilityField count={1}/>,
                         validator: Yup.mixed(),
                     },
-                    // {
-                    //     name: 'weekday1',
-                    //     label: 'Day of Week',
-                    //     required: 'true',
-                    //     ...selectField(DAY_OF_WEEK_OPTIONS),
-                    // },
-                    // {
-                    //     name: 'startTime1',
-                    //     label: 'Start Time',
-                    //     required: 'true',
-                    //     component: <Fields.TimePicker format="hh:mm a" />,
-                    //     validator: Yup.date(),
-                    // },
-                    // {
-                    //     name: 'endTime1',
-                    //     label: 'End Time',
-                    //     required: 'true',
-                    //     component: (
-                    //         <Fields.TimePicker width={50} format="hh:mm a" />
-                    //     ),
-                    //     validator: Yup.date(),
-                    // },
-                    // {
-                    //     name: 'weekday2',
-                    //     label: 'Day of Week',
-                    //     ...selectField(DAY_OF_WEEK_OPTIONS),
-                    // },
-                    // {
-                    //     name: 'startTime2',
-                    //     label: 'Start Time',
-                    //     component: <Fields.TimePicker format="hh:mm a" />,
-                    //     validator: Yup.date(),
-                    // },
-                    // {
-                    //     name: 'endTime2',
-                    //     label: 'End Time',
-                    //     component: <Fields.TimePicker format="hh:mm a" />,
-                    //     validator: Yup.date(),
-                    // },
-                    // {
-                    //     name: 'weekday3',
-                    //     label: 'Day of Week',
-                    //     ...selectField(DAY_OF_WEEK_OPTIONS),
-                    // },
-                    // {
-                    //     name: 'startTime3',
-                    //     label: 'Start Time',
-                    //     component: <Fields.TimePicker format="hh:mm a" />,
-                    //     validator: Yup.date(),
-                    // },
-                    // {
-                    //     name: 'endTime3',
-                    //     label: 'End Time',
-                    //     component: <Fields.TimePicker format="hh:mm a" />,
-                    //     validator: Yup.date(),
-                    // },
+                    {
+                        name: 'CourseAvailability2',
+                        label: 'CourseAvailability2',
+                        component: <CourseAvailabilityField count={2}/>,
+                        validator: Yup.mixed(),
+                    },
+                    {
+                        name: 'CourseAvailability3',
+                        label: 'CourseAvailability3',
+                        component: <CourseAvailabilityField count={3}/>,
+                        validator: Yup.mixed(),
+                    },
                 ],
                 next: 'tuition',
             },
@@ -1446,8 +1402,27 @@ export default {
                 });
                 console.log(course)
                 const {
-                    instructor: { user },
+                    instructor: {user},
                 } = course;
+
+                const isAtLeastTwoCourseAvailabilities = course.activeAvailabilityList.length >= 2;
+                const isAtLeastThreeCourseAvailabilities = course.activeAvailabilityList.length >= 3;
+
+                const courseAvailabilities = {
+                    "dayOfWeek-1": course.activeAvailabilityList[0].dayOfWeek,
+                    "startTime-1": moment(course.activeAvailabilityList[0].startTime, "HH:mm"),
+                    "endTime-1": moment(course.activeAvailabilityList[0].endTime, "HH:mm"),
+                    ...isAtLeastTwoCourseAvailabilities && {
+                        "dayOfWeek-2": course.activeAvailabilityList[1].dayOfWeek,
+                        "startTime-2": moment(course.activeAvailabilityList[1].startTime, "HH:mm"),
+                        "endTime-2": moment(course.activeAvailabilityList[1].endTime, "HH:mm"),
+                    },
+                    ...isAtLeastThreeCourseAvailabilities && {
+                        "dayOfWeek-3": course.activeAvailabilityList[2].dayOfWeek,
+                        "startTime-3": moment(course.activeAvailabilityList[2].startTime, "HH:mm"),
+                        "endTime-3": moment(course.activeAvailabilityList[2].endTime, "HH:mm"),
+                    },
+                }
 
                 return {
                     courseDescription: {
@@ -1468,9 +1443,7 @@ export default {
                     dayAndTime: {
                         startDate: moment(course.startDate, 'YYYY-MM-DD'),
                         endDate: moment(course.endDate, 'YYYY-MM-DD'),
-                        "dayOfWeek-1": course.activeAvailabilityList[0].dayOfWeek,
-                        "startTime-1": moment(course.activeAvailabilityList[0].startTime, "HH:mm"),
-                        "endTime-1": moment(course.activeAvailabilityList[0].endTime, "HH:mm"),
+                        ...courseAvailabilities
                     },
                     tuition: {
                         academicLevel: course.academicLevel,
@@ -1562,15 +1535,19 @@ export default {
             const {courseDescription, dayAndTime, tuition} = formData;
             const formatTime = (time) => time && time.format('HH:mm')
             const availabilities = (() => {
-                const availabilityList = [
-                    {
-                        dayOfWeek: formData["dayOfWeek-1"] || dayAndTime["dayOfWeek-1"],
-                        startTime: formatTime(formData["startTime-1"]) || formatTime(dayAndTime["startTime-1"]),
-                        endTime: formatTime(formData["endTime-1"]) || formatTime(dayAndTime["endTime-1"]),
-                    },
+                const createCourseAvailability = (count) => ({
+                    dayOfWeek: formData[`dayOfWeek-${count}`] || dayAndTime[`dayOfWeek-${count}`],
+                    startTime: formatTime(formData[`startTime-${count}`]) || formatTime(dayAndTime[`startTime-${count}`]),
+                    endTime: formatTime(formData[`endTime-${count}`]) || formatTime(dayAndTime[`endTime-${count}`]),
+                });
+                const insertIf = (condition, ...elements) => condition ? elements : [];
+                return [
+                    createCourseAvailability(1),
+                    ...insertIf(dayAndTime["dayOfWeek-2"] || formData[`dayOfWeek-2`],
+                        createCourseAvailability(2)),
+                    ...insertIf(dayAndTime["dayOfWeek-3"] || formData[`dayOfWeek-3`],
+                        createCourseAvailability(3)),
                 ];
-
-                return availabilityList;
             })();
             const modifiedData = {
                 courseDescription: {

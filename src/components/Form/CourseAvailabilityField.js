@@ -15,7 +15,7 @@ const CourseAvailabilityField = ({count}) => {
 					name={`dayOfWeek-${count}`}
 					label="Day of Week"
 					required={count === 1}
-					value={values["dayOfWeek-1"] || values.dayAndTime[`dayOfWeek-${count}`]}
+					value={values[`dayOfWeek-${count}`] || values.dayAndTime[`dayOfWeek-${count}`]}
 				>
 					<MenuItem value="MONDAY">Monday</MenuItem>
 					<MenuItem value="TUESDAY">Tuesday</MenuItem>
@@ -31,7 +31,7 @@ const CourseAvailabilityField = ({count}) => {
 					name={`startTime-${count}`}
 					label="Start Time"
 					required={count === 1}
-					value={values["startTime-1"] || values.dayAndTime[`startTime-${count}`]}
+					value={values[`startTime-${count}`] || values.dayAndTime[`startTime-${count}`]}
 				/>
 			</Grid>
 			<Grid item xs={4}>
@@ -39,7 +39,7 @@ const CourseAvailabilityField = ({count}) => {
 					name={`endTime-${count}`}
 					label="End Time"
 					required={count === 1}
-					value={values["endTime-1"] || values.dayAndTime[`endTime-${count}`]}
+					value={values[`endTime-${count}`] || values.dayAndTime[`endTime-${count}`]}
 				/>
 			</Grid>
 		</Grid>

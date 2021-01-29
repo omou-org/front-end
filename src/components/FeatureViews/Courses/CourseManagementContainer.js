@@ -18,6 +18,7 @@ import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
 import {fullName, gradeOptions} from 'utils';
 import moment from 'moment';
 import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
+import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -159,15 +160,6 @@ const ClassListItem = ({
     const classes = useStyles();
     let history = useHistory();
     const concatFullName = fullName(instructor.user);
-    const abbreviatedDay = moment(startDate).format('dddd');
-    const startingTime = moment(
-        activeAvailabilityList[0].startTime,
-        'HH:mm'
-    ).format('h:mm');
-    const endingTime = moment(
-        activeAvailabilityList[0].endTime,
-        'HH:mm'
-    ).format('h:mma');
     const startingDate = moment(startDate).format('MMM D YYYY');
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
@@ -252,10 +244,12 @@ const ClassListItem = ({
                         <Typography
                             variant="body1"
                             align="left"
-                            style={{ marginLeft: '1.2em', paddingTop: '3px' }}
+                            style={{marginLeft: '1.2em', paddingTop: '3px'}}
                             className={classes.displayCardMargins}
                         >
-                            {`${abbreviatedDay} ${startingTime} - ${endingTime} `}
+                            <CourseAvailabilites
+                                availabilityList={activeAvailabilityList}
+                            />
                         </Typography>
                     </Grid>
                 </Grid>

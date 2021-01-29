@@ -26,6 +26,7 @@ import AccessControlComponent from '../../OmouComponents/AccessControlComponent'
 import AttendanceContainer from './AttendanceContainer';
 import {StudentCourseLabel} from './StudentBadge';
 import {GET_STUDENTS} from './CourseManagementContainer';
+import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -240,15 +241,6 @@ const CourseClass = () => {
     } = data.course;
     const { name: courseCategory } = data.course.courseCategory;
 
-    const abbreviatedDay = moment(startDate).format('ddd');
-    const startingTime = moment(
-        activeAvailabilityList[0].startTime,
-        'HH:mm'
-    ).format('h:mm A');
-    const endingTime = moment(
-        activeAvailabilityList[0].endTime,
-        'HH:mm'
-    ).format('h:mm A');
     const startingDate = moment(startDate).format('L');
     const endingDate = moment(endDate).format('L');
 
@@ -359,14 +351,16 @@ const CourseClass = () => {
                         align="left"
                         className={classes.alignTitleLeft}
                     >
-                        Time
+                        Time(s)
                     </Typography>
                     <Typography
                         variant="body1"
                         align="left"
                         className={classes.dataFontDate}
                     >
-                        {`${abbreviatedDay} ${startingTime} - ${endingTime}`}
+                        <CourseAvailabilites
+                            availabilityList={activeAvailabilityList}
+                        />
                     </Typography>
                 </Grid>
             </Grid>
