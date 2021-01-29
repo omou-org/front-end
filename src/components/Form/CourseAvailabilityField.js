@@ -9,7 +9,7 @@ const CourseAvailabilityField = ({count}) => {
 	const {values} = useFormState();
 
 	return (
-		<Grid container item spacing={2}>
+		<Grid container item spacing={2} style={{marginTop: "16px"}}>
 			<Grid item xs={4}>
 				<Fields.Select
 					name={`dayOfWeek-${count}`}
