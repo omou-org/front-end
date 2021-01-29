@@ -13,6 +13,7 @@ import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
 import CourseAvailabilityField from "./CourseAvailabilityField";
+import {GET_CLASS} from "../FeatureViews/Courses/CourseClass";
 
 export const GET_ADMIN = gql`
             query GetAdmin($userID: ID!) {
@@ -1313,8 +1314,8 @@ export default {
                     START_DATE_FIELD,
                     END_DATE_FIELD,
                     {
-                        name: 'courseAvailability',
-                        label: 'Course Availability',
+                        name: '',
+                        label: '',
                         component: <CourseAvailabilityField count={1}/>,
                         validator: Yup.mixed(),
                     },
@@ -1530,18 +1531,27 @@ export default {
                     ) {
                         created
                         course {
-                            academicLevelPretty
                             id
-                            title
-                            description
-                            courseType
                             academicLevel
+                            title
                             startDate
                             endDate
+                            description
+                            courseCategory {
+                                name
+                                id
+                            }
+                            activeAvailabilityList {
+                                dayOfWeek
+                                endTime
+                                startTime
+                                id
+                            }
                             instructor {
                                 user {
                                     firstName
                                     lastName
+                                    id
                                 }
                             }
                         }
@@ -1549,13 +1559,14 @@ export default {
                 }
             `;
 
-            const { courseDescription, dayAndTime, tuition } = formData;
+            const {courseDescription, dayAndTime, tuition} = formData;
+            const formatTime = (time) => time && time.format('HH:mm')
             const availabilities = (() => {
                 const availabilityList = [
                     {
-                        dayOfWeek: dayAndTime["dayOfWeek-1"],
-                        startTime: dayAndTime["startTime-1"].format('HH:mm'),
-                        endTime: dayAndTime["endTime-1"].format('HH:mm'),
+                        dayOfWeek: formData["dayOfWeek-1"] || dayAndTime["dayOfWeek-1"],
+                        startTime: formatTime(formData["startTime-1"]) || formatTime(dayAndTime["startTime-1"]),
+                        endTime: formatTime(formData["endTime-1"]) || formatTime(dayAndTime["endTime-1"]),
                     },
                 ];
 
@@ -1565,16 +1576,16 @@ export default {
                 courseDescription: {
                     ...courseDescription,
                     instructor: courseDescription.instructor.value,
-                    courseCategory: courseDescription.courseCategory.value,
                 },
                 dayAndTime: {
-                    startDate: dayAndTime.startDate,
-                    endDate: dayAndTime.endDate,
+                    startDate: dayAndTime.startDate.format("YYYY-MM-DDTHH:mm:ss"),
+                    endDate: dayAndTime.endDate.format("YYYY-MM-DDTHH:mm:ss"),
                     availabilities,
                 },
                 tuition: {
                     ...tuition,
                     courseCategory: courseDescription.courseCategory.value,
+                    academicLevel: courseDescription.academicLevel,
                 },
             };
             const courseFormFields = Object.values(modifiedData).reduce(
@@ -1592,7 +1603,27 @@ export default {
                 await client.mutate({
                     mutation: CREATE_COURSE,
                     variables: id ? editedCourseFormFields : courseFormFields,
-                    // update: ()
+                    update: (cache, {data}) => {
+                        const newCourse = data.createCourse.course;
+                        const cachedCourse = cache.readQuery({
+                            query: GET_CLASS,
+                            variables: {
+                                "id": id,
+                            }
+                        });
+                        cache.writeQuery({
+                            data: {
+                                "course": {
+                                    ...cachedCourse.course,
+                                    ...newCourse,
+                                },
+                            },
+                            query: GET_CLASS,
+                            variables: {
+                                id: id,
+                            }
+                        });
+                    }
                 });
             } catch (error) {
                 return {

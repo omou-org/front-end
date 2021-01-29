@@ -77,8 +77,8 @@ export const GET_ANNOUNCEMENTS = gql`
 export const GET_CLASS = gql`
     query getClass($id: ID!) {
         course(courseId: $id) {
+            id
             academicLevel
-
             title
             startDate
             endDate
@@ -98,14 +98,17 @@ export const GET_CLASS = gql`
                 dayOfWeek
                 endTime
                 startTime
+                id
             }
             instructor {
                 user {
                     firstName
                     lastName
+                    id
                 }
             }
             enrollmentSet {
+                id
                 student {
                     user {
                         firstName
@@ -134,14 +137,15 @@ export const GET_CLASS = gql`
                 startDatetime
                 id
             }
-
             availabilityList {
                 startTime
                 endTime
                 dayOfWeek
+                id
             }
         }
         enrollments(courseId: $id) {
+            id
             student {
                 user {
                     id

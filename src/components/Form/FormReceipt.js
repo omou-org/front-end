@@ -34,6 +34,12 @@ const toDisplayValue = (value) => {
         return value.label;
     }
 
+    if (typeof value === "object") {
+        return Object.entries(value)
+            .reduce((accumulator, [keyTitle, valueTitle]) =>
+                `${accumulator}\n${keyTitle}: ${valueTitle}`, "")
+    }
+
     return value.toString();
 };
 
