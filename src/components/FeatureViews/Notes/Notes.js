@@ -23,7 +23,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-
+import ReadMoreText from "components/OmouComponents/ReadMoreText";
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton'
 
 import "./Notes.scss";
@@ -605,19 +605,21 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             {notes && isDashboard && Object.values(notes).map((note) => (
                 <Grid item key={note.id || note.body} xs={12}>
                     <Paper className={`note ${classes.notePaper}`} elevation={2} >
+                        <Avatar
+                            variant="square"
+                            className={`noteNotification ${isDashboard ? classes.notesNotification : null}`}
+                            onClick={toggleNoteField(note.id, "important")}
+                            style={note.important ? { "background-color": "red" } : {}}>
+                            !
+                        </Avatar>
                         <Typography align="left"
                             className={`noteHeader ${classes.notesTitle}`}>
                             {note.title}
-                            <Avatar
-                                variant="square"
-                                className={`noteNotification ${isDashboard ? classes.notesNotification : null}`}
-                                onClick={toggleNoteField(note.id, "important")}
-                                style={note.important ? { "background-color": "red" } : {}}>
-                                !
-                            </Avatar>
                         </Typography>
                         <Typography align="left" className="body">
-                            {note.body}
+                            <ReadMoreText textLimit={30} handleDisplay={openExistingNote(note)}>
+                                {note.body}
+                            </ReadMoreText>
                         </Typography>
                         <Grid item xs={12}>
                             <Typography className={`date ${classes.dateDisplay}`}
