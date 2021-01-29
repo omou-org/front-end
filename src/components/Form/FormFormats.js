@@ -12,6 +12,7 @@ import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
+import CourseAvailabilityField from "./CourseAvailabilityField";
 
 export const GET_ADMIN = gql`
             query GetAdmin($userID: ID!) {
@@ -185,7 +186,7 @@ const DAY_OF_WEEK_OPTIONS = [
 
 export const ACADEMIC_LVL_FIELD = {
         name: 'academicLevel',
-        label: 'Grade',
+        label: 'Academic Level',
         ...selectField([
             {
                 label: 'Elementary School',
@@ -1312,61 +1313,67 @@ export default {
                     START_DATE_FIELD,
                     END_DATE_FIELD,
                     {
-                        name: 'weekday1',
-                        label: 'Day of Week',
-                        required: 'true',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
+                        name: 'courseAvailability',
+                        label: 'Course Availability',
+                        component: <CourseAvailabilityField count={1}/>,
+                        validator: Yup.mixed(),
                     },
-                    {
-                        name: 'startTime1',
-                        label: 'Start Time',
-                        required: 'true',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime1',
-                        label: 'End Time',
-                        required: 'true',
-                        component: (
-                            <Fields.TimePicker width={50} format="hh:mm a" />
-                        ),
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'weekday2',
-                        label: 'Day of Week',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime2',
-                        label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime2',
-                        label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'weekday3',
-                        label: 'Day of Week',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime3',
-                        label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime3',
-                        label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
+                    // {
+                    //     name: 'weekday1',
+                    //     label: 'Day of Week',
+                    //     required: 'true',
+                    //     ...selectField(DAY_OF_WEEK_OPTIONS),
+                    // },
+                    // {
+                    //     name: 'startTime1',
+                    //     label: 'Start Time',
+                    //     required: 'true',
+                    //     component: <Fields.TimePicker format="hh:mm a" />,
+                    //     validator: Yup.date(),
+                    // },
+                    // {
+                    //     name: 'endTime1',
+                    //     label: 'End Time',
+                    //     required: 'true',
+                    //     component: (
+                    //         <Fields.TimePicker width={50} format="hh:mm a" />
+                    //     ),
+                    //     validator: Yup.date(),
+                    // },
+                    // {
+                    //     name: 'weekday2',
+                    //     label: 'Day of Week',
+                    //     ...selectField(DAY_OF_WEEK_OPTIONS),
+                    // },
+                    // {
+                    //     name: 'startTime2',
+                    //     label: 'Start Time',
+                    //     component: <Fields.TimePicker format="hh:mm a" />,
+                    //     validator: Yup.date(),
+                    // },
+                    // {
+                    //     name: 'endTime2',
+                    //     label: 'End Time',
+                    //     component: <Fields.TimePicker format="hh:mm a" />,
+                    //     validator: Yup.date(),
+                    // },
+                    // {
+                    //     name: 'weekday3',
+                    //     label: 'Day of Week',
+                    //     ...selectField(DAY_OF_WEEK_OPTIONS),
+                    // },
+                    // {
+                    //     name: 'startTime3',
+                    //     label: 'Start Time',
+                    //     component: <Fields.TimePicker format="hh:mm a" />,
+                    //     validator: Yup.date(),
+                    // },
+                    // {
+                    //     name: 'endTime3',
+                    //     label: 'End Time',
+                    //     component: <Fields.TimePicker format="hh:mm a" />,
+                    //     validator: Yup.date(),
+                    // },
                 ],
                 next: 'tuition',
             },
@@ -1412,10 +1419,17 @@ export default {
                             name
                         }
                         academicLevel
+                        academicLevelPretty
                         endDate
                         totalTuition
                         hourlyTuition
                         isConfirmed
+                        activeAvailabilityList {
+                          dayOfWeek
+                          endTime
+                          id
+                          startTime
+                        }
                     }
                 }
             `;
@@ -1429,10 +1443,11 @@ export default {
                         id,
                     },
                 });
-
+                console.log(course)
                 const {
                     instructor: { user },
                 } = course;
+
                 return {
                     courseDescription: {
                         title: course.title,
@@ -1443,8 +1458,18 @@ export default {
                             label: `${user.firstName} ${user.lastName}`,
                             value: user.id,
                         },
+                        academicLevel: course.academicLevel,
+                        courseCategory: {
+                            label: course.courseCategory.name,
+                            value: course.courseCategory.id,
+                        }
+                    },
+                    dayAndTime: {
                         startDate: moment(course.startDate, 'YYYY-MM-DD'),
-                        startTime: moment(course.startTime, 'HH:mm:ss'),
+                        endDate: moment(course.endDate, 'YYYY-MM-DD'),
+                        "dayOfWeek-1": course.activeAvailabilityList[0].dayOfWeek,
+                        "startTime-1": moment(course.activeAvailabilityList[0].startTime, "HH:mm"),
+                        "endTime-1": moment(course.activeAvailabilityList[0].endTime, "HH:mm"),
                     },
                     tuition: {
                         academicLevel: course.academicLevel,
@@ -1528,41 +1553,12 @@ export default {
             const availabilities = (() => {
                 const availabilityList = [
                     {
-                        dayOfWeek: dayAndTime.weekday1,
-                        startTime: dayAndTime.startTime1.format('HH:mm'),
-                        endTime: dayAndTime.endTime1.format('HH:mm'),
+                        dayOfWeek: dayAndTime["dayOfWeek-1"],
+                        startTime: dayAndTime["startTime-1"].format('HH:mm'),
+                        endTime: dayAndTime["endTime-1"].format('HH:mm'),
                     },
                 ];
-                if (
-                    dayAndTime.weekday2 &&
-                    dayAndTime.startTime2 &&
-                    dayAndTime.EndTime2
-                ) {
-                    availabilities.push({
-                        dayOfWeek: dayAndTime.weekday2,
-                        startTime: dayAndTime.startTime2
-                            ? dayAndTime.startTime2.format('HH:mm')
-                            : null,
-                        endTime: dayAndTime.endTime2
-                            ? dayAndTime.endTime2.format('HH:mm')
-                            : null,
-                    });
-                }
-                if (
-                    dayAndTime.weekday3 &&
-                    dayAndTime.startTime3 &&
-                    dayAndTime.EndTime3
-                ) {
-                    availabilities.push({
-                        dayOfWeek: dayAndTime.weekday3,
-                        startTime: dayAndTime.startTime3
-                            ? dayAndTime.startTime3.format('HH:mm')
-                            : null,
-                        endTime: dayAndTime.endTime3
-                            ? dayAndTime.endTime3.format('HH:mm')
-                            : null,
-                    });
-                }
+
                 return availabilityList;
             })();
             const modifiedData = {
@@ -1596,6 +1592,7 @@ export default {
                 await client.mutate({
                     mutation: CREATE_COURSE,
                     variables: id ? editedCourseFormFields : courseFormFields,
+                    // update: ()
                 });
             } catch (error) {
                 return {
