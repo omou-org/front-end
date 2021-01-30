@@ -88,8 +88,14 @@ const RegistrationActions = () => {
 		history.push("/registration/cart");
 	}
 
-	const displayRegistrationButton = ((currentParent || parentIsLoggedIn) &&
-		!location.pathname.includes("registration"));
+	const isCompletingRegistrationForm = location.pathname.includes("form");
+	const isInRegistrationCart = location.pathname.includes("cart");
+
+	const displayRegistrationButton = (
+		(currentParent || parentIsLoggedIn) &&
+		!isCompletingRegistrationForm &&
+		!isInRegistrationCart
+	);
 
 	return (
 		<>
@@ -119,9 +125,11 @@ const RegistrationActions = () => {
 				<Grid item xs={2}>
 					{registeringParent ? (
 						!data && <Tooltip title="Registering Parent">
-							<ResponsiveButton 
+							<ResponsiveButton
 								variant='contained'
-								onClick={openDialog}>
+								onClick={openDialog}
+								disabled={isCompletingRegistrationForm}
+							>
 								{parentName}
 							</ResponsiveButton>
 						</Tooltip>
