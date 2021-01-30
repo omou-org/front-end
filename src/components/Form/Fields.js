@@ -15,8 +15,9 @@ import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import MomentUtils from "@date-io/moment";
 import MaskedInput from "react-text-mask";
+import {Schedule} from "@material-ui/icons";
 
-const getLabel = ({label}) => label;
+const getLabel = ({label}) => label || "";
 
 const useSelectStyles = makeStyles({
     "select": {
@@ -38,7 +39,11 @@ export const KeyboardTimePicker = (props) =>
 export const DatePicker = (props) =>
     <Fields.KeyboardDatePicker dateFunsUtils={MomentUtils} {...props} />;
 export const TimePicker = (props) =>
-    <Fields.KeyboardTimePicker {...props} dateFunsUtils={MomentUtils} />;
+    <Fields.KeyboardTimePicker
+        {...props}
+        dateFunsUtils={MomentUtils}
+        keyboardIcon={<Schedule/>}
+    />;
 
 const MaskedPhoneInput = (props) => 
     <MaskedInput mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/,]}
@@ -82,16 +87,17 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     );
 
     const options = data ? optionsMap(data) : [];
-    
+
     return (
-        <Fields.Autocomplete getOptionLabel={getLabel}
+        <Fields.Autocomplete
+            getOptionLabel={getLabel}
             loading={loading}
             name={name}
             onInputChange={handleQueryChange}
             options={options}
-            renderOption={renderOption} 
-            {...props} 
-            />
+            renderOption={renderOption}
+            {...props}
+        />
     );
 };
 

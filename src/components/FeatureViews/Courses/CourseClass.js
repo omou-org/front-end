@@ -26,13 +26,13 @@ import AttendanceContainer from './AttendanceContainer';
 import {StudentCourseLabel} from './StudentBadge';
 import {GET_STUDENTS} from './CourseManagementContainer';
 import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
+import Notes from "../Notes/Notes";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
     editcoursebutton: {
-        border: '1px solid #999999',
         height: '2.25em',
         borderRadius: '0',
         width: '2.25em',
@@ -166,9 +166,10 @@ const CourseClass = () => {
     const adminTabs = [
         {label: 'About Course'},
         {label: 'Announcements'},
-        { label: 'Student Enrolled' },
-        { label: 'Sessions' },
-        { label: 'Attendance' },
+        {label: 'Student Enrolled'},
+        {label: 'Sessions'},
+        {label: 'Attendance'},
+        {label: 'Notes'},
     ];
 
     const parentTabWithStudentEnrolledTabs = [
@@ -320,7 +321,7 @@ const CourseClass = () => {
                             className={classes.editcoursebutton}
                             size="small"
                             component={Link}
-                            to={`/form/course_details/${id}`}
+                            to={`/form/course_details/${id}/edit`}
                         >
                             <EditIcon />
                         </IconButton>
@@ -477,13 +478,15 @@ const CourseClass = () => {
                                     sessionList={sessionSet}
                                 />
                             </TabPanel>
-
                             <TabPanel
                                 index={4}
                                 value={index}
-                                style={{ width: '100%' }}
+                                style={{width: '100%'}}
                             >
-                                <AttendanceContainer />
+                                <AttendanceContainer/>
+                            </TabPanel>
+                            <TabPanel index={5} value={index} style={{width: "100%", marginTop: "48px"}}>
+                                <Notes ownerID={id} ownerType="course"/>
                             </TabPanel>
                         </Grid>
                     </ThemeProvider>

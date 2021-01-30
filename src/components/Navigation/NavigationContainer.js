@@ -42,7 +42,10 @@ const NavigationContainer = () => {
         let active = false;
         if (location) {
             ["student", "admin", "instructor", "parent"].forEach(accountType => {
-                if (location.pathname.includes(accountType) && NavItem.name === "Accounts") {
+                if (location.pathname.includes(accountType) &&
+                    !location.pathname.includes("adminportal") &&
+                    NavItem.name === "Accounts"
+                ) {
                     active = true;
                 }
             });

@@ -351,29 +351,9 @@ const CourseFilterDropdown = ({
     );
 };
 
-const CourseManagementContainer = () => {
-    const classes = useStyles();
-    const [sortByDate, setSortByDate] = useState('');
-    const [gradeFilterValue, setGradeFilterValue] = useState('');
-    const [subectFilterValue, setSubjectFilterValue] = useState('');
-    const [instructorsFilterValue, setInstructorFilterValue] = useState('');
-    const [studentFilterValue, setStudentFilterValue] = useState('');
-    const accountInfo = useSelector(({ auth }) => auth);
-
-    const handleChange = (event) => setSortByDate(event.target.value);
-
-    const checkAccountForQuery =
-        accountInfo.accountType === 'ADMIN' ||
-        accountInfo.accountType === 'INSTRUCTOR'
-            ? 'instructorId'
-            : 'parentId';
-
-    const accountId =
-        accountInfo.accountType === 'ADMIN' ? '' : accountInfo.user.id;
-
-    const GET_COURSES = gql`
-    query getCourses($accountId:ID!) {
-      courses(${checkAccountForQuery}: $accountId) {
+export const getCourseManagementCourses = (accountType) => (gql`
+    query getCourses($accountId:ID) {
+      courses${accountType ? `(${accountType}: $accountId)` : ""} {
         endDate
         title
         academicLevel
@@ -398,7 +378,29 @@ const CourseManagementContainer = () => {
         }
       }
     }
-  `;
+  `);
+
+const CourseManagementContainer = () => {
+    const classes = useStyles();
+    const [sortByDate, setSortByDate] = useState('');
+    const [gradeFilterValue, setGradeFilterValue] = useState('');
+    const [subectFilterValue, setSubjectFilterValue] = useState('');
+    const [instructorsFilterValue, setInstructorFilterValue] = useState('');
+    const [studentFilterValue, setStudentFilterValue] = useState('');
+    const accountInfo = useSelector(({auth}) => auth);
+
+    const handleChange = (event) => setSortByDate(event.target.value);
+
+    const setAccountForQuery =
+        accountInfo.accountType === 'ADMIN' ||
+        accountInfo.accountType === 'INSTRUCTOR'
+            ? 'instructorId'
+            : 'parentId';
+
+    const accountId =
+        accountInfo.accountType === 'ADMIN' ? '' : accountInfo.user.id;
+
+    const GET_COURSES = getCourseManagementCourses(setAccountForQuery);
 
     const {
         data: courseData,

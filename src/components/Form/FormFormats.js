@@ -14,6 +14,7 @@ import TutoringPriceQuote from "./TutoringPriceQuote";
 import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
 import CourseAvailabilityField from "./CourseAvailabilityField";
 import {GET_CLASS} from "../FeatureViews/Courses/CourseClass";
+import {getCourseManagementCourses} from "../FeatureViews/Courses/CourseManagementContainer";
 
 export const GET_ADMIN = gql`
             query GetAdmin($userID: ID!) {
@@ -1338,18 +1339,18 @@ export default {
                 name: 'tuition',
                 label: 'Tuition',
                 fields: [
-                    {
-                        name: 'room',
-                        label: 'Room',
-                        required: true,
-                        component: <Fields.TextField />,
-                        validator: Yup.string(),
-                    },
+                    // {
+                    //     name: 'room',
+                    //     label: 'Room',
+                    //     required: true,
+                    //     component: <Fields.TextField />,
+                    //     validator: Yup.string(),
+                    // },
                     {
                         name: 'totalTuition',
                         label: 'Total Tuition',
                         required: true,
-                        component: <Fields.TextField />,
+                        component: <Fields.TextField/>,
                         validator: Yup.number().min(0),
                     },
                 ],
@@ -1400,7 +1401,7 @@ export default {
                         id,
                     },
                 });
-                console.log(course)
+
                 const {
                     instructor: {user},
                 } = course;
@@ -1510,6 +1511,7 @@ export default {
                             startDate
                             endDate
                             description
+                            maxCapacity
                             courseCategory {
                                 name
                                 id
@@ -1582,24 +1584,42 @@ export default {
                     variables: id ? editedCourseFormFields : courseFormFields,
                     update: (cache, {data}) => {
                         const newCourse = data.createCourse.course;
-                        const cachedCourse = cache.readQuery({
-                            query: GET_CLASS,
-                            variables: {
-                                "id": id,
-                            }
-                        });
-                        cache.writeQuery({
-                            data: {
-                                "course": {
-                                    ...cachedCourse.course,
-                                    ...newCourse,
+                        const created = data.createCourse.created;
+
+                        if (created) {
+                            const GET_COURSES = getCourseManagementCourses();
+
+                            const cachedCourses = cache.readQuery({query: GET_COURSES});
+
+                            cache.writeQuery({
+                                data: {
+                                    courses: [
+                                        ...cachedCourses,
+                                        newCourse,
+                                    ]
                                 },
-                            },
-                            query: GET_CLASS,
-                            variables: {
-                                id: id,
-                            }
-                        });
+                                query: GET_COURSES,
+                            });
+                        } else {
+                            const cachedCourse = cache.readQuery({
+                                query: GET_CLASS,
+                                variables: {
+                                    "id": id,
+                                }
+                            });
+                            cache.writeQuery({
+                                data: {
+                                    "course": {
+                                        ...cachedCourse.course,
+                                        ...newCourse,
+                                    },
+                                },
+                                query: GET_CLASS,
+                                variables: {
+                                    id: id,
+                                }
+                            });
+                        }
                     }
                 });
             } catch (error) {

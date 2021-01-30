@@ -32,6 +32,7 @@ const CourseAvailabilityField = ({count}) => {
 					label="Start Time"
 					required={count === 1}
 					value={values[`startTime-${count}`] || values.dayAndTime[`startTime-${count}`]}
+					emptyLabel="Start Time"
 				/>
 			</Grid>
 			<Grid item xs={4}>
@@ -40,6 +41,7 @@ const CourseAvailabilityField = ({count}) => {
 					label="End Time"
 					required={count === 1}
 					value={values[`endTime-${count}`] || values.dayAndTime[`endTime-${count}`]}
+					emptyLabel="End Time"
 				/>
 			</Grid>
 		</Grid>

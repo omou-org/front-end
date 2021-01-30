@@ -173,9 +173,9 @@ export const RootRoutes = () => {
                                 users={[USER_TYPES.admin]}>
                 <AdminPortal/>
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact path="/form/:type/:id?"
-                users={[USER_TYPES.admin, USER_TYPES.parent]}>
-                <FormPage />
+            <AuthenticatedRoute exact path="/form/:type/:id?/:edit?"
+                                users={[USER_TYPES.admin, USER_TYPES.parent]}>
+                <FormPage/>
             </AuthenticatedRoute>
         
             {/* Course Management Routes */}

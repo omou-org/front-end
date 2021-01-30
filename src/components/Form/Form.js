@@ -135,10 +135,10 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         Next
                     </ResponsiveButton>}
                     {index === sections.length - 1 &&
-                    <ResponsiveButton 
+                    <ResponsiveButton
                         data-cy="submitButton"
                         disabled={Boolean(errors[name]) || submitting}
-                        type="submit" variant="outlined"
+                        type="submit" variant="contained"
                     >
                         {submitting ? "Submitting" : "Submit"}
                     </ResponsiveButton>}
