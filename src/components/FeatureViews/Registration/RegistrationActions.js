@@ -1,15 +1,12 @@
 import React, {useCallback, useEffect, useState} from "react";
-import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import {Link, useHistory} from "react-router-dom";
-import NewCourse from "@material-ui/icons/School";
+import {Link, useHistory, useLocation} from "react-router-dom";
 import Tooltip from "@material-ui/core/Tooltip";
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import "./registration.scss";
 import SelectParentDialog from "./SelectParentDialog";
-import {stringToColor} from "../Accounts/accountUtils";
 import {fullName, USER_TYPES} from "../../../utils";
 import {useValidateRegisteringParent} from "../../OmouComponents/RegistrationUtils";
 import {useDispatch, useSelector} from "react-redux";
@@ -48,6 +45,7 @@ const RegistrationActions = () => {
 		skip: AuthUser.accountType !== USER_TYPES.parent,
 	});
 	const history = useHistory();
+	const location = useLocation();
 
 	useEffect(() => {
 		dispatch({
@@ -90,25 +88,27 @@ const RegistrationActions = () => {
 		history.push("/registration/cart");
 	}
 
+	const displayRegistrationButton = ((currentParent || parentIsLoggedIn) &&
+		!location.pathname.includes("registration"));
+
 	return (
 		<>
 			<Grid
-				className="registration-action-control"
 				container
 				direction="row"
 				justify="flex-start"
 				alignItems="center"
 				spacing={1}
+				style={{borderBottom: '1px solid #C4C4C4', marginBottom: "24px"}}
 			>
 				<Grid item md={9}>
-					{(currentParent || parentIsLoggedIn) && (
+					{displayRegistrationButton && (
 						<Grid item xs={2}>
-							<ResponsiveButton 
+							<ResponsiveButton
 								aria-controls="simple-menu"
 								aria-haspopup="true"
-								color="secondary"
 								component={Link} to="/registration/form/class-registration"
-								variant="outlined"
+								variant="contained"
 								data-cy="register-class"
 							>
 								register class

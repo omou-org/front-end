@@ -307,44 +307,44 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
               return (
                   <ListDetailedItem key={course.id}>
                     <ListContent>
-                  <ListHeading>
-                    <Box onClick={() => clickHandler(course.id)}>
-                      <ListTitle>{course.title}</ListTitle>
-                    </Box>
-                  </ListHeading>
-                  <ListDetails>
-                    <Link
-                      to={`/accounts/instructor/${course.instructor.user.id}`}
-                    >
-                      <ListDetailLink>
-                        {fullName(course.instructor.user)}
-                      </ListDetailLink>
-                    </Link>
-                    <ListDivider />
-                    <ListDetail>
-                      {moment(course.startDate).format("MMM D YYYY")} -{" "}
-                      {moment(course.endDate).format("MMM D YYYY")}
-                    </ListDetail>
-                    <ListDivider />
-                    <ListDetail>
-                      <CourseAvailabilites
-                        availabilityList={course.availabilityList}
-                      />
-                    </ListDetail>
-                    <ListDivider />
-                    <ListDetail>${course.totalTuition}</ListDetail>
-                  </ListDetails>
-                </ListContent>
-                <ListActions>
-                  <ListStatus>
-                    {course.enrollmentSet.length} / {course.maxCapacity}
-                  </ListStatus>
-                  <ListButton>
-                    {course.enrollmentSet.length < course.maxCapacity ||
-                    !parentIsLoggedIn ? (
-                      <ResponsiveButton
-                        disabled={shouldDisableQuickRegister({
-                          course,
+                      <ListHeading>
+                        <Box onClick={() => clickHandler(course.id)}>
+                          <ListTitle>{course.title}</ListTitle>
+                        </Box>
+                      </ListHeading>
+                      <ListDetails>
+                        <Link
+                            to={`/accounts/instructor/${course.instructor.user.id}`}
+                        >
+                          <ListDetailLink>
+                            {fullName(course.instructor.user)}
+                          </ListDetailLink>
+                        </Link>
+                        <ListDivider/>
+                        <ListDetail>
+                          {moment(course.startDate).format("MMM D YYYY")} -{" "}
+                          {moment(course.endDate).format("MMM D YYYY")}
+                        </ListDetail>
+                        <ListDivider/>
+                        <ListDetail>
+                          <CourseAvailabilites
+                              availabilityList={course.availabilityList}
+                          />
+                        </ListDetail>
+                        <ListDivider/>
+                        <ListDetail>${course.totalTuition}</ListDetail>
+                      </ListDetails>
+                    </ListContent>
+                    <ListActions>
+                      <ListStatus>
+                        {course.enrollmentSet.length} / {course.maxCapacity}
+                      </ListStatus>
+                      <ListButton>
+                        {course.enrollmentSet.length < course.maxCapacity ||
+                        !parentIsLoggedIn ? (
+                            <ResponsiveButton
+                                disabled={shouldDisableQuickRegister({
+                                  course,
                           enrolledCourseIds,
                           registrations,
                           studentIdList,

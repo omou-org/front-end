@@ -183,7 +183,7 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
     return (
         <div className={classes.root}>
             <Typography align="left" className="heading" data-cy="formTitle"
-                variant="h3">
+                        variant="h1">
                 {title}
             </Typography>
             {showReceipt ?

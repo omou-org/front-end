@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
 import Forms from "../../Form/FormFormats";
-import BackgroundPaper from "../../OmouComponents/BackgroundPaper";
 import Form from "../../Form/Form";
 import CourseRegistrationReceipt from "./CourseRegistrationReceipt";
 import {Redirect, useParams} from "react-router-dom"
@@ -45,15 +44,14 @@ export default function RegistrationForm() {
 	}
 	
 	return (
-		<BackgroundPaper>
+		<>
 			<Grid container>
 				<RegistrationActions/>
 			</Grid>
-			<hr/>
 			<Form base={form} initialData={withDefaultData} onSubmit={onSubmit}
 				  title={`${title} ${id ? "Editing" : "Registration"}`}
 				  receipt={CourseRegistrationReceipt}
 			/>
-		</BackgroundPaper>
+		</>
 	);
 }
