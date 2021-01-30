@@ -62,7 +62,7 @@ export const selectField = (options) => ({
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
     stringField = (label) => ({
-        component: <Fields.TextField />,
+        component: <Fields.TextField name={label}/>,
         label,
         validator: Yup.string().matches(
             /[a-zA-Z][^#&<>"~;$^%{}?]+$/u,

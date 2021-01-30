@@ -28,8 +28,9 @@ const useSelectStyles = makeStyles({
 export const { TextField, Checkboxes } = Fields;
 
 export const Select = (props) => {
-    const { select } = useSelectStyles();
-    return <Fields.Select className={select} {...props} />;
+    const {select} = useSelectStyles();
+    const denseMarginProps = {...props, margin: "dense"}
+    return <Fields.Select className={select} {...denseMarginProps} />;
 };
 
 export const KeyboardDatePicker = (props) =>
@@ -78,7 +79,8 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     }, []);
 
     const { data, loading } = useQuery(request, {
-        "variables": { query },
+        "variables": {query},
+        skip: !query || query === ""
     });
 
     const renderOption = useCallback(
@@ -88,12 +90,17 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
 
     const options = data ? optionsMap(data) : [];
 
+    const defaultSelectedHandler = (option, value) => (
+        option.value === value.value || value === ""
+    )
+
     return (
         <Fields.Autocomplete
             getOptionLabel={getLabel}
             loading={loading}
             name={name}
             onInputChange={handleQueryChange}
+            getOptionSelected={defaultSelectedHandler}
             options={options}
             renderOption={renderOption}
             {...props}

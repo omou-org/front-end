@@ -104,11 +104,11 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
             <StepContent>
                 {fields.map((field) => React.cloneElement(field,
                     {
-                        "SelectDisplayProps": {
+                        "selectdisplayprops": {
                             "data-cy": `${name}-${field.props.name}-select`,
                         },
                         "data-cy": `${name}-${field.props.name}`,
-                        "inputProps": {
+                        "inputprops": {
                             "data-cy": `${name}-${field.props.name}-input`,
                         },
                         "margin": "normal",
