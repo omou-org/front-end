@@ -29,7 +29,6 @@ import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
-import { filterEvent } from 'actions/calendarActions';
 import { GET_STUDENTS } from './CourseManagementContainer';
 
 const useStyles = makeStyles((theme) => ({

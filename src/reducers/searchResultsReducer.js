@@ -10,19 +10,19 @@ export default function search(
         return state;
     }
     switch (type) {
-        case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS: {
-            const {data} = payload.response;
-            return JSON.parse(
-                JSON.stringify({
-                    ...state,
-                    accountResultsNum: data.count,
-                    accounts: {
-                        ...state.accounts,
-                        [data.page]: data.results,
-                   },
-                })
-            );
-        }
+        // case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS: {
+        //     const {data} = payload.response;
+        //     return JSON.parse(
+        //         JSON.stringify({
+        //             ...state,
+        //             accountResultsNum: data.count,
+        //             accounts: {
+        //                 ...state.accounts,
+        //                 [data.page]: data.results,
+        //            },
+        //         })
+        //     );
+        // }
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS: {
             const {data} = payload.response;
             return {

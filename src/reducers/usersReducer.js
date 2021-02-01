@@ -15,14 +15,14 @@ export default function users(state = initialState.Users, {payload, type}) {
         case actions.FETCH_ACCOUNT_NOTE_SUCCESSFUL:
             return handleAccountNotesFetch(state, payload);
         case actions.POST_ACCOUNT_NOTE_SUCCESSFUL:
-        case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
-            return handleAccountNotesPost(state, payload);
+        // case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
+        //     return handleAccountNotesPost(state, payload);
         case actions.DELETE_ACCOUNT_NOTE_SUCCESSFUL:
             return handleNoteDelete(state, payload);
         case actions.POST_STUDENT_SUCCESSFUL:
             return handleStudentPost(state, payload);
-        case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
-            return handleAccountSearchResults(state, payload);
+        // case actions.GET_ACCOUNT_SEARCH_QUERY_SUCCESS:
+        //     return handleAccountSearchResults(state, payload);
         case actions.POST_OOO_SUCCESS:
         case actions.FETCH_OOO_SUCCESS:
             return handleOOOFetch(state, payload);

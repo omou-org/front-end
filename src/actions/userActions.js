@@ -75,7 +75,7 @@ export const postParent = (parent) => wrapPost(
     ],
     parent,
 );
-
+/*
 export const patchParent = (id, parent) => wrapPatch(
     "/account/parent/",
     [
@@ -88,7 +88,7 @@ export const patchParent = (id, parent) => wrapPatch(
         id,
     },
 );
-
+*/
 export const fetchInstructors = (id) => wrapGet(
     "/account/instructor/",
     [
@@ -190,7 +190,7 @@ const wrapNotePatch = (
 	};
 	// request starting
 	newAction(startType, {});
-
+	/*
 	try {
 		const response = await instance.patch(`${endpoint}${id}/`, data);
 		// succesful request
@@ -199,6 +199,7 @@ const wrapNotePatch = (
 		// failed request
 		newAction(failType, error.response);
 	}
+	*/
 };
 
 export const fetchAccountNotes = wrapNoteGet("/account/note/", "user_id", [

@@ -52,14 +52,12 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateInstructorPost(state, status);
         case actions.POST_INSTRUCTOR_FAILED:
             return updateInstructorPost(state, status);
-
         case actions.PATCH_INSTRUCTOR_STARTED:
             return updateInstructorPatch(state, payload.id, api.REQUEST_STARTED);
         case actions.PATCH_INSTRUCTOR_SUCCESSFUL:
             return updateInstructorPatch(state, payload.id, status);
         case actions.PATCH_INSTRUCTOR_FAILED:
             return updateInstructorPatch(state, payload.id, status);
-
         case actions.FETCH_ACCOUNT_NOTE_STARTED:
             return updateAccountNoteFetch(
                 state,

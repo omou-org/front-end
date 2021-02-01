@@ -1,6 +1,9 @@
 import * as actions from "./../actions/actionTypes";
 import initialState from "./initialState";
 
+
+// Used in RegistrationCart.js
+
 export default function enrollment(
 	state = initialState.Enrollments,
 	{payload, type}
