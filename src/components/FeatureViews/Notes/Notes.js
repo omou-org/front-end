@@ -23,7 +23,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-
+import ReadMoreText from "components/OmouComponents/ReadMoreText";
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton'
 
 import "./Notes.scss";
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     "icons": {
         padding: "3px",
         transform: "scale(.8)",
+        cursor: "pointer",
     },
     "notePaper": {
         height: "150px"
@@ -93,6 +94,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "deleteButton": {
         "backgroundColor": theme.palette.error.main,
+        "borderColor": theme.palette.error.main,
     },
     "notesTitle": {
         "fontSize": "0.875rem",
@@ -110,7 +112,7 @@ const numericDateString = (date) => new Date(date).toLocaleTimeString("en-US", {
 const QUERIES = {
     "account": gql`
         query AccountNotesQuery($ownerID: ID!) {
-            notes(userId: $ownerID) {
+            accountNotes(userId: $ownerID) {
                 id
                 body
                 complete
@@ -150,9 +152,9 @@ const MUTATIONS = {
     "account": gql`
         mutation CreateAccountNote($ownerID: ID!, $title: String, $body: String,
             $complete: Boolean, $important: Boolean, $id: ID) {
-            createNote(userId: $ownerID, title: $title, important: $important,
+            createAccountNote(userId: $ownerID, title: $title, important: $important,
                 body: $body, complete: $complete, id: $id) {
-                note {
+                accountNote {
                     id
                     body
                     complete
@@ -194,19 +196,41 @@ const MUTATIONS = {
         }`,
 };
 
+const DELETE_MUTATIONS = {
+    "account": gql`
+        mutation DeleteAccountNote($deleteID: ID!) {
+            deleteAccountNote(id: $deleteID) {
+                deleted
+            }
+        }`,
+    "course": gql`
+        mutation DeleteCourseNote($deleteID: ID!) {
+            deleteCourseNote(id: $deleteID) {
+                deleted
+            }
+        }`,
+    "enrollment": gql`
+        mutation DeleteEnrollmentNote($deleteID: ID!) {
+            deleteEnrollmentNote(id: $deleteID) {
+                deleted
+            }
+        }`
+}
+
 const QUERY_KEY = {
-    "account": "notes",
+    "account": "accountNotes",
     "course": "courseNotes",
     "enrollment": "enrollmentNotes",
 };
 
 const MUTATION_KEY = {
-    "account": "createNote",
+    "account": "createAccountNote",
     "course": "createCourseNote",
     "enrollment": "createEnrollmentNote",
 };
 
 // eslint-disable-next-line max-statements
+// Jan 29, 2021 - Plan to refactor Dashboard notes
 const Notes = ({ ownerType, ownerID, isDashboard }) => {
     const dispatch = useDispatch();
 
@@ -245,8 +269,36 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                 "query": QUERIES[ownerType],
                 "variables": { ownerID },
             });
+
+            setDeleteID(null)
         },
     });
+
+    const [deleteNote, isNoteDeleted] = useMutation(DELETE_MUTATIONS[ownerType], {
+       "onCompleted": () => {
+           hideWarning()
+       },
+       "update": (cache, { data }) => {
+
+            const cachedNotes = cache.readQuery({
+                "query": QUERIES[ownerType],
+                "variables": { ownerID },
+            })[QUERY_KEY[ownerType]];
+            let updatedNotes = [...cachedNotes];
+            let indexToBeDeleted = updatedNotes.findIndex(({id}) => id === deleteID);
+            if(indexToBeDeleted !== -1) {
+                updatedNotes.splice(indexToBeDeleted, 1)
+            }
+
+            cache.writeQuery({
+                "data": {
+                    [QUERY_KEY[ownerType]]: updatedNotes,
+                },
+                "query": QUERIES[ownerType],
+                "variables": { ownerID },
+            })
+       }
+    })
 
     const query = useQuery(QUERIES[ownerType], {
         "variables": { ownerID },
@@ -323,39 +375,13 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
         });
     }, [mutateNote, ownerID, getNoteByID]);
 
-    const handleDelete = useCallback(async () => {
-        let URL = "",
-            type = "";
-        switch (ownerType) {
-            case "course":
-                URL = "/course/catalog_note/";
-                type = DELETE_COURSE_NOTE_SUCCESSFUL;
-                break;
-            case "enrollment":
-                URL = "/course/enrollment_note/";
-                type = DELETE_ENROLLMENT_NOTE_SUCCESSFUL;
-                break;
-            default:
-                URL = "/account/note/";
-                type = DELETE_ACCOUNT_NOTE_SUCCESSFUL;
-                break;
-        }
-        try {
-            await instance.delete(`${URL}${deleteID}/`);
-            dispatch({
-                "payload": {
-                    "noteID": deleteID,
-                    ownerID,
-                    ownerType,
-                },
-                type,
-            });
-            hideWarning();
-        } catch {
-            // if note not actually deleted
-            setDeleteError(true);
-        }
-    }, [deleteID, dispatch, hideWarning, ownerID, ownerType]);
+    const handleDelete = useCallback(() => {
+        deleteNote({
+            "variables": {
+                deleteID
+            }
+        })
+    }, [deleteNote, deleteID]);
 
     if (query.loading) {
         return <Loading loadingText="NOTES LOADING" small />;
@@ -554,7 +580,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                 item
                                 xs={12}>
                                 <AddItemButton
-                                    height={'100%'}
+                                    height={'50px'}
                                     width='inherit'
                                     style={{padding: 0}}
                                     onClick={openNewNote}
@@ -566,7 +592,7 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                     :
                        <Grid item md={3}>
                            <AddItemButton
-                            height={200}
+                            height={'250px'}
                             width='inherit'
                             onClick={openNewNote}
                            >
@@ -579,19 +605,21 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
             {notes && isDashboard && Object.values(notes).map((note) => (
                 <Grid item key={note.id || note.body} xs={12}>
                     <Paper className={`note ${classes.notePaper}`} elevation={2} >
+                        <Avatar
+                            variant="square"
+                            className={`noteNotification ${isDashboard ? classes.notesNotification : null}`}
+                            onClick={toggleNoteField(note.id, "important")}
+                            style={note.important ? { "background-color": "red" } : {}}>
+                            !
+                        </Avatar>
                         <Typography align="left"
                             className={`noteHeader ${classes.notesTitle}`}>
                             {note.title}
-                            <Avatar
-                                variant="square"
-                                className={`noteNotification ${isDashboard ? classes.notesNotification : null}`}
-                                onClick={toggleNoteField(note.id, "important")}
-                                style={note.important ? { "background-color": "red" } : {}}>
-                                !
-                            </Avatar>
                         </Typography>
                         <Typography align="left" className="body">
-                            {note.body}
+                            <ReadMoreText textLimit={30} handleDisplay={openExistingNote(note)}>
+                                {note.body}
+                            </ReadMoreText>
                         </Typography>
                         <Grid item xs={12}>
                             <Typography className={`date ${classes.dateDisplay}`}

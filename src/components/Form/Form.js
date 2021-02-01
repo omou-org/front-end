@@ -10,13 +10,12 @@ import Typography from "@material-ui/core/Typography";
 import FormReceipt from "./FormReceipt";
 
 import {makeValidate} from "mui-rff";
-import {Button} from "@material-ui/core";
 import * as Yup from "yup";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
     "buttons": {
@@ -126,12 +125,15 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         Back
                     </ResponsiveButton>}
                     {index < sections.length - 1 &&
-                        <ResponsiveButton data-cy={`${name}-nextButton`}
-                                disabled={Boolean(errors[name])}
-                                onClick={handleNext}
-                                variant="outlined">
-                            Next
-                        </ResponsiveButton>}
+                    <ResponsiveButton
+                        data-cy={`nextButton`}
+                        disabled={Boolean(errors[name])}
+                        onClick={handleNext}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Next
+                    </ResponsiveButton>}
                     {index === sections.length - 1 &&
                     <ResponsiveButton 
                         data-cy="submitButton"

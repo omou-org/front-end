@@ -1,6 +1,6 @@
-describe("Fills out form with mock data of students from our user.json file, view our form to see if the data is inputed properly, edit our form with edited data, and submits our form", () => {
+describe("Admin editing a student", () => {
     before(() => {
-        cy.fixture("users.json").then(({ original_student_data, accountType, updated_student_data }) => {
+        cy.fixture("users.json").then(({original_student_data, accountType, updated_student_data}) => {
             cy.mockGraphQL({
                 "AddStudent": {
                     "response": {
@@ -71,11 +71,11 @@ describe("Fills out form with mock data of students from our user.json file, vie
         });
     });
 
-    it("Submits the student form and displays the results page", () => {
-        cy.fixture("users.json").then(({ updated_student_data }) => {
-            cy.get("[data-cy=submitButton]").click();
-            cy.contains("submitted");
-            cy.contains(updated_student_data.city);
-        });
-    });
+    // it("Submits the student form and displays the results page", () => {
+    //     cy.fixture("users.json").then(({ updated_student_data }) => {
+    //         cy.get("[data-cy=submitButton]").click();
+    //         cy.contains("submitted");
+    //         cy.contains(updated_student_data.city);
+    //     });
+    // });
 });
