@@ -7,7 +7,7 @@ import StepContent from "@material-ui/core/StepContent";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import Typography from "@material-ui/core/Typography";
-import FormReceipt from "./FormReceipt";
+import DefaultFormReceipt from "./Receipts/DefaultFormReceipt";
 
 import {makeValidate} from "mui-rff";
 import * as Yup from "yup";
@@ -72,7 +72,7 @@ const generateFields = (format) => {
     return [schema, sections];
 };
 
-const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormReceipt}) => {
+const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = DefaultFormReceipt}) => {
     const [activeStep, setActiveStep] = useState(0);
     const [showReceipt, setShowReceipt] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);

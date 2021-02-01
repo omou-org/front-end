@@ -3,16 +3,16 @@ import {createTutoringDetails, submitRegistration} from "../OmouComponents/Regis
 import {instance} from "actions/apiActions";
 import React from "react";
 import {FORM_ERROR} from "final-form";
-import * as Fields from "./Fields";
-import {StudentSelect} from "./Fields";
+import * as Fields from "./Field Components/Fields";
+import {StudentSelect} from "./Field Components/Fields";
 import * as Yup from "yup";
 import * as moment from "moment";
 import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
-import TutoringPriceQuote from "./TutoringPriceQuote";
+import TutoringPriceQuote from "./Field Components/TutoringPriceQuote";
 import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
-import CourseAvailabilityField from "./CourseAvailabilityField";
+import CourseAvailabilityField from "./Field Components/CourseAvailabilityField";
 import {GET_CLASS} from "../FeatureViews/Courses/CourseClass";
 import {getCourseManagementCourses} from "../FeatureViews/Courses/CourseManagementContainer";
 

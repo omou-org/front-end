@@ -43,7 +43,7 @@ const toDisplayValue = (value) => {
     return value.toString();
 };
 
-const FormReceipt = ({formData, format}) => (
+const DefaultFormReceipt = ({formData, format}) => (
     <div style={{
         "margin": "2%",
         "padding": "5px",
@@ -78,7 +78,7 @@ const FormReceipt = ({formData, format}) => (
     </div>
 );
 
-FormReceipt.propTypes = {
+DefaultFormReceipt.propTypes = {
     "formData": PropTypes.objectOf(PropTypes.object),
     "format": PropTypes.arrayOf(PropTypes.shape({
         "fields": PropTypes.arrayOf(PropTypes.shape({
@@ -90,4 +90,4 @@ FormReceipt.propTypes = {
     })),
 };
 
-export default FormReceipt;
+export default DefaultFormReceipt;
