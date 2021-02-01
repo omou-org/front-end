@@ -6,11 +6,7 @@
         "cypress/globals": true
     },
     "parser": "babel-eslint",
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "prettier"
-    ],
+    "extends": ["eslint:recommended", "plugin:react/recommended", "prettier"],
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
@@ -18,11 +14,7 @@
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "plugins": [
-        "react",
-        "react-hooks",
-        "cypress"
-    ],
+    "plugins": ["react", "react-hooks", "cypress"],
     "rules": {
         "indent": ["error", 4],
         "semi": "error",

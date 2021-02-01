@@ -181,7 +181,7 @@ const Accounts = () => {
 
     const tableView = useMemo(
         () => (
-            <Table className="AccountsTable" resizable="false">
+            <Table className='AccountsTable' resizable='false'>
                 <TableHead>
                     <TableRow>
                         <TableCell className={classes.tableCellStyle}>
@@ -202,16 +202,16 @@ const Accounts = () => {
                 <TableBody>
                     {displayUsers.map((row) => (
                         <TableRow
-                            className="row"
+                            className='row'
                             component={Link}
                             key={row.user.id}
                             to={`/accounts/${row.accountType}/${row.user.id}`}
                         >
                             <TableCell className={classes.tableRowStyle}>
                                 <Grid
-                                    alignItems="center"
+                                    alignItems='center'
                                     container
-                                    layout="row"
+                                    layout='row'
                                 >
                                     <UserAvatar
                                         fontSize={14}
@@ -263,10 +263,10 @@ const Accounts = () => {
     const cardView = useMemo(
         () => (
             <Grid
-                alignItems="center"
-                className="card-container"
+                alignItems='center'
+                className='card-container'
                 container
-                direction="row"
+                direction='row'
                 spacing={2}
                 xs={12}
             >
@@ -283,13 +283,13 @@ const Accounts = () => {
     );
 
     return (
-        <Grid className="Accounts" item xs={12}>
-            <Grid container alignItems="flex-start" spacing={4}>
+        <Grid className='Accounts' item xs={12}>
+            <Grid container alignItems='flex-start' spacing={4}>
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to="/form/student"
-                        variant="outlined"
+                        to='/form/student'
+                        variant='outlined'
                     >
                         new student
                     </ResponsiveButton>
@@ -297,8 +297,8 @@ const Accounts = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to="/form/parent"
-                        variant="outlined"
+                        to='/form/parent'
+                        variant='outlined'
                     >
                         new parent
                     </ResponsiveButton>
@@ -307,27 +307,27 @@ const Accounts = () => {
             <Hidden xsDown>
                 <hr />
             </Hidden>
-            <Typography align="left" className="heading" variant="h1">
+            <Typography align='left' className='heading' variant='h1'>
                 Accounts
             </Typography>
-            <Grid container direction="row" justify='space-between'>
+            <Grid container direction='row' justify='space-between'>
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
-                        className="tabs"
+                        className='tabs'
                         onChange={handleTabChange}
-                        scrollButtons="on"
+                        scrollButtons='on'
                         value={tabIndex}
-                        variant="scrollable"
+                        variant='scrollable'
                     >
                         {TABS}
                     </Tabs>
                 </Grid>
                 <Grid component={Hidden} item md={8} mdDown xs={10}>
                     <Tabs
-                        className="tabs"
+                        className='tabs'
                         classes={{ indicator: classes.MuiIndicator }}
                         onChange={handleTabChange}
-                        scrollButtons="off"
+                        scrollButtons='off'
                         value={tabIndex}
                     >
                         {TABS}
@@ -340,7 +340,7 @@ const Accounts = () => {
                         item
                         md={1}
                     >
-                        <ToggleButtonGroup aria-label="list & grid view toggle buttons">
+                        <ToggleButtonGroup aria-label='list & grid view toggle buttons'>
                             <ToggleButton
                                 onClick={setView(true)}
                                 selected={viewToggle && true}
@@ -360,11 +360,11 @@ const Accounts = () => {
                 </Hidden>
             </Grid>
             <Grid
-                alignItems="center"
-                className="accounts-list-wrapper"
+                alignItems='center'
+                className='accounts-list-wrapper'
                 container
-                direction="row"
-                justify="center"
+                direction='row'
+                justify='center'
                 spacing={1}
             >
                 <LoadingHandler error={error} loading={loading}>

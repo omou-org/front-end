@@ -1,8 +1,8 @@
-import * as actions from "./../actions/actionTypes";
-import initialState from "./initialState";
-import {REQUEST_ALL} from "../actions/apiActions";
+import * as actions from './../actions/actionTypes';
+import initialState from './initialState';
+import { REQUEST_ALL } from '../actions/apiActions';
 
-export default function users(state = initialState.Users, {payload, type}) {
+export default function users(state = initialState.Users, { payload, type }) {
     switch (type) {
         case actions.FETCH_STUDENT_SUCCESSFUL:
             return handleStudentsFetch(state, payload);
@@ -35,121 +35,121 @@ export default function users(state = initialState.Users, {payload, type}) {
 }
 
 const parseRelationship = {
-    "mother": "Mother",
-    "father": "Father",
-    "guardian": "Guardian",
-    "other": "Other",
+    mother: 'Mother',
+    father: 'Father',
+    guardian: 'Guardian',
+    other: 'Other',
 };
 
 const dayToNum = {
-    "sunday": 0,
-    "monday": 1,
-    "tuesday": 2,
-    "wednesday": 3,
-    "thursday": 4,
-    "friday": 5,
-    "saturday": 6,
+    sunday: 0,
+    monday: 1,
+    tuesday: 2,
+    wednesday: 3,
+    thursday: 4,
+    friday: 5,
+    saturday: 6,
 };
 
 const parseBirthday = (date) => {
     if (date !== null) {
-        const [year, month, day] = date.split("-");
+        const [year, month, day] = date.split('-');
         return `${month}/${day}/${year}`;
     }
-    return "01/01/2000";
+    return '01/01/2000';
 };
 
-const handleAccountNotesPost = (state, {response, ...rest}) =>
+const handleAccountNotesPost = (state, { response, ...rest }) =>
     handleAccountNotesFetch(state, {
-        "response": {
+        response: {
             ...response,
-            "data": [response.data],
+            data: [response.data],
         },
-        "ownerID": response.data.user,
+        ownerID: response.data.user,
         ...rest,
     });
 
-const handleAccountNotesFetch = (state, {ownerID, ownerType, response}) => {
-    const {data} = response;
+const handleAccountNotesFetch = (state, { ownerID, ownerType, response }) => {
+    const { data } = response;
     const newState = JSON.parse(JSON.stringify(state));
     data.forEach((note) => {
         switch (ownerType) {
-            case "student":
+            case 'student':
                 if (!newState.StudentList[ownerID]) {
                     newState.StudentList[ownerID] = {
-                        "notes": {},
+                        notes: {},
                     };
                 }
                 newState.StudentList[ownerID].notes[note.id] = note;
                 break;
-            case "parent":
+            case 'parent':
                 if (!newState.ParentList[ownerID]) {
                     newState.ParentList[ownerID] = {
-                        "notes": {},
+                        notes: {},
                     };
                 }
                 newState.ParentList[ownerID].notes[note.id] = note;
                 break;
-            case "instructor":
+            case 'instructor':
                 if (!newState.InstructorList[ownerID]) {
                     newState.InstructorList[ownerID] = {
-                        "notes": {},
+                        notes: {},
                     };
                 }
                 newState.InstructorList[ownerID].notes[note.id] = note;
                 break;
-            case "receptionist":
+            case 'receptionist':
                 if (!newState.ReceptionistList[ownerID]) {
                     newState.ReceptionistList[ownerID] = {
-                        "notes": {},
+                        notes: {},
                     };
                 }
                 newState.ReceptionistList[ownerID].notes[note.id] = note;
                 break;
             default:
-                console.error("Bad user type", ownerType);
+                console.error('Bad user type', ownerType);
         }
     });
     return newState;
 };
 
-const handleNoteDelete = (state, {ownerID, ownerType, noteID}) => {
+const handleNoteDelete = (state, { ownerID, ownerType, noteID }) => {
     const newState = JSON.parse(JSON.stringify(state));
     switch (ownerType) {
-        case "student":
+        case 'student':
             if (!newState.StudentList[ownerID]) {
                 newState.StudentList[ownerID] = {
-                    "notes": {},
+                    notes: {},
                 };
             }
             delete newState.StudentList[ownerID].notes[noteID];
             break;
-        case "parent":
+        case 'parent':
             if (!newState.ParentList[ownerID]) {
                 newState.ParentList[ownerID] = {
-                    "notes": {},
+                    notes: {},
                 };
             }
             delete newState.ParentList[ownerID].notes[noteID];
             break;
-        case "instructor":
+        case 'instructor':
             if (!newState.InstructorList[ownerID]) {
                 newState.InstructorList[ownerID] = {
-                    "notes": {},
+                    notes: {},
                 };
             }
             delete newState.InstructorList[ownerID].notes[noteID];
             break;
-        case "receptionist":
+        case 'receptionist':
             if (!newState.ReceptionistList[ownerID]) {
                 newState.ReceptionistList[ownerID] = {
-                    "notes": {},
+                    notes: {},
                 };
             }
             delete newState.ReceptionistList[ownerID].notes[noteID];
             break;
         default:
-            console.error("Bad user type", ownerType);
+            console.error('Bad user type', ownerType);
     }
     return newState;
 };
@@ -163,13 +163,13 @@ export const handleParentsFetch = (state, payload) => {
         id = payload.data.user.id;
         response = payload;
     }
-    let {ParentList} = state;
+    let { ParentList } = state;
     if (id === REQUEST_ALL) {
         response.data.forEach((parent) => {
             ParentList = updateParent(ParentList, parent.user.id, parent);
         });
     } else if (Array.isArray(id)) {
-        response.forEach(({data}) => {
+        response.forEach(({ data }) => {
             ParentList = updateParent(ParentList, data.user.id, data);
         });
     } else {
@@ -184,24 +184,24 @@ export const handleParentsFetch = (state, payload) => {
 export const updateParent = (parents, id, parent) => ({
     ...parents,
     [id]: {
-        "user_id": parent.user.id,
-        "gender": parent.gender,
-        "birthday": parseBirthday(parent.birth_date),
-        "address": parent.address,
-        "city": parent.city,
-        "phone_number": parent.phone_number,
-        "state": parent.state,
-        "zipcode": parent.zipcode,
-        "relationship": parseRelationship[parent.relationship],
-        "first_name": parent.user.first_name,
-        "last_name": parent.user.last_name,
-        "name": `${parent.user.first_name} ${parent.user.last_name}`,
-        "email": parent.user.email,
-        "student_ids": parent.student_list,
-        "updated_at": parent.updated_at,
-        "role": "parent",
-        "notes": (parents[id] && parents[id].notes) || {},
-        "balance": parent.balance,
+        user_id: parent.user.id,
+        gender: parent.gender,
+        birthday: parseBirthday(parent.birth_date),
+        address: parent.address,
+        city: parent.city,
+        phone_number: parent.phone_number,
+        state: parent.state,
+        zipcode: parent.zipcode,
+        relationship: parseRelationship[parent.relationship],
+        first_name: parent.user.first_name,
+        last_name: parent.user.last_name,
+        name: `${parent.user.first_name} ${parent.user.last_name}`,
+        email: parent.user.email,
+        student_ids: parent.student_list,
+        updated_at: parent.updated_at,
+        role: 'parent',
+        notes: (parents[id] && parents[id].notes) || {},
+        balance: parent.balance,
     },
 });
 
@@ -218,14 +218,22 @@ export const handleAdminsFetch = (state, payload) => {
         id = payload.data.user.id;
         response = payload;
     }
-    let {ReceptionistList} = state;
+    let { ReceptionistList } = state;
     if (id === REQUEST_ALL) {
         data.forEach((admin) => {
-            ReceptionistList = updateAdmin(ReceptionistList, admin.user.id, admin);
+            ReceptionistList = updateAdmin(
+                ReceptionistList,
+                admin.user.id,
+                admin
+            );
         });
     } else if (Array.isArray(id)) {
-        response.forEach(({data}) => {
-            ReceptionistList = updateAdmin(ReceptionistList, data.user.id, data);
+        response.forEach(({ data }) => {
+            ReceptionistList = updateAdmin(
+                ReceptionistList,
+                data.user.id,
+                data
+            );
         });
     } else {
         ReceptionistList = updateAdmin(ReceptionistList, id, data);
@@ -233,32 +241,32 @@ export const handleAdminsFetch = (state, payload) => {
     return {
         ...state,
         ReceptionistList,
-    };   
+    };
 };
 
 export const updateAdmin = (admins, id, admin) => ({
     ...admins,
     [id]: {
-        "user_id": admin.user.id,
-        "email": admin.user.email,
-        "first_name": admin.user.first_name,
-        "last_name": admin.user.last_name,
-        "name": `${admin.user.first_name} ${admin.user.last_name}`,
-        "user_uuid": admin.user_uuid,
-        "admin_type": admin.admin_type,
-        "gender": admin.gender,
-        "birth_date": admin.birth_date,
-        "address": admin.address,
-        "city": admin.city,
-        "phone_number": admin.phone_number,
-        "state": admin.state,
-        "zipcode": admin.zipcode,
-        "role": admin.account_type,
-        "updated_at": admin.updated_at,
-        "created_at": admin.created_at,
-        "notes": (admins[id] && admins[id].notes) || {},
-    }
-})
+        user_id: admin.user.id,
+        email: admin.user.email,
+        first_name: admin.user.first_name,
+        last_name: admin.user.last_name,
+        name: `${admin.user.first_name} ${admin.user.last_name}`,
+        user_uuid: admin.user_uuid,
+        admin_type: admin.admin_type,
+        gender: admin.gender,
+        birth_date: admin.birth_date,
+        address: admin.address,
+        city: admin.city,
+        phone_number: admin.phone_number,
+        state: admin.state,
+        zipcode: admin.zipcode,
+        role: admin.account_type,
+        updated_at: admin.updated_at,
+        created_at: admin.created_at,
+        notes: (admins[id] && admins[id].notes) || {},
+    },
+});
 
 export const handleStudentsFetch = (state, payload) => {
     let data;
@@ -273,13 +281,13 @@ export const handleStudentsFetch = (state, payload) => {
         id = payload.data.user.id;
         response = payload;
     }
-    let {StudentList} = state;
+    let { StudentList } = state;
     if (id === REQUEST_ALL) {
         data.forEach((student) => {
             StudentList = updateStudent(StudentList, student.user.id, student);
         });
     } else if (Array.isArray(id)) {
-        response.forEach(({data}) => {
+        response.forEach(({ data }) => {
             StudentList = updateStudent(StudentList, data.user.id, data);
         });
     } else {
@@ -291,8 +299,8 @@ export const handleStudentsFetch = (state, payload) => {
     };
 };
 
-export const handleStudentPost = (state, {data}) => {
-    let {StudentList, ParentList} = state;
+export const handleStudentPost = (state, { data }) => {
+    let { StudentList, ParentList } = state;
     StudentList = updateStudent(StudentList, data.user.id, data);
     // Add student to parent in state
     if (ParentList[data.primary_parent]) {
@@ -309,41 +317,41 @@ export const handleStudentPost = (state, {data}) => {
 export const updateStudent = (students, id, student) => ({
     ...students,
     [id]: {
-        "user_id": student.user.id,
-        "summit_id": student.user_uuid,
-        "gender": student.gender,
-        "birthday": parseBirthday(student.birth_date),
-        "address": student.address,
-        "city": student.city,
-        "phone_number": student.phone_number,
-        "state": student.state,
-        "zipcode": student.zipcode,
-        "grade": student.grade,
-        "age": student.age,
-        "school": student.school,
-        "first_name": student.user.first_name,
-        "last_name": student.user.last_name,
-        "name": `${student.user.first_name} ${student.user.last_name}`,
-        "email": student.user.email,
-        "parent_id": student.primary_parent,
-        "updated_at": student.updated_at,
+        user_id: student.user.id,
+        summit_id: student.user_uuid,
+        gender: student.gender,
+        birthday: parseBirthday(student.birth_date),
+        address: student.address,
+        city: student.city,
+        phone_number: student.phone_number,
+        state: student.state,
+        zipcode: student.zipcode,
+        grade: student.grade,
+        age: student.age,
+        school: student.school,
+        first_name: student.user.first_name,
+        last_name: student.user.last_name,
+        name: `${student.user.first_name} ${student.user.last_name}`,
+        email: student.user.email,
+        parent_id: student.primary_parent,
+        updated_at: student.updated_at,
         // Below is not from database
-        "role": "student",
-        "balance": 0,
-        "notes": (students[id] && students[id].notes) || {},
+        role: 'student',
+        balance: 0,
+        notes: (students[id] && students[id].notes) || {},
     },
 });
 
 const updateOOO = (
     instructors,
-    {id, instructor, start_datetime, description, end_datetime},
+    { id, instructor, start_datetime, description, end_datetime }
 ) => {
     const newInstructors = JSON.parse(JSON.stringify(instructors));
     if (!newInstructors[instructor]) {
         newInstructors[instructor] = {
-            "schedule": {
-                "time_off": {},
-                "work_hours": {},
+            schedule: {
+                time_off: {},
+                work_hours: {},
             },
         };
     }
@@ -353,13 +361,13 @@ const updateOOO = (
     newInstructors[instructor].schedule.time_off = {
         ...newInstructors[instructor].schedule.time_off,
         [id]: {
-            "all_day":
+            all_day:
                 start.getHours() === end.getHours() &&
                 start.getMinutes() === end.getMinutes(),
             description,
             end,
-            "instructor_id": instructor,
-            "ooo_id": id,
+            instructor_id: instructor,
+            ooo_id: id,
             start,
         },
     };
@@ -371,26 +379,26 @@ const updateAvailability = (instructors, availability) => {
     const instructorID = availability.instructor;
     if (!newInstructors[instructorID]) {
         newInstructors[instructorID] = {
-            "schedule": {
-                "work_hours": {},
+            schedule: {
+                work_hours: {},
             },
         };
     }
     newInstructors[instructorID].schedule.work_hours = {
         ...instructors[instructorID].schedule.work_hours,
         [availability.id]: {
-            "availability_id": availability.id,
-            "day": dayToNum[availability.day_of_week],
-            "end": availability.end_time,
-            "start": availability.start_time,
+            availability_id: availability.id,
+            day: dayToNum[availability.day_of_week],
+            end: availability.end_time,
+            start: availability.start_time,
         },
     };
     return newInstructors;
 };
 
-export const handleOOOFetch = (state, {response}) => {
-    const {data} = response;
-    let {InstructorList} = state;
+export const handleOOOFetch = (state, { response }) => {
+    const { data } = response;
+    let { InstructorList } = state;
     if (Array.isArray(data)) {
         data.forEach((OOO) => {
             InstructorList = updateOOO(InstructorList, OOO);
@@ -404,9 +412,9 @@ export const handleOOOFetch = (state, {response}) => {
     };
 };
 
-export const handleAvailabilityFetch = (state, {response}) => {
-    const {data} = response;
-    let {InstructorList} = state;
+export const handleAvailabilityFetch = (state, { response }) => {
+    const { data } = response;
+    let { InstructorList } = state;
     if (Array.isArray(data)) {
         data.forEach((availability) => {
             InstructorList = updateAvailability(InstructorList, availability);
@@ -420,9 +428,9 @@ export const handleAvailabilityFetch = (state, {response}) => {
     };
 };
 
-export const handleInstructorsFetch = (state, {id, response}) => {
-    const {data} = response;
-    let {InstructorList} = state;
+export const handleInstructorsFetch = (state, { id, response }) => {
+    const { data } = response;
+    let { InstructorList } = state;
     if (id !== REQUEST_ALL) {
         InstructorList = updateInstructor(InstructorList, id, data);
     } else {
@@ -430,7 +438,7 @@ export const handleInstructorsFetch = (state, {id, response}) => {
             InstructorList = updateInstructor(
                 InstructorList,
                 instructor.user.id,
-                instructor,
+                instructor
             );
         });
     }
@@ -459,32 +467,32 @@ export const updateInstructor = (instructors, id, instructor) => {
     let newInstructor = instructors[id] || {};
     const schedule = newInstructor.schedule || {};
     newInstructor = {
-        "user_id": user.id,
-        "summit_id": user_uuid,
+        user_id: user.id,
+        summit_id: user_uuid,
         gender,
-        "birth_date": parseBirthday(birth_date),
+        birth_date: parseBirthday(birth_date),
         address,
         city,
         phone_number,
         state,
         zipcode,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "name": `${user.first_name} ${user.last_name}`,
-        "email": user.email,
-        "updated_at": instructor.updated_at,
-        "role": "instructor",
-        "background": {
-            "bio": biography,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        name: `${user.first_name} ${user.last_name}`,
+        email: user.email,
+        updated_at: instructor.updated_at,
+        role: 'instructor',
+        background: {
+            bio: biography,
             experience,
             subjects,
-            "languages": language,
+            languages: language,
         },
-        "schedule": {
-            "work_hours": schedule.work_hours || {},
-            "time_off": schedule.time_off || {},
+        schedule: {
+            work_hours: schedule.work_hours || {},
+            time_off: schedule.time_off || {},
         },
-        "notes": newInstructor.notes || {},
+        notes: newInstructor.notes || {},
     };
     return {
         ...instructors,
@@ -492,24 +500,28 @@ export const updateInstructor = (instructors, id, instructor) => {
     };
 };
 
-const handleAccountSearchResults = (state, {response}) => {
-    let {StudentList, ParentList, InstructorList} = state;
-    const {data} = response;
+const handleAccountSearchResults = (state, { response }) => {
+    let { StudentList, ParentList, InstructorList } = state;
+    const { data } = response;
     data.results.forEach((account) => {
         switch (account.account_type) {
-            case "STUDENT": {
-                StudentList = updateStudent(StudentList, account.user.id, account);
+            case 'STUDENT': {
+                StudentList = updateStudent(
+                    StudentList,
+                    account.user.id,
+                    account
+                );
                 break;
             }
-            case "PARENT": {
+            case 'PARENT': {
                 ParentList = updateParent(ParentList, account.user.id, account);
                 break;
             }
-            case "INSTRUCTOR": {
+            case 'INSTRUCTOR': {
                 InstructorList = updateInstructor(
                     InstructorList,
                     account.user.id,
-                    account,
+                    account
                 );
             }
             // no default

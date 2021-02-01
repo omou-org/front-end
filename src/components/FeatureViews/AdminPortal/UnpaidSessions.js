@@ -34,11 +34,10 @@ const UnpaidSessions = () => {
         }
     `;
 
-
     const { data, loading, error } = useQuery(UNPAID_SESSION_QUERY);
 
     if (loading) {
-        return <Loading loadingText="UNPAID SESSIONS LOADING" small />;
+        return <Loading loadingText='UNPAID SESSIONS LOADING' small />;
     }
 
     if (error) {
@@ -50,12 +49,12 @@ const UnpaidSessions = () => {
 
     if (UnpaidList.length === 0) {
         return (
-            <Card className="no-unpaid-sessions">
+            <Card className='no-unpaid-sessions'>
                 <CardContent>
-                    <Typography variant="h5">
+                    <Typography variant='h5'>
                         No unpaid sessions to display!
                     </Typography>
-                    <HappyIcon fontSize="large" />
+                    <HappyIcon fontSize='large' />
                 </CardContent>
             </Card>
         );

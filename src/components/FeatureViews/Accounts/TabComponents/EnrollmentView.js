@@ -210,36 +210,36 @@ const CourseSessionStatus = () => {
                 return (
                     <>
                         <Grid
-                            className="accounts-table-heading"
+                            className='accounts-table-heading'
                             container
                             item
                             xs={12}
                         >
                             <Grid item xs={1} />
                             <Grid item xs={2}>
-                                <Typography align="left" className="table-text">
+                                <Typography align='left' className='table-text'>
                                     Session Date
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
-                                <Typography align="left" className="table-text">
+                                <Typography align='left' className='table-text'>
                                     Day
                                 </Typography>
                             </Grid>
                             <Grid item xs={3}>
-                                <Typography align="left" className="table-text">
+                                <Typography align='left' className='table-text'>
                                     Time
                                 </Typography>
                             </Grid>
                             <Grid item xs={1}>
-                                <Typography align="left" className="table-text">
+                                <Typography align='left' className='table-text'>
                                     Tuition
                                 </Typography>
                             </Grid>
                             <Grid item xs={2}>
                                 <Typography
-                                    align="center"
-                                    className="table-text"
+                                    align='center'
+                                    className='table-text'
                                 >
                                     Status
                                 </Typography>
@@ -248,7 +248,7 @@ const CourseSessionStatus = () => {
                         <Grid
                             container
                             spacing={1}
-                            data-cy="enrollment-sessions"
+                            data-cy='enrollment-sessions'
                         >
                             {sessionsData.sessions.length !== 0 ? (
                                 sessionsData.sessions.map((session) => {
@@ -261,20 +261,20 @@ const CourseSessionStatus = () => {
                                     );
                                 })
                             ) : (
-                                <NoListAlert list="Course" />
+                                <NoListAlert list='Course' />
                             )}
                         </Grid>
                     </>
                 );
             case 1:
-                return <Notes ownerID={id} ownerType="enrollment" />;
+                return <Notes ownerID={id} ownerType='enrollment' />;
             case 2:
                 return (
                     <PaymentTable
                         courseID={course.id}
                         enrollmentID={id}
                         paymentList={paymentList}
-                        type="enrollment"
+                        type='enrollment'
                     />
                 );
             default:
@@ -284,52 +284,52 @@ const CourseSessionStatus = () => {
 
     return (
         <Grid item xs={12} container>
-            <Grid className="course-session-status" container>
+            <Grid className='course-session-status' container>
                 <Grid item xs={12}>
                     <hr />
                 </Grid>
                 <Grid item xs={12}>
                     <Typography
-                        align="left"
-                        className="course-session-title"
-                        variant="h1"
+                        align='left'
+                        className='course-session-title'
+                        variant='h1'
                     >
                         {course.title}
                     </Typography>
                 </Grid>
                 <Grid item md={12}>
                     <Grid
-                        alignItems="center"
-                        className="session-actions"
+                        alignItems='center'
+                        className='session-actions'
                         container
-                        direction="row"
-                        justify="flex-start"
+                        direction='row'
+                        justify='flex-start'
                         spacing={2}
                     >
                         <Grid item>
                             <AddSessions
-                                componentOption="button"
+                                componentOption='button'
                                 enrollment={enrollmentData}
                                 parentOfCurrentStudent={student.parent}
                             />
                         </Grid>
                         <Grid item>
                             <ResponsiveButton
-                                className="button unenroll"
+                                className='button unenroll'
                                 onClick={openUnenrollDialog}
                             >
                                 Unenroll Course
                             </ResponsiveButton>
                         </Grid>
                     </Grid>
-                    <Grid className="participants" item xs={12}>
-                        <Typography align="left">
+                    <Grid className='participants' item xs={12}>
+                        <Typography align='left'>
                             Student:{' '}
                             <Link to={`/accounts/student/${student.is}`}>
                                 {fullName(student.user)}
                             </Link>
                         </Typography>
-                        <Typography align="left">
+                        <Typography align='left'>
                             Instructor:{' '}
                             <Link
                                 to={`/accounts/instructor/${course.instructor_id}`}
@@ -337,27 +337,27 @@ const CourseSessionStatus = () => {
                                 {fullName(course.instructor.user)}
                             </Link>
                         </Typography>
-                        <Typography align="left">
+                        <Typography align='left'>
                             Enrollment Balance Left: ${enrollmentBalance}
                         </Typography>
                     </Grid>
                     {activeTab === 0 && (
-                        <Grid alignItems="flex-start" container item xs={3}>
+                        <Grid alignItems='flex-start' container item xs={3}>
                             <Grid item>
-                                <FormControl component="fieldset">
+                                <FormControl component='fieldset'>
                                     <FormGroup>
                                         <FormControlLabel
                                             control={
                                                 <Switch
                                                     checked={highlightSession}
-                                                    color="primary"
+                                                    color='primary'
                                                     onChange={
                                                         handleHighlightSwitch
                                                     }
-                                                    value="upcoming-session"
+                                                    value='upcoming-session'
                                                 />
                                             }
-                                            label="Highlight Upcoming Session"
+                                            label='Highlight Upcoming Session'
                                         />
                                     </FormGroup>
                                 </FormControl>
@@ -367,7 +367,7 @@ const CourseSessionStatus = () => {
                 </Grid>
                 <Tabs
                     classes={{ indicator: classes.MuiIndicator }}
-                    className="enrollment-tabs"
+                    className='enrollment-tabs'
                     onChange={handleTabChange}
                     value={activeTab}
                 >
@@ -382,7 +382,7 @@ const CourseSessionStatus = () => {
                                     Notes
                                     <LabelBadge
                                         style={{ marginLeft: '8px' }}
-                                        variant="round-count"
+                                        variant='round-count'
                                     >
                                         1
                                     </LabelBadge>
@@ -398,11 +398,11 @@ const CourseSessionStatus = () => {
                 {mainContent()}
             </Grid>
             <Dialog
-                aria-labelledby="warn-unenroll"
+                aria-labelledby='warn-unenroll'
                 onClose={closeUnenrollDialog(false)}
                 open={unenrollWarningOpen}
             >
-                <DialogTitle disableTypography id="warn-unenroll">
+                <DialogTitle disableTypography id='warn-unenroll'>
                     Unenroll in {course.title}
                 </DialogTitle>
                 <DialogContent>
@@ -416,15 +416,15 @@ const CourseSessionStatus = () => {
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton
-                        variant="outlined"
-                        color="secondary"
+                        variant='outlined'
+                        color='secondary'
                         onClick={closeUnenrollDialog(true)}
                     >
                         Yes, unenroll
                     </ResponsiveButton>
                     <ResponsiveButton
-                        variant="outlined"
-                        color="primary"
+                        variant='outlined'
+                        color='primary'
                         onClick={closeUnenrollDialog(false)}
                     >
                         Cancel

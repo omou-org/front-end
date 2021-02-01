@@ -38,7 +38,7 @@
             "id": 1,
             "name": "Alhambra High School",
             "__typename": "SchoolType"
-    },
+        },
         "state": "CA",
         "user": {
             "email": "Aaron@Ao.com",
@@ -74,7 +74,7 @@
             "id": 1,
             "name": "Alhambra High School",
             "__typename": "SchoolType"
-    },
+        },
         "state": "CA",
         "user": {
             "email": "Aaron@Ao.com",
@@ -133,11 +133,13 @@
         "language": "English",
         "phoneNumber": "9253418562",
         "state": "CA",
-        "subjects": [{
-            "name": "Math",
-            "id": 1,
-            "__typename": "CourseCategoryType"
-        }],
+        "subjects": [
+            {
+                "name": "Math",
+                "id": 1,
+                "__typename": "CourseCategoryType"
+            }
+        ],
         "user": {
             "__typename": "UserType",
             "email": "paulwuus1000@hotmail.com",
@@ -158,11 +160,13 @@
         "language": "Cantonese, English, French",
         "phoneNumber": "9253458562",
         "state": "CA",
-        "subjects": [{
-            "name": "Biology",
-            "id": 2,
-            "__typename": "CourseCategoryType"
-        }],
+        "subjects": [
+            {
+                "name": "Biology",
+                "id": 2,
+                "__typename": "CourseCategoryType"
+            }
+        ],
         "user": {
             "__typename": "UserType",
             "email": "paulwuus1000@hotmail.com",

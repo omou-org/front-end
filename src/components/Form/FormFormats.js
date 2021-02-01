@@ -1,37 +1,41 @@
-import * as types from "actions/actionTypes";
-import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
-import {instance} from "actions/apiActions";
-import React from "react";
-import {FORM_ERROR} from "final-form";
-import * as Fields from "./Fields";
-import {StudentSelect} from "./Fields";
-import * as Yup from "yup";
-import * as moment from "moment";
-import {client} from "index";
-import gql from "graphql-tag";
-import {fullName} from "../../utils";
-import TutoringPriceQuote from "./TutoringPriceQuote";
-import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
+import * as types from 'actions/actionTypes';
+import {
+    createTutoringDetails,
+    submitRegistration,
+} from '../OmouComponents/RegistrationUtils';
+import { instance } from 'actions/apiActions';
+import React from 'react';
+import { FORM_ERROR } from 'final-form';
+import * as Fields from './Fields';
+import { StudentSelect } from './Fields';
+import * as Yup from 'yup';
+import * as moment from 'moment';
+import { client } from 'index';
+import gql from 'graphql-tag';
+import { fullName } from '../../utils';
+import TutoringPriceQuote from './TutoringPriceQuote';
+import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 
 export const GET_ADMIN = gql`
-            query GetAdmin($userID: ID!) {
-                admin(userId: $userID) {
-                    user {
-                        id
-                        email
-                        firstName
-                        lastName
-                    }
-                    adminType
-                    gender
-                    phoneNumber
-                    birthDate
-                    address
-                    city
-                    state
-                    zipcode
-                }
-            }`;
+    query GetAdmin($userID: ID!) {
+        admin(userId: $userID) {
+            user {
+                id
+                email
+                firstName
+                lastName
+            }
+            adminType
+            gender
+            phoneNumber
+            birthDate
+            address
+            city
+            state
+            zipcode
+        }
+    }
+`;
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = (a) => a) {
     return this.test('unique', message, function (list) {
@@ -94,7 +98,7 @@ const instructorSelect = (name) => (
         name={name}
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
-        noOptionsText="No instructors available"
+        noOptionsText='No instructors available'
     />
 );
 
@@ -212,7 +216,7 @@ export const ACADEMIC_LVL_FIELD = {
     BIRTH_DATE_FIELD = {
         name: 'birthDate',
         label: 'Birth Date',
-        component: <Fields.DatePicker format="MM/DD/YYYY" openTo="year" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' openTo='year' />,
         validator: Yup.date().max(moment()),
     },
     CITY_FIELD = {
@@ -288,26 +292,26 @@ export const ACADEMIC_LVL_FIELD = {
         name: 'startDate',
         label: 'Start Date',
         required: 'true',
-        component: <Fields.DatePicker format="MM/DD/YYYY" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' />,
         validator: Yup.date(),
     },
     END_DATE_FIELD = {
         name: 'endDate',
         label: 'End Date',
         required: 'true',
-        component: <Fields.DatePicker format="MM/DD/YYYY" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' />,
         validator: Yup.date(),
     },
     START_TIME_FIELD = {
         name: 'startTime',
         label: 'Start Time',
-        component: <Fields.TimePicker format="hh:mm a" />,
+        component: <Fields.TimePicker format='hh:mm a' />,
         validator: Yup.date(),
     },
     END_TIME_FIELD = {
         name: 'endTime',
         label: 'End Time',
-        component: <Fields.TimePicker format="hh:mm a" />,
+        component: <Fields.TimePicker format='hh:mm a' />,
         validator: Yup.date(),
     },
     STATE_FIELD = {
@@ -476,7 +480,7 @@ const TUTORING_COURSE_SECTIONS = [
                 // TODO: price quote tool
                 name: 'price',
                 label: 'Price',
-                component: <TutoringPriceQuote courseType="TUTORING" />,
+                component: <TutoringPriceQuote courseType='TUTORING' />,
                 validator: Yup.mixed(),
             },
         ],
@@ -532,7 +536,7 @@ const parentSelect = (name) => (
         name={name}
         optionsMap={userMap}
         request={SEARCH_PARENTS}
-        noOptionsText="No parents available"
+        noOptionsText='No parents available'
     />
 );
 
@@ -563,7 +567,7 @@ const categorySelect = (name) => (
         name={name}
         optionsMap={categoryMap}
         request={GET_CATEGORIES}
-        noOptionsText="No categories available"
+        noOptionsText='No categories available'
     />
 );
 
@@ -587,7 +591,7 @@ const schoolSelect = (name) => (
         name={name}
         optionsMap={schoolMap}
         request={GET_SCHOOLS}
-        noOptionsText="No schools available"
+        noOptionsText='No schools available'
     />
 );
 
@@ -749,49 +753,69 @@ export default {
         },
         submit: async ({ student }, id) => {
             const ADD_STUDENT = gql`
-            mutation AddStudent(
-            $firstName: String!,
-            $email: String,
-            $lastName: String!,
-            $address: String,
-            $birthDate:Date,
-            $city:String,
-            $gender:GenderEnum,
-            $grade:Int,
-            $phoneNumber:String,
-            $primaryParent:ID,
-            $school:ID,
-            $zipcode:String,
-            $state:String,
-            $id: ID) {
-                createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
-                    created
-                    student {
-                      accountType
-                      phoneNumber
-                      user {
-                        email
-                        lastName
-                        firstName
-                        id
-                      }
-                    }  
+                mutation AddStudent(
+                    $firstName: String!
+                    $email: String
+                    $lastName: String!
+                    $address: String
+                    $birthDate: Date
+                    $city: String
+                    $gender: GenderEnum
+                    $grade: Int
+                    $phoneNumber: String
+                    $primaryParent: ID
+                    $school: ID
+                    $zipcode: String
+                    $state: String
+                    $id: ID
+                ) {
+                    createStudent(
+                        user: {
+                            firstName: $firstName
+                            id: $id
+                            lastName: $lastName
+                            email: $email
+                        }
+                        address: $address
+                        birthDate: $birthDate
+                        school: $school
+                        grade: $grade
+                        gender: $gender
+                        primaryParent: $primaryParent
+                        phoneNumber: $phoneNumber
+                        city: $city
+                        state: $state
+                        zipcode: $zipcode
+                    ) {
+                        created
+                        student {
+                            accountType
+                            phoneNumber
+                            user {
+                                email
+                                lastName
+                                firstName
+                                id
+                            }
+                        }
+                    }
                 }
-            }`;
+            `;
 
             const GET_ALL_STUDENTS = gql`
                 query GetAllStudents {
                     students {
-                      accountType
-                      phoneNumber
-                      user {
-                        email
-                        lastName
-                        firstName
-                        id
-                      }
+                        accountType
+                        phoneNumber
+                        user {
+                            email
+                            lastName
+                            firstName
+                            id
+                        }
                     }
-                }`
+                }
+            `;
 
             try {
                 await client.mutate({
@@ -804,54 +828,60 @@ export default {
                         primaryParent: student.primaryParent?.value,
                         school: student.school?.value,
                     },
-                    "update": (cache, { data }) => {
+                    update: (cache, { data }) => {
                         const newStudent = data.createStudent;
 
                         const cachedStudent = cache.readQuery({
-                            query: USER_QUERIES["student"],
+                            query: USER_QUERIES['student'],
                             variables: {
-                                "ownerID": newStudent.student.user.id,
-                            }
+                                ownerID: newStudent.student.user.id,
+                            },
                         });
                         cache.writeQuery({
                             data: {
-                                "student": {
+                                student: {
                                     ...cachedStudent,
-                                    user: {...newStudent.student.user,},
+                                    user: { ...newStudent.student.user },
                                     birthDate: newStudent.student.birthDate,
                                 },
                             },
-                            query: USER_QUERIES["student"],
+                            query: USER_QUERIES['student'],
                             variables: {
                                 ownerId: newStudent.student.user.id,
-                            }
+                            },
                         });
                         // NOTE: Hacky way to check if the students cache exists yet.
                         // if it doesn't exist then don't update the list. No better way of doing this according to stackoverflow
                         // https://github.com/apollographql/apollo-client/issues/1701
                         if (cache.data.data.ROOT_QUERY.students) {
-                            const cachedStudents = cache.readQuery({
-                                query: GET_ALL_STUDENTS
-                            }).students || [];
+                            const cachedStudents =
+                                cache.readQuery({
+                                    query: GET_ALL_STUDENTS,
+                                }).students || [];
 
-                            const matchingIndex = cachedStudents.findIndex(({user: {id}}) =>
-                                id === newStudent.student.user.id);
+                            const matchingIndex = cachedStudents.findIndex(
+                                ({ user: { id } }) =>
+                                    id === newStudent.student.user.id
+                            );
 
                             let updatedStudents = cachedStudents;
 
                             if (matchingIndex === -1) {
-                                updatedStudents = [...cachedStudents, newStudent];
+                                updatedStudents = [
+                                    ...cachedStudents,
+                                    newStudent,
+                                ];
                             } else {
                                 updatedStudents[matchingIndex] = newStudent;
                             }
                             cache.writeQuery({
                                 data: {
-                                    "students": updatedStudents
+                                    students: updatedStudents,
                                 },
-                                query: GET_ALL_STUDENTS
+                                query: GET_ALL_STUDENTS,
                             });
                         }
-                    }
+                    },
                 });
             } catch (error) {
                 return {
@@ -967,7 +997,7 @@ export default {
                     {
                         name: 'password',
                         label: 'Password',
-                        component: <Fields.TextField type="password" />,
+                        component: <Fields.TextField type='password' />,
                         validator: Yup.mixed(),
                         required: true,
                     },
@@ -1007,8 +1037,7 @@ export default {
                 ],
             },
         ],
-        "load": async (id) => {
-
+        load: async (id) => {
             try {
                 const {
                     data: { admin },
@@ -1028,72 +1057,75 @@ export default {
         },
         submit: async (formData, id) => {
             const CREATE_ADMIN = gql`
-            mutation CreateAdmin(
-                $address: String,
-                $adminType: AdminTypeEnum!,
-                $birthDate: Date,
-                $city: String,
-                $gender: GenderEnum,
-                $phoneNumber: String,
-                $id: ID,
-                $state: String,
-                $email: String,
-                $firstName: String!,
-                $lastName: String!,
-                $password: String,
-                $zipcode: String
-            ) {
-                createAdmin(
-                    user: {
-                        firstName: $firstName, lastName: $lastName,
-                        password: $password, email: $email,
-                        id: $id,
-                    },
-                    address: $address,
-                    adminType: $adminType,
-                    birthDate: $birthDate,
-                    city: $city,
-                    gender: $gender,
-                    phoneNumber: $phoneNumber,
-                    state: $state,
-                    zipcode: $zipcode
+                mutation CreateAdmin(
+                    $address: String
+                    $adminType: AdminTypeEnum!
+                    $birthDate: Date
+                    $city: String
+                    $gender: GenderEnum
+                    $phoneNumber: String
+                    $id: ID
+                    $state: String
+                    $email: String
+                    $firstName: String!
+                    $lastName: String!
+                    $password: String
+                    $zipcode: String
                 ) {
-                    admin {
+                    createAdmin(
+                        user: {
+                            firstName: $firstName
+                            lastName: $lastName
+                            password: $password
+                            email: $email
+                            id: $id
+                        }
+                        address: $address
+                        adminType: $adminType
+                        birthDate: $birthDate
+                        city: $city
+                        gender: $gender
+                        phoneNumber: $phoneNumber
+                        state: $state
+                        zipcode: $zipcode
+                    ) {
+                        admin {
+                            accountType
+                            adminType
+                            userUuid
+                            birthDate
+                            address
+                            city
+                            phoneNumber
+                            state
+                            zipcode
+                            user {
+                                email
+                                firstName
+                                id
+                                lastName
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const GET_ALL_ADMINS = gql`
+                query GetAllAdmins {
+                    admins {
                         accountType
                         adminType
-                        userUuid
-                        birthDate
-                        address
-                        city
                         phoneNumber
-                        state
-                        zipcode
                         user {
                             email
                             firstName
                             id
                             lastName
                         }
+                        userUuid
                     }
                 }
-            }
             `;
-
-            const GET_ALL_ADMINS = gql`
-                query GetAllAdmins {
-                    admins {
-                      accountType
-                      adminType
-                      phoneNumber
-                      user {
-                        email
-                        firstName
-                        id
-                        lastName
-                      }
-                      userUuid
-                    }
-                  }`;
 
             const modifiedData = {
                 ...formData,
@@ -1121,42 +1153,52 @@ export default {
                     variables: {
                         ...adminMutationVariable,
                         id,
-                        userUuid
+                        userUuid,
                     },
-                    "update": (cache, { data: { createAdmin: { admin } } }) => {
+                    update: (
+                        cache,
+                        {
+                            data: {
+                                createAdmin: { admin },
+                            },
+                        }
+                    ) => {
                         const newAdmin = {
                             accountType: admin.accountType,
                             adminType: admin.adminType,
                             phoneNumber: admin.phoneNumber,
                             user: admin.user,
-                            userUuid: admin.userUuid
+                            userUuid: admin.userUuid,
                         };
 
                         const cachedAdmin = cache.readQuery({
                             query: USER_QUERIES.admin,
                             variables: {
-                                ownerID: admin.user.id
-                            }
-                        })
+                                ownerID: admin.user.id,
+                            },
+                        });
                         cache.writeQuery({
                             data: {
                                 admin: {
                                     ...cachedAdmin,
-                                    ...newAdmin
+                                    ...newAdmin,
                                 },
                             },
                             query: GET_ADMIN,
                             variables: {
                                 ownerID: admin.user.id,
-                            }
+                            },
                         });
 
                         if (cache.data.data.ROOT_QUERY.admins) {
-                            const cachedAdmins = cache.readQuery({
-                                query: GET_ALL_ADMINS
-                            })["admins"] || [];
+                            const cachedAdmins =
+                                cache.readQuery({
+                                    query: GET_ALL_ADMINS,
+                                })['admins'] || [];
 
-                            const matchingIndex = cachedAdmins.findIndex(({user: {id}}) => newAdmin.user.id === id)
+                            const matchingIndex = cachedAdmins.findIndex(
+                                ({ user: { id } }) => newAdmin.user.id === id
+                            );
 
                             let updatedAdmins = cachedAdmins;
 
@@ -1168,12 +1210,12 @@ export default {
 
                             cache.writeQuery({
                                 data: {
-                                    "admins": updatedAdmins
+                                    admins: updatedAdmins,
                                 },
-                                query: GET_ALL_ADMINS
+                                query: GET_ALL_ADMINS,
                             });
                         }
-                    }
+                    },
                 });
             } catch (error) {
                 return {
@@ -1321,7 +1363,7 @@ export default {
                         name: 'startTime1',
                         label: 'Start Time',
                         required: 'true',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
@@ -1329,7 +1371,7 @@ export default {
                         label: 'End Time',
                         required: 'true',
                         component: (
-                            <Fields.TimePicker width={50} format="hh:mm a" />
+                            <Fields.TimePicker width={50} format='hh:mm a' />
                         ),
                         validator: Yup.date(),
                     },
@@ -1341,13 +1383,13 @@ export default {
                     {
                         name: 'startTime2',
                         label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
                         name: 'endTime2',
                         label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
@@ -1358,13 +1400,13 @@ export default {
                     {
                         name: 'startTime3',
                         label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
                         name: 'endTime3',
                         label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                 ],
@@ -1869,10 +1911,10 @@ export default {
                         label: 'Class',
                         component: (
                             <Fields.DataSelect
-                                name="Classes"
+                                name='Classes'
                                 optionsMap={openCourseMap}
                                 request={GET_COURSES}
-                                noOptionsText="No classes available"
+                                noOptionsText='No classes available'
                             />
                         ),
                         validator: Yup.mixed(),

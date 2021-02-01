@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {Link, useParams} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
@@ -14,22 +14,22 @@ import Hidden from '@material-ui/core/Hidden';
 import MoneyIcon from '@material-ui/icons/LocalAtmOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
-import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
-import {darkGrey} from 'theme/muiTheme';
+import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import { darkGrey } from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
 import ResetPasswordDialogs from './ResetPasswordDialogs';
 import Loading from 'components/OmouComponents/Loading';
 import './Accounts.scss';
-import {addDashes} from './accountUtils';
-import {ReactComponent as GradeIcon} from '../../grade.svg';
-import {ReactComponent as IDIcon} from '../../identifier.svg';
-import {ReactComponent as SchoolIcon} from '../../school.svg';
+import { addDashes } from './accountUtils';
+import { ReactComponent as GradeIcon } from '../../grade.svg';
+import { ReactComponent as IDIcon } from '../../identifier.svg';
+import { ReactComponent as SchoolIcon } from '../../school.svg';
 
-import {capitalizeString, fullName, USER_TYPES} from 'utils';
-import moment from "moment";
+import { capitalizeString, fullName, USER_TYPES } from 'utils';
+import moment from 'moment';
 
 const useStyles = makeStyles({
     icon: {
@@ -165,14 +165,14 @@ const ProfileHeading = ({ ownerID }) => {
     const renderEditandAwayButton = () => (
         <>
             {accountType === 'instructor' && (
-                <Grid align="left" className="schedule-button" item xs={12}>
+                <Grid align='left' className='schedule-button' item xs={12}>
                     {canViewScheduleOptions && (
                         <>
                             <ResponsiveButton
-                                aria-controls="simple-menu"
-                                aria-haspopup="true"
+                                aria-controls='simple-menu'
+                                aria-haspopup='true'
                                 onClick={handleOpen}
-                                variant="outlined"
+                                variant='outlined'
                                 startIcon={<CalendarIcon />}
                             >
                                 Schedule Options
@@ -197,13 +197,13 @@ const ProfileHeading = ({ ownerID }) => {
             {isAdmin && isAuthUser && (
                 <>
                     <Grid component={Hidden} item mdDown xs={12}>
-                        <div className="editResetDiv">
+                        <div className='editResetDiv'>
                             <ResponsiveButton
                                 component={Link}
                                 to={`/form/${userInfo.accountType.toLowerCase()}/${
                                     userInfo.user.id
                                 }`}
-                                className="edit"
+                                className='edit'
                             >
                                 Edit Profile
                             </ResponsiveButton>
@@ -221,7 +221,7 @@ const ProfileHeading = ({ ownerID }) => {
                             to={`/form/${userInfo.accountType.toLowerCase()}/${
                                 userInfo.user.id
                             }`}
-                            variant="outlined"
+                            variant='outlined'
                         >
                             <EditIcon />
                         </ResponsiveButton>
@@ -236,7 +236,7 @@ const ProfileHeading = ({ ownerID }) => {
                         to={`/form/${userInfo.accountType.toLowerCase()}/${
                             userInfo.user.id
                         }`}
-                        variant="outlined"
+                        variant='outlined'
                     >
                         Edit Profile
                     </ResponsiveButton>
@@ -292,7 +292,7 @@ const ProfileHeading = ({ ownerID }) => {
                                 href={`mailto:${userInfo.user.email}`}
                             >
                                 <Typography
-                                    variant="body1"
+                                    variant='body1'
                                     className={classes.text}
                                 >
                                     {userInfo.user.email}
@@ -309,7 +309,7 @@ const ProfileHeading = ({ ownerID }) => {
                         </Grid>
                         <Grid item xs={width - 1}>
                             <Typography
-                                variant="body1"
+                                variant='body1'
                                 className={classes.text}
                             >
                                 {type[variant].text}
@@ -324,38 +324,38 @@ const ProfileHeading = ({ ownerID }) => {
             case 'student':
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Grade" />
-                        <InfoRow variant="Phone" />
-                        <InfoRow variant="School" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Birthday" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Grade' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='School' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Birthday' />
                     </>
                 );
             case 'instructor':
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Phone" />
-                        <InfoRow variant="Birthday" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='Birthday' />
                     </>
                 );
             case 'parent':
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Phone" />
-                        <InfoRow variant="Balance" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='Balance' />
                     </>
                 );
             default:
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Phone" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
                     </>
                 );
         }
@@ -363,19 +363,32 @@ const ProfileHeading = ({ ownerID }) => {
 
     return (
         <Grid
-            alignItems="center"
+            alignItems='center'
             container
-            item xs={12}
-
-            style={{margin: accountType === 'INSTRUCTOR' ? '-20px 0' : '0'}}
+            item
+            xs={12}
+            style={{ margin: accountType === 'INSTRUCTOR' ? '-20px 0' : '0' }}
         >
-            <Grid align="left" alignItems="center" justify="space-between" container item xs={12}>
-                <Grid className="profile-name" item>
-                    <Typography variant="h3" style={{marginRight: "20px", display: "inline-block"}}>
+            <Grid
+                align='left'
+                alignItems='center'
+                justify='space-between'
+                container
+                item
+                xs={12}
+            >
+                <Grid className='profile-name' item>
+                    <Typography
+                        variant='h3'
+                        style={{ marginRight: '20px', display: 'inline-block' }}
+                    >
                         {fullName(userInfo.user)}
                     </Typography>
                     <Hidden smDown>
-                        <LabelBadge variant="outline-gray" style={{marginBottom: "10px"}}>
+                        <LabelBadge
+                            variant='outline-gray'
+                            style={{ marginBottom: '10px' }}
+                        >
                             {capitalizeString(accountType)}
                         </LabelBadge>
                     </Hidden>
@@ -385,8 +398,8 @@ const ProfileHeading = ({ ownerID }) => {
 
             <Grid
                 container
-                align="left"
-                alignItems="center"
+                align='left'
+                alignItems='center'
                 style={{
                     width: '430px',
                     margin: accountType === 'INSTRUCTOR' ? '-10px 0' : '10px 0',

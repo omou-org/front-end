@@ -1,16 +1,16 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import Hidden from '@material-ui/core/Hidden';
 import Drawer from '@material-ui/core/Drawer';
 import AuthenticatedNavBar from './AuthenticatedNavBar';
-import {makeStyles} from '@material-ui/core/styles';
-import {AuthenticatedComponent} from './NavigationContainer';
+import { makeStyles } from '@material-ui/core/styles';
+import { AuthenticatedComponent } from './NavigationContainer';
 import MomentUtils from '@date-io/moment';
-import {RootRoutes} from '../Routes/RootRoutes';
-import {MuiPickersUtilsProvider} from '@material-ui/pickers';
+import { RootRoutes } from '../Routes/RootRoutes';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import gql from 'graphql-tag';
 import OnboardingRoutes from '../Routes/OnboardingRoutes';
 import IdleTimerPrompt from '../OmouComponents/IdleTimerPrompt';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles({
     navigationIconStyle: {
@@ -34,7 +34,7 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const {accountType} = useSelector(({auth}) => auth) || [];
+    const { accountType } = useSelector(({ auth }) => auth) || [];
     // const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
     //     skip: accountType !== 'ADMIN',
     // });
@@ -51,27 +51,27 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     return (
         <AuthenticatedComponent>
             {isBusinessDataValid ? (
-                <div className="Navigation">
-                    <AuthenticatedNavBar toggleDrawer={handleDrawerToggle}/>
-                    <nav className="OmouDrawer">
-                        <Hidden implementation="css" smUp>
+                <div className='Navigation'>
+                    <AuthenticatedNavBar toggleDrawer={handleDrawerToggle} />
+                    <nav className='OmouDrawer'>
+                        <Hidden implementation='css' smUp>
                             <Drawer
                                 classes={{ paper: classes.navigationLeftList }}
                                 onClose={handleDrawerToggle}
                                 open={mobileOpen}
-                                variant="temporary"
+                                variant='temporary'
                             >
                                 {UserNavigationOptions}
                             </Drawer>
                         </Hidden>
-                        <Hidden implementation="css" mdDown>
-                            <Drawer open variant="permanent">
+                        <Hidden implementation='css' mdDown>
+                            <Drawer open variant='permanent'>
                                 {UserNavigationOptions}
                             </Drawer>
                         </Hidden>
                     </nav>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
-                        <main className="OmouMain">
+                        <main className='OmouMain'>
                             <RootRoutes />
                         </main>
                     </MuiPickersUtilsProvider>
