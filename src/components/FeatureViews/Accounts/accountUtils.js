@@ -1,9 +1,13 @@
 export const addDashes = (string) => {
-    if (string && string.length === 10 &&
-        string.match(/^[0-9]{10}$/u) !== null) {
-        return (
-            `${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(6, 10)}`
-        );
+    if (
+        string &&
+        string.length === 10 &&
+        string.match(/^[0-9]{10}$/u) !== null
+    ) {
+        return `${string.slice(0, 3)}-${string.slice(3, 6)}-${string.slice(
+            6,
+            10
+        )}`;
     }
     return string;
 };
@@ -15,7 +19,7 @@ export const stringToColor = (string) => {
         hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
 
-    let colour = "#";
+    let colour = '#';
 
     for (let j = 0; j < 3; j += 1) {
         const value = (hash >> (j * 8)) & 0xff;

@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Redirect, useParams} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Redirect, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import BioIcon from '@material-ui/icons/PersonOutlined';
 import ContactIcon from '@material-ui/icons/ContactPhoneOutlined';
@@ -12,7 +12,7 @@ import PaymentIcon from '@material-ui/icons/CreditCardOutlined';
 import ScheduleIcon from '@material-ui/icons/CalendarTodayOutlined';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import NotificationIcon from '@material-ui/icons/NotificationImportant';
 import './Accounts.scss';
 
@@ -21,28 +21,28 @@ import ComponentViewer from './ComponentViewer.js';
 import Loading from 'components/OmouComponents/Loading';
 
 import SettingsIcon from '@material-ui/icons/Settings';
-import {USER_TYPES} from '../../../utils';
+import { USER_TYPES } from '../../../utils';
 
 import UserProfileInfo from './UserProfileInfo';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 const userTabs = {
     instructor: [
         {
-            icon: <ScheduleIcon className="TabIcon" />,
+            icon: <ScheduleIcon className='TabIcon' />,
             tab_heading: 'Schedule',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 0,
         },
         {
-            icon: <CoursesIcon className="TabIcon" />,
+            icon: <CoursesIcon className='TabIcon' />,
             tab_heading: 'Courses',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 1,
         },
         {
-            icon: <BioIcon className="TabIcon" />,
+            icon: <BioIcon className='TabIcon' />,
             tab_heading: 'Bio',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -53,7 +53,7 @@ const userTabs = {
             tab_id: 2,
         },
         {
-            icon: <NoteIcon className="TabIcon" />,
+            icon: <NoteIcon className='TabIcon' />,
             tab_heading: 'Notes',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -63,7 +63,7 @@ const userTabs = {
             tab_id: 7,
         },
         {
-            icon: <SettingsIcon className="SettingsIcon" />,
+            icon: <SettingsIcon className='SettingsIcon' />,
             tab_heading: 'Notification Settings',
             access_permissions: [USER_TYPES.instructor],
             tab_id: 11,
@@ -71,7 +71,7 @@ const userTabs = {
     ],
     parent: [
         {
-            icon: <CurrentSessionsIcon className="TabIcon" />,
+            icon: <CurrentSessionsIcon className='TabIcon' />,
             tab_heading: 'Student Info',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -81,7 +81,7 @@ const userTabs = {
             tab_id: 8,
         },
         {
-            icon: <PaymentIcon className="TabIcon" />,
+            icon: <PaymentIcon className='TabIcon' />,
             tab_heading: 'Payment History',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -91,7 +91,7 @@ const userTabs = {
             tab_id: 5,
         },
         {
-            icon: <NotificationIcon className="TabIcon" />,
+            icon: <NotificationIcon className='TabIcon' />,
             tab_heading: 'Notes',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -101,7 +101,7 @@ const userTabs = {
             tab_id: 7,
         },
         {
-            icon: <SettingsIcon className="SettingsIcon" />,
+            icon: <SettingsIcon className='SettingsIcon' />,
             tab_heading: 'Notification Settings',
             access_permissions: [USER_TYPES.parent],
             tab_id: 11,
@@ -109,19 +109,19 @@ const userTabs = {
     ],
     student: [
         {
-            icon: <CurrentSessionsIcon className="TabIcon" />,
+            icon: <CurrentSessionsIcon className='TabIcon' />,
             tab_heading: 'Current Course(s)',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 3,
         },
         {
-            icon: <PastSessionsIcon className="TabIcon" />,
+            icon: <PastSessionsIcon className='TabIcon' />,
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_heading: 'Past Course(s)',
             tab_id: 4,
         },
         {
-            icon: <ContactIcon className="TabIcon" />,
+            icon: <ContactIcon className='TabIcon' />,
             access_permissions: [
                 USER_TYPES.receptionist,
                 USER_TYPES.admin,
@@ -132,7 +132,7 @@ const userTabs = {
             tab_id: 6,
         },
         {
-            icon: <NoteIcon className="TabIcon" />,
+            icon: <NoteIcon className='TabIcon' />,
             access_permissions: [
                 USER_TYPES.receptionist,
                 USER_TYPES.admin,
@@ -279,13 +279,13 @@ const UserProfile = () => {
         setDisplayTabs(userTabs[accountType]);
     }, [accountType]);
 
-    const {loading, error, data} = useQuery(USER_QUERIES[accountType], {
-        variables: {ownerID: accountID},
+    const { loading, error, data } = useQuery(USER_QUERIES[accountType], {
+        variables: { ownerID: accountID },
     });
 
     if (loading) return <Loading />;
 
-    if (error) return <Redirect to="/PageNotFound" />;
+    if (error) return <Redirect to='/PageNotFound' />;
 
     const { accountNotes } = data;
     const numImportantNotes = accountNotes.filter((note) => note.important)
@@ -346,7 +346,7 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="UserProfile">
+        <div className='UserProfile'>
             <UserProfileInfo user={data.userInfo} />
             {tabs()}
         </div>

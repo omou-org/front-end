@@ -1,8 +1,8 @@
-const EMAIL = "maggie@summit.com";
+const EMAIL = 'maggie@summit.com';
 
-describe("Reset Password", () => {
+describe('Reset Password', () => {
     before(() => {
-        cy.visit("/resetpassword");
+        cy.visit('/resetpassword');
     });
 
     // it("Can return to the login page", () => {

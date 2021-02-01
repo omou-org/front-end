@@ -114,24 +114,24 @@ const ParentPayment = (props) => {
         const rows = getPaymentInfo(student);
         return (
             <div key={student.user_id}>
-                <h3 align="left">{student.name}</h3>
-                <Table padding="default">
+                <h3 align='left'>{student.name}</h3>
+                <Table padding='default'>
                     <colgroup>
-                        <col width="0%" />
-                        <col width="100%" />
-                        <col width="0%" />
-                        <col width="0%" />
-                        <col width="0%" />
-                        <col width="0%" />
+                        <col width='0%' />
+                        <col width='100%' />
+                        <col width='0%' />
+                        <col width='0%' />
+                        <col width='0%' />
+                        <col width='0%' />
                     </colgroup>
                     <TableHead>
                         <TableRow>
                             <TableCell />
-                            <TableCell align="left">Session</TableCell>
-                            <TableCell align="left">Dates</TableCell>
-                            <TableCell align="left">Sessions</TableCell>
-                            <TableCell align="left">Tuition</TableCell>
-                            <TableCell align="left">Material Fee</TableCell>
+                            <TableCell align='left'>Session</TableCell>
+                            <TableCell align='left'>Dates</TableCell>
+                            <TableCell align='left'>Sessions</TableCell>
+                            <TableCell align='left'>Tuition</TableCell>
+                            <TableCell align='left'>Material Fee</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -152,7 +152,7 @@ const ParentPayment = (props) => {
                                     tabIndex={-1}
                                     key={course.course_id}
                                 >
-                                    <TableCell padding="checkbox">
+                                    <TableCell padding='checkbox'>
                                         <Checkbox
                                             checked={
                                                 selectedRows[student.user_id][
@@ -174,7 +174,7 @@ const ParentPayment = (props) => {
                                             }}
                                         />
                                     </TableCell>
-                                    <TableCell align="left">
+                                    <TableCell align='left'>
                                         <span
                                             style={{
                                                 width: '50%',
@@ -183,15 +183,15 @@ const ParentPayment = (props) => {
                                             {course.title}
                                         </span>
                                     </TableCell>
-                                    <TableCell align="left">
+                                    <TableCell align='left'>
                                         {renderDate(course.schedule.start_date)}
                                         &nbsp;-&nbsp;
                                         {renderDate(course.schedule.end_date)}
                                     </TableCell>
-                                    <TableCell align="left">
+                                    <TableCell align='left'>
                                         <TextField
-                                            id="standard-name"
-                                            type="number"
+                                            id='standard-name'
+                                            type='number'
                                             error={!validSessions}
                                             value={
                                                 sessionFields[student.user_id][
@@ -213,7 +213,7 @@ const ParentPayment = (props) => {
                                             }}
                                         />
                                     </TableCell>
-                                    <TableCell align="left">
+                                    <TableCell align='left'>
                                         {validSessions &&
                                             `$${Math.round(tuition)}`}
                                     </TableCell>
@@ -228,9 +228,9 @@ const ParentPayment = (props) => {
     };
 
     return (
-        <Grid container className="">
+        <Grid container className=''>
             <Grid item xs={11} style={{ padding: '20px' }}>
-                <h1 align="left">Pay for Course(s)</h1>
+                <h1 align='left'>Pay for Course(s)</h1>
                 {parent.student_ids.map((studentID) =>
                     renderStudentPayments(props.students[studentID])
                 )}
@@ -240,14 +240,14 @@ const ParentPayment = (props) => {
                         paddingTop: '5vh',
                     }}
                 >
-                    <Grid item xs={6} align="left">
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">
+                    <Grid item xs={6} align='left'>
+                        <FormControl component='fieldset'>
+                            <FormLabel component='legend'>
                                 <b>Payment Method</b>
                             </FormLabel>
                             <RadioGroup
-                                aria-label="position"
-                                name="position"
+                                aria-label='position'
+                                name='position'
                                 value={paymentType}
                                 onChange={({ target: value }) => {
                                     setPaymentType(value);
@@ -255,35 +255,35 @@ const ParentPayment = (props) => {
                                 row
                             >
                                 <FormControlLabel
-                                    value="Credit Card"
-                                    control={<Radio color="primary" />}
-                                    label="Credit Card"
-                                    labelPlacement="end"
+                                    value='Credit Card'
+                                    control={<Radio color='primary' />}
+                                    label='Credit Card'
+                                    labelPlacement='end'
                                 />
                                 <FormControlLabel
-                                    value="Check"
-                                    control={<Radio color="primary" />}
-                                    label="Check"
-                                    labelPlacement="end"
+                                    value='Check'
+                                    control={<Radio color='primary' />}
+                                    label='Check'
+                                    labelPlacement='end'
                                 />
                                 <FormControlLabel
-                                    value="Cash"
-                                    control={<Radio color="primary" />}
-                                    label="Cash"
-                                    labelPlacement="end"
+                                    value='Cash'
+                                    control={<Radio color='primary' />}
+                                    label='Cash'
+                                    labelPlacement='end'
                                 />
                             </RadioGroup>
                         </FormControl>
                         <FormControl
-                            variant="outlined"
+                            variant='outlined'
                             style={{
                                 paddingTop: '2vh',
                             }}
                         >
                             <div row>
                                 <OutlinedInput
-                                    placeholder="Enter Discount Code"
-                                    id="component-outlined"
+                                    placeholder='Enter Discount Code'
+                                    id='component-outlined'
                                     onChange={({ target: { value } }) => {
                                         setEnteredDiscountCode(value);
                                     }}
@@ -296,7 +296,7 @@ const ParentPayment = (props) => {
                             </div>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={5} align="right">
+                    <Grid item xs={5} align='right'>
                         <b>Total</b>
                     </Grid>
                     <Grid item xs={1}>

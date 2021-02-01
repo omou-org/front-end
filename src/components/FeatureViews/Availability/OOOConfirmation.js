@@ -33,19 +33,19 @@ export default function OOOConfirmation(props) {
                     }}
                 />
             </Grid>
-            <Grid item xs={12} alignItems="center">
+            <Grid item xs={12} alignItems='center'>
                 <Typography className={classes.messageSent}>
                     Your notice has been sent{' '}
                 </Typography>
-                <Typography variant="h6">
+                <Typography variant='h6'>
                     You will recieve a confirmation of your OOO request
                 </Typography>
             </Grid>
 
-            <Grid item xs={12} alignItems="center" style={{ marginTop: '5vh' }}>
+            <Grid item xs={12} alignItems='center' style={{ marginTop: '5vh' }}>
                 <ResponsiveButton
                     className={classes.cancelbutton}
-                    variant="outlined"
+                    variant='outlined'
                     onClick={props.handleClose}
                 >
                     Close

@@ -102,7 +102,7 @@ const ComponentViewer = ({ inView, user, id }) => {
                 },
                 {
                     component: (
-                        <Notes ownerID={id} ownerType="account" key={7} />
+                        <Notes ownerID={id} ownerType='account' key={7} />
                     ),
                     access_permissions: [
                         USER_TYPES.receptionist,
@@ -158,7 +158,7 @@ const ComponentViewer = ({ inView, user, id }) => {
     );
 
     return (
-        <Grid className="profile-component-container">
+        <Grid className='profile-component-container'>
             {componentsArray.find(({ id }) => id == inView)?.component}
         </Grid>
     );
