@@ -22,7 +22,7 @@ const useStyles = makeStyles({
         "& Button": {
             "margin": "10px",
         },
-        "textAlign": "right",
+        "textAlign": "left",
     },
     "root": {
         "& .MuiSelect-select-root": {
@@ -141,7 +141,8 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
                         type="submit" variant="outlined"
                     >
                         {submitting ? "Submitting" : "Submit"}
-                    </ResponsiveButton>}
+                    </ResponsiveButton>
+                    }
                 </div>
             </StepContent>
         </Step>

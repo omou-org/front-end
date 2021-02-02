@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { useSelector } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import CardView from '@material-ui/icons/ViewModule';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Grid from '@material-ui/core/Grid';
@@ -33,8 +32,6 @@ import { simpleUser } from 'queryFragments';
 import UserAvatar from './UserAvatar';
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { buttonBlue } from '../../../theme/muiTheme';
-
-
 
 const QUERY_USERS = gql`
     query UserQuery($adminType: String) {
@@ -327,7 +324,7 @@ const Accounts = () => {
             <Typography align="left" className="heading" variant="h1">
                 Accounts
             </Typography>
-            <Grid style={{marginBottom: "48px"}} container direction="row">
+            <Grid style={{marginBottom: "40px"}} container direction="row">
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
                         className="tabs"
