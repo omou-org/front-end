@@ -245,7 +245,7 @@ const Accounts = () => {
                                         row.user.id === userID) && (
                                         <IconButton
                                             component={Link}
-                                            to={`/form/edit/${row.accountType}/${row.user.id}`}
+                                            to={`/form/${row.accountType}/edit/${row.user.id}`}
                                         >
                                             <EditIcon />
                                         </IconButton>
@@ -288,7 +288,7 @@ const Accounts = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to='/form/add/student'
+                        to='/form/student/add'
                         variant='outlined'
                     >
                         new student
@@ -297,7 +297,7 @@ const Accounts = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to='/form/add/parent'
+                        to='/form/parent/add'
                         variant='outlined'
                     >
                         new parent

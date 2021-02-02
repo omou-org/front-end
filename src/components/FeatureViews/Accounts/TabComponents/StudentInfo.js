@@ -103,7 +103,7 @@ const StudentInfo = () => {
                     height={150}
                     width={300}
                     component={Link}
-                    to={`/form/add/student/${accountID}`}
+                    to={`/form/student/add/${accountID}`}
                 >
                     + Add Student
                 </AddItemButton>
