@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useValidateRegisteringParent } from '../../../OmouComponents/RegistrationUtils';
+import React, {useEffect, useState} from 'react';
+import {useValidateRegisteringParent} from '../../../OmouComponents/RegistrationUtils';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import {useMutation, useQuery} from '@apollo/react-hooks';
 import Loading from '../../../OmouComponents/Loading';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { RegistrationContext } from './RegistrationContext';
+import {RegistrationContext} from './RegistrationContext';
 import StudentRegistrationEntry from './StudentRegistrationsEntry';
 import PaymentBoard from './PaymentBoard';
 import RegistrationActions from '../RegistrationActions';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { omouBlue, skyBlue } from '../../../../theme/muiTheme';
+import {omouBlue, skyBlue} from '../../../../theme/muiTheme';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,10 +21,10 @@ import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import {Link} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
-import { GET_REGISTRATION_CART } from '../SelectParentDialog';
+import {GET_REGISTRATION_CART} from '../SelectParentDialog';
 
 const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
     query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
@@ -223,177 +223,175 @@ export default function RegistrationCartContainer() {
 
     return (
         <RegistrationContext.Provider
-            value={{ registrationCart, currentParent, updateSession }}
+            value={{registrationCart, currentParent, updateSession}}
         >
-            <BackgroundPaper>
-                <Grid container>
-                    <RegistrationActions />
+            <Grid container>
+                <RegistrationActions/>
+            </Grid>
+            <hr/>
+            <Typography variant='h2' align='left'>
+                Registration Cart
+            </Typography>
+            <Typography
+                style={{fontSize: '2em'}}
+                align='left'
+                gutterBottom
+                data-cy='payment-title'
+            >
+                Pay for Course(s)
+            </Typography>
+            <Grid container item>
+                <Grid container direction='row' spacing={5}>
+                    {Object.entries(registrationCart).map(
+                        ([studentId, registration]) => (
+                            <StudentRegistrationEntry
+                                key={studentId}
+                                student={studentData.find(
+                                    (student) =>
+                                        student.user.id === studentId
+                                )}
+                                registrationList={registration}
+                            />
+                        )
+                    )}
                 </Grid>
-                <hr />
-                <Typography variant='h2' align='left'>
-                    Registration Cart
-                </Typography>
-                <Typography
-                    style={{ fontSize: '2em' }}
-                    align='left'
-                    gutterBottom
-                    data-cy='payment-title'
+                <Grid
+                    container
+                    item
+                    justify={
+                        parentIsLoggedIn ? 'flex-end' : 'space-between'
+                    }
+                    alignItems={parentIsLoggedIn && 'flex-end'}
+                    direction={parentIsLoggedIn ? 'column' : 'row'}
+                    spacing={parentIsLoggedIn && 4}
+                    style={{marginTop: '50px'}}
                 >
-                    Pay for Course(s)
-                </Typography>
-                <Grid container item>
-                    <Grid container direction='row' spacing={5}>
-                        {Object.entries(registrationCart).map(
-                            ([studentId, registration]) => (
-                                <StudentRegistrationEntry
-                                    key={studentId}
-                                    student={studentData.find(
-                                        (student) =>
-                                            student.user.id === studentId
-                                    )}
-                                    registrationList={registration}
-                                />
-                            )
-                        )}
-                    </Grid>
+                    {parentIsLoggedIn ? (
+                        <>
+                            <Grid item xs={5}>
+                                <FormControl required error={reviewError}>
+                                    <FormLabel
+                                        style={{textAlign: 'left'}}
+                                    >
+                                        Acknowledge
+                                    </FormLabel>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={
+                                                    reviewConfirmationCheck
+                                                }
+                                                color='primary'
+                                                onChange={
+                                                    handleAcknowledgement
+                                                }
+                                                name='checkedA'
+                                            />
+                                        }
+                                        label='By checking this box, you confirmed that you have reviewed
+                                        the registrations above.'
+                                        style={{
+                                            color: omouBlue,
+                                            textAlign: 'left',
+                                            fontSize: '.7em',
+                                            fontStyle: 'italics',
+                                        }}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item>
+                                <ResponsiveButton
+                                    onClick={handleParentRegistrationSubmit}
+                                    variant='contained'
+                                    color='primary'
+                                >
+                                    save registration cart
+                                </ResponsiveButton>
+                            </Grid>
+                        </>
+                    ) : (
+                        <PaymentBoard/>
+                    )}
+                </Grid>
+            </Grid>
+            <Dialog
+                open={parentRegistrationConfirmation}
+                onClose={() => setParentConfirmation(false)}
+            >
+                <DialogTitle disableTypography>
                     <Grid
                         container
-                        item
-                        justify={
-                            parentIsLoggedIn ? 'flex-end' : 'space-between'
-                        }
-                        alignItems={parentIsLoggedIn && 'flex-end'}
-                        direction={parentIsLoggedIn ? 'column' : 'row'}
-                        spacing={parentIsLoggedIn && 4}
-                        style={{ marginTop: '50px' }}
+                        direction='row'
+                        justify='center'
+                        alignItems='center'
                     >
-                        {parentIsLoggedIn ? (
-                            <>
-                                <Grid item xs={5}>
-                                    <FormControl required error={reviewError}>
-                                        <FormLabel
-                                            style={{ textAlign: 'left' }}
-                                        >
-                                            Acknowledge
-                                        </FormLabel>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={
-                                                        reviewConfirmationCheck
-                                                    }
-                                                    color='primary'
-                                                    onChange={
-                                                        handleAcknowledgement
-                                                    }
-                                                    name='checkedA'
-                                                />
-                                            }
-                                            label='By checking this box, you confirmed that you have reviewed
-											the registrations above.'
-                                            style={{
-                                                color: omouBlue,
-                                                textAlign: 'left',
-                                                fontSize: '.7em',
-                                                fontStyle: 'italics',
-                                            }}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <Grid item>
-                                    <ResponsiveButton
-                                        onClick={handleParentRegistrationSubmit}
-                                        variant='contained'
-                                        color='primary'
-                                    >
-                                        save registration cart
-                                    </ResponsiveButton>
-                                </Grid>
-                            </>
-                        ) : (
-                            <PaymentBoard />
-                        )}
-                    </Grid>
-                </Grid>
-                <Dialog
-                    open={parentRegistrationConfirmation}
-                    onClose={() => setParentConfirmation(false)}
-                >
-                    <DialogTitle disableTypography>
-                        <Grid
-                            container
-                            direction='row'
-                            justify='center'
-                            alignItems='center'
-                        >
-                            <Grid item>
-                                <CheckCircleIcon
-                                    color='primary'
-                                    style={{ fontSize: '3em' }}
-                                />
-                            </Grid>
-                            <Grid item>
-                                <Typography
-                                    color='primary'
-                                    align='center'
-                                    style={{
-                                        fontSize: '1.2em',
-                                        fontWeight: 500,
-                                        padding: '15px',
-                                    }}
-                                >
-                                    Request Saved
-                                </Typography>
-                            </Grid>
+                        <Grid item>
+                            <CheckCircleIcon
+                                color='primary'
+                                style={{fontSize: '3em'}}
+                            />
                         </Grid>
-                    </DialogTitle>
-                    <DialogContent>
-                        <Typography align='center'>
-                            Your request has been submitted!
-                        </Typography>
-                        <Typography align='center'>
-                            Here’s the next step to complete the enrollment
-                            process:
-                        </Typography>
-
-                        <Box
-                            style={{
-                                backgroundColor: skyBlue,
-                                padding: '8%',
-                                margin: '3%',
-                            }}
-                        >
+                        <Grid item>
                             <Typography
+                                color='primary'
                                 align='center'
-                                style={{ fontWeight: 550 }}
+                                style={{
+                                    fontSize: '1.2em',
+                                    fontWeight: 500,
+                                    padding: '15px',
+                                }}
                             >
-                                Pay in-person at Summit Tutoring or pay over
-                                phone (408)839-3239
+                                Request Saved
                             </Typography>
-                        </Box>
-                        <Typography align='center'>
-                            Review all invoices on your Payment page.
+                        </Grid>
+                    </Grid>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography align='center'>
+                        Your request has been submitted!
+                    </Typography>
+                    <Typography align='center'>
+                        Here’s the next step to complete the enrollment
+                        process:
+                    </Typography>
+
+                    <Box
+                        style={{
+                            backgroundColor: skyBlue,
+                            padding: '8%',
+                            margin: '3%',
+                        }}
+                    >
+                        <Typography
+                            align='center'
+                            style={{fontWeight: 550}}
+                        >
+                            Pay in-person at Summit Tutoring or pay over
+                            phone (408)839-3239
                         </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <ResponsiveButton
-                            variant='outlined'
-                            component={Link}
-                            to='/registration'
-                        >
-                            done
-                        </ResponsiveButton>
-                        <ResponsiveButton
-                            variant='contained'
-                            color='primary'
-                            component={Link}
-                            to='/my-payments'
-                        >
-                            view invoice
-                        </ResponsiveButton>
-                    </DialogActions>
-                </Dialog>
-            </BackgroundPaper>
+                    </Box>
+                    <Typography align='center'>
+                        Review all invoices on your Payment page.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton
+                        variant='outlined'
+                        component={Link}
+                        to='/registration'
+                    >
+                        done
+                    </ResponsiveButton>
+                    <ResponsiveButton
+                        variant='contained'
+                        color='primary'
+                        component={Link}
+                        to='/my-payments'
+                    >
+                        view invoice
+                    </ResponsiveButton>
+                </DialogActions>
+            </Dialog>
         </RegistrationContext.Provider>
     );
 }

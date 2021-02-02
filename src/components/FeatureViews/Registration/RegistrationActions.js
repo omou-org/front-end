@@ -1,19 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import Button from '@material-ui/core/Button';
+import React, {useCallback, useEffect, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Link, useHistory } from 'react-router-dom';
-import NewCourse from '@material-ui/icons/School';
+import {Link, useHistory, useLocation} from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './registration.scss';
 import SelectParentDialog from './SelectParentDialog';
-import { stringToColor } from '../Accounts/accountUtils';
-import { fullName, USER_TYPES } from '../../../utils';
-import { useValidateRegisteringParent } from '../../OmouComponents/RegistrationUtils';
-import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import {fullName, USER_TYPES} from '../../../utils';
+import {useValidateRegisteringParent} from '../../OmouComponents/RegistrationUtils';
+import {useDispatch, useSelector} from 'react-redux';
+import {useQuery} from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';

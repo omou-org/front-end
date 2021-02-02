@@ -1,4 +1,4 @@
-import { capitalizeString } from 'utils';
+import {capitalizeString} from 'utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -44,14 +44,14 @@ const toDisplayValue = (value) => {
     return value.toString();
 };
 
-const FormReceipt = ({ formData, format }) => (
+const DefaultFormReceipt = ({formData, format}) => (
     <div
         style={{
             margin: '2%',
             padding: '5px',
         }}
     >
-        <Typography align='left' style={{ fontSize: '24px' }}>
+        <Typography align='left' style={{fontSize: '24px'}}>
             You've successfully submitted!
         </Typography>
         <div className='confirmation-copy'>
@@ -81,7 +81,7 @@ const FormReceipt = ({ formData, format }) => (
     </div>
 );
 
-FormReceipt.propTypes = {
+DefaultFormReceipt.propTypes = {
     formData: PropTypes.objectOf(PropTypes.object),
     format: PropTypes.arrayOf(
         PropTypes.shape({
