@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Moment from 'react-moment';
 import {makeStyles} from '@material-ui/core/styles';
-import {LabelBadge} from '../../../theme/ThemedComponents/Badge/LabelBadge';
 
 import './registration.scss';
 import {Link, useRouteMatch} from 'react-router-dom';
@@ -117,10 +116,6 @@ const RegistrationCourse = () => {
         courseNotes,
     } = data;
 
-    const numImportantNotes = Object.values(courseNotes || {}).filter(
-        ({ important }) => important
-    ).length;
-
     const instructorName = fullName(instructor.user);
 
     return (
@@ -214,24 +209,6 @@ const RegistrationCourse = () => {
                         value={activeTab}
                     >
                         <Tab label="Registration" />
-                        <Tab
-                            classes={{ wrapper: classes.wrapper }}
-                            label={
-                                numImportantNotes ? (
-                                    <>
-                                        Notes
-                                        <LabelBadge
-                                            style={{ marginLeft: '8px' }}
-                                            variant="round-count"
-                                        >
-                                            {numImportantNotes}
-                                        </LabelBadge>
-                                    </>
-                                ) : (
-                                    <> Notes </>
-                                )
-                            }
-                        />
                     </Tabs>
                     {activeTab === 0 && (
                         <RegistrationCourseEnrollments
