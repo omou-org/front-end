@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import { PropTypes } from 'prop-types';
+import {defaultBoxShadow} from '../../theme/muiTheme'
 
 const useStyles = makeStyles({
     addNewItemStyles: ({ height, width }) => ({
@@ -18,7 +19,7 @@ const useStyles = makeStyles({
         border: '1.5px dashed #999999',
         borderRadius: '5px',
         boxSizing: 'border-box',
-        boxShadow: '0px 0px 8px rgb(196 196 196 / 60%)',
+        boxShadow: defaultBoxShadow,
     }),
 });
 

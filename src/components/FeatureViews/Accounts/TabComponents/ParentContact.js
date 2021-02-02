@@ -49,7 +49,7 @@ const ParentContact = () => {
 
     const parent = {
         name: fullName(student.primaryParent.user),
-        phoneNumber: student.primaryParent.user.parent.phoneNumber,
+        phoneNumber: student.primaryParent.user?.parent.phoneNumber,
         accountType: student.primaryParent.accountType.toLowerCase(),
         user: {
             id: student.primaryParent.user?.id,
