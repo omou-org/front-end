@@ -41,23 +41,28 @@ const NavigationContainer = () => {
     const isAccountFormActive = (location, NavItem) => {
         let active = false;
         if (location) {
-            ["student", "admin", "instructor", "parent"].forEach(accountType => {
-                if (
-                	location.pathname.includes(accountType) &&
-                    !location.pathname.includes("adminportal") &&
-                    NavItem.name === "Accounts"
-                ) {
-                    active = true;
+            ['student', 'admin', 'instructor', 'parent'].forEach(
+                (accountType) => {
+                    if (
+                        location.pathname.includes(accountType) &&
+                        !location.pathname.includes('adminportal') &&
+                        NavItem.name === 'Accounts'
+                    ) {
+                        active = true;
+                    }
                 }
-            });
+            );
         }
         return active;
-    }
+    };
 
     const isCourseFormActive = (location, NavItem) => {
         let active = false;
         if (location) {
-            if (location.pathname.includes("course_details") && NavItem.name === "Courses") {
+            if (
+                location.pathname.includes('course_details') &&
+                NavItem.name === 'Courses'
+            ) {
                 active = true;
             }
         }
@@ -72,28 +77,29 @@ const NavigationContainer = () => {
         <div className='DrawerList'>
             <List className='list'>
                 {NavigationList &&
-                NavigationList.map((NavItem) => (
-                    <ListItem
-                        button
-                        className={`listItem ${classes.navigationIconStyle}`}
-                        component={NavLinkNoDup}
-                        isActive={(match, location) => {
-                            return (
-                                match?.url ||
-                                isAccountFormActive(location, NavItem) ||
-                                isCourseFormActive(location, NavItem) ||
-                                (NavItem.name === 'Dashboard' &&
-                                    location.pathname === '/'))
-                        }}
-                        key={NavItem.name}
-                        to={NavItem.link}
-                    >
-                        <ListItemIcon className="icon">
-                            {NavItem.icon}
-                        </ListItemIcon>
-                        <ListItemText
-                            className="text"
-                            primary={NavItem.name}
+                    NavigationList.map((NavItem) => (
+                        <ListItem
+                            button
+                            className={`listItem ${classes.navigationIconStyle}`}
+                            component={NavLinkNoDup}
+                            isActive={(match, location) => {
+                                return (
+                                    match?.url ||
+                                    isAccountFormActive(location, NavItem) ||
+                                    isCourseFormActive(location, NavItem) ||
+                                    (NavItem.name === 'Dashboard' &&
+                                        location.pathname === '/')
+                                );
+                            }}
+                            key={NavItem.name}
+                            to={NavItem.link}
+                        >
+                            <ListItemIcon className='icon'>
+                                {NavItem.icon}
+                            </ListItemIcon>
+                            <ListItemText
+                                className='text'
+                                primary={NavItem.name}
                             />
                         </ListItem>
                     ))}

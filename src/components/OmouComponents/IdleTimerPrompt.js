@@ -1,17 +1,17 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import Dialog from '@material-ui/core/Dialog';
-import {closeRegistrationCart} from './RegistrationUtils';
-import {logout, setToken} from '../../actions/authActions';
-import {useIdleTimer} from 'react-idle-timer';
-import {useHistory} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import { closeRegistrationCart } from './RegistrationUtils';
+import { logout, setToken } from '../../actions/authActions';
+import { useIdleTimer } from 'react-idle-timer';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 
 const REFRESH_TOKEN = gql`
     mutation RefreshToken($token: String!) {

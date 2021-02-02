@@ -1,22 +1,22 @@
 import React from 'react';
-import {NavLink, withRouter} from 'react-router-dom';
-import {useSelector} from 'react-redux';
-import {Paper, Tooltip, Typography} from '@material-ui/core';
+import { NavLink, withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Paper, Tooltip, Typography } from '@material-ui/core';
 import AccountCard from '../../FeatureViews/Search/cards/AccountCard';
 import Grid from '@material-ui/core/Grid';
 import * as hooks from '../../../actions/hooks';
 import Loading from '../../OmouComponents/Loading';
-import {stringToColor} from '../../FeatureViews/Accounts/accountUtils';
+import { stringToColor } from '../../FeatureViews/Accounts/accountUtils';
 import Avatar from '@material-ui/core/Avatar';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 export function CompleteCourseRegistration({
-                                               registeredCourseForm,
-                                               courseType,
-                                           }) {
-    const students = useSelector(({Users}) => Users.StudentList);
-    const instructors = useSelector(({Users}) => Users.InstructorList);
-    const courses = useSelector(({Course}) => Course.NewCourseList);
+    registeredCourseForm,
+    courseType,
+}) {
+    const students = useSelector(({ Users }) => Users.StudentList);
+    const instructors = useSelector(({ Users }) => Users.InstructorList);
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
 
     let studentID = registeredCourseForm.student_id;
     const course_id = registeredCourseForm.course_id;

@@ -18,14 +18,14 @@ import { ApolloProvider } from '@apollo/react-hooks';
 import { setContext } from 'apollo-link-context';
 
 import { setToken } from 'actions/authActions';
-import * as actionCreators from "actions/actionTypes"
-import initialState from "./reducers/initialState";
+import * as actionCreators from 'actions/actionTypes';
+import initialState from './reducers/initialState';
 import invariant from 'redux-immutable-state-invariant';
 
 const composeEnhancers = composeWithDevTools({
     actionCreators,
     trace: true,
-    traceLimit: 25
+    traceLimit: 25,
 });
 
 const store = createStore(
@@ -34,9 +34,8 @@ const store = createStore(
     composeEnhancers(applyMiddleware(invariant(), thunk))
 );
 
-
 const httpLink = ApolloLink.from([
-    onError(({graphQLErrors, networkError}) => {
+    onError(({ graphQLErrors, networkError }) => {
         if (graphQLErrors) {
             console.error('[GraphQL Error(s)]', graphQLErrors);
         }

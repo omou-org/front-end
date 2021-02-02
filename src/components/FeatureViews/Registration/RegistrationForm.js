@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Forms from '../../Form/FormFormats';
 import Form from '../../Form/Form';
 import CourseRegistrationReceipt from './CourseRegistrationReceipt';
-import {Redirect, useParams} from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import RegistrationActions from './RegistrationActions';
 import Grid from '@material-ui/core/Grid';
 
@@ -55,7 +55,7 @@ export default function RegistrationForm() {
     return (
         <>
             <Grid container>
-                <RegistrationActions/>
+                <RegistrationActions />
             </Grid>
             <Form
                 base={form}

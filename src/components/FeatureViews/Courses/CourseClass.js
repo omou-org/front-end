@@ -23,10 +23,10 @@ import { fullName, gradeLvl, USER_TYPES } from 'utils';
 import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
-import {StudentCourseLabel} from './StudentBadge';
-import {GET_STUDENTS} from './CourseManagementContainer';
-import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
-import Notes from "../Notes/Notes";
+import { StudentCourseLabel } from './StudentBadge';
+import { GET_STUDENTS } from './CourseManagementContainer';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import Notes from '../Notes/Notes';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -481,12 +481,16 @@ const CourseClass = () => {
                             <TabPanel
                                 index={4}
                                 value={index}
-                                style={{width: '100%'}}
+                                style={{ width: '100%' }}
                             >
-                                <AttendanceContainer/>
+                                <AttendanceContainer />
                             </TabPanel>
-                            <TabPanel index={5} value={index} style={{width: "100%", marginTop: "48px"}}>
-                                <Notes ownerID={id} ownerType="course"/>
+                            <TabPanel
+                                index={5}
+                                value={index}
+                                style={{ width: '100%', marginTop: '48px' }}
+                            >
+                                <Notes ownerID={id} ownerType='course' />
                             </TabPanel>
                         </Grid>
                     </ThemeProvider>

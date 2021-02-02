@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import theme from '../../theme/muiTheme';
@@ -27,7 +27,12 @@ const ReadMoreText = ({ children, textLimit, handleDisplay = null }) => {
                     ? bodyText.substring(0, textLimit) + '...\n'
                     : bodyText + '\n'}
                 <a onClick={handleReadMoreClick}>
-                    <span style={{paddingRight: theme.spacing(1), cursor: "pointer"}}>
+                    <span
+                        style={{
+                            paddingRight: theme.spacing(1),
+                            cursor: 'pointer',
+                        }}
+                    >
                         {isReadMoreClosed ? 'Read More' : ' Read Less'}
                     </span>
                 </a>
