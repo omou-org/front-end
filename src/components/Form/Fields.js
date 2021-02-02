@@ -38,15 +38,12 @@ export const Select = (props) => {
     return <Fields.Select className={select} {...props} />;
 };
 
-export const KeyboardDatePicker = (props) =>
-    <Fields.KeyboardDatePicker style={{marginTop: "16px", marginBottom: "8px"}} openTo="year" {...props} />;
 export const KeyboardDatePicker = (props) => <Fields.KeyboardDatePicker style={useFieldsStyles}  openTo="year" {...props} />;
 
 export const KeyboardTimePicker = (props) => <Fields.KeyboardTimePicker style={useFieldsStyles}  {...props} />;
 
 export const DatePicker = (props) => <Fields.KeyboardDatePicker style={useFieldsStyles}  dateFunsUtils={MomentUtils} {...props} />;
 
-    
 export const TimePicker = (props) => <Fields.KeyboardTimePicker style={useFieldsStyles}  {...props} dateFunsUtils={MomentUtils} />;
 
 
