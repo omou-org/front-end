@@ -1,14 +1,14 @@
 import React from 'react';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import NavLinkNoDup from '../Routes/NavLinkNoDup';
-import {makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import './Navigation.scss';
 import OmouTheme from '../../theme/muiTheme';
-import {NavList} from './NavigationAccessList';
+import { NavList } from './NavigationAccessList';
 import Loading from '../OmouComponents/Loading';
 import AuthenticatedNavigationView from './AuthenticatedNavigationView';
 import LoginPage from '../Authentication/LoginPage';
@@ -33,16 +33,17 @@ export const AuthenticatedComponent = ({ children }) => {
 
 const NavigationContainer = () => {
     const classes = useStyles();
-    const {token} = useSelector(({auth}) => auth);
+    const { token } = useSelector(({ auth }) => auth);
 
-    const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
+    const ACCOUNT_TYPE = useSelector(({ auth }) => auth.accountType);
     const NavigationList = NavList[ACCOUNT_TYPE];
 
     const isAccountFormActive = (location, NavItem) => {
         let active = false;
         if (location) {
             ["student", "admin", "instructor", "parent"].forEach(accountType => {
-                if (location.pathname.includes(accountType) &&
+                if (
+                	location.pathname.includes(accountType) &&
                     !location.pathname.includes("adminportal") &&
                     NavItem.name === "Accounts"
                 ) {
@@ -61,15 +62,15 @@ const NavigationContainer = () => {
             }
         }
         return active;
-    }
+    };
 
     if ((!NavigationList || !ACCOUNT_TYPE) && token) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     const UserNavigationOptions = (
-        <div className="DrawerList">
-            <List className="list">
+        <div className='DrawerList'>
+            <List className='list'>
                 {NavigationList &&
                 NavigationList.map((NavItem) => (
                     <ListItem
@@ -83,8 +84,7 @@ const NavigationContainer = () => {
                                 isCourseFormActive(location, NavItem) ||
                                 (NavItem.name === 'Dashboard' &&
                                     location.pathname === '/'))
-                        }
-                        }
+                        }}
                         key={NavItem.name}
                         to={NavItem.link}
                     >

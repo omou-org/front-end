@@ -85,7 +85,7 @@ export default function IdleTimerPrompt() {
     return (
         <Dialog open={openIdlePrompt}>
             <DialogTitle disableTypography>
-                <Typography variant="h4">Are you still there?</Typography>
+                <Typography variant='h4'>Are you still there?</Typography>
             </DialogTitle>
             <DialogContent>
                 Looks like you've been idle for a while. To make sure no one
@@ -95,8 +95,8 @@ export default function IdleTimerPrompt() {
             <DialogActions>
                 <ResponsiveButton
                     onClick={handleOnPromptClose}
-                    color="primary"
-                    variant="contained"
+                    color='primary'
+                    variant='contained'
                 >
                     Yes
                 </ResponsiveButton>

@@ -207,7 +207,7 @@ const RegistrationLanding = () => {
 
         return (
             <SearchSelect
-                className="filter-options"
+                className='filter-options'
                 closeMenuOnSelect={false}
                 components={{ ClearIndicator }}
                 isMulti
@@ -232,14 +232,14 @@ const RegistrationLanding = () => {
                 />
             </Grid>
             <hr />
-            <Grid container layout="row">
-                <Box marginBottom="22px" width="100%">
+            <Grid container layout='row'>
+                <Box marginBottom='22px' width='100%'>
                     <Grid item md={8} xs={12}>
                         <Typography
-                            align="left"
-                            className="heading"
-                            variant="h1"
-                            data-cy="registration-heading"
+                            align='left'
+                            className='heading'
+                            variant='h1'
+                            data-cy='registration-heading'
                         >
                             Registration Catalog
                         </Typography>
@@ -256,9 +256,9 @@ const RegistrationLanding = () => {
                 {/*</Grid>*/}
             </Grid>
 
-            <Box width="100%" marginBottom="40px">
+            <Box width='100%' marginBottom='40px'>
                 {view === 0 && (
-                    <Grid item container layout="row" spacing={1}>
+                    <Grid item container layout='row' spacing={1}>
                         <Grid item xs={3}>
                             {renderFilter('instructor')}
                         </Grid>
@@ -271,7 +271,7 @@ const RegistrationLanding = () => {
                             </Grid>
                             <Grid item xs={3}>
                                 <SearchSelect
-                                    className="sort-options"
+                                    className='sort-options'
                                     closeMenuOnSelect={true}
                                     components={{ ClearIndicator }}
                                     onChange={handleSortChange}
@@ -294,7 +294,7 @@ const RegistrationLanding = () => {
                 )}
             </Box>
 
-            <Grid item className="registration-table" container spacing={5}>
+            <Grid item className='registration-table' container spacing={5}>
                 <CourseList filteredCourses={sortedCourses} />
                 {/*{view === 0 ?*/}
                 {/*    <CourseList filteredCourses={filteredCourses} updatedParent={updatedParent}/> :*/}

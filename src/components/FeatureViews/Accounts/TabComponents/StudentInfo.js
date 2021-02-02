@@ -77,14 +77,14 @@ const StudentInfo = () => {
     }
 
     if (error) {
-        return <LoadingError error="students" />;
+        return <LoadingError error='students' />;
     }
 
     return (
         <Grid
-            alignItems="center"
+            alignItems='center'
             container
-            direction="row"
+            direction='row'
             md={12}
             spacing={5}
             xs={10}
@@ -100,7 +100,7 @@ const StudentInfo = () => {
             <Grid item sm={6} xs={12}>
                 <AddItemButton
                     height={120}
-                    width="inherit"
+                    width='inherit'
                     component={Link}
                     to={`/form/student/${accountID}`}
                 >

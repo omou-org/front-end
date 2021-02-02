@@ -120,54 +120,54 @@ const PaymentReceipt = ({ paymentID }) => {
         return (
             <Grid item key={enrollment.id}>
                 <Grid
-                    className="enrolled-course"
+                    className='enrolled-course'
                     container
-                    direction="column"
-                    justify="flex-start"
+                    direction='column'
+                    justify='flex-start'
                 >
                     <Grid item>
                         <Typography
-                            align="left"
-                            className="enrolled-course-title"
+                            align='left'
+                            className='enrolled-course-title'
                         >
                             {course.title}
                         </Typography>
                     </Grid>
                     <Grid item>
-                        <Grid container direction="column" justify="flex-start">
+                        <Grid container direction='column' justify='flex-start'>
                             <Grid item>
-                                <Grid container direction="row">
+                                <Grid container direction='row'>
                                     <Grid item xs={2}>
                                         <Typography
-                                            align="left"
-                                            className="course-label"
+                                            align='left'
+                                            className='course-label'
                                         >
                                             Dates
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Typography align="left">
+                                        <Typography align='left'>
                                             <Moment
-                                                format="M/D/YYYY"
+                                                format='M/D/YYYY'
                                                 date={course.startDate}
                                             />
                                             {` - `}
                                             <Moment
-                                                format="M/D/YYYY"
+                                                format='M/D/YYYY'
                                                 date={course.endDate}
                                             />
                                         </Typography>
                                     </Grid>
-                                    <Grid className="course-label" item xs={2}>
+                                    <Grid className='course-label' item xs={2}>
                                         <Typography
-                                            align="left"
-                                            className="course-label"
+                                            align='left'
+                                            className='course-label'
                                         >
                                             Tuition
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Typography align="left">
+                                        <Typography align='left'>
                                             $
                                             {Math.round(
                                                 course.hourlyTuition *
@@ -178,30 +178,30 @@ const PaymentReceipt = ({ paymentID }) => {
                                 </Grid>
                             </Grid>
                             <Grid item>
-                                <Grid container direction="row">
+                                <Grid container direction='row'>
                                     <Grid item xs={2}>
                                         <Typography
-                                            align="left"
-                                            className="course-label"
+                                            align='left'
+                                            className='course-label'
                                         >
                                             Sessions
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Typography align="left">
+                                        <Typography align='left'>
                                             {registration.numSessions}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={2}>
                                         <Typography
-                                            align="left"
-                                            className="course-label"
+                                            align='left'
+                                            className='course-label'
                                         >
                                             Hourly Tuition
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={4}>
-                                        <Typography align="left">
+                                        <Typography align='left'>
                                             ${course.hourlyTuition}
                                         </Typography>
                                     </Grid>
@@ -218,13 +218,13 @@ const PaymentReceipt = ({ paymentID }) => {
         // we're given a student's list of registrations so we can take the first registration's student user object
         const student = registrations[0].enrollment.student.user;
         return (
-            <Grid container direction="column" key={student.id}>
-                <Paper elevation={2} className="course-receipt">
+            <Grid container direction='column' key={student.id}>
+                <Paper elevation={2} className='course-receipt'>
                     <Grid item>
                         <Typography
-                            align="left"
-                            className="student-name"
-                            variant="h5"
+                            align='left'
+                            className='student-name'
+                            variant='h5'
                         >
                             {fullName(student)} <span>- ID# {student.id}</span>
                         </Typography>
@@ -238,55 +238,55 @@ const PaymentReceipt = ({ paymentID }) => {
     };
 
     return (
-        <BackgroundPaper elevation={2} className="registration-receipt">
+        <BackgroundPaper elevation={2} className='registration-receipt'>
             {params.paymentID && (
                 <>
                     <hr />
                 </>
             )}
             <Prompt
-                message="Remember to please close out the parent first!"
+                message='Remember to please close out the parent first!'
                 when={
                     currentPayingParent !== null &&
                     location.pathname.includes('receipt')
                 }
             />
-            <Grid container direction="column" spacing={2}>
+            <Grid container direction='column' spacing={2}>
                 <Grid item>
                     <Typography
-                        align="left"
-                        variant="h2"
-                        data-cy="payment-header"
+                        align='left'
+                        variant='h2'
+                        data-cy='payment-header'
                     >
                         Payment Confirmation
                     </Typography>
                 </Grid>
                 <Grid item>
-                    <Typography align="left" variant="h5">
+                    <Typography align='left' variant='h5'>
                         Thank you for your payment, {parent.user.firstName}.
                     </Typography>
                 </Grid>
-                <Grid className="receipt-info" item xs={12}>
-                    <Grid container direction="column">
+                <Grid className='receipt-info' item xs={12}>
+                    <Grid container direction='column'>
                         <Grid item xs={8}>
-                            <Grid container direction="row">
+                            <Grid container direction='row'>
                                 <Grid item xs={3}>
-                                    <Typography align="left" className="label">
+                                    <Typography align='left' className='label'>
                                         Order ID#:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align="left">
+                                    <Typography align='left'>
                                         {payment.id}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align="left" className="label">
+                                    <Typography align='left' className='label'>
                                         Paid By:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align="left">
+                                    <Typography align='left'>
                                         {fullName(parent.user)} - ID#:{' '}
                                         {parent.user.id}
                                     </Typography>
@@ -294,27 +294,27 @@ const PaymentReceipt = ({ paymentID }) => {
                             </Grid>
                         </Grid>
                         <Grid item xs={8}>
-                            <Grid container direction="row">
+                            <Grid container direction='row'>
                                 <Grid item xs={3}>
-                                    <Typography align="left" className="label">
+                                    <Typography align='left' className='label'>
                                         Order Date:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align="left">
+                                    <Typography align='left'>
                                         <Moment
-                                            format="M/DD/YYYY"
+                                            format='M/DD/YYYY'
                                             date={payment.createdAt}
                                         />
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align="left" className="label">
+                                    <Typography align='left' className='label'>
                                         Payment Method:
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Typography align="left">
+                                    <Typography align='left'>
                                         {paymentToString(payment.method)}
                                     </Typography>
                                 </Grid>
@@ -325,8 +325,8 @@ const PaymentReceipt = ({ paymentID }) => {
                 <Grid item xs={12}>
                     <Grid
                         container
-                        direction="column"
-                        justify="center"
+                        direction='column'
+                        justify='center'
                         spacing={1}
                     >
                         <Grid item xs={12}>
@@ -336,20 +336,20 @@ const PaymentReceipt = ({ paymentID }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid className="receipt-details" item xs={12}>
-                    <Grid alignItems="flex-end" container direction="column">
+                <Grid className='receipt-details' item xs={12}>
+                    <Grid alignItems='flex-end' container direction='column'>
                         {payment.discountTotal >= 0 && (
                             <Grid item style={{ width: '100%' }} xs={3}>
-                                <Grid container direction="row">
+                                <Grid container direction='row'>
                                     <Grid item xs={7}>
-                                        <Typography align="right">
+                                        <Typography align='right'>
                                             Discount Amount
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5}>
                                         <Typography
-                                            align="right"
-                                            variant="subtitle1"
+                                            align='right'
+                                            variant='subtitle1'
                                         >
                                             - ${payment.discountTotal}
                                         </Typography>
@@ -359,16 +359,16 @@ const PaymentReceipt = ({ paymentID }) => {
                         )}
                         {payment.priceAdjustment > 0 && (
                             <Grid item style={{ width: '100%' }} xs={3}>
-                                <Grid container direction="row">
+                                <Grid container direction='row'>
                                     <Grid item xs={7}>
-                                        <Typography align="right" variant="p">
+                                        <Typography align='right' variant='p'>
                                             Price Adjustment
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5}>
                                         <Typography
-                                            align="right"
-                                            variant="subtitle1"
+                                            align='right'
+                                            variant='subtitle1'
                                         >
                                             {payment.priceAdjustment}
                                         </Typography>
@@ -377,14 +377,14 @@ const PaymentReceipt = ({ paymentID }) => {
                             </Grid>
                         )}
                         <Grid item style={{ width: '100%' }} xs={3}>
-                            <Grid container direction="row">
+                            <Grid container direction='row'>
                                 <Grid item xs={7}>
-                                    <Typography align="right" variant="h6">
+                                    <Typography align='right' variant='h6'>
                                         Total
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={5}>
-                                    <Typography align="right" variant="h6">
+                                    <Typography align='right' variant='h6'>
                                         ${payment.total}
                                     </Typography>
                                 </Grid>
@@ -392,19 +392,19 @@ const PaymentReceipt = ({ paymentID }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid className="receipt-actions" item xs={12}>
+                <Grid className='receipt-actions' item xs={12}>
                     <Grid
                         container
-                        direction="row"
-                        justify="flex-end"
+                        direction='row'
+                        justify='flex-end'
                         spacing={1}
                     >
                         {!location.pathname.includes('parent') && (
                             <Grid item>
                                 <ResponsiveButton
-                                    variant="contained"
-                                    data-cy="close-parent"
-                                    className="button primary"
+                                    variant='contained'
+                                    data-cy='close-parent'
+                                    className='button primary'
                                     onClick={handleCloseReceipt()}
                                 >
                                     close parent

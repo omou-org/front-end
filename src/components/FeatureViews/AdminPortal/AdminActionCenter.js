@@ -71,37 +71,37 @@ const AdminActionCenter = () => {
     }, [dispatch]);
 
     return (
-        <Grid className="admin-actions-wrapper" container spacing={2}>
+        <Grid className='admin-actions-wrapper' container spacing={2}>
             <Grid item>
                 <ResponsiveButton
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
+                    aria-controls='simple-menu'
+                    aria-haspopup='true'
                     className={`button ${tabState.user && 'active'}`}
                     onClick={handleClick(setUserAnchor)}
-                    variant="outlined"
+                    variant='outlined'
                 >
                     Add Users
                 </ResponsiveButton>
             </Grid>
             <Grid item>
                 <ResponsiveButton
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
+                    aria-controls='simple-menu'
+                    aria-haspopup='true'
                     className={`button ${tabState.course && 'active'}`}
                     onClick={handleClick(setCourseAnchor)}
-                    variant="outlined"
+                    variant='outlined'
                 >
                     Manage Course
                 </ResponsiveButton>
             </Grid>
             <Grid item>
                 <ResponsiveButton
-                    aria-controls="simple-menu"
-                    aria-haspopup="true"
+                    aria-controls='simple-menu'
+                    aria-haspopup='true'
                     className={`button ${tabState.course && 'active'}`}
                     component={NavLink}
-                    to="/adminportal/actionlog"
-                    variant="outlined"
+                    to='/adminportal/actionlog'
+                    variant='outlined'
                 >
                     Action Log
                 </ResponsiveButton>
@@ -134,11 +134,11 @@ const AdminActionCenter = () => {
                 onClose={handleClose(setUserAnchor)}
                 open={Boolean(userAnchor)}
             >
-                <MenuItem component={NavLink} to="/form/instructor">
-                    <ListItemText primary="ADD INSTRUCTOR" />
+                <MenuItem component={NavLink} to='/form/instructor'>
+                    <ListItemText primary='ADD INSTRUCTOR' />
                 </MenuItem>
-                <MenuItem component={NavLink} to="/form/admin">
-                    <ListItemText primary="ADD STAFF" />
+                <MenuItem component={NavLink} to='/form/admin'>
+                    <ListItemText primary='ADD STAFF' />
                 </MenuItem>
             </StyledMenu>
             <StyledMenu
@@ -147,11 +147,11 @@ const AdminActionCenter = () => {
                 onClose={handleClose(setCourseAnchor)}
                 open={Boolean(courseAnchor)}
             >
-                <MenuItem component={NavLink} to="/form/course_details">
-                    <ListItemText primary="NEW COURSE" />
+                <MenuItem component={NavLink} to='/form/course_details'>
+                    <ListItemText primary='NEW COURSE' />
                 </MenuItem>
-                <MenuItem component={NavLink} to="/adminportal/management">
-                    <ListItemText primary="MANAGE BUSINESS" />
+                <MenuItem component={NavLink} to='/adminportal/management'>
+                    <ListItemText primary='MANAGE BUSINESS' />
                 </MenuItem>
             </StyledMenu>
             {/*<StyledMenu*/}

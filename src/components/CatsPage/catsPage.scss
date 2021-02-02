@@ -1,12 +1,12 @@
 :root {
     font-family: sans-serif;
-  }
-  
-  * {
+}
+
+* {
     box-sizing: border-box;
-  }
-  
-  .screensaver {
+}
+
+.screensaver {
     font-family: sans-serif;
     font-size: 1rem;
     position: absolute;
@@ -15,11 +15,10 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-  }
-  
-  .screensaver__bouncer {
+}
+
+.screensaver__bouncer {
     position: absolute;
     left: 0;
     top: 0;
-  }
-  
+}

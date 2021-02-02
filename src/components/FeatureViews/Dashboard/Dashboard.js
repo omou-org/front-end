@@ -1,112 +1,109 @@
-import {useSelector} from 'react-redux';
-import {useQuery} from '@apollo/react-hooks';
+import { useSelector } from 'react-redux';
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
-import Loading from "components/OmouComponents/Loading";
+import Loading from 'components/OmouComponents/Loading';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Paper from "@material-ui/core/Paper";
+import Paper from '@material-ui/core/Paper';
 import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
-import {makeStyles} from "@material-ui/styles";
+import { makeStyles } from '@material-ui/styles';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         [theme.breakpoints.down('md')]: {
-            padding: "0px"
-        }
+            padding: '0px',
+        },
     },
     date: {
         [theme.breakpoints.down('md')]: {
-            fontSize: "20px"
-        }
+            fontSize: '20px',
+        },
     },
     todayCard: {
         [theme.breakpoints.down('md')]: {
-            fontSize: "6px"
-        }
-    }
+            fontSize: '6px',
+        },
+    },
 }));
 
 const Dashboard = () => {
     const classes = useStyles();
-    const {email} = useSelector(({auth}) => auth) || [];
+    const { email } = useSelector(({ auth }) => auth) || [];
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,
-        filter: ""
+        filter: '',
     });
 
-    const emailQuery = {"email": email};
+    const emailQuery = { email: email };
 
-    const DASHBOARD_QUERY = gql`query DashboardQuery($email: String="") {
-        sessionSearch(query: "", time: "today", sort: "timeAsc") {
-          results {
-            course {
-              courseCategory {
-                id
-                name
-              }
+    const DASHBOARD_QUERY = gql`
+        query DashboardQuery($email: String = "") {
+            sessionSearch(query: "", time: "today", sort: "timeAsc") {
+                results {
+                    course {
+                        courseCategory {
+                            id
+                            name
+                        }
+                    }
+                }
             }
-          }
-        }
-        accountSearch(query: $email) {
-          total
-          results {
-            ... on AdminType {
-              userUuid
-              birthDate
-              user {
-                email
-                firstName
-                id
-              }
+            accountSearch(query: $email) {
+                total
+                results {
+                    ... on AdminType {
+                        userUuid
+                        birthDate
+                        user {
+                            email
+                            firstName
+                            id
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-      
     `;
-     
+
     const { data, loading, error } = useQuery(DASHBOARD_QUERY, {
-        variables: emailQuery
+        variables: emailQuery,
     });
 
     if (loading) {
-        return (
-            <Loading/>
-        );
+        return <Loading />;
     }
 
-    if (error){
+    if (error) {
         console.error(error);
-        return <>There has been an error: {error.message}</>
+        return <>There has been an error: {error.message}</>;
     }
 
     const { firstName, id } = data.accountSearch.results[0].user;
     const currentDate = moment();
     let isDisabled;
 
-    const handleChange = e => {
-        if (e){
+    const handleChange = (e) => {
+        if (e) {
             setCurrentFilter({
                 filter: e.label,
-                showFiltered: true
-            })
-        }
-        else{
+                showFiltered: true,
+            });
+        } else {
             setCurrentFilter({
-                filter: "",
-                showFiltered: false
-            })
+                filter: '',
+                showFiltered: false,
+            });
         }
     };
 
@@ -114,53 +111,52 @@ const Dashboard = () => {
         return self.indexOf(value) === index;
     };
 
-    const categoryList = data.sessionSearch.results.map(category=> ({
-        "label": category.course.courseCategory.name,
-        "value": category.course.courseCategory.id
+    const categoryList = data.sessionSearch.results.map((category) => ({
+        label: category.course.courseCategory.name,
+        value: category.course.courseCategory.id,
     }));
 
-    const uniqueCategoryList = categoryList.filter( onlyUnique );
-    if (uniqueCategoryList.length===0){
-        isDisabled=true;
+    const uniqueCategoryList = categoryList.filter(onlyUnique);
+    if (uniqueCategoryList.length === 0) {
+        isDisabled = true;
+    } else if (uniqueCategoryList.length > 0) {
+        isDisabled = false;
     }
 
-    else if (uniqueCategoryList.length>0){
-        isDisabled=false;
-    }
-
-    return(
+    return (
         <Grid container>
-            <Paper className="dashboard-paper" elevation={3}>
-                <Grid container justify="space-around">
+            <Paper className='dashboard-paper' elevation={3}>
+                <Grid container justify='space-around'>
                     <Grid item xs={9}>
-                        <Typography variant="h1" align="left">
+                        <Typography variant='h1' align='left'>
                             Hello {firstName}!
                         </Typography>
-                        <br/>
-                        <Paper className="today-paper" container>
-                            <Grid container className="today-header-container">
+                        <br />
+                        <Paper className='today-paper' container>
+                            <Grid container className='today-header-container'>
                                 <Grid item xs={7}>
                                     <Moment
                                         className={`dashboard-date ${classes.date}`}
-                                        format="dddd, MMMM DD">
+                                        format='dddd, MMMM DD'
+                                    >
                                         {currentDate}
                                     </Moment>
                                 </Grid>
                                 <ResponsiveButton
                                     variant='outlined'
-                                    style={{margin: "5px", float: "right"}}
+                                    style={{ margin: '5px', float: 'right' }}
                                     component={Link}
                                     to={{
-                                        pathname: "/scheduler",
-                                        state: {isDashboard: true}
+                                        pathname: '/scheduler',
+                                        state: { isDashboard: true },
                                     }}
                                 >
                                     view in scheduler
-                                </ ResponsiveButton>
+                                </ResponsiveButton>
                             </Grid>
                             <Grid item sm={6} md={6} lg={4}>
                                 <Select
-                                    className="category-options"
+                                    className='category-options'
                                     closeMenuOnSelect={true}
                                     isClearable={true}
                                     isDisabled={isDisabled}
@@ -172,27 +168,31 @@ const Dashboard = () => {
                             </Grid>
                             <Grid
                                 container
-                                className="today-container"
-                                wrap="nowrap"
-                                direction="row">
-                                <Today
-                                    filter={currentFilter.filter}
-                                />
+                                className='today-container'
+                                wrap='nowrap'
+                                direction='row'
+                            >
+                                <Today filter={currentFilter.filter} />
                             </Grid>
                         </Paper>
                         <Paper className='OP-paper'>
-                            <Typography variant='h3' className="OP-label">
+                            <Typography variant='h3' className='OP-label'>
                                 Outstanding Payments
                             </Typography>
                             <Grid
                                 container
-                                className="unpaid-container"
-                                wrap="nowrap">
-                                <UnpaidSessions/>
+                                className='unpaid-container'
+                                wrap='nowrap'
+                            >
+                                <UnpaidSessions />
                             </Grid>
                         </Paper>
                     </Grid>
-                    <Grid item xs={3} className={`db-notes-container ${classes.root}`}>
+                    <Grid
+                        item
+                        xs={3}
+                        className={`db-notes-container ${classes.root}`}
+                    >
                         <DashboardNotes
                             key={id}
                             id={id}
@@ -202,7 +202,7 @@ const Dashboard = () => {
                 </Grid>
             </Paper>
         </Grid>
-    )
+    );
 };
 
 export default Dashboard;

@@ -170,9 +170,9 @@ const ClassListItem = ({
         <>
             <Grid
                 container
-                justify="flex-start"
+                justify='flex-start'
                 className={classes.mainCardContainer}
-                data-active="inactive"
+                data-active='inactive'
                 onClick={handleClick}
             >
                 <Grid container md={10}>
@@ -195,8 +195,8 @@ const ClassListItem = ({
                     </Grid>
                     <Grid item xs={10} sm={9} md={10}>
                         <Typography
-                            variant="h3"
-                            align="left"
+                            variant='h3'
+                            align='left'
                             style={{ marginLeft: '.85em' }}
                         >
                             {title}
@@ -210,21 +210,21 @@ const ClassListItem = ({
                         md={2}
                         className={classes.displayCardMargins}
                     >
-                        <Typography variant="body1" align="left">
+                        <Typography variant='body1' align='left'>
                             <span className={classes.highlightName}>
                                 {concatFullName}
                             </span>
                         </Typography>
                     </Grid>
                     <Divder
-                        orientation="vertical"
+                        orientation='vertical'
                         flexItem
                         style={{ height: '2em', marginTop: '1em' }}
                     />
                     <Grid item>
                         <Typography
-                            variant="body1"
-                            align="left"
+                            variant='body1'
+                            align='left'
                             style={{ marginLeft: '1.2em', paddingTop: '3px' }}
                             className={classes.displayCardMargins}
                         >
@@ -232,7 +232,7 @@ const ClassListItem = ({
                         </Typography>
                     </Grid>
                     <Divder
-                        orientation="vertical"
+                        orientation='vertical'
                         flexItem
                         style={{
                             height: '2em',
@@ -242,9 +242,9 @@ const ClassListItem = ({
                     />
                     <Grid item>
                         <Typography
-                            variant="body1"
-                            align="left"
-                            style={{marginLeft: '1.2em', paddingTop: '3px'}}
+                            variant='body1'
+                            align='left'
+                            style={{ marginLeft: '1.2em', paddingTop: '3px' }}
                             className={classes.displayCardMargins}
                         >
                             <CourseAvailabilites
@@ -304,8 +304,8 @@ const CourseFilterDropdown = ({
         <Grid item xs={3}>
             <FormControl className={classes.margin}>
                 <Select
-                    labelId="course-management-sort-tab"
-                    id="course-management-sort-tab"
+                    labelId='course-management-sort-tab'
+                    id='course-management-sort-tab'
                     displayEmpty
                     value={filter}
                     onChange={handleChange}
@@ -326,7 +326,7 @@ const CourseFilterDropdown = ({
                 >
                     <MenuItem
                         ListItemClasses={{ selected: classes.menuSelected }}
-                        value=""
+                        value=''
                     >
                         {initialValue}
                     </MenuItem>
@@ -479,9 +479,9 @@ const CourseManagementContainer = () => {
 
     return (
         <Grid item xs={12}>
-            <Grid container direction="row">
+            <Grid container direction='row'>
                 <Grid item xs={6}>
-                    <Typography align="left" className="heading" variant="h1">
+                    <Typography align='left' className='heading' variant='h1'>
                         Course Management
                     </Typography>
                 </Grid>
@@ -489,16 +489,16 @@ const CourseManagementContainer = () => {
                 {accountInfo.accountType === 'PARENT' && (
                     <Grid
                         item
-                        align="right"
+                        align='right'
                         style={{ paddingRight: '2em' }}
                         xs={6}
                     >
                         <CourseFilterDropdown
                             filterList={studentOptionList}
-                            initialValue="All Students"
+                            initialValue='All Students'
                             setState={setStudentFilterValue}
                             filter={studentFilterValue}
-                            filterKey="students"
+                            filterKey='students'
                         />
                     </Grid>
                 )}
@@ -506,14 +506,14 @@ const CourseManagementContainer = () => {
 
             <Grid
                 container
-                alignItems="center"
+                alignItems='center'
                 className={classes.containerMargins}
             >
                 <Grid item xs={3}>
                     <FormControl className={classes.margin}>
                         <Select
-                            labelId="course-management-sort-tab"
-                            id="course-management-sort-tab"
+                            labelId='course-management-sort-tab'
+                            id='course-management-sort-tab'
                             displayEmpty
                             value={sortByDate}
                             onChange={handleChange}
@@ -537,7 +537,7 @@ const CourseManagementContainer = () => {
                                     ListItemClasses={{
                                         selected: classes.menuSelected,
                                     }}
-                                    value=""
+                                    value=''
                                 >
                                     Sort By
                                 </MenuItem>
@@ -565,24 +565,24 @@ const CourseManagementContainer = () => {
                 </Grid>
                 <CourseFilterDropdown
                     filterList={gradeOptions}
-                    initialValue="All Grades"
+                    initialValue='All Grades'
                     setState={setGradeFilterValue}
                     filter={gradeFilterValue}
-                    filterKey="grades"
+                    filterKey='grades'
                 />
                 <CourseFilterDropdown
                     filterList={subjectList}
-                    initialValue="All Subjects"
+                    initialValue='All Subjects'
                     setState={setSubjectFilterValue}
                     filter={subectFilterValue}
-                    filterKey="subjects"
+                    filterKey='subjects'
                 />
                 <CourseFilterDropdown
                     filterList={instructorsList}
-                    initialValue="All Instructors"
+                    initialValue='All Instructors'
                     setState={setInstructorFilterValue}
                     filter={instructorsFilterValue}
-                    filterKey="instructors"
+                    filterKey='instructors'
                 />
             </Grid>
             <hr />
