@@ -1,16 +1,15 @@
 /* eslint-disable indent */
-import { Link, useParams } from 'react-router-dom';
-import React, { useMemo } from 'react';
+import {Link, useParams} from 'react-router-dom';
+import React, {useMemo} from 'react';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Loading from 'components/OmouComponents/Loading';
 import LoadingError from './LoadingCourseError';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import ProfileCard from '../ProfileCard';
-import { useQuery } from '@apollo/react-hooks';
-import { useSelector } from 'react-redux';
-import { AddItemButton } from '../../../OmouComponents/AddItemButton';
-import { PropTypes } from 'prop-types';
+import {useQuery} from '@apollo/react-hooks';
+import {useSelector} from 'react-redux';
+import {AddItemButton} from '../../../OmouComponents/AddItemButton';
 
 const useStyles = makeStyles({
     center: {
@@ -103,7 +102,7 @@ const StudentInfo = () => {
                     height={120}
                     width="inherit"
                     component={Link}
-                    to={`/form/add_student/${accountID}`}
+                    to={`/form/student/${accountID}`}
                 >
                     + Add New Student
                 </AddItemButton>

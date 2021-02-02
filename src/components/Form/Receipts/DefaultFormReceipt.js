@@ -34,7 +34,7 @@ const toDisplayValue = (value) => {
         return value.label;
     }
 
-    if (typeof value === "object") {
+    if (typeof value === "object" && value !== null) {
         return Object.entries(value)
             .reduce((accumulator, [keyTitle, valueTitle]) =>
                 `${accumulator}\n${keyTitle}: ${valueTitle}`, "")

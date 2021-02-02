@@ -48,7 +48,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import {DatePicker, TimePicker} from "@material-ui/pickers";
 import * as utils from "./FormUtils";
-import TutoringPriceQuote from "./Field Components/TutoringPriceQuote";
+import TutoringPriceQuote from "./FieldComponents/TutoringPriceQuote";
 import InstructorConflictCheck from "components/InstructorConflictCheck";
 import {combineDateAndTime, durationStringToNum} from "utils";
 

@@ -28,11 +28,6 @@ const composeEnhancers = composeWithDevTools({
     traceLimit: 25
 });
 
-// const store = createStore(
-//     rootReducer,
-//     composeWithDevTools(applyMiddleware(thunk)),
-// );
-
 const store = createStore(rootReducer, initialState, composeEnhancers(
     applyMiddleware(invariant(), thunk)
 ));

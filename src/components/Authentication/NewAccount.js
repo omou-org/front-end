@@ -12,7 +12,7 @@ import {Form as ReactForm} from "react-final-form";
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Grid from "@material-ui/core/Grid";
-import * as Fields from "../Form/Field Components/Fields";
+import * as Fields from "../Form/FieldComponents/Fields";
 import "./LoginPage.scss";
 import {ReactComponent as Ellipse3} from "./loginImages/ellipse3.svg";
 import {ReactComponent as Ellipse4} from "./loginImages/ellipse4.svg";
