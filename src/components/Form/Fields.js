@@ -21,24 +21,34 @@ const getLabel = ({label}) => label;
 const useSelectStyles = makeStyles({
     "select": {
         "width": "200px",
+        "marginTop": "16px",
+        "marginBottom": "24px"
     },
 });
+
+export const useFieldsStyles = {
+    marginTop: "16px",
+    marginBottom: "8px"
+}
 
 export const { TextField, Checkboxes } = Fields;
 
 export const Select = (props) => {
     const { select } = useSelectStyles();
-    return <Fields.Select style={{marginTop: "16px", marginBottom: "24px"}} className={select} {...props} />;
+    return <Fields.Select className={select} {...props} />;
 };
 
 export const KeyboardDatePicker = (props) =>
     <Fields.KeyboardDatePicker style={{marginTop: "16px", marginBottom: "8px"}} openTo="year" {...props} />;
-export const KeyboardTimePicker = (props) =>
-    <Fields.KeyboardTimePicker style={{marginTop: "16px", marginBottom: "8px"}} {...props} />;
-export const DatePicker = (props) =>
-    <Fields.KeyboardDatePicker style={{marginTop: "16px", marginBottom: "8px"}} dateFunsUtils={MomentUtils} {...props} />;
-export const TimePicker = (props) =>
-    <Fields.KeyboardTimePicker style={{marginTop: "16px", marginBottom:"8px"}} {...props} dateFunsUtils={MomentUtils} />;
+export const KeyboardDatePicker = (props) => <Fields.KeyboardDatePicker style={useFieldsStyles}  openTo="year" {...props} />;
+
+export const KeyboardTimePicker = (props) => <Fields.KeyboardTimePicker style={useFieldsStyles}  {...props} />;
+
+export const DatePicker = (props) => <Fields.KeyboardDatePicker style={useFieldsStyles}  dateFunsUtils={MomentUtils} {...props} />;
+
+    
+export const TimePicker = (props) => <Fields.KeyboardTimePicker style={useFieldsStyles}  {...props} dateFunsUtils={MomentUtils} />;
+
 
 const MaskedPhoneInput = (props) => 
     <MaskedInput mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/,]}
@@ -50,7 +60,7 @@ const MaskedPhoneInput = (props) =>
 export const PhoneInput = (props) => 
     <TextField
         {...props}
-        // InputLabelProps={{ shrink: true }}
+        InputLabelProps={{ shrink: true }}
         InputProps={{
             inputComponent: MaskedPhoneInput,
         }}
@@ -62,7 +72,7 @@ export const Autocomplete = ({ name, options, ...props }) => {
         [name],
     );
     return (
-        <Fields.Autocomplete style={{marginTop: "16px", marginBottom:"8px"}} name={name} options={options}
+        <Fields.Autocomplete style={useFieldsStyles} name={name} options={options}
             renderOption={renderOption} {...props} />
     );
 };
