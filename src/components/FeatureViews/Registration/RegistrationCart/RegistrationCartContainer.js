@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {useValidateRegisteringParent} from '../../../OmouComponents/RegistrationUtils';
+import React, { useEffect, useState } from 'react';
+import { useValidateRegisteringParent } from '../../../OmouComponents/RegistrationUtils';
 import gql from 'graphql-tag';
-import {useMutation, useQuery} from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import Loading from '../../../OmouComponents/Loading';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {RegistrationContext} from './RegistrationContext';
+import { RegistrationContext } from './RegistrationContext';
 import StudentRegistrationEntry from './StudentRegistrationsEntry';
 import PaymentBoard from './PaymentBoard';
 import RegistrationActions from '../RegistrationActions';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import {omouBlue, skyBlue} from '../../../../theme/muiTheme';
+import { omouBlue, skyBlue } from '../../../../theme/muiTheme';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,10 +21,10 @@ import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import {Link} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
-import {GET_REGISTRATION_CART} from '../SelectParentDialog';
+import { GET_REGISTRATION_CART } from '../SelectParentDialog';
 
 const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
     query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
@@ -223,17 +223,17 @@ export default function RegistrationCartContainer() {
 
     return (
         <RegistrationContext.Provider
-            value={{registrationCart, currentParent, updateSession}}
+            value={{ registrationCart, currentParent, updateSession }}
         >
             <Grid container>
-                <RegistrationActions/>
+                <RegistrationActions />
             </Grid>
-            <hr/>
+            <hr />
             <Typography variant='h2' align='left'>
                 Registration Cart
             </Typography>
             <Typography
-                style={{fontSize: '2em'}}
+                style={{ fontSize: '2em' }}
                 align='left'
                 gutterBottom
                 data-cy='payment-title'
@@ -247,8 +247,7 @@ export default function RegistrationCartContainer() {
                             <StudentRegistrationEntry
                                 key={studentId}
                                 student={studentData.find(
-                                    (student) =>
-                                        student.user.id === studentId
+                                    (student) => student.user.id === studentId
                                 )}
                                 registrationList={registration}
                             />
@@ -258,21 +257,17 @@ export default function RegistrationCartContainer() {
                 <Grid
                     container
                     item
-                    justify={
-                        parentIsLoggedIn ? 'flex-end' : 'space-between'
-                    }
+                    justify={parentIsLoggedIn ? 'flex-end' : 'space-between'}
                     alignItems={parentIsLoggedIn && 'flex-end'}
                     direction={parentIsLoggedIn ? 'column' : 'row'}
                     spacing={parentIsLoggedIn && 4}
-                    style={{marginTop: '50px'}}
+                    style={{ marginTop: '50px' }}
                 >
                     {parentIsLoggedIn ? (
                         <>
                             <Grid item xs={5}>
                                 <FormControl required error={reviewError}>
-                                    <FormLabel
-                                        style={{textAlign: 'left'}}
-                                    >
+                                    <FormLabel style={{ textAlign: 'left' }}>
                                         Acknowledge
                                     </FormLabel>
                                     <FormControlLabel
@@ -282,9 +277,7 @@ export default function RegistrationCartContainer() {
                                                     reviewConfirmationCheck
                                                 }
                                                 color='primary'
-                                                onChange={
-                                                    handleAcknowledgement
-                                                }
+                                                onChange={handleAcknowledgement}
                                                 name='checkedA'
                                             />
                                         }
@@ -310,7 +303,7 @@ export default function RegistrationCartContainer() {
                             </Grid>
                         </>
                     ) : (
-                        <PaymentBoard/>
+                        <PaymentBoard />
                     )}
                 </Grid>
             </Grid>
@@ -328,7 +321,7 @@ export default function RegistrationCartContainer() {
                         <Grid item>
                             <CheckCircleIcon
                                 color='primary'
-                                style={{fontSize: '3em'}}
+                                style={{ fontSize: '3em' }}
                             />
                         </Grid>
                         <Grid item>
@@ -351,8 +344,7 @@ export default function RegistrationCartContainer() {
                         Your request has been submitted!
                     </Typography>
                     <Typography align='center'>
-                        Here’s the next step to complete the enrollment
-                        process:
+                        Here’s the next step to complete the enrollment process:
                     </Typography>
 
                     <Box
@@ -362,12 +354,9 @@ export default function RegistrationCartContainer() {
                             margin: '3%',
                         }}
                     >
-                        <Typography
-                            align='center'
-                            style={{fontWeight: 550}}
-                        >
-                            Pay in-person at Summit Tutoring or pay over
-                            phone (408)839-3239
+                        <Typography align='center' style={{ fontWeight: 550 }}>
+                            Pay in-person at Summit Tutoring or pay over phone
+                            (408)839-3239
                         </Typography>
                     </Box>
                     <Typography align='center'>

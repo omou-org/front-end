@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {useSelector} from 'react-redux';
-import {makeStyles, withStyles} from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -9,16 +9,20 @@ import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import Loading from '../../OmouComponents/Loading';
 
-import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
-import {fullName, gradeOptions} from 'utils';
+import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
+import { fullName, gradeOptions } from 'utils';
 import moment from 'moment';
-import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
-import CourseAvailabilites from "../../OmouComponents/CourseAvailabilities";
+import {
+    activeColor,
+    highlightColor,
+    pastColor,
+} from '../../../theme/muiTheme';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -120,7 +124,7 @@ const useStyles = makeStyles((theme) => ({
         height: '115px',
         '&:hover': {
             backgroundColor: highlightColor,
-            cursor: "pointer"
+            cursor: 'pointer',
         },
     },
 }));
@@ -351,9 +355,9 @@ const CourseFilterDropdown = ({
     );
 };
 
-export const getCourseManagementCourses = (accountType) => (gql`
+export const getCourseManagementCourses = (accountType) => gql`
     query getCourses($accountId:ID) {
-      courses${accountType ? `(${accountType}: $accountId)` : ""} {
+      courses${accountType ? `(${accountType}: $accountId)` : ''} {
         endDate
         title
         academicLevel
@@ -378,7 +382,7 @@ export const getCourseManagementCourses = (accountType) => (gql`
         }
       }
     }
-  `);
+  `;
 
 const CourseManagementContainer = () => {
     const classes = useStyles();
@@ -387,7 +391,7 @@ const CourseManagementContainer = () => {
     const [subectFilterValue, setSubjectFilterValue] = useState('');
     const [instructorsFilterValue, setInstructorFilterValue] = useState('');
     const [studentFilterValue, setStudentFilterValue] = useState('');
-    const accountInfo = useSelector(({auth}) => auth);
+    const accountInfo = useSelector(({ auth }) => auth);
 
     const handleChange = (event) => setSortByDate(event.target.value);
 

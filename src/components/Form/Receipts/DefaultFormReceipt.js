@@ -1,4 +1,4 @@
-import {capitalizeString} from 'utils';
+import { capitalizeString } from 'utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -35,23 +35,25 @@ const toDisplayValue = (value) => {
         return value.label;
     }
 
-    if (typeof value === "object" && value !== null) {
-        return Object.entries(value)
-            .reduce((accumulator, [keyTitle, valueTitle]) =>
-                `${accumulator}\n${keyTitle}: ${valueTitle}`, "")
+    if (typeof value === 'object' && value !== null) {
+        return Object.entries(value).reduce(
+            (accumulator, [keyTitle, valueTitle]) =>
+                `${accumulator}\n${keyTitle}: ${valueTitle}`,
+            ''
+        );
     }
 
     return value.toString();
 };
 
-const DefaultFormReceipt = ({formData, format}) => (
+const DefaultFormReceipt = ({ formData, format }) => (
     <div
         style={{
             margin: '2%',
             padding: '5px',
         }}
     >
-        <Typography align='left' style={{fontSize: '24px'}}>
+        <Typography align='left' style={{ fontSize: '24px' }}>
             You've successfully submitted!
         </Typography>
         <div className='confirmation-copy'>

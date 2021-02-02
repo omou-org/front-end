@@ -1,12 +1,12 @@
-import React, {Fragment, useCallback, useEffect, useState} from 'react';
-import {Redirect, useParams} from 'react-router-dom';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import { Redirect, useParams } from 'react-router-dom';
 
 import Form from './Form';
 import Forms from './FormFormats';
 
 const FormPage = () => {
-    const {type, id} = useParams();
-    const {form, load, submit, title} = Forms?.[type] || {};
+    const { type, id } = useParams();
+    const { form, load, submit, title } = Forms?.[type] || {};
     const [initialData, setInitialData] = useState();
     const onSubmit = useCallback((formData) => submit(formData, id), [
         id,

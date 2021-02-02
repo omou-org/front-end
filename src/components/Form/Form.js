@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-import {Form as ReactForm} from "react-final-form";
-import Step from "@material-ui/core/Step";
-import StepContent from "@material-ui/core/StepContent";
-import StepLabel from "@material-ui/core/StepLabel";
-import Stepper from "@material-ui/core/Stepper";
-import Typography from "@material-ui/core/Typography";
-import DefaultFormReceipt from "./Receipts/DefaultFormReceipt";
+import { Form as ReactForm } from 'react-final-form';
+import Step from '@material-ui/core/Step';
+import StepContent from '@material-ui/core/StepContent';
+import StepLabel from '@material-ui/core/StepLabel';
+import Stepper from '@material-ui/core/Stepper';
+import Typography from '@material-ui/core/Typography';
+import DefaultFormReceipt from './Receipts/DefaultFormReceipt';
 
 import { makeValidate } from 'mui-rff';
 import * as Yup from 'yup';
@@ -113,54 +113,62 @@ const Form = ({
         [onSubmit]
     );
 
-    const renderStep = useCallback((index, {label, name, fields}, errors, submitting, mutators) => (
-        <Step className={classes.step} key={label}>
-            <StepLabel>{label}</StepLabel>
-            <StepContent>
-                {fields.map((field) => React.cloneElement(field,
-                    {
-                        "selectdisplayprops": {
-                            "data-cy": `${name}-${field.props.name}-select`,
-                        },
-                        "data-cy": `${name}-${field.props.name}`,
-                        "inputprops": {
-                            "data-cy": `${name}-${field.props.name}-input`,
-                        },
-                        "margin": "normal",
-                        "name": `${name}.${field.props.name}`,
-                        mutators,
-                    }))}
-                <div className={classes.buttons}>
-                    {index > 0 && index < sections.length &&
-                    <ResponsiveButton
-                        data-cy="backButton"
-                        onClick={handleBack}
-                        variant="outlined"
-                    >
-                        Back
-                    </ResponsiveButton>}
-                    {index < sections.length - 1 &&
-                    <ResponsiveButton
-                        data-cy={`nextButton`}
-                        disabled={Boolean(errors[name])}
-                        onClick={handleNext}
-                        variant="contained"
-                        color="primary"
-                    >
-                        Next
-                    </ResponsiveButton>}
-                    {index === sections.length - 1 &&
-                    <ResponsiveButton
-                        data-cy="submitButton"
-                        disabled={Boolean(errors[name]) || submitting}
-                        type="submit" variant="contained"
-                    >
-                        {submitting ? "Submitting" : "Submit"}
-                    </ResponsiveButton>}
-                </div>
-            </StepContent>
-        </Step>
-    ), [classes.step, classes.buttons, sections.length, handleBack, handleNext]);
+    const renderStep = useCallback(
+        (index, { label, name, fields }, errors, submitting, mutators) => (
+            <Step className={classes.step} key={label}>
+                <StepLabel>{label}</StepLabel>
+                <StepContent>
+                    {fields.map((field) =>
+                        React.cloneElement(field, {
+                            selectdisplayprops: {
+                                'data-cy': `${name}-${field.props.name}-select`,
+                            },
+                            'data-cy': `${name}-${field.props.name}`,
+                            inputprops: {
+                                'data-cy': `${name}-${field.props.name}-input`,
+                            },
+                            margin: 'normal',
+                            name: `${name}.${field.props.name}`,
+                            mutators,
+                        })
+                    )}
+                    <div className={classes.buttons}>
+                        {index > 0 && index < sections.length && (
+                            <ResponsiveButton
+                                data-cy='backButton'
+                                onClick={handleBack}
+                                variant='outlined'
+                            >
+                                Back
+                            </ResponsiveButton>
+                        )}
+                        {index < sections.length - 1 && (
+                            <ResponsiveButton
+                                data-cy={`nextButton`}
+                                disabled={Boolean(errors[name])}
+                                onClick={handleNext}
+                                variant='contained'
+                                color='primary'
+                            >
+                                Next
+                            </ResponsiveButton>
+                        )}
+                        {index === sections.length - 1 && (
+                            <ResponsiveButton
+                                data-cy='submitButton'
+                                disabled={Boolean(errors[name]) || submitting}
+                                type='submit'
+                                variant='contained'
+                            >
+                                {submitting ? 'Submitting' : 'Submit'}
+                            </ResponsiveButton>
+                        )}
+                    </div>
+                </StepContent>
+            </Step>
+        ),
+        [classes.step, classes.buttons, sections.length, handleBack, handleNext]
+    );
 
     const Render = ({
         handleSubmit,

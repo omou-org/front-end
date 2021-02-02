@@ -1,16 +1,16 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {Link, useHistory, useLocation} from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './registration.scss';
 import SelectParentDialog from './SelectParentDialog';
-import {fullName, USER_TYPES} from '../../../utils';
-import {useValidateRegisteringParent} from '../../OmouComponents/RegistrationUtils';
-import {useDispatch, useSelector} from 'react-redux';
-import {useQuery} from '@apollo/react-hooks';
+import { fullName, USER_TYPES } from '../../../utils';
+import { useValidateRegisteringParent } from '../../OmouComponents/RegistrationUtils';
+import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';
@@ -47,7 +47,7 @@ const RegistrationActions = () => {
         skip: AuthUser.accountType !== USER_TYPES.parent,
     });
     const history = useHistory();
-	const location = useLocation();
+    const location = useLocation();
 
     useEffect(() => {
         dispatch({
@@ -93,85 +93,94 @@ const RegistrationActions = () => {
         history.push('/registration/cart');
     };
 
-	const isCompletingRegistrationForm = location.pathname.includes("form");
-	const isInRegistrationCart = location.pathname.includes("cart");
+    const isCompletingRegistrationForm = location.pathname.includes('form');
+    const isInRegistrationCart = location.pathname.includes('cart');
 
-	const displayRegistrationButton = (
-		(currentParent || parentIsLoggedIn) &&
-		!isCompletingRegistrationForm &&
-		!isInRegistrationCart
-	);
+    const displayRegistrationButton =
+        (currentParent || parentIsLoggedIn) &&
+        !isCompletingRegistrationForm &&
+        !isInRegistrationCart;
 
-	return (
-		<>
-			<Grid
-				container
-				direction="row"
-				justify="flex-start"
-				alignItems="center"
-				spacing={1}
-				style={{borderBottom: '1px solid #C4C4C4', marginBottom: "24px"}}
-			>
-				<Grid item md={9}>
-					{displayRegistrationButton && (
-						<Grid item xs={2}>
-							<ResponsiveButton
-								aria-controls="simple-menu"
-								aria-haspopup="true"
-								component={Link} to="/registration/form/class-registration"
-								variant="contained"
-								data-cy="register-class"
-							>
-								register class
-							</ ResponsiveButton>
-						</Grid>
-					)}
-				</Grid>
-				<Grid item xs={2}>
-					{registeringParent ? (
-						!data && <Tooltip title="Registering Parent">
-							<ResponsiveButton
-								variant='contained'
-								onClick={openDialog}
-								disabled={isCompletingRegistrationForm}
-							>
-								{parentName}
-							</ResponsiveButton>
-						</Tooltip>
-					) : (
-						<ResponsiveButton 
-							variant='contained'
-							onClick={openDialog} 
-							data-cy="select-parent"
-						>
-							SET PARENT
-						</ResponsiveButton>
-					)}
-				</Grid>
-				<Grid item xs={1} style={{ paddingRight: "6vh", verticalAlign: "middle" }}>
-					<IconButton
-						onClick={toShoppingCart}
-						disabled={numberOfRegistrationsInCart === 0}
-						data-cy="registration-cart"
-					>
-						<Badge
-							data-cy="shopping-cart-num-registrations"
-							badgeContent={numberOfRegistrationsInCart}
-							color="primary"
-							showZero
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-						>
-							<ShoppingCartIcon style={{fontSize: "1.4em",}}/>
-						</Badge>
-					</IconButton>
-				</Grid>
-			</Grid>
-			<SelectParentDialog onClose={closeDialog} open={dialogOpen}/>
-		</>
-	);
+    return (
+        <>
+            <Grid
+                container
+                direction='row'
+                justify='flex-start'
+                alignItems='center'
+                spacing={1}
+                style={{
+                    borderBottom: '1px solid #C4C4C4',
+                    marginBottom: '24px',
+                }}
+            >
+                <Grid item md={9}>
+                    {displayRegistrationButton && (
+                        <Grid item xs={2}>
+                            <ResponsiveButton
+                                aria-controls='simple-menu'
+                                aria-haspopup='true'
+                                component={Link}
+                                to='/registration/form/class-registration'
+                                variant='contained'
+                                data-cy='register-class'
+                            >
+                                register class
+                            </ResponsiveButton>
+                        </Grid>
+                    )}
+                </Grid>
+                <Grid item xs={2}>
+                    {registeringParent ? (
+                        !data && (
+                            <Tooltip title='Registering Parent'>
+                                <ResponsiveButton
+                                    variant='contained'
+                                    onClick={openDialog}
+                                    disabled={isCompletingRegistrationForm}
+                                >
+                                    {parentName}
+                                </ResponsiveButton>
+                            </Tooltip>
+                        )
+                    ) : (
+                        <ResponsiveButton
+                            variant='contained'
+                            onClick={openDialog}
+                            data-cy='select-parent'
+                        >
+                            SET PARENT
+                        </ResponsiveButton>
+                    )}
+                </Grid>
+                <Grid
+                    item
+                    xs={1}
+                    style={{ paddingRight: '6vh', verticalAlign: 'middle' }}
+                >
+                    <IconButton
+                        onClick={toShoppingCart}
+                        disabled={numberOfRegistrationsInCart === 0}
+                        data-cy='registration-cart'
+                    >
+                        <Badge
+                            data-cy='shopping-cart-num-registrations'
+                            badgeContent={numberOfRegistrationsInCart}
+                            color='primary'
+                            showZero
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                        >
+                            <ShoppingCartIcon style={{ fontSize: '1.4em' }} />
+                        </Badge>
+                    </IconButton>
+                </Grid>
+            </Grid>
+            <SelectParentDialog onClose={closeDialog} open={dialogOpen} />
+        </>
+    );
 };
 
 export default RegistrationActions;

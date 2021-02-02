@@ -1,5 +1,5 @@
 // React Imports
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 // Material UI Imports
 import Grid from '@material-ui/core/Grid';
@@ -9,12 +9,12 @@ import '../Form.scss';
 import TextField from '@material-ui/core/TextField/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
-import {BootstrapInput} from '../../FeatureViews/Scheduler/SchedulerUtils';
+import { BootstrapInput } from '../../FeatureViews/Scheduler/SchedulerUtils';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import Loading from '../../OmouComponents/Loading';
 import * as Fields from 'mui-rff';
-import {OnChange} from 'react-final-form-listeners';
+import { OnChange } from 'react-final-form-listeners';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 const GET_TUITION_RULES = gql`

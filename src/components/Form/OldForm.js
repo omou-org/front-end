@@ -37,20 +37,20 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 // Outside React Component
-import SearchSelect from "react-select";
-import Modal from "@material-ui/core/Modal";
-import CompleteCourseRegistration from "./Receipts/CompleteCourseRegistration";
+import SearchSelect from 'react-select';
+import Modal from '@material-ui/core/Modal';
+import CompleteCourseRegistration from './Receipts/CompleteCourseRegistration';
 
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import {DatePicker, TimePicker} from "@material-ui/pickers";
-import * as utils from "./FormUtils";
-import TutoringPriceQuote from "./FieldComponents/TutoringPriceQuote";
-import InstructorConflictCheck from "components/InstructorConflictCheck";
-import {combineDateAndTime, durationStringToNum} from "utils";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { DatePicker, TimePicker } from '@material-ui/pickers';
+import * as utils from './FormUtils';
+import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
+import InstructorConflictCheck from 'components/InstructorConflictCheck';
+import { combineDateAndTime, durationStringToNum } from 'utils';
 
 const parseGender = {
     M: 'Male',

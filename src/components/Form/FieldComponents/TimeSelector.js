@@ -5,7 +5,7 @@ import { MenuItem } from '@material-ui/core';
 import Select from '@material-ui/core/Select/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 Date.daysBetween = function (date1, date2) {
     //Get 1 day in milliseconds
