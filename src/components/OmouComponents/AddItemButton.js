@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import { PropTypes } from 'prop-types';
 
 const useStyles = makeStyles({
-    addNewItemStyles: ({ height, width,  }) => ({
+    addNewItemStyles: ({ height, width }) => ({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',

@@ -61,7 +61,7 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
     const classes = useStyles();
 
     return (
-        <Grid item sm={4} xs={12} >
+        <Grid item sm={4} xs={12}>
             {user && (
                 <Card className={classes.cardContainer}>
                     <Grid className={classes.gridContainer} container>

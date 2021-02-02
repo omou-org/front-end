@@ -46,7 +46,7 @@ const ParentContact = () => {
 
     // Needs to take ID and check if its a parent
     const { student } = data;
-    
+
     const parent = {
         name: fullName(student.primaryParent.user),
         phoneNumber: student.primaryParent.user.parent.phoneNumber,

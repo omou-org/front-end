@@ -48,8 +48,8 @@ const FormPage = () => {
     );
 
     const getTitle = (title) => {
-        console.log(title)
-        if (action === "edit") {
+        console.log(title);
+        if (action === 'edit') {
             return title.edit || `Edit ${title}`;
         } else {
             return title.create || `Add New ${title}`;
