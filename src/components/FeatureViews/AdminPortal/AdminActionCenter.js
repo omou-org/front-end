@@ -134,10 +134,10 @@ const AdminActionCenter = () => {
                 onClose={handleClose(setUserAnchor)}
                 open={Boolean(userAnchor)}
             >
-                <MenuItem component={NavLink} to='/form/instructor'>
+                <MenuItem component={NavLink} to='/form/add/instructor'>
                     <ListItemText primary='ADD INSTRUCTOR' />
                 </MenuItem>
-                <MenuItem component={NavLink} to='/form/admin'>
+                <MenuItem component={NavLink} to='/form/add/admin'>
                     <ListItemText primary='ADD STAFF' />
                 </MenuItem>
             </StyledMenu>
@@ -147,7 +147,7 @@ const AdminActionCenter = () => {
                 onClose={handleClose(setCourseAnchor)}
                 open={Boolean(courseAnchor)}
             >
-                <MenuItem component={NavLink} to='/form/course_details'>
+                <MenuItem component={NavLink} to='/form/add/course_details'>
                     <ListItemText primary='NEW COURSE' />
                 </MenuItem>
                 <MenuItem component={NavLink} to='/adminportal/management'>

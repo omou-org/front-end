@@ -193,7 +193,7 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/form/:type/:id?'
+                path='/form/:action/:type/:id?'
                 users={[USER_TYPES.admin, USER_TYPES.parent]}
             >
                 <FormPage />

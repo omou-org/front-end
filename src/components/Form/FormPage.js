@@ -6,7 +6,7 @@ import Form from './Form';
 import Forms from './FormFormats';
 
 const FormPage = () => {
-    const { type, id } = useParams();
+    const { type, id, action } = useParams();
     const { form, load, submit, title } = Forms?.[type] || {};
     const [initialData, setInitialData] = useState();
     const onSubmit = useCallback((formData) => submit(formData, id), [
@@ -48,7 +48,8 @@ const FormPage = () => {
     );
 
     const getTitle = (title) => {
-        if (id) {
+        console.log(title)
+        if (action === "edit") {
             return title.edit || `Edit ${title}`;
         } else {
             return title.create || `Add New ${title}`;

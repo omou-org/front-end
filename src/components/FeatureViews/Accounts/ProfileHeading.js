@@ -200,7 +200,7 @@ const ProfileHeading = ({ ownerID }) => {
                         <div className='editResetDiv'>
                             <ResponsiveButton
                                 component={Link}
-                                to={`/form/${userInfo.accountType.toLowerCase()}/${
+                                to={`/form/edit/${userInfo.accountType.toLowerCase()}/${
                                     userInfo.user.id
                                 }`}
                                 className='edit'
@@ -218,7 +218,7 @@ const ProfileHeading = ({ ownerID }) => {
                     <Grid component={Hidden} item lgUp xs={12}>
                         <ResponsiveButton
                             component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${
+                            to={`/form/edit/${userInfo.accountType.toLowerCase()}/${
                                 userInfo.user.id
                             }`}
                             variant='outlined'
@@ -233,7 +233,7 @@ const ProfileHeading = ({ ownerID }) => {
                 <Grid component={Hidden} item mdDown xs={12}>
                     <ResponsiveButton
                         component={Link}
-                        to={`/form/${userInfo.accountType.toLowerCase()}/${
+                        to={`/form/edit/${userInfo.accountType.toLowerCase()}/${
                             userInfo.user.id
                         }`}
                         variant='outlined'
