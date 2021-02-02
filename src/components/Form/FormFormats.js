@@ -7,7 +7,7 @@ import { instance } from 'actions/apiActions';
 import React from 'react';
 import { FORM_ERROR } from 'final-form';
 import * as Fields from './Fields';
-import { StudentSelect, useFieldsStyles } from './Fields';
+import { StudentSelect, fieldsMargins } from './Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
 import { client } from 'index';
@@ -37,7 +37,7 @@ export const parseDate = (date) => {
 };
 
 export const selectField = (options) => ({
-        component: <Fields.Select style={useFieldsStyles} data={options} />,
+        component: <Fields.Select style={fieldsMargins} data={options} />,
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
     stringField = (label) => ({
