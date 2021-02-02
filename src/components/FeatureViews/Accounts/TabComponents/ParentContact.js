@@ -46,10 +46,10 @@ const ParentContact = () => {
 
     // Needs to take ID and check if its a parent
     const { student } = data;
-    console.log(student);
+
     const parent = {
         name: fullName(student.primaryParent.user),
-        phoneNumber: student.primaryParent.user.parent.phoneNumber,
+        phoneNumber: student.primaryParent.user?.parent.phoneNumber,
         accountType: student.primaryParent.accountType.toLowerCase(),
         user: {
             id: student.primaryParent.user?.id,
@@ -62,7 +62,7 @@ const ParentContact = () => {
             <Grid container spacing={2}>
                 <Grid item md={12} xs={10}>
                     <ProfileCard
-                        route={`/accounts/parent/${accountID}`}
+                        route={`/accounts/parent/${student.primaryParent.user.id}`}
                         user={parent}
                     />
                 </Grid>

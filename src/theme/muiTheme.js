@@ -33,6 +33,7 @@ export const backgroundGrey = '#FAFAFA';
 export const statusGreen = '#6CE086';
 export const statusYellow = '#FFDD59';
 export const statusRed = '#FF6766';
+export const defaultBoxShadow = '0px 0px 8px rgb(196 196 196 / 60%)';
 
 // Typography
 export const h1 = {
