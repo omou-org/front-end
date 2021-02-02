@@ -7,7 +7,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import PaymentIcon from '@material-ui/icons/Payment';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
-import {ReactComponent as NewAdminIcon} from './newadminicon.svg';
+import { ReactComponent as NewAdminIcon } from './newadminicon.svg';
 
 /**
  * Various pages accessible by different users
@@ -33,7 +33,7 @@ export const NavList = {
         {
             name: 'Courses',
             link: '/courses',
-            icon: <MenuBookIcon/>,
+            icon: <MenuBookIcon />,
         },
         {
             name: 'Accounts',
@@ -65,7 +65,7 @@ export const NavList = {
         {
             name: 'Courses',
             link: '/courses',
-            icon: <MenuBookIcon/>,
+            icon: <MenuBookIcon />,
         },
         {
             name: 'Accounts',
@@ -87,7 +87,7 @@ export const NavList = {
         {
             name: 'Courses',
             link: '/courses',
-            icon: <MenuBookIcon/>,
+            icon: <MenuBookIcon />,
         },
         {
             name: 'Availability',
@@ -115,7 +115,7 @@ export const NavList = {
         {
             name: 'Courses',
             link: '/courses',
-            icon: <MenuBookIcon/>,
+            icon: <MenuBookIcon />,
         },
         {
             name: 'Payments',
