@@ -128,52 +128,52 @@ const RegistrationCourse = () => {
     const instructorName = fullName(instructor.user);
 
     return (
-        <Grid className="registrationCourse" item xs={12}>
-            <Grid container justify="space-between">
+        <Grid className='registrationCourse' item xs={12}>
+            <Grid container justify='space-between'>
                 <Grid item sm={3}></Grid>
                 <Grid item sm={2} />
             </Grid>
-            <Divider className="top-divider" />
+            <Divider className='top-divider' />
             <Grid item lg={12}>
                 <RegistrationActions courseTitle={title} />
             </Grid>
-            <div className="course-heading">
-                <Typography align="left" variant="h1">
+            <div className='course-heading'>
+                <Typography align='left' variant='h1'>
                     {title}
                 </Typography>
                 {isAdmin && (
                     <ResponsiveButton
-                        className="button"
-                        variant="outlined"
+                        className='button'
+                        variant='outlined'
                         component={Link}
                         to={`/form/course_details/${courseID}`}
                     >
                         edit course
                     </ResponsiveButton>
                 )}
-                <div className="date">
-                    <CalendarIcon align="left" className="icon" />
-                    <Typography align="left" className="sessions-text">
-                        <Moment format="MMM D YYYY" date={startDate} />
+                <div className='date'>
+                    <CalendarIcon align='left' className='icon' />
+                    <Typography align='left' className='sessions-text'>
+                        <Moment format='MMM D YYYY' date={startDate} />
                         {' - '}
-                        <Moment format="MMM D YYYY" date={endDate} /> (
+                        <Moment format='MMM D YYYY' date={endDate} /> (
                         {weeklySessionsParser(startDate, endDate)} sessions)
                     </Typography>
                 </div>
-                <div className="info-section">
-                    <div className="course-info-header">
-                        <ClassIcon className="icon" />
-                        <Typography align="left" className="text">
+                <div className='info-section'>
+                    <div className='course-info-header'>
+                        <ClassIcon className='icon' />
+                        <Typography align='left' className='text'>
                             Course Information
                         </Typography>
                     </div>
-                    <div className="course-info-details">
+                    <div className='course-info-details'>
                         {instructor && (
                             <>
                                 {isConfirmed ? (
-                                    <ConfirmIcon className="confirmed course-icon" />
+                                    <ConfirmIcon className='confirmed course-icon' />
                                 ) : (
-                                    <UnconfirmIcon className="unconfirmed course-icon" />
+                                    <UnconfirmIcon className='unconfirmed course-icon' />
                                 )}
                                 <Chip
                                     avatar={
@@ -183,16 +183,16 @@ const RegistrationCourse = () => {
                                             size={38}
                                         />
                                     }
-                                    className="chip"
+                                    className='chip'
                                     component={Link}
                                     label={instructorName}
                                     to={`/accounts/instructor/${instructor.user.id}`}
                                 />
                             </>
                         )}
-                        <Typography align="left" className="text">
+                        <Typography align='left' className='text'>
                             <Moment
-                                format="h:mm a"
+                                format='h:mm a'
                                 date={
                                     startDate +
                                     'T' +
@@ -201,21 +201,21 @@ const RegistrationCourse = () => {
                             />
                             {' - '}
                             <Moment
-                                format="h:mm a"
+                                format='h:mm a'
                                 date={
                                     endDate + 'T' + availabilityList[0].endTime
                                 }
                             />
                         </Typography>
-                        <Typography align="left" className="text">
-                            <Moment format="dddd" date={startDate} />
+                        <Typography align='left' className='text'>
+                            <Moment format='dddd' date={startDate} />
                         </Typography>
-                        <Typography align="left" className="text">
+                        <Typography align='left' className='text'>
                             Grade {gradeLvl(academicLevel)}
                         </Typography>
                     </div>
                 </div>
-                <Typography align="left" className="description text">
+                <Typography align='left' className='description text'>
                     {description}
                 </Typography>
                 <AccessControlComponent
@@ -226,12 +226,12 @@ const RegistrationCourse = () => {
                     ]}
                 >
                     <Tabs
-                        className="registration-course-tabs"
+                        className='registration-course-tabs'
                         classes={{ indicator: classes.MuiIndicator }}
                         onChange={handleTabChange}
                         value={activeTab}
                     >
-                        <Tab label="Registration" />
+                        <Tab label='Registration' />
                         <Tab
                             classes={{ wrapper: classes.wrapper }}
                             label={
@@ -240,7 +240,7 @@ const RegistrationCourse = () => {
                                         Notes
                                         <LabelBadge
                                             style={{ marginLeft: '8px' }}
-                                            variant="round-count"
+                                            variant='round-count'
                                         >
                                             {numImportantNotes}
                                         </LabelBadge>
@@ -259,8 +259,8 @@ const RegistrationCourse = () => {
                         />
                     )}
                     {activeTab === 1 && (
-                        <div className="notes-container">
-                            <Notes ownerID={courseID} ownerType="course" />
+                        <div className='notes-container'>
+                            <Notes ownerID={courseID} ownerType='course' />
                         </div>
                     )}
                 </AccessControlComponent>

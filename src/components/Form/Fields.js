@@ -70,11 +70,16 @@ export const PhoneInput = (props) =>
 export const Autocomplete = ({ name, options, ...props }) => {
     const renderOption = useCallback(
         (option) => <span data-cy={`${name}-${option}`}>{option}</span>,
-        [name],
+        [name]
     );
     return (
-        <Fields.Autocomplete style={fieldsMargins} name={name} options={options}
-            renderOption={renderOption} {...props} />
+        <Fields.Autocomplete
+            style={fieldsMargins}
+            name={name}
+            options={options}
+            renderOption={renderOption}
+            {...props}
+        />
     );
 };
 
@@ -86,79 +91,98 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     }, []);
 
     const { data, loading } = useQuery(request, {
-        "variables": { query },
+        variables: { query },
     });
 
     const renderOption = useCallback(
-        ({label, value}) => <span data-cy={`${name}-${value}`}>{label}</span>,
-        [name],
+        ({ label, value }) => <span data-cy={`${name}-${value}`}>{label}</span>,
+        [name]
     );
 
     const options = data ? optionsMap(data) : [];
-    
+
     return (
-        <Fields.Autocomplete getOptionLabel={getLabel}
+        <Fields.Autocomplete
+            getOptionLabel={getLabel}
             loading={loading}
             name={name}
             onInputChange={handleQueryChange}
             options={options}
-            renderOption={renderOption} 
-            {...props} 
-            />
+            renderOption={renderOption}
+            {...props}
+        />
     );
 };
 
 const GET_STUDENTS = gql`
     query GetStudents($userIds: [ID]!) {
-      userInfos(userIds: $userIds) {
-        ... on StudentType {
-          user {
-            firstName
-            lastName
-            id
-          }
+        userInfos(userIds: $userIds) {
+            ... on StudentType {
+                user {
+                    firstName
+                    lastName
+                    id
+                }
+            }
         }
-      }
     }
 `;
 
 export const StudentSelect = (props) => {
-    const {studentIdList} = JSON.parse(sessionStorage.getItem("registrations")).currentParent;
-    const {data} = useQuery(GET_STUDENTS, {"variables": {"userIds": studentIdList}});
-    const studentOptions = data?.userInfos.map((student) => ({
-        "label": fullName(student.user),
-        "value": student.user.id,
-    })) || [];
-    return <Select data={studentOptions} label="Select Student" name="selectStudent" {...props}/>;
+    const { studentIdList } = JSON.parse(
+        sessionStorage.getItem('registrations')
+    ).currentParent;
+    const { data } = useQuery(GET_STUDENTS, {
+        variables: { userIds: studentIdList },
+    });
+    const studentOptions =
+        data?.userInfos.map((student) => ({
+            label: fullName(student.user),
+            value: student.user.id,
+        })) || [];
+    return (
+        <Select
+            data={studentOptions}
+            label='Select Student'
+            name='selectStudent'
+            {...props}
+        />
+    );
 };
 
-export const PasswordInput = ({ label = "Password", isField = true, ...props }) => {
+export const PasswordInput = ({
+    label = 'Password',
+    isField = true,
+    ...props
+}) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const toggleVisibility = useCallback(() => {
         setShowPassword((show) => !show);
     }, []);
 
-    return React.createElement(
-        isField ? TextField : MuiTextField,
-        {
-            "InputProps": {
-                "endAdornment": (
-                    <InputAdornment position="end">
-                        <IconButton aria-label="toggle password visibility"
-                            onClick={toggleVisibility}>
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                        <Tooltip aria-label="passwordInfo" title="Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character" >
-                            <InfoOutlinedIcon />
-                        </Tooltip>
-                    </InputAdornment>
-                ),
-            },
-            "id": "password",
-            "label": "Password",
-            "type": showPassword ? "text" : "password",
-            ...props,
+    return React.createElement(isField ? TextField : MuiTextField, {
+        InputProps: {
+            endAdornment: (
+                <InputAdornment position='end'>
+                    <IconButton
+                        aria-label='toggle password visibility'
+                        onClick={toggleVisibility}
+                    >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                    <Tooltip
+                        aria-label='passwordInfo'
+                        title='Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
+                    >
+                        <InfoOutlinedIcon />
+                    </Tooltip>
+                </InputAdornment>
+            ),
         },
-    );
+        id: 'password',
+        label: 'Password',
+        type: showPassword ? 'text' : 'password',
+        ...props,
+    });
 };

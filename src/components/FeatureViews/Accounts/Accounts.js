@@ -34,7 +34,7 @@ import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/Responsiv
 import { buttonBlue } from '../../../theme/muiTheme';
 
 const QUERY_USERS = gql`
-    query UserQuery($adminType: String) {
+    query UserQuery {
         students {
             user {
                 ...SimpleUser
@@ -59,7 +59,7 @@ const QUERY_USERS = gql`
             accountType
             phoneNumber
         }
-        admins(adminType: $adminType) {
+        admins {
             adminType
             userUuid
             user {
@@ -195,7 +195,7 @@ const Accounts = () => {
 
     const tableView = useMemo(
         () => (
-            <Table className="AccountsTable" resizable="false">
+            <Table className='AccountsTable' resizable='false'>
                 <TableHead>
                     <TableRow>
                         <TableCell className={classes.tableCellStyle}>
@@ -216,16 +216,16 @@ const Accounts = () => {
                 <TableBody>
                     {displayUsers.map((row) => (
                         <TableRow
-                            className="row"
+                            className='row'
                             component={Link}
                             key={row.user.id}
                             to={`/accounts/${row.accountType}/${row.user.id}`}
                         >
                             <TableCell className={classes.tableRowStyle}>
                                 <Grid
-                                    alignItems="center"
+                                    alignItems='center'
                                     container
-                                    layout="row"
+                                    layout='row'
                                 >
                                     <UserAvatar
                                         fontSize={14}
@@ -259,7 +259,7 @@ const Accounts = () => {
                                         row.user.id === userID) && (
                                         <IconButton
                                             component={Link}
-                                            to={`/form/${row.accountType}/${row.user.id}`}
+                                            to={`/form/${row.accountType}/edit/${row.user.id}`}
                                         >
                                             <EditIcon />
                                         </IconButton>
@@ -277,10 +277,10 @@ const Accounts = () => {
     const cardView = useMemo(
         () => (
             <Grid
-                alignItems="center"
-                className="card-container"
+                alignItems='center'
+                className='card-container'
                 container
-                direction="row"
+                direction='row'
                 spacing={2}
                 xs={12}
             >
@@ -297,13 +297,13 @@ const Accounts = () => {
     );
 
     return (
-        <Grid className="Accounts" item xs={12}>
-            <Grid container alignItems="flex-start" spacing={4}>
+        <Grid className='Accounts' item xs={12}>
+            <Grid container alignItems='flex-start' spacing={4}>
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to="/form/student"
-                        variant="outlined"
+                        to='/form/student/add'
+                        variant='outlined'
                     >
                         new student
                     </ResponsiveButton>
@@ -311,27 +311,27 @@ const Accounts = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to="/form/parent"
-                        variant="outlined"
+                        to='/form/parent/add'
+                        variant='outlined'
                     >
                         new parent
                     </ResponsiveButton>
                 </Grid>
             </Grid>
             <Hidden xsDown>
-                <hr />
+                <hr style={{marginTop: "24px"}} />
             </Hidden>
-            <Typography align="left" className="heading" variant="h1">
+            <Typography align='left' className='heading' variant='h1'>
                 Accounts
             </Typography>
-            <Grid style={{marginBottom: "40px"}} container direction="row">
+            <Grid style={{marginBottom: "40px"}} justify="space-between" container direction="row">
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
-                        className="tabs"
+                        className='tabs'
                         onChange={handleTabChange}
-                        scrollButtons="on"
+                        scrollButtons='on'
                         value={tabIndex}
-                        variant="scrollable"
+                        variant='scrollable'
                     >
                         {TABS}
                     </Tabs>
@@ -340,7 +340,7 @@ const Accounts = () => {
                     <Tabs
                         className="tabs"
                         onChange={handleTabChange}
-                        scrollButtons="off"
+                        scrollButtons='off'
                         value={tabIndex}
                     >
                         {TABS}
@@ -348,12 +348,11 @@ const Accounts = () => {
                 </Grid>
                 <Hidden smDown>
                     <Grid
-                        style={{ justifyContent: 'flex-end' }}
                         container
                         item
-                        md={4}
+                        md={1}
                     >
-                        <ToggleButtonGroup aria-label="list & grid view toggle buttons">
+                        <ToggleButtonGroup aria-label='list & grid view toggle buttons'>
                             <ToggleButton
                                 onClick={setView(true)}
                                 selected={viewToggle && true}
@@ -373,11 +372,11 @@ const Accounts = () => {
                 </Hidden>
             </Grid>
             <Grid
-                alignItems="center"
-                className="accounts-list-wrapper"
+                alignItems='center'
+                className='accounts-list-wrapper'
                 container
-                direction="row"
-                justify="center"
+                direction='row'
+                justify='center'
                 spacing={1}
             >
                 <LoadingHandler error={error} loading={loading}>

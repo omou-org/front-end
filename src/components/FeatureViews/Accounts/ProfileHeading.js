@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import gql from 'graphql-tag';
@@ -22,8 +21,6 @@ import { darkGrey } from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
 import ResetPasswordDialogs from './ResetPasswordDialogs';
-
-import { useSearchParams } from 'actions/hooks';
 import Loading from 'components/OmouComponents/Loading';
 import './Accounts.scss';
 import { addDashes } from './accountUtils';
@@ -31,9 +28,9 @@ import { ReactComponent as GradeIcon } from '../../grade.svg';
 import { ReactComponent as IDIcon } from '../../identifier.svg';
 import { ReactComponent as SchoolIcon } from '../../school.svg';
 
-import { fullName, USER_TYPES, capitalizeString } from 'utils';
+import { capitalizeString, fullName, USER_TYPES } from 'utils';
+import moment from 'moment';
 
-import UserProfileInfo from './UserProfileInfo';
 const useStyles = makeStyles({
     icon: {
         fill: darkGrey,
@@ -131,6 +128,7 @@ const GET_PROFILE_HEADING_QUERY = {
 const ProfileHeading = ({ ownerID }) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [editButtonActive, setEditButtonActive] = useState(false);
     const { accountType } = useParams();
 
     const loggedInUserID = useSelector(({ auth }) => auth.user.id);
@@ -165,16 +163,16 @@ const ProfileHeading = ({ ownerID }) => {
         accountType === 'student' || accountType === 'parent';
 
     const renderEditandAwayButton = () => (
-        <Grid container item xs={4}>
+        <>
             {accountType === 'instructor' && (
-                <Grid align="left" className="schedule-button" item xs={12}>
+                <Grid align='left' className='schedule-button' item xs={12}>
                     {canViewScheduleOptions && (
                         <>
                             <ResponsiveButton
-                                aria-controls="simple-menu"
-                                aria-haspopup="true"
+                                aria-controls='simple-menu'
+                                aria-haspopup='true'
                                 onClick={handleOpen}
-                                variant="outlined"
+                                variant='outlined'
                                 startIcon={<CalendarIcon />}
                             >
                                 Schedule Options
@@ -199,14 +197,13 @@ const ProfileHeading = ({ ownerID }) => {
             {isAdmin && isAuthUser && (
                 <>
                     <Grid component={Hidden} item mdDown xs={12}>
-                        <EditIcon className="editIcon" />
-                        <div className="editResetDiv">
+                        <div className='editResetDiv'>
                             <ResponsiveButton
                                 component={Link}
-                                to={`/form/${userInfo.accountType.toLowerCase()}/${
+                                to={`/form/${userInfo.accountType.toLowerCase()}/edit/${
                                     userInfo.user.id
                                 }`}
-                                className="edit"
+                                className='edit'
                             >
                                 Edit Profile
                             </ResponsiveButton>
@@ -221,10 +218,10 @@ const ProfileHeading = ({ ownerID }) => {
                     <Grid component={Hidden} item lgUp xs={12}>
                         <ResponsiveButton
                             component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${
+                            to={`/form/${userInfo.accountType.toLowerCase()}/edit/${
                                 userInfo.user.id
                             }`}
-                            variant="outlined"
+                            variant='outlined'
                         >
                             <EditIcon />
                         </ResponsiveButton>
@@ -234,21 +231,18 @@ const ProfileHeading = ({ ownerID }) => {
 
             {isStudentOrParent && (
                 <Grid component={Hidden} item mdDown xs={12}>
-                    <EditIcon className="editIcon" />
-                    <div className="editResetDiv">
-                        <ResponsiveButton
-                            component={Link}
-                            to={`/form/${userInfo.accountType.toLowerCase()}/${
-                                userInfo.user.id
-                            }`}
-                            className="edit"
-                        >
-                            Edit Profile
-                        </ResponsiveButton>
-                    </div>
+                    <ResponsiveButton
+                        component={Link}
+                        to={`/form/${userInfo.accountType.toLowerCase()}/edit/${
+                            userInfo.user.id
+                        }`}
+                        variant='outlined'
+                    >
+                        Edit Profile
+                    </ResponsiveButton>
                 </Grid>
             )}
-        </Grid>
+        </>
     );
 
     const profileDetails = () => {
@@ -264,7 +258,7 @@ const ProfileHeading = ({ ownerID }) => {
                 },
                 Birthday: {
                     icon: <CakeOutlinedIcon className={classes.icon} />,
-                    text: userInfo.birthday,
+                    text: moment(userInfo.birthDate).format('MMM Do, YYYY'),
                 },
                 Grade: {
                     icon: <GradeIcon className={classes.icon} />,
@@ -298,7 +292,7 @@ const ProfileHeading = ({ ownerID }) => {
                                 href={`mailto:${userInfo.user.email}`}
                             >
                                 <Typography
-                                    variant="body1"
+                                    variant='body1'
                                     className={classes.text}
                                 >
                                     {userInfo.user.email}
@@ -315,7 +309,7 @@ const ProfileHeading = ({ ownerID }) => {
                         </Grid>
                         <Grid item xs={width - 1}>
                             <Typography
-                                variant="body1"
+                                variant='body1'
                                 className={classes.text}
                             >
                                 {type[variant].text}
@@ -330,38 +324,38 @@ const ProfileHeading = ({ ownerID }) => {
             case 'student':
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Grade" />
-                        <InfoRow variant="Phone" />
-                        <InfoRow variant="School" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Birthday" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Grade' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='School' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Birthday' />
                     </>
                 );
             case 'instructor':
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Phone" />
-                        <InfoRow variant="Birthday" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='Birthday' />
                     </>
                 );
             case 'parent':
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Phone" />
-                        <InfoRow variant="Balance" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='Balance' />
                     </>
                 );
             default:
                 return (
                     <>
-                        <InfoRow variant="ID" />
-                        <InfoRow variant="Email" />
-                        <InfoRow variant="Phone" />
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
                     </>
                 );
         }
@@ -369,31 +363,43 @@ const ProfileHeading = ({ ownerID }) => {
 
     return (
         <Grid
-            alignItems="center"
+            alignItems='center'
             container
             item
             xs={12}
             style={{ margin: accountType === 'INSTRUCTOR' ? '-20px 0' : '0' }}
         >
-            <Grid align="left" alignItems="center" container item xs={8}>
-                <Grid className="profile-name" item style={{ marginRight: 20 }}>
-                    <Typography variant="h3">
+            <Grid
+                align='left'
+                alignItems='center'
+                justify='space-between'
+                container
+                item
+                xs={12}
+            >
+                <Grid className='profile-name' item>
+                    <Typography
+                        variant='h3'
+                        style={{ marginRight: '20px', display: 'inline-block' }}
+                    >
                         {fullName(userInfo.user)}
                     </Typography>
-                </Grid>
-                <Grid item>
                     <Hidden smDown>
-                        <LabelBadge variant="outline-gray">
+                        <LabelBadge
+                            variant='outline-gray'
+                            style={{ marginBottom: '10px' }}
+                        >
                             {capitalizeString(accountType)}
                         </LabelBadge>
                     </Hidden>
                 </Grid>
+                {renderEditandAwayButton()}
             </Grid>
-            {renderEditandAwayButton()}
+
             <Grid
                 container
-                align="left"
-                alignItems="center"
+                align='left'
+                alignItems='center'
                 style={{
                     width: '430px',
                     margin: accountType === 'INSTRUCTOR' ? '-10px 0' : '10px 0',

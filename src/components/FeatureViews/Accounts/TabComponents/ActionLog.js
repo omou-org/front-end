@@ -48,7 +48,7 @@ const ActionLog = ({ ownerID }) => {
     });
 
     if (loading) return null;
-    if (error) return <Redirect to="/PageNotFound" />;
+    if (error) return <Redirect to='/PageNotFound' />;
 
     const { logs } = data;
 
@@ -111,7 +111,12 @@ const ActionLog = ({ ownerID }) => {
                                         {moment(date).format('LLLL')}
                                     </TableCell>
                                     <TableCell>{ActionLabel(action)}</TableCell>
-                                    <TableCell style={{ paddingLeft: '6em' , textTransform: "capitalize" }}>
+                                    <TableCell
+                                        style={{
+                                            paddingLeft: '6em',
+                                            textTransform: 'capitalize',
+                                        }}
+                                    >
                                         {objectType}
                                     </TableCell>
                                     <TableCell>{objectRepr}</TableCell>
