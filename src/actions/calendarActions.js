@@ -3,20 +3,20 @@ import {instance, REQUEST_ALL, wrapGet, wrapPatch} from "./apiActions";
 import {useMemo} from "react";
 import {wrapUseEndpoint} from "./hooks";
 
-export const addEvent = (event) => ({
-	type: types.ADD_EVENT,
-	payload: event,
-});
+// export const addEvent = (event) => ({
+// 	type: types.ADD_EVENT,
+// 	payload: event,
+// });
 
-export const deleteEvent = (event) => ({
-	type: types.DELETE_EVENT,
-	payload: event,
-});
+// export const deleteEvent = (event) => ({
+// 	type: types.DELETE_EVENT,
+// 	payload: event,
+// });
 
-export const filterEvent = (event) => ({
-	type: types.FILTER_EVENT,
-	payload: event,
-});
+// export const filterEvent = (event) => ({
+// 	type: types.FILTER_EVENT,
+// 	payload: event,
+// });
 
 export const fetchSession = ({config, id}) =>
 	wrapGet(

@@ -434,10 +434,10 @@ export const useInstructorAvailability = (instructorID) =>
         )
     );
 
-export const useUnpaidSessions = wrapUseEndpoint(
-    "/payment/unpaid-sessions/",
-    types.GET_UNPAID_SUCCESS
-);
+// export const useUnpaidSessions = wrapUseEndpoint(
+//     "/payment/unpaid-sessions/",
+//     types.GET_UNPAID_SUCCESS
+// );
     
 // Hook
 export const usePrevious = (value) => {

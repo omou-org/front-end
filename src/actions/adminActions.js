@@ -30,23 +30,23 @@ export const fetchCategories = (id) =>
     }
 	);
 
-export const useCategories = wrapUseEndpoint(
-	"/course/categories/",
-	types.GET_CATEGORY_SUCCESS
-);
+// export const useCategories = wrapUseEndpoint(
+// 	"/course/categories/",
+// 	types.GET_CATEGORY_SUCCESS
+// );
 
-export const fetchUnpaid = (id) =>
-	wrapGet(
-    "/payment/unpaid-sessions/",
-    [
-		types.GET_UNPAID_STARTED,
-		types.GET_UNPAID_SUCCESS,
-		types.GET_UNPAID_FAILED,
-    ],
-    {
-		id,
-    }
-	);
+// export const fetchUnpaid = (id) =>
+// 	wrapGet(
+//     "/payment/unpaid-sessions/",
+//     [
+// 		types.GET_UNPAID_STARTED,
+// 		types.GET_UNPAID_SUCCESS,
+// 		types.GET_UNPAID_FAILED,
+//     ],
+//     {
+// 		id,
+//     }
+// 	);
 
 export const updateCategory = (id, updatedCategory) =>
 	wrapPatch(
