@@ -7,7 +7,7 @@ import { instance } from 'actions/apiActions';
 import React from 'react';
 import { FORM_ERROR } from 'final-form';
 import * as Fields from './Fields';
-import { StudentSelect } from './Fields';
+import { StudentSelect, fieldsMargins } from './Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
 import { client } from 'index';
@@ -59,11 +59,15 @@ export const parseDate = (date) => {
 };
 
 export const selectField = (options) => ({
-        component: <Fields.Select data={options} />,
+        component: <Fields.Select style={fieldsMargins} data={options} />,
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
     stringField = (label) => ({
-        component: <Fields.TextField />,
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '8px ', marginBottom: '24px' }}
+            />
+        ),
         label,
         validator: Yup.string().matches(
             /[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
@@ -319,6 +323,7 @@ export const ACADEMIC_LVL_FIELD = {
         label: 'State',
         component: (
             <Fields.Autocomplete
+                style={{ marginTop: '16px', marginBottom: '8px' }}
                 options={STATE_OPTIONS}
                 textFieldProps={{
                     fullWidth: false,
@@ -330,7 +335,12 @@ export const ACADEMIC_LVL_FIELD = {
     ZIPCODE_FIELD = {
         name: 'zipcode',
         label: 'Zip Code',
-        component: <Fields.TextField textInputProps={{ fullWidth: false }} />,
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '16px', marginBottom: '16px' }}
+                textInputProps={{ fullWidth: false }}
+            />
+        ),
         validator: Yup.string().matches(
             /^\d{5}(?:[-\s]\d{4})?$/u,
             'Invalid zipcode'
