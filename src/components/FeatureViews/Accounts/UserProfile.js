@@ -293,10 +293,7 @@ const UserProfile = () => {
     const tabs = () => {
         return (
             <>
-                <Tabs
-                    onChange={handleTabChange}
-                    value={tabIndex}
-                >
+                <Tabs onChange={handleTabChange} value={tabIndex}>
                     {displayTabs
                         .filter((tab) =>
                             tabsInViewforAccountType(tab, AuthUser.accountType)

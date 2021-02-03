@@ -63,7 +63,11 @@ export const selectField = (options) => ({
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
     stringField = (label) => ({
-        component: <Fields.TextField style={{marginTop: "8px ", marginBottom: "24px"}} />,
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '8px ', marginBottom: '24px' }}
+            />
+        ),
         label,
         validator: Yup.string().matches(
             /[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
@@ -319,7 +323,7 @@ export const ACADEMIC_LVL_FIELD = {
         label: 'State',
         component: (
             <Fields.Autocomplete
-                style={{marginTop: "16px", marginBottom:"8px"}}
+                style={{ marginTop: '16px', marginBottom: '8px' }}
                 options={STATE_OPTIONS}
                 textFieldProps={{
                     fullWidth: false,
@@ -331,7 +335,12 @@ export const ACADEMIC_LVL_FIELD = {
     ZIPCODE_FIELD = {
         name: 'zipcode',
         label: 'Zip Code',
-        component: <Fields.TextField style={{marginTop: "16px", marginBottom: "16px"}} textInputProps={{ fullWidth: false }} />,
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '16px', marginBottom: '16px' }}
+                textInputProps={{ fullWidth: false }}
+            />
+        ),
         validator: Yup.string().matches(
             /^\d{5}(?:[-\s]\d{4})?$/u,
             'Invalid zipcode'

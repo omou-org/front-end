@@ -9,7 +9,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
-import {makeStyles, withStyles} from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -30,7 +30,7 @@ import LoadingHandler from 'components/OmouComponents/LoadingHandler';
 import ProfileCard from './ProfileCard';
 import { simpleUser } from 'queryFragments';
 import UserAvatar from './UserAvatar';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { buttonBlue } from '../../../theme/muiTheme';
 
 const QUERY_USERS = gql`
@@ -79,17 +79,17 @@ const AccountTab = withStyles({
         borderTop: '1px solid #43B5D9',
         borderLeft: '1px solid #43B5D9',
         color: buttonBlue,
-        fontWeight: "500",
-        borderRadius: "0px",
-        "&$selected": {
-            borderRadius: "0px",
+        fontWeight: '500',
+        borderRadius: '0px',
+        '&$selected': {
+            borderRadius: '0px',
         },
-        "&:last-of-type": {
+        '&:last-of-type': {
             borderRight: '1px solid #43B5D9',
-        }
+        },
     },
-    selected: {}
-})((props) => <Tab {...props}></Tab>)
+    selected: {},
+})((props) => <Tab {...props}></Tab>);
 
 const TABS = [
     'All',
@@ -319,12 +319,17 @@ const Accounts = () => {
                 </Grid>
             </Grid>
             <Hidden xsDown>
-                <hr style={{marginTop: "24px"}} />
+                <hr style={{ marginTop: '24px' }} />
             </Hidden>
             <Typography align='left' className='heading' variant='h1'>
                 Accounts
             </Typography>
-            <Grid style={{marginBottom: "40px"}} justify="space-between" container direction="row">
+            <Grid
+                style={{ marginBottom: '40px' }}
+                justify='space-between'
+                container
+                direction='row'
+            >
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
                         className='tabs'
@@ -338,7 +343,7 @@ const Accounts = () => {
                 </Grid>
                 <Grid component={Hidden} item md={8} mdDown xs={10}>
                     <Tabs
-                        className="tabs"
+                        className='tabs'
                         onChange={handleTabChange}
                         scrollButtons='off'
                         value={tabIndex}
@@ -347,11 +352,7 @@ const Accounts = () => {
                     </Tabs>
                 </Grid>
                 <Hidden smDown>
-                    <Grid
-                        container
-                        item
-                        md={1}
-                    >
+                    <Grid container item md={1}>
                         <ToggleButtonGroup aria-label='list & grid view toggle buttons'>
                             <ToggleButton
                                 onClick={setView(true)}

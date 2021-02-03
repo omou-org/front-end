@@ -22,7 +22,7 @@ const useStyles = makeStyles({
         '& Button': {
             margin: '10px',
         },
-        "textAlign": "left",
+        textAlign: 'left',
     },
     root: {
         '& .MuiSelect-select-root': {
