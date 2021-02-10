@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import SearchSelect from 'react-select';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { distinctObjectArray, fullName, gradeOptions } from 'utils';
+import {distinctObjectArray, fullName, gradeOptions} from 'utils';
 import CourseList from './CourseList';
 import Loading from 'components/OmouComponents/Loading';
 import RegistrationActions from './RegistrationActions';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { SIMPLE_COURSE_DATA } from 'queryFragments';
-import { getRegistrationCart } from '../../OmouComponents/RegistrationUtils';
+import {useQuery} from '@apollo/react-hooks';
+import {SIMPLE_COURSE_DATA} from 'queryFragments';
+import {getRegistrationCart} from '../../OmouComponents/RegistrationUtils';
 
 const customStyles = {
     clearIndicator: (base, state) => ({
@@ -45,7 +45,7 @@ const ClearIndicator = (indicatorProps) => {
     );
 };
 
-export const GET_COURSES = gql`
+export const GET_ALL_COURSES = gql`
     query CourseList {
         courses {
             id
@@ -81,8 +81,8 @@ export const GET_COURSES = gql`
 `;
 
 const RegistrationLanding = () => {
-    const { data, loading, error } = useQuery(GET_COURSES);
-    const { currentParent } = getRegistrationCart();
+    const {data, loading, error} = useQuery(GET_ALL_COURSES);
+    const {currentParent} = getRegistrationCart();
 
     const [view, setView] = useState(0);
     const [updatedParent, setUpdatedParent] = useState(false);

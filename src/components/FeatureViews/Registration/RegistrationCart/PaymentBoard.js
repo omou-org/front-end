@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { RegistrationContext } from './RegistrationContext';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/react-hooks';
+import React, {useContext, useEffect, useState} from 'react';
+import {RegistrationContext} from './RegistrationContext';
+import {useLazyQuery, useMutation, useQuery} from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';
@@ -11,14 +11,14 @@ import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
-import { useHistory } from 'react-router-dom';
-import { GET_PAYMENT } from '../PaymentReceipt';
-import { GET_COURSES } from '../RegistrationLanding';
-import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
-import { GET_REGISTRATION_CART } from '../SelectParentDialog';
-import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
+import {useHistory} from 'react-router-dom';
+import {GET_PAYMENT} from '../PaymentReceipt';
+import {GET_ALL_COURSES} from '../RegistrationLanding';
+import {GET_STUDENTS_AND_ENROLLMENTS} from '../CourseList';
+import {GET_REGISTRATION_CART} from '../SelectParentDialog';
+import {CREATE_REGISTRATION_CART} from './RegistrationCartContainer';
 
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote(
@@ -209,7 +209,7 @@ export default function PaymentBoard() {
                     variables: { studentIds: currentParent.studentIdList },
                 });
                 let cachedCourses = cache.readQuery({
-                    query: GET_COURSES,
+                    query: GET_ALL_COURSES,
                 }).courses;
                 const newEnrollments = data.createEnrollments.enrollments.map(
                     (enrollment) => {
@@ -236,7 +236,7 @@ export default function PaymentBoard() {
                 });
 
                 cache.writeQuery({
-                    query: GET_COURSES,
+                    query: GET_ALL_COURSES,
                     data: {
                         courses: cachedCourses,
                     },

@@ -1,12 +1,12 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import React, {Fragment, useCallback, useEffect, useState} from 'react';
+import {Redirect, useParams} from 'react-router-dom';
 
 import Form from './Form';
 import Forms from './FormFormats';
 
 const FormPage = () => {
-    const { type, id, action } = useParams();
-    const { form, load, submit, title } = Forms?.[type] || {};
+    const {type, id, action} = useParams();
+    const {form, load, submit, title} = Forms?.[type] || {};
     const [initialData, setInitialData] = useState();
     const onSubmit = useCallback((formData) => submit(formData, id), [
         id,
@@ -47,7 +47,6 @@ const FormPage = () => {
     );
 
     const getTitle = (title) => {
-        console.log(title);
         if (action === 'edit') {
             return title.edit || `Edit ${title}`;
         } else {
