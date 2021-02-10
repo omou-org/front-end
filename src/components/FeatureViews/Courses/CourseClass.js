@@ -8,8 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Toolbar from '@material-ui/core/Toolbar';
 import gql from 'graphql-tag';
-
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
 import ChromeTabs from '../../OmouComponents/ChromeTabs';

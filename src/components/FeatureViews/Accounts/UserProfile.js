@@ -252,22 +252,12 @@ export const USER_QUERIES = {
 	  }`,
 };
 
-const useStyles = makeStyles({
-    MuiIndicator: {
-        height: '1px',
-    },
-});
-
 const UserProfile = () => {
     const { accountType, accountID } = useParams();
     const [tabIndex, setTabIndex] = useState(0);
     const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
     const AuthUser = useSelector(({ auth }) => auth);
-
-    // check if user is viewing a differnt profile
-    const classes = useStyles();
-    //
 
     // reset to first tab when profile changes
     useEffect(() => {
@@ -303,11 +293,7 @@ const UserProfile = () => {
     const tabs = () => {
         return (
             <>
-                <Tabs
-                    classes={{ indicator: classes.MuiIndicator }}
-                    onChange={handleTabChange}
-                    value={tabIndex}
-                >
+                <Tabs onChange={handleTabChange} value={tabIndex}>
                     {displayTabs
                         .filter((tab) =>
                             tabsInViewforAccountType(tab, AuthUser.accountType)
