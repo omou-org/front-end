@@ -13,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import "../Search.scss";
 import {truncateStrings} from "utils";
 import {LabelBadge} from "../../../../theme/ThemedComponents/Badge/LabelBadge";
+import {GET_COURSE} from "../../../../queries/CoursesQuery/CourseQuerys"
 
 const getLocaleDateString = (start, end) => {
     if (start && end) {
@@ -22,28 +23,9 @@ const getLocaleDateString = (start, end) => {
     }
 };
 
-const COURSE_QUERY = gql`
-    query CourseFetch($courseID: ID!) {
-        course(courseId: $courseID) {
-            instructor {
-                user {
-                    firstName
-                    lastName
-                }
-            }
-            enrollmentSet {
-                id
-            }
-            maxCapacity
-            endDate
-            title
-            startDate
-        }
-    }
-`;
 
 const CourseCard = ({courseID, isLoading = false}) => {
-    const {data, loading} = useQuery(COURSE_QUERY, {
+    const {data, loading} = useQuery(GET_COURSE, {
         "variables": {courseID},
     });
 

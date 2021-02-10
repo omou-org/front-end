@@ -11,6 +11,7 @@ import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import {GET_CATEGORIES,GET_COURSES, GET_COURSE } from "../../queries/CoursesQuery/CourseQuerys"
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
     return this.test('unique', message, function (list) {
@@ -418,33 +419,9 @@ const SEARCH_PARENTS = gql`
     }
 `;
 
-const GET_CATEGORIES = gql`
-    query GetCategories {
-        courseCategories {
-            id
-            name
-        }
-    }
-`;
 
-const GET_COURSES = gql`
-    query GetCourses {
-      courses {
-        title
-        id
-        enrollmentSet {
-              id
-            }
-        maxCapacity
-        instructor {
-          user {
-            lastName
-            firstName
-          }
-        }
-      }
-    }
-`;
+
+
 
 const parentSelect = (name) => (
     <Fields.DataSelect name={name} 
@@ -1127,33 +1104,7 @@ export default {
             },
         ],
         "load": async (id) => {
-            const GET_COURSE = gql`
-            query CourseFetch($id: ID!) {
-                course(courseId: $id) {
-                    title
-                    id
-                    description
-                    instructor {
-                        user {
-                            id
-                            firstName
-                            lastName
-                        }
-                    }
-                    startDate
-                    maxCapacity
-                    courseCategory {
-                        id
-                        name
-                    }
-                    academicLevel
-                    endDate
-                    totalTuition
-                    hourlyTuition
-                    isConfirmed
-                }
-            }`;
-
+           
             try {
                 const {"data": {course}} = await client.query({
                     "query": GET_COURSE,
