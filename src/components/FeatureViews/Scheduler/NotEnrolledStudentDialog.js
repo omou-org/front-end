@@ -4,9 +4,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { withRouter } from "react-router-dom";
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'; 
-import "./scheduler.scss";
+import { withRouter } from 'react-router-dom';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import './scheduler.scss';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const NotEnrolledStudentsDialog = (props) => {
@@ -21,28 +21,28 @@ const NotEnrolledStudentsDialog = (props) => {
             <Dialog
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-                className="notEnrolledStudentDialog"
+                aria-labelledby='alert-dialog-title'
+                aria-describedby='alert-dialog-description'
+                className='notEnrolledStudentDialog'
             >
-                <ErrorOutlineIcon className="warningIcon"/>
-                <DialogTitle disableTypography id="alert-dialog-title">{"OOPS!"}</DialogTitle>
+                <ErrorOutlineIcon className='warningIcon' />
+                <DialogTitle disableTypography id='alert-dialog-title'>
+                    {'OOPS!'}
+                </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        It looks like there are no students Enrolled in that class. Please go back and choose another. (Clicking outside of the box will take you back)
-
+                    <DialogContentText id='alert-dialog-description'>
+                        It looks like there are no students Enrolled in that
+                        class. Please go back and choose another. (Clicking
+                        outside of the box will take you back)
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <ResponsiveButton 
-                        onClick={handleClose}
-                        variant='outlined'
-                    >
+                    <ResponsiveButton onClick={handleClose} variant='outlined'>
                         back
-                    </ ResponsiveButton>
+                    </ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </div>
     );
-}
-export default withRouter(NotEnrolledStudentsDialog)
+};
+export default withRouter(NotEnrolledStudentsDialog);

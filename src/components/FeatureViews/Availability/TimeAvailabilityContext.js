@@ -1,5 +1,7 @@
-import * as React from "react";
+import * as React from 'react';
 
 const timeAvailabilityContext = {};
 
-export const TimeAvailabilityContext = React.createContext(timeAvailabilityContext);
+export const TimeAvailabilityContext = React.createContext(
+    timeAvailabilityContext
+);

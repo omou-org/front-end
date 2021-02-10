@@ -1,5 +1,6 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {makeStyles} from "@material-ui/core/styles";
+import React, { useCallback, useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 import {Form as ReactForm} from "react-final-form";
 import Step from "@material-ui/core/Step";
@@ -11,70 +12,83 @@ import FormReceipt from "./FormReceipt";
 import {Prompt} from 'react-router-dom';
 import BackButton from "../OmouComponents/BackButton";
 
-import {makeValidate} from "mui-rff";
-import * as Yup from "yup";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+
+import { makeValidate } from 'mui-rff';
+import * as Yup from 'yup';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
-    "buttons": {
-        "& Button": {
-            "margin": "10px",
+    buttons: {
+        '& Button': {
+            margin: '10px',
         },
-        "textAlign": "right",
+        textAlign: 'left',
     },
-    "root": {
-        "& .MuiSelect-select-root": {
-            "width": 200,
+    root: {
+        '& .MuiSelect-select-root': {
+            width: 200,
         },
     },
-    "step": {
-        "textAlign": "left",
+    step: {
+        textAlign: 'left',
     },
 });
 
 const generateFields = (format) => {
-    const sections = format.map(({fields, ...settings}) => ({
+    const sections = format.map(({ fields, ...settings }) => ({
         ...settings,
-        "fields": fields.map((field) => {
+        fields: fields.map((field) => {
             let jsField = field.component;
             jsField = React.cloneElement(jsField, {
-                "key": field.name,
-                "label": field.label,
-                "name": field.name,
-                "required": Boolean(field.required),
+                key: field.name,
+                label: field.label,
+                name: field.name,
+                required: Boolean(field.required),
             });
             return jsField;
         }),
     }));
 
-    const schema = Yup.object().shape(format.reduce((allValidators, section) => {
-        const sectionObj = section.fields.reduce((fieldValidators, field) => {
-            const {name, label, required} = field;
-            let {validator} = field;
-            if (required) {
-                validator = validator.required();
-            }
-            validator = validator.label(label).nullable();
+    const schema = Yup.object().shape(
+        format.reduce((allValidators, section) => {
+            const sectionObj = section.fields.reduce(
+                (fieldValidators, field) => {
+                    const { name, label, required } = field;
+                    let { validator } = field;
+                    if (required) {
+                        validator = validator.required();
+                    }
+                    validator = validator.label(label).nullable();
+                    return {
+                        ...fieldValidators,
+                        [name]: validator,
+                    };
+                },
+                {}
+            );
             return {
-                ...fieldValidators,
-                [name]: validator,
+                ...allValidators,
+                [section.name]: Yup.object()
+                    .shape(sectionObj)
+                    .label(section.label),
             };
-        }, {});
-        return {
-            ...allValidators,
-            [section.name]: Yup.object().shape(sectionObj)
-                .label(section.label),
-        };
-    }, {}));
+        }, {})
+    );
 
     return [schema, sections];
 };
 
-const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormReceipt}) => {
+const Form = ({
+    base,
+    initialData,
+    title,
+    onSubmit,
+    receipt: Receipt = FormReceipt,
+}) => {
     const [activeStep, setActiveStep] = useState(0);
     const [showReceipt, setShowReceipt] = useState(false);
     const [submittedData, setSubmittedData] = useState(null);
@@ -91,14 +105,18 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
         setActiveStep((prevStep) => prevStep - 1);
     }, []);
 
-    const submit = useCallback(async (formData) => {
-        const errors = await onSubmit(formData);
-        if (!errors) {
-            setSubmittedData(formData);
-            setShowReceipt(true);
-        }
-        return errors;
-    }, [onSubmit]);
+    const submit = useCallback(
+        async (formData) => {
+            const errors = await onSubmit(formData);
+            if (!errors) {
+                setSubmittedData(formData);
+                setShowReceipt(true);
+            }
+            return errors;
+        },
+        [onSubmit]
+    );
+
 
     const renderStep = useCallback((index, {label, name, fields}, errors, submitting, mutators) => (
         <Step className={classes.step} key={label}>
@@ -167,7 +185,14 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
         </Step>
     ), [classes.step, classes.buttons, sections.length, handleBack, handleNext]);
 
-    const Render = ({handleSubmit, errors, submitError, submitting, form}) => {
+
+    const Render = ({
+        handleSubmit,
+        errors,
+        submitError,
+        submitting,
+        form,
+    }) => {
         const [openError, setOpenError] = useState(false);
         useEffect(() => {
             if (submitError) {
@@ -177,43 +202,69 @@ const Form = ({base, initialData, title, onSubmit, "receipt": Receipt = FormRece
 
         return (
             <form noValidate onSubmit={handleSubmit}>
-                <Stepper activeStep={activeStep} orientation="vertical">
-                    {sections.map((section, index) => renderStep(
-                        index, section, errors, submitting, form.mutators,
-                    ))}
+                <Stepper activeStep={activeStep} orientation='vertical'>
+                    {sections.map((section, index) =>
+                        renderStep(
+                            index,
+                            section,
+                            errors,
+                            submitting,
+                            form.mutators
+                        )
+                    )}
                 </Stepper>
-                {submitError &&
-                    <Dialog className="error" onClose={() => setOpenError(false)}
-                        open={openError}>
+                {submitError && (
+                    <Dialog
+                        className='error'
+                        onClose={() => setOpenError(false)}
+                        open={openError}
+                    >
                         <DialogTitle disableTypography>
                             An error occurred while submitting. Try again.
                         </DialogTitle>
-                        <DialogContent>
-                            {submitError.message}
-                        </DialogContent>
+                        <DialogContent>{submitError.message}</DialogContent>
                         <DialogActions>
-                            <ResponsiveButton variant='outlined' onClick={() => setOpenError(false)}>
+                            <ResponsiveButton
+                                variant='outlined'
+                                onClick={() => setOpenError(false)}
+                            >
                                 Close
                             </ResponsiveButton>
                         </DialogActions>
-                    </Dialog>}
+                    </Dialog>
+                )}
             </form>
         );
     };
     return (
         <div className={classes.root}>
-            <Typography align="left" className="heading" data-cy="formTitle"
-                variant="h3">
+            <Typography
+                align='left'
+                className='heading'
+                data-cy='formTitle'
+                variant='h3'
+            >
                 {title}
             </Typography>
-            {showReceipt ?
-                <Receipt formData={submittedData} format={base} /> :
-                <ReactForm initialValues={initialData} mutators={{
-                    "setHourlyTuition": ([name], state, utils) => {
-                        utils.changeValue(state, "hourlyTuition", () => name);
-                    },
-                }}
-                onSubmit={submit} render={Render} validate={validate} />}
+            {showReceipt ? (
+                <Receipt formData={submittedData} format={base} />
+            ) : (
+                <ReactForm
+                    initialValues={initialData}
+                    mutators={{
+                        setHourlyTuition: ([name], state, utils) => {
+                            utils.changeValue(
+                                state,
+                                'hourlyTuition',
+                                () => name
+                            );
+                        },
+                    }}
+                    onSubmit={submit}
+                    render={Render}
+                    validate={validate}
+                />
+            )}
         </div>
     );
 };

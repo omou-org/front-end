@@ -4,13 +4,12 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { useSelector } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import CardView from '@material-ui/icons/ViewModule';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -32,9 +31,10 @@ import ProfileCard from './ProfileCard';
 import { simpleUser } from 'queryFragments';
 import UserAvatar from './UserAvatar';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { buttonBlue } from '../../../theme/muiTheme';
 
 const QUERY_USERS = gql`
-    query UserQuery($adminType: String) {
+    query UserQuery {
         students {
             user {
                 ...SimpleUser
@@ -59,7 +59,7 @@ const QUERY_USERS = gql`
             accountType
             phoneNumber
         }
-        admins(adminType: $adminType) {
+        admins {
             adminType
             userUuid
             user {
@@ -73,19 +73,33 @@ const QUERY_USERS = gql`
     ${simpleUser}
 `;
 
+const AccountTab = withStyles({
+    root: {
+        background: '#FFFFFF',
+        borderTop: '1px solid #43B5D9',
+        borderLeft: '1px solid #43B5D9',
+        color: buttonBlue,
+        fontWeight: '500',
+        borderRadius: '0px',
+        '&$selected': {
+            borderRadius: '0px',
+        },
+        '&:last-of-type': {
+            borderRight: '1px solid #43B5D9',
+        },
+    },
+    selected: {},
+})((props) => <Tab {...props}></Tab>);
+
 const TABS = [
     'All',
     'Instructors',
     'Students',
     'Receptionist',
     'Parents',
-].map((label) => <Tab key={label} label={label} />);
+].map((label) => <AccountTab key={label} label={label} />);
 
-const useStyles = makeStyles({
-    MuiIndicator: {
-        height: '1px',
-    },
-});
+const useStyles = makeStyles({});
 
 const stopPropagation = (event) => {
     event.stopPropagation();
@@ -181,7 +195,7 @@ const Accounts = () => {
 
     const tableView = useMemo(
         () => (
-            <Table className="AccountsTable" resizable="false">
+            <Table className='AccountsTable' resizable='false'>
                 <TableHead>
                     <TableRow>
                         <TableCell className={classes.tableCellStyle}>
@@ -202,16 +216,16 @@ const Accounts = () => {
                 <TableBody>
                     {displayUsers.map((row) => (
                         <TableRow
-                            className="row"
+                            className='row'
                             component={Link}
                             key={row.user.id}
                             to={`/accounts/${row.accountType}/${row.user.id}`}
                         >
                             <TableCell className={classes.tableRowStyle}>
                                 <Grid
-                                    alignItems="center"
+                                    alignItems='center'
                                     container
-                                    layout="row"
+                                    layout='row'
                                 >
                                     <UserAvatar
                                         fontSize={14}
@@ -245,7 +259,7 @@ const Accounts = () => {
                                         row.user.id === userID) && (
                                         <IconButton
                                             component={Link}
-                                            to={`/form/${row.accountType}/${row.user.id}`}
+                                            to={`/form/${row.accountType}/edit/${row.user.id}`}
                                         >
                                             <EditIcon />
                                         </IconButton>
@@ -263,10 +277,10 @@ const Accounts = () => {
     const cardView = useMemo(
         () => (
             <Grid
-                alignItems="center"
-                className="card-container"
+                alignItems='center'
+                className='card-container'
                 container
-                direction="row"
+                direction='row'
                 spacing={2}
                 xs={12}
             >
@@ -283,13 +297,13 @@ const Accounts = () => {
     );
 
     return (
-        <Grid className="Accounts" item xs={12}>
-            <Grid container alignItems="flex-start" spacing={4}>
+        <Grid className='Accounts' item xs={12}>
+            <Grid container alignItems='flex-start' spacing={4}>
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to="/form/student"
-                        variant="outlined"
+                        to='/form/student/add'
+                        variant='outlined'
                     >
                         new student
                     </ResponsiveButton>
@@ -297,50 +311,49 @@ const Accounts = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={Link}
-                        to="/form/parent"
-                        variant="outlined"
+                        to='/form/parent/add'
+                        variant='outlined'
                     >
                         new parent
                     </ResponsiveButton>
                 </Grid>
             </Grid>
             <Hidden xsDown>
-                <hr />
+                <hr style={{ marginTop: '24px' }} />
             </Hidden>
-            <Typography align="left" className="heading" variant="h1">
+            <Typography align='left' className='heading' variant='h1'>
                 Accounts
             </Typography>
-            <Grid container direction="row">
+            <Grid
+                style={{ marginBottom: '40px' }}
+                justify='space-between'
+                container
+                direction='row'
+            >
                 <Grid component={Hidden} item lgUp md={8} xs={10}>
                     <Tabs
-                        className="tabs"
+                        className='tabs'
                         onChange={handleTabChange}
-                        scrollButtons="on"
+                        scrollButtons='on'
                         value={tabIndex}
-                        variant="scrollable"
+                        variant='scrollable'
                     >
                         {TABS}
                     </Tabs>
                 </Grid>
                 <Grid component={Hidden} item md={8} mdDown xs={10}>
                     <Tabs
-                        className="tabs"
-                        classes={{ indicator: classes.MuiIndicator }}
+                        className='tabs'
                         onChange={handleTabChange}
-                        scrollButtons="off"
+                        scrollButtons='off'
                         value={tabIndex}
                     >
                         {TABS}
                     </Tabs>
                 </Grid>
                 <Hidden smDown>
-                    <Grid
-                        style={{ justifyContent: 'flex-end' }}
-                        container
-                        item
-                        md={4}
-                    >
-                        <ToggleButtonGroup aria-label="list & grid view toggle buttons">
+                    <Grid container item md={1}>
+                        <ToggleButtonGroup aria-label='list & grid view toggle buttons'>
                             <ToggleButton
                                 onClick={setView(true)}
                                 selected={viewToggle && true}
@@ -360,11 +373,11 @@ const Accounts = () => {
                 </Hidden>
             </Grid>
             <Grid
-                alignItems="center"
-                className="accounts-list-wrapper"
+                alignItems='center'
+                className='accounts-list-wrapper'
                 container
-                direction="row"
-                justify="center"
+                direction='row'
+                justify='center'
                 spacing={1}
             >
                 <LoadingHandler error={error} loading={loading}>

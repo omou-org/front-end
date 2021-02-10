@@ -7,13 +7,35 @@ import { instance } from 'actions/apiActions';
 import React from 'react';
 import { FORM_ERROR } from 'final-form';
 import * as Fields from './Fields';
-import { StudentSelect } from './Fields';
+import { StudentSelect, fieldsMargins } from './Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
 import { client } from 'index';
 import gql from 'graphql-tag';
 import { fullName } from '../../utils';
 import TutoringPriceQuote from './TutoringPriceQuote';
+import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
+
+export const GET_ADMIN = gql`
+    query GetAdmin($userID: ID!) {
+        admin(userId: $userID) {
+            user {
+                id
+                email
+                firstName
+                lastName
+            }
+            adminType
+            gender
+            phoneNumber
+            birthDate
+            address
+            city
+            state
+            zipcode
+        }
+    }
+`;
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = (a) => a) {
     return this.test('unique', message, function (list) {
@@ -37,11 +59,15 @@ export const parseDate = (date) => {
 };
 
 export const selectField = (options) => ({
-        component: <Fields.Select data={options} />,
+        component: <Fields.Select style={fieldsMargins} data={options} />,
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
     stringField = (label) => ({
-        component: <Fields.TextField />,
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '8px ', marginBottom: '24px' }}
+            />
+        ),
         label,
         validator: Yup.string().matches(
             /[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
@@ -76,7 +102,7 @@ const instructorSelect = (name) => (
         name={name}
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
-        noOptionsText="No instructors available"
+        noOptionsText='No instructors available'
     />
 );
 
@@ -194,7 +220,7 @@ export const ACADEMIC_LVL_FIELD = {
     BIRTH_DATE_FIELD = {
         name: 'birthDate',
         label: 'Birth Date',
-        component: <Fields.DatePicker format="MM/DD/YYYY" openTo="year" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' openTo='year' />,
         validator: Yup.date().max(moment()),
     },
     CITY_FIELD = {
@@ -270,26 +296,26 @@ export const ACADEMIC_LVL_FIELD = {
         name: 'startDate',
         label: 'Start Date',
         required: 'true',
-        component: <Fields.DatePicker format="MM/DD/YYYY" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' />,
         validator: Yup.date(),
     },
     END_DATE_FIELD = {
         name: 'endDate',
         label: 'End Date',
         required: 'true',
-        component: <Fields.DatePicker format="MM/DD/YYYY" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' />,
         validator: Yup.date(),
     },
     START_TIME_FIELD = {
         name: 'startTime',
         label: 'Start Time',
-        component: <Fields.TimePicker format="hh:mm a" />,
+        component: <Fields.TimePicker format='hh:mm a' />,
         validator: Yup.date(),
     },
     END_TIME_FIELD = {
         name: 'endTime',
         label: 'End Time',
-        component: <Fields.TimePicker format="hh:mm a" />,
+        component: <Fields.TimePicker format='hh:mm a' />,
         validator: Yup.date(),
     },
     STATE_FIELD = {
@@ -297,6 +323,7 @@ export const ACADEMIC_LVL_FIELD = {
         label: 'State',
         component: (
             <Fields.Autocomplete
+                style={{ marginTop: '16px', marginBottom: '8px' }}
                 options={STATE_OPTIONS}
                 textFieldProps={{
                     fullWidth: false,
@@ -308,7 +335,12 @@ export const ACADEMIC_LVL_FIELD = {
     ZIPCODE_FIELD = {
         name: 'zipcode',
         label: 'Zip Code',
-        component: <Fields.TextField textInputProps={{ fullWidth: false }} />,
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '16px', marginBottom: '16px' }}
+                textInputProps={{ fullWidth: false }}
+            />
+        ),
         validator: Yup.string().matches(
             /^\d{5}(?:[-\s]\d{4})?$/u,
             'Invalid zipcode'
@@ -458,7 +490,7 @@ const TUTORING_COURSE_SECTIONS = [
                 // TODO: price quote tool
                 name: 'price',
                 label: 'Price',
-                component: <TutoringPriceQuote courseType="TUTORING" />,
+                component: <TutoringPriceQuote courseType='TUTORING' />,
                 validator: Yup.mixed(),
             },
         ],
@@ -514,7 +546,7 @@ const parentSelect = (name) => (
         name={name}
         optionsMap={userMap}
         request={SEARCH_PARENTS}
-        noOptionsText="No parents available"
+        noOptionsText='No parents available'
     />
 );
 
@@ -545,7 +577,7 @@ const categorySelect = (name) => (
         name={name}
         optionsMap={categoryMap}
         request={GET_CATEGORIES}
-        noOptionsText="No categories available"
+        noOptionsText='No categories available'
     />
 );
 
@@ -569,7 +601,7 @@ const schoolSelect = (name) => (
         name={name}
         optionsMap={schoolMap}
         request={GET_SCHOOLS}
-        noOptionsText="No schools available"
+        noOptionsText='No schools available'
     />
 );
 
@@ -766,6 +798,31 @@ export default {
                         zipcode: $zipcode
                     ) {
                         created
+                        student {
+                            accountType
+                            phoneNumber
+                            user {
+                                email
+                                lastName
+                                firstName
+                                id
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const GET_ALL_STUDENTS = gql`
+                query GetAllStudents {
+                    students {
+                        accountType
+                        phoneNumber
+                        user {
+                            email
+                            lastName
+                            firstName
+                            id
+                        }
                     }
                 }
             `;
@@ -778,8 +835,62 @@ export default {
                         id,
                         email: student.email || '',
                         birthDate: parseDate(student.birthDate),
-                        primaryParent: student.primaryParent.value,
-                        school: student.school.value,
+                        primaryParent: student.primaryParent?.value,
+                        school: student.school?.value,
+                    },
+                    update: (cache, { data }) => {
+                        const newStudent = data.createStudent;
+
+                        const cachedStudent = cache.readQuery({
+                            query: USER_QUERIES['student'],
+                            variables: {
+                                ownerID: newStudent.student.user.id,
+                            },
+                        });
+                        cache.writeQuery({
+                            data: {
+                                student: {
+                                    ...cachedStudent,
+                                    user: { ...newStudent.student.user },
+                                    birthDate: newStudent.student.birthDate,
+                                },
+                            },
+                            query: USER_QUERIES['student'],
+                            variables: {
+                                ownerId: newStudent.student.user.id,
+                            },
+                        });
+                        // NOTE: Hacky way to check if the students cache exists yet.
+                        // if it doesn't exist then don't update the list. No better way of doing this according to stackoverflow
+                        // https://github.com/apollographql/apollo-client/issues/1701
+                        if (cache.data.data.ROOT_QUERY.students) {
+                            const cachedStudents =
+                                cache.readQuery({
+                                    query: GET_ALL_STUDENTS,
+                                }).students || [];
+
+                            const matchingIndex = cachedStudents.findIndex(
+                                ({ user: { id } }) =>
+                                    id === newStudent.student.user.id
+                            );
+
+                            let updatedStudents = cachedStudents;
+
+                            if (matchingIndex === -1) {
+                                updatedStudents = [
+                                    ...cachedStudents,
+                                    newStudent,
+                                ];
+                            } else {
+                                updatedStudents[matchingIndex] = newStudent;
+                            }
+                            cache.writeQuery({
+                                data: {
+                                    students: updatedStudents,
+                                },
+                                query: GET_ALL_STUDENTS,
+                            });
+                        }
                     },
                 });
             } catch (error) {
@@ -896,7 +1007,7 @@ export default {
                     {
                         name: 'password',
                         label: 'Password',
-                        component: <Fields.TextField type="password" />,
+                        component: <Fields.TextField type='password' />,
                         validator: Yup.mixed(),
                         required: true,
                     },
@@ -937,26 +1048,6 @@ export default {
             },
         ],
         load: async (id) => {
-            const GET_ADMIN = gql`
-                query GetAdmin($userID: ID!) {
-                    admin(userId: $userID) {
-                        user {
-                            id
-                            email
-                            firstName
-                            lastName
-                        }
-                        adminType
-                        gender
-                        phoneNumber
-                        birthDate
-                        address
-                        city
-                        state
-                        zipcode
-                    }
-                }
-            `;
             try {
                 const {
                     data: { admin },
@@ -1009,6 +1100,8 @@ export default {
                         zipcode: $zipcode
                     ) {
                         admin {
+                            accountType
+                            adminType
                             userUuid
                             birthDate
                             address
@@ -1016,10 +1109,34 @@ export default {
                             phoneNumber
                             state
                             zipcode
+                            user {
+                                email
+                                firstName
+                                id
+                                lastName
+                            }
                         }
                     }
                 }
             `;
+
+            const GET_ALL_ADMINS = gql`
+                query GetAllAdmins {
+                    admins {
+                        accountType
+                        adminType
+                        phoneNumber
+                        user {
+                            email
+                            firstName
+                            id
+                            lastName
+                        }
+                        userUuid
+                    }
+                }
+            `;
+
             const modifiedData = {
                 ...formData,
                 user: {
@@ -1047,6 +1164,67 @@ export default {
                         ...adminMutationVariable,
                         id,
                         userUuid,
+                    },
+                    update: (
+                        cache,
+                        {
+                            data: {
+                                createAdmin: { admin },
+                            },
+                        }
+                    ) => {
+                        const newAdmin = {
+                            accountType: admin.accountType,
+                            adminType: admin.adminType,
+                            phoneNumber: admin.phoneNumber,
+                            user: admin.user,
+                            userUuid: admin.userUuid,
+                        };
+
+                        const cachedAdmin = cache.readQuery({
+                            query: USER_QUERIES.admin,
+                            variables: {
+                                ownerID: admin.user.id,
+                            },
+                        });
+                        cache.writeQuery({
+                            data: {
+                                admin: {
+                                    ...cachedAdmin,
+                                    ...newAdmin,
+                                },
+                            },
+                            query: GET_ADMIN,
+                            variables: {
+                                ownerID: admin.user.id,
+                            },
+                        });
+
+                        if (cache.data.data.ROOT_QUERY.admins) {
+                            const cachedAdmins =
+                                cache.readQuery({
+                                    query: GET_ALL_ADMINS,
+                                })['admins'] || [];
+
+                            const matchingIndex = cachedAdmins.findIndex(
+                                ({ user: { id } }) => newAdmin.user.id === id
+                            );
+
+                            let updatedAdmins = cachedAdmins;
+
+                            if (matchingIndex !== -1) {
+                                updatedAdmins = [...cachedAdmins, newAdmin];
+                            } else {
+                                updatedAdmins[matchingIndex] = newAdmin;
+                            }
+
+                            cache.writeQuery({
+                                data: {
+                                    admins: updatedAdmins,
+                                },
+                                query: GET_ALL_ADMINS,
+                            });
+                        }
                     },
                 });
             } catch (error) {
@@ -1195,7 +1373,7 @@ export default {
                         name: 'startTime1',
                         label: 'Start Time',
                         required: 'true',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
@@ -1203,7 +1381,7 @@ export default {
                         label: 'End Time',
                         required: 'true',
                         component: (
-                            <Fields.TimePicker width={50} format="hh:mm a" />
+                            <Fields.TimePicker width={50} format='hh:mm a' />
                         ),
                         validator: Yup.date(),
                     },
@@ -1215,13 +1393,13 @@ export default {
                     {
                         name: 'startTime2',
                         label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
                         name: 'endTime2',
                         label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
@@ -1232,13 +1410,13 @@ export default {
                     {
                         name: 'startTime3',
                         label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                     {
                         name: 'endTime3',
                         label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
+                        component: <Fields.TimePicker format='hh:mm a' />,
                         validator: Yup.date(),
                     },
                 ],
@@ -1743,10 +1921,10 @@ export default {
                         label: 'Class',
                         component: (
                             <Fields.DataSelect
-                                name="Classes"
+                                name='Classes'
                                 optionsMap={openCourseMap}
                                 request={GET_COURSES}
-                                noOptionsText="No classes available"
+                                noOptionsText='No classes available'
                             />
                         ),
                         validator: Yup.mixed(),
