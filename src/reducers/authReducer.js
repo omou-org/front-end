@@ -1,9 +1,9 @@
-import * as actions from "actions/actionTypes";
-import initialState from "./initialState";
+import * as actions from 'actions/actionTypes';
+import initialState from './initialState';
 
-const {Authentication} = initialState;
+const { Authentication } = initialState;
 
-export default (state = Authentication, {payload, type}) => {
+export default (state = Authentication, { payload, type }) => {
     switch (type) {
         case actions.SET_CREDENTIALS:
             return {
