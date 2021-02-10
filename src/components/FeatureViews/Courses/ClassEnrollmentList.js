@@ -71,6 +71,8 @@ const ClassEnrollmentList = ({
     setAnchorEl(null);
   };
 
+  if(!courses) return "Loading"
+
   return (
     <TableRow key={fullStudentName} style={{ wordBreak: "break-word" }}>
       <TableCell
@@ -208,7 +210,6 @@ const Studentenrollment = ({
                 const phoneNumber = primaryParent.phoneNumber;
                 const parentId = primaryParent.user.id;
                 const parentEmail = primaryParent.user.email;
-
                 return (
                   <ClassEnrollmentList
                     fullStudentName={fullStudentName}

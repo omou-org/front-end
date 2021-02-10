@@ -139,6 +139,7 @@ export const GET_STUDENTS = gql`
                     firstName
                     id
                     lastName
+                    email
                 }
                 enrollmentSet {
                     course {
@@ -416,7 +417,17 @@ const CourseManagementContainer = () => {
         error: courseError,
     } = useQuery(GET_COURSES, {
         variables: { accountId },
+
     });
+
+    const { data, loading, error } = useQuery(GET_COURSES, {
+        variables: { accountId },
+        onCompleted: (data) => {
+          dispatch({
+            type: actions.STORE_COURSES, 
+            payload: {courses: data.courses}
+          })
+        }});
 
     const {
         data: studentData,
