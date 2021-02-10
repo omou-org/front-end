@@ -20,11 +20,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
-    buttons: {
+    buttons: { 
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flexStart",
         '& Button': {
-            margin: '10px',
+            marginTop: '10px',
+            marginBottom: '10px',
+            marginRight: '10px',
         },
-        textAlign: 'left',
     },
     root: {
         '& .MuiSelect-select-root': {
@@ -158,7 +162,7 @@ const Form = ({
 
                         <BackButton
                             data-cy='cancelButton'
-                            variant='contained'
+                            variant='outlined'
                             icon='cancel'
                             label='cancel'
                         />
