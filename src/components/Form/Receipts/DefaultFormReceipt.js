@@ -35,10 +35,18 @@ const toDisplayValue = (value) => {
         return value.label;
     }
 
+    if (typeof value === 'object' && value !== null) {
+        return Object.entries(value).reduce(
+            (accumulator, [keyTitle, valueTitle]) =>
+                `${accumulator}\n${keyTitle}: ${valueTitle}`,
+            ''
+        );
+    }
+
     return value.toString();
 };
 
-const FormReceipt = ({ formData, format }) => (
+const DefaultFormReceipt = ({ formData, format }) => (
     <div
         style={{
             margin: '2%',
@@ -75,7 +83,7 @@ const FormReceipt = ({ formData, format }) => (
     </div>
 );
 
-FormReceipt.propTypes = {
+DefaultFormReceipt.propTypes = {
     formData: PropTypes.objectOf(PropTypes.object),
     format: PropTypes.arrayOf(
         PropTypes.shape({
@@ -91,4 +99,4 @@ FormReceipt.propTypes = {
     ),
 };
 
-export default FormReceipt;
+export default DefaultFormReceipt;

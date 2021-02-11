@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 const breakpoints = createBreakpoints({});
@@ -201,7 +201,7 @@ const theme = createMuiTheme({
                 color: buttonBlue,
                 paddingBottom: '7px',
                 backgroundColor: white,
-                border: `2px solid ${cloudy}`,
+                border: `1px solid ${cloudy}`,
                 boxSizing: 'border-box',
                 'border-radius': '5px',
                 overflow: 'hidden',
@@ -266,7 +266,7 @@ const theme = createMuiTheme({
         MuiTabs: {
             root: {
                 color: '#000000',
-                borderBottom: '1px solid #43B5D9',
+                borderBottom: "1px solid #43B5D9",
             },
             indicator: {
                 display: 'none',
