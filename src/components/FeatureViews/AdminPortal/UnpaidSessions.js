@@ -27,6 +27,10 @@ const UnpaidSessions = () => {
                     startTime
                     endTime
                     hourlyTuition
+                    courseavailabilitySet {
+                        startTime
+                        endTime
+                      }
                 }
                 sessionsLeft
                 lastPaidSessionDatetime
