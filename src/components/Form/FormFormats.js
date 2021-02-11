@@ -1,5 +1,8 @@
 import * as types from 'actions/actionTypes';
-import { createTutoringDetails, submitRegistration, } from '../OmouComponents/RegistrationUtils';
+import {
+    createTutoringDetails,
+    submitRegistration,
+} from '../OmouComponents/RegistrationUtils';
 import { instance } from 'actions/apiActions';
 import React from 'react';
 import { FORM_ERROR } from 'final-form';
@@ -7,14 +10,14 @@ import * as Fields from './FieldComponents/Fields';
 import { StudentSelect, fieldsMargins } from './FieldComponents/Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
-import {client} from 'index';
+import { client } from 'index';
 import gql from 'graphql-tag';
-import {fullName} from '../../utils';
+import { fullName } from '../../utils';
 import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
-import {USER_QUERIES} from '../FeatureViews/Accounts/UserProfile';
+import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
-import {GET_CLASS} from '../FeatureViews/Courses/CourseClass';
-import {GET_ALL_COURSES} from "../FeatureViews/Registration/RegistrationLanding";
+import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
+import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
 
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
@@ -491,7 +494,7 @@ const TUTORING_COURSE_SECTIONS = [
                 // TODO: price quote tool
                 name: 'price',
                 label: 'Price',
-                component: <TutoringPriceQuote courseType='TUTORING'/>,
+                component: <TutoringPriceQuote courseType='TUTORING' />,
                 validator: Yup.mixed(),
             },
         ],
@@ -501,7 +504,7 @@ const TUTORING_COURSE_SECTIONS = [
 const COURSE_AVAILABILITY_FIELD = (count) => ({
     name: `CourseAvailability${count}`,
     label: `CourseAvailability${count}`,
-    component: <CourseAvailabilityField count={count}/>,
+    component: <CourseAvailabilityField count={count} />,
     validator: Yup.mixed(),
 });
 
@@ -1437,21 +1440,35 @@ export default {
                 });
 
                 const {
-                    instructor: {user},
+                    instructor: { user },
                 } = course;
 
-                const isValidCourseAvailability = (length, maxLength) => maxLength >= length;
-                const maxCourseAvailabilities = course.activeAvailabilityList.length;
-                const loadedCourseAvailabilityFieldValues = course.activeAvailabilityList
-                    .reduce((acc, courseAvailability, index) => ({
-                            ...acc,
-                            ...isValidCourseAvailability(index + 1, maxCourseAvailabilities) && {
-                                [`dayOfWeek-${index + 1}`]: courseAvailability.dayOfWeek,
-                                [`endTime-${index + 1}`]: moment(courseAvailability.endTime, 'HH:mm'),
-                                [`startTime-${index + 1}`]: moment(courseAvailability.startTime, 'HH:mm'),
-                            }
-                        }), {}
-                    );
+                const isValidCourseAvailability = (length, maxLength) =>
+                    maxLength >= length;
+                const maxCourseAvailabilities =
+                    course.activeAvailabilityList.length;
+                const loadedCourseAvailabilityFieldValues = course.activeAvailabilityList.reduce(
+                    (acc, courseAvailability, index) => ({
+                        ...acc,
+                        ...(isValidCourseAvailability(
+                            index + 1,
+                            maxCourseAvailabilities
+                        ) && {
+                            [`dayOfWeek-${
+                                index + 1
+                            }`]: courseAvailability.dayOfWeek,
+                            [`endTime-${index + 1}`]: moment(
+                                courseAvailability.endTime,
+                                'HH:mm'
+                            ),
+                            [`startTime-${index + 1}`]: moment(
+                                courseAvailability.startTime,
+                                'HH:mm'
+                            ),
+                        }),
+                    }),
+                    {}
+                );
 
                 return {
                     courseDescription: {
@@ -1565,8 +1582,11 @@ export default {
             const { courseDescription, dayAndTime, tuition } = formData;
             const formatTime = (time) => time && time.format('HH:mm');
             const availabilities = (() => {
-                const setDayOfWeek = (count) => formData[`dayOfWeek-${count}`] || dayAndTime[`dayOfWeek-${count}`];
-                const setTime = (time) => formatTime(formData[time]) || formatTime(dayAndTime[time]);
+                const setDayOfWeek = (count) =>
+                    formData[`dayOfWeek-${count}`] ||
+                    dayAndTime[`dayOfWeek-${count}`];
+                const setTime = (time) =>
+                    formatTime(formData[time]) || formatTime(dayAndTime[time]);
 
                 const createCourseAvailability = (count) => ({
                     dayOfWeek: setDayOfWeek(count),
@@ -1576,13 +1596,19 @@ export default {
 
                 const insertIf = (condition, ...elements) =>
                     condition ? elements : [];
-                const ifUserFilledDayOfWeek = (dayOfWeek) => dayAndTime[dayOfWeek] || formData[dayOfWeek];
+                const ifUserFilledDayOfWeek = (dayOfWeek) =>
+                    dayAndTime[dayOfWeek] || formData[dayOfWeek];
 
-                return ['dayOfWeek-1', 'dayOfWeek-2', 'dayOfWeek-3']
-                    .reduce((acc, dayOfWeek, index) => ([
+                return ['dayOfWeek-1', 'dayOfWeek-2', 'dayOfWeek-3'].reduce(
+                    (acc, dayOfWeek, index) => [
                         ...acc,
-                        ...insertIf(ifUserFilledDayOfWeek(dayOfWeek), createCourseAvailability(index + 1))
-                    ]), []);
+                        ...insertIf(
+                            ifUserFilledDayOfWeek(dayOfWeek),
+                            createCourseAvailability(index + 1)
+                        ),
+                    ],
+                    []
+                );
             })();
             const modifiedData = {
                 courseDescription: {

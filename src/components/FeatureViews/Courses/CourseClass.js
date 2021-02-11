@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {Link, useParams} from 'react-router-dom';
-import {makeStyles} from '@material-ui/core/styles';
-import {ThemeProvider} from '@material-ui/styles';
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -17,13 +17,13 @@ import ClassInfo from './ClassInfo';
 import Announcements from './Announcements';
 import ClassEnrollmentList from './ClassEnrollmentList';
 import ClassSessionContainer from './ClassSessionContainer';
-import {useSelector} from 'react-redux';
-import {fullName, gradeLvl, USER_TYPES} from 'utils';
+import { useSelector } from 'react-redux';
+import { fullName, gradeLvl, USER_TYPES } from 'utils';
 import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
-import {StudentCourseLabel} from './StudentBadge';
-import {GET_STUDENTS} from './CourseManagementContainer';
+import { StudentCourseLabel } from './StudentBadge';
+import { GET_STUDENTS } from './CourseManagementContainer';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 
@@ -201,21 +201,23 @@ const CourseClass = () => {
         skip: accountType !== 'PARENT',
         onCompleted: () => {
             if (accountType === 'PARENT') {
-                const identifyCourseHasEnrolledStudent = ({course, student: {user}}) => {
-                    const isStudentEnrolledInCurrentCourse = (courseId) => courseId === id;
+                const identifyCourseHasEnrolledStudent = ({
+                    course,
+                    student: { user },
+                }) => {
+                    const isStudentEnrolledInCurrentCourse = (courseId) =>
+                        courseId === id;
                     if (isStudentEnrolledInCurrentCourse(course.id)) {
                         const updateStudentsInCourseList = (prevState) => [
                             ...prevState,
                             `${user.firstName} ${user.lastName}`,
-                        ]
+                        ];
                         setStudentInCourse(updateStudentsInCourseList);
                     }
-                }
-                studentData.parent.studentList.forEach(
-                    ({enrollmentSet}) => {
-                        enrollmentSet.forEach(identifyCourseHasEnrolledStudent);
-                    }
-                );
+                };
+                studentData.parent.studentList.forEach(({ enrollmentSet }) => {
+                    enrollmentSet.forEach(identifyCourseHasEnrolledStudent);
+                });
             }
         },
     });

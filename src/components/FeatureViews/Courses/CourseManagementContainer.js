@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {useSelector} from 'react-redux';
-import {makeStyles, withStyles} from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -9,15 +9,19 @@ import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import Loading from '../../OmouComponents/Loading';
 
-import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
-import {fullName, gradeOptions} from 'utils';
+import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
+import { fullName, gradeOptions } from 'utils';
 import moment from 'moment';
-import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
+import {
+    activeColor,
+    highlightColor,
+    pastColor,
+} from '../../../theme/muiTheme';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
 export const BootstrapInput = withStyles((theme) => ({
@@ -352,33 +356,33 @@ const CourseFilterDropdown = ({
 };
 
 export const GET_COURSES_BY_ACCOUNT_ID = gql`
-    query getCourses($accountId:ID) {
-      courses(userId: $accountId){
-        endDate
-        title
-        academicLevel
-        startDate
-        courseId
-        id
-        activeAvailabilityList {
-          dayOfWeek
-          endTime
-          startTime
-        }
-        instructor {
-          user {
-            firstName
-            lastName
+    query getCourses($accountId: ID) {
+        courses(userId: $accountId) {
+            endDate
+            title
+            academicLevel
+            startDate
+            courseId
             id
-          }
+            activeAvailabilityList {
+                dayOfWeek
+                endTime
+                startTime
+            }
+            instructor {
+                user {
+                    firstName
+                    lastName
+                    id
+                }
+            }
+            courseCategory {
+                id
+                name
+            }
         }
-        courseCategory {
-          id
-          name
-        }
-      }
     }
-  `;
+`;
 
 const CourseManagementContainer = () => {
     const classes = useStyles();
@@ -399,7 +403,7 @@ const CourseManagementContainer = () => {
         loading: courseLoading,
         error: courseError,
     } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
-        variables: {accountId},
+        variables: { accountId },
     });
 
     const {
