@@ -30,7 +30,7 @@ const UnpaidSessions = () => {
                     courseavailabilitySet {
                         startTime
                         endTime
-                      }
+                    }
                 }
                 sessionsLeft
                 lastPaidSessionDatetime

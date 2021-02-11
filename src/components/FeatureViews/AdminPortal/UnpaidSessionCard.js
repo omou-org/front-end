@@ -71,7 +71,10 @@ const UnpaidSessionCard = ({ unpaidStudent }) => {
     const amtDue = adminUtils.amountDue(
         hourlyTuition,
         sessionsLeft,
-        adminUtils.calculateSessionLength(courseavailabilitySet.startTime, courseavailabilitySet.endTime)
+        adminUtils.calculateSessionLength(
+            courseavailabilitySet.startTime,
+            courseavailabilitySet.endTime
+        )
     );
 
     return (
