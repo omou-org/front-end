@@ -32,7 +32,7 @@ export const NavList = {
         },
         {
             name: 'Courses',
-            link: '/coursemanagement',
+            link: '/courses',
             icon: <MenuBookIcon />,
         },
         {
@@ -64,7 +64,7 @@ export const NavList = {
         },
         {
             name: 'Courses',
-            link: '/coursemanagement',
+            link: '/courses',
             icon: <MenuBookIcon />,
         },
         {
@@ -86,7 +86,7 @@ export const NavList = {
         },
         {
             name: 'Courses',
-            link: '/coursemanagement',
+            link: '/courses',
             icon: <MenuBookIcon />,
         },
         {
@@ -114,7 +114,7 @@ export const NavList = {
         },
         {
             name: 'Courses',
-            link: '/coursemanagement',
+            link: '/courses',
             icon: <MenuBookIcon />,
         },
         {

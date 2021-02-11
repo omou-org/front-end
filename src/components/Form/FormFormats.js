@@ -6,15 +6,18 @@ import {
 import { instance } from 'actions/apiActions';
 import React from 'react';
 import { FORM_ERROR } from 'final-form';
-import * as Fields from './Fields';
-import { StudentSelect, fieldsMargins } from './Fields';
+import * as Fields from './FieldComponents/Fields';
+import { StudentSelect, fieldsMargins } from './FieldComponents/Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
 import { client } from 'index';
 import gql from 'graphql-tag';
 import { fullName } from '../../utils';
-import TutoringPriceQuote from './TutoringPriceQuote';
+import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
 import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
+import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
+import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
+import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
 
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
@@ -66,6 +69,7 @@ export const selectField = (options) => ({
         component: (
             <Fields.TextField
                 style={{ marginTop: '8px ', marginBottom: '24px' }}
+                name={label}
             />
         ),
         label,
@@ -193,7 +197,7 @@ const DAY_OF_WEEK_OPTIONS = [
 
 export const ACADEMIC_LVL_FIELD = {
         name: 'academicLevel',
-        label: 'Grade',
+        label: 'Academic Level',
         ...selectField([
             {
                 label: 'Elementary School',
@@ -496,6 +500,13 @@ const TUTORING_COURSE_SECTIONS = [
         ],
     },
 ];
+
+const COURSE_AVAILABILITY_FIELD = (count) => ({
+    name: `CourseAvailability${count}`,
+    label: `CourseAvailability${count}`,
+    component: <CourseAvailabilityField count={count} />,
+    validator: Yup.mixed(),
+});
 
 const SEARCH_PARENTS = gql`
     query ParentSearch($query: String!) {
@@ -947,7 +958,6 @@ export default {
                     $firstName: String!
                     $lastName: String!
                     $email: String!
-                    $password: String
                     $phoneNumber: String
                     $address: String
                     $birthDate: Date
@@ -964,7 +974,7 @@ export default {
                             lastName: $lastName
                             id: $id
                             email: $email
-                            password: $password
+                            password: "abcdefgh"
                         }
                         city: $city
                         address: $address
@@ -1363,62 +1373,9 @@ export default {
                 fields: [
                     START_DATE_FIELD,
                     END_DATE_FIELD,
-                    {
-                        name: 'weekday1',
-                        label: 'Day of Week',
-                        required: 'true',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime1',
-                        label: 'Start Time',
-                        required: 'true',
-                        component: <Fields.TimePicker format='hh:mm a' />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime1',
-                        label: 'End Time',
-                        required: 'true',
-                        component: (
-                            <Fields.TimePicker width={50} format='hh:mm a' />
-                        ),
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'weekday2',
-                        label: 'Day of Week',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime2',
-                        label: 'Start Time',
-                        component: <Fields.TimePicker format='hh:mm a' />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime2',
-                        label: 'End Time',
-                        component: <Fields.TimePicker format='hh:mm a' />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'weekday3',
-                        label: 'Day of Week',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime3',
-                        label: 'Start Time',
-                        component: <Fields.TimePicker format='hh:mm a' />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime3',
-                        label: 'End Time',
-                        component: <Fields.TimePicker format='hh:mm a' />,
-                        validator: Yup.date(),
-                    },
+                    COURSE_AVAILABILITY_FIELD(1),
+                    COURSE_AVAILABILITY_FIELD(2),
+                    COURSE_AVAILABILITY_FIELD(3),
                 ],
                 next: 'tuition',
             },
@@ -1426,13 +1383,6 @@ export default {
                 name: 'tuition',
                 label: 'Tuition',
                 fields: [
-                    {
-                        name: 'room',
-                        label: 'Room',
-                        required: true,
-                        component: <Fields.TextField />,
-                        validator: Yup.string(),
-                    },
                     {
                         name: 'totalTuition',
                         label: 'Total Tuition',
@@ -1464,10 +1414,17 @@ export default {
                             name
                         }
                         academicLevel
+                        academicLevelPretty
                         endDate
                         totalTuition
                         hourlyTuition
                         isConfirmed
+                        activeAvailabilityList {
+                            dayOfWeek
+                            endTime
+                            id
+                            startTime
+                        }
                     }
                 }
             `;
@@ -1485,6 +1442,34 @@ export default {
                 const {
                     instructor: { user },
                 } = course;
+
+                const isValidCourseAvailability = (length, maxLength) =>
+                    maxLength >= length;
+                const maxCourseAvailabilities =
+                    course.activeAvailabilityList.length;
+                const loadedCourseAvailabilityFieldValues = course.activeAvailabilityList.reduce(
+                    (acc, courseAvailability, index) => ({
+                        ...acc,
+                        ...(isValidCourseAvailability(
+                            index + 1,
+                            maxCourseAvailabilities
+                        ) && {
+                            [`dayOfWeek-${
+                                index + 1
+                            }`]: courseAvailability.dayOfWeek,
+                            [`endTime-${index + 1}`]: moment(
+                                courseAvailability.endTime,
+                                'HH:mm'
+                            ),
+                            [`startTime-${index + 1}`]: moment(
+                                courseAvailability.startTime,
+                                'HH:mm'
+                            ),
+                        }),
+                    }),
+                    {}
+                );
+
                 return {
                     courseDescription: {
                         title: course.title,
@@ -1495,8 +1480,16 @@ export default {
                             label: `${user.firstName} ${user.lastName}`,
                             value: user.id,
                         },
+                        academicLevel: course.academicLevel,
+                        courseCategory: {
+                            label: course.courseCategory.name,
+                            value: course.courseCategory.id,
+                        },
+                    },
+                    dayAndTime: {
                         startDate: moment(course.startDate, 'YYYY-MM-DD'),
-                        startTime: moment(course.startTime, 'HH:mm:ss'),
+                        endDate: moment(course.endDate, 'YYYY-MM-DD'),
+                        ...loadedCourseAvailabilityFieldValues,
                     },
                     tuition: {
                         academicLevel: course.academicLevel,
@@ -1557,18 +1550,28 @@ export default {
                     ) {
                         created
                         course {
-                            academicLevelPretty
                             id
-                            title
-                            description
-                            courseType
                             academicLevel
+                            title
                             startDate
                             endDate
+                            description
+                            maxCapacity
+                            courseCategory {
+                                name
+                                id
+                            }
+                            activeAvailabilityList {
+                                dayOfWeek
+                                endTime
+                                startTime
+                                id
+                            }
                             instructor {
                                 user {
                                     firstName
                                     lastName
+                                    id
                                 }
                             }
                         }
@@ -1577,60 +1580,52 @@ export default {
             `;
 
             const { courseDescription, dayAndTime, tuition } = formData;
+            const formatTime = (time) => time && time.format('HH:mm');
             const availabilities = (() => {
-                const availabilityList = [
-                    {
-                        dayOfWeek: dayAndTime.weekday1,
-                        startTime: dayAndTime.startTime1.format('HH:mm'),
-                        endTime: dayAndTime.endTime1.format('HH:mm'),
-                    },
-                ];
-                if (
-                    dayAndTime.weekday2 &&
-                    dayAndTime.startTime2 &&
-                    dayAndTime.EndTime2
-                ) {
-                    availabilities.push({
-                        dayOfWeek: dayAndTime.weekday2,
-                        startTime: dayAndTime.startTime2
-                            ? dayAndTime.startTime2.format('HH:mm')
-                            : null,
-                        endTime: dayAndTime.endTime2
-                            ? dayAndTime.endTime2.format('HH:mm')
-                            : null,
-                    });
-                }
-                if (
-                    dayAndTime.weekday3 &&
-                    dayAndTime.startTime3 &&
-                    dayAndTime.EndTime3
-                ) {
-                    availabilities.push({
-                        dayOfWeek: dayAndTime.weekday3,
-                        startTime: dayAndTime.startTime3
-                            ? dayAndTime.startTime3.format('HH:mm')
-                            : null,
-                        endTime: dayAndTime.endTime3
-                            ? dayAndTime.endTime3.format('HH:mm')
-                            : null,
-                    });
-                }
-                return availabilityList;
+                const setDayOfWeek = (count) =>
+                    formData[`dayOfWeek-${count}`] ||
+                    dayAndTime[`dayOfWeek-${count}`];
+                const setTime = (time) =>
+                    formatTime(formData[time]) || formatTime(dayAndTime[time]);
+
+                const createCourseAvailability = (count) => ({
+                    dayOfWeek: setDayOfWeek(count),
+                    startTime: setTime(`startTime-${count}`),
+                    endTime: setTime(`endTime-${count}`),
+                });
+
+                const insertIf = (condition, ...elements) =>
+                    condition ? elements : [];
+                const ifUserFilledDayOfWeek = (dayOfWeek) =>
+                    dayAndTime[dayOfWeek] || formData[dayOfWeek];
+
+                return ['dayOfWeek-1', 'dayOfWeek-2', 'dayOfWeek-3'].reduce(
+                    (acc, dayOfWeek, index) => [
+                        ...acc,
+                        ...insertIf(
+                            ifUserFilledDayOfWeek(dayOfWeek),
+                            createCourseAvailability(index + 1)
+                        ),
+                    ],
+                    []
+                );
             })();
             const modifiedData = {
                 courseDescription: {
                     ...courseDescription,
                     instructor: courseDescription.instructor.value,
-                    courseCategory: courseDescription.courseCategory.value,
                 },
                 dayAndTime: {
-                    startDate: dayAndTime.startDate,
-                    endDate: dayAndTime.endDate,
+                    startDate: dayAndTime.startDate.format(
+                        'YYYY-MM-DDTHH:mm:ss'
+                    ),
+                    endDate: dayAndTime.endDate.format('YYYY-MM-DDTHH:mm:ss'),
                     availabilities,
                 },
                 tuition: {
                     ...tuition,
                     courseCategory: courseDescription.courseCategory.value,
+                    academicLevel: courseDescription.academicLevel,
                 },
             };
             const courseFormFields = Object.values(modifiedData).reduce(
@@ -1648,6 +1643,42 @@ export default {
                 await client.mutate({
                     mutation: CREATE_COURSE,
                     variables: id ? editedCourseFormFields : courseFormFields,
+                    update: (cache, { data }) => {
+                        const newCourse = data.createCourse.course;
+                        const created = data.createCourse.created;
+
+                        if (created) {
+                            const cachedCourses = cache.readQuery({
+                                query: GET_ALL_COURSES,
+                            });
+
+                            cache.writeQuery({
+                                data: {
+                                    courses: [...cachedCourses, newCourse],
+                                },
+                                query: GET_ALL_COURSES,
+                            });
+                        } else {
+                            const cachedCourse = cache.readQuery({
+                                query: GET_CLASS,
+                                variables: {
+                                    id: id,
+                                },
+                            });
+                            cache.writeQuery({
+                                data: {
+                                    course: {
+                                        ...cachedCourse.course,
+                                        ...newCourse,
+                                    },
+                                },
+                                query: GET_CLASS,
+                                variables: {
+                                    id: id,
+                                },
+                            });
+                        }
+                    },
                 });
             } catch (error) {
                 return {

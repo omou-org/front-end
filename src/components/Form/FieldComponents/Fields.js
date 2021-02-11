@@ -12,12 +12,13 @@ import * as Fields from 'mui-rff';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { fullName } from '../../utils';
+import { fullName } from '../../../utils';
 import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
 import { TrendingUpRounded } from '@material-ui/icons';
+import { Schedule } from '@material-ui/icons';
 
-const getLabel = ({ label }) => label;
+const getLabel = ({ label }) => label || '';
 
 const useSelectStyles = makeStyles({
     select: {
@@ -36,7 +37,8 @@ export const { TextField, Checkboxes } = Fields;
 
 export const Select = (props) => {
     const { select } = useSelectStyles();
-    return <Fields.Select className={select} {...props} />;
+    const denseMarginProps = { ...props, margin: 'dense' };
+    return <Fields.Select className={select} {...denseMarginProps} />;
 };
 
 export const KeyboardDatePicker = (props) => (
@@ -57,9 +59,10 @@ export const DatePicker = (props) => (
 
 export const TimePicker = (props) => (
     <Fields.KeyboardTimePicker
-        style={fieldsMargins}
         {...props}
         dateFunsUtils={MomentUtils}
+        keyboardIcon={<Schedule />}
+        style={fieldsMargins}
     />
 );
 
@@ -126,6 +129,7 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
 
     const { data, loading } = useQuery(request, {
         variables: { query },
+        skip: !query,
     });
 
     const renderOption = useCallback(
@@ -135,12 +139,16 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
 
     const options = data ? optionsMap(data) : [];
 
+    const defaultSelectedHandler = (option, value) =>
+        option.value === value.value || value === '';
+
     return (
         <Fields.Autocomplete
             getOptionLabel={getLabel}
             loading={loading}
             name={name}
             onInputChange={handleQueryChange}
+            getOptionSelected={defaultSelectedHandler}
             options={options}
             renderOption={renderOption}
             {...props}

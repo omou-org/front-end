@@ -8,21 +8,21 @@ import InputBase from '@material-ui/core/InputBase';
 import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import Loading from '../../OmouComponents/Loading';
 
-import { UserAvatarCircle, StudentCourseLabel } from './StudentBadge';
+import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
 import { fullName, gradeOptions } from 'utils';
 import moment from 'moment';
-import theme, {
-    highlightColor,
+import {
     activeColor,
+    highlightColor,
     pastColor,
 } from '../../../theme/muiTheme';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -124,6 +124,7 @@ const useStyles = makeStyles((theme) => ({
         height: '115px',
         '&:hover': {
             backgroundColor: highlightColor,
+            cursor: 'pointer',
         },
     },
 }));
@@ -163,20 +164,11 @@ const ClassListItem = ({
     const classes = useStyles();
     let history = useHistory();
     const concatFullName = fullName(instructor.user);
-    const abbreviatedDay = moment(startDate).format('dddd');
-    const startingTime = moment(
-        activeAvailabilityList[0].startTime,
-        'HH:mm'
-    ).format('h:mm');
-    const endingTime = moment(
-        activeAvailabilityList[0].endTime,
-        'HH:mm'
-    ).format('h:mma');
     const startingDate = moment(startDate).format('MMM D YYYY');
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
-    const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
+    const handleClick = (e) => history.push(`/courses/class/${id}`);
 
     return (
         <>
@@ -259,7 +251,9 @@ const ClassListItem = ({
                             style={{ marginLeft: '1.2em', paddingTop: '3px' }}
                             className={classes.displayCardMargins}
                         >
-                            {`${abbreviatedDay} ${startingTime} - ${endingTime} `}
+                            <CourseAvailabilites
+                                availabilityList={activeAvailabilityList}
+                            />
                         </Typography>
                     </Grid>
                 </Grid>
@@ -361,6 +355,35 @@ const CourseFilterDropdown = ({
     );
 };
 
+export const GET_COURSES_BY_ACCOUNT_ID = gql`
+    query getCourses($accountId: ID) {
+        courses(userId: $accountId) {
+            endDate
+            title
+            academicLevel
+            startDate
+            courseId
+            id
+            activeAvailabilityList {
+                dayOfWeek
+                endTime
+                startTime
+            }
+            instructor {
+                user {
+                    firstName
+                    lastName
+                    id
+                }
+            }
+            courseCategory {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const CourseManagementContainer = () => {
     const classes = useStyles();
     const [sortByDate, setSortByDate] = useState('');
@@ -372,49 +395,14 @@ const CourseManagementContainer = () => {
 
     const handleChange = (event) => setSortByDate(event.target.value);
 
-    const checkAccountForQuery =
-        accountInfo.accountType === 'ADMIN' ||
-        accountInfo.accountType === 'INSTRUCTOR'
-            ? 'instructorId'
-            : 'parentId';
-
     const accountId =
         accountInfo.accountType === 'ADMIN' ? '' : accountInfo.user.id;
-
-    const GET_COURSES = gql`
-    query getCourses($accountId:ID!) {
-      courses(${checkAccountForQuery}: $accountId) {
-        endDate
-        title
-        academicLevel
-        startDate
-        courseId
-        id
-        activeAvailabilityList {
-          dayOfWeek
-          endTime
-          startTime
-        }
-        instructor {
-          user {
-            firstName
-            lastName
-            id
-          }
-        }
-        courseCategory {
-          id
-          name
-        }
-      }
-    }
-  `;
 
     const {
         data: courseData,
         loading: courseLoading,
         error: courseError,
-    } = useQuery(GET_COURSES, {
+    } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
         variables: { accountId },
     });
 
