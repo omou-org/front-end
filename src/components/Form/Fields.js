@@ -15,14 +15,22 @@ import gql from 'graphql-tag';
 import { fullName } from '../../utils';
 import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
+import { TrendingUpRounded } from '@material-ui/icons';
 
 const getLabel = ({ label }) => label;
 
 const useSelectStyles = makeStyles({
     select: {
         width: '200px',
+        marginTop: '16px',
+        marginBottom: '24px',
     },
 });
+
+export const fieldsMargins = {
+    marginTop: '16px',
+    marginBottom: '8px',
+};
 
 export const { TextField, Checkboxes } = Fields;
 
@@ -32,50 +40,66 @@ export const Select = (props) => {
 };
 
 export const KeyboardDatePicker = (props) => (
-    <Fields.KeyboardDatePicker openTo='year' {...props} />
+    <Fields.KeyboardDatePicker style={fieldsMargins} openTo='year' {...props} />
 );
+
 export const KeyboardTimePicker = (props) => (
-    <Fields.KeyboardTimePicker {...props} />
+    <Fields.KeyboardTimePicker style={fieldsMargins} {...props} />
 );
+
 export const DatePicker = (props) => (
-    <Fields.KeyboardDatePicker dateFunsUtils={MomentUtils} {...props} />
+    <Fields.KeyboardDatePicker
+        style={fieldsMargins}
+        dateFunsUtils={MomentUtils}
+        {...props}
+    />
 );
+
 export const TimePicker = (props) => (
-    <Fields.KeyboardTimePicker {...props} dateFunsUtils={MomentUtils} />
-);
-
-const MaskedPhoneInput = (props) => (
-    <MaskedInput
-        mask={[
-            '(',
-            /[1-9]/,
-            /\d/,
-            /\d/,
-            ')',
-            ' ',
-            /\d/,
-            /\d/,
-            /\d/,
-            '-',
-            /\d/,
-            /\d/,
-            /\d/,
-            /\d/,
-        ]}
-        placeholderChar={'\u2000'}
-        showMask={false}
+    <Fields.KeyboardTimePicker
+        style={fieldsMargins}
         {...props}
+        dateFunsUtils={MomentUtils}
     />
 );
 
-export const PhoneInput = (props) => (
-    <TextField
-        {...props}
-        InputProps={{
-            inputComponent: MaskedPhoneInput,
-        }}
-    />
-);
+const MaskedPhoneInput = (props) => {
+    return (
+        <MaskedInput
+            mask={[
+                '(',
+                /[1-9]/,
+                /\d/,
+                /\d/,
+                ')',
+                ' ',
+                /\d/,
+                /\d/,
+                /\d/,
+                '-',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+            ]}
+            placeholderChar={'\u2000'}
+            showMask={false}
+            {...props}
+        />
+    );
+};
+
+export const PhoneInput = (props) => {
+    return (
+        <TextField
+            {...props}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+                inputComponent: MaskedPhoneInput,
+            }}
+        />
+    );
+};
 
 export const Autocomplete = ({ name, options, ...props }) => {
     const renderOption = useCallback(
@@ -84,6 +108,7 @@ export const Autocomplete = ({ name, options, ...props }) => {
     );
     return (
         <Fields.Autocomplete
+            style={fieldsMargins}
             name={name}
             options={options}
             renderOption={renderOption}

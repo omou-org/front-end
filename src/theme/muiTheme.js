@@ -202,6 +202,7 @@ const theme = createMuiTheme({
             outlined: {
                 ...h5,
                 color: buttonBlue,
+                paddingBottom: '7px',
                 backgroundColor: white,
                 border: `2px solid ${cloudy}`,
                 boxSizing: 'border-box',
@@ -268,6 +269,9 @@ const theme = createMuiTheme({
         MuiTabs: {
             root: {
                 color: '#000000',
+            },
+            indicator: {
+                display: 'none',
             },
         },
         MuiTab: {
@@ -344,12 +348,8 @@ const theme = createMuiTheme({
             },
             wrapper: {
                 zIndex: 2,
-                marginTop: '0.5em',
+                // marginTop: '0.5em',
                 textTransform: 'initial',
-            },
-            indicator: {
-                display: 'none',
-                marginTop: '1.1em',
             },
         },
         MuiStepIcon: {
