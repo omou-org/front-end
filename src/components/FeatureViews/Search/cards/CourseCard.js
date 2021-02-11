@@ -1,19 +1,16 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/react-hooks';
-
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-
 import "../Search.scss";
 import {truncateStrings} from "utils";
 import {LabelBadge} from "../../../../theme/ThemedComponents/Badge/LabelBadge";
-import {GET_COURSE} from "../../../../queries/CoursesQuery/CourseQuerys"
+import {GET_COURSE} from "../../../../queries/CoursesQuery/CourseQuery"
 
 const getLocaleDateString = (start, end) => {
     if (start && end) {

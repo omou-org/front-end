@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as types from "../../../../actions/actionTypes";
 import { GET_REGISTRATION_CART } from "../SelectParentDialog";
-import {GET_COURSES_AND_STUDENTS_TO_REGISTER} from "../../../../queries/CoursesQuery/CourseQuerys"
+import {GET_COURSES_AND_STUDENTS_TO_REGISTER} from "../../../../queries/CoursesQuery/CourseQuery"
 
 
 export const CREATE_REGISTRATION_CART = gql`

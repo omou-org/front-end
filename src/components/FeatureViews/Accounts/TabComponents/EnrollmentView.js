@@ -34,13 +34,14 @@ import {
 } from 'actions/registrationActions';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from 'components/OmouComponents/AddSessions';
-import BackButton from 'components/OmouComponents/BackButton';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
 import { useEnrollmentNotes } from 'actions/userActions';
 import { useSessionsWithConfig } from 'actions/calendarActions';
 import Moment from 'react-moment';
 import { fullName } from '../../../../utils';
+
+import {GET_SESSIONS} from "../../../../queries/SchedulerQuery/SchedulerQuery"
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -87,23 +88,6 @@ const GET_ENROLLMENT = gql`
     }
 `;
 
-export const GET_SESSIONS = gql`
-    query GetSessions($courseId: ID!) {
-        sessions(courseId: $courseId) {
-            course {
-                availabilityList {
-                    startTime
-                    endTime
-                }
-                id
-                hourlyTuition
-            }
-            id
-            startDatetime
-            endDatetime
-        }
-    }
-`;
 
 const timeOptions = {
     hour: '2-digit',

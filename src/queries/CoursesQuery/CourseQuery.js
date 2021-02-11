@@ -53,21 +53,72 @@ query CourseFetch($id: ID!) {
       totalTuition
       hourlyTuition
       isConfirmed
-    instructor {
+      courseLink
+      courseLinkDescription
+      courseLinkUpdatedAt
+      activeAvailabilityList {
+        startTime
+        endTime
+      }
+      courseLinkUser {
+          firstName
+          lastName
+      }
+      courseCategory {
+        id
+        name
+    }
+      instructor {
           user {
               id
               firstName
               lastName
           }
       }
-      enrollmentSet {
-        id
+      availabilityList {
+        startTime
+        endTime
+        dayOfWeek
     }
-    courseCategory {
-      id
-      name
+    sessionSet {
+  startDatetime
+  id
+}
+enrollmentSet {
+  id
+  student {
+      user {
+          firstName
+          lastName
+          id
+      }
+      primaryParent {
+          user {
+              firstName
+              lastName
+              id
+              email
+          }
+          accountType
+          phoneNumber
+      }
+      studentschoolinfoSet {
+          textbook
+          teacher
+          name
+      }
+      accountType
   }
-  }
+}
+}
+
+    enrollments(courseId: $id) {
+      student {
+          user {
+              id
+          }
+      }
+  }  
 }`;
 
 

@@ -12,7 +12,7 @@ import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
 import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
-import {GET_CATEGORIES,GET_COURSES, GET_COURSE } from "../../queries/CoursesQuery/CourseQuerys"
+import {GET_CATEGORIES,GET_COURSES, GET_COURSE } from "../../queries/CoursesQuery/CourseQuery"
 
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
