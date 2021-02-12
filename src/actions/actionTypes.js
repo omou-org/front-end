@@ -305,10 +305,3 @@ export const GET_GIF_SUCCESS = "GET_GIF_SUCCESS";
 export const GET_GIF_FAIL = "GET_GIF_FAIL";
 
 export const SET_CREDENTIALS = "SET_CREDENTIALS";
-<<<<<<< Updated upstream
-=======
-
-export const SET_GOOGLE_TOKEN = "SET_GOOGLE_TOKEN";
-export const STORE_COURSES = "STORE_COURSES";
-export const SET_GOOGLE_COURSES = "SET_GOOGLE_COURSES";
->>>>>>> Stashed changes
