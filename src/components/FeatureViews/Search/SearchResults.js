@@ -8,7 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import LessResultsIcon from '@material-ui/icons/KeyboardArrowLeft';
 import { Link } from 'react-router-dom';
 import MoreResultsIcon from '@material-ui/icons/KeyboardArrowRight';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 import './Search.scss';
@@ -217,7 +216,7 @@ const SearchResults = () => {
                     <Typography
                         align='left'
                         className='search-title'
-                        variant='h3'
+                        variant='h1'
                     >
                         {numResults} Search Result{numResults !== 1 && 's'} for{' '}
                         {filter && capitalizeString(filter)} "{query}"
@@ -230,13 +229,16 @@ const SearchResults = () => {
                                 <AccountFilters />
                             </Grid>
                         )}
-                        {numAccResults !== 0 && <hr />}
+                        {numAccResults !== 0 && (
+                            <hr style={{ marginBottom: '48px' }} />
+                        )}
                         <Grid item xs={12}>
                             <Grid
                                 alignItems='center'
                                 container
                                 direction='row'
                                 justify='space-between'
+                                style={{ marginBottom: '24px' }}
                             >
                                 <Grid className='searchResults' item>
                                     <Typography

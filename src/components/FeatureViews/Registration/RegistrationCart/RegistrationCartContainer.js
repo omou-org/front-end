@@ -228,17 +228,12 @@ export default function RegistrationCartContainer() {
             <Grid container>
                 <RegistrationActions />
             </Grid>
-            <hr />
-            <Typography variant='h2' align='left'>
-                Registration Cart
-            </Typography>
             <Typography
-                style={{ fontSize: '2em' }}
+                variant='h1'
                 align='left'
-                gutterBottom
-                data-cy='payment-title'
+                style={{ marginBottom: '48px' }}
             >
-                Pay for Course(s)
+                Registration Cart
             </Typography>
             <Grid container item>
                 <Grid container direction='row' spacing={5}>

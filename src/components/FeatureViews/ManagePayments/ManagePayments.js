@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import MyPaymentsRoutes from '../../Routes/MyPaymentsRoutes';
-import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -51,7 +50,7 @@ export default function ManagePayments() {
     const classes = useStyles();
 
     return (
-        <BackgroundPaper>
+        <div>
             <Typography variant='h3' align='left'>
                 My Payments
             </Typography>
@@ -70,6 +69,6 @@ export default function ManagePayments() {
             <TabPanel value={value} index={1}>
                 <MyPaymentsRoutes />
             </TabPanel>
-        </BackgroundPaper>
+        </div>
     );
 }
