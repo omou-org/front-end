@@ -18,6 +18,7 @@ import {useHistory} from 'react-router-dom'
 import Grid from "@material-ui/core/Grid";
 import {omouBlue} from "../../../theme/muiTheme";
 import AdvancedSessionFilters from "./AdvancedSessionFilters";
+import {findCommonElement} from "../../Form/FormUtils";
 
 const useStyles = makeStyles((theme) => ({
 	sessionPopover: {
@@ -234,13 +235,13 @@ const SessionPopover = ({session: {start, end, title, instructor}}) => {
 		<Typography variant="h3">{title}</Typography>
 		<div className={classes.sessionInfo}>
 			<Schedule style={{marginRight: "8px"}}/>
-			<Typography variant="p">
+			<Typography variant="body1">
 				{`${timeText(start)} - ${timeText(end)}`}
 			</Typography>
 		</div>
 		<div className={classes.sessionInfo}>
 			<Face style={{marginRight: "8px"}}/>
-			<Typography variant="p">
+			<Typography variant="body1">
 				{fullName(instructor)}
 			</Typography>
 		</div>
@@ -326,7 +327,7 @@ const BigCalendar = (props) => {
 			startAccessor="start"
 			endAccessor="end"
 			onSelectEvent={props.onSelectEvent}
-			style={{height: 800}}
+			style={{height: 700}}
 			eventPropGetter={eventStyleGetter}
 		/>)
 };
@@ -369,25 +370,80 @@ export default function NEWScheduler() {
 		timeShift: null,
 		instructorOptions: [],
 		selectedInstructors: [],
+		courseOptions: [],
+		selectedCourses: [],
+		studentOptions: [],
+		selectedStudents: [],
 	});
 	const [sessionsInView, setSessionsInView] = useState([]);
+	const [filteredSessionsInView, setFilteredSessionsInView] = useState([]);
 
-    useEffect(() => {
-        setSchedulerState({
-            timeFrame: 'month',
-            timeShift: 0,
-        });
+	useEffect(() => {
+		setSchedulerState({
+			timeFrame: 'month',
+			timeShift: 0,
+			instructorOptions: [],
+			selectedInstructors: [],
+			courseOptions: [],
+			selectedCourses: [],
+			studentOptions: [],
+			selectedStudents: [],
+		});
     }, []);
 
-    useEffect(() => {
-        const { timeFrame, timeShift } = schedulerState;
-        if (timeFrame && timeShift) {
-            setSchedulerState({
-                timeFrame,
-                timeShift,
-            });
-        }
-    }, [schedulerState.timeFrame, schedulerState.timeShift]);
+	useEffect(() => {
+		const {timeFrame, timeShift, ...rest} = schedulerState;
+		if (timeFrame && timeShift) {
+			setSchedulerState({
+				...rest,
+				timeFrame,
+				timeShift,
+			});
+		}
+	}, [schedulerState.timeFrame, schedulerState.timeShift]);
+
+	const setFilteredSessions = (schedulerState, allSessionsInView) => {
+		const atLeastOneFilter = (selectedOptions) => selectedOptions.length > 0;
+
+		const filterSessionsBySelectedOptions = (selectedOptions, sessionsList, getMatchId) => {
+			if (atLeastOneFilter(selectedOptions)) {
+				const selectedIds = selectedOptions.map(option => option.value);
+				const bySelectedOptions = (selectedOptionsList, id) => {
+					if (Array.isArray(id)) {
+						return findCommonElement(selectedOptionsList, id);
+					} else {
+						return selectedOptionsList.includes(id);
+					}
+				};
+				return sessionsList.filter(session => bySelectedOptions(selectedIds, getMatchId(session)));
+			} else {
+				return sessionsList;
+			}
+
+		}
+		const getInstructorId = (session) => session.instructor.id;
+		const sessionsFilteredByInstructors =
+			filterSessionsBySelectedOptions(schedulerState.selectedInstructors, allSessionsInView, getInstructorId);
+
+		const getCourseId = (session) => session.course.id;
+		const sessionsFilteredByInstructorsAndCourses =
+			filterSessionsBySelectedOptions(schedulerState.selectedCourses, sessionsFilteredByInstructors, getCourseId);
+
+		const getStudentId = (session) => session.students.map(student => student.id);
+		const sessionsFilteredByInstructorsCoursesStudents =
+			filterSessionsBySelectedOptions(schedulerState.selectedStudents,
+				sessionsFilteredByInstructorsAndCourses, getStudentId);
+
+		setFilteredSessionsInView(sessionsFilteredByInstructorsCoursesStudents);
+	}
+
+	useEffect(() => {
+		setFilteredSessions(schedulerState, sessionsInView);
+	}, [
+		schedulerState.selectedInstructors.length,
+		schedulerState.selectedCourses.length,
+		schedulerState.selectedStudents.length,
+	])
 
 	const uniqueValuesById = (objectList) => {
 		const result = [];
@@ -413,22 +469,39 @@ export default function NEWScheduler() {
 		},
 		onCompleted: (data) => {
 			const {sessions} = data;
-			const parsedBigCalendarSessions = sessions.map(({id, endDatetime, startDatetime, title, instructor}) => ({
+			const parsedBigCalendarSessions = sessions.map((
+				{id, endDatetime, startDatetime, title, instructor, course}
+			) => ({
 				id,
 				title,
+				course,
+				students: course.enrollmentSet.map(enrollment => enrollment.student.user),
 				start: new Date(startDatetime),
 				end: new Date(endDatetime),
 				instructor: instructor.user,
 			}));
 			setSessionsInView(parsedBigCalendarSessions);
+			setFilteredSessions(schedulerState, parsedBigCalendarSessions);
 
 			const instructors = sessions.map(session => session.instructor.user);
 			const uniqueInstructors = uniqueValuesById(instructors);
-			const instructorOptions = createOptions(uniqueInstructors, (instructor) => fullName(instructor))
+			const instructorOptions = createOptions(uniqueInstructors, (instructor) => fullName(instructor));
+
+			const courses = sessions.map(session => session.course);
+			const uniqueCourses = uniqueValuesById(courses);
+			const courseOptions = createOptions(uniqueCourses, (course) => course.title);
+
+			const enrollmentLists = sessions.map(session => session.course.enrollmentSet);
+			const students = enrollmentLists.flat().map(enrollment => enrollment.student.user);
+			const uniqueStudents = uniqueValuesById(students);
+			const studentOptions = createOptions(uniqueStudents, (student) => fullName(student))
+
 			setSchedulerState((prevState) => ({
 				...prevState,
 				instructorOptions,
-			}))
+				courseOptions,
+				studentOptions,
+			}));
 		}
 	});
 
@@ -439,7 +512,7 @@ export default function NEWScheduler() {
 			value={{schedulerState, updateSchedulerState}}
 		>
 			<Typography variant="h1" align="left">Scheduler</Typography>
-			<BigCalendar eventList={sessionsInView}/>
+			<BigCalendar eventList={filteredSessionsInView}/>
 		</SchedulerContext.Provider>
     );
 }

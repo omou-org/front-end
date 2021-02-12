@@ -6,6 +6,7 @@ import Popover from "@material-ui/core/Popover";
 import Typography from "@material-ui/core/Typography";
 import Select from 'react-select'
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import Badge from "@material-ui/core/Badge";
 
 const useStyles = makeStyles((theme) => ({
 	sessionPopover: {
@@ -20,7 +21,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdvancedSessionFilters = () => {
-	const {schedulerState: {instructorOptions}, updateSchedulerState} = useContext(SchedulerContext);
+	const {
+		schedulerState: {
+			instructorOptions = [],
+			selectedInstructors = [],
+			courseOptions = [],
+			selectedCourses = [],
+			studentOptions = [],
+			selectedStudents = [],
+		},
+		updateSchedulerState
+	} = useContext(SchedulerContext);
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -32,15 +43,36 @@ const AdvancedSessionFilters = () => {
 		setAnchorEl(null);
 	};
 
+	const handleFilter = (filterType) => (event) => {
+		updateSchedulerState((prevState) => ({
+			...prevState,
+			[filterType]: event || [],
+		}));
+	}
+
 	const open = Boolean(anchorEl);
 	const id = open ? 'advanced-session-filters-popover' : undefined;
 
-	console.log(instructorOptions);
+	const numActiveFilters = selectedStudents.length + selectedCourses.length + selectedInstructors.length;
 
 	return (
 		<div>
-			<IconButton aria-describedby={id} variant="contained" onClick={handleClick}>
-				<FilterList/>
+			<IconButton
+				aria-describedby={id}
+				variant="contained"
+				onClick={handleClick}
+			>
+				<Badge
+					badgeContent={numActiveFilters}
+					color="primary"
+					anchorOrigin={{
+						vertical: 'top',
+						horizontal: 'right',
+					}}
+				>
+					<FilterList/>
+				</Badge>
+
 			</IconButton>
 			<Popover
 				id={id}
@@ -55,7 +87,6 @@ const AdvancedSessionFilters = () => {
 					vertical: 'top',
 					horizontal: 'center',
 				}}
-
 			>
 				<div className={classes.sessionPopover}>
 					<Typography variant="h3">
@@ -64,8 +95,26 @@ const AdvancedSessionFilters = () => {
 					<Select
 						isMulti
 						name="instructors"
+						value={selectedInstructors}
 						options={instructorOptions}
+						onChange={handleFilter("selectedInstructors")}
 						placeholder="Select Instructors"
+					/>
+					<Select
+						isMulti
+						name="courses"
+						value={selectedCourses}
+						options={courseOptions}
+						onChange={handleFilter("selectedCourses")}
+						placeholder="Select Courses"
+					/>
+					<Select
+						isMulti
+						name="students"
+						value={selectedStudents}
+						options={studentOptions}
+						onChange={handleFilter("selectedStudents")}
+						placeholder="Select Students"
 					/>
 				</div>
 
