@@ -1,6 +1,6 @@
-import {Container, Grid, makeStyles, Typography} from '@material-ui/core';
+import { Container, Grid, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
-import {LabelBadge} from './LabelBadge';
+import { LabelBadge } from './LabelBadge';
 
 const useStyles = makeStyles(() => ({
     row: {

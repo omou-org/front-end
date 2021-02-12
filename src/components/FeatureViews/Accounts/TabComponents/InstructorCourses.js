@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
@@ -11,9 +11,9 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import Loading from 'components/OmouComponents/Loading';
-import {DayAbbreviation} from 'utils';
+import { DayAbbreviation } from 'utils';
 
 export const GET_INSTRUCTOR_ENROLLMENTS = gql`
     query InstructorEnrollments($instructorID: ID!) {

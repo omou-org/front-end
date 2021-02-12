@@ -1,12 +1,12 @@
-import React, {useCallback, useState} from "react";
-import MyPaymentsRoutes from "../../Routes/MyPaymentsRoutes";
-import Typography from "@material-ui/core/Typography";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
-import {useHistory} from "react-router-dom";
-import ActiveInvoices from "./ActiveInvoices";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useCallback, useState } from 'react';
+import MyPaymentsRoutes from '../../Routes/MyPaymentsRoutes';
+import Typography from '@material-ui/core/Typography';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import { useHistory } from 'react-router-dom';
+import ActiveInvoices from './ActiveInvoices';
+import { makeStyles } from '@material-ui/core/styles';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -49,23 +49,26 @@ export default function ManagePayments() {
 
     const classes = useStyles();
 
-	return (
-		<div>
-			<Typography variant="h3" align="left">My Payments</Typography>
-			<Tabs
-				classes={{indicator: classes.MuiIndicator}}
-				value={value}
-				onChange={handleChange}
-				aria-label="simple tabs example"
-			>
-				<Tab label="Outstanding Invoice"/>
-				<Tab label="Payment History"/>
-			</Tabs>
-			<TabPanel value={value} index={0}>
-				<ActiveInvoices/>
-			</TabPanel>
-			<TabPanel value={value} index={1}>
-				<MyPaymentsRoutes/>
-			</TabPanel>
-		</div>)
+    return (
+        <div>
+            <Typography variant='h3' align='left'>
+                My Payments
+            </Typography>
+            <Tabs
+                classes={{ indicator: classes.MuiIndicator }}
+                value={value}
+                onChange={handleChange}
+                aria-label='simple tabs example'
+            >
+                <Tab label='Outstanding Invoice' />
+                <Tab label='Payment History' />
+            </Tabs>
+            <TabPanel value={value} index={0}>
+                <ActiveInvoices />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                <MyPaymentsRoutes />
+            </TabPanel>
+        </div>
+    );
 }

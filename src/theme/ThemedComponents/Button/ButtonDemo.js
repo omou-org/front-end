@@ -268,32 +268,36 @@ const ButtonDemo = () => {
                         </Typography>
                     </Grid>
 
-					<Grid item xs={4}>
-						<ResponsiveButton
-							variant='contained'
-							label='back'
-							startIcon={<BackArrow style={{ transform: 'scale(0.8)' }} />}
-						/>
-					</Grid>
-					<Grid item xs={4}>
-						<ResponsiveButton
-							variant='contained'
-							label='register'
-							startIcon={<AddIcon />}
-						/>
-					</Grid>
-					<Grid item xs={4}>
-						<ResponsiveButton
-							variant='contained'
-							label='register'
-							startIcon={<AddIcon />}
-							disabled
-						/>
-					</Grid>
-				</Grid>
-			</Grid>
-		</div>
-	);
+                    <Grid item xs={4}>
+                        <ResponsiveButton
+                            variant='contained'
+                            label='back'
+                            startIcon={
+                                <BackArrow
+                                    style={{ transform: 'scale(0.8)' }}
+                                />
+                            }
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <ResponsiveButton
+                            variant='contained'
+                            label='register'
+                            startIcon={<AddIcon />}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <ResponsiveButton
+                            variant='contained'
+                            label='register'
+                            startIcon={<AddIcon />}
+                            disabled
+                        />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </div>
+    );
 };
 
 export default ButtonDemo;

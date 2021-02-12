@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Color from 'color';
-import {makeStyles} from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import {omouBlue} from '../../theme/muiTheme';
+import { omouBlue } from '../../theme/muiTheme';
 
 const useTabsStyles = makeStyles(() => ({
     indicator: {
