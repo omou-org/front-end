@@ -148,6 +148,15 @@ const Form = ({
                                 Back
                             </ResponsiveButton>
                         )}
+                    
+                        <BackButton
+                            data-cy='cancelButton'
+                            variant='outlined'
+                            icon='cancel'
+                            label='cancel'
+                        />
+                        <Prompt message='Are you sure you want to continue?' />
+
                         {index < sections.length - 1 && (
                             <ResponsiveButton
                                 data-cy={`nextButton`}
@@ -159,15 +168,6 @@ const Form = ({
                                 Next
                             </ResponsiveButton>
                         )}
-
-                        <BackButton
-                            data-cy='cancelButton'
-                            variant='outlined'
-                            icon='cancel'
-                            label='cancel'
-                        />
-
-                        <Prompt message='Are you sure you want to continue?' />
 
                         {index === sections.length - 1 && (
                             <ResponsiveButton
