@@ -459,7 +459,7 @@ const EditSessionView = () => {
             }
         }
         history.push(
-            `/scheduler/view-session/${course_id}/${session_id}/${sessionFields.instructor.value}`
+            `/scheduler/session/${session_id}`
         );
     };
 

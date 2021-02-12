@@ -103,13 +103,13 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/scheduler/view-session/:course_id/:session_id/:instructor_id'
+                path='/scheduler/session/:session_id'
             >
                 <SessionView />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit'
+                path='/scheduler/session/:session_id/edit'
             >
                 <EditSessionView />
             </AuthenticatedRoute>

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams } from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { Tooltip, Typography, withStyles } from '@material-ui/core';
+import {useQuery} from '@apollo/react-hooks';
+import {Tooltip, Typography, withStyles} from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
-import { stringToColor } from '../Accounts/accountUtils';
+import {stringToColor} from '../Accounts/accountUtils';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Divider from '@material-ui/core/Divider';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -19,10 +19,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
-import BackButton from 'components/OmouComponents/BackButton';
 import Menu from '@material-ui/core/Menu';
-import { fullName } from '../../../utils';
+import {fullName} from '../../../utils';
 import moment from 'moment';
+import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 
 const StyledMenu = withStyles({
     paper: {
@@ -305,32 +305,28 @@ const SessionView = () => {
                 </Grid>
             </Grid>
             <Grid
-                className='session-detail-action-control'
                 container
                 direction='row'
                 justify='flex-end'
+                spacing={1}
             >
                 <Grid item>
-                    <Button
-                        className='button'
-                        color='secondary'
+                    <ResponsiveButton
                         component={NavLink}
-                        to={`/registration/course/${course_id}`}
+                        to={`/courses/class/${course_id}`}
                         variant='outlined'
                     >
                         Course Page
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
-                <Grid item></Grid>
                 <Grid item>
-                    <Button
-                        className='editButton'
+                    <ResponsiveButton
                         color='primary'
                         onClick={handleEditToggle(true)}
-                        variant='outlined'
+                        variant='contained'
                     >
                         Reschedule
-                    </Button>
+                    </ResponsiveButton>
                     <Dialog
                         aria-describedby='form-dialog-description'
                         aria-labelledby='form-dialog-title'
@@ -376,8 +372,8 @@ const SessionView = () => {
                                 color='primary'
                                 component={NavLink}
                                 to={{
-                                    pathname: `/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`,
-                                    state: { allOrCurrent: editSelection },
+                                    pathname: `/scheduler/session/${session_id}/edit`,
+                                    state: {allOrCurrent: editSelection},
                                 }}
                             >
                                 Confirm to Edit
