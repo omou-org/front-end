@@ -1,23 +1,21 @@
-import React, { useMemo, useEffect } from 'react';
-import { Prompt, useHistory, useLocation, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useMemo} from 'react';
+import {Prompt, useHistory, useLocation, useParams} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 import * as registrationActions from 'actions/registrationActions';
-import BackButton from 'components/OmouComponents/BackButton';
 import Loading from 'components/OmouComponents/Loading';
-import { paymentToString, uniques } from 'utils';
+import {paymentToString, uniques} from 'utils';
 import Moment from 'react-moment';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { bindActionCreators } from 'redux';
-import { fullName } from '../../../utils';
-import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import ParentContact from '../Accounts/TabComponents/ParentContact';
+import {useQuery} from '@apollo/react-hooks';
+import {bindActionCreators} from 'redux';
+import {fullName} from '../../../utils';
+import {closeRegistrationCart} from '../../OmouComponents/RegistrationUtils';
+import {ResponsiveButton} from 'theme/ThemedComponents/Button/ResponsiveButton';
 
 export const GET_PAYMENT = gql`
     query Payment($paymentId: ID!) {
@@ -413,7 +411,7 @@ const PaymentReceipt = ({ paymentID }) => {
                     </Grid>
                 </Grid>
             </Grid>
-        </BackgroundPaper>
+        </div>
     );
 };
 

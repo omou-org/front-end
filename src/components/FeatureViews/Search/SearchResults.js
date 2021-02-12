@@ -1,25 +1,24 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { useSearchParams } from 'actions/hooks';
+import {useQuery} from '@apollo/react-hooks';
+import {useSearchParams} from 'actions/hooks';
 
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import LessResultsIcon from '@material-ui/icons/KeyboardArrowLeft';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import MoreResultsIcon from '@material-ui/icons/KeyboardArrowRight';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
 import './Search.scss';
 import AccountFilters from './AccountFilters';
 import AccountCard from './cards/AccountCard';
 import BackButton from '../../OmouComponents/BackButton';
-import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
+import {LabelBadge} from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import CourseFilters from './CourseFilters';
 import CourseCard from './cards/CourseCard';
 import NoResultsPage from './NoResults/NoResultsPage';
-import { capitalizeString } from 'utils';
+import {capitalizeString} from 'utils';
 
 const changePage = (setter, delta) => () => {
     setter((prevVal) => prevVal + delta);
@@ -217,7 +216,7 @@ const SearchResults = () => {
                     <Typography
                         align='left'
                         className='search-title'
-                        variant='h3'
+                        variant='h1'
                     >
                         {numResults} Search Result{numResults !== 1 && 's'} for{' '}
                         {filter && capitalizeString(filter)} "{query}"
@@ -227,16 +226,17 @@ const SearchResults = () => {
                     <div className='account-results-wrapper'>
                         {filter === 'account' && (
                             <Grid item xs={12}>
-                                <AccountFilters />
+                                <AccountFilters/>
                             </Grid>
                         )}
-                        {numAccResults !== 0 && <hr />}
+                        {numAccResults !== 0 && <hr style={{marginBottom: "48px"}}/>}
                         <Grid item xs={12}>
                             <Grid
                                 alignItems='center'
                                 container
                                 direction='row'
                                 justify='space-between'
+                                style={{marginBottom: "24px"}}
                             >
                                 <Grid className='searchResults' item>
                                     <Typography
