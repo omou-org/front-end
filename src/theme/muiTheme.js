@@ -1,4 +1,4 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 const breakpoints = createBreakpoints({});
@@ -12,6 +12,7 @@ export const highlightColor = '#EBFAFF';
 export const errorRed = '#c0392b';
 export const activeColor = '#6FCF97';
 export const pastColor = '#BDBDBD';
+export const buttonBlue = '#278FC3';
 
 // Theme Colors
 export const omouBlue = '#43B5D9';
@@ -27,11 +28,12 @@ export const slateGrey = '#666666';
 export const gloom = '#999999';
 export const cloudy = '#C4C4C4';
 export const lightGrey = '#D3D3D3';
-export const buttonBlue = '#289FC3';
+export const buttonThemeBlue = '#289FC3';
 export const backgroundGrey = '#FAFAFA';
 export const statusGreen = '#6CE086';
 export const statusYellow = '#FFDD59';
 export const statusRed = '#FF6766';
+export const defaultBoxShadow = '0px 0px 8px rgb(196 196 196 / 60%)';
 
 // Typography
 export const h1 = {
@@ -115,7 +117,6 @@ const theme = createMuiTheme({
             default: backgroundGrey,
         },
         success: { main: statusGreen },
-        warning: { main: statusYellow },
         error: { main: statusRed },
     },
     colors: {
@@ -201,8 +202,9 @@ const theme = createMuiTheme({
             outlined: {
                 ...h5,
                 color: buttonBlue,
+                paddingBottom: '7px',
                 backgroundColor: white,
-                border: `2px solid ${cloudy}`,
+                border: `1px solid ${cloudy}`,
                 boxSizing: 'border-box',
                 'border-radius': '5px',
                 overflow: 'hidden',
@@ -267,6 +269,10 @@ const theme = createMuiTheme({
         MuiTabs: {
             root: {
                 color: '#000000',
+                borderBottom: "1px solid #43B5D9",
+            },
+            indicator: {
+                display: 'none',
             },
         },
         MuiTab: {
@@ -283,7 +289,6 @@ const theme = createMuiTheme({
                 paddingRight: '1em',
                 borderTopLeftRadius: '5px',
                 borderTopRightRadius: '5px',
-                borderBottom: '1px solid #43B5D9',
                 marginTop: '0',
                 backgroundColor: '#ffffff',
                 transition: '0.2s',
@@ -303,7 +308,6 @@ const theme = createMuiTheme({
                         width: 1,
                         zIndex: 1,
                         marginTop: '0.5em',
-                        backgroundColor: '#EEEEEE',
                     },
                 },
                 '& + $selected:before': {
@@ -343,12 +347,8 @@ const theme = createMuiTheme({
             },
             wrapper: {
                 zIndex: 2,
-                marginTop: '0.5em',
+                // marginTop: '0.5em',
                 textTransform: 'initial',
-            },
-            indicator: {
-                display: 'none',
-                marginTop: '1.1em',
             },
         },
         MuiStepIcon: {
@@ -368,6 +368,12 @@ const theme = createMuiTheme({
             root: {
                 color: 'inherit',
                 height: '48px',
+            },
+        },
+        //Must use disable typography in the tag on your component
+        MuiDialogTitle: {
+            root: {
+                ...h4,
             },
         },
         MuiTableCell: {

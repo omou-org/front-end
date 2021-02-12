@@ -109,7 +109,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
 
     return (
         <Container style={{ paddingLeft: '50px' }}>
-            <Grid item xs={12} align="left">
+            <Grid item xs={12} align='left'>
                 <Typography className={classes.boldText}>
                     Instructor:
                     <span className={classes.normalText}>
@@ -119,12 +119,12 @@ export const SubmitNotice = forwardRef((props, ref) => {
             </Grid>
 
             <Grid item xs={12} lg={7}>
-                <Typography className={classes.selectDateText} align="left">
+                <Typography className={classes.selectDateText} align='left'>
                     Select Date:
                 </Typography>
             </Grid>
             <Grid container style={{ paddingTop: '2%' }}>
-                <ButtonGroup variant="contained">
+                <ButtonGroup variant='contained'>
                     <Button style={{ backgroundColor: omouBlue }}>
                         <CalendarIcon style={{ color: 'white' }} />
                     </Button>
@@ -132,22 +132,22 @@ export const SubmitNotice = forwardRef((props, ref) => {
                         style={{ fontWeight: 500, backgroundColor: 'white' }}
                         onClick={() => setOpenCalendar(true)}
                     >
-                        <Moment date={state[0].startDate} format="MM/DD/YYYY" />
+                        <Moment date={state[0].startDate} format='MM/DD/YYYY' />
                     </Button>
                     <Button
                         style={{ fontWeight: 500, backgroundColor: 'white' }}
                         onClick={() => setOpenCalendar(true)}
                     >
-                        <Moment date={state[0].endDate} format="MM/DD/YYYY" />
+                        <Moment date={state[0].endDate} format='MM/DD/YYYY' />
                     </Button>
                 </ButtonGroup>
             </Grid>
 
             <Grid
                 container
-                align="left"
-                alignContent="center"
-                alignItems="center"
+                align='left'
+                alignContent='center'
+                alignItems='center'
                 style={{ marginTop: '3%' }}
             >
                 <Grid item xs={4}>
@@ -155,7 +155,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
                         <Typography>Select OOO Start Time</Typography>
                     </Grid>
                     <KeyboardTimePicker
-                        id="keyboardTimePickerOOO"
+                        id='keyboardTimePickerOOO'
                         className={classes.timePicker}
                         disabled={outAllDay}
                         style={{
@@ -164,8 +164,8 @@ export const SubmitNotice = forwardRef((props, ref) => {
                         keyboardIcon={<TimeIcon />}
                         value={startTime}
                         onChange={handleTimeChange(setStartTime, 'start')}
-                        inputVariant="outlined"
-                        data-cy="start-time-picker-OOO"
+                        inputVariant='outlined'
+                        data-cy='start-time-picker-OOO'
                     />
                 </Grid>
 
@@ -185,8 +185,8 @@ export const SubmitNotice = forwardRef((props, ref) => {
                             keyboardIcon={<TimeIcon />}
                             value={endTime}
                             onChange={handleTimeChange(setEndTime, 'end')}
-                            inputVariant="outlined"
-                            data-cy="end-time-picker-OOO"
+                            inputVariant='outlined'
+                            data-cy='end-time-picker-OOO'
                         />
                     </Grid>
                 </Grid>
@@ -196,12 +196,12 @@ export const SubmitNotice = forwardRef((props, ref) => {
                         <Checkbox
                             checked={outAllDay}
                             onChange={handleOutAllDay}
-                            name="Out All Day"
-                            color="primary"
-                            data-cy="out-all-day-checkbox"
+                            name='Out All Day'
+                            color='primary'
+                            data-cy='out-all-day-checkbox'
                         />
                     }
-                    label="Out all day"
+                    label='Out all day'
                 />
             </Grid>
 
@@ -210,7 +210,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
                 className={classes.root}
                 style={{ marginTop: '3%' }}
             >
-                <Grid item xs={2} align="left">
+                <Grid item xs={2} align='left'>
                     <Typography className={classes.boldText}>
                         Description:
                     </Typography>
@@ -220,11 +220,11 @@ export const SubmitNotice = forwardRef((props, ref) => {
                         multiline
                         fullWidth={true}
                         rows={4}
-                        variant="outlined"
+                        variant='outlined'
                         style={{ backgroundColor: 'white' }}
                         onChange={handleDescriptionChange}
                         value={description}
-                        data-cy="instructor-OOO-description-input"
+                        data-cy='instructor-OOO-description-input'
                     />
                 </Grid>
             </Grid>
@@ -241,7 +241,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
                 <DialogActions>
                     <ResponsiveButton
                         onClick={() => setOpenCalendar(false)}
-                        color="primary"
+                        color='primary'
                         variant='outlined'
                     >
                         Save & Close

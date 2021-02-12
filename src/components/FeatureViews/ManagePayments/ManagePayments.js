@@ -9,50 +9,53 @@ import ActiveInvoices from "./ActiveInvoices";
 import { makeStyles } from "@material-ui/core/styles";
 
 function TabPanel(props) {
-	const {children, value, index, ...other} = props;
+    const { children, value, index, ...other } = props;
 
-	return (
-		<div
-			role="tabpanel"
-			hidden={value !== index}
-			id={`simple-tabpanel-${index}`}
-			aria-labelledby={`simple-tab-${index}`}
-			{...other}
-		>
-			{value === index && (
-				<Box p={3}>
-					<Typography>{children}</Typography>
-				</Box>
-			)}
-		</div>
-	);
+    return (
+        <div
+            role='tabpanel'
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
 }
 
 export default function ManagePayments() {
-	const [value, setValue] = useState(0);
-	const history = useHistory();
+    const [value, setValue] = useState(0);
+    const history = useHistory();
 
-	const handleChange = useCallback((_, newTab) => {
-		setValue(newTab);
-		if (newTab === 0) history.push("/my-payments")
-		if (newTab === 1) history.push("/my-payments/history")
-	}, [setValue])
+    const handleChange = useCallback(
+        (_, newTab) => {
+            setValue(newTab);
+            if (newTab === 0) history.push('/my-payments');
+            if (newTab === 1) history.push('/my-payments/history');
+        },
+        [setValue]
+    );
 
-	const useStyles = makeStyles({
-		MuiIndicator: {
-			height: "1px"
-		}
-	});
-	
-	const classes = useStyles();
+    const useStyles = makeStyles({
+        MuiIndicator: {
+            height: '1px',
+        },
+    });
+
+    const classes = useStyles();
 
 	return (
 		<div>
 			<Typography variant="h3" align="left">My Payments</Typography>
 			<Tabs
-				classes={{indicator: classes.MuiIndicator}} 
-				value={value} 
-				onChange={handleChange} 
+				classes={{indicator: classes.MuiIndicator}}
+				value={value}
+				onChange={handleChange}
 				aria-label="simple tabs example"
 			>
 				<Tab label="Outstanding Invoice"/>

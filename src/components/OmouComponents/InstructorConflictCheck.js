@@ -1,30 +1,49 @@
-import React, {useCallback, useState} from "react";
-import PropTypes from "prop-types";
+import React, { useCallback, useState } from 'react';
+import PropTypes from 'prop-types';
 
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
-import {instructorConflictCheck} from "utils";
+import { instructorConflictCheck } from 'utils';
 
 const parseString = (string) => {
-    const [sentence, eventName, remainder] = string.split("\"");
+    const [sentence, eventName, remainder] = string.split('"');
     return (
         <>
-            {sentence}<br /><br />
-            {eventName && <><b>{eventName}</b> <br /> <br /></>}
-            {remainder && <>{remainder}<br /><br /></>}
+            {sentence}
+            <br />
+            <br />
+            {eventName && (
+                <>
+                    <b>{eventName}</b> <br /> <br />
+                </>
+            )}
+            {remainder && (
+                <>
+                    {remainder}
+                    <br />
+                    <br />
+                </>
+            )}
         </>
     );
 };
 
 const InstructorConflictCheck = ({
-    active = true, instructorID, start, end, ignoreAvailablity = false, eventID, onSubmit = () => {}, children,
+    active = true,
+    instructorID,
+    start,
+    end,
+    ignoreAvailablity = false,
+    eventID,
+    onSubmit = () => {},
+    children,
 }) => {
     const [open, setOpen] = useState(false);
-    const [conflictText, setConflictText] = useState("");
+    const [conflictText, setConflictText] = useState('');
 
     const closeDialog = useCallback(() => {
         setOpen(false);
@@ -36,22 +55,30 @@ const InstructorConflictCheck = ({
     }, []);
 
     // detects if there's an actual conflict
-    const conflictDetect = useCallback(({data}) => {
-        if (!data || data.status === true) {
-            return false;
-        }
-        if (ignoreAvailablity &&
-            data.reason.includes("not marked for being available")) {
-            return false;
-        }
-        const conflictingID = data.conflicting_course || data.conflicting_session;
-        return !conflictingID || conflictingID !== eventID;
-    }, [eventID, ignoreAvailablity]);
+    const conflictDetect = useCallback(
+        ({ data }) => {
+            if (!data || data.status === true) {
+                return false;
+            }
+            if (
+                ignoreAvailablity &&
+                data.reason.includes('not marked for being available')
+            ) {
+                return false;
+            }
+            const conflictingID =
+                data.conflicting_course || data.conflicting_session;
+            return !conflictingID || conflictingID !== eventID;
+        },
+        [eventID, ignoreAvailablity]
+    );
 
     const handleSubmit = useCallback(async () => {
         if (active) {
-            const {session, course} = await instructorConflictCheck(
-                instructorID, start, end
+            const { session, course } = await instructorConflictCheck(
+                instructorID,
+                start,
+                end
             );
 
             const seshConf = conflictDetect(session);
@@ -74,58 +101,60 @@ const InstructorConflictCheck = ({
         } else {
             onSubmit();
         }
-    }, [active, conflictDetect, instructorID, start, end, onSubmit, openDialog]);
+    }, [
+        active,
+        conflictDetect,
+        instructorID,
+        start,
+        end,
+        onSubmit,
+        openDialog,
+    ]);
 
     return (
         <>
-            <div onClick={handleSubmit}>
-                {children}
-            </div>
-            {
-                active &&
-                <Dialog
-                    onClose={closeDialog}
-                    open={open}>
-                    <DialogTitle>Scheduling Conflict</DialogTitle>
+            <div onClick={handleSubmit}>{children}</div>
+            {active && (
+                <Dialog onClose={closeDialog} open={open}>
+                    <DialogTitle disableTypography>
+                        Scheduling Conflict
+                    </DialogTitle>
                     <DialogContent>
                         {conflictText}
                         Are you sure you want to continue?
                     </DialogContent>
                     <DialogActions>
                         <Button
-                            color="secondary"
+                            color='secondary'
                             onClick={onSubmit}
-                            variant="outlined">
+                            variant='outlined'
+                        >
                             Continue anyways
                         </Button>
                         <Button
-                            color="primary"
+                            color='primary'
                             onClick={closeDialog}
-                            variant="outlined">
+                            variant='outlined'
+                        >
                             Go back
                         </Button>
                     </DialogActions>
                 </Dialog>
-            }
+            )}
         </>
     );
 };
 
 InstructorConflictCheck.propTypes = {
-    "active": PropTypes.bool,
-    "children": PropTypes.node.isRequired,
-    "end": PropTypes.instanceOf(Date).isRequired,
-    "eventID": PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]),
-    "ignoreAvailablity": PropTypes.bool,
-    "instructorID": PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]).isRequired,
-    "onSubmit": PropTypes.func,
-    "start": PropTypes.instanceOf(Date).isRequired,
+    active: PropTypes.bool,
+    children: PropTypes.node.isRequired,
+    end: PropTypes.instanceOf(Date).isRequired,
+    eventID: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    ignoreAvailablity: PropTypes.bool,
+    instructorID: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired,
+    onSubmit: PropTypes.func,
+    start: PropTypes.instanceOf(Date).isRequired,
 };
 
 export default InstructorConflictCheck;

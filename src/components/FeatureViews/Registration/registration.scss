@@ -3,779 +3,794 @@
 /*Registration*/
 
 .no-underline {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 .registration-action-control {
-  padding: 1%;
+    padding: 1%;
 
-  .button {
-    background-color: white;
-    @include respond-to(medium-up-screens) {
-      // margin-right: 30px;
-      height: 46px;
-      //width: 145px;
-    }
-    @include respond-to(handhelds) {
-      margin-right: 5px;
-      height: 46px;
-      //width: 110px;
-    }
-
-    color: $primaryFontColor;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
-    text-transform: uppercase;
-
-    border: 1px solid #DBD7D7;
-    box-sizing: border-box;
-    border-radius: 7px;
-
-    z-index: 1001;
-
-    .icon {
-      margin-right: 4px;
-      color: $secondaryFontColor;
-      @include respond-to(handhelds) {
-        font-size: 1.5em;
-      }
-    }
-
-    &.set-parent{
-      background-color: $primaryDarkColor;
-      border:none !important;
-      color:white;
-      padding-left: 1.7em !important;
-      padding-right: 2.3em !important;
-      font-weight:600;
-      margin-right:0;
-      .circle-icon{
+    .button {
         background-color: white;
-      }
+        @include respond-to(medium-up-screens) {
+            // margin-right: 30px;
+            height: 46px;
+            //width: 145px;
+        }
+        @include respond-to(handhelds) {
+            margin-right: 5px;
+            height: 46px;
+            //width: 110px;
+        }
+
+        color: $primaryFontColor;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 12px;
+        text-transform: uppercase;
+
+        border: 1px solid #dbd7d7;
+        box-sizing: border-box;
+        border-radius: 7px;
+
+        z-index: 1001;
+
+        .icon {
+            margin-right: 4px;
+            color: $secondaryFontColor;
+            @include respond-to(handhelds) {
+                font-size: 1.5em;
+            }
+        }
+
+        &.set-parent {
+            background-color: $primaryDarkColor;
+            border: none !important;
+            color: white;
+            padding-left: 1.7em !important;
+            padding-right: 2.3em !important;
+            font-weight: 600;
+            margin-right: 0;
+            .circle-icon {
+                background-color: white;
+            }
+        }
     }
-  }
 }
 
-.circle-icon{
-  height: 20px;
-  width: 20px;
-  margin-right: 10px;
-  border-radius:100%;
+.circle-icon {
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+    border-radius: 100%;
 }
 
 .button.mobile-toggle {
-  position: fixed;
-  top: 85vh;
-  left: 75vw;
-  cursor: pointer;
+    position: fixed;
+    top: 85vh;
+    left: 75vw;
+    cursor: pointer;
 }
 
 //Full Registration styles
 .paper {
-  margin: 2% 0 2% 0;
+    margin: 2% 0 2% 0;
 }
 
 .paper.content {
-  padding: 2%;
+    padding: 2%;
 }
 
-
-.NoteIcon{
-  display: inline-flex;
-  vertical-align: middle;
+.NoteIcon {
+    display: inline-flex;
+    vertical-align: middle;
 }
 
 .TabIcon {
-  display: inline-flex;
-  vertical-align: middle;
-  margin-right: 5px;
+    display: inline-flex;
+    vertical-align: middle;
+    margin-right: 5px;
 }
 
 .course-categories {
-  position: relative;
-  //Controls
-  .control {
-    display: none;
-    position: absolute;
-    border: $lightPrimaryFontColor solid 1px;
-    border-radius: 100%;
-    color: $lightPrimaryFontColor;
-    font-size: 1.4em;
-    opacity: 1;
-    z-index: 10000;
-  }
-
-  .forward, .back {
-    top: 100%;
-  }
-
-  .forward {
-    right: 4px;
-  }
-
-  .back {
-    left: 8px;
-  }
-
-  .expand, .shrink {
-    bottom: -25px;
-    left: 47%
-  }
-
-  .visible * {
-    display: block;
-  }
-
-  .control:hover {
-    display: block;
-    background-color: white;
-    color: black;
-    cursor: pointer;
-    opacity: 100;
-  }
-
-  //Card
-  .category-card {
-    margin-left: 0%;
-    width: 100%;
-
-    .media {
-      height: 100px;
+    position: relative;
+    //Controls
+    .control {
+        display: none;
+        position: absolute;
+        border: $lightPrimaryFontColor solid 1px;
+        border-radius: 100%;
+        color: $lightPrimaryFontColor;
+        font-size: 1.4em;
+        opacity: 1;
+        z-index: 10000;
     }
 
-    .text * {
-      text-align: left;
-      text-overflow: ellipsis;
+    .forward,
+    .back {
+        top: 100%;
     }
-  }
+
+    .forward {
+        right: 4px;
+    }
+
+    .back {
+        left: 8px;
+    }
+
+    .expand,
+    .shrink {
+        bottom: -25px;
+        left: 47%;
+    }
+
+    .visible * {
+        display: block;
+    }
+
+    .control:hover {
+        display: block;
+        background-color: white;
+        color: black;
+        cursor: pointer;
+        opacity: 100;
+    }
+
+    //Card
+    .category-card {
+        margin-left: 0%;
+        width: 100%;
+
+        .media {
+            height: 100px;
+        }
+
+        .text * {
+            text-align: left;
+            text-overflow: ellipsis;
+        }
+    }
 }
 
 .course-title {
-  font-weight: 500 !important;
-  color: #404040 !important;
-  font-size: 1em !important;
+    font-weight: 500 !important;
+    color: #404040 !important;
+    font-size: 1em !important;
 }
 
 .pop-courses-table {
-  .row td {
-    height: 56px;
-  }
+    .row td {
+        height: 56px;
+    }
 
-  .row {
-    margin: 5px;
-  }
+    .row {
+        margin: 5px;
+    }
 }
 
 .spacing {
-  cursor: pointer;
-  color: $lightPrimaryFontColor;
+    cursor: pointer;
+    color: $lightPrimaryFontColor;
 }
 
 .spacing > * {
-  margin: 5px;
-  color: $lightPrimaryFontColor;
-  text-decoration: none;
+    margin: 5px;
+    color: $lightPrimaryFontColor;
+    text-decoration: none;
 }
 
 .spacing > * :hover {
-  color: $darkenPrimaryFontColor;
-  text-decoration: none;
+    color: $darkenPrimaryFontColor;
+    text-decoration: none;
 }
 
 .bold {
-  font-weight: 500 !important;
-  font-size: .95em !important;
+    font-weight: 500 !important;
+    font-size: 0.95em !important;
 }
 
 .space-left-progress {
-  color: #FF9800 !important;
-  margin-left: 5px !important;
+    color: #ff9800 !important;
+    margin-left: 5px !important;
 }
 
 .space-left {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 /*Registration Form Styles*/
 .exit-popup {
-  @include respond-to(handhelds) {
-    top: 35%;
-    left: 5%;
-    width: 90%;
-  }
-  @include respond-to(medium-up-screens) {
-    top: 35%;
-    left: 37%;
-  }
+    @include respond-to(handhelds) {
+        top: 35%;
+        left: 5%;
+        width: 90%;
+    }
+    @include respond-to(medium-up-screens) {
+        top: 35%;
+        left: 37%;
+    }
 }
 
 .existing-user-popup {
-  @include respond-to(handhelds) {
-    top: 35%;
-    left: 5%;
-    width: 90%;
-  }
-  @include respond-to(medium-up-screens) {
-    top: 35%;
-    left: 30%;
-    width: 40%;
-  }
-}
-
-.exit-popup, .existing-user-popup {
-  padding: 3%;
-  position: absolute;
-  outline: none;
-  background-color: white;
-  border-radius: 8px;
-
-  .button {
-    text-align: center;
     @include respond-to(handhelds) {
-      margin: 10% 15px 0 0;
-      width: 45%;
+        top: 35%;
+        left: 5%;
+        width: 90%;
     }
     @include respond-to(medium-up-screens) {
-      margin: 15% 5px 0 0;
+        top: 35%;
+        left: 30%;
+        width: 40%;
     }
-  }
-
-  .button.primary {
-    background-color: $primaryColor;
-    color: white;
-  }
-
-  .button.primary:hover {
-    background-color: $secondaryColor;
-  }
 }
 
+.exit-popup,
+.existing-user-popup {
+    padding: 3%;
+    position: absolute;
+    outline: none;
+    background-color: white;
+    border-radius: 8px;
+
+    .button {
+        text-align: center;
+        @include respond-to(handhelds) {
+            margin: 10% 15px 0 0;
+            width: 45%;
+        }
+        @include respond-to(medium-up-screens) {
+            margin: 15% 5px 0 0;
+        }
+    }
+
+    .button.primary {
+        background-color: $primaryColor;
+        color: white;
+    }
+
+    .button.primary:hover {
+        background-color: $secondaryColor;
+    }
+}
 
 @keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
+    0% {
+        opacity: 0;
+    }
 
-  99% {
-    opacity: .5;
-  }
+    99% {
+        opacity: 0.5;
+    }
 
-  100% {
-    opacity: 1;
-  }
+    100% {
+        opacity: 1;
+    }
 }
 
 .control {
-  cursor: pointer;
-  position: absolute;
-  color: $lightPrimaryFontColor;
-  text-decoration: none;
+    cursor: pointer;
+    position: absolute;
+    color: $lightPrimaryFontColor;
+    text-decoration: none;
 
-  .icon, .back, .label {
-    display: inline-block;
-    @include respond-to(handhelds) {
-      margin-top: 15px;
+    .icon,
+    .back,
+    .label {
+        display: inline-block;
+        @include respond-to(handhelds) {
+            margin-top: 15px;
+        }
     }
-  }
 
-  .icon {
-    @include respond-to(handhelds) {
-      margin-left: 10px;
+    .icon {
+        @include respond-to(handhelds) {
+            margin-left: 10px;
+        }
     }
-  }
 
-  .label {
-    position: relative;
-    font-style: normal;
-    margin:auto;
-    text-align:center;
-  }
+    .label {
+        position: relative;
+        font-style: normal;
+        margin: auto;
+        text-align: center;
+    }
 }
 
 // the back button on the course registration page
 
 .course.control {
-  position: relative;
-  text-align: center;
-  display: block;
-  margin-bottom: 30px;
-  background-color: white;
-  @include respond-to(handhelds){
+    position: relative;
+    text-align: center;
+    display: block;
     margin-bottom: 30px;
-    padding: 0px 8px 5px 0px;
-  }
+    background-color: white;
+    @include respond-to(handhelds) {
+        margin-bottom: 30px;
+        padding: 0px 8px 5px 0px;
+    }
 }
 
 .registration-form {
-  position: relative;
-  border-radius: 5px !important;
-  padding: 2%;
-  margin-top: 2%;
-
-  .heading {
-    margin-top: 50px;
-    margin-left: 2%;
-    text-transform: capitalize;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 42px;
-    line-height: 42px;
-    display: flex;
-
-    @include respond-to(handhelds) {
-      margin-left: 3%;
-    }
-  }
-
-  .form-section {
-    background-color: $paperColor;
-    text-align: left;
-
-    .form-control {
-      width: 200px;
-    }
-
-  }
-
-  .error {
-    color: red;
-    border: red solid 1px;
-    border-radius: 5px;
-  }
-
-  .controls {
     position: relative;
-    left: 80%;
-    //width:28%;
+    border-radius: 5px !important;
+    padding: 2%;
+    margin-top: 2%;
 
-    .button {
-      margin: 5px;
+    .heading {
+        margin-top: 50px;
+        margin-left: 2%;
+        text-transform: capitalize;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 42px;
+        line-height: 42px;
+        display: flex;
+
+        @include respond-to(handhelds) {
+            margin-left: 3%;
+        }
     }
 
-    .label {
-      font-style: italic;
-      color: red;
+    .form-section {
+        background-color: $paperColor;
+        text-align: left;
+
+        .form-control {
+            width: 200px;
+        }
     }
-  }
+
+    .error {
+        color: red;
+        border: red solid 1px;
+        border-radius: 5px;
+    }
+
+    .controls {
+        position: relative;
+        left: 80%;
+        //width:28%;
+
+        .button {
+            margin: 5px;
+        }
+
+        .label {
+            font-style: italic;
+            color: red;
+        }
+    }
 }
 
 .hide {
-  opacity: 0;
+    opacity: 0;
 }
 
 .add-student {
-  margin-top: 25px !important;
-  margin-bottom: 25px !important;
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
 }
 
 .button.add-student {
-  border: none !important;
-  background-color: $primaryColor;
-  color: white;
+    border: none !important;
+    background-color: $primaryColor;
+    color: white;
 }
 
 .remove-student {
-  margin-top: 25px !important;
-  margin-bottom: 25px !important;
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
 }
 
 .popular-courses {
-  font-weight: bold !important;
-  //margin-top:50px !important;
-  margin-bottom: -35px !important;
-  color: $lightPrimaryFontColor !important;
+    font-weight: bold !important;
+    //margin-top:50px !important;
+    margin-bottom: -35px !important;
+    color: $lightPrimaryFontColor !important;
 }
 
 .search-options {
-  width: 50%;
+    width: 50%;
 }
 
 .button-remove-student {
-  margin-top: 5px;
-  cursor: pointer;
+    margin-top: 5px;
+    cursor: pointer;
 }
-
 
 .label {
-  margin-left: 5px;
-  margin-right: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
-
 
 /*Course Registration Page*/
 .text {
-  font-size: 18px !important;
+    font-size: 18px !important;
 }
 
 .notificationCourse {
-  width: 10px!important;
-  height: 10px!important;
-  background-color: orange!important;
-  position: absolute!important;
-  top: 10px!important;
-  left: 2.9em!important;
+    width: 10px !important;
+    height: 10px !important;
+    background-color: orange !important;
+    position: absolute !important;
+    top: 10px !important;
+    left: 2.9em !important;
 
-  @include respond-to(medium-screens) {
-    left: 1.4em!important;
-  }
+    @include respond-to(medium-screens) {
+        left: 1.4em !important;
+    }
 
-  @include respond-to(handhelds) {
-    left: 1.4em!important;
-  }
+    @include respond-to(handhelds) {
+        left: 1.4em !important;
+    }
 }
 
 .course-heading {
-  margin-top:10px;
+    margin-top: 10px;
 
-  .icon {
-    color: $lightPrimaryFontColor;
-  }
-
-  .date {
-    text-align: left;
-  }
-
-  .date > * {
-    display: inline-block;
-  }
-
-  .info-section {
-    margin: 25px 0 5px 0;
-    text-align: left;
-
-    .course-info-header > .text {
-        font-weight: 500;
-        margin: 10px 0 5px 5px;
-        color: $lightPrimaryFontColor
+    .icon {
+        color: $lightPrimaryFontColor;
     }
 
-    .course-info-header > *, .course-info-details > * {
-      display: inline-block;
+    .date {
+        text-align: left;
     }
 
-    .course-info-details {
-      .course-icon{
-        margin-left:0;
-        margin-bottom:-6px;
-      }
-      .text, .chip {
-        margin: 3px 55px 3px 0;
-      }
-
-      .chip {
-        display: inline-flex;
-        cursor: pointer;
-      }
+    .date > * {
+        display: inline-block;
     }
-  }
 
+    .info-section {
+        margin: 25px 0 5px 0;
+        text-align: left;
+
+        .course-info-header > .text {
+            font-weight: 500;
+            margin: 10px 0 5px 5px;
+            color: $lightPrimaryFontColor;
+        }
+
+        .course-info-header > *,
+        .course-info-details > * {
+            display: inline-block;
+        }
+
+        .course-info-details {
+            .course-icon {
+                margin-left: 0;
+                margin-bottom: -6px;
+            }
+            .text,
+            .chip {
+                margin: 3px 55px 3px 0;
+            }
+
+            .chip {
+                display: inline-flex;
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .description {
-  padding: 2% 1% 1% 1%;
-  margin-bottom: 15px !important;
-  @include respond-to(medium-up-screens) {
-    width: 60%;
-    line-height: 1.8 !important;
-  }
-  @include respond-to(handheld) {
-    width: 100%;
-  }
+    padding: 2% 1% 1% 1%;
+    margin-bottom: 15px !important;
+    @include respond-to(medium-up-screens) {
+        width: 60%;
+        line-height: 1.8 !important;
+    }
+    @include respond-to(handheld) {
+        width: 100%;
+    }
 }
 
 .course-status {
-  position: relative;
-  @include respond-to(handhelds){
-    margin-top:35px;
-  }
-  margin-top:5px;
+    position: relative;
+    @include respond-to(handhelds) {
+        margin-top: 35px;
+    }
+    margin-top: 5px;
 
-  .status {
-    top: -40px;
-  }
+    .status {
+        top: -40px;
+    }
 }
 
 .innerIcon {
-  margin-right: 10px;
-  color: $secondaryFontColor;
+    margin-right: 10px;
+    color: $secondaryFontColor;
 }
 
 // Confirmation Copy
 .confirmation-copy {
-  background-color: white;
-  margin: 10px;
-  padding: 3%;
+    background-color: white;
+    margin: 10px;
+    padding: 3%;
 
-  .title {
-    font-size: 1.3em;
-  }
+    .title {
+        font-size: 1.3em;
+    }
 
-  .section-title {
-    margin: 15px 0 5px 0;
-    font-weight: bold;
-    color: $secondaryFontColor;
-  }
+    .section-title {
+        margin: 15px 0 5px 0;
+        font-weight: bold;
+        color: $secondaryFontColor;
+    }
 
-  .field-title {
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 1.1em;
-  }
+    .field-title {
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
 
-  .field-value {
-    font-size: 1.1em;
-  }
+    .field-value {
+        font-size: 1.1em;
+    }
 }
 
 // Registration Landing
 .RegistrationLanding {
-  min-height: 75vh;
+    min-height: 75vh;
 
-  .catalog-setting-wrapper{
-    margin-bottom: 15px;
-    .catalog-setting{
-      @include respond-to(medium-up-screens){
-        margin-top:8%;
-      }
-      @include respond-to(handhelds){
-        //margin-top:2%;
-        margin-bottom:5%;
-      }
-    }
-  }
-
-  .heading {
-    margin: 20px 0 25px 0;
-  }
-
-  .registration-table {
-    > * {
-      margin: 10px 0 10px 0;
-    }
-
-    .row {
-      cursor: pointer;
-
-      .course-heading, .course-detail {
-        padding: 5px 15px;
-      }
-
-      .course-heading {
-        font-weight: 400;
-        font-size: 20px;
-      }
-
-      .course-detail {
-        color: $secondaryFontColor;
-        font-size: 14px;
-        margin: 3px;
-
-        .heading-det {
-          font-weight: 800;
+    .catalog-setting-wrapper {
+        margin-bottom: 15px;
+        .catalog-setting {
+            @include respond-to(medium-up-screens) {
+                margin-top: 8%;
+            }
+            @include respond-to(handhelds) {
+                //margin-top:2%;
+                margin-bottom: 5%;
+            }
         }
-      }
+    }
 
-      .course-action {
-        background-color: #F5F5F5;
-        cursor: default;
-        height: 120px;
-        overflow-y: hidden;
+    .heading {
+        margin: 20px 0 25px 0;
+    }
 
-        .course-status {
-          .stats, .label {
-            display: block;
-          }
-
-          .stats {
-            font-size: 1.2em;
-            font-weight: 500;
-          }
+    .registration-table {
+        > * {
+            margin: 10px 0 10px 0;
         }
-      }
-    }
 
-    .row:hover {
-        border-left: solid 5px $primaryColor;
+        .row {
+            cursor: pointer;
+
+            .course-heading,
+            .course-detail {
+                padding: 5px 15px;
+            }
+
+            .course-heading {
+                font-weight: 400;
+                font-size: 20px;
+            }
+
+            .course-detail {
+                color: $secondaryFontColor;
+                font-size: 14px;
+                margin: 3px;
+
+                .heading-det {
+                    font-weight: 800;
+                }
+            }
+
+            .course-action {
+                background-color: #f5f5f5;
+                cursor: default;
+                height: 120px;
+                overflow-y: hidden;
+
+                .course-status {
+                    .stats,
+                    .label {
+                        display: block;
+                    }
+
+                    .stats {
+                        font-size: 1.2em;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+
+        .row:hover {
+            border-left: solid 5px $primaryColor;
+        }
     }
-  }
 }
 
 .tutoring-card {
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  color: #828282;
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 24px;
-  line-height: 28px;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    color: #828282;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 28px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
 }
 
 .tutoring-card:hover {
-  border: 0px solid #43B5D9;
-  border-left-width: 5px;
+    border: 0px solid #43b5d9;
+    border-left-width: 5px;
 }
 
 // Registration Course Styling
 
-.registrationCourse{
-  .registration-course-tabs{
-    margin-bottom:10px;
-  }
-
-  .course-heading {
-    .button {
-      background-color: white;
-      padding: 6px 10px;
-      float: right;
-      margin-right:2.5%;
+.registrationCourse {
+    .registration-course-tabs {
+        margin-bottom: 10px;
     }
 
-    .icon {
-      font-size: 16px;
+    .course-heading {
+        .button {
+            background-color: white;
+            padding: 6px 10px;
+            float: right;
+            margin-right: 2.5%;
+        }
+
+        .icon {
+            font-size: 16px;
+        }
+
+        .sessions-text {
+            margin-left: 5px;
+            margin-top: 10px;
+        }
     }
 
-    .sessions-text {
-      margin-left: 5px;
-      margin-top: 10px;
+    .notes-container {
+        padding-top: 20px;
     }
-  }
-
-  .notes-container {
-    padding-top: 20px;
-  }
 }
 
 // Registration Parent Styling
 .select-parent-search-wrapper {
-  height: 75px;
-  &.active {
-    animation-name: expandHeight;
-    animation-duration: 0.2s;
-    height: 150px;
-  }
+    height: 75px;
+    &.active {
+        animation-name: expandHeight;
+        animation-duration: 0.2s;
+        height: 150px;
+    }
 }
 
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes expandHeight {
-  from {height: 0;}
-  to {height: 150px;}
+    from {
+        height: 0;
+    }
+    to {
+        height: 150px;
+    }
 }
 
 /* Standard syntax */
 @keyframes expandHeight {
-  from {height: 0;}
-  to {height: 150px;}
+    from {
+        height: 0;
+    }
+    to {
+        height: 150px;
+    }
 }
 
-.select-parent-dialog{
-  overflow-y: visible;
+.select-parent-dialog {
+    overflow-y: visible;
 
-  #simple-dialog-title {
-    width: 20vw;
-  }
+    #simple-dialog-title {
+        width: 20vw;
+    }
 }
-.select-parent-search__menu{
-  position:relative;
-  z-index:2000;
+.select-parent-search__menu {
+    position: relative;
+    z-index: 2000;
 }
-.active-parent-dialog-content{
-  @include respond-to(medium-up-screens){
-    width:28vw;
-  }
-  @include respond-to(handhelds){
-    width:auto;
-  }
+.active-parent-dialog-content {
+    @include respond-to(medium-up-screens) {
+        width: 28vw;
+    }
+    @include respond-to(handhelds) {
+        width: auto;
+    }
 }
 
 // Registration Cart Styling
 .registration-cart {
-  &.paper{
-    padding:$paperPadding;
-  }
+    &.paper {
+        padding: $paperPadding;
+    }
 
-  .cart-header {
-    color: white;
-    font-weight: 500;
-  }
+    .cart-header {
+        color: white;
+        font-weight: 500;
+    }
 }
 
 // Registration Receipt
 .registration-receipt {
-  &.paper{
-    padding: $paperPadding;
-  }
-  .receipt-info{
-    margin-top:20px;
-    .label{
-      font-weight:bold;
+    &.paper {
+        padding: $paperPadding;
     }
-  }
-  .course-receipt{
-    padding: $paperPadding;
-    background-color:white !important;
-    margin-top: 10px;
-    margin-bottom:10px;
-  }
-  .enrolled-course{
-    .enrolled-course-title{
-      color:$primaryColor;
-      font-weight:500;
-      margin-bottom:10px;
-      font-size:14px;
+    .receipt-info {
+        margin-top: 20px;
+        .label {
+            font-weight: bold;
+        }
     }
-    .course-label{
-      color:$lightPrimaryFontColor;
-      font-weight:600;
+    .course-receipt {
+        padding: $paperPadding;
+        background-color: white !important;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
-  }
-  .student-name{
-    span{
-      color:$lightPrimaryFontColor;
+    .enrolled-course {
+        .enrolled-course-title {
+            color: $primaryColor;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .course-label {
+            color: $lightPrimaryFontColor;
+            font-weight: 600;
+        }
     }
-    margin-bottom:20px;
-  }
-  .receipt-details{
-    margin-top: 120px;
-  }
-  .receipt-actions{
-    margin-top:10px;
-  }
+    .student-name {
+        span {
+            color: $lightPrimaryFontColor;
+        }
+        margin-bottom: 20px;
+    }
+    .receipt-details {
+        margin-top: 120px;
+    }
+    .receipt-actions {
+        margin-top: 10px;
+    }
 }
 
-.student-cart-wrapper{
-  margin-top: 20px;
-  margin-bottom: 40px;
+.student-cart-wrapper {
+    margin-top: 20px;
+    margin-bottom: 40px;
 }
 
 @keyframes confirmationAnimation {
-  from {color: $lightPrimaryFontColor}
-  to {color: $goodStatusColor;}
+    from {
+        color: $lightPrimaryFontColor;
+    }
+    to {
+        color: $goodStatusColor;
+    }
 }
 
-.course-icon{
-  color:$lightPrimaryFontColor;
-  &.confirmed{
-    animation-name:confirmationAnimation;
-    animation-duration: 0.25s;
-  }
+.course-icon {
+    color: $lightPrimaryFontColor;
+    &.confirmed {
+        animation-name: confirmationAnimation;
+        animation-duration: 0.25s;
+    }
 }
 
 .expanded-container {
-  padding: 10px;
+    padding: 10px;
 
-  .expanded-text {
-    padding: 5px;
-  }
+    .expanded-text {
+        padding: 5px;
+    }
 }
 
 .session-status-chip {
-  width: 50px;
-  padding: 7px 0 0 10px;
-  border-radius: 15px;
+    width: 50px;
+    padding: 7px 0 0 10px;
+    border-radius: 15px;
 }
