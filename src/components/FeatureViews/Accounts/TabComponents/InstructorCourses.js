@@ -17,7 +17,7 @@ import { DayAbbreviation } from 'utils';
 
 export const GET_INSTRUCTOR_ENROLLMENTS = gql`
     query InstructorEnrollments($instructorID: ID!) {
-        courses(instructorId: $instructorID) {
+        courses(userId: $instructorID) {
             id
             description
             startDate
