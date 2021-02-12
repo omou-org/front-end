@@ -177,6 +177,11 @@ const CustomToolbar = (toolbar) => {
 const EventPopoverWrapper = ({children, popover}) => {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState(null);
+	const history = useHistory();
+
+	const handleClick = () => {
+		history.push(`/scheduler/session/${popover.props.session.id}`);
+	}
 
 	const handlePopoverOpen = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -195,6 +200,7 @@ const EventPopoverWrapper = ({children, popover}) => {
 				aria-haspopup="true"
 				onMouseEnter={handlePopoverOpen}
 				onMouseLeave={handlePopoverClose}
+				onClick={handleClick}
 			>
 				{children}
 			</div>
@@ -220,16 +226,11 @@ const EventPopoverWrapper = ({children, popover}) => {
 	);
 }
 
-const SessionPopover = ({session: {id, start, end, title, instructor}}) => {
+const SessionPopover = ({session: {start, end, title, instructor}}) => {
 	const classes = useStyles();
-	const history = useHistory();
-
-	const handleClick = () => {
-		history.push(`/scheduler/session/${id}`);
-	}
 
 	const timeText = (time) => moment(time).format("h:mma")
-	return (<div className={classes.sessionPopover} onClick={handleClick}>
+	return (<div className={classes.sessionPopover}>
 		<Typography variant="h3">{title}</Typography>
 		<div className={classes.sessionInfo}>
 			<Schedule style={{marginRight: "8px"}}/>
@@ -434,10 +435,11 @@ export default function NEWScheduler() {
     const updateSchedulerState = (newState) => setSchedulerState(newState);
 
     return (
-        <SchedulerContext.Provider
-            value={{ schedulerState, updateSchedulerState }}
-        >
-            <BigCalendar eventList={sessionsInView} />
-        </SchedulerContext.Provider>
+		<SchedulerContext.Provider
+			value={{schedulerState, updateSchedulerState}}
+		>
+			<Typography variant="h1" align="left">Scheduler</Typography>
+			<BigCalendar eventList={sessionsInView}/>
+		</SchedulerContext.Provider>
     );
 }
