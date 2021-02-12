@@ -1,10 +1,10 @@
-import React, { u } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Color from 'color';
-import { makeStyles } from '@material-ui/styles';
+import {makeStyles} from '@material-ui/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { omouBlue } from '../../theme/muiTheme';
+import {omouBlue} from '../../theme/muiTheme';
 
 const useTabsStyles = makeStyles(() => ({
     indicator: {
@@ -58,7 +58,6 @@ const useTabStyles = makeStyles(({ palette, spacing, breakpoints }) => {
                     width: 1,
                     zIndex: 1,
                     marginTop: spacing(0.5),
-                    backgroundColor: '#EEEEEE',
                 },
             },
             '& + $selected:before': {

@@ -2,11 +2,10 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { MenuItem } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 Date.daysBetween = function (date1, date2) {
     //Get 1 day in milliseconds

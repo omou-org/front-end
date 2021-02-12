@@ -45,12 +45,26 @@ const NavigationContainer = () => {
                 (accountType) => {
                     if (
                         location.pathname.includes(accountType) &&
+                        !location.pathname.includes('adminportal') &&
                         NavItem.name === 'Accounts'
                     ) {
                         active = true;
                     }
                 }
             );
+        }
+        return active;
+    };
+
+    const isCourseFormActive = (location, NavItem) => {
+        let active = false;
+        if (location) {
+            if (
+                location.pathname.includes('course_details') &&
+                NavItem.name === 'Courses'
+            ) {
+                active = true;
+            }
         }
         return active;
     };
@@ -72,6 +86,7 @@ const NavigationContainer = () => {
                                 return (
                                     match?.url ||
                                     isAccountFormActive(location, NavItem) ||
+                                    isCourseFormActive(location, NavItem) ||
                                     (NavItem.name === 'Dashboard' &&
                                         location.pathname === '/')
                                 );

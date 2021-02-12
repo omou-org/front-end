@@ -15,7 +15,7 @@ import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/Resp
 import Loading from '../../../OmouComponents/Loading';
 import { useHistory } from 'react-router-dom';
 import { GET_PAYMENT } from '../PaymentReceipt';
-import { GET_COURSES } from '../RegistrationLanding';
+import { GET_ALL_COURSES } from '../RegistrationLanding';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
 import { GET_REGISTRATION_CART } from '../SelectParentDialog';
 import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
@@ -209,7 +209,7 @@ export default function PaymentBoard() {
                     variables: { studentIds: currentParent.studentIdList },
                 });
                 let cachedCourses = cache.readQuery({
-                    query: GET_COURSES,
+                    query: GET_ALL_COURSES,
                 }).courses;
                 const newEnrollments = data.createEnrollments.enrollments.map(
                     (enrollment) => {
@@ -236,7 +236,7 @@ export default function PaymentBoard() {
                 });
 
                 cache.writeQuery({
-                    query: GET_COURSES,
+                    query: GET_ALL_COURSES,
                     data: {
                         courses: cachedCourses,
                     },

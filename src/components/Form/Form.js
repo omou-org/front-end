@@ -7,7 +7,7 @@ import StepContent from '@material-ui/core/StepContent';
 import StepLabel from '@material-ui/core/StepLabel';
 import Stepper from '@material-ui/core/Stepper';
 import Typography from '@material-ui/core/Typography';
-import FormReceipt from './FormReceipt';
+import DefaultFormReceipt from './Receipts/DefaultFormReceipt';
 import { Prompt } from 'react-router-dom';
 import BackButton from '../OmouComponents/BackButton';
 
@@ -85,7 +85,7 @@ const Form = ({
     initialData,
     title,
     onSubmit,
-    receipt: Receipt = FormReceipt,
+    receipt: Receipt = DefaultFormReceipt,
 }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [showReceipt, setShowReceipt] = useState(false);
@@ -122,11 +122,11 @@ const Form = ({
                 <StepContent>
                     {fields.map((field) =>
                         React.cloneElement(field, {
-                            SelectDisplayProps: {
+                            selectdisplayprops: {
                                 'data-cy': `${name}-${field.props.name}-select`,
                             },
                             'data-cy': `${name}-${field.props.name}`,
-                            inputProps: {
+                            inputprops: {
                                 'data-cy': `${name}-${field.props.name}-input`,
                             },
                             margin: 'normal',
@@ -170,7 +170,7 @@ const Form = ({
                                 data-cy='submitButton'
                                 disabled={Boolean(errors[name]) || submitting}
                                 type='submit'
-                                variant='outlined'
+                                variant='contained'
                             >
                                 {submitting ? 'Submitting' : 'Submit'}
                             </ResponsiveButton>
@@ -238,7 +238,7 @@ const Form = ({
                 align='left'
                 className='heading'
                 data-cy='formTitle'
-                variant='h3'
+                variant='h1'
             >
                 {title}
             </Typography>

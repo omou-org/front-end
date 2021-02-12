@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 
-import BackButton from 'components/OmouComponents/BackButton.js';
 import Form from './Form';
 import Forms from './FormFormats';
 
@@ -48,7 +47,6 @@ const FormPage = () => {
     );
 
     const getTitle = (title) => {
-        console.log(title);
         if (action === 'edit') {
             return title.edit || `Edit ${title}`;
         } else {

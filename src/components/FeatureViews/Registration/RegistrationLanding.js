@@ -45,11 +45,10 @@ const ClearIndicator = (indicatorProps) => {
     );
 };
 
-export const GET_COURSES = gql`
+export const GET_ALL_COURSES = gql`
     query CourseList {
         courses {
             id
-
             endDate
             availabilityList {
                 endTime
@@ -82,7 +81,7 @@ export const GET_COURSES = gql`
 `;
 
 const RegistrationLanding = () => {
-    const { data, loading, error } = useQuery(GET_COURSES);
+    const { data, loading, error } = useQuery(GET_ALL_COURSES);
     const { currentParent } = getRegistrationCart();
 
     const [view, setView] = useState(0);
