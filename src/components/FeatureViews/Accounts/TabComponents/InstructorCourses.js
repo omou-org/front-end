@@ -111,7 +111,7 @@ const InstructorCourses = ({ instructorID }) => {
                                     component={Link}
                                     item
                                     key={id}
-                                    to={`/coursemanagement/class/${id}`}
+                                    to={`/course/class/${id}`}
                                     xs={12}
                                 >
                                     <Paper elevation={2} square>
