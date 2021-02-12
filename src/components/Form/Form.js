@@ -148,7 +148,7 @@ const Form = ({
                                 Back
                             </ResponsiveButton>
                         )}
-                    
+
                         <BackButton
                             data-cy='cancelButton'
                             variant='outlined'
