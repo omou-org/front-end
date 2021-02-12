@@ -1,7 +1,7 @@
 // React Imports
-import { Redirect, Route, Switch } from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 // Local Component Imports
 import Accounts from '../FeatureViews/Accounts/Accounts';
 import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
@@ -20,7 +20,6 @@ import Registration from '../FeatureViews/Registration/Registration';
 import FormPage from '../Form/FormPage';
 import RegistrationCourse from '../FeatureViews/Registration/RegistrationCourse';
 import ResetPassword from '../Authentication/ResetPassword';
-import Scheduler from '../FeatureViews/Scheduler/Scheduler';
 import SearchResults from '../FeatureViews/Search/SearchResults';
 import SessionView from '../FeatureViews/Scheduler/SessionView';
 import UserProfile from '../FeatureViews/Accounts/UserProfile';
@@ -28,8 +27,8 @@ import CourseManagementContainer from '../FeatureViews/Courses/CourseManagementC
 import CourseClass from '../FeatureViews/Courses/CourseClass';
 import DemoRoutes from './DemoRoutes';
 
-import { resetSubmitStatus } from 'actions/registrationActions';
-import { USER_TYPES } from 'utils';
+import {resetSubmitStatus} from 'actions/registrationActions';
+import {USER_TYPES} from 'utils';
 import RegistrationForm from '../FeatureViews/Registration/RegistrationForm';
 import RegistrationCartContainer from '../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer';
 import DashboardSwitch from '../FeatureViews/Dashboard/DashboardSwitch';
@@ -38,7 +37,7 @@ import AvailabilityContainer from '../FeatureViews/Availability/AvailabilityCont
 import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
-import NEWScheduler from '../FeatureViews/Scheduler/NEW_Scheduler';
+import Scheduler from '../FeatureViews/Scheduler/Scheduler';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -99,7 +98,7 @@ export const RootRoutes = () => {
 
             {/* Scheduler Routes */}
             <AuthenticatedRoute exact path='/scheduler'>
-                <NEWScheduler />
+                <Scheduler/>
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
