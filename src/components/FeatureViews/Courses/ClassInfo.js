@@ -1,22 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/react-hooks';
-import {
-    Button,
-    fade,
-    Grid,
-    IconButton,
-    InputBase,
-    Link,
-    Typography,
-    withStyles,
-} from '@material-ui/core/';
+import React, {useEffect, useState} from 'react';
+import {useMutation} from '@apollo/react-hooks';
+import {Button, fade, Grid, IconButton, InputBase, Link, Typography, withStyles,} from '@material-ui/core/';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
 import moment from 'moment';
 import gql from 'graphql-tag';
-import { fullName, USER_TYPES } from '../../../utils';
-import { GET_CLASS } from './CourseClass';
+import {fullName, USER_TYPES} from '../../../utils';
+import {GET_CLASS} from './CourseClass';
 
 const useStyles = makeStyles({
     courseLink: {
@@ -193,17 +184,16 @@ const ClassInfo = ({
     };
 
     return (
-        <>
+        <Grid container item xs={12}>
             <Grid item xs={7}>
                 <Typography
                     className={classes.aboutCourseDescription}
                     align='left'
-                    style={{ marginBottom: '1em', marginTop: '2em' }}
+                    style={{marginBottom: '1em', marginTop: '2em'}}
                 >
                     {description}
                 </Typography>
             </Grid>
-
             <Grid item container>
                 <Typography style={{ fontSize: '17px' }}>
                     Course Link
@@ -284,14 +274,14 @@ const ClassInfo = ({
                         >
                             <Grid item xs={4}>
                                 <IconButton onClick={editLinkAndDescription}>
-                                    <CreateIcon />
+                                    <CreateIcon/>
                                 </IconButton>
                             </Grid>
                         </AccessControlComponent>
                     </Grid>
                 )}
             </Grid>
-        </>
+        </Grid>
     );
 };
 

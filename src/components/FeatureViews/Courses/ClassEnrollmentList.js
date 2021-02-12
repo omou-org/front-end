@@ -1,15 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, {useState} from 'react';
 
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import { TableHeadSecondary } from 'theme/ThemedComponents/Table/TableHeadSecondary';
+import {TableHeadSecondary} from 'theme/ThemedComponents/Table/TableHeadSecondary';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Grid from '@material-ui/core/Grid';
-import { fullName } from '../../../utils';
-import { highlightColor } from '../../../theme/muiTheme';
+import {fullName} from '../../../utils';
+import {highlightColor} from '../../../theme/muiTheme';
 import SessionEmailOrNotesModal from './ModalTextEditor';
 import ClassEnrollmentRow from './ClassEnrollmentRow';
 
@@ -103,14 +103,14 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                 } = students.student;
                                 const fullStudentName = fullName(user);
                                 const studentId = user.id;
-                                const concatFullParentName = fullName(
+                                const concatFullParentName = primaryParent ? fullName(
                                     primaryParent.user
-                                );
+                                ) : "N/A";
                                 const parentAccountType =
-                                    primaryParent.accountType;
-                                const phoneNumber = primaryParent.phoneNumber;
-                                const parentId = primaryParent.user.id;
-                                const parentEmail = primaryParent.user.email;
+                                    primaryParent?.accountType;
+                                const phoneNumber = primaryParent?.phoneNumber;
+                                const parentId = primaryParent?.user.id;
+                                const parentEmail = primaryParent?.user.email;
                                 const studentInfo = studentschoolinfoSet;
                                 return (
                                     <ClassEnrollmentRow
