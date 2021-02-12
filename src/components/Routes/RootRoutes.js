@@ -1,7 +1,7 @@
 // React Imports
-import {Redirect, Route, Switch} from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // Local Component Imports
 import Accounts from '../FeatureViews/Accounts/Accounts';
 import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
@@ -28,8 +28,8 @@ import CourseManagementContainer from '../FeatureViews/Courses/CourseManagementC
 import CourseClass from '../FeatureViews/Courses/CourseClass';
 import DemoRoutes from './DemoRoutes';
 
-import {resetSubmitStatus} from 'actions/registrationActions';
-import {USER_TYPES} from 'utils';
+import { resetSubmitStatus } from 'actions/registrationActions';
+import { USER_TYPES } from 'utils';
 import RegistrationForm from '../FeatureViews/Registration/RegistrationForm';
 import RegistrationCartContainer from '../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer';
 import DashboardSwitch from '../FeatureViews/Dashboard/DashboardSwitch';
@@ -38,7 +38,7 @@ import AvailabilityContainer from '../FeatureViews/Availability/AvailabilityCont
 import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
-import NEWScheduler from "../FeatureViews/Scheduler/NEW_Scheduler";
+import NEWScheduler from '../FeatureViews/Scheduler/NEW_Scheduler';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -99,7 +99,7 @@ export const RootRoutes = () => {
 
             {/* Scheduler Routes */}
             <AuthenticatedRoute exact path='/scheduler'>
-                <NEWScheduler/>
+                <NEWScheduler />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
