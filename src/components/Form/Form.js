@@ -20,10 +20,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
-    buttons: { 
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flexStart",
+    buttons: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flexStart',
         '& Button': {
             marginTop: '10px',
             marginBottom: '10px',
