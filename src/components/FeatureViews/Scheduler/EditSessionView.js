@@ -458,9 +458,7 @@ const EditSessionView = () => {
                 });
             }
         }
-        history.push(
-            `/scheduler/session/${session_id}`
-        );
+        history.push(`/scheduler/session/${session_id}`);
     };
 
     if (loading || categoriesLoading || instructorsLoading) {

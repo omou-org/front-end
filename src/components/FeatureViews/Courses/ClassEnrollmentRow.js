@@ -1,20 +1,20 @@
-import React, {useCallback, useState} from 'react';
-import {Link, useHistory, useParams} from 'react-router-dom';
-import {useDispatch} from 'react-redux';
-import {deleteEnrollment} from 'actions/registrationActions';
+import React, { useCallback, useState } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { deleteEnrollment } from 'actions/registrationActions';
 
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {fullName, USER_TYPES} from '../../../utils';
-import {highlightColor, omouBlue} from '../../../theme/muiTheme';
+import { fullName, USER_TYPES } from '../../../utils';
+import { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import IconButton from '@material-ui/core/IconButton';
 import MobileMenu from '@material-ui/icons/MoreVert';
 
@@ -200,8 +200,11 @@ const ClassEnrollmentRow = ({
                         </TableCell>
                         <TableCell
                             component={Link}
-                            to={parentAccountType && `/accounts/${parentAccountType.toLowerCase()}/${parentId}`}
-                            style={{textDecoration: 'none'}}
+                            to={
+                                parentAccountType &&
+                                `/accounts/${parentAccountType.toLowerCase()}/${parentId}`
+                            }
+                            style={{ textDecoration: 'none' }}
                             className={`${classes.parentRenderAccordionSpacing} ${classes.noBorderBottom}`}
                         >
                             {concatFullParentName}

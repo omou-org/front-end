@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import {Link, useParams} from 'react-router-dom';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
 import TabPanel from '../../OmouComponents/TabPanel';
@@ -14,16 +14,16 @@ import ClassInfo from './ClassInfo';
 import Announcements from './Announcements';
 import ClassEnrollmentList from './ClassEnrollmentList';
 import ClassSessionContainer from './ClassSessionContainer';
-import {useSelector} from 'react-redux';
-import {fullName, gradeLvl, USER_TYPES} from 'utils';
+import { useSelector } from 'react-redux';
+import { fullName, gradeLvl, USER_TYPES } from 'utils';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
-import {StudentCourseLabel} from './StudentBadge';
-import {GET_STUDENTS} from './CourseManagementContainer';
+import { StudentCourseLabel } from './StudentBadge';
+import { GET_STUDENTS } from './CourseManagementContainer';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -429,10 +429,11 @@ const CourseClass = () => {
                 </Grid>
             </Grid>
 
-            <Grid container
-                  style={{marginTop: '2.5em'}}
-                  direction="column"
-                  spacing={2}
+            <Grid
+                container
+                style={{ marginTop: '2.5em' }}
+                direction='column'
+                spacing={2}
             >
                 <Grid item xs={12} sm={12}>
                     <Tabs
@@ -465,15 +466,13 @@ const CourseClass = () => {
                         index={0}
                         value={index}
                         backgroundColor='#FFFFFF'
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                     >
                         <ClassInfo
                             id={id}
                             courseLink={courseLink}
                             description={description}
-                            courseLinkDescription={
-                                courseLinkDescription
-                            }
+                            courseLinkDescription={courseLinkDescription}
                             courseLinkUpdatedAt={courseLinkUpdatedAt}
                             courseLinkUser={courseLinkUser}
                         />
@@ -488,28 +487,20 @@ const CourseClass = () => {
                     </TabPanel>
 
                     <TabPanel index={2} value={index}>
-                        <ClassEnrollmentList
-                            enrollmentList={enrollmentSet}
-                        />
+                        <ClassEnrollmentList enrollmentList={enrollmentSet} />
                     </TabPanel>
                     <TabPanel index={3} value={index}>
-                        <ClassSessionContainer
-                            sessionList={sessionSet}
-                        />
+                        <ClassSessionContainer sessionList={sessionSet} />
                     </TabPanel>
-                    <TabPanel
-                        index={4}
-                        value={index}
-                        style={{width: '100%'}}
-                    >
-                        <AttendanceContainer/>
+                    <TabPanel index={4} value={index} style={{ width: '100%' }}>
+                        <AttendanceContainer />
                     </TabPanel>
                     <TabPanel
                         index={5}
                         value={index}
-                        style={{width: '100%', marginTop: '48px'}}
+                        style={{ width: '100%', marginTop: '48px' }}
                     >
-                        <Notes ownerID={id} ownerType='course'/>
+                        <Notes ownerID={id} ownerType='course' />
                     </TabPanel>
                 </>
             </Grid>

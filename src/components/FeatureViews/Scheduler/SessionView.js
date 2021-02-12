@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {NavLink, useParams} from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
-import {Tooltip, Typography, withStyles} from '@material-ui/core';
+import { useQuery } from '@apollo/react-hooks';
+import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
-import {stringToColor} from '../Accounts/accountUtils';
+import { stringToColor } from '../Accounts/accountUtils';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Divider from '@material-ui/core/Divider';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -20,9 +20,9 @@ import Dialog from '@material-ui/core/Dialog';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Menu from '@material-ui/core/Menu';
-import {fullName} from '../../../utils';
+import { fullName } from '../../../utils';
 import moment from 'moment';
-import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const StyledMenu = withStyles({
     paper: {
@@ -304,12 +304,7 @@ const SessionView = () => {
                     {/* <InstructorSchedule instructorID={instructor_id} /> */}
                 </Grid>
             </Grid>
-            <Grid
-                container
-                direction='row'
-                justify='flex-end'
-                spacing={1}
-            >
+            <Grid container direction='row' justify='flex-end' spacing={1}>
                 <Grid item>
                     <ResponsiveButton
                         component={NavLink}
@@ -373,7 +368,7 @@ const SessionView = () => {
                                 component={NavLink}
                                 to={{
                                     pathname: `/scheduler/session/${session_id}/edit`,
-                                    state: {allOrCurrent: editSelection},
+                                    state: { allOrCurrent: editSelection },
                                 }}
                             >
                                 Confirm to Edit
