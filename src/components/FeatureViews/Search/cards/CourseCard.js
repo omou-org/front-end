@@ -74,7 +74,7 @@ const CourseCard = ({ courseID, isLoading = false }) => {
                 padding: '10px',
                 textDecoration: 'none',
             }}
-            to={`/course/class/${courseID}`}
+            to={`/courses/class/${courseID}`}
         >
             <Card className='CourseCard' style={{ height: '148px' }}>
                 <Grid container>
