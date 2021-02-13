@@ -22,7 +22,7 @@ export default (state = Authentication, {payload, type}) => {
                 ...state,
                 ...payload,
             }
-        case actions.GET_GOOGLE_CLASSCODE:
+        case actions.STORE_COURSES:
             return {
                 ...state,
                 ...payload,

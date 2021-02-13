@@ -71,8 +71,31 @@ const ClassEnrollmentList = ({
   const [inviteStatus, setInviteStatus] = useState("Unsent");
   const [googleClassroomInviteStatusMessage, setGoogleClassroomInviteStatusMessage] = useState("Send Invite");
 
+  // useEffect(async () => {
+  //   try {
+  //     if(googleCourseId && studentEmail){
+  //       const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, 
+  //         {
+  //           "userId": studentEmail,
+  //           "courseId": googleCourseId,
+  //           "role": "STUDENT"
+  //         },
+  //         {
+  //           "headers": {
+  //             "Authorization": `Bearer ${google_access_token}`,
+  //           },
+  //         }
+  //       );
+  //       setInviteStatus("Sent");
+  //     }
+  //   } catch(error){
+  //       setInviteStatus(<Typography color="error">Unsent</Typography>);
+  //       alert("Error creating invite");
+  //   }
+  // }, [google_access_token]);
+
   const getGoogleClassCode = (courses, courseId) => {
-    var googleClassCode;
+    let googleClassCode;
     if(courses){
       courses.forEach(function(course){
         if(courseId == course.id){
@@ -99,25 +122,25 @@ const ClassEnrollmentList = ({
   const handleInvite = async () => {
     setGoogleClassroomInviteStatusMessage("Resend Invite");
     const googleCourseId = getGoogleCourseId(google_courses, courses, courseId);
-    if(googleCourseId && studentEmail){
-      try {
-          const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, 
-            {
-              "userId": studentEmail,
-              "courseId": googleCourseId,
-              "role": "STUDENT"
+    try {
+      if(googleCourseId && studentEmail){
+        const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, 
+          {
+            "userId": studentEmail,
+            "courseId": googleCourseId,
+            "role": "STUDENT"
+          },
+          {
+            "headers": {
+              "Authorization": `Bearer ${google_access_token}`,
             },
-            {
-              "headers": {
-                "Authorization": `Bearer ${google_access_token}`,
-              },
-            }
-          );
-          setInviteStatus("Sent");
-      } catch {
-          setInviteStatus(<Typography color="error">Unsent</Typography>);
-          alert("Error creating invite");
+          }
+        );
+        setInviteStatus("Sent");
       }
+    } catch(error){
+        setInviteStatus(<Typography color="error">Unsent</Typography>);
+        alert("Error creating invite");
     }
   };
 
@@ -130,6 +153,8 @@ const ClassEnrollmentList = ({
     handleOpenModal(currentValue, dataType);
     setAnchorEl(null);
   };
+
+  if(!courses) return "Loading"
 
   return (
     <TableRow key={fullStudentName} style={{ wordBreak: "break-word" }}>
@@ -153,7 +178,7 @@ const ClassEnrollmentList = ({
       <TableCell>
         {inviteStatus}
         <Button onClick={handleInvite}>
-          {GoogleClassroomInviteStatusMessage}
+          {googleClassroomInviteStatusMessage}
         </Button>
       </TableCell>
       <TableCell align="right" padding="none" size="small">
@@ -278,7 +303,6 @@ const Studentenrollment = ({
                 const parentId = primaryParent.user.id;
                 const parentEmail = primaryParent.user.email;
                 const studentEmail = user.email;
-
                 return (
                   <ClassEnrollmentList
                     fullStudentName={fullStudentName}

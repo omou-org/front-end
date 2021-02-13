@@ -116,6 +116,7 @@ export const GET_CLASSES = gql`
                         firstName
                         lastName
                         id
+                        email
                     }
                     primaryParent {
                         user {

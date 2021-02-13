@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, useEffect } from 'react-redux';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -143,6 +143,7 @@ export const GET_STUDENTS = gql`
                     firstName
                     id
                     lastName
+                    email
                 }
                 enrollmentSet {
                     course {
@@ -181,35 +182,16 @@ const ClassListItem = ({
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
-    const { google_access_token, google_courses } = useSelector(({ auth }) => auth);
+    const { google_courses } = useSelector(({ auth }) => auth);
     const [courses, setCourses] = useState();
-    const [gClassResp, setGClassResp] = useState();
     const dispatch = useDispatch();
 
     const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
 
-    useEffect(() => {
-      if(gClassResp === null || gClassResp === undefined){
-        (async () => {
-          setGClassResp( await axios.get("https://classroom.googleapis.com/v1/courses", {
-            "headers": {
-              "Authorization": `Bearer ${google_access_token}`,
-            },
-          }));
-        })();
-      }
-    }, [google_access_token]);
-
     function GoogleClassroomIntegrationIcon(googleCode){
-      var isIntegrated = false;
-      if(googleCode && gClassResp){
-        if(google_courses === undefined || google_courses == null){
-          dispatch({
-            type: actions.SET_GOOGLE_COURSES,
-            payload: {google_courses: gClassResp.data.courses}
-          })
-        }
-        gClassResp.data.courses.forEach(function(course) {
+      let isIntegrated = false;
+      if(googleCode && google_courses){
+        google_courses.forEach(function(course) {
           if(course.enrollmentCode == googleCode){
             isIntegrated = true;
           } 
@@ -256,9 +238,7 @@ const ClassListItem = ({
                         </Typography>
                     </Grid>
                     <Grid item xs={1} sm={1} md={1}>
-                      <Tooltip title="Integrated with Google Classroom" placement="top" arrow> 
                         {GoogleClassroomIntegrationIcon(googleClassCode)}        
-                      </Tooltip>
                     </Grid>
 
                     <Grid
@@ -419,13 +399,6 @@ const CourseManagementContainer = () => {
 
     const handleChange = (event) => setSortByDate(event.target.value);
 
-  const { data, loading, error } = useQuery(GET_COURSES, {
-    onCompleted: (data) => {
-      dispatch({
-        type: actions.GET_GOOGLE_CLASSCODE, 
-        payload: {courses: data.courses}
-      })
-    }});
     const checkAccountForQuery =
         accountInfo.accountType === 'ADMIN' ||
         accountInfo.accountType === 'INSTRUCTOR'
@@ -471,7 +444,17 @@ const CourseManagementContainer = () => {
         error: courseError,
     } = useQuery(GET_COURSES, {
         variables: { accountId },
+
     });
+
+    const { data, loading, error } = useQuery(GET_COURSES, {
+        variables: { accountId },
+        onCompleted: (data) => {
+          dispatch({
+            type: actions.STORE_COURSES, 
+            payload: {courses: data.courses}
+          })
+        }});
 
     const {
         data: studentData,
@@ -670,7 +653,7 @@ const CourseManagementContainer = () => {
                         id={id}
                         key={title}
                         studentList={studentOptionList}
-                        googleClassCodem={googleClassCodem}
+                        googleClassCode={googleClassCode}
                     />
                 )
             )}

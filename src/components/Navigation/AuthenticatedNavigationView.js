@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Hidden from '@material-ui/core/Hidden';
 import Drawer from '@material-ui/core/Drawer';
 import AuthenticatedNavBar from './AuthenticatedNavBar';
@@ -45,6 +45,9 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
+	const dispatch = useDispatch();
+    const [gClassResp, setGClassResp] = useState();
+    const { google_access_token, google_courses } = useSelector(({ auth }) => auth);
 
     const { accountType, email } = useSelector(({ auth }) => auth) || [];
     const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
@@ -55,6 +58,35 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         setMobileOpen((open) => !open);
     }, []);
 
+	useEffect(() => {
+        if(email !== null && (google_access_token === null || google_access_token === undefined)){
+            setGoogleLoginPromptOpen(true);
+        }
+	}, [email]);
+
+	useEffect(() => {
+		if(gClassResp === null || gClassResp === undefined){
+		  (async () => {
+			try {
+				setGClassResp( await axios.get("https://classroom.googleapis.com/v1/courses", {
+				"headers": {
+					"Authorization": `Bearer ${google_access_token}`,
+				},
+				}));
+			}
+			catch(error){
+				console.log(error)
+			}
+		  })();
+		}
+		if(google_courses === undefined || google_courses == null){
+			dispatch({
+			  type: actions.SET_GOOGLE_COURSES,
+			  payload: {google_courses: gClassResp?.data.courses}
+			})
+		}
+	  }, [google_access_token]);
+	
     if (loading) return <Loading />;
 	if (error) return <div>There's been an error! {error.message}</div>;
 	
@@ -69,19 +101,14 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         dispatch({
             type: actions.SET_GOOGLE_TOKEN, 
             payload: {google_access_token: response.tokenObj.access_token}
-        })
-        setGoogleLoginPromptOpen(false);
-    };
+		})
+		console.log({response})
+	};
 
-    useEffect(() => {
-        if(email !== null){
-            setGoogleLoginPromptOpen(true);
-        }
-    }, [email]);
 
 	return (<AuthenticatedComponent>
 		{
-			isBusinessDataValid ? <div className="Navigation">
+			<div className="Navigation">
 				<AuthenticatedNavBar toggleDrawer={handleDrawerToggle}/>
 				<nav className="OmouDrawer">
 					<Hidden implementation="css" smUp>
@@ -134,7 +161,7 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
 					</DialogActions>
 				</Dialog>
 			</div>
-			</div> : <OnboardingRoutes/>
+			</div>
 		}
 		<IdleTimerPrompt/>
 	</AuthenticatedComponent>)
