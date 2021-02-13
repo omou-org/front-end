@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Toolbar from '@material-ui/core/Toolbar';
-import Divider from '@material-ui/core/Divider';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
@@ -25,13 +24,14 @@ import AccessControlComponent from '../../OmouComponents/AccessControlComponent'
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
 import { GET_STUDENTS } from './CourseManagementContainer';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import Notes from '../Notes/Notes';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
     editcoursebutton: {
-        border: '1px solid #999999',
         height: '2.25em',
         borderRadius: '0',
         width: '2.25em',
@@ -76,8 +76,8 @@ export const GET_ANNOUNCEMENTS = gql`
 export const GET_CLASS = gql`
     query getClass($id: ID!) {
         course(courseId: $id) {
+            id
             academicLevel
-
             title
             startDate
             endDate
@@ -97,14 +97,17 @@ export const GET_CLASS = gql`
                 dayOfWeek
                 endTime
                 startTime
+                id
             }
             instructor {
                 user {
                     firstName
                     lastName
+                    id
                 }
             }
             enrollmentSet {
+                id
                 student {
                     user {
                         firstName
@@ -133,14 +136,15 @@ export const GET_CLASS = gql`
                 startDatetime
                 id
             }
-
             availabilityList {
                 startTime
                 endTime
                 dayOfWeek
+                id
             }
         }
         enrollments(courseId: $id) {
+            id
             student {
                 user {
                     id
@@ -164,6 +168,7 @@ const CourseClass = () => {
         { label: 'Student Enrolled' },
         { label: 'Sessions' },
         { label: 'Attendance' },
+        { label: 'Notes' },
     ];
 
     const parentTabWithStudentEnrolledTabs = [
@@ -196,18 +201,23 @@ const CourseClass = () => {
         skip: accountType !== 'PARENT',
         onCompleted: () => {
             if (accountType === 'PARENT') {
-                studentData.parent.studentList.map(
-                    ({ enrollmentSet, user }) => {
-                        enrollmentSet.map(({ course }) => {
-                            if (course.id === id) {
-                                setStudentInCourse((prevState) => [
-                                    ...prevState,
-                                    `${user.firstName} ${user.lastName}`,
-                                ]);
-                            }
-                        });
+                const identifyCourseHasEnrolledStudent = ({
+                    course,
+                    student: { user },
+                }) => {
+                    const isStudentEnrolledInCurrentCourse = (courseId) =>
+                        courseId === id;
+                    if (isStudentEnrolledInCurrentCourse(course.id)) {
+                        const updateStudentsInCourseList = (prevState) => [
+                            ...prevState,
+                            `${user.firstName} ${user.lastName}`,
+                        ];
+                        setStudentInCourse(updateStudentsInCourseList);
                     }
-                );
+                };
+                studentData.parent.studentList.forEach(({ enrollmentSet }) => {
+                    enrollmentSet.forEach(identifyCourseHasEnrolledStudent);
+                });
             }
         },
     });
@@ -235,15 +245,6 @@ const CourseClass = () => {
     } = data.course;
     const { name: courseCategory } = data.course.courseCategory;
 
-    const abbreviatedDay = moment(startDate).format('ddd');
-    const startingTime = moment(
-        activeAvailabilityList[0].startTime,
-        'HH:mm'
-    ).format('h:mm A');
-    const endingTime = moment(
-        activeAvailabilityList[0].endTime,
-        'HH:mm'
-    ).format('h:mm A');
     const startingDate = moment(startDate).format('L');
     const endingDate = moment(endDate).format('L');
 
@@ -324,7 +325,7 @@ const CourseClass = () => {
                             className={classes.editcoursebutton}
                             size='small'
                             component={Link}
-                            to={`/registration/form/course_details/${id}`}
+                            to={`/form/course_details/edit/${id}`}
                         >
                             <EditIcon />
                         </IconButton>
@@ -354,14 +355,16 @@ const CourseClass = () => {
                         align='left'
                         className={classes.alignTitleLeft}
                     >
-                        Time
+                        Time(s)
                     </Typography>
                     <Typography
                         variant='body1'
                         align='left'
                         className={classes.dataFontDate}
                     >
-                        {`${abbreviatedDay} ${startingTime} - ${endingTime}`}
+                        <CourseAvailabilites
+                            availabilityList={activeAvailabilityList}
+                        />
                     </Typography>
                 </Grid>
             </Grid>
@@ -435,9 +438,6 @@ const CourseClass = () => {
                                     leftValue: 0,
                                     rightValue: 0,
                                 }}
-                                tabProps={{
-                                    disableRipple: true,
-                                }}
                                 value={index}
                                 onChange={handleChange}
                             />
@@ -479,13 +479,19 @@ const CourseClass = () => {
                                     sessionList={sessionSet}
                                 />
                             </TabPanel>
-
                             <TabPanel
                                 index={4}
                                 value={index}
                                 style={{ width: '100%' }}
                             >
                                 <AttendanceContainer />
+                            </TabPanel>
+                            <TabPanel
+                                index={5}
+                                value={index}
+                                style={{ width: '100%', marginTop: '48px' }}
+                            >
+                                <Notes ownerID={id} ownerType='course' />
                             </TabPanel>
                         </Grid>
                     </ThemeProvider>

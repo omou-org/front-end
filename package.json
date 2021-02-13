@@ -94,6 +94,7 @@
         "eslint-plugin-react": "^7.20.5",
         "eslint-plugin-react-hooks": "^3.0.0",
         "redux-devtools-extension": "^2.13.8",
+        "redux-immutable-state-invariant": "^2.1.0",
         "sass": "^1.26.10",
         "sass-loader": "^8.0.2"
     }

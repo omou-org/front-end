@@ -1,7 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Typography, Box } from '@material-ui/core';
-import BackgroundPaper from '../../../components/OmouComponents/BackgroundPaper';
 import theme from '../../muiTheme';
 
 const ColorBox = ({ bgcolor }) => {
@@ -23,7 +22,7 @@ const ColorBox = ({ bgcolor }) => {
 
 const ColorsDemo = () => {
     return (
-        <BackgroundPaper>
+        <div>
             <Grid container justify='space-around'>
                 <Grid item>
                     <Grid container>
@@ -172,7 +171,7 @@ const ColorsDemo = () => {
                     </Grid>
                 </Grid>
             </Grid>
-        </BackgroundPaper>
+        </div>
     );
 };
 
