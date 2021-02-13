@@ -9,30 +9,9 @@ import Typography from '@material-ui/core/Typography';
 import Loading from 'components/OmouComponents/Loading';
 import UnpaidSessionCard from './UnpaidSessionCard';
 import './AdminPortal.scss';
+import { UNPAID_SESSION_QUERY } from '../../../queries/Payment/PaymentQuery';
 
 const UnpaidSessions = () => {
-    const UNPAID_SESSION_QUERY = gql`
-        query unpaidSessionQuery {
-            unpaidSessions {
-                student {
-                    user {
-                        firstName
-                        lastName
-                        id
-                    }
-                }
-                course {
-                    id
-                    title
-                    startTime
-                    endTime
-                    hourlyTuition
-                }
-                sessionsLeft
-                lastPaidSessionDatetime
-            }
-        }
-    `;
 
     const { data, loading, error } = useQuery(UNPAID_SESSION_QUERY);
 

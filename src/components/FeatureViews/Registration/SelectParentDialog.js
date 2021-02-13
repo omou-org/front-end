@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { GET_REGISTRATION_CART } from '../../../queries/Payment/PaymentQuery'
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -37,13 +38,7 @@ const GET_PARENTS_QUERY = gql`
     }
 `;
 
-export const GET_REGISTRATION_CART = gql`
-    query GetRegisteringCart($parent: ID!) {
-        registrationCart(parentId: $parent) {
-            registrationPreferences
-        }
-    }
-`;
+
 
 const SelectParentDialog = ({ onClose, open }) => {
     const dispatch = useDispatch();
