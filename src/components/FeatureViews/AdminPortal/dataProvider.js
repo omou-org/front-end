@@ -1,5 +1,6 @@
 import { client } from 'index';
 import gql from 'graphql-tag';
+import { getPriceRules, getTutitionRule } from '../../../queries/Pricing/PricingQuery';
 
 const discountInfo = gql`
     fragment DiscountInfo on DiscountInterface {
@@ -61,19 +62,7 @@ const QUERIES_LIST = {
         }
         ${discountInfo}
     `,
-    tuitionRules: gql`
-        query GetPriceRules {
-            priceRules {
-                id
-                courseType
-                category {
-                    id
-                    name
-                }
-                academicLevel
-            }
-        }
-    `,
+    tuitionRules: getPriceRules,
 };
 
 const QUERIES_ONE = {
@@ -124,20 +113,7 @@ const QUERIES_ONE = {
         }
         ${discountInfo}
     `,
-    tuitionRules: gql`
-        query getTuitionRule($id: ID) {
-            priceRule(priceRuleId: $id) {
-                academicLevel
-                courseType
-                hourlyTuition
-                id
-                category {
-                    name
-                    id
-                }
-            }
-        }
-    `,
+    tuitionRules: getTutitionRule,
 };
 
 const MUTATION_ADD = {
