@@ -19,6 +19,7 @@ import { GET_ALL_COURSES } from '../RegistrationLanding';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
 import { GET_REGISTRATION_CART } from '../SelectParentDialog';
 import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
+import { GET_PRICE_QUOTE } from '../../../../queries/Pricing/PricingQuery';
 
 
 

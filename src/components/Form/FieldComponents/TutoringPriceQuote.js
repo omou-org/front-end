@@ -16,7 +16,7 @@ import Loading from '../../OmouComponents/Loading';
 import * as Fields from 'mui-rff';
 import { OnChange } from 'react-final-form-listeners';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { getPriceRules } from '../../queries/Pricing/PricingQuery';
+import { getPriceRules } from '../../../queries/Pricing/PricingQuery';
 
 const GET_TUITION_RULES = getPriceRules;
 

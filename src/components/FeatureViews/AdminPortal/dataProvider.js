@@ -1,17 +1,16 @@
 import { client } from 'index';
 import gql from 'graphql-tag';
-import { getPriceRules, getTutitionRule } from '../../../queries/Pricing/PricingQuery';
+import {
+    getPriceRules,
+    getTutitionRule,
+    discountInfo,
+    BULK_DISCOUNTS,
+    BULK_DISCOUNT,
+    DATE_RANGE_DISCOUNTS,
+    DATE_RANGE_DISCOUNT,
+    PAYMENT_METHOD_DISCOUNTS,
+} from '../../../queries/Pricing/PricingQuery';
 
-const discountInfo = gql`
-    fragment DiscountInfo on DiscountInterface {
-        active
-        amount
-        amountType
-        description
-        id
-        name
-    }
-`;
 
 const QUERIES_LIST = {
     courseCategories: gql`
@@ -34,34 +33,9 @@ const QUERIES_LIST = {
             }
         }
     `,
-    bulkDiscounts: gql`
-        query GetBulkDiscounts {
-            multiCourseDiscounts {
-                ...DiscountInfo
-                numSessions
-            }
-        }
-        ${discountInfo}
-    `,
-    dateRangeDiscounts: gql`
-        query GetDateRangeDiscounts {
-            dateRangeDiscounts {
-                ...DiscountInfo
-                startDate
-                endDate
-            }
-        }
-        ${discountInfo}
-    `,
-    paymentMethodDiscounts: gql`
-        query GetPaymentMethodDiscounts {
-            paymentMethodDiscounts {
-                ...DiscountInfo
-                paymentMethod
-            }
-        }
-        ${discountInfo}
-    `,
+    bulkDiscounts: BULK_DISCOUNTS,
+    dateRangeDiscounts: DATE_RANGE_DISCOUNTS,
+    paymentMethodDiscounts: PAYMENT_METHOD_DISCOUNTS,
     tuitionRules: getPriceRules,
 };
 
@@ -85,25 +59,8 @@ const QUERIES_ONE = {
             }
         }
     `,
-    bulkDiscounts: gql`
-        query GetBulkDiscount($id: ID!) {
-            multiCourseDiscount(multiCourseDiscountId: $id) {
-                ...DiscountInfo
-                numSessions
-            }
-        }
-        ${discountInfo}
-    `,
-    dateRangeDiscounts: gql`
-        query GetDateRangeDiscount($id: ID!) {
-            dateRangeDiscount(dateRangeDiscountId: $id) {
-                ...DiscountInfo
-                startDate
-                endDate
-            }
-        }
-        ${discountInfo}
-    `,
+    bulkDiscounts: BULK_DISCOUNT,
+    dateRangeDiscounts: DATE_RANGE_DISCOUNT,
     paymentMethodDiscounts: gql`
         query GetPaymentMethodDiscount($id: ID!) {
             paymentMethodDiscount(paymentMethodDiscountId: $id) {
