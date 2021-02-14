@@ -1,34 +1,30 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useCallback, useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-import {Form as ReactForm} from 'react-final-form';
+import { Form as ReactForm } from 'react-final-form';
 import Step from '@material-ui/core/Step';
 import StepContent from '@material-ui/core/StepContent';
 import StepLabel from '@material-ui/core/StepLabel';
 import Stepper from '@material-ui/core/Stepper';
 import Typography from '@material-ui/core/Typography';
 import DefaultFormReceipt from './Receipts/DefaultFormReceipt';
-import {Prompt} from 'react-router-dom';
+import { Prompt } from 'react-router-dom';
 import BackButton from '../OmouComponents/BackButton';
 
-import {makeValidate} from 'mui-rff';
+import { makeValidate } from 'mui-rff';
 import * as Yup from 'yup';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
     buttons: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flexStart',
         '& Button': {
-            marginTop: '10px',
-            marginBottom: '10px',
-            marginRight: '10px',
+            margin: '10px',
         },
+        textAlign: 'left',
     },
     root: {
         '& .MuiSelect-select-root': {
@@ -148,14 +144,6 @@ const Form = ({
                                 Back
                             </ResponsiveButton>
                         )}
-
-                        <BackButton
-                            data-cy='cancelButton'
-                            variant='outlined'
-                            icon='cancel'
-                            label='cancel'
-                        />
-
                         {index < sections.length - 1 && (
                             <ResponsiveButton
                                 data-cy={`nextButton`}
@@ -167,6 +155,15 @@ const Form = ({
                                 Next
                             </ResponsiveButton>
                         )}
+
+                        <BackButton
+                            data-cy='cancelButton'
+                            variant='contained'
+                            icon='cancel'
+                            label='cancel'
+                        />
+
+                        <Prompt message='Are you sure you want to continue?' />
 
                         {index === sections.length - 1 && (
                             <ResponsiveButton
@@ -237,7 +234,6 @@ const Form = ({
     };
     return (
         <div className={classes.root}>
-            <Prompt message='All changes will be lost, are you sure you want to continue?'/>
             <Typography
                 align='left'
                 className='heading'
