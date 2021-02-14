@@ -237,7 +237,6 @@ const Form = ({
     };
     return (
         <div className={classes.root}>
-            <Prompt message='All changes will be lost, are you sure you want to continue?'/>
             <Typography
                 align='left'
                 className='heading'
@@ -249,21 +248,24 @@ const Form = ({
             {showReceipt ? (
                 <Receipt formData={submittedData} format={base} />
             ) : (
-                <ReactForm
-                    initialValues={initialData}
-                    mutators={{
-                        setHourlyTuition: ([name], state, utils) => {
-                            utils.changeValue(
-                                state,
-                                'hourlyTuition',
-                                () => name
-                            );
-                        },
-                    }}
-                    onSubmit={submit}
-                    render={Render}
-                    validate={validate}
-                />
+                <>
+                    <Prompt message='All changes will be lost, are you sure you want to continue?'/>
+                    <ReactForm
+                        initialValues={initialData}
+                        mutators={{
+                            setHourlyTuition: ([name], state, utils) => {
+                                utils.changeValue(
+                                    state,
+                                    'hourlyTuition',
+                                    () => name
+                                );
+                            },
+                        }}
+                        onSubmit={submit}
+                        render={Render}
+                        validate={validate}
+                    />
+                </>
             )}
         </div>
     );
