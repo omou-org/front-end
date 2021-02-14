@@ -187,6 +187,9 @@ const theme = createMuiTheme({
                 '&:hover': {
                     backgroundColor: buttonBlue,
                     opacity: '80%',
+                    border: 'rgba(40, 159, 195, 0.8)',
+                    '-webkit-background-clip': 'padding-box',
+                    'background-clip': 'padding-box',
                 },
                 '&:active': {
                     backgroundColor: buttonBlue,

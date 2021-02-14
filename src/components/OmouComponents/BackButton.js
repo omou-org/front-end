@@ -77,6 +77,7 @@ const BackButton = (props) => {
             <ResponsiveButton
                 style={{ display: 'flex' }}
                 variant='outlined'
+                className='control course button'
                 onClick={() => {
                     handleClick();
                 }}
