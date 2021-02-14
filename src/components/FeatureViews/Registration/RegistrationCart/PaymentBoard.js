@@ -21,8 +21,6 @@ import { GET_REGISTRATION_CART } from '../../../../queries/Payment/PaymentQuery'
 import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
 import { GET_PRICE_QUOTE } from '../../../../queries/Pricing/PricingQuery';
 
-
-
 const CREATE_ENROLLMENTS = gql`
     mutation CreateEnrollments($enrollments: [EnrollmentInput]!) {
         __typename

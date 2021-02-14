@@ -6,7 +6,6 @@ import { useQuery } from '@apollo/react-hooks';
 import Typography from '@material-ui/core/Typography';
 import { GET_PARENT_PAYMENTS } from '../../../../queries/Payment/PaymentQuery';
 
-
 const PaymentHistory = ({ user_id }) => {
     const { data, loading, error } = useQuery(GET_PARENT_PAYMENTS, {
         variables: { parentId: user_id },

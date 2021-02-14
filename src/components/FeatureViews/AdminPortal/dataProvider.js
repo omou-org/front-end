@@ -11,7 +11,6 @@ import {
     PAYMENT_METHOD_DISCOUNTS,
 } from '../../../queries/Pricing/PricingQuery';
 
-
 const QUERIES_LIST = {
     courseCategories: gql`
         query GetCatgories {
