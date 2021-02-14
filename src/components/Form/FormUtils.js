@@ -1,11 +1,11 @@
-import {instance} from 'actions/apiActions';
-import {isFail} from 'actions/hooks';
-import {capitalizeString, DayConverter} from 'utils';
+import { instance } from 'actions/apiActions';
+import { isFail } from 'actions/hooks';
+import { capitalizeString, DayConverter } from 'utils';
 
 /**
  * @description: parses a form to convert start and end time from a form to a duration
  * */
-export const durationParser = ({start, end}, fieldTitle, field) => {
+export const durationParser = ({ start, end }, fieldTitle, field) => {
     const durationString = {
         0.5: '0.5 Hours',
         1: '1 Hour',
@@ -259,7 +259,7 @@ export function arr_diff(a1, a2) {
 
 // Function definition with passing two arrays
 export const findCommonElement = (array1, array2) =>
-    array1.some(item => array2.includes(item));
+    array1.some((item) => array2.includes(item));
 
 /**
  * @description Searches for matching instructors

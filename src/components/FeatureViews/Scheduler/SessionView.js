@@ -1,21 +1,21 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import {NavLink, useParams} from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
-import {Tooltip, Typography, withStyles} from '@material-ui/core';
+import { useQuery } from '@apollo/react-hooks';
+import { Tooltip, Typography, withStyles } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
-import {stringToColor} from '../Accounts/accountUtils';
+import { stringToColor } from '../Accounts/accountUtils';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Menu from '@material-ui/core/Menu';
-import {fullName, USER_TYPES} from '../../../utils';
+import { fullName, USER_TYPES } from '../../../utils';
 import moment from 'moment';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import AccessControlComponent from "../../OmouComponents/AccessControlComponent";
-import {RescheduleBtn} from "./RescheduleBtn";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
+import { RescheduleBtn } from './RescheduleBtn';
 
 const StyledMenu = withStyles({
     paper: {
@@ -45,7 +45,6 @@ const styles = (username) => ({
     fontSize: 15,
     marginRight: 10,
 });
-
 
 const GET_SESSION = gql`
     query SessionViewQuery($sessionId: ID!) {
@@ -107,7 +106,6 @@ const SessionView = () => {
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
     });
-
 
     if (loading) {
         return <Loading />;
@@ -289,7 +287,7 @@ const SessionView = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <RescheduleBtn/>
+                        <RescheduleBtn />
                     </AccessControlComponent>
                 </Grid>
             </Grid>
