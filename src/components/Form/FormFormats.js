@@ -1,19 +1,24 @@
-import * as types from "actions/actionTypes";
-import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
-import {instance} from "actions/apiActions";
-import React from "react";
-import {FORM_ERROR} from "final-form";
-import * as Fields from "./Fields";
-import { StudentSelect, fieldsMargins } from './Fields';
-import * as Yup from "yup";
-import * as moment from "moment";
-import {client} from "index";
-import gql from "graphql-tag";
-import {fullName} from "../../utils";
-import TutoringPriceQuote from "./TutoringPriceQuote";
+import * as types from 'actions/actionTypes';
+import {
+    createTutoringDetails,
+    submitRegistration,
+} from '../OmouComponents/RegistrationUtils';
+import { instance } from 'actions/apiActions';
+import React from 'react';
+import { FORM_ERROR } from 'final-form';
+import * as Fields from './FieldComponents/Fields';
+import { StudentSelect, fieldsMargins } from './FieldComponents/Fields';
+import * as Yup from 'yup';
+import * as moment from 'moment';
+import { client } from 'index';
+import gql from 'graphql-tag';
+import { fullName } from '../../utils';
+import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
 import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
-import {GET_CATEGORIES,GET_COURSES, GET_COURSE } from "../../queries/CoursesQuery/CourseQuery"
+import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 
+import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
+import {GET_CATEGORIES,GET_COURSES, GET_COURSE } from "../../queries/CoursesQuery/CourseQuery"
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
         admin(userId: $userID) {
@@ -1597,7 +1602,7 @@ export default {
                             });
                         } else {
                             const cachedCourse = cache.readQuery({
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },
@@ -1609,7 +1614,7 @@ export default {
                                         ...newCourse,
                                     },
                                 },
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },

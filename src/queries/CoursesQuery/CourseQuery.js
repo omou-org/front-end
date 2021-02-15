@@ -61,6 +61,7 @@ query CourseFetch($id: ID!) {
       activeAvailabilityList {
         startTime
         endTime
+        dayOfWeek
       }
       courseLinkUser {
           firstName
