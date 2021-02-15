@@ -20,10 +20,9 @@ const getLocaleDateString = (start, end) => {
     }
 };
 
-
-const CourseCard = ({courseID, isLoading = false}) => {
-    const {data, loading} = useQuery(GET_COURSE, {
-        "variables": {id: courseID},
+const CourseCard = ({ courseID, isLoading = false }) => {
+    const { data, loading } = useQuery(GET_COURSE, {
+        variables: { id: courseID },
     });
 
     if (loading || isLoading) {
