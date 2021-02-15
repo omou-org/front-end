@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import {useSelector} from "react-redux";
+import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import { TableHeadSecondary } from 'theme/ThemedComponents/Table/TableHeadSecondary';
@@ -112,7 +112,7 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                 const parentId = primaryParent.user.id;
                                 const parentEmail = primaryParent.user.email;
                                 const studentInfo = studentschoolinfoSet;
-                                const studentEmail = user.email
+                                const studentEmail = user.email;
                                 return (
                                     <ClassEnrollmentRow
                                         fullStudentName={fullStudentName}

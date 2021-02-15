@@ -17,8 +17,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {GoogleLogin, GoogleLogout} from 'react-google-login';
-import axios from 'axios'; 
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import axios from 'axios';
 import * as actions from 'actions/actionTypes';
 
 const useStyles = makeStyles({
@@ -41,14 +41,15 @@ const CHECK_BUSINESS_EXISTS = gql`
 
 export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
-	const [mobileOpen, setMobileOpen] = useState(false);
-	const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
-	const dispatch = useDispatch();
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
+    const dispatch = useDispatch();
     const [gClassResp, setGClassResp] = useState();
     const { google_courses } = useSelector(({ auth }) => auth);
     const [exitButtonMessage, setExitButtonMessage] = useState('No');
 
-    const { accountType, email, google_access_token } = useSelector(({ auth }) => auth) || [];
+    const { accountType, email, google_access_token } =
+        useSelector(({ auth }) => auth) || [];
     // const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
     //     skip: accountType !== 'ADMIN',
     // });
@@ -57,14 +58,16 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         setMobileOpen((open) => !open);
     }, []);
 
-	useEffect(() => {
-        if(email !== null && (google_access_token === null || google_access_token === undefined))
-        {
+    useEffect(() => {
+        if (
+            email !== null &&
+            (google_access_token === null || google_access_token === undefined)
+        ) {
             setGoogleLoginPromptOpen(true);
         }
-	}, [email]);
+    }, [email]);
 
-	useEffect(() => {
+    useEffect(() => {
         // if(sessionStorage.getItem('google_access_token') == null){
         //     sessionStorage.setItem(
         //         'google_access_token',
@@ -72,39 +75,46 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         //     )
         // }
         setExitButtonMessage('Exit');
-		if((gClassResp === null || gClassResp === undefined) && google_access_token){
-		  (async () => {
-			try {
-				setGClassResp( await axios.get('https://classroom.googleapis.com/v1/courses', {
-				'headers': {
-					'Authorization': `Bearer ${google_access_token}`,
-				},
-				}));
-			}
-			catch(error){
-				console.log(error)
-			}
-		  })();
-		}
-		if(google_courses === undefined || google_courses == null){
-			dispatch({
-			  type: actions.SET_GOOGLE_COURSES,
-			  payload: {google_courses: gClassResp?.data.courses}
-			})
+        if (
+            (gClassResp === null || gClassResp === undefined) &&
+            google_access_token
+        ) {
+            (async () => {
+                try {
+                    setGClassResp(
+                        await axios.get(
+                            'https://classroom.googleapis.com/v1/courses',
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${google_access_token}`,
+                                },
+                            }
+                        )
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+            })();
         }
-	}, [google_access_token]);
-	
-	const handleClose = () => {
+        if (google_courses === undefined || google_courses == null) {
+            dispatch({
+                type: actions.SET_GOOGLE_COURSES,
+                payload: { google_courses: gClassResp?.data.courses },
+            });
+        }
+    }, [google_access_token]);
+
+    const handleClose = () => {
         setGoogleLoginPromptOpen(false);
-    }
-	
-	const onSuccess = (response) => {
+    };
+
+    const onSuccess = (response) => {
         // setGoogle_access_token(response.tokenObj.access_token);
         dispatch({
             type: actions.STORE_COURSES,
-            payload: {google_access_token: response.tokenObj.access_token}
-        })
-	};
+            payload: { google_access_token: response.tokenObj.access_token },
+        });
+    };
     // if (loading) return <Loading />;
     // if (error) return <div>There's been an error! {error.message}</div>;
 
@@ -137,31 +147,36 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
                             <RootRoutes />
                         </main>
                     </MuiPickersUtilsProvider>
-					<Dialog
-					open={googleLoginPromptOpen}
-					onClose={handleClose}
-					aria-labelledby='dialog-title'
-					aria-describedby='dialog-description'
-				>
-					<DialogTitle disableTypography id='dialog-title'>{'Sign in with Google'}</DialogTitle>
-					<DialogContent>
-						<DialogContentText id='dialog-description'>
-							Allow us to access your Google Classroom courses
-						</DialogContentText>
-					</DialogContent>
-					<DialogActions>
-						<ResponsiveButton onClick={handleClose} color='primary'>
-                            {exitButtonMessage}
-						</ResponsiveButton>
-						<GoogleLogin
-						buttonText='Login'
-						clientId='1059849289788-0tpge112i2bfe5llak523fdopu8foul7.apps.googleusercontent.com'
-						isSignedIn
-						onSuccess={onSuccess}
-						scope = 'https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
-						/> 
-					</DialogActions>
-				</Dialog>
+                    <Dialog
+                        open={googleLoginPromptOpen}
+                        onClose={handleClose}
+                        aria-labelledby='dialog-title'
+                        aria-describedby='dialog-description'
+                    >
+                        <DialogTitle disableTypography id='dialog-title'>
+                            {'Sign in with Google'}
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id='dialog-description'>
+                                Allow us to access your Google Classroom courses
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <ResponsiveButton
+                                onClick={handleClose}
+                                color='primary'
+                            >
+                                {exitButtonMessage}
+                            </ResponsiveButton>
+                            <GoogleLogin
+                                buttonText='Login'
+                                clientId='1059849289788-0tpge112i2bfe5llak523fdopu8foul7.apps.googleusercontent.com'
+                                isSignedIn
+                                onSuccess={onSuccess}
+                                scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
+                            />
+                        </DialogActions>
+                    </Dialog>
                 </div>
             ) : (
                 <OnboardingRoutes />

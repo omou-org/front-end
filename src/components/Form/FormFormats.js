@@ -1351,8 +1351,8 @@ export default {
                         validator: Yup.mixed(),
                     },
                     {
-                        "name": "google_classroom_code",
-                    ...stringField("[Optional] Google Classroom Code"),
+                        name: 'google_classroom_code',
+                        ...stringField('[Optional] Google Classroom Code'),
                     },
                     {
                         name: 'instructor',
