@@ -64,7 +64,7 @@ import gql from "graphql-tag"
 `;
 
 
-// Multi Session
+// EnrollmentView.js
 export const GET_SESSIONS = gql`
     query GetSessions($courseId: ID!) {
         sessions(courseId: $courseId) {

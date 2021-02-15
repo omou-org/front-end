@@ -19,7 +19,7 @@ export const GET_CATEGORIES = gql`
     }
 `;
 
-// Multiple courses
+// FormFormats.js
 export const GET_COURSES = gql`
 query GetCourses {
   courses {
@@ -39,7 +39,9 @@ query GetCourses {
 }
 `;
 
-// Gets single course by ID 
+// ClassInfo.js
+// CourseClass.js
+// CourseRegistrationReceipt.js
 export const GET_COURSE = gql`
 query CourseFetch($id: ID!) {
   course(courseId: $id) {
@@ -122,7 +124,7 @@ enrollmentSet {
 }`;
 
 
-// Registration Cart Container component
+// RegistrationCartContainer.js
 export const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
   query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
     userInfos(userIds: $userIds) {
