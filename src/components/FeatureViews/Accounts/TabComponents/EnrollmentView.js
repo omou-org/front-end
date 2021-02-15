@@ -273,7 +273,7 @@ const CourseSessionStatus = () => {
                 return (
                     <EnrollmentPayment
                         courseID={Number(course.course_id)}
-                        enrollmentID={Number(enrollment.enrollment_id)}
+                        enrollmentID={Number(id)}
                     />
                     );
             default:
