@@ -24,7 +24,7 @@ import AccessControlComponent from '../../OmouComponents/AccessControlComponent'
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
 import { GET_STUDENTS } from './CourseManagementContainer';
-import {GET_COURSE} from "../../../queries/CoursesQuery/CourseQuery"
+import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 
@@ -73,7 +73,6 @@ export const GET_ANNOUNCEMENTS = gql`
         }
     }
 `;
-
 
 const CourseClass = () => {
     const { id } = useParams();

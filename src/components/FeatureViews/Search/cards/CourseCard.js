@@ -7,10 +7,10 @@ import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import "../Search.scss";
-import {truncateStrings} from "utils";
-import {LabelBadge} from "../../../../theme/ThemedComponents/Badge/LabelBadge";
-import {GET_COURSE} from "../../../../queries/CoursesQuery/CourseQuery"
+import '../Search.scss';
+import { truncateStrings } from 'utils';
+import { LabelBadge } from '../../../../theme/ThemedComponents/Badge/LabelBadge';
+import { GET_COURSE } from '../../../../queries/CoursesQuery/CourseQuery';
 
 const getLocaleDateString = (start, end) => {
     if (start && end) {
@@ -20,10 +20,9 @@ const getLocaleDateString = (start, end) => {
     }
 };
 
-
-const CourseCard = ({courseID, isLoading = false}) => {
-    const {data, loading} = useQuery(GET_COURSE, {
-        "variables": {courseID},
+const CourseCard = ({ courseID, isLoading = false }) => {
+    const { data, loading } = useQuery(GET_COURSE, {
+        variables: { courseID },
     });
 
     if (loading || isLoading) {

@@ -1,11 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 // Material UI Imports
 import Grid from '@material-ui/core/Grid';
-import {
-    useHistory,
-    useLocation,
-    useParams,
-} from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import Loading from 'components/OmouComponents/Loading';
 
 import gql from 'graphql-tag';
@@ -37,8 +33,8 @@ import { fullName } from '../../../utils';
 import moment from 'moment';
 import { GET_SESSIONS_FAILED } from 'actions/actionTypes';
 
-import {GET_CATEGORIES} from "../../../queries/CoursesQuery/CourseQuery"
-import {GET_SESSION} from "../../../queries/SchedulerQuery/SchedulerQuery"
+import { GET_CATEGORIES } from '../../../queries/CoursesQuery/CourseQuery';
+import { GET_SESSION } from '../../../queries/SchedulerQuery/SchedulerQuery';
 
 const GET_INSTRUCTORS = gql`
     query EditSessionCategoriesQuery {
@@ -52,7 +48,6 @@ const GET_INSTRUCTORS = gql`
         }
     }
 `;
-
 
 const UPDATE_COURSE = gql`
     mutation UpdateCourse(

@@ -13,10 +13,8 @@ import { stringToColor } from '../Accounts/accountUtils';
 import Divider from '@material-ui/core/Divider';
 import NavLinkNoDup from '../../Routes/NavLinkNoDup';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
-import {GET_COURSE} from "../../../queries/CoursesQuery/CourseQuery";
+import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-
-
 
 export default function CourseRegistrationReceipt({ formData, format }) {
     const { type } = useParams();

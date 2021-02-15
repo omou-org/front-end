@@ -22,7 +22,7 @@ import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Menu from '@material-ui/core/Menu';
 import { fullName } from '../../../utils';
 import moment from 'moment';
-import {GET_SESSION} from "../../../queries/SchedulerQuery/SchedulerQuery"
+import { GET_SESSION } from '../../../queries/SchedulerQuery/SchedulerQuery';
 
 const StyledMenu = withStyles({
     paper: {
@@ -55,7 +55,6 @@ const styles = (username) => ({
 
 const EDIT_ALL_SESSIONS = 'all';
 const EDIT_CURRENT_SESSION = 'current';
-
 
 const SessionView = () => {
     const { session_id } = useParams();

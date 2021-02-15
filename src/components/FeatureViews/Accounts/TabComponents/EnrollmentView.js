@@ -41,7 +41,7 @@ import { useSessionsWithConfig } from 'actions/calendarActions';
 import Moment from 'react-moment';
 import { fullName } from '../../../../utils';
 
-import {GET_SESSIONS} from "../../../../queries/SchedulerQuery/SchedulerQuery"
+import { GET_SESSIONS } from '../../../../queries/SchedulerQuery/SchedulerQuery';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -87,7 +87,6 @@ const GET_ENROLLMENT = gql`
         }
     }
 `;
-
 
 const timeOptions = {
     hour: '2-digit',

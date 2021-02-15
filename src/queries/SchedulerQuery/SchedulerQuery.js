@@ -4,65 +4,64 @@
 /* 
 IF NOT IN GRAPHQL LEAVE EM IN THERE
 */
-import gql from "graphql-tag"
+import gql from 'graphql-tag';
 
 // Single Session
- export const GET_SESSION = gql`
- query SessionViewQuery($sessionId: ID!) {
-     session(sessionId: $sessionId) {
-         id
-         isConfirmed
-         startDatetime
-         title
-         instructor {
-             user {
-                 id
-                 firstName
-                 lastName
-             }
-         }
-         course {
-             id
-             isConfirmed
-             room
-             title
-             availabilityList {
-                 dayOfWeek
-                 startTime
-                 endTime
-             }
-             startDate
-             endDate
-             courseCategory {
-                 id
-                 name
-             }
-             instructor {
-                 user {
-                     id
-                     firstName
-                     lastName
-                 }
-                 subjects {
-                     name
-                 }
-             }
-             enrollmentSet {
-                 student {
-                     user {
-                         id
-                         firstName
-                         lastName
-                     }
-                 }
-             }
-         }
-         endDatetime
-         startDatetime
-     }
- }
+export const GET_SESSION = gql`
+    query SessionViewQuery($sessionId: ID!) {
+        session(sessionId: $sessionId) {
+            id
+            isConfirmed
+            startDatetime
+            title
+            instructor {
+                user {
+                    id
+                    firstName
+                    lastName
+                }
+            }
+            course {
+                id
+                isConfirmed
+                room
+                title
+                availabilityList {
+                    dayOfWeek
+                    startTime
+                    endTime
+                }
+                startDate
+                endDate
+                courseCategory {
+                    id
+                    name
+                }
+                instructor {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                    subjects {
+                        name
+                    }
+                }
+                enrollmentSet {
+                    student {
+                        user {
+                            id
+                            firstName
+                            lastName
+                        }
+                    }
+                }
+            }
+            endDatetime
+            startDatetime
+        }
+    }
 `;
-
 
 // EnrollmentView.js
 export const GET_SESSIONS = gql`

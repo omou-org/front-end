@@ -18,7 +18,11 @@ import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 
 import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
-import {GET_CATEGORIES,GET_COURSES, GET_COURSE } from "../../queries/CoursesQuery/CourseQuery"
+import {
+    GET_CATEGORIES,
+    GET_COURSES,
+    GET_COURSE,
+} from '../../queries/CoursesQuery/CourseQuery';
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
         admin(userId: $userID) {
@@ -523,10 +527,6 @@ const SEARCH_PARENTS = gql`
         }
     }
 `;
-
-
-
-
 
 const parentSelect = (name) => (
     <Fields.DataSelect
@@ -1369,8 +1369,7 @@ export default {
                 ],
             },
         ],
-        "load": async (id) => {
-           
+        load: async (id) => {
             try {
                 const {
                     data: { course },

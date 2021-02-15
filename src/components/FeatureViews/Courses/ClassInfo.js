@@ -16,8 +16,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import moment from 'moment';
 import gql from 'graphql-tag';
 import { fullName, USER_TYPES } from '../../../utils';
-import {GET_COURSE} from "../../../queries/CoursesQuery/CourseQuery"
-
+import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
 
 const useStyles = makeStyles({
     courseLink: {
