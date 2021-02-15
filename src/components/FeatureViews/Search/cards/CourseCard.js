@@ -20,9 +20,10 @@ const getLocaleDateString = (start, end) => {
     }
 };
 
-const CourseCard = ({ courseID, isLoading = false }) => {
-    const { data, loading } = useQuery(GET_COURSE, {
-        variables: { courseID },
+
+const CourseCard = ({courseID, isLoading = false}) => {
+    const {data, loading} = useQuery(GET_COURSE, {
+        "variables": {id: courseID},
     });
 
     if (loading || isLoading) {
@@ -42,7 +43,6 @@ const CourseCard = ({ courseID, isLoading = false }) => {
             </Grid>
         );
     }
-
     const { course } = data;
     const instructorName = `${course.instructor.user.firstName} ${course.instructor.user.lastName}`;
 
