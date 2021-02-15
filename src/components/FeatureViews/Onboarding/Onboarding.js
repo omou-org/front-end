@@ -1,9 +1,6 @@
-import React from "react";
-import Welcome from "./Welcome";
+import React from 'react';
+import Welcome from './Welcome';
 const Onboarding = () => {
-    return (
-        <Welcome />
-
-    );
+    return <Welcome />;
 };
 export default Onboarding;

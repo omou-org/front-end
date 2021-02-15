@@ -1,10 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Loading from "components/OmouComponents/Loading";
-import PaymentTable from "./PaymentTable";
-import {useQuery} from "@apollo/react-hooks";
-import Typography from "@material-ui/core/Typography";
-import gql from "graphql-tag";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Loading from 'components/OmouComponents/Loading';
+import PaymentTable from './PaymentTable';
+import { useQuery } from '@apollo/react-hooks';
+import Typography from '@material-ui/core/Typography';
+import gql from 'graphql-tag';
 
 export const GET_PARENT_PAYMENTS = gql`
     query ParentPayments($parentId: ID!) {
@@ -12,7 +12,7 @@ export const GET_PARENT_PAYMENTS = gql`
             id
             createdAt
             registrationSet {
-              id
+                id
             }
             total
             method
@@ -20,31 +20,29 @@ export const GET_PARENT_PAYMENTS = gql`
     }
 `;
 
-const PaymentHistory = ({user_id}) => {
-	const {data, loading, error} = useQuery(GET_PARENT_PAYMENTS,
-		{variables: {parentId: user_id}}
-	);
+const PaymentHistory = ({ user_id }) => {
+    const { data, loading, error } = useQuery(GET_PARENT_PAYMENTS, {
+        variables: { parentId: user_id },
+    });
 
-	if (loading) {
-		return <Loading/>
-	}
-	if (error) {
-		return <Typography>
-			There's been an error! Error: {error.message}
-		</Typography>
+    if (loading) {
+        return <Loading />;
+    }
+    if (error) {
+        return (
+            <Typography>
+                There's been an error! Error: {error.message}
+            </Typography>
+        );
     }
 
-	const {invoices} = data;
+    const { invoices } = data;
 
-    return (
-        <PaymentTable
-            paymentList={invoices}
-            type="parent" />
-    );
+    return <PaymentTable paymentList={invoices} type='parent' />;
 };
 
 PaymentHistory.propTypes = {
-    "user_id": PropTypes.number.isRequired,
+    user_id: PropTypes.number.isRequired,
 };
 
 export default PaymentHistory;

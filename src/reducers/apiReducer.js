@@ -1,11 +1,11 @@
-import * as actions from "../actions/actionTypes";
-import initialState from "./initialState";
-import * as api from "../actions/apiActions";
+import * as actions from '../actions/actionTypes';
+import initialState from './initialState';
+import * as api from '../actions/apiActions';
 
-export default (state = initialState.RequestStatus, {payload, type}) => {
+export default (state = initialState.RequestStatus, { payload, type }) => {
     let status;
     if (payload && payload.response && payload.response.status) {
-        ({status} = payload.response);
+        ({ status } = payload.response);
     } else {
         // general server error
         status = api.MISC_FAIL;
@@ -19,7 +19,11 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateCourseFetch(state, payload.id, status);
 
         case actions.FETCH_INSTRUCTOR_STARTED:
-            return updateInstructorFetch(state, payload.id, api.REQUEST_STARTED);
+            return updateInstructorFetch(
+                state,
+                payload.id,
+                api.REQUEST_STARTED
+            );
         case actions.FETCH_INSTRUCTOR_SUCCESSFUL:
             return updateInstructorFetch(state, payload.id, status);
         case actions.FETCH_INSTRUCTOR_FAILED:
@@ -54,7 +58,11 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateInstructorPost(state, status);
 
         case actions.PATCH_INSTRUCTOR_STARTED:
-            return updateInstructorPatch(state, payload.id, api.REQUEST_STARTED);
+            return updateInstructorPatch(
+                state,
+                payload.id,
+                api.REQUEST_STARTED
+            );
         case actions.PATCH_INSTRUCTOR_SUCCESSFUL:
             return updateInstructorPatch(state, payload.id, status);
         case actions.PATCH_INSTRUCTOR_FAILED:
@@ -64,7 +72,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateAccountNoteFetch(
                 state,
                 payload.ownerID,
-                api.REQUEST_STARTED,
+                api.REQUEST_STARTED
             );
         case actions.FETCH_ACCOUNT_NOTE_SUCCESSFUL:
             return updateAccountNoteFetch(state, payload.ownerID, status);
@@ -72,7 +80,11 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateAccountNoteFetch(state, payload.ownerID, status);
 
         case actions.FETCH_COURSE_NOTE_STARTED:
-            return updateCourseNoteFetch(state, payload.ownerID, api.REQUEST_STARTED);
+            return updateCourseNoteFetch(
+                state,
+                payload.ownerID,
+                api.REQUEST_STARTED
+            );
         case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
             return updateCourseNoteFetch(state, payload.ownerID, status);
         case actions.FETCH_COURSE_NOTE_FAILED:
@@ -86,7 +98,11 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateCourseNotePost(state, status);
 
         case actions.PATCH_COURSE_NOTE_STARTED:
-            return updateCourseNotePatch(state, payload.ownerID, api.REQUEST_STARTED);
+            return updateCourseNotePatch(
+                state,
+                payload.ownerID,
+                api.REQUEST_STARTED
+            );
         case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
             return updateCourseNotePatch(state, payload.ownerID, status);
         case actions.PATCH_COURSE_NOTE_FAILED:
@@ -96,7 +112,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateEnrollmentNoteFetch(
                 state,
                 payload.ownerID,
-                api.REQUEST_STARTED,
+                api.REQUEST_STARTED
             );
         case actions.FETCH_ENROLLMENT_NOTE_SUCCESSFUL:
             return updateEnrollmentNoteFetch(state, payload.ownerID, status);
@@ -114,7 +130,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateEnrollmentNotePatch(
                 state,
                 payload.ownerID,
-                api.REQUEST_STARTED,
+                api.REQUEST_STARTED
             );
         case actions.PATCH_ENROLLMENT_NOTE_SUCCESSFUL:
             return updateEnrollmentNotePatch(state, payload.ownerID, status);
@@ -132,7 +148,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
             return updateAccountNotePatch(
                 state,
                 payload.ownerID,
-                api.REQUEST_STARTED,
+                api.REQUEST_STARTED
             );
         case actions.PATCH_ACCOUNT_NOTE_SUCCESSFUL:
             return updateAccountNotePatch(state, payload.ownerID, status);
@@ -165,14 +181,29 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 state,
                 payload.id,
                 api.REQUEST_STARTED,
-                actions.GET,
+                actions.GET
             );
         case actions.GET_PRICE_RULE_SUCCESS:
-            return updatePriceRuleStatus(state, payload.id, status, actions.GET);
+            return updatePriceRuleStatus(
+                state,
+                payload.id,
+                status,
+                actions.GET
+            );
         case actions.POST_PRICE_RULE_FAILED:
-            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+            return updatePriceRuleStatus(
+                state,
+                payload.id,
+                status,
+                actions.POST
+            );
         case actions.POST_PRICE_RULE_SUCCESS:
-            return updatePriceRuleStatus(state, payload.id, status, actions.POST);
+            return updatePriceRuleStatus(
+                state,
+                payload.id,
+                status,
+                actions.POST
+            );
 
         case actions.GET_DISCOUNT_DATE_RANGE_START:
             return updateDiscountStatus(
@@ -180,7 +211,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 api.REQUEST_STARTED,
                 actions.GET,
-                "dateRange",
+                'dateRange'
             );
         case actions.GET_DISCOUNT_PAYMENT_METHOD_STARTED:
             return updateDiscountStatus(
@@ -188,7 +219,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 api.REQUEST_STARTED,
                 actions.GET,
-                "paymentMethod",
+                'paymentMethod'
             );
         case actions.GET_DISCOUNT_MULTI_COURSE_STARTED:
             return updateDiscountStatus(
@@ -196,7 +227,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 api.REQUEST_STARTED,
                 actions.GET,
-                "multiCourse",
+                'multiCourse'
             );
 
         case actions.GET_DISCOUNT_DATE_RANGE_SUCCESS:
@@ -205,7 +236,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.GET,
-                "dateRange",
+                'dateRange'
             );
         case actions.GET_DISCOUNT_MULTI_COURSE_SUCCESS:
             return updateDiscountStatus(
@@ -213,7 +244,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.GET,
-                "multiCourse",
+                'multiCourse'
             );
         case actions.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS:
             return updateDiscountStatus(
@@ -221,7 +252,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.GET,
-                "paymentMethod",
+                'paymentMethod'
             );
 
         case actions.DELETE_DISCOUNT_PAYMENT_METHOD_SUCCESS:
@@ -230,7 +261,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.DELETE,
-                "paymentMethod",
+                'paymentMethod'
             );
         case actions.DELETE_DISCOUNT_DATE_RANGE_SUCCESS:
             return updateDiscountStatus(
@@ -238,7 +269,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.DELETE,
-                "dateRange",
+                'dateRange'
             );
         case actions.DELETE_DISCOUNT_MULTI_COURSE_SUCCESS:
             return updateDiscountStatus(
@@ -246,7 +277,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.DELETE,
-                "multiCourse",
+                'multiCourse'
             );
 
         case actions.PATCH_DISCOUNT_PAYMENT_METHOD_SUCCESS:
@@ -255,7 +286,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.PATCH,
-                "paymentMethod",
+                'paymentMethod'
             );
         case actions.PATCH_DISCOUNT_DATE_RANGE_SUCCESS:
             return updateDiscountStatus(
@@ -263,7 +294,7 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.PATCH,
-                "dateRange",
+                'dateRange'
             );
         case actions.PATCH_DISCOUNT_MULTI_COURSE_SUCCESS:
             return updateDiscountStatus(
@@ -271,13 +302,13 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
                 payload.id,
                 status,
                 actions.PATCH,
-                "multiCourse",
+                'multiCourse'
             );
 
         case actions.SET_PARENT:
             return {
                 ...state,
-                "registeringParent": NEW_REGISTERING_PARENT,
+                registeringParent: NEW_REGISTERING_PARENT,
             };
 
         case actions.GET_PAYMENT_SUCCESS:
@@ -305,13 +336,13 @@ export default (state = initialState.RequestStatus, {payload, type}) => {
 export const NEW_REGISTERING_PARENT = 2;
 
 const updateCategoryPost = (state, payload, status) => {
-    const newState = {...state};
+    const newState = { ...state };
     newState.category[actions.POST] = status;
     return newState;
 };
 
 const updateCategoryFetch = (state, payload, status) => {
-    const newState = {...state};
+    const newState = { ...state };
     newState.category[actions.GET] = status;
     return newState;
 };
@@ -378,7 +409,7 @@ const updateAccountNotePatch = (state, ownerID, status) => {
 
 const updateUserFetch = (state, status) => ({
     ...state,
-    "userFetch": status,
+    userFetch: status,
 });
 
 const updateCourseNoteFetch = (state, ownerID, status) => {
@@ -418,13 +449,13 @@ const updateEnrollmentNotePatch = (state, ownerID, status) => {
 };
 
 const updatePriceRuleStatus = (state, id, status, requestType) => {
-    const newState = {...state};
+    const newState = { ...state };
     newState.priceRule[requestType][id] = status;
     return newState;
 };
 
 const updateDiscountStatus = (state, id, status, requestType, discountType) => {
-    const newState = {...state};
+    const newState = { ...state };
     if (requestType !== actions.DELETE && requestType !== actions.PATCH) {
         newState.discount[discountType][requestType][id] = status;
     } else {
