@@ -986,9 +986,35 @@ export default {
                         state: $state
                     ) {
                         created
+                        parent {
+                            accountType
+                            phoneNumber
+                            user {
+                                email
+                                lastName
+                                firstName
+                                id
+                            }
+                        }
                     }
                 }
             `;
+
+            const GET_ALL_PARENTS = gql`
+                query GetAllParents {
+                    parents {
+                        accountType
+                        phoneNumber
+                        user {
+                            email
+                            lastName
+                            firstName
+                            id
+                        }
+                    }
+                }
+            `;
+
             try {
                 await client.mutate({
                     mutation: CREATE_PARENT,
@@ -998,6 +1024,55 @@ export default {
                         id,
                         password: '',
                     },
+                    update: (cache, { data }) => {
+                        console.log(data);
+                        const newParent = data.createParent;
+
+                        if (cache.data.data.ROOT_QUERY.parents) {
+                            const cachedParents = cache.readQuery({
+                                query: GET_ALL_PARENTS,
+                            }).parents || [];
+
+                            const matchingIndex = cachedParents.findIndex(
+                                ({ user: { id } }) => 
+                                    id === newParent.parent.user.id
+                            )
+
+                            let updatedParents = cachedParents;
+
+                            if (matchingIndex === -1) {
+                                updatedParents = [
+                                    ...cachedParents,
+                                    newParent,
+                                ];
+                            } else {
+                                updatedParents[matchingIndex] = newParent;
+                            }
+                            cache.writeQuery({
+                                data: {
+                                    parents: updatedParents,
+                                },
+                                query: GET_ALL_PARENTS,
+                            });
+                        }
+
+                        // const cachedParent = cache.readQuery({
+                        //     query: USER_QUERIES['parent'],
+                        //     variables: {
+                        //         ownerID: newParent.parent.user.id,
+                        //     }
+                        // });
+                        // console.log(cachedParent);
+                        // cache.writeQuery({
+                        //     data: {
+                        //         parent: {
+                        //             cachedParent,
+                        //             user: { ...newParent.parent.user},
+                                    
+                        //         }
+                        //     }
+                        // })
+                    }
                 });
             } catch (error) {
                 return {
