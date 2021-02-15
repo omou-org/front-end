@@ -2,13 +2,13 @@ import React from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Paper, Tooltip, Typography } from '@material-ui/core';
-import AccountCard from '../FeatureViews/Search/cards/AccountCard';
+import AccountCard from '../../FeatureViews/Search/cards/AccountCard';
 import Grid from '@material-ui/core/Grid';
-import * as hooks from '../../actions/hooks';
-import Loading from '../OmouComponents/Loading';
-import { stringToColor } from '../FeatureViews/Accounts/accountUtils';
+import * as hooks from '../../../actions/hooks';
+import Loading from '../../OmouComponents/Loading';
+import { stringToColor } from '../../FeatureViews/Accounts/accountUtils';
 import Avatar from '@material-ui/core/Avatar';
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 export function CompleteCourseRegistration({
     registeredCourseForm,

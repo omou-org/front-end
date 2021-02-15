@@ -316,6 +316,10 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                             moment().diff(moment(endDate), 'days') < 0
                     )
                     .map((course) => {
+                        const toDisplayRegistrationButton =
+                            currentParent || parentIsLoggedIn;
+                        const toDisplayRegisterButtonWhenRegistering =
+                            course.enrollmentSet.length < course.maxCapacity;
                         return (
                             <ListDetailedItem key={course.id}>
                                 <ListContent>
@@ -370,38 +374,37 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
                                         {course.maxCapacity}
                                     </ListStatus>
                                     <ListButton>
-                                        {course.enrollmentSet.length <
-                                            course.maxCapacity ||
-                                        !parentIsLoggedIn ? (
-                                            <ResponsiveButton
-                                                disabled={shouldDisableQuickRegister(
-                                                    {
-                                                        course,
-                                                        enrolledCourseIds,
-                                                        registrations,
-                                                        studentIdList,
+                                        {toDisplayRegistrationButton &&
+                                            (toDisplayRegisterButtonWhenRegistering ? (
+                                                <ResponsiveButton
+                                                    disabled={shouldDisableQuickRegister(
+                                                        {
+                                                            course,
+                                                            enrolledCourseIds,
+                                                            registrations,
+                                                            studentIdList,
+                                                        }
+                                                    )}
+                                                    variant='contained'
+                                                    onClick={handleStartQuickRegister(
+                                                        course.id
+                                                    )}
+                                                    data-cy='quick-register-class'
+                                                    startIcon={<AddIcon />}
+                                                >
+                                                    register
+                                                </ResponsiveButton>
+                                            ) : (
+                                                <ParentCourseInterestBtn
+                                                    courseID={course.id}
+                                                    isCourseOnParentInterestList={
+                                                        isCourseOnParentInterestList
                                                     }
-                                                )}
-                                                variant='contained'
-                                                onClick={handleStartQuickRegister(
-                                                    course.id
-                                                )}
-                                                data-cy='quick-register-class'
-                                                startIcon={<AddIcon />}
-                                            >
-                                                register
-                                            </ResponsiveButton>
-                                        ) : (
-                                            <ParentCourseInterestBtn
-                                                courseID={course.id}
-                                                isCourseOnParentInterestList={
-                                                    isCourseOnParentInterestList
-                                                }
-                                                handleInterestRegister={
-                                                    handleInterestRegister
-                                                }
-                                            />
-                                        )}
+                                                    handleInterestRegister={
+                                                        handleInterestRegister
+                                                    }
+                                                />
+                                            ))}
                                     </ListButton>
                                 </ListActions>
                             </ListDetailedItem>

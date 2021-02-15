@@ -6,7 +6,6 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import CalendarIcon from '@material-ui/icons/CalendarToday';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import Grid from '@material-ui/core/Grid';
@@ -15,7 +14,6 @@ import MoneyIcon from '@material-ui/icons/LocalAtmOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core';
-import Menu from '@material-ui/core/Menu';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { darkGrey } from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
@@ -164,36 +162,6 @@ const ProfileHeading = ({ ownerID }) => {
 
     const renderEditandAwayButton = () => (
         <>
-            {accountType === 'instructor' && (
-                <Grid align='left' className='schedule-button' item xs={12}>
-                    {canViewScheduleOptions && (
-                        <>
-                            <ResponsiveButton
-                                aria-controls='simple-menu'
-                                aria-haspopup='true'
-                                onClick={handleOpen}
-                                variant='outlined'
-                                startIcon={<CalendarIcon />}
-                            >
-                                Schedule Options
-                            </ResponsiveButton>
-                            <Menu
-                                anchorEl={anchorEl}
-                                keepMounted
-                                onClose={handleClose}
-                                open={anchorEl !== null}
-                            >
-                                {/* <InstructorAvailability
-                            button={false}
-                            instructorID={ownerID}
-                        />
-                        <OutOfOffice button={false} instructorID={ownerID} /> */}
-                            </Menu>
-                        </>
-                    )}
-                </Grid>
-            )}
-
             {isAdmin && isAuthUser && (
                 <>
                     <Grid component={Hidden} item mdDown xs={12}>

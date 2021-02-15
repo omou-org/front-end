@@ -1,5 +1,4 @@
 import React from 'react';
-import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Moment from 'react-moment';
@@ -21,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 export default function InstructorDashboard({ user }) {
     const classes = useStyles();
     return (
-        <BackgroundPaper styles={{ backgroundColor: '#EBFAFF' }}>
+        <div>
             <Grid container spacing={5}>
                 <Grid
                     item
@@ -83,6 +82,6 @@ export default function InstructorDashboard({ user }) {
                     </Paper>
                 </Grid>
             </Grid>
-        </BackgroundPaper>
+        </div>
     );
 }

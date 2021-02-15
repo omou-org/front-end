@@ -1,14 +1,13 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Typography } from '@material-ui/core';
-import BackgroundPaper from '../../../components/OmouComponents/BackgroundPaper';
 import { ResponsiveButton } from './ResponsiveButton';
 import BackArrow from '@material-ui/icons/ArrowBackIos';
 import AddIcon from '@material-ui/icons/Add';
 
 const ButtonDemo = () => {
     return (
-        <BackgroundPaper>
+        <div>
             <Grid container spacing={6}>
                 <Grid
                     container
@@ -297,7 +296,7 @@ const ButtonDemo = () => {
                     </Grid>
                 </Grid>
             </Grid>
-        </BackgroundPaper>
+        </div>
     );
 };
 

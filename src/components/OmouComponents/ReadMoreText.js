@@ -27,7 +27,12 @@ const ReadMoreText = ({ children, textLimit, handleDisplay = null }) => {
                     ? bodyText.substring(0, textLimit) + '...\n'
                     : bodyText + '\n'}
                 <a onClick={handleReadMoreClick}>
-                    <span style={{ paddingRight: theme.spacing(1) }}>
+                    <span
+                        style={{
+                            paddingRight: theme.spacing(1),
+                            cursor: 'pointer',
+                        }}
+                    >
                         {isReadMoreClosed ? 'Read More' : ' Read Less'}
                     </span>
                 </a>

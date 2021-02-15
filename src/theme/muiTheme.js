@@ -204,7 +204,7 @@ const theme = createMuiTheme({
                 color: buttonBlue,
                 paddingBottom: '7px',
                 backgroundColor: white,
-                border: `2px solid ${cloudy}`,
+                border: `1px solid ${cloudy}`,
                 boxSizing: 'border-box',
                 'border-radius': '5px',
                 overflow: 'hidden',
@@ -269,6 +269,7 @@ const theme = createMuiTheme({
         MuiTabs: {
             root: {
                 color: '#000000',
+                borderBottom: '1px solid #43B5D9',
             },
             indicator: {
                 display: 'none',
@@ -288,7 +289,6 @@ const theme = createMuiTheme({
                 paddingRight: '1em',
                 borderTopLeftRadius: '5px',
                 borderTopRightRadius: '5px',
-                borderBottom: '1px solid #43B5D9',
                 marginTop: '0',
                 backgroundColor: '#ffffff',
                 transition: '0.2s',
@@ -308,7 +308,6 @@ const theme = createMuiTheme({
                         width: 1,
                         zIndex: 1,
                         marginTop: '0.5em',
-                        backgroundColor: '#EEEEEE',
                     },
                 },
                 '& + $selected:before': {

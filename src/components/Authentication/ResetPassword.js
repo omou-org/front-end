@@ -9,7 +9,7 @@ import { useSearchParams } from 'actions/hooks';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { PasswordInput } from '../Form/Fields';
+import { PasswordInput } from '../Form/FieldComponents/Fields';
 import Typography from '@material-ui/core/Typography';
 
 import Loading from 'components/OmouComponents/Loading';

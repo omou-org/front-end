@@ -59,9 +59,11 @@ export default function IdleTimerPrompt() {
     };
 
     const handleLogout = useCallback(() => {
-        closeRegistrationCart();
-        dispatch(logout());
-        history.push('/login');
+        if (openIdlePrompt) {
+            closeRegistrationCart();
+            dispatch(logout());
+            history.push('/login');
+        }
     }, [dispatch, history]);
 
     useEffect(() => {

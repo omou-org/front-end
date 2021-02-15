@@ -15,7 +15,6 @@ import * as adminActions from 'actions/adminActions';
 import * as hooks from 'actions/hooks';
 import Loading from 'components/OmouComponents/Loading';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
-import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
 
 const ManageCategories = () => {
     const dispatch = useDispatch();
@@ -53,39 +52,41 @@ const ManageCategories = () => {
     }, [api, categoryName, categoryDescription]);
 
     const categoryForm = () => (
-        <BackgroundPaper className='category-row new-category'>
-            <Grid alignItems='center' container>
-                <Grid item xs={3}>
-                    <TextField
-                        className='field'
-                        label='Category Name'
-                        onChange={handleChange(setCategoryName)}
-                        required
-                        value={categoryName}
-                    />
-                </Grid>
-                <Grid item xs={7}>
-                    <TextField
-                        className='field'
-                        label='Category Description'
-                        multiline
-                        onChange={handleChange(setCategoryDescription)}
-                        value={categoryDescription}
-                    />
-                </Grid>
-                <Grid item xs={2}>
-                    <ResponsiveButton
-                        className='add-category'
-                        color='primary'
-                        disabled={categoryName === ''}
-                        onClick={submitCategory}
-                        variant='contained'
-                    >
-                        Add Category
-                    </ResponsiveButton>
-                </Grid>
+        <Grid
+            alignItems='center'
+            container
+            className='category-row new-category'
+        >
+            <Grid item xs={3}>
+                <TextField
+                    className='field'
+                    label='Category Name'
+                    onChange={handleChange(setCategoryName)}
+                    required
+                    value={categoryName}
+                />
             </Grid>
-        </BackgroundPaper>
+            <Grid item xs={7}>
+                <TextField
+                    className='field'
+                    label='Category Description'
+                    multiline
+                    onChange={handleChange(setCategoryDescription)}
+                    value={categoryDescription}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <ResponsiveButton
+                    className='add-category'
+                    color='primary'
+                    disabled={categoryName === ''}
+                    onClick={submitCategory}
+                    variant='contained'
+                >
+                    Add Category
+                </ResponsiveButton>
+            </Grid>
+        </Grid>
     );
 
     const displayCategories = () => (

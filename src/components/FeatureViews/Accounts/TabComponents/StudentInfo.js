@@ -10,7 +10,6 @@ import ProfileCard from '../ProfileCard';
 import { useQuery } from '@apollo/react-hooks';
 import { useSelector } from 'react-redux';
 import { AddItemButton } from '../../../OmouComponents/AddItemButton';
-import { PropTypes } from 'prop-types';
 
 const useStyles = makeStyles({
     center: {
