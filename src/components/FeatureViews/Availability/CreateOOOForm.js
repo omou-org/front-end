@@ -16,6 +16,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { omouBlue } from '../../../theme/muiTheme';
 import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -142,7 +143,7 @@ export default function CreateOOOForm() {
 
     return (
         <OOOContext.Provider value={{ OOOFormState, updateOOOFormState }}>
-            <Grid container direction="row">
+            <Grid container direction='row'>
                 {/* 
                 
                 We need to comment this out because the final design is a step feature. I believe we are waiting
@@ -174,58 +175,46 @@ export default function CreateOOOForm() {
                 <Grid item xs={12}>
                     <Typography
                         style={{ paddingBottom: '3%' }}
-                        data-cy="submit-OOO-text"
-                        variant="h4"
+                        data-cy='submit-OOO-text'
+                        variant='h4'
                     >
                         Submit Out of Office Notice{' '}
                     </Typography>
                     {submitted ? (
                         <OOOConfirmation handleClose={handleClose} />
                     ) : (
-                            <SubmitNotice ref={SubmitNoticeChild} />
-                        )}
+                        <SubmitNotice ref={SubmitNoticeChild} />
+                    )}
                 </Grid>
 
                 <Grid
                     container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
+                    direction='row'
+                    justify='center'
+                    alignItems='center'
                 >
                     <Grid item style={{ padding: '5%' }}>
                         {!submitted && (
-                            <Button
-                                style={{
-                                    backgroundColor: 'white',
-                                    color: 'black',
-                                    width: '150px',
-                                }}
+                            <ResponsiveButton
                                 onClick={() =>
                                     SubmitNoticeChild.current.handleClearForm()
                                 }
-                                color="primary"
-                                variant="outlined"
-                                data-cy="clear-OOO-button"
+                                variant='outlined'
+                                data-cy='clear-OOO-button'
                             >
-                                Clear
-                            </Button>
+                                clear
+                            </ResponsiveButton>
                         )}
                     </Grid>
                     <Grid item>
                         {!submitted && (
-                            <Button
-                                style={{
-                                    backgroundColor: omouBlue,
-                                    color: 'white',
-                                    width: '150px',
-                                }}
+                            <ResponsiveButton
                                 onClick={handleSubmit}
-                                color="primary"
-                                variant="outlined"
-                                data-cy="submit-OOO-button"
+                                variant='outlined'
+                                data-cy='submit-OOO-button'
                             >
-                                Submit
-                            </Button>
+                                submit
+                            </ResponsiveButton>
                         )}
                     </Grid>
                 </Grid>

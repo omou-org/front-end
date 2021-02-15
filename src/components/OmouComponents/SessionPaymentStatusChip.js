@@ -1,24 +1,22 @@
-import React from "react";
-import {sessionPaymentStatus} from "utils";
+import React from 'react';
+import { sessionPaymentStatus } from 'utils';
+import { LabelBadge } from '../../theme/ThemedComponents/Badge/LabelBadge';
 
-const SessionPaymentStatusChip = ({session, enrollment, setPos, style}) => {
+const SessionPaymentStatusChip = ({ session, enrollment, setPos, style }) => {
     if (!session || !enrollment) {
-        return (
-            <div
-                className={`sessions-left-chip NA ${setPos && "set-pos"}`}
-                style={style}>
-                Loading...
-            </div>
-        );
+        return <LabelBadge variant='outline-gray'>Loading...</LabelBadge>;
     }
     const status = sessionPaymentStatus(session, enrollment);
-    return (
-        <div
-            className={`sessions-left-chip ${setPos && "set-pos"} ${status}`}
-            style={style}>
-            {status}
-        </div>
-    );
+
+    const badgeVariant = (paymentStatus) =>
+        ({
+            Paid: 'status-positive',
+            Partial: 'status-warning',
+            Unpaid: 'status-negative',
+            NA: 'outline-gray',
+        }[paymentStatus]);
+
+    return <LabelBadge variant={badgeVariant(status)}>{status}</LabelBadge>;
 };
 
 export default SessionPaymentStatusChip;

@@ -1,18 +1,4 @@
 {
-    "student": {
-        "user": {
-            "id": 11,
-            "first_name": "James",
-            "last_name": "Wan",
-            "email": "james.wan@gmail.com",
-            "__typename": "UserType"
-        },
-        "grade": 11,
-        "birth_date": "12-07-2002",
-        "school": "Foothill High School",
-        "phone_number": "925-731-0499",
-        "__typename": "StudentType"
-    },
     "parent": {
         "__typename": "ParentType",
         "user": {
@@ -30,15 +16,6 @@
         "city": "Pleasanton",
         "state": "CA",
         "zipcode": "94566"
-    },
-    "instructor": {
-        "__typename": "InstructorType",
-        "user": {
-            "__typename": "UserType",
-            "id": 5,
-            "firstName": "Daniel",
-            "lastName": "Huang"
-        }
     },
     "original_student_data": {
         "__typename": "StudentType",
@@ -61,7 +38,7 @@
             "id": 1,
             "name": "Alhambra High School",
             "__typename": "SchoolType"
-    },
+        },
         "state": "CA",
         "user": {
             "email": "Aaron@Ao.com",
@@ -97,7 +74,7 @@
             "id": 1,
             "name": "Alhambra High School",
             "__typename": "SchoolType"
-    },
+        },
         "state": "CA",
         "user": {
             "email": "Aaron@Ao.com",
@@ -156,11 +133,13 @@
         "language": "English",
         "phoneNumber": "9253418562",
         "state": "CA",
-        "subjects": [{
-            "name": "Math",
-            "id": 1,
-            "__typename": "CourseCategoryType"
-        }],
+        "subjects": [
+            {
+                "name": "Math",
+                "id": 1,
+                "__typename": "CourseCategoryType"
+            }
+        ],
         "user": {
             "__typename": "UserType",
             "email": "paulwuus1000@hotmail.com",
@@ -181,11 +160,13 @@
         "language": "Cantonese, English, French",
         "phoneNumber": "9253458562",
         "state": "CA",
-        "subjects": [{
-            "name": "Biology",
-            "id": 2,
-            "__typename": "CourseCategoryType"
-        }],
+        "subjects": [
+            {
+                "name": "Biology",
+                "id": 2,
+                "__typename": "CourseCategoryType"
+            }
+        ],
         "user": {
             "__typename": "UserType",
             "email": "paulwuus1000@hotmail.com",
@@ -199,5 +180,22 @@
     "inviteInstructorConfirmationResponse": {
         "status": "failed",
         "__typename": "InviteInstructor"
+    },
+    "admin": {
+        "__typename": "AdminType",
+        "user": {
+            "__typename": "UserType",
+            "email": "maggie@summit.com",
+            "firstName": "maggie",
+            "lastName": "Huang",
+            "id": 1
+        },
+        "gender": "FEMALE",
+        "phoneNumber": "1112223333",
+        "birthDate": "1965-11-15",
+        "address": "1234 Peak Rd",
+        "city": "Mountain View",
+        "state": "CA",
+        "zipcode": "55555"
     }
 }

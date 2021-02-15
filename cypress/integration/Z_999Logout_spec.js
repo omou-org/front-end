@@ -1,6 +1,7 @@
-describe("Z:99Logout-spec", () => {
-  it("Logout", function () {
-    cy.get(".logout-icon").click();
-    cy.contains("sign in");
-  });
+describe('Z:99Logout-spec', () => {
+    it('Logout', function () {
+        cy.visitAuthenticated('/');
+        cy.get('.logout-icon').click();
+        cy.contains('SIGN IN');
+    });
 });

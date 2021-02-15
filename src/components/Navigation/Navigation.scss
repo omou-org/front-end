@@ -2,135 +2,136 @@
 @import '../../theme/sizes';
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 
-body{
-  overflow-y: hidden;
+body {
+    overflow-y: hidden;
 }
 
 .fade-enter {
-  opacity: 0;
-  z-index: 1;
+    opacity: 0;
+    z-index: 1;
 }
 .fade-enter.fade-enter-active {
-  opacity: 1;
-  transition: opacity 200ms ease-in;
+    opacity: 1;
+    transition: opacity 200ms ease-in;
 }
 
 /*Navigation Styling*/
 .Navigation {
-  /*App Bar Styling*/
-  .OmouBar {
-    //background-color: $bioBackgroundColor;
-    padding: 0;
-  }
-
-  .title {
-    font-family: 'Roboto Slab', serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 26px;
-    text-decoration: none;
-    color: white;
-    z-index: 10000;
-  }
-
-  .logout-icon{
-    cursor:pointer;
-    color: white;
-  }
-  .catsButton{
-    cursor: default;
-    background: transparent;
-    color: transparent;
-    
-  }
-  /*Drawer Styling*/
-
-  .OmouMain {
-    @include respond-to(handhelds) {
-      margin-left: 0;
+    /*App Bar Styling*/
+    .OmouBar {
+        //background-color: $bioBackgroundColor;
+        padding: 0;
     }
 
-    @include respond-to(medium-screens) {
-      margin-left: 0;
+    .title {
+        font-family: 'Roboto Slab', serif;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 26px;
+        text-decoration: none;
+        color: white;
+        z-index: 10000;
     }
 
-    @include respond-to(ipad-landscape) {
-      margin-left: 0;
+    .logout-icon {
+        cursor: pointer;
+        color: white;
+    }
+    .catsButton {
+        cursor: default;
+        background: transparent;
+        color: transparent;
+    }
+    /*Drawer Styling*/
+
+    .OmouMain {
+        @include respond-to(handhelds) {
+            margin-left: 0;
+        }
+
+        @include respond-to(medium-screens) {
+            margin-left: 0;
+        }
+
+        @include respond-to(ipad-landscape) {
+            margin-left: 0;
+        }
+
+        @include respond-to(wide-screens) {
+            margin-left: $drawerWidth + 50;
+        }
+
+        padding: 3% 3% 5% 3%;
+        height: 96vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: #ffffff;
+        box-shadow: -2px 0px 5px #c1c1c1;
     }
 
-    @include respond-to(wide-screens) {
-      margin-left: $drawerWidth;
+    .DrawerList {
+        @include respond-to(handhelds) {
+            width: 0;
+        }
+
+        @include respond-to(medium-up-screens) {
+            width: $drawerWidth;
+        }
+
+        padding-top: 30%;
+
+        .listItem {
+            width: 94%;
+            margin: 3%;
+        }
+
+        .list .listItem .text > span {
+            font-weight: 500;
+            font-size: $navigationSize;
+            color: $primaryFontColor;
+        }
+
+        .listItem.active {
+            border-radius: 5px;
+            background-color: $primaryLightColor;
+            border: solid 2px $primaryDarkColor;
+
+            .text > span {
+                color: $primaryFontColor;
+            }
+
+            .icon > * {
+                color: $primaryDarkColor;
+                fill: $primaryDarkColor;
+            }
+        }
     }
 
-    padding: 2.2% 3%;
-    height: 92vh;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    background-color: #FAFAFA;
-  }
-
-  .DrawerList {
-    @include respond-to(handhelds) {
-      width: 0;
-    }
-
-    @include respond-to(medium-up-screens) {
-      width: $drawerWidth;
-    }
-
-    padding-top: 30%;
-
-    .listItem {
-      width: 94%;
-      margin: 3%;
-    }
-
-    .list .listItem .text>span {
-      font-weight: 500;
-      font-size: $navigationSize;
-      color: $primaryFontColor;
-    }
-
-    .listItem.active {
-      border-radius: 5px;
-      background-color: $primaryLightColor;
-      border: solid 2px $primaryDarkColor;
-
-      .text>span {
+    .loginToggle {
+        font-family: 'Roboto', sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 26px;
+        text-decoration: none;
         color: $primaryFontColor;
-      }
-
-      .icon>* {
-        color: $primaryDarkColor;
-      }
+        float: right;
+        cursor: pointer;
+        text-transform: capitalize;
     }
-  }
-
-  .loginToggle {
-    font-family: 'Roboto', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 26px;
-    text-decoration: none;
-    color: $primaryFontColor;
-    float: right;
-    cursor: pointer;
-    text-transform: capitalize;
-  }
 }
 
 .DrawerList .list {
-  @include respond-to(handhelds-vertical) {
-    padding-top: 70px !important;
-  }
+    @include respond-to(handhelds-vertical) {
+        padding-top: 70px !important;
+    }
 
-  @include respond-to(handhelds) {
-    padding-top: 60px !important;
-  }
+    @include respond-to(handhelds) {
+        padding-top: 60px !important;
+    }
 
-  @include respond-to(ipad-landscape) {
-    padding-top: 80px !important;
-  }
+    @include respond-to(ipad-landscape) {
+        padding-top: 80px !important;
+    }
 }

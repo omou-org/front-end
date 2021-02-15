@@ -1,237 +1,397 @@
-import React, {useCallback, useMemo, useState} from "react";
-import {Link} from "react-router-dom";
-import PropTypes from "prop-types";
-import {useSelector} from "react-redux";
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-import Button from "@material-ui/core/Button";
-import CalendarIcon from "@material-ui/icons/CalendarToday";
-import EditIcon from "@material-ui/icons/EditOutlined";
-import EmailIcon from "@material-ui/icons/EmailOutlined";
-import Grid from "@material-ui/core/Grid";
-import Hidden from "@material-ui/core/Hidden";
-import Menu from "@material-ui/core/Menu";
-import MoneyIcon from "@material-ui/icons/LocalAtmOutlined";
-import PhoneIcon from "@material-ui/icons/PhoneOutlined";
-import Typography from "@material-ui/core/Typography";
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 
-import "./Accounts.scss";
-import {addDashes} from "./accountUtils";
-import {ReactComponent as BirthdayIcon} from "../../birthday.svg";
-import {ReactComponent as GradeIcon} from "../../grade.svg";
-import {ReactComponent as IDIcon} from "../../identifier.svg";
-import InstructorAvailability from "./InstructorAvailability";
-import OutOfOffice from "./OutOfOffice";
-import RoleChip from "./RoleChip";
-import {ReactComponent as SchoolIcon} from "../../school.svg";
-import {USER_TYPES} from "utils";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import EmailIcon from '@material-ui/icons/EmailOutlined';
+import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
+import MoneyIcon from '@material-ui/icons/LocalAtmOutlined';
+import PhoneIcon from '@material-ui/icons/PhoneOutlined';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core';
+import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import { darkGrey } from 'theme/muiTheme';
+import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
-const ProfileHeading = ({ user }) => {
-	const [anchorEl, setAnchorEl] = useState(null);
-	const isAdmin =
-		useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
+import ResetPasswordDialogs from './ResetPasswordDialogs';
+import Loading from 'components/OmouComponents/Loading';
+import './Accounts.scss';
+import { addDashes } from './accountUtils';
+import { ReactComponent as GradeIcon } from '../../grade.svg';
+import { ReactComponent as IDIcon } from '../../identifier.svg';
+import { ReactComponent as SchoolIcon } from '../../school.svg';
 
-	const handleOpen = useCallback(({currentTarget}) => {
-		setAnchorEl(currentTarget);
-	}, []);
+import { capitalizeString, fullName, USER_TYPES } from 'utils';
+import moment from 'moment';
 
-	const handleClose = useCallback(() => {
-		setAnchorEl(null);
-	}, []);
+const useStyles = makeStyles({
+    icon: {
+        fill: darkGrey,
+    },
+    text: {
+        color: darkGrey,
+    },
+    link: {
+        textDecoration: 'none',
+    },
+    iconContainer: {
+        paddingTop: '3px',
+    },
+});
 
-	const renderEditandAwayButton = () => (
-		<Grid container item xs={4}>
-			{user.role === "instructor" && (
-				<Grid align="left" className="schedule-button" item xs={12}>
-					<Button
-						aria-controls="simple-menu"
-						aria-haspopup="true"
-						onClick={handleOpen}
-						variant="outlined"
-					>
-						<CalendarIcon/>
-						Schedule Options
-					</Button>
-					<Menu
-						anchorEl={anchorEl}
-						keepMounted
-						onClose={handleClose}
-						open={anchorEl !== null}
-					>
-						<InstructorAvailability
-							button={false}
-							instructorID={user.user_id}
-						/>
-						<OutOfOffice button={false} instructorID={user.user_id}/>
-					</Menu>
-				</Grid>
-			)}
-			{isAdmin && (
-				<>
-					<Grid component={Hidden} item mdDown xs={12}>
-						<Button
-							component={Link}
-							to={`/form/${user.role}/${user.user_id}`}
-							variant="outlined"
-						>
-							<EditIcon/>
-							Edit Profile
-						</Button>
-					</Grid>
-					<Grid component={Hidden} item lgUp xs={12}>
-						<Button
-							component={Link}
-							to={`/form/${user.role}/${user.user_id}`}
-							variant="outlined"
-						>
-							<EditIcon/>
-						</Button>
-					</Grid>
-				</>
-			)}
-		</Grid>
-	);
+const GET_PROFILE_HEADING_QUERY = {
+    admin: gql`
+        query getAdmimUserInfo($userID: ID!) {
+            userInfo(userId: $userID) {
+                ... on AdminType {
+                    birthDate
+                    accountType
+                    adminType
+                    phoneNumber
+                    user {
+                        firstName
+                        lastName
+                        lastLogin
+                        email
+                        id
+                    }
+                }
+            }
+        }
+    `,
+    instructor: gql`
+        query getInstructorUserInfo($userID: ID!) {
+            userInfo(userId: $userID) {
+                ... on InstructorType {
+                    birthDate
+                    accountType
+                    phoneNumber
+                    user {
+                        firstName
+                        lastName
+                        email
+                        id
+                    }
+                }
+            }
+        }
+    `,
+    parent: gql`
+        query getParentUserInfo($userID: ID!) {
+            userInfo(userId: $userID) {
+                ... on ParentType {
+                    birthDate
+                    accountType
+                    phoneNumber
+                    balance
+                    user {
+                        firstName
+                        lastName
+                        email
+                        id
+                    }
+                }
+            }
+        }
+    `,
+    student: gql`
+        query getStudentUserInfo($userID: ID!) {
+            userInfo(userId: $userID) {
+                ... on StudentType {
+                    birthDate
+                    accountType
+                    phoneNumber
+                    grade
+                    school {
+                        name
+                        id
+                    }
+                    user {
+                        firstName
+                        lastName
+                        email
+                        id
+                    }
+                }
+            }
+        }
+    `,
+};
 
-	const profileDetails = useMemo(() => {
-		const IDRow = ({width = 6}) => (
-			<>
-				<Grid className="rowPadding" item xs={1}>
-					<IDIcon className="iconScaling"/>
-				</Grid>
-				<Grid className="rowPadding" item xs={width - 1}>
-					<Typography className="rowText">
-						#{user.summit_id || user.user_id}
-					</Typography>
-				</Grid>
-			</>
-		);
+const ProfileHeading = ({ ownerID }) => {
+    const classes = useStyles();
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [editButtonActive, setEditButtonActive] = useState(false);
+    const { accountType } = useParams();
 
-		const EmailRow = () => (
-			<>
-				<Grid className="emailPadding" item md={1}>
-					<a href={`mailto:${user.email}`}>
-						<EmailIcon/>
-					</a>
-				</Grid>
-				<Grid className="emailPadding" item md={5}>
-					<a href={`mailto:${user.email}`}>
-						<Typography className="rowText">{user.email}</Typography>
-					</a>
-				</Grid>
-			</>
-		);
+    const loggedInUserID = useSelector(({ auth }) => auth.user.id);
+    const loggedInAuth = useSelector(({ auth }) => auth);
 
-		const PhoneRow = ({width = 6}) => (
-			<>
-				<Grid className="rowPadding" item xs={1}>
-					<PhoneIcon className="iconScaling"/>
-				</Grid>
-				<Grid className="rowPadding" item xs={width - 1}>
-					<Typography className="rowText">
-						{addDashes(user.phone_number)}
-					</Typography>
-				</Grid>
-			</>
-		);
+    const { data, loading, error } = useQuery(
+        GET_PROFILE_HEADING_QUERY[accountType],
+        {
+            variables: { userID: ownerID },
+        }
+    );
+    if (loading) return <Loading />;
 
-		const BirthdayRow = () => (
-			<>
-				<Grid className="rowPadding" item xs={1}>
-					<BirthdayIcon className="iconScaling"/>
-				</Grid>
-				<Grid className="rowPadding" item xs={5}>
-					<Typography className="rowText">{user.birthday}</Typography>
-				</Grid>
-			</>
-		);
+    if (error) return `Error: ${error}`;
+    const { userInfo } = data;
 
-		switch (user.role) {
-			case "student":
-				return (
-					<>
-						<IDRow/>
-						<BirthdayRow/>
-						<Grid className="rowPadding" item xs={1}>
-							<GradeIcon className="iconScaling"/>
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">Grade {user.grade}</Typography>
-						</Grid>
-						<PhoneRow/>
-						<Grid className="rowPadding" item xs={1}>
-							<SchoolIcon className="iconScaling"/>
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">{user.school}</Typography>
-						</Grid>
-						<EmailRow/>
-					</>
-				);
-			case "instructor":
-			case "receptionist":
-				return (
-					<>
-						<IDRow width={12}/>
-						<PhoneRow width={12}/>
-						<EmailRow/>
-					</>
-				);
-			case "parent":
-				return (
-					<>
-						<IDRow/>
-						<Grid className="rowPadding" item xs={1}>
-							<MoneyIcon className="iconScaling"/>
-						</Grid>
-						<Grid className="rowPadding" item xs={5}>
-							<Typography className="rowText">${user.balance}</Typography>
-						</Grid>
-						<PhoneRow width={12}/>
-						<EmailRow/>
-					</>
-				);
-			default:
-				return null;
-		}
-	}, [user]);
+    const handleOpen = ({ currentTarget }) => {
+        setAnchorEl(currentTarget);
+    };
 
-	return (
-		<Grid alignItems="center" container item xs={12}>
-			<Grid align="left" alignItems="center" container item xs={8}>
-				<Grid className="profile-name" item style={{paddingRight: 10}}>
-					<Typography variant="h4">{user.name}</Typography>
-				</Grid>
-				<Grid item>
-					<Hidden smDown>
-						<RoleChip role={user.role}/>
-					</Hidden>
-				</Grid>
-			</Grid>
-			{renderEditandAwayButton()}
-			<Grid
-				container
-				style={{
-					margin: user.role === "instructor" ? "-10px 0" : "10px 0",
-				}}
-			>
-				{profileDetails}
-			</Grid>
-		</Grid>
-	);
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    // Validation
+    const isInstructor = loggedInAuth.accountType === USER_TYPES.instructor;
+    const isAdmin = loggedInAuth.accountType === USER_TYPES.admin;
+    const isAuthUser = userInfo.user.id === loggedInUserID;
+    const isStudentProfile = userInfo.accountType === 'STUDENT';
+    const canViewScheduleOptions = isAdmin || isInstructor;
+    const isStudentOrParent =
+        accountType === 'student' || accountType === 'parent';
+
+    const renderEditandAwayButton = () => (
+        <>
+            {isAdmin && isAuthUser && (
+                <>
+                    <Grid component={Hidden} item mdDown xs={12}>
+                        <div className='editResetDiv'>
+                            <ResponsiveButton
+                                component={Link}
+                                to={`/form/${userInfo.accountType.toLowerCase()}/edit/${
+                                    userInfo.user.id
+                                }`}
+                                className='edit'
+                            >
+                                Edit Profile
+                            </ResponsiveButton>
+                            {isAdmin && (
+                                <ResetPasswordDialogs
+                                    isStudentProfile={isStudentProfile}
+                                    userInfo={userInfo}
+                                />
+                            )}
+                        </div>
+                    </Grid>
+                    <Grid component={Hidden} item lgUp xs={12}>
+                        <ResponsiveButton
+                            component={Link}
+                            to={`/form/${userInfo.accountType.toLowerCase()}/edit/${
+                                userInfo.user.id
+                            }`}
+                            variant='outlined'
+                        >
+                            <EditIcon />
+                        </ResponsiveButton>
+                    </Grid>
+                </>
+            )}
+
+            {isStudentOrParent && (
+                <Grid component={Hidden} item mdDown xs={12}>
+                    <ResponsiveButton
+                        component={Link}
+                        to={`/form/${userInfo.accountType.toLowerCase()}/edit/${
+                            userInfo.user.id
+                        }`}
+                        variant='outlined'
+                    >
+                        Edit Profile
+                    </ResponsiveButton>
+                </Grid>
+            )}
+        </>
+    );
+
+    const profileDetails = () => {
+        const InfoRow = ({ variant, width = 6 }) => {
+            const type = {
+                ID: {
+                    icon: <IDIcon className={classes.icon} />,
+                    text: `#${userInfo.user.id}`,
+                },
+                Phone: {
+                    icon: <PhoneIcon className={classes.icon} />,
+                    text: addDashes(userInfo.phoneNumber),
+                },
+                Birthday: {
+                    icon: <CakeOutlinedIcon className={classes.icon} />,
+                    text: moment(userInfo.birthDate).format('MMM Do, YYYY'),
+                },
+                Grade: {
+                    icon: <GradeIcon className={classes.icon} />,
+                    text: `Grade ${userInfo?.grade}`,
+                },
+                School: {
+                    icon: <SchoolIcon className={classes.icon} />,
+                    text: userInfo.school?.name,
+                },
+                Balance: {
+                    icon: <MoneyIcon className={classes.icon} />,
+                    text: `$${userInfo.balance}`,
+                },
+                Email: {
+                    icon: <EmailIcon className={classes.icon} />,
+                    text: userInfo.user.email,
+                },
+            };
+
+            if (variant === 'Email' && userInfo.user.email !== '') {
+                return (
+                    <>
+                        <Grid item md={1} className={classes.iconContainer}>
+                            <a href={`mailto:${userInfo.user.email}`}>
+                                <EmailIcon className={classes.icon} />
+                            </a>
+                        </Grid>
+                        <Grid item md={width - 1}>
+                            <a
+                                className={classes.link}
+                                href={`mailto:${userInfo.user.email}`}
+                            >
+                                <Typography
+                                    variant='body1'
+                                    className={classes.text}
+                                >
+                                    {userInfo.user.email}
+                                </Typography>
+                            </a>
+                        </Grid>
+                    </>
+                );
+            } else {
+                return (
+                    <>
+                        <Grid item xs={1} className={classes.iconContainer}>
+                            {type[variant].icon}
+                        </Grid>
+                        <Grid item xs={width - 1}>
+                            <Typography
+                                variant='body1'
+                                className={classes.text}
+                            >
+                                {type[variant].text}
+                            </Typography>
+                        </Grid>
+                    </>
+                );
+            }
+        };
+
+        switch (accountType) {
+            case 'student':
+                return (
+                    <>
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Grade' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='School' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Birthday' />
+                    </>
+                );
+            case 'instructor':
+                return (
+                    <>
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='Birthday' />
+                    </>
+                );
+            case 'parent':
+                return (
+                    <>
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
+                        <InfoRow variant='Balance' />
+                    </>
+                );
+            default:
+                return (
+                    <>
+                        <InfoRow variant='ID' />
+                        <InfoRow variant='Email' />
+                        <InfoRow variant='Phone' />
+                    </>
+                );
+        }
+    };
+
+    return (
+        <Grid
+            alignItems='center'
+            container
+            item
+            xs={12}
+            style={{ margin: accountType === 'INSTRUCTOR' ? '-20px 0' : '0' }}
+        >
+            <Grid
+                align='left'
+                alignItems='center'
+                justify='space-between'
+                container
+                item
+                xs={12}
+            >
+                <Grid className='profile-name' item>
+                    <Typography
+                        variant='h3'
+                        style={{ marginRight: '20px', display: 'inline-block' }}
+                    >
+                        {fullName(userInfo.user)}
+                    </Typography>
+                    <Hidden smDown>
+                        <LabelBadge
+                            variant='outline-gray'
+                            style={{ marginBottom: '10px' }}
+                        >
+                            {capitalizeString(accountType)}
+                        </LabelBadge>
+                    </Hidden>
+                </Grid>
+                {renderEditandAwayButton()}
+            </Grid>
+
+            <Grid
+                container
+                align='left'
+                alignItems='center'
+                style={{
+                    width: '430px',
+                    margin: accountType === 'INSTRUCTOR' ? '-10px 0' : '10px 0',
+                }}
+            >
+                {profileDetails()}
+            </Grid>
+        </Grid>
+    );
 };
 
 ProfileHeading.propTypes = {
-	user: PropTypes.shape({
-		balance: PropTypes.string,
-		birthday: PropTypes.string,
-		email: PropTypes.string,
-		grade: PropTypes.number,
-		name: PropTypes.string,
-		phone_number: PropTypes.string,
-		role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
-		school: PropTypes.string,
-		summit_id: PropTypes.string,
-		user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	}).isRequired,
+    // user: PropTypes.shape({
+    // 	balance: PropTypes.string,
+    // 	birthday: PropTypes.string,
+    // 	email: PropTypes.string,
+    // 	grade: PropTypes.number,
+    // 	name: PropTypes.string,
+    // 	phone_number: PropTypes.string,
+    // 	// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
+    // 	school: PropTypes.string,
+    // 	summit_id: PropTypes.string,
+    // 	user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    // }).isRequired,
 };
 
 export default ProfileHeading;

@@ -1,134 +1,132 @@
-import EventIcon from "@material-ui/icons/CalendarToday";
-import React from "react";
-import AccountsIcon from "@material-ui/icons/Contacts";
-import AdminIcon from "@material-ui/icons/Face";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import DashboardIcon from "@material-ui/icons/Dashboard"
+import EventOutlinedIcon from '@material-ui/icons/EventOutlined';
+import React from 'react';
+import AccessTimeOutlinedIcon from '@material-ui/icons/AccessTimeOutlined';
+import ContactsOutlinedIcon from '@material-ui/icons/ContactsOutlined';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
-import PaymentIcon from "@material-ui/icons/Payment"
+import PaymentIcon from '@material-ui/icons/Payment';
+import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
+import { ReactComponent as NewAdminIcon } from './newadminicon.svg';
 
 /**
  * Various pages accessible by different users
  * */
 
 export const NavList = {
-	"ADMIN": [
-		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
-		{
-			"name": "Scheduler",
-			"link": "/scheduler",
-			"icon": <EventIcon/>,
-		},
-		{
-			"name": "Registration",
-			"link": "/registration",
-			"icon": <AssignmentIcon/>,
-		},
-		{
-			"name": "Course Management",
-			"link": "/coursemanagement",
-			"icon": <MenuBookIcon />
-		},
-		{
-			"name": "Accounts",
-			"link": "/accounts",
-			"icon": <AccountsIcon/>,
-		},
-		{
-			"name": "Admin",
-			"link": "/adminportal",
-			"icon": <AdminIcon/>,
-		},
-	],
-	"RECEPTIONIST": [
-		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
-		{
-			"name": "Scheduler",
-			"link": "/scheduler",
-			"icon": <EventIcon/>,
-		},
-		{
-			"name": "Registration",
-			"link": "/registration",
-			"icon": <AssignmentIcon/>,
-		},
-		{
-			"name": "Course Management",
-			"link": "/coursemanagement",
-			"icon": <MenuBookIcon />
-		},
-		{
-			"name": "Accounts",
-			"link": "/accounts",
-			"icon": <AccountsIcon/>,
-		},
-	],
-	"INSTRUCTOR": [
-		// {
-		// 	"name": "Dashboard",
-		// 	"link": "/",
-		// 	"icon": <DashboardIcon/>,
-		// },
-		{
-			"name": "My Schedule",
-			"link": "/scheduler",
-			"icon": <EventIcon/>,
-		},
-		{
-			"name": "Course Management",
-			"link": "/coursemanagement",
-			"icon": <MenuBookIcon />
-		},
-		{
-			"name": "My Availability",
-			"link": "/availability",
-			"icon": <EventIcon/>,
-		},
-		{
-			"name": "Teaching Log",
-			"link": "/teaching-log",
-			"icon": <EventIcon/>,
-		},
-	],
-	"PARENT": [
-		// {
-		// 	"name": "Dashboard",
-		// 	"link": "/",
-		// 	"icon": <DashboardIcon/>,
-		// },
-		{
-			"name": "Dashboard",
-			"link": "/",
-			"icon": <DashboardIcon/>,
-		},
-		{
-			"name": "Course Management",
-			"link": "/coursemanagement",
-			"icon": <MenuBookIcon />
-		},
-		{
-			"name": "My Scheduler",
-			"link": "/scheduler",
-			"icon": <EventIcon/>,
-		},
-		{
-			"name": "Registration",
-			"link": "/registration",
-			"icon": <AssignmentIcon/>,
-		},
-		{
-			"name": "My Payments",
-			"link": "/my-payments",
-			"icon": <PaymentIcon/>,
-		},
-	],
-    "STUDENT": [],
+    ADMIN: [
+        {
+            name: 'Dashboard',
+            link: '/',
+            icon: <DashboardIcon />,
+        },
+        {
+            name: 'Scheduler',
+            link: '/scheduler',
+            icon: <EventOutlinedIcon />,
+        },
+        {
+            name: 'Registration',
+            link: '/registration',
+            icon: <AssignmentOutlinedIcon />,
+        },
+        {
+            name: 'Courses',
+            link: '/courses',
+            icon: <MenuBookIcon />,
+        },
+        {
+            name: 'Accounts',
+            link: '/accounts',
+            icon: <ContactsOutlinedIcon />,
+        },
+        {
+            name: 'Admin',
+            link: '/adminportal',
+            icon: <NewAdminIcon />,
+        },
+    ],
+    RECEPTIONIST: [
+        {
+            name: 'Dashboard',
+            link: '/',
+            icon: <DashboardIcon />,
+        },
+        {
+            name: 'Scheduler',
+            link: '/scheduler',
+            icon: <EventOutlinedIcon />,
+        },
+        {
+            name: 'Registration',
+            link: '/registration',
+            icon: <AssignmentOutlinedIcon />,
+        },
+        {
+            name: 'Courses',
+            link: '/courses',
+            icon: <MenuBookIcon />,
+        },
+        {
+            name: 'Accounts',
+            link: '/accounts',
+            icon: <ContactsOutlinedIcon />,
+        },
+    ],
+    INSTRUCTOR: [
+        // {
+        // 	"name": "Dashboard",
+        // 	"link": "/",
+        // 	"icon": <DashboardIcon/>,
+        // },
+        {
+            name: 'Schedule',
+            link: '/scheduler',
+            icon: <EventOutlinedIcon />,
+        },
+        {
+            name: 'Courses',
+            link: '/courses',
+            icon: <MenuBookIcon />,
+        },
+        {
+            name: 'Availability',
+            link: '/availability',
+            icon: <AccessTimeOutlinedIcon />,
+        },
+        {
+            name: 'Teaching Log',
+            link: '/teaching-log',
+            icon: <ListAltOutlinedIcon />,
+        },
+    ],
+    PARENT: [
+        // {
+        // 	"name": "Dashboard",
+        // 	"link": "/",
+        // 	"icon": <DashboardIcon/>,
+        // },
+
+        {
+            name: 'Schedule',
+            link: '/scheduler',
+            icon: <EventOutlinedIcon />,
+        },
+        {
+            name: 'Courses',
+            link: '/courses',
+            icon: <MenuBookIcon />,
+        },
+        {
+            name: 'Payments',
+            link: '/my-payments',
+            icon: <PaymentIcon />,
+        },
+        {
+            name: 'Registration',
+            link: '/registration',
+            icon: <AssignmentOutlinedIcon />,
+        },
+    ],
+    STUDENT: [],
 };

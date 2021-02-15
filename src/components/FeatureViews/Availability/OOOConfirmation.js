@@ -3,6 +3,7 @@ import checkMarkIcon from 'components/FeatureViews/Scheduler/icons/bluecheckmark
 import { Typography, Grid, Button } from '@material-ui/core/';
 import { omouBlue } from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     messageSent: {
@@ -32,23 +33,23 @@ export default function OOOConfirmation(props) {
                     }}
                 />
             </Grid>
-            <Grid item xs={12} alignItems="center">
+            <Grid item xs={12} alignItems='center'>
                 <Typography className={classes.messageSent}>
                     Your notice has been sent{' '}
                 </Typography>
-                <Typography variant="h6">
+                <Typography variant='h6'>
                     You will recieve a confirmation of your OOO request
                 </Typography>
             </Grid>
 
-            <Grid item xs={12} alignItems="center" style={{ marginTop: '5vh' }}>
-                <Button
+            <Grid item xs={12} alignItems='center' style={{ marginTop: '5vh' }}>
+                <ResponsiveButton
                     className={classes.cancelbutton}
-                    variant="outlined"
+                    variant='outlined'
                     onClick={props.handleClose}
                 >
                     Close
-                </Button>
+                </ResponsiveButton>
             </Grid>
         </Grid>
     );
