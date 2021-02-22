@@ -1025,8 +1025,24 @@ export default {
                         password: '',
                     },
                     update: (cache, { data }) => {
-                        console.log(data);
                         const newParent = data.createParent;
+
+                        const cachedParent = cache.readQuery({
+                            query: USER_QUERIES['parent'],
+                            variables: {
+                                ownerID: newParent.parent.user.id,
+                            }
+                        });
+
+                        cache.writeQuery({
+                            data: {
+                                parent: {
+                                    cachedParent,
+                                    user: { ...newParent.parent.user},
+                                    
+                                }
+                            }
+                        })
 
                         if (cache.data.data.ROOT_QUERY.parents) {
                             const cachedParents = cache.readQuery({
@@ -1055,23 +1071,6 @@ export default {
                                 query: GET_ALL_PARENTS,
                             });
                         }
-
-                        // const cachedParent = cache.readQuery({
-                        //     query: USER_QUERIES['parent'],
-                        //     variables: {
-                        //         ownerID: newParent.parent.user.id,
-                        //     }
-                        // });
-                        // console.log(cachedParent);
-                        // cache.writeQuery({
-                        //     data: {
-                        //         parent: {
-                        //             cachedParent,
-                        //             user: { ...newParent.parent.user},
-                                    
-                        //         }
-                        //     }
-                        // })
                     }
                 });
             } catch (error) {
