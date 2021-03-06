@@ -2,7 +2,7 @@ import initialState from './initialState';
 import * as actions from './../actions/actionTypes';
 import { dateParser, weeklySessionsParser } from 'components/Form/FormUtils';
 import {
-    mapRegistrationInfo,
+    mapStudentRegistrationInfo,
     setParentRegistrationCart,
 } from '../components/OmouComponents/RegistrationUtils';
 import { arraysMatch } from '../utils';
@@ -254,7 +254,7 @@ const failedSubmit = (state) => ({
 });
 
 const saveRegistration = (student, course, registrationState) => {
-    const newRegistrationInfo = mapRegistrationInfo(student, course);
+    const newRegistrationInfo = mapStudentRegistrationInfo(student, course);
     const existingStudentRegistration = registrationState?.[student] || [];
     const newRegistrationState = {
         ...registrationState,

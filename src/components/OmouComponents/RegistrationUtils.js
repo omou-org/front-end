@@ -18,7 +18,7 @@ export const createTutoringDetails = (courseType, formData) => ({
     courseType,
 });
 
-export const mapRegistrationInfo = (student, course) => ({
+export const mapStudentRegistrationInfo = (student, course) => ({
     course: {
         id: typeof course === 'string' && course,
         ...(typeof course !== 'string' && course),
@@ -29,7 +29,7 @@ export const mapRegistrationInfo = (student, course) => ({
 });
 
 const saveRegistration = (student, course, registrationState) => {
-    const newRegistrationInfo = mapRegistrationInfo(student, course);
+    const newRegistrationInfo = mapStudentRegistrationInfo(student, course);
     const existingStudentRegistration = registrationState?.[student] || [];
     const newRegistrationState = {
         ...registrationState,
