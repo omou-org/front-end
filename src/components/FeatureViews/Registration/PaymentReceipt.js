@@ -18,8 +18,8 @@ import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 
 export const GET_PAYMENT = gql`
-    query Payment($paymentId: ID!) {
-        payment(paymentId: $paymentId) {
+    query Payment($invoiceId: ID!) {
+        invoice(invoiceId: $invoiceId) {
             id
             createdAt
             registrationSet {
@@ -59,13 +59,13 @@ export const GET_PAYMENT = gql`
     }
 `;
 
-const PaymentReceipt = ({ paymentID }) => {
+const PaymentReceipt = ({ invoiceId }) => {
     const history = useHistory();
     const location = useLocation();
     const params = useParams();
 
     const { data, loading, error } = useQuery(GET_PAYMENT, {
-        variables: { paymentId: params.paymentID || paymentID },
+        variables: { invoiceId: params.paymentID || invoiceId },
     });
 
     const currentPayingParent = useSelector(
@@ -89,8 +89,8 @@ const PaymentReceipt = ({ paymentID }) => {
         );
     }
 
-    const { payment } = data;
-    const { parent, registrationSet } = payment;
+    const { invoice } = data;
+    const { parent, registrationSet } = invoice;
     const studentIDs = uniques(
         registrationSet.map(
             (registration) => registration.enrollment.student.user.id
@@ -274,7 +274,7 @@ const PaymentReceipt = ({ paymentID }) => {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align='left'>
-                                        {payment.id}
+                                        {invoice.id}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={3}>
@@ -301,7 +301,7 @@ const PaymentReceipt = ({ paymentID }) => {
                                     <Typography align='left'>
                                         <Moment
                                             format='M/DD/YYYY'
-                                            date={payment.createdAt}
+                                            date={invoice.createdAt}
                                         />
                                     </Typography>
                                 </Grid>
@@ -312,7 +312,7 @@ const PaymentReceipt = ({ paymentID }) => {
                                 </Grid>
                                 <Grid item xs={3}>
                                     <Typography align='left'>
-                                        {paymentToString(payment.method)}
+                                        {paymentToString(invoice.method)}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -335,7 +335,7 @@ const PaymentReceipt = ({ paymentID }) => {
                 </Grid>
                 <Grid className='receipt-details' item xs={12}>
                     <Grid alignItems='flex-end' container direction='column'>
-                        {payment.discountTotal >= 0 && (
+                        {invoice.discountTotal >= 0 && (
                             <Grid item style={{ width: '100%' }} xs={3}>
                                 <Grid container direction='row'>
                                     <Grid item xs={7}>
@@ -348,13 +348,13 @@ const PaymentReceipt = ({ paymentID }) => {
                                             align='right'
                                             variant='subtitle1'
                                         >
-                                            - ${payment.discountTotal}
+                                            - ${invoice.discountTotal}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                             </Grid>
                         )}
-                        {payment.priceAdjustment > 0 && (
+                        {invoice.priceAdjustment > 0 && (
                             <Grid item style={{ width: '100%' }} xs={3}>
                                 <Grid container direction='row'>
                                     <Grid item xs={7}>
@@ -367,7 +367,7 @@ const PaymentReceipt = ({ paymentID }) => {
                                             align='right'
                                             variant='subtitle1'
                                         >
-                                            {payment.priceAdjustment}
+                                            {invoice.priceAdjustment}
                                         </Typography>
                                     </Grid>
                                 </Grid>
@@ -382,7 +382,7 @@ const PaymentReceipt = ({ paymentID }) => {
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Typography align='right' variant='h6'>
-                                        ${payment.total}
+                                        ${invoice.total}
                                     </Typography>
                                 </Grid>
                             </Grid>

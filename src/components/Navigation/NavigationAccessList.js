@@ -6,11 +6,12 @@ import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import PaymentIcon from '@material-ui/icons/Payment';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 import { ReactComponent as NewAdminIcon } from './newadminicon.svg';
 
 /**
- * Various pages accessible by different users
+ * @description Various pages accessible by different users
  * */
 
 export const NavList = {
@@ -41,10 +42,16 @@ export const NavList = {
             icon: <ContactsOutlinedIcon />,
         },
         {
+            name: "Invoices",
+            link: "/invoices",
+            icon: <AttachMoneyIcon/>
+        },
+        {
             name: 'Admin',
             link: '/adminportal',
             icon: <NewAdminIcon />,
         },
+       
     ],
     RECEPTIONIST: [
         {
@@ -71,6 +78,11 @@ export const NavList = {
             name: 'Accounts',
             link: '/accounts',
             icon: <ContactsOutlinedIcon />,
+        },
+        {
+            name: "Invoices",
+            link: "/invoices",
+            icon: <AttachMoneyIcon/>
         },
     ],
     INSTRUCTOR: [
@@ -117,15 +129,20 @@ export const NavList = {
             link: '/courses',
             icon: <MenuBookIcon />,
         },
-        {
-            name: 'Payments',
-            link: '/my-payments',
-            icon: <PaymentIcon />,
-        },
+        // {
+        //     name: 'Payments',
+        //     link: '/my-payments',
+        //     icon: <PaymentIcon />,
+        // },
         {
             name: 'Registration',
             link: '/registration',
             icon: <AssignmentOutlinedIcon />,
+        },
+         {
+            name: "Invoices",
+            link: "/invoices",
+            icon: <AttachMoneyIcon/>
         },
     ],
     STUDENT: [],

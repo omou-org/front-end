@@ -1,3 +1,13 @@
+/**
+ * @description invoice componet to display table of parents invoices
+ * @todo code to match figma design 
+ * 
+ * 
+ */
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import PaymentTable from '../Accounts/TabComponents/PaymentTable';
 import gql from 'graphql-tag';
@@ -17,8 +27,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 
 export const GET_PARENT_PAYMENTS_FILTERED = gql`
-    query ParentPayments {
-        invoices{
+    query ParentPayments($parentId: ID!, $startDate: String, $endDate: String) {
+        invoices(
+            parentId: $parentId
+            startDate: $startDate
+            endDate: $endDate
+        ) {
             id
             createdAt
             registrationSet {
@@ -30,7 +44,7 @@ export const GET_PARENT_PAYMENTS_FILTERED = gql`
     }
 `;
 
-export default function MyPaymentHistory() {
+export default function Invoices() {
     const AuthUser = useSelector(({ auth }) => auth);
     const [getPayments, { loading, data, error, called }] = useLazyQuery(
         GET_PARENT_PAYMENTS_FILTERED,
@@ -40,6 +54,7 @@ export default function MyPaymentHistory() {
             },
         }
     );
+    
     const [openCalendar, setOpenCalendar] = useState(false);
     const [state, setState] = useState([
         {
@@ -76,7 +91,7 @@ export default function MyPaymentHistory() {
     if (loading || !called) return <Loading />;
     if (error) return <div>An Error has occurred! {error.message}</div>;
 
-    const { payments } = data;
+    const { invoices } = data;
 
     return (
         <Grid container direction='row' spacing={4}>
@@ -132,8 +147,8 @@ export default function MyPaymentHistory() {
             </Grid>
             <Grid item xs={12}>
                 <PaymentTable
-                    paymentList={payments}
-                    rootRoute='/my-payments/payment/'
+                    paymentList={invoices}
+                    rootRoute='/invoices/'
                     type='parent'
                 />
             </Grid>

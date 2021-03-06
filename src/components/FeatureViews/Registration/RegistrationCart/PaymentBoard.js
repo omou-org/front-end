@@ -70,7 +70,7 @@ const CREATE_ENROLLMENTS = gql`
 `;
 
 const CREATE_PAYMENT = gql`
-    mutation CreatePayment(
+    mutation CreateInvoice(
         $method: String!
         $parent: ID!
         $classes: [ClassQuote]!
@@ -79,7 +79,7 @@ const CREATE_PAYMENT = gql`
         $registrations: [EnrollmentQuote]!
     ) {
         __typename
-        createPayment(
+        createInvoice(
             method: $method
             parent: $parent
             classes: $classes
@@ -87,7 +87,7 @@ const CREATE_PAYMENT = gql`
             priceAdjustment: $priceAdjustment
             registrations: $registrations
         ) {
-            payment {
+            invoice {
                 id
                 accountBalance
                 createdAt
@@ -426,9 +426,8 @@ export default function PaymentBoard() {
                 registrationPreferences: '',
             },
         });
-
         history.push(
-            `/registration/receipt/${payment.data.createPayment.payment.id}`
+            `/registration/receipt/${payment.data.createInvoice.invoice.id}`
         );
     };
 
