@@ -3,6 +3,7 @@ import * as actions from './../actions/actionTypes';
 import { dateParser, weeklySessionsParser } from 'components/Form/FormUtils';
 import {
     mapStudentRegistrationInfo,
+    mapEnrollmentRegistrationInfo,
     setParentRegistrationCart,
 } from '../components/OmouComponents/RegistrationUtils';
 import { arraysMatch } from '../utils';
