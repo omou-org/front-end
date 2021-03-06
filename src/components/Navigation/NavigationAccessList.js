@@ -42,16 +42,15 @@ export const NavList = {
             icon: <ContactsOutlinedIcon />,
         },
         {
-            name: "Invoices",
-            link: "/invoices",
-            icon: <AttachMoneyIcon/>
+            name: 'Invoices',
+            link: '/invoices',
+            icon: <AttachMoneyIcon />,
         },
         {
             name: 'Admin',
             link: '/adminportal',
             icon: <NewAdminIcon />,
         },
-       
     ],
     RECEPTIONIST: [
         {
@@ -80,9 +79,9 @@ export const NavList = {
             icon: <ContactsOutlinedIcon />,
         },
         {
-            name: "Invoices",
-            link: "/invoices",
-            icon: <AttachMoneyIcon/>
+            name: 'Invoices',
+            link: '/invoices',
+            icon: <AttachMoneyIcon />,
         },
     ],
     INSTRUCTOR: [
@@ -139,10 +138,10 @@ export const NavList = {
             link: '/registration',
             icon: <AssignmentOutlinedIcon />,
         },
-         {
-            name: "Invoices",
-            link: "/invoices",
-            icon: <AttachMoneyIcon/>
+        {
+            name: 'Invoices',
+            link: '/invoices',
+            icon: <AttachMoneyIcon />,
         },
     ],
     STUDENT: [],

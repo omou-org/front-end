@@ -39,7 +39,7 @@ import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
 
-import Invoices from "../FeatureViews/Invoices/Invoices"
+import Invoices from '../FeatureViews/Invoices/Invoices';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -128,11 +128,14 @@ export const RootRoutes = () => {
             {/* Invoices */}
             <AuthenticatedRoute
                 path='/invoices'
-                users={[USER_TYPES.parent, USER_TYPES.receptionist, USER_TYPES.admin]}
+                users={[
+                    USER_TYPES.parent,
+                    USER_TYPES.receptionist,
+                    USER_TYPES.admin,
+                ]}
             >
                 <Invoices />
             </AuthenticatedRoute>
-
 
             {/* Accounts */}
             <AuthenticatedRoute exact path='/accounts/:accountType/:accountID'>

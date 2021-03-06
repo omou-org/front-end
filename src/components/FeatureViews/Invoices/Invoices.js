@@ -1,12 +1,9 @@
 /**
  * @description invoice componet to display table of parents invoices
- * @todo code to match figma design 
- * 
- * 
+ * @todo code to match figma design
+ *
+ *
  */
-
-
-
 
 import React, { useEffect, useState } from 'react';
 import PaymentTable from '../Accounts/TabComponents/PaymentTable';
@@ -54,7 +51,7 @@ export default function Invoices() {
             },
         }
     );
-    
+
     const [openCalendar, setOpenCalendar] = useState(false);
     const [state, setState] = useState([
         {

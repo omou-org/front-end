@@ -18,7 +18,7 @@ import Dialog from '@material-ui/core/Dialog';
 
 export const GET_PARENT_PAYMENTS_FILTERED = gql`
     query ParentPayments {
-        invoices{
+        invoices {
             id
             createdAt
             registrationSet {

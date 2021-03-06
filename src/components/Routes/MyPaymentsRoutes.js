@@ -7,10 +7,9 @@ import MyPaymentHistory from '../FeatureViews/ManagePayments/MyPaymentHistory';
 import ActiveInvoices from '../FeatureViews/ManagePayments/ActiveInvoices';
 
 /**
- * @description Old payment routes for only parents 
+ * @description Old payment routes for only parents
  * @todo Work out updated invoice routes Keep this file or not.
  */
-
 
 export default function MyPaymentsRoutes() {
     return (
