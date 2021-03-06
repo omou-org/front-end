@@ -20,21 +20,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCartOutlined";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import * as types from "actions/actionTypes";
-
-const GET_PARENT_QUERY = gql`
-query GetRegisteringParent($userId: ID!) {
-  __typename
-  parent(userId: $userId) {
-    user {
-      firstName
-      id
-      lastName
-      email
-    }
-    studentList
-  }
-}
-`
+import { GET_PARENT_QUERY_AND_STUDENTLIST } from '../../../queries/AccountsQuery/AccountsQuery'
 
 const RegistrationActions = () => {
 	const AuthUser = useSelector(({auth}) => auth);
@@ -43,7 +29,7 @@ const RegistrationActions = () => {
 	const dispatch = useDispatch();
 
 	const [dialogOpen, setDialog] = useState(false);
-	const {data, error, loading} = useQuery(GET_PARENT_QUERY, {
+	const {data, error, loading} = useQuery(GET_PARENT_QUERY_AND_STUDENTLIST, {
 		variables: {userId: AuthUser.user.id},
 		skip: AuthUser.accountType !== USER_TYPES.parent,
 	});

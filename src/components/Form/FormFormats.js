@@ -11,6 +11,7 @@ import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
+import { GET_ADMIN_INFO, GET_INFO, GET_INSTRUCTOR_INFO, GET_NAME, GET_PARENT_INFO } from '../../queries/AccountsQuery/AccountsQuery';
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
     return this.test('unique', message, function (list) {
@@ -562,15 +563,7 @@ export default {
                     "variables": {id},
                 });
                 if (userInfo.accountType === "PARENT") {
-                    const GET_NAME = gql`
-                query GetName($id: ID!) {
-                    parent(userId: $id) {
-                        user {
-                            firstName
-                            lastName
-                        }
-                    }
-                }`;
+                    
                     const {"data": {parent}} = await client.query({
                         "query": GET_NAME,
                         "variables": {id},
@@ -584,36 +577,6 @@ export default {
                         },
                     };
                 } else if (userInfo.accountType === "STUDENT") {
-                    const GET_INFO = gql`
-                query GetInfo($id: ID!) {
-                    student(userId: $id) {
-                        address
-                        zipcode
-                        city
-                        state
-                        birthDate
-                        gender
-                        grade
-                        phoneNumber
-                        primaryParent {
-                            user {
-                                firstName
-                                lastName
-                                id
-                            }
-                        }
-                        school {
-                            name
-                            id
-                        }
-                        user {
-                            firstName
-                            lastName
-                            email
-                            id
-                        }
-                    }
-                }`;
                     const {"data": {student}} = await client.query({
                         "query": GET_INFO,
                         "variables": {id},
@@ -690,28 +653,9 @@ export default {
         "title": "Parent",
         "form": [PARENT_FIELDS],
         "load": async (id) => {
-            const GET_PARENT = gql`
-            query GetParent($id: ID!) {
-                parent(userId: $id) {
-                    user {
-                        firstName
-                        lastName
-                        email
-                    }
-                    relationship
-                    gender
-                    phoneNumber
-                    birthDate
-                    address
-                    city
-                    state
-                    zipcode
-                }
-            }`;
-
             try {
                 const {"data": {parent}} = await client.query({
-                    "query": GET_PARENT,
+                    "query": GET_PARENT_INFO,
                     "variables": {id},
                 });
                 return {
@@ -814,28 +758,9 @@ export default {
             },
         ],
         "load": async (id) => {
-            const GET_ADMIN = gql`
-            query GetAdmin($userID: ID!) {
-                admin(userId: $userID) {
-                    user {
-                        id
-                        email
-                        firstName
-                        lastName
-                    }
-                    adminType
-                    gender
-                    phoneNumber
-                    birthDate
-                    address
-                    city
-                    state
-                    zipcode
-                }
-            }`;
             try {
                 const {"data": {admin}} = await client.query({
-                    "query": GET_ADMIN,
+                    "query": GET_ADMIN_INFO,
                     "variables": {
                         "userID": id,
                     },
@@ -1348,33 +1273,9 @@ export default {
             },
         ],
         "load": async (id) => {
-            const GET_INSTRUCTOR = gql`
-                query GetInstructor($userID: ID) {
-                    instructor(userId: $userID) {
-                        address
-                        user {
-                            firstName
-                            lastName
-                            email
-                        }
-                        phoneNumber
-                        gender
-                        city
-                        state
-                        zipcode
-                        birthDate
-                        biography
-                        experience
-                        language
-                        subjects {
-                            name
-                            id
-                        }
-                    }
-                }`;
             try {
                 const {"data": {instructor}} = await client.query({
-                    "query": GET_INSTRUCTOR,
+                    "query": GET_INSTRUCTOR_INFO,
                     "variables": {
                         "userID": id,
                     },

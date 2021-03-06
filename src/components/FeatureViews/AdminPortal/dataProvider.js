@@ -1,5 +1,6 @@
 import { client } from "index";
 import gql from "graphql-tag";
+import { GET_SCHOOL } from "queries/AccountsQuery/AccountsQuery";
 
 const discountInfo = gql`
     fragment DiscountInfo on DiscountInterface {
@@ -81,17 +82,7 @@ const QUERIES_ONE = {
                 name
             }
         }`,
-    "schools": gql`
-        query getSchool($id:ID) {
-            school(schoolId: $id) {
-              id
-              name
-              district
-              zipcode
-            }
-          }
-
-        `,
+    "schools": GET_SCHOOL,
     "bulkDiscounts": gql`
         query GetBulkDiscount($id: ID!) {
             multiCourseDiscount(multiCourseDiscountId: $id) {

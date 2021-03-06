@@ -1,6 +1,7 @@
 import * as types from "./actionTypes";
 import {client} from "index";
 import gql from "graphql-tag";
+import { GET_ACCOUNT_TYPE } from '../queries/AccountsQuery/AccountsQuery'
 
 const GET_EMAIL = gql`
     mutation GetDetails($token: String!) {
@@ -9,47 +10,7 @@ const GET_EMAIL = gql`
         }
     }`;
 
-const GET_ACCOUNT_TYPE = gql`
-    query GetAccountType($username: String!) {
-        userInfo(userName: $username) {
-            ... on AdminType {
-                accountType
-                user {
-                    id
-                    firstName
-                    lastName
-                    email
-                }
-            }
-            ... on InstructorType {
-                accountType
-                user {
-                    id
-                    firstName
-                    lastName
-                    email
-                }
-            }
-            ... on ParentType {
-                accountType
-                user {
-                    id
-                    firstName
-                    lastName
-                    email
-                }
-            }
-            ... on StudentType {
-                accountType
-                user {
-                    id
-                    firstName
-                    lastName
-                    email
-                }
-            }
-        }
-    }`; 
+ 
 
 export const setToken = async (token, shouldSave) => {
     try {

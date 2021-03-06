@@ -30,7 +30,7 @@ import AccessControlComponent from '../../OmouComponents/AccessControlComponent'
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
 import { filterEvent } from 'actions/calendarActions';
-import { GET_STUDENTS } from './CourseManagementContainer';
+import { GET_STUDENTS_BY_ENROLLMENT } from '../../../queries/AccountsQuery/AccountsQuery';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -192,7 +192,7 @@ const CourseClasses = () => {
         data: studentData,
         loading: studentLoading,
         error: studentError,
-    } = useQuery(GET_STUDENTS, {
+    } = useQuery(GET_STUDENTS_BY_ENROLLMENT, {
         variables: { accountId: user.id },
         skip: accountType !== 'PARENT',
         onCompleted: () => {
