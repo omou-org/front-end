@@ -268,6 +268,15 @@ const saveRegistration = (student, course, registrationState) => {
     return newRegistrationState;
 };
 
+const addTutoringSessionsRegistration = (enrollmentId, numSessions) => {
+    const registrationStateRegistration = JSON.parse(
+        sessionStorage.getItem('registrations')
+    );
+    const newRegistrationInfo = mapEnrollmentRegistrationInfo(enrollmentId, numSessions);
+
+
+};
+
 const addClassRegistration = ({ courseId, studentId }) => {
     const registrationState = JSON.parse(
         sessionStorage.getItem('registrations')
