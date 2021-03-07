@@ -248,7 +248,7 @@ export const paymentToString = (string) => {
         case 'credit_card':
             return 'Credit Card';
         default:
-            return capitalizeString(string);
+            return capitalizeString(string.toLowerCase());
     }
 };
 

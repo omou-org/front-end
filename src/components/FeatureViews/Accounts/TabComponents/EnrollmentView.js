@@ -41,6 +41,7 @@ import { useEnrollmentNotes } from 'actions/userActions';
 import { useSessionsWithConfig } from 'actions/calendarActions';
 import Moment from 'react-moment';
 import { fullName } from '../../../../utils';
+import EnrollmentPayment from './EnrollmentPayment';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -270,11 +271,9 @@ const CourseSessionStatus = () => {
                 return <Notes ownerID={id} ownerType='enrollment' />;
             case 2:
                 return (
-                    <PaymentTable
-                        courseID={course.id}
-                        enrollmentID={id}
-                        paymentList={paymentList}
-                        type='enrollment'
+                    <EnrollmentPayment
+                        courseID={Number(course.course_id)}
+                        enrollmentID={Number(id)}
                     />
                 );
             default:
