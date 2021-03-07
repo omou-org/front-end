@@ -17,38 +17,9 @@ import { useHistory } from 'react-router-dom';
 import { GET_PAYMENT } from '../PaymentReceipt';
 import { GET_ALL_COURSES } from '../RegistrationLanding';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
-import { GET_REGISTRATION_CART } from '../SelectParentDialog';
+import { GET_REGISTRATION_CART } from '../../../../queries/Payment/PaymentQuery';
 import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
-
-const GET_PRICE_QUOTE = gql`
-    query GetPriceQuote(
-        $method: String!
-        $disabledDiscounts: [ID]
-        $priceAdjustment: Float
-        $classes: [ClassQuote]
-        $tutoring: [TutoringQuote]
-        $parent: ID!
-    ) {
-        priceQuote(
-            method: $method
-            disabledDiscounts: $disabledDiscounts
-            priceAdjustment: $priceAdjustment
-            classes: $classes
-            tutoring: $tutoring
-            parent: $parent
-        ) {
-            subTotal
-            priceAdjustment
-            accountBalance
-            total
-            discounts {
-                id
-                name
-                amount
-            }
-        }
-    }
-`;
+import { GET_PRICE_QUOTE } from '../../../../queries/Pricing/PricingQuery';
 
 const CREATE_ENROLLMENTS = gql`
     mutation CreateEnrollments($enrollments: [EnrollmentInput]!) {
