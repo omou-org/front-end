@@ -21,6 +21,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Stepper from "@material-ui/core/Stepper";
 import { makeValidate } from "mui-rff";
+import { CHECK_EMAIL } from '../../queries/AccountsQuery/AccountsQuery'
 
 const basicInfo = [
     <Fields.TextField className="TextField" fullWidth={false} key="firstName" label="First Name" margin="dense" name="firstName" required variant="outlined" />,
@@ -31,9 +32,7 @@ const basicInfo = [
 
 ];
 
-const CHECK_EMAIL = gql`query CheckEmail($email:String) {
-    userType(userName: $email)
-}`;
+
 
 
 const NewAccount = () => {

@@ -29,6 +29,7 @@ import { USER_TYPES } from '../../../utils';
 import UserProfileInfo from './UserProfileInfo';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
+import { GET_ADMIN_INFO_QUERY, GET_INSTRUCTOR_INFO_QUERY, GET_PARENT_INFO_QUERY, GET_STUDENT_INFO_QUERY } from 'queries/AccountsQuery/AccountsQuery';
 
 const userTabs = {
     instructor: [
@@ -162,97 +163,13 @@ const userTabs = {
     ],
 };
 
-const GET_ACCOUNT_NOTES = `
-	notes(userId: $ownerID) {
-		id
-		body
-		complete
-		important
-		timestamp
-		title
-	}`;
+
 
 const QUERIES = {
-    student: gql`query StudentInfoQuery($ownerID: ID!) {
-		userInfo(userId: $ownerID) {
-		  ... on StudentType {
-			birthDate
-			grade
-			phoneNumber
-			user {
-			  id
-			  firstName
-			  lastName
-			  email
-			}
-		  }
-		}
-		${GET_ACCOUNT_NOTES}
-	}
-	`,
-    parent: gql`
-	query ParentInfoQuery($ownerID: ID!) {
-		userInfo(userId: $ownerID) {
-		  ... on ParentType {
-			balance
-			accountType
-			phoneNumber
-			user {
-			  email
-			  id
-			  firstName
-			  lastName
-			}
-		  }
-		}
-		${GET_ACCOUNT_NOTES}
-	  }`,
-    instructor: gql`query InstructorInfoQuery($ownerID: ID!) {
-		userInfo(userId: $ownerID) {
-		  ... on InstructorType {
-			userUuid
-			phoneNumber
-			birthDate
-			accountType
-			biography
-		  	experience
-			language
-			 subjects {
-			  name
-			}
-			user {
-			  lastName
-			  firstName
-			  id
-			  email
-			}
-			instructoravailabilitySet {
-			  dayOfWeek
-			  endDatetime
-			  startDatetime
-			}
-		  }
-		}
-		${GET_ACCOUNT_NOTES}
-	  }`,
-    admin: gql`
-	  query AdminInfoQuery($ownerID: ID!) {
-		userInfo(userId: $ownerID) {
-		  ... on AdminType {
-			birthDate
-			phoneNumber
-			adminType
-			accountType
-			user {
-			  firstName
-			  lastName
-			  id
-			  email
-			}
-		  }
-		}
-		${GET_ACCOUNT_NOTES}
-	  }`,
+    student: GET_STUDENT_INFO_QUERY,
+    parent: GET_PARENT_INFO_QUERY,
+    instructor: GET_INSTRUCTOR_INFO_QUERY,
+    admin: GET_ADMIN_INFO_QUERY,
 };
 
 const useStyles = makeStyles({

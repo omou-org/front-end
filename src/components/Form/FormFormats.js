@@ -11,7 +11,7 @@ import {client} from "index";
 import gql from "graphql-tag";
 import {fullName} from "../../utils";
 import TutoringPriceQuote from "./TutoringPriceQuote";
-import { GET_ADMIN_INFO, GET_INFO, GET_INSTRUCTOR_INFO, GET_NAME, GET_PARENT_INFO } from '../../queries/AccountsQuery/AccountsQuery';
+import { GET_ADMIN_INFO, GET_INFO, GET_INSTRUCTOR_INFO, GET_NAME, GET_PARENT_INFO, GET_USER_TYPE_AND_PARENT_TYPE } from '../../queries/AccountsQuery/AccountsQuery';
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = a => a) {
     return this.test('unique', message, function (list) {
@@ -499,17 +499,7 @@ const schoolSelect = (name) => (
         noOptionsText="No schools available"/>
 );
 
-const GET_USER_TYPE = gql`
-    query GET_USER_TYPE($id: ID!) {
-        userInfo(userId: $id) {
-            ... on StudentType {
-                accountType
-            }
-            ... on ParentType {
-                accountType
-            }
-        }
-    }`;
+
 
 export default {
     "student": {
@@ -559,7 +549,7 @@ export default {
         "load": async (id) => {
             try {
                 const {"data": {userInfo}} = await client.query({
-                    "query": GET_USER_TYPE,
+                    "query": GET_USER_TYPE_AND_PARENT_TYPE,
                     "variables": {id},
                 });
                 if (userInfo.accountType === "PARENT") {

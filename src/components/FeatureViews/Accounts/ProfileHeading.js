@@ -34,6 +34,7 @@ import { ReactComponent as SchoolIcon } from "../../school.svg";
 import { fullName, USER_TYPES } from "utils";
 
 import UserProfileInfo from "./UserProfileInfo";
+import { GET_ADMIN_USER_INFO, GET_INSTRUCTOR_USER_INFO, GET_PARENT_USER_INFO, GET_STUDENT_USER_INFO } from "queries/AccountsQuery/AccountsQuery";
 const useStyles = makeStyles({
     icon: {
         fill: darkGrey,
@@ -50,82 +51,10 @@ const useStyles = makeStyles({
 });
 
 const GET_PROFILE_HEADING_QUERY = {
-    admin: gql`
-        query getAdmimUserInfo($userID: ID!) {
-            userInfo(userId: $userID) {
-                ... on AdminType {
-                    birthDate
-                    accountType
-                    adminType
-                    phoneNumber
-                    user {
-                        firstName
-                        lastName
-                        lastLogin
-                        email
-                        id
-                    }
-                }
-            }
-        }
-    `,
-    instructor: gql`
-        query getInstructorUserInfo($userID: ID!) {
-            userInfo(userId: $userID) {
-                ... on InstructorType {
-                    birthDate
-                    accountType
-                    phoneNumber
-                    user {
-                        firstName
-                        lastName
-                        email
-                        id
-                    }
-                }
-            }
-        }
-    `,
-    parent: gql`
-        query getParentUserInfo($userID: ID!) {
-            userInfo(userId: $userID) {
-                ... on ParentType {
-                    birthDate
-                    accountType
-                    phoneNumber
-                    balance
-                    user {
-                        firstName
-                        lastName
-                        email
-                        id
-                    }
-                }
-            }
-        }
-    `,
-    student: gql`
-        query getStudentUserInfo($userID: ID!) {
-            userInfo(userId: $userID) {
-                ... on StudentType {
-                    birthDate
-                    accountType
-                    phoneNumber
-                    grade
-                    school {
-                        name
-                        id
-                    }
-                    user {
-                        firstName
-                        lastName
-                        email
-                        id
-                    }
-                }
-            }
-        }
-    `,
+    admin: GET_ADMIN_USER_INFO,
+    instructor: GET_INSTRUCTOR_USER_INFO,
+    parent: GET_PARENT_USER_INFO,
+    student: GET_STUDENT_USER_INFO,
 };
 
 const ProfileHeading = ({ ownerID }) => {
