@@ -16,7 +16,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import moment from 'moment';
 import gql from 'graphql-tag';
 import { fullName, USER_TYPES } from '../../../utils';
-import { GET_CLASS } from './CourseClass';
+import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
 
 const useStyles = makeStyles({
     courseLink: {
@@ -134,7 +134,7 @@ const ClassInfo = ({
         update: (cache, { data }) => {
             const newCourseLink = data.createCourse.course;
             const cachedCourseLink = cache.readQuery({
-                query: GET_CLASS,
+                query: GET_COURSE,
                 variables: { id: id },
             }).course;
 
@@ -142,7 +142,7 @@ const ClassInfo = ({
                 data: {
                     course: { ...cachedCourseLink, ...newCourseLink },
                 },
-                query: GET_CLASS,
+                query: GET_COURSE,
                 variables: { id: id },
             });
         },

@@ -19,7 +19,11 @@ import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
 import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
 import { GET_ADMIN_INFO, GET_INFO, GET_INSTRUCTOR_INFO, GET_NAME, GET_PARENT_INFO, GET_USER_TYPE_AND_PARENT_TYPE, GET_ALL_STUDENTS, GET_SCHOOLS, GET_ALL_ADMINS } from '../../queries/AccountsQuery/AccountsQuery';
-
+import {
+    GET_CATEGORIES,
+    GET_COURSES,
+    GET_COURSE,
+} from '../../queries/CoursesQuery/CourseQuery';
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
         admin(userId: $userID) {
@@ -519,34 +523,6 @@ const SEARCH_PARENTS = gql`
                         firstName
                         lastName
                     }
-                }
-            }
-        }
-    }
-`;
-
-const GET_CATEGORIES = gql`
-    query GetCategories {
-        courseCategories {
-            id
-            name
-        }
-    }
-`;
-
-const GET_COURSES = gql`
-    query GetCourses {
-        courses {
-            title
-            id
-            enrollmentSet {
-                id
-            }
-            maxCapacity
-            instructor {
-                user {
-                    lastName
-                    firstName
                 }
             }
         }
@@ -1279,41 +1255,6 @@ export default {
             },
         ],
         load: async (id) => {
-            const GET_COURSE = gql`
-                query CourseFetch($id: ID!) {
-                    course(courseId: $id) {
-                        title
-                        id
-                        description
-                        instructor {
-                            user {
-                                id
-                                firstName
-                                lastName
-                            }
-                        }
-                        startDate
-                        maxCapacity
-                        courseCategory {
-                            id
-                            name
-                        }
-                        academicLevel
-                        academicLevelPretty
-                        endDate
-                        totalTuition
-                        hourlyTuition
-                        isConfirmed
-                        activeAvailabilityList {
-                            dayOfWeek
-                            endTime
-                            id
-                            startTime
-                        }
-                    }
-                }
-            `;
-
             try {
                 const {
                     data: { course },
@@ -1545,7 +1486,7 @@ export default {
                             });
                         } else {
                             const cachedCourse = cache.readQuery({
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },
@@ -1557,7 +1498,7 @@ export default {
                                         ...newCourse,
                                     },
                                 },
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },

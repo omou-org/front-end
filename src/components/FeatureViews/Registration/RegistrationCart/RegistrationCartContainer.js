@@ -3,6 +3,7 @@ import { useValidateRegisteringParent } from '../../../OmouComponents/Registrati
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Loading from '../../../OmouComponents/Loading';
+import BackgroundPaper from '../../../OmouComponents/BackgroundPaper';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -26,7 +27,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
 import { GET_COURSES_AND_STUDENTS_TO_REGISTER } from '../../../../queries/AccountsQuery/AccountsQuery';
 import { GET_REGISTRATION_CART } from '../../../../queries/Payment/PaymentQuery';
-
 
 export const CREATE_REGISTRATION_CART = gql`
     mutation CreateRegisteringCart(

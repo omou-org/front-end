@@ -1,13 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 // Material UI Imports
 import Grid from '@material-ui/core/Grid';
-import {
-    useHistory,
-    useLocation,
-    withRouter,
-    useParams,
-    NavLink,
-} from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import Loading from 'components/OmouComponents/Loading';
 
 import gql from 'graphql-tag';
@@ -20,7 +14,6 @@ import * as userActions from '../../../actions/userActions.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormControl, Typography } from '@material-ui/core';
 import * as apiActions from '../../../actions/apiActions';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { DatePicker } from '@material-ui/pickers/DatePicker/DatePicker';
 import { TimePicker } from '@material-ui/pickers/TimePicker/TimePicker';
@@ -31,7 +24,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import { dateFormat, timeFormat } from '../../../utils';
 import InstructorConflictCheck from 'components/OmouComponents/InstructorConflictCheck';
-import BackButton from '../../OmouComponents/BackButton';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import './scheduler.scss';
 import GET_SESSIONS from '../Accounts/TabComponents/EnrollmentView';
@@ -42,68 +34,8 @@ import moment from 'moment';
 import { GET_SESSIONS_FAILED } from 'actions/actionTypes';
 import { GET_INSTRUCTORS } from '../../../queries/AccountsQuery/AccountsQuery';
 
-const GET_CATEGORIES = gql`
-    query EditSessionCategoriesQuery {
-        courseCategories {
-            id
-            name
-        }
-    }
-`;
-
-const GET_SESSION = gql`
-    query EditSessionViewQuery($sessionId: ID!) {
-        session(sessionId: $sessionId) {
-            id
-            isConfirmed
-            startDatetime
-            title
-            instructor {
-                user {
-                    id
-                    firstName
-                    lastName
-                }
-            }
-            course {
-                id
-                isConfirmed
-                title
-                availabilityList {
-                    startTime
-                    endTime
-                    dayOfWeek
-                }
-                room
-                courseCategory {
-                    id
-                    name
-                }
-                instructor {
-                    user {
-                        id
-                        firstName
-                        lastName
-                    }
-                    subjects {
-                        name
-                    }
-                }
-                enrollmentSet {
-                    student {
-                        user {
-                            id
-                            firstName
-                            lastName
-                        }
-                    }
-                }
-            }
-            endDatetime
-            startDatetime
-        }
-    }
-`;
+import { GET_CATEGORIES } from '../../../queries/CoursesQuery/CourseQuery';
+import { GET_SESSION } from '../../../queries/SchedulerQuery/SchedulerQuery';
 
 const UPDATE_COURSE = gql`
     mutation UpdateCourse(

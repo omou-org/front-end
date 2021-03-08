@@ -25,6 +25,7 @@ import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
 import { filterEvent } from 'actions/calendarActions';
 import { GET_STUDENTS_BY_ENROLLMENT } from '../../../queries/AccountsQuery/AccountsQuery';
+import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 
@@ -74,87 +75,6 @@ export const GET_ANNOUNCEMENTS = gql`
     }
 `;
 
-export const GET_CLASS = gql`
-    query getClass($id: ID!) {
-        course(courseId: $id) {
-            id
-            academicLevel
-            title
-            startDate
-            endDate
-            description
-            courseLink
-            courseLinkDescription
-            courseLinkUpdatedAt
-            courseLinkUser {
-                firstName
-                lastName
-            }
-            courseCategory {
-                name
-                id
-            }
-            activeAvailabilityList {
-                dayOfWeek
-                endTime
-                startTime
-                id
-            }
-            instructor {
-                user {
-                    firstName
-                    lastName
-                    id
-                }
-            }
-            enrollmentSet {
-                id
-                student {
-                    user {
-                        firstName
-                        lastName
-                        id
-                    }
-                    primaryParent {
-                        user {
-                            firstName
-                            lastName
-                            id
-                            email
-                        }
-                        accountType
-                        phoneNumber
-                    }
-                    studentschoolinfoSet {
-                        textbook
-                        teacher
-                        name
-                    }
-                    accountType
-                }
-            }
-            sessionSet {
-                startDatetime
-                id
-            }
-            availabilityList {
-                startTime
-                endTime
-                dayOfWeek
-                id
-            }
-        }
-        enrollments(courseId: $id) {
-            id
-            student {
-                user {
-                    id
-                }
-            }
-        }
-    }
-`;
-
 const CourseClass = () => {
     const { id } = useParams();
     const classes = useStyles();
@@ -181,7 +101,7 @@ const CourseClass = () => {
 
     const parentNostudentEnrolledTab = [{ label: 'About Course' }];
 
-    const { data, loading, error } = useQuery(GET_CLASS, {
+    const { data, loading, error } = useQuery(GET_COURSE, {
         variables: {
             id: id,
         },
