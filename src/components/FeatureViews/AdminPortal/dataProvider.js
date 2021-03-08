@@ -10,7 +10,10 @@ import {
     DATE_RANGE_DISCOUNT,
     PAYMENT_METHOD_DISCOUNTS,
 } from '../../../queries/Pricing/PricingQuery';
-import { GET_SCHOOL, GET_SCHOOLS } from "../../../queries/AccountsQuery/AccountsQuery";
+import {
+    GET_SCHOOL,
+    GET_SCHOOLS,
+} from '../../../queries/AccountsQuery/AccountsQuery';
 
 const QUERIES_LIST = {
     courseCategories: gql`
@@ -38,8 +41,9 @@ const QUERIES_ONE = {
                 description
                 name
             }
-        }`,
-    "schools": GET_SCHOOL,
+        }
+    `,
+    schools: GET_SCHOOL,
     bulkDiscounts: BULK_DISCOUNT,
     dateRangeDiscounts: DATE_RANGE_DISCOUNT,
     paymentMethodDiscounts: gql`

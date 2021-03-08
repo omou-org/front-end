@@ -13,8 +13,6 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { GET_STUDENT_PARENTS } from 'queries/AccountsQuery/AccountsQuery';
 
-
-
 // I click into a student account - Take the ID from param
 //
 

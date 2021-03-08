@@ -26,7 +26,12 @@ import { USER_TYPES } from '../../../utils';
 import UserProfileInfo from './UserProfileInfo';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_ADMIN_INFO_QUERY, GET_INSTRUCTOR_INFO_QUERY, GET_PARENT_INFO_QUERY, GET_STUDENT_INFO_QUERY } from 'queries/AccountsQuery/AccountsQuery';
+import {
+    GET_ADMIN_INFO_QUERY,
+    GET_INSTRUCTOR_INFO_QUERY,
+    GET_PARENT_INFO_QUERY,
+    GET_STUDENT_INFO_QUERY,
+} from 'queries/AccountsQuery/AccountsQuery';
 
 const userTabs = {
     instructor: [
@@ -159,8 +164,6 @@ const userTabs = {
         },
     ],
 };
-
-
 
 export const USER_QUERIES = {
     student: GET_STUDENT_INFO_QUERY,

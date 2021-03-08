@@ -157,8 +157,6 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     );
 };
 
-
-
 export const StudentSelect = (props) => {
     const { studentIdList } = JSON.parse(
         sessionStorage.getItem('registrations')

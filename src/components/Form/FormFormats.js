@@ -18,7 +18,17 @@ import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
 import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
-import { GET_ADMIN_INFO, GET_INFO, GET_INSTRUCTOR_INFO, GET_NAME, GET_PARENT_INFO, GET_USER_TYPE_AND_PARENT_TYPE, GET_ALL_STUDENTS, GET_SCHOOLS, GET_ALL_ADMINS } from '../../queries/AccountsQuery/AccountsQuery';
+import {
+    GET_ADMIN_INFO,
+    GET_INFO,
+    GET_INSTRUCTOR_INFO,
+    GET_NAME,
+    GET_PARENT_INFO,
+    GET_USER_TYPE_AND_PARENT_TYPE,
+    GET_ALL_STUDENTS,
+    GET_SCHOOLS,
+    GET_ALL_ADMINS,
+} from '../../queries/AccountsQuery/AccountsQuery';
 import {
     GET_CATEGORIES,
     GET_COURSES,
@@ -584,7 +594,6 @@ const schoolSelect = (name) => (
     />
 );
 
-
 export default {
     student: {
         title: 'Student',
@@ -653,10 +662,12 @@ export default {
                             },
                         },
                     };
-                } else if (userInfo.accountType === "STUDENT") {
-                    const {"data": {student}} = await client.query({
-                        "query": GET_INFO,
-                        "variables": {id},
+                } else if (userInfo.accountType === 'STUDENT') {
+                    const {
+                        data: { student },
+                    } = await client.query({
+                        query: GET_INFO,
+                        variables: { id },
                     });
 
                     const modifiedData = {

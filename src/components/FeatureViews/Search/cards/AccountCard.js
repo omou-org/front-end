@@ -16,7 +16,12 @@ import { truncateStrings } from '../../../../utils';
 import { ReactComponent as IDIcon } from '../../../identifier.svg';
 import { stringToColor } from 'components/FeatureViews/Accounts/accountUtils';
 import { makeStyles } from '@material-ui/core/styles';
-import { GET_ADMIN, GET_INSTRUCTOR, GET_PARENT, GET_STUDENT } from '../../../../queries/AccountsQuery/AccountsQuery';
+import {
+    GET_ADMIN,
+    GET_INSTRUCTOR,
+    GET_PARENT,
+    GET_STUDENT,
+} from '../../../../queries/AccountsQuery/AccountsQuery';
 
 const useStyles = makeStyles({
     cardContainer: {
@@ -35,10 +40,10 @@ const USER_DETAILS = gql`
 `;
 
 export const ACCOUNT_QUERIES = {
-    "ADMIN": GET_ADMIN,
-    "INSTRUCTOR": GET_INSTRUCTOR,
-    "PARENT": GET_PARENT,
-    "STUDENT": GET_STUDENT,
+    ADMIN: GET_ADMIN,
+    INSTRUCTOR: GET_INSTRUCTOR,
+    PARENT: GET_PARENT,
+    STUDENT: GET_STUDENT,
 };
 
 const AccountCard = ({ accountType, userID, isLoading }) => {

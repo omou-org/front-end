@@ -30,7 +30,7 @@ import Dialog from '@material-ui/core/Dialog';
 import ErrorIcon from '@material-ui/icons/Error';
 import { fullName } from '../../../utils';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
-import { GET_LOGS } from '../../../queries/AccountsQuery/AccountsQuery'
+import { GET_LOGS } from '../../../queries/AccountsQuery/AccountsQuery';
 
 const useStyles = makeStyles({
     root: {

@@ -7,13 +7,12 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import moment from 'moment';
 
-import {handleToolTip} from "../../Scheduler/SchedulerUtils";
-import { fullName } from "utils.js";
-import {stringToColor} from "../accountUtils";
-import Loading from "components/OmouComponents/Loading";
-import { Typography } from "@material-ui/core";
-import { GET_INSTRUCTOR_COURSE_INFO } from "../../../../queries/AccountsQuery/AccountsQuery"
-
+import { handleToolTip } from '../../Scheduler/SchedulerUtils';
+import { fullName } from 'utils.js';
+import { stringToColor } from '../accountUtils';
+import Loading from 'components/OmouComponents/Loading';
+import { Typography } from '@material-ui/core';
+import { GET_INSTRUCTOR_COURSE_INFO } from '../../../../queries/AccountsQuery/AccountsQuery';
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 

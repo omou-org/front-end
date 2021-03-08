@@ -37,8 +37,7 @@ import ListDetailedItem, {
 } from '../../OmouComponents/ListComponent/ListDetailedItem';
 import { DialogContentText } from '@material-ui/core';
 import ParentCourseInterestBtn from './ParentCourseInterestBtn';
-import { GET_STUDENTS_AND_ENROLLMENTS } from '../../../queries/AccountsQuery/AccountsQuery'
-
+import { GET_STUDENTS_AND_ENROLLMENTS } from '../../../queries/AccountsQuery/AccountsQuery';
 
 const GET_PARENT_INTEREST = gql`
     query GetParentInterest($parentId: ID!) {

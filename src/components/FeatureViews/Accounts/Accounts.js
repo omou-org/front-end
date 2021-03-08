@@ -32,7 +32,10 @@ import { simpleUser } from '../../../queries/queryFragments';
 import UserAvatar from './UserAvatar';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { buttonBlue } from '../../../theme/muiTheme';
-import { QUERY_USERS, GET_ALL_STUDENTS } from '../../../queries/AccountsQuery/AccountsQuery'
+import {
+    QUERY_USERS,
+    GET_ALL_STUDENTS,
+} from '../../../queries/AccountsQuery/AccountsQuery';
 
 const AccountTab = withStyles({
     root: {

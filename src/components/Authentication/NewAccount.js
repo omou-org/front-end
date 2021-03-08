@@ -3,25 +3,25 @@ import { Link } from 'react-router-dom';
 import useStyles from './styles.js';
 import Typography from '@material-ui/core/Typography';
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
-import { PHONE_NUMBER_FIELD, stringField } from "../Form/FormFormats";
-import { FORM_ERROR } from "final-form";
-import * as Yup from "yup";
-import gql from "graphql-tag";
-import { useApolloClient } from "@apollo/react-hooks";
-import { Form as ReactForm } from "react-final-form";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
-import Grid from "@material-ui/core/Grid";
-import * as Fields from "../Form/FieldComponents/Fields";
-import "./LoginPage.scss";
-import { ReactComponent as Ellipse3 } from "./loginImages/ellipse3.svg";
-import { ReactComponent as Ellipse4 } from "./loginImages/ellipse4.svg";
-import { ReactComponent as Picture2 } from "./loginImages/picture2.svg";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import Stepper from "@material-ui/core/Stepper";
-import { makeValidate } from "mui-rff";
-import { CHECK_EMAIL } from '../../queries/AccountsQuery/AccountsQuery'
+import { PHONE_NUMBER_FIELD, stringField } from '../Form/FormFormats';
+import { FORM_ERROR } from 'final-form';
+import * as Yup from 'yup';
+import gql from 'graphql-tag';
+import { useApolloClient } from '@apollo/react-hooks';
+import { Form as ReactForm } from 'react-final-form';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import Grid from '@material-ui/core/Grid';
+import * as Fields from '../Form/FieldComponents/Fields';
+import './LoginPage.scss';
+import { ReactComponent as Ellipse3 } from './loginImages/ellipse3.svg';
+import { ReactComponent as Ellipse4 } from './loginImages/ellipse4.svg';
+import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import Stepper from '@material-ui/core/Stepper';
+import { makeValidate } from 'mui-rff';
+import { CHECK_EMAIL } from '../../queries/AccountsQuery/AccountsQuery';
 
 const basicInfo = [
     <Fields.TextField
@@ -74,9 +74,6 @@ const basicInfo = [
         variant='outlined'
     />,
 ];
-
-
-
 
 const NewAccount = () => {
     const client = useApolloClient();

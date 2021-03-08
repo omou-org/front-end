@@ -1,7 +1,7 @@
-import * as types from "./actionTypes";
-import {client} from "index";
-import gql from "graphql-tag";
-import { GET_ACCOUNT_TYPE } from '../queries/AccountsQuery/AccountsQuery'
+import * as types from './actionTypes';
+import { client } from 'index';
+import gql from 'graphql-tag';
+import { GET_ACCOUNT_TYPE } from '../queries/AccountsQuery/AccountsQuery';
 
 const GET_EMAIL = gql`
     mutation GetDetails($token: String!) {
@@ -10,8 +10,6 @@ const GET_EMAIL = gql`
         }
     }
 `;
-
- 
 
 export const setToken = async (token, shouldSave) => {
     try {

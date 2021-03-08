@@ -29,8 +29,13 @@ import { ReactComponent as SchoolIcon } from '../../school.svg';
 import { capitalizeString, fullName, USER_TYPES } from 'utils';
 import moment from 'moment';
 
-import UserProfileInfo from "./UserProfileInfo";
-import { GET_ADMIN_USER_INFO, GET_INSTRUCTOR_USER_INFO, GET_PARENT_USER_INFO, GET_STUDENT_USER_INFO } from "queries/AccountsQuery/AccountsQuery";
+import UserProfileInfo from './UserProfileInfo';
+import {
+    GET_ADMIN_USER_INFO,
+    GET_INSTRUCTOR_USER_INFO,
+    GET_PARENT_USER_INFO,
+    GET_STUDENT_USER_INFO,
+} from 'queries/AccountsQuery/AccountsQuery';
 const useStyles = makeStyles({
     icon: {
         fill: darkGrey,

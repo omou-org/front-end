@@ -1,6 +1,6 @@
 // Accounts GraphQL Queries
-import gql from "graphql-tag";
-import { simpleUser } from '../queryFragments'
+import gql from 'graphql-tag';
+import { simpleUser } from '../queryFragments';
 // note
 /* 
 IF NOT IN GRAPHQL LEAVE EM IN THERE
@@ -13,330 +13,333 @@ const getNoteByID = useCallback(
 
 // AccountCard.js
 export const USER_DETAILS = gql`
-  fragment UserDetails on UserType {
-    email
-    lastName
-    firstName
-  }
+    fragment UserDetails on UserType {
+        email
+        lastName
+        firstName
+    }
 `;
 
 export const GET_STUDENT = gql`
-  query StudentFetch($userID: ID!) {
-    student(userId: $userID) {
-      user {
-        ...UserDetails
-      }
+    query StudentFetch($userID: ID!) {
+        student(userId: $userID) {
+            user {
+                ...UserDetails
+            }
+        }
     }
-  }
-  ${USER_DETAILS}
+    ${USER_DETAILS}
 `;
 
 export const GET_PARENT = gql`
-  query ParentFetch($userID: ID!) {
-    parent(userId: $userID) {
-      user {
-        ...UserDetails
-      }
+    query ParentFetch($userID: ID!) {
+        parent(userId: $userID) {
+            user {
+                ...UserDetails
+            }
+        }
     }
-  }
-  ${USER_DETAILS}
+    ${USER_DETAILS}
 `;
 
-export const GET_INSTRUCTOR =  gql`
-query InstructorFetch($userID: ID!) {
-	instructor(userId: $userID) {
-		user {
-			...UserDetails
-		}
-	}
-}
-${USER_DETAILS}`;
+export const GET_INSTRUCTOR = gql`
+    query InstructorFetch($userID: ID!) {
+        instructor(userId: $userID) {
+            user {
+                ...UserDetails
+            }
+        }
+    }
+    ${USER_DETAILS}
+`;
 
 export const GET_ADMIN = gql`
-query AdminFetch($userID: ID!) {
-	admin(userId: $userID) {
-		user {
-			...UserDetails
-		}
-	}
-}
-${USER_DETAILS}`;
+    query AdminFetch($userID: ID!) {
+        admin(userId: $userID) {
+            user {
+                ...UserDetails
+            }
+        }
+    }
+    ${USER_DETAILS}
+`;
 
 // FormFormats
 export const GET_INFO = gql`
-  query GetInfo($id: ID!) {
-    student(userId: $id) {
-      address
-      zipcode
-      city
-      state
-      birthDate
-      gender
-      grade
-      phoneNumber
-      primaryParent {
-        user {
-          firstName
-          lastName
-          id
+    query GetInfo($id: ID!) {
+        student(userId: $id) {
+            address
+            zipcode
+            city
+            state
+            birthDate
+            gender
+            grade
+            phoneNumber
+            primaryParent {
+                user {
+                    firstName
+                    lastName
+                    id
+                }
+            }
+            school {
+                name
+                id
+            }
+            user {
+                firstName
+                lastName
+                email
+                id
+            }
         }
-      }
-      school {
-        name
-        id
-      }
-      user {
-        firstName
-        lastName
-        email
-        id
-      }
     }
-  }
 `;
 export const GET_NAME = gql`
-  query GetName($id: ID!) {
-    parent(userId: $id) {
-      user {
-        firstName
-        lastName
-      }
+    query GetName($id: ID!) {
+        parent(userId: $id) {
+            user {
+                firstName
+                lastName
+            }
+        }
     }
-  }
 `;
 
 export const GET_PARENT_INFO = gql`
-  query GetParent($id: ID!) {
-    parent(userId: $id) {
-      user {
-        firstName
-        lastName
-        email
-      }
-      relationship
-      gender
-      phoneNumber
-      birthDate
-      address
-      city
-      state
-      zipcode
+    query GetParent($id: ID!) {
+        parent(userId: $id) {
+            user {
+                firstName
+                lastName
+                email
+            }
+            relationship
+            gender
+            phoneNumber
+            birthDate
+            address
+            city
+            state
+            zipcode
+        }
     }
-  }
 `;
 
 export const GET_ADMIN_INFO = gql`
-  query GetAdmin($userID: ID!) {
-    admin(userId: $userID) {
-      user {
-        id
-        email
-        firstName
-        lastName
-      }
-      adminType
-      gender
-      phoneNumber
-      birthDate
-      address
-      city
-      state
-      zipcode
+    query GetAdmin($userID: ID!) {
+        admin(userId: $userID) {
+            user {
+                id
+                email
+                firstName
+                lastName
+            }
+            adminType
+            gender
+            phoneNumber
+            birthDate
+            address
+            city
+            state
+            zipcode
+        }
     }
-  }
 `;
 
 export const GET_INSTRUCTOR_INFO = gql`
-  query GetInstructor($userID: ID) {
-    instructor(userId: $userID) {
-      address
-      user {
-        firstName
-        lastName
-        email
-      }
-      phoneNumber
-      gender
-      city
-      state
-      zipcode
-      birthDate
-      biography
-      experience
-      language
-      subjects {
-        name
-        id
-      }
+    query GetInstructor($userID: ID) {
+        instructor(userId: $userID) {
+            address
+            user {
+                firstName
+                lastName
+                email
+            }
+            phoneNumber
+            gender
+            city
+            state
+            zipcode
+            birthDate
+            biography
+            experience
+            language
+            subjects {
+                name
+                id
+            }
+        }
     }
-  }
 `;
 
 export const GET_USER_TYPE_AND_PARENT_TYPE = gql`
-query GET_USER_TYPE($id: ID!) {
-    userInfo(userId: $id) {
-        ... on StudentType {
-            accountType
-        }
-        ... on ParentType {
-            accountType
+    query GET_USER_TYPE($id: ID!) {
+        userInfo(userId: $id) {
+            ... on StudentType {
+                accountType
+            }
+            ... on ParentType {
+                accountType
+            }
         }
     }
-}`;
+`;
 
 export const GET_ALL_STUDENTS = gql`
-query GetAllStudents {
-    students {
-        accountType
-        phoneNumber
-        user {
-            email
-            lastName
-            firstName
-            id
+    query GetAllStudents {
+        students {
+            accountType
+            phoneNumber
+            user {
+                email
+                lastName
+                firstName
+                id
+            }
         }
     }
-}
 `;
 
 export const GET_ALL_ADMINS = gql`
-query GetAllAdmins {
-    admins {
-        accountType
-        adminType
-        phoneNumber
-        user {
-            email
-            firstName
-            id
-            lastName
+    query GetAllAdmins {
+        admins {
+            accountType
+            adminType
+            phoneNumber
+            user {
+                email
+                firstName
+                id
+                lastName
+            }
+            userUuid
         }
-        userUuid
     }
-}
 `;
 
 // dataProvider.js
 export const GET_SCHOOL = {
-  schools: gql`
-    query getSchool($id: ID) {
-      school(schoolId: $id) {
-        id
-        name
-        district
-        zipcode
-      }
-    }
-  `,
+    schools: gql`
+        query getSchool($id: ID) {
+            school(schoolId: $id) {
+                id
+                name
+                district
+                zipcode
+            }
+        }
+    `,
 };
 
 export const GET_SCHOOLS = gql`
-query getSchools {
-    schools {
-        id
-        name
-        district
-        zipcode
+    query getSchools {
+        schools {
+            id
+            name
+            district
+            zipcode
+        }
     }
-}
 `;
 
 // StudentInfo.js
 export const GET_STUDENTS_BY_PARENT = gql`
-  query GetStudents($id: ID) {
-    parent(userId: $id) {
-      studentPrimaryParent {
-        ...StudentInfo
-      }
-      studentSecondaryParent {
-        ...StudentInfo
-      }
+    query GetStudents($id: ID) {
+        parent(userId: $id) {
+            studentPrimaryParent {
+                ...StudentInfo
+            }
+            studentSecondaryParent {
+                ...StudentInfo
+            }
+        }
     }
-  }
 
-  fragment StudentInfo on StudentType {
-    phoneNumber
-    user {
-      id
-      firstName
-      lastName
-      email
+    fragment StudentInfo on StudentType {
+        phoneNumber
+        user {
+            id
+            firstName
+            lastName
+            email
+        }
     }
-  }
 `;
 
 // CourseManagementContainer.js
 export const GET_STUDENTS_BY_ENROLLMENT = gql`
-  query getStudents($accountId: ID!) {
-    parent(userId: $accountId) {
-      user {
-        id
-      }
-      studentList {
-        user {
-          firstName
-          id
-          lastName
+    query getStudents($accountId: ID!) {
+        parent(userId: $accountId) {
+            user {
+                id
+            }
+            studentList {
+                user {
+                    firstName
+                    id
+                    lastName
+                }
+                enrollmentSet {
+                    course {
+                        id
+                        title
+                    }
+                }
+            }
         }
-        enrollmentSet {
-          course {
-            id
-            title
-          }
-        }
-      }
     }
-  }
 `;
 
 // RegistrationActions.js
 export const GET_PARENT_QUERY_AND_STUDENTLIST = gql`
-  query GetRegisteringParent($userId: ID!) {
-    __typename
-    parent(userId: $userId) {
-      user {
-        firstName
-        id
-        lastName
-        email
-      }
-      studentList
+    query GetRegisteringParent($userId: ID!) {
+        __typename
+        parent(userId: $userId) {
+            user {
+                firstName
+                id
+                lastName
+                email
+            }
+            studentList
+        }
     }
-  }
 `;
 
 // InstructorSchedule.js
 export const GET_INSTRUCTOR_COURSE_INFO = gql`
-	query getCourses($instructorID: ID!) {
-		instructor(userId: $instructorID) {
-			accountType
-			user {
-			  firstName
-			  lastName
-			  id
-			  instructor {
-				sessionSet {
-				  endDatetime
-				  startDatetime
-				  title
-				}
-				instructoravailabilitySet {
-				  dayOfWeek
-				  endDatetime
-				  startDatetime
-				  startTime
-				  endTime
-				}
-				instructoroutofofficeSet {
-					endDatetime
-					startDatetime
-					description
-				  }
-			  }
-			}
-		  }
-	  }
-`
+    query getCourses($instructorID: ID!) {
+        instructor(userId: $instructorID) {
+            accountType
+            user {
+                firstName
+                lastName
+                id
+                instructor {
+                    sessionSet {
+                        endDatetime
+                        startDatetime
+                        title
+                    }
+                    instructoravailabilitySet {
+                        dayOfWeek
+                        endDatetime
+                        startDatetime
+                        startTime
+                        endTime
+                    }
+                    instructoroutofofficeSet {
+                        endDatetime
+                        startDatetime
+                        description
+                    }
+                }
+            }
+        }
+    }
+`;
 // authActions.js
 export const GET_ACCOUNT_TYPE = gql`
     query GetAccountType($username: String!) {
@@ -378,87 +381,88 @@ export const GET_ACCOUNT_TYPE = gql`
                 }
             }
         }
-    }`;
+    }
+`;
 
 // ProfileHeading.js
 export const GET_ADMIN_USER_INFO = gql`
-query getAdmimUserInfo($userID: ID!) {
-  userInfo(userId: $userID) {
-    ... on AdminType {
-      birthDate
-      accountType
-      adminType
-      phoneNumber
-      user {
-        firstName
-        lastNamed
-        lastLogin
-        email
-        id
-      }
+    query getAdmimUserInfo($userID: ID!) {
+        userInfo(userId: $userID) {
+            ... on AdminType {
+                birthDate
+                accountType
+                adminType
+                phoneNumber
+                user {
+                    firstName
+                    lastNamed
+                    lastLogin
+                    email
+                    id
+                }
+            }
+        }
     }
-  }
-}
 `;
 
 export const GET_INSTRUCTOR_USER_INFO = gql`
-query getInstructorUserInfo($userID: ID!) {
-  userInfo(userId: $userID) {
-    ... on InstructorType {
-      birthDate
-      accountType
-      phoneNumber
-      user {
-        firstName
-        lastName
-        email
-        id
-      }
+    query getInstructorUserInfo($userID: ID!) {
+        userInfo(userId: $userID) {
+            ... on InstructorType {
+                birthDate
+                accountType
+                phoneNumber
+                user {
+                    firstName
+                    lastName
+                    email
+                    id
+                }
+            }
+        }
     }
-  }
-}
 `;
 
 export const GET_PARENT_USER_INFO = gql`
-query getParentUserInfo($userID: ID!) {
-  userInfo(userId: $userID) {
-    ... on ParentType {
-      birthDate
-      accountType
-      phoneNumber
-      balance
-      user {
-        firstName
-        lastName
-        email
-        id
-      }
+    query getParentUserInfo($userID: ID!) {
+        userInfo(userId: $userID) {
+            ... on ParentType {
+                birthDate
+                accountType
+                phoneNumber
+                balance
+                user {
+                    firstName
+                    lastName
+                    email
+                    id
+                }
+            }
+        }
     }
-  }
-}
 `;
 
 export const GET_STUDENT_USER_INFO = gql`
-query getStudentUserInfo($userID: ID!) {
-  userInfo(userId: $userID) {
-    ... on StudentType {
-      birthDate
-      accountType
-      phoneNumber
-      grade
-      school {
-        name
-        id
-      }
-      user {
-        firstName
-        lastName
-        email
-        id
-      }
+    query getStudentUserInfo($userID: ID!) {
+        userInfo(userId: $userID) {
+            ... on StudentType {
+                birthDate
+                accountType
+                phoneNumber
+                grade
+                school {
+                    name
+                    id
+                }
+                user {
+                    firstName
+                    lastName
+                    email
+                    id
+                }
+            }
+        }
     }
-  }
-}
 `;
 
 // UserProfile.js
@@ -472,7 +476,7 @@ export const GET_ACCOUNT_NOTES = `
 		title
 	}`;
 
-  export const GET_STUDENT_INFO_QUERY = gql`query StudentInfoQuery($ownerID: ID!) {
+export const GET_STUDENT_INFO_QUERY = gql`query StudentInfoQuery($ownerID: ID!) {
 		userInfo(userId: $ownerID) {
 		  ... on StudentType {
 			birthDate
@@ -490,7 +494,7 @@ export const GET_ACCOUNT_NOTES = `
 	}
 	`;
 
-  export const GET_PARENT_INFO_QUERY = gql`
+export const GET_PARENT_INFO_QUERY = gql`
 	query ParentInfoQuery($ownerID: ID!) {
 		userInfo(userId: $ownerID) {
 		  ... on ParentType {
@@ -508,7 +512,7 @@ export const GET_ACCOUNT_NOTES = `
 		${GET_ACCOUNT_NOTES}
 	  }`;
 
-  export const GET_INSTRUCTOR_INFO_QUERY = gql`query InstructorInfoQuery($ownerID: ID!) {
+export const GET_INSTRUCTOR_INFO_QUERY = gql`query InstructorInfoQuery($ownerID: ID!) {
 		userInfo(userId: $ownerID) {
 		  ... on InstructorType {
 			userUuid
@@ -537,7 +541,7 @@ export const GET_ACCOUNT_NOTES = `
 		${GET_ACCOUNT_NOTES}
 	  }`;
 
-    export const GET_ADMIN_INFO_QUERY = gql`
+export const GET_ADMIN_INFO_QUERY = gql`
 	  query AdminInfoQuery($ownerID: ID!) {
 		userInfo(userId: $ownerID) {
 		  ... on AdminType {
@@ -557,38 +561,40 @@ export const GET_ACCOUNT_NOTES = `
 	  }`;
 
 // Bio.js
-export const GET_USER_BIO = gql`query getUserBio($ownerID: ID!) {
-	userInfo(userId: $ownerID) {
-	  ... on InstructorType {
-		biography
-		experience
-		language
-		subjects {
-		  name
-		}
-	  }
-	}
-  }
-  `;
+export const GET_USER_BIO = gql`
+    query getUserBio($ownerID: ID!) {
+        userInfo(userId: $ownerID) {
+            ... on InstructorType {
+                biography
+                experience
+                language
+                subjects {
+                    name
+                }
+            }
+        }
+    }
+`;
 
-  
-  // NewAccount.js
-  export const CHECK_EMAIL = gql`query CheckEmail($email:String) {
-    userType(userName: $email)
-}`;
+// NewAccount.js
+export const CHECK_EMAIL = gql`
+    query CheckEmail($email: String) {
+        userType(userName: $email)
+    }
+`;
 
 // LoginPage.js
 export const GET_USER_TYPE = gql`
-  query GetUserType($username: String!) {
-    userType(userName: $username)
-  }
+    query GetUserType($username: String!) {
+        userType(userName: $username)
+    }
 `;
 
 // ResetPassword.js
 export const GET_EMAIL = gql`
-  query GetEmail($token: String) {
-    emailFromToken(token: $token)
-  }
+    query GetEmail($token: String) {
+        emailFromToken(token: $token)
+    }
 `;
 
 // ParentContact.js
@@ -615,43 +621,43 @@ export const GET_STUDENT_PARENTS = gql`
 
 // Accounts.js
 export const QUERY_USERS = gql`
-	query UserQuery($adminType: String) {
-		students {
-			user {
-				...SimpleUser
-				email
-			}
-			accountType
-			phoneNumber
-		}
-		parents {
-			user {
-				...SimpleUser
-				email
-			}
-			accountType
-			phoneNumber
-		}
-		instructors {
-			user {
-				...SimpleUser
-				email
-			}
-			accountType
-			phoneNumber
-		}
-		admins(adminType: $adminType) {
-			adminType
-			userUuid
-			user {
-				...SimpleUser
-				email
-			}
-			accountType
-			phoneNumber
-		}
-	}
-	${simpleUser}
+    query UserQuery($adminType: String) {
+        students {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+        parents {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+        instructors {
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+        admins(adminType: $adminType) {
+            adminType
+            userUuid
+            user {
+                ...SimpleUser
+                email
+            }
+            accountType
+            phoneNumber
+        }
+    }
+    ${simpleUser}
 `;
 
 // EditSessionView.js
@@ -791,24 +797,24 @@ export const GET_STUDENTS_USER_INFOS = gql`
 
 // UpcomingLogOOO.js
 export const GET_UPCOMING_INSTRUCTOR_OOO = gql`
-  query getInstructorOOO($instructorID: ID!) {
-    instructorOoo(instructorId: $instructorID) {
-      id
-      description
-      endDatetime
-      startDatetime
+    query getInstructorOOO($instructorID: ID!) {
+        instructorOoo(instructorId: $instructorID) {
+            id
+            description
+            endDatetime
+            startDatetime
+        }
     }
-  }
 `;
 
 // TimeAvailabilityContainer.js
 export const GET_INSTRUCTOR_AVAILABILITY = gql`
-  query GetInstructorAvailability($instructorId: ID!) {
-    instructorAvailability(instructorId: $instructorId) {
-      endTime
-      startTime
-      id
-      dayOfWeek
+    query GetInstructorAvailability($instructorId: ID!) {
+        instructorAvailability(instructorId: $instructorId) {
+            endTime
+            startTime
+            id
+            dayOfWeek
+        }
     }
-  }
 `;

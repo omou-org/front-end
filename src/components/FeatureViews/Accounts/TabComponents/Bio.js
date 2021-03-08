@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Card from "@material-ui/core/Card";
-import Chip from "@material-ui/core/Chip";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Loading from "../../../OmouComponents/Loading";
-import { useQuery } from "@apollo/react-hooks";
+import Card from '@material-ui/core/Card';
+import Chip from '@material-ui/core/Chip';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Loading from '../../../OmouComponents/Loading';
+import { useQuery } from '@apollo/react-hooks';
 import { GET_USER_BIO } from '../../../../queries/AccountsQuery/AccountsQuery';
 
 const Bio = ({ ownerID }) => {
