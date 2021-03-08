@@ -1,10 +1,10 @@
-@import "~@fullcalendar/core/main.css";
-@import "~@fullcalendar/daygrid/main.css";
-@import "~@fullcalendar/timeline/main.css";
-@import "~@fullcalendar/resource-timeline/main.css";
-@import "~@fullcalendar/timegrid/main.css";
-@import "../../../theme/colors";
-@import "../../../theme/sizes";
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+@import '~@fullcalendar/timeline/main.css';
+@import '~@fullcalendar/resource-timeline/main.css';
+@import '~@fullcalendar/timegrid/main.css';
+@import '../../../theme/colors';
+@import '../../../theme/sizes';
 @import '~@fullcalendar/core/main.css';
 @import '~@fullcalendar/daygrid/main.css';
 @import '~@fullcalendar/list/main.css';
@@ -14,278 +14,278 @@
 
 // Session view
 .scheduler {
-  width: 100%;
-  .scheduler-title {
-    margin: 0 0 0 10px;
-  }
-
-  .session-button {
-    .button {
-      left: 30px;
-      top: 15px;
+    width: 100%;
+    .scheduler-title {
+        margin: 0 0 0 10px;
     }
-  }
+
+    .session-button {
+        .button {
+            left: 30px;
+            top: 15px;
+        }
+    }
 }
 
 .paper.session {
-  padding: $paperPadding;
+    padding: $paperPadding;
 }
 
 .main-session-view {
-  margin-top: 2em;
+    margin-top: 2em;
 }
 
 .session-footer-buttons {
-  display: flex;
-  width: 50%;
+    display: flex;
+    width: 50%;
 }
 
 .session-view-details {
-  padding: 1%;
-  @include respond-to(handhelds) {
-    margin-top: 50px;
-  }
+    padding: 1%;
+    @include respond-to(handhelds) {
+        margin-top: 50px;
+    }
 
-  h5 {
-    font-weight: 500;
-  }
+    h5 {
+        font-weight: 500;
+    }
 }
 
 .scheduler-header {
-  background-color: white;
-  margin-bottom: 20px;
+    background-color: white;
+    margin-bottom: 20px;
 }
 
 .scheduler-header-firstSet {
-  flex: 1; /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+    flex: 1; /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .scheduler-header-date {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .fc-now-indicator {
-  border: 0 solid #43b5d9;
+    border: 0 solid #43b5d9;
 }
 
 // Current day background color
 .fc-today {
-  background: #EBFAFF !important;
-  border: none !important;
-  border-top: 1px solid #ddd !important;
-  font-weight: bold;
+    background: #ebfaff !important;
+    border: none !important;
+    border-top: 1px solid #ddd !important;
+    font-weight: bold;
 }
 
 // ToolTip css are styled ul's
 .toolTip {
-  .ul {
-    padding-inline-start: 0 !important;
-    list-style: none;
-  }
-  .container {
-    line-height: 2rem;
+    .ul {
+        padding-inline-start: 0 !important;
+        list-style: none;
+    }
+    .container {
+        line-height: 2rem;
 
-    .clock_icon {
-      background-image: url("./icons/icons8-clock-64.png");
-      margin: 0;
-      padding-left: 25px;
-      list-style: none;
-      background-repeat: no-repeat;
-      background-position: left center;
-      background-size: 20px;
-    }
+        .clock_icon {
+            background-image: url('./icons/icons8-clock-64.png');
+            margin: 0;
+            padding-left: 25px;
+            list-style: none;
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: 20px;
+        }
 
-    .pin_icon {
-      background-image: url("./icons/icons8-place-marker-50.png");
-      margin: 0;
-      padding-left: 25px;
-      list-style: none;
-      background-repeat: no-repeat;
-      background-position: left center;
-      background-size: 20px;
-    }
+        .pin_icon {
+            background-image: url('./icons/icons8-place-marker-50.png');
+            margin: 0;
+            padding-left: 25px;
+            list-style: none;
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: 20px;
+        }
 
-    .teacher_icon {
-      background-image: url("./icons/icons8-teacher-24.png");
-      margin: 0;
-      padding-left: 25px;
-      list-style: none;
-      background-repeat: no-repeat;
-      background-position: left center;
-      background-size: 20px;
+        .teacher_icon {
+            background-image: url('./icons/icons8-teacher-24.png');
+            margin: 0;
+            padding-left: 25px;
+            list-style: none;
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: 20px;
+        }
+        .discription_icon {
+            background-image: url('./icons/icons8-topic-32.png');
+            margin: 0;
+            padding-left: 25px;
+            list-style: none;
+            background-repeat: no-repeat;
+            background-position: left center;
+            background-size: 20px;
+            line-height: 1.2rem;
+        }
     }
-    .discription_icon {
-      background-image: url("./icons/icons8-topic-32.png");
-      margin: 0;
-      padding-left: 25px;
-      list-style: none;
-      background-repeat: no-repeat;
-      background-position: left center;
-      background-size: 20px;
-      line-height: 1.2rem;
-    }
-  }
 }
 
 // Tool tip styling
 
 .tippy-tooltip.light-theme {
-  background: white;
-  text-align: left;
-  border: 1px solid #c6c6c6;
-  color: #000000;
-  box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.25);
-  max-width: 260px !important;
-  padding-left: 20px;
-  padding-bottom: 20px;
-  border-radius: 10px;
-  padding-right: 20px;
+    background: white;
+    text-align: left;
+    border: 1px solid #c6c6c6;
+    color: #000000;
+    box-shadow: 5px 5px 6px rgba(0, 0, 0, 0.25);
+    max-width: 260px !important;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+    padding-right: 20px;
 }
 
 .toolTip {
-  .icn {
-    color: #3c3c3c;
-  }
+    .icn {
+        color: #3c3c3c;
+    }
 }
 
 .tippy-tooltip.light-theme .tippy-backdrop {
-  background-color: #ffffff;
+    background-color: #ffffff;
 }
 .session-view-title {
-  padding: 1%;
+    padding: 1%;
 }
 
 .main-calendar-div {
-  padding: 1%;
-  @include respond-to(handhelds) {
-  }
+    padding: 1%;
+    @include respond-to(handhelds) {
+    }
 }
 
 .session-detail-action-control {
-  padding: 1%;
-  padding-top: 4%;
-  @include respond-to(handhelds) {
-    margin-top: 50px;
-  }
-
-  .button,
-  .editButton {
-    background-color: white;
-    @include respond-to(medium-up-screens) {
-      margin-right: 30px;
-      height: 46px;
-      //width: 145px;
-    }
+    padding: 1%;
+    padding-top: 4%;
     @include respond-to(handhelds) {
-      margin-right: 5px;
-      height: 46px;
-      //width: 110px;
+        margin-top: 50px;
     }
 
-    color: $primaryFontColor;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
+    .button,
+    .editButton {
+        background-color: white;
+        @include respond-to(medium-up-screens) {
+            margin-right: 30px;
+            height: 46px;
+            //width: 145px;
+        }
+        @include respond-to(handhelds) {
+            margin-right: 5px;
+            height: 46px;
+            //width: 110px;
+        }
 
-    border: 1px solid #ffffff;
-    box-sizing: border-box;
-    border-radius: 5px;
+        color: $primaryFontColor;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 12px;
 
-    z-index: 1001;
+        border: 1px solid #ffffff;
+        box-sizing: border-box;
+        border-radius: 5px;
 
-    .icon {
-      margin-right: 4px;
-      color: $secondaryFontColor;
-      @include respond-to(handhelds) {
-        font-size: 1.5em;
-      }
+        z-index: 1001;
+
+        .icon {
+            margin-right: 4px;
+            color: $secondaryFontColor;
+            @include respond-to(handhelds) {
+                font-size: 1.5em;
+            }
+        }
     }
-  }
-  .editButton {
-    color: white;
-    background-color: $primaryColor;
-    border: 1px solid $primaryDarkColor;
-    &:not(.disable):hover {
-      color: white;
-      background-color: $primaryColor;
-      border: 1px solid $primaryDarkColor;
+    .editButton {
+        color: white;
+        background-color: $primaryColor;
+        border: 1px solid $primaryDarkColor;
+        &:not(.disable):hover {
+            color: white;
+            background-color: $primaryColor;
+            border: 1px solid $primaryDarkColor;
+        }
     }
-  }
 }
 
 .demo-app {
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
 }
 body .fc {
-  font-size: 15px;
+    font-size: 15px;
 }
 
 .demo-app-top {
-  margin: 0 0 3em;
+    margin: 0 0 3em;
 }
 
 .omou-calendar {
-  margin: 0 auto;
-  max-width: 1100px;
-  background-color: white;
-  .fc-event {
-    cursor: pointer;
-  }
+    margin: 0 auto;
+    max-width: 1100px;
+    background-color: white;
+    .fc-event {
+        cursor: pointer;
+    }
 }
 .fc-view,
 .fc-view > table {
-  z-index: 0;
+    z-index: 0;
 }
 
 .scheduler-wrapper {
-  padding: 0 15px;
+    padding: 0 15px;
 }
 
 .session-filter {
-  ul {
-    height: 300px;
-    width: 250px;
-    padding: 10px;
-  }
-  .session-filter-select {
-    width: 200px;
-    margin: 15px;
-  }
-  .select-filter-header {
-    font-size: 20px;
-    padding-left: 3px;
-    border: 1px solid #ffffff;
-    box-sizing: border-box;
-    border-radius: 5px;
-    width: 200px;
-  }
+    ul {
+        height: 300px;
+        width: 250px;
+        padding: 10px;
+    }
+    .session-filter-select {
+        width: 200px;
+        margin: 15px;
+    }
+    .select-filter-header {
+        font-size: 20px;
+        padding-left: 3px;
+        border: 1px solid #ffffff;
+        box-sizing: border-box;
+        border-radius: 5px;
+        width: 200px;
+    }
 }
 
 .notEnrolledStudentDialog {
-  .warningIcon {
-    font-size: 100px;
-    color: orange;
-    align-self: center;
-    margin-top: 20%;
-  }
+    .warningIcon {
+        font-size: 100px;
+        color: orange;
+        align-self: center;
+        margin-top: 20%;
+    }
 }
 
 .filter-select {
-  width: 85%;
-  display: flex;
+    width: 85%;
+    display: flex;
 }
 
 .scheduler.paper {
-  padding: $paperPadding;
+    padding: $paperPadding;
 }
 
 .search-options {
-  width: 80%;
+    width: 80%;
 }

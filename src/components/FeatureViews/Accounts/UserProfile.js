@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -13,15 +13,12 @@ import ScheduleIcon from '@material-ui/icons/CalendarTodayOutlined';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { makeStyles } from '@material-ui/core/styles';
-import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import NotificationIcon from '@material-ui/icons/NotificationImportant';
 import './Accounts.scss';
 
 import BackButton from 'components/OmouComponents/BackButton';
 import ComponentViewer from './ComponentViewer.js';
 import Loading from 'components/OmouComponents/Loading';
-
-import { useAccountNotes } from 'actions/userActions';
 
 import SettingsIcon from '@material-ui/icons/Settings';
 import { USER_TYPES } from '../../../utils';
@@ -34,19 +31,19 @@ import { GET_ADMIN_INFO_QUERY, GET_INSTRUCTOR_INFO_QUERY, GET_PARENT_INFO_QUERY,
 const userTabs = {
     instructor: [
         {
-            icon: <ScheduleIcon className="TabIcon" />,
+            icon: <ScheduleIcon className='TabIcon' />,
             tab_heading: 'Schedule',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 0,
         },
         {
-            icon: <CoursesIcon className="TabIcon" />,
+            icon: <CoursesIcon className='TabIcon' />,
             tab_heading: 'Courses',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 1,
         },
         {
-            icon: <BioIcon className="TabIcon" />,
+            icon: <BioIcon className='TabIcon' />,
             tab_heading: 'Bio',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -57,7 +54,7 @@ const userTabs = {
             tab_id: 2,
         },
         {
-            icon: <NoteIcon className="TabIcon" />,
+            icon: <NoteIcon className='TabIcon' />,
             tab_heading: 'Notes',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -67,7 +64,7 @@ const userTabs = {
             tab_id: 7,
         },
         {
-            icon: <SettingsIcon className="SettingsIcon" />,
+            icon: <SettingsIcon className='SettingsIcon' />,
             tab_heading: 'Notification Settings',
             access_permissions: [USER_TYPES.instructor],
             tab_id: 11,
@@ -75,7 +72,7 @@ const userTabs = {
     ],
     parent: [
         {
-            icon: <CurrentSessionsIcon className="TabIcon" />,
+            icon: <CurrentSessionsIcon className='TabIcon' />,
             tab_heading: 'Student Info',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -85,7 +82,7 @@ const userTabs = {
             tab_id: 8,
         },
         {
-            icon: <PaymentIcon className="TabIcon" />,
+            icon: <PaymentIcon className='TabIcon' />,
             tab_heading: 'Payment History',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -95,7 +92,7 @@ const userTabs = {
             tab_id: 5,
         },
         {
-            icon: <NotificationIcon className="TabIcon" />,
+            icon: <NotificationIcon className='TabIcon' />,
             tab_heading: 'Notes',
             access_permissions: [
                 USER_TYPES.receptionist,
@@ -105,7 +102,7 @@ const userTabs = {
             tab_id: 7,
         },
         {
-            icon: <SettingsIcon className="SettingsIcon" />,
+            icon: <SettingsIcon className='SettingsIcon' />,
             tab_heading: 'Notification Settings',
             access_permissions: [USER_TYPES.parent],
             tab_id: 11,
@@ -113,19 +110,19 @@ const userTabs = {
     ],
     student: [
         {
-            icon: <CurrentSessionsIcon className="TabIcon" />,
+            icon: <CurrentSessionsIcon className='TabIcon' />,
             tab_heading: 'Current Course(s)',
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_id: 3,
         },
         {
-            icon: <PastSessionsIcon className="TabIcon" />,
+            icon: <PastSessionsIcon className='TabIcon' />,
             access_permissions: [USER_TYPES.receptionist, USER_TYPES.admin],
             tab_heading: 'Past Course(s)',
             tab_id: 4,
         },
         {
-            icon: <ContactIcon className="TabIcon" />,
+            icon: <ContactIcon className='TabIcon' />,
             access_permissions: [
                 USER_TYPES.receptionist,
                 USER_TYPES.admin,
@@ -136,7 +133,7 @@ const userTabs = {
             tab_id: 6,
         },
         {
-            icon: <NoteIcon className="TabIcon" />,
+            icon: <NoteIcon className='TabIcon' />,
             access_permissions: [
                 USER_TYPES.receptionist,
                 USER_TYPES.admin,
@@ -165,18 +162,12 @@ const userTabs = {
 
 
 
-const QUERIES = {
+export const USER_QUERIES = {
     student: GET_STUDENT_INFO_QUERY,
     parent: GET_PARENT_INFO_QUERY,
     instructor: GET_INSTRUCTOR_INFO_QUERY,
     admin: GET_ADMIN_INFO_QUERY,
 };
-
-const useStyles = makeStyles({
-    MuiIndicator: {
-        height: '1px',
-    },
-});
 
 const UserProfile = () => {
     const { accountType, accountID } = useParams();
@@ -184,10 +175,6 @@ const UserProfile = () => {
     const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
 
     const AuthUser = useSelector(({ auth }) => auth);
-
-    // check if user is viewing a differnt profile
-    const classes = useStyles();
-    //
 
     // reset to first tab when profile changes
     useEffect(() => {
@@ -199,16 +186,17 @@ const UserProfile = () => {
         setDisplayTabs(userTabs[accountType]);
     }, [accountType]);
 
-    const { loading, error, data } = useQuery(QUERIES[accountType], {
+    const { loading, error, data } = useQuery(USER_QUERIES[accountType], {
         variables: { ownerID: accountID },
     });
 
     if (loading) return <Loading />;
 
-    if (error) return <Redirect to="/PageNotFound" />;
+    if (error) return <Redirect to='/PageNotFound' />;
 
-    const { notes } = data;
-    const numImportantNotes = notes.filter((note) => note.important).length;
+    const { accountNotes } = data;
+    const numImportantNotes = accountNotes.filter((note) => note.important)
+        .length;
     const importantNotesBadge =
         numImportantNotes > 0 ? numImportantNotes : null;
 
@@ -222,11 +210,7 @@ const UserProfile = () => {
     const tabs = () => {
         return (
             <>
-                <Tabs
-                    classes={{ indicator: classes.MuiIndicator }}
-                    onChange={handleTabChange}
-                    value={tabIndex}
-                >
+                <Tabs onChange={handleTabChange} value={tabIndex}>
                     {displayTabs
                         .filter((tab) =>
                             tabsInViewforAccountType(tab, AuthUser.accountType)
@@ -265,9 +249,7 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="UserProfile">
-            <BackButton warn={false} />
-            <hr />
+        <div className='UserProfile'>
             <UserProfileInfo user={data.userInfo} />
             {tabs()}
         </div>

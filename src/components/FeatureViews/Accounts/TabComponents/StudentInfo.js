@@ -56,34 +56,34 @@ const StudentInfo = () => {
     }
 
     if (error) {
-        return <LoadingError error="students" />;
+        return <LoadingError error='students' />;
     }
 
     return (
         <Grid
-            alignItems="center"
+            alignItems='center'
             container
-            direction="row"
-            md={12}
+            direction='row'
+            md={10}
             spacing={5}
             xs={10}
         >
             {studentList.map((student) => (
                 <ProfileCard
-                    key={student.user_id}
-                    route={`/accounts/student/${student.user_id}`}
+                    key={student.user.id}
+                    route={`/accounts/student/${student.user.id}`}
                     studentInvite={['PARENT', 'ADMIN'].includes(accountType)}
                     user={student}
                 />
             ))}
-            <Grid item sm={6} xs={12}>
+            <Grid item sm={4} xs={12}>
                 <AddItemButton
-                    height={120}
-                    width="inherit"
+                    height={150}
+                    width={300}
                     component={Link}
-                    to={`/form/add_student/${accountID}`}
+                    to={`/form/student/add/${accountID}`}
                 >
-                    + Add New Student
+                    + Add Student
                 </AddItemButton>
             </Grid>
         </Grid>
