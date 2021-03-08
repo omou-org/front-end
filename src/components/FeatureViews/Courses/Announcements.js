@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Create, Cancel } from '@material-ui/icons';
+import { Cancel, Create } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
-import { highlightColor } from '../../../theme/muiTheme';
+import theme, { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import moment from 'moment';
@@ -13,9 +13,8 @@ import NewAnnouncementModal from './NewAnnoucementsModal';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 
 import AddIcon from '@material-ui/icons/Add';
-import { GET_ANNOUNCEMENTS } from './CourseClasses';
-import { fullName, USER_TYPES, sortTime } from '../../../utils';
-import theme, { omouBlue } from '../../../theme/muiTheme';
+import { GET_ANNOUNCEMENTS } from './CourseClass';
+import { fullName, sortTime, USER_TYPES } from '../../../utils';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
@@ -72,13 +71,13 @@ const AnnouncementCard = ({
         <Grid
             className={classes.announcementContainer}
             container
-            justify="flex-start"
-            data-active="inactive"
+            justify='flex-start'
+            data-active='inactive'
         >
             <Grid item xs={6}>
                 <Typography
-                    variant="h6"
-                    align="left"
+                    variant='h6'
+                    align='left'
                     gutterBottom
                     ref={subjectRef}
                 >
@@ -93,7 +92,7 @@ const AnnouncementCard = ({
                         USER_TYPES.instructor,
                     ]}
                 >
-                    <Button onClick={handleOpenForm} name="edit" value="edit">
+                    <Button onClick={handleOpenForm} name='edit' value='edit'>
                         <Create style={{ color: omouBlue }} />
                     </Button>
                     <Button onClick={handleDeleteForm}>
@@ -102,12 +101,12 @@ const AnnouncementCard = ({
                 </AccessControlComponent>
             </Grid>
             <Grid item xs={12} className={classes.announcementBody}>
-                <Typography variant="body1" align="left" ref={bodyRef}>
+                <Typography variant='body1' align='left' ref={bodyRef}>
                     {body}
                 </Typography>
             </Grid>
             <Grid item xs={12}>
-                <Typography variant="subtitle2" align="left">
+                <Typography variant='subtitle2' align='left'>
                     Posted by:
                     <span
                         style={{
@@ -202,7 +201,7 @@ const Announcements = ({ announcementsData }) => {
     );
 
     return (
-        <Grid container justify="flex-start" data-active="inactive">
+        <Grid container justify='flex-start' data-active='inactive'>
             <AccessControlComponent
                 permittedAccountTypes={[
                     USER_TYPES.admin,
@@ -211,13 +210,13 @@ const Announcements = ({ announcementsData }) => {
                 ]}
             >
                 <ResponsiveButton
-                    variant="outlined"
+                    variant='outlined'
                     className={classes.newNoteButton}
                     onClick={() =>
                         setNewAnnouncementForm(true, setEditOrPost('post'))
                     }
-                    value="post"
-                    name="post"
+                    value='post'
+                    name='post'
                     startIcon={<AddIcon />}
                 >
                     <span className={classes.plusSpan}>+</span> New Announcement

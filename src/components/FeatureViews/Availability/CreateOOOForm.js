@@ -15,7 +15,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { omouBlue } from '../../../theme/muiTheme';
-import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
+import { GET_UPCOMING_INSTRUCTOR_OOO } from '../../../queries/AccountsQuery/AccountsQuery';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
@@ -143,7 +143,7 @@ export default function CreateOOOForm() {
 
     return (
         <OOOContext.Provider value={{ OOOFormState, updateOOOFormState }}>
-            <Grid container direction="row">
+            <Grid container direction='row'>
                 {/* 
                 
                 We need to comment this out because the final design is a step feature. I believe we are waiting
@@ -175,23 +175,23 @@ export default function CreateOOOForm() {
                 <Grid item xs={12}>
                     <Typography
                         style={{ paddingBottom: '3%' }}
-                        data-cy="submit-OOO-text"
-                        variant="h4"
+                        data-cy='submit-OOO-text'
+                        variant='h4'
                     >
                         Submit Out of Office Notice{' '}
                     </Typography>
                     {submitted ? (
                         <OOOConfirmation handleClose={handleClose} />
                     ) : (
-                            <SubmitNotice ref={SubmitNoticeChild} />
-                        )}
+                        <SubmitNotice ref={SubmitNoticeChild} />
+                    )}
                 </Grid>
 
                 <Grid
                     container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
+                    direction='row'
+                    justify='center'
+                    alignItems='center'
                 >
                     <Grid item style={{ padding: '5%' }}>
                         {!submitted && (
@@ -199,10 +199,10 @@ export default function CreateOOOForm() {
                                 onClick={() =>
                                     SubmitNoticeChild.current.handleClearForm()
                                 }
-                                variant="outlined"
-                                data-cy="clear-OOO-button"
-                        >
-                            clear
+                                variant='outlined'
+                                data-cy='clear-OOO-button'
+                            >
+                                clear
                             </ResponsiveButton>
                         )}
                     </Grid>
@@ -210,8 +210,8 @@ export default function CreateOOOForm() {
                         {!submitted && (
                             <ResponsiveButton
                                 onClick={handleSubmit}
-                                variant="outlined"
-                                data-cy="submit-OOO-button"
+                                variant='outlined'
+                                data-cy='submit-OOO-button'
                             >
                                 submit
                             </ResponsiveButton>

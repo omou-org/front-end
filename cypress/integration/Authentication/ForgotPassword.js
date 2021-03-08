@@ -1,9 +1,9 @@
-const EMAIL = "maggie@summit.com";
+const EMAIL = 'maggie@summit.com';
 
-describe("Forgot Password", () => {
-    it("Loads login page", () => {
-        cy.visit("");
-        cy.get("[data-cy=signInButton");
+describe('Forgot Password', () => {
+    it('Loads login page', () => {
+        cy.visit('');
+        cy.get('[data-cy=signInButton');
     });
     //
     // it("Fills out email and submits", () => {

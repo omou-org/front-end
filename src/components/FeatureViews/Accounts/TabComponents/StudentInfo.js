@@ -11,6 +11,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { useSelector } from 'react-redux';
 import { AddItemButton } from '../../../OmouComponents/AddItemButton';
 import { PropTypes } from 'prop-types';
+import { GET_STUDENTS_BY_PARENT } from '../../../../queries/AccountsQuery/AccountsQuery';
 
 const useStyles = makeStyles({
     center: {
@@ -25,33 +26,10 @@ const useStyles = makeStyles({
     },
 });
 
-const GET_STUDENTS = gql`
-    query GetStudents($id: ID) {
-        parent(userId: $id) {
-            studentPrimaryParent {
-                ...StudentInfo
-            }
-            studentSecondaryParent {
-                ...StudentInfo
-            }
-        }
-    }
-
-    fragment StudentInfo on StudentType {
-        phoneNumber
-        user {
-            id
-            firstName
-            lastName
-            email
-        }
-    }
-`;
-
 const StudentInfo = () => {
     const { accountType } = useSelector(({ auth }) => auth);
     const { accountID } = useParams();
-    const { data, loading, error } = useQuery(GET_STUDENTS, {
+    const { data, loading, error } = useQuery(GET_STUDENTS_BY_PARENT, {
         variables: { id: accountID },
     });
 
@@ -78,34 +56,34 @@ const StudentInfo = () => {
     }
 
     if (error) {
-        return <LoadingError error="students" />;
+        return <LoadingError error='students' />;
     }
 
     return (
         <Grid
-            alignItems="center"
+            alignItems='center'
             container
-            direction="row"
-            md={12}
+            direction='row'
+            md={10}
             spacing={5}
             xs={10}
         >
             {studentList.map((student) => (
                 <ProfileCard
-                    key={student.user_id}
-                    route={`/accounts/student/${student.user_id}`}
+                    key={student.user.id}
+                    route={`/accounts/student/${student.user.id}`}
                     studentInvite={['PARENT', 'ADMIN'].includes(accountType)}
                     user={student}
                 />
             ))}
-            <Grid item sm={6} xs={12}>
+            <Grid item sm={4} xs={12}>
                 <AddItemButton
-                    height={120}
-                    width="inherit"
+                    height={150}
+                    width={300}
                     component={Link}
-                    to={`/form/add_student/${accountID}`}
+                    to={`/form/student/add/${accountID}`}
                 >
-                    + Add New Student
+                    + Add Student
                 </AddItemButton>
             </Grid>
         </Grid>
