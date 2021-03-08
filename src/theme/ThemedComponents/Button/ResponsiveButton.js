@@ -32,6 +32,7 @@ export const ResponsiveButton = ({
     disabled,
     startIcon,
     endIcon,
+    to,
     ...ResponsiveButtonProps
 }) => {
     const buttonText = label || children;
@@ -47,6 +48,7 @@ export const ResponsiveButton = ({
             disabled={disabled}
             startIcon={startIcon}
             endIcon={endIcon}
+            href={to}
             {...ResponsiveButtonProps}
         >
             {buttonText}
