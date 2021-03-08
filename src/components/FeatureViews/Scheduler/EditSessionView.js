@@ -40,25 +40,13 @@ import { fullName } from '../../../utils';
 
 import moment from 'moment';
 import { GET_SESSIONS_FAILED } from 'actions/actionTypes';
+import { GET_INSTRUCTORS } from '../../../queries/AccountsQuery/AccountsQuery';
 
 const GET_CATEGORIES = gql`
     query EditSessionCategoriesQuery {
         courseCategories {
             id
             name
-        }
-    }
-`;
-
-const GET_INSTRUCTORS = gql`
-    query EditSessionCategoriesQuery {
-        instructors {
-            user {
-                firstName
-                id
-                lastName
-                email
-            }
         }
     }
 `;

@@ -28,50 +28,11 @@ import { capitalizeString, USER_TYPES } from 'utils';
 import IconButton from '@material-ui/core/IconButton';
 import LoadingHandler from 'components/OmouComponents/LoadingHandler';
 import ProfileCard from './ProfileCard';
-import { simpleUser } from 'queryFragments';
+import { simpleUser } from '../../../queries/queryFragments';
 import UserAvatar from './UserAvatar';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { buttonBlue } from '../../../theme/muiTheme';
-
-const QUERY_USERS = gql`
-    query UserQuery {
-        students {
-            user {
-                ...SimpleUser
-                email
-            }
-            accountType
-            phoneNumber
-        }
-        parents {
-            user {
-                ...SimpleUser
-                email
-            }
-            accountType
-            phoneNumber
-        }
-        instructors {
-            user {
-                ...SimpleUser
-                email
-            }
-            accountType
-            phoneNumber
-        }
-        admins {
-            adminType
-            userUuid
-            user {
-                ...SimpleUser
-                email
-            }
-            accountType
-            phoneNumber
-        }
-    }
-    ${simpleUser}
-`;
+import { QUERY_USERS, GET_ALL_STUDENTS } from '../../../queries/AccountsQuery/AccountsQuery'
 
 const AccountTab = withStyles({
     root: {

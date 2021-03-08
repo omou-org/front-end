@@ -18,7 +18,7 @@ import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
 import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
-import { GET_ADMIN_INFO, GET_INFO, GET_INSTRUCTOR_INFO, GET_NAME, GET_PARENT_INFO, GET_USER_TYPE_AND_PARENT_TYPE } from '../../queries/AccountsQuery/AccountsQuery';
+import { GET_ADMIN_INFO, GET_INFO, GET_INSTRUCTOR_INFO, GET_NAME, GET_PARENT_INFO, GET_USER_TYPE_AND_PARENT_TYPE, GET_ALL_STUDENTS, GET_SCHOOLS, GET_ALL_ADMINS } from '../../queries/AccountsQuery/AccountsQuery';
 
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
@@ -599,15 +599,6 @@ const schoolMap = ({ schools }) =>
         value: id,
     }));
 
-const GET_SCHOOLS = gql`
-    query GetSchools {
-        schools {
-            name
-            id
-        }
-    }
-`;
-
 const schoolSelect = (name) => (
     <Fields.DataSelect
         name={name}
@@ -764,21 +755,6 @@ export default {
                                 firstName
                                 id
                             }
-                        }
-                    }
-                }
-            `;
-
-            const GET_ALL_STUDENTS = gql`
-                query GetAllStudents {
-                    students {
-                        accountType
-                        phoneNumber
-                        user {
-                            email
-                            lastName
-                            firstName
-                            id
                         }
                     }
                 }
@@ -1052,23 +1028,6 @@ export default {
                                 lastName
                             }
                         }
-                    }
-                }
-            `;
-
-            const GET_ALL_ADMINS = gql`
-                query GetAllAdmins {
-                    admins {
-                        accountType
-                        adminType
-                        phoneNumber
-                        user {
-                            email
-                            firstName
-                            id
-                            lastName
-                        }
-                        userUuid
                     }
                 }
             `;

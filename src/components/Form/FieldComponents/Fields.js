@@ -17,6 +17,7 @@ import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
 import { TrendingUpRounded } from '@material-ui/icons';
 import { Schedule } from '@material-ui/icons';
+import { GET_STUDENTS_USER_INFOS } from '../../../queries/AccountsQuery/AccountsQuery';
 
 const getLabel = ({ label }) => label || '';
 
@@ -156,25 +157,13 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     );
 };
 
-const GET_STUDENTS = gql`
-    query GetStudents($userIds: [ID]!) {
-        userInfos(userIds: $userIds) {
-            ... on StudentType {
-                user {
-                    firstName
-                    lastName
-                    id
-                }
-            }
-        }
-    }
-`;
+
 
 export const StudentSelect = (props) => {
     const { studentIdList } = JSON.parse(
         sessionStorage.getItem('registrations')
     ).currentParent;
-    const { data } = useQuery(GET_STUDENTS, {
+    const { data } = useQuery(GET_STUDENTS_USER_INFOS, {
         variables: { userIds: studentIdList },
     });
     const studentOptions =

@@ -30,50 +30,7 @@ import Dialog from '@material-ui/core/Dialog';
 import ErrorIcon from '@material-ui/icons/Error';
 import { fullName } from '../../../utils';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
-
-const GET_LOGS = gql`
-    query GetLogs(
-        $action: String
-        $adminType: String
-        $page: Int
-        $pageSize: Int
-        $sort: String
-        $objectType: String
-        $userId: ID!
-        $startDateTime: String
-        $endDateTime: String
-    ) {
-        logs(
-            action: $action
-            adminType: $adminType
-            page: $page
-            pageSize: $pageSize
-            sort: $sort
-            objectType: $objectType
-            userId: $userId
-            startDateTime: $startDateTime
-            endDateTime: $endDateTime
-        ) {
-            results {
-                date
-                userId
-                adminType
-                action
-                objectType
-                objectRepr
-            }
-            total
-        }
-        admins {
-            user {
-                id
-                firstName
-                email
-                lastName
-            }
-        }
-    }
-`;
+import { GET_LOGS } from '../../../queries/AccountsQuery/AccountsQuery'
 
 const useStyles = makeStyles({
     root: {

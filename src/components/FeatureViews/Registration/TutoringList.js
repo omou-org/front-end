@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import LoadingError from '../Accounts/TabComponents/LoadingCourseError';
 import { truncateStrings } from 'utils';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_CATEGORIES } from 'queryFragments';
+import { GET_CATEGORIES } from '../../../queries/queryFragments';
 
 const TutoringList = () => {
     const { data, loading, error } = useQuery(GET_CATEGORIES);

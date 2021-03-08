@@ -1,6 +1,6 @@
 import { client } from "index";
 import gql from "graphql-tag";
-import { GET_SCHOOL } from "queries/AccountsQuery/AccountsQuery";
+import { GET_SCHOOL, GET_SCHOOLS } from "queries/AccountsQuery/AccountsQuery";
 
 const discountInfo = gql`
     fragment DiscountInfo on DiscountInterface {
@@ -24,16 +24,7 @@ const QUERIES_LIST = {
             }
         }
     `,
-    schools: gql`
-        query getSchools {
-            schools {
-                id
-                name
-                district
-                zipcode
-            }
-        }
-    `,
+    schools: GET_SCHOOLS,
     bulkDiscounts: gql`
         query GetBulkDiscounts {
             multiCourseDiscounts {

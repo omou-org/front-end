@@ -25,45 +25,8 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
 import { GET_REGISTRATION_CART } from '../SelectParentDialog';
+import { GET_COURSES_AND_STUDENTS_TO_REGISTER } from '../../../../queries/AccountsQuery/AccountsQuery';
 
-const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
-    query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
-        userInfos(userIds: $userIds) {
-            ... on StudentType {
-                user {
-                    firstName
-                    lastName
-                    email
-                    id
-                }
-            }
-        }
-        courses(courseIds: $courseIds) {
-            id
-            title
-            startDate
-            endDate
-            hourlyTuition
-            availabilityList {
-                dayOfWeek
-                endTime
-                startTime
-            }
-            academicLevelPretty
-            courseCategory {
-                id
-                name
-            }
-            instructor {
-                user {
-                    id
-                    firstName
-                    lastName
-                }
-            }
-        }
-    }
-`;
 
 export const CREATE_REGISTRATION_CART = gql`
     mutation CreateRegisteringCart(

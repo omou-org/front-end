@@ -11,7 +11,7 @@ import Loading from 'components/OmouComponents/Loading';
 import RegistrationActions from './RegistrationActions';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
-import { SIMPLE_COURSE_DATA } from 'queryFragments';
+import { SIMPLE_COURSE_DATA } from '../../../queries/queryFragments';
 import { getRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 
 const customStyles = {

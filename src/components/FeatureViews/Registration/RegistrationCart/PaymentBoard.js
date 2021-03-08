@@ -16,7 +16,7 @@ import Loading from '../../../OmouComponents/Loading';
 import { useHistory } from 'react-router-dom';
 import { GET_PAYMENT } from '../PaymentReceipt';
 import { GET_ALL_COURSES } from '../RegistrationLanding';
-import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
+import { GET_STUDENTS_AND_ENROLLMENTS } from '../../../../queries/AccountsQuery/AccountsQuery';
 import { GET_REGISTRATION_CART } from '../SelectParentDialog';
 import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
 

@@ -15,7 +15,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { omouBlue } from '../../../theme/muiTheme';
-import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
+import { GET_UPCOMING_INSTRUCTOR_OOO } from '../../../queries/AccountsQuery/AccountsQuery';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
