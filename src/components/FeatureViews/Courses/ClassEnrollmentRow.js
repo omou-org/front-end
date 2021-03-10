@@ -117,10 +117,15 @@ const ClassEnrollmentRow = ({
         open: false,
     });
 
-    const [inviteStatus, setInviteStatus] = useState("Unsent");
-    const [googleClassroomStatusMessage, setGoogleClassroomStatusMessage] = useState("Send Invite");
-    const { courses, google_courses, google_access_token} = useSelector(({ auth }) => auth);
-  
+    const [inviteStatus, setInviteStatus] = useState('Unsent');
+    const [
+        googleClassroomStatusMessage,
+        setGoogleClassroomStatusMessage,
+    ] = useState('Send Invite');
+    const { courses, google_courses, google_access_token } = useSelector(
+        ({ auth }) => auth
+    );
+
     const getGoogleClassCode = (courses, courseID) => {
         let googleClassCode;
         if (courses) {
@@ -180,31 +185,29 @@ const ClassEnrollmentRow = ({
                 setInviteStatus(<Typography color='error'>Unsent</Typography>);
                 alert('Error creating invite');
             }
-        }
-        else if(googleClassroomStatusMessage == "Refresh"){
-            console.log("Refreshing");
-            if(googleCourseID && studentEmail) {
+        } else if (googleClassroomStatusMessage == 'Refresh') {
+            console.log('Refreshing');
+            if (googleCourseID && studentEmail) {
                 try {
                     console.log(googleCourseID);
                     console.log(studentEmail);
                     const resp = await axios.get(
                         `https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`,
                         {
-                        "headers": {
-                            "Authorization": `Bearer ${google_access_token}`,
-                        },
-                    });
-                    console.log({resp});
-                    setInviteStatus("Accepted");
-                    setGoogleClassroomStatusMessage("Invite Accepted");
-                }
-                catch(error){
-                    setInviteStatus("Not Accepted");
-                    setGoogleClassroomStatusMessage("Resend Invite");
+                            headers: {
+                                Authorization: `Bearer ${google_access_token}`,
+                            },
+                        }
+                    );
+                    console.log({ resp });
+                    setInviteStatus('Accepted');
+                    setGoogleClassroomStatusMessage('Invite Accepted');
+                } catch (error) {
+                    setInviteStatus('Not Accepted');
+                    setGoogleClassroomStatusMessage('Resend Invite');
                 }
             }
-        }
-        else if (googleClassroomStatusMessage == "Invite Accepted"){
+        } else if (googleClassroomStatusMessage == 'Invite Accepted') {
             return;
         }
     };
