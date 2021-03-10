@@ -120,35 +120,6 @@ const ClassEnrollmentRow = ({
     const [inviteStatus, setInviteStatus] = useState("Unsent");
     const [googleClassroomStatusMessage, setGoogleClassroomStatusMessage] = useState("Send Invite");
     const { courses, google_courses, google_access_token} = useSelector(({ auth }) => auth);
-    // const google_access_token = sessionStorage.getItem('google_access_token')
-    
-    // const onClick = async () => {
-    //     let googleCourseID = getGoogleCourseID(google_courses, courses, courseID);
-    //     if(googleCourseID && studentEmail) {
-    //         try {
-    //             const resp = await axios.get(`https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`, 
-    //                 {
-    //                     "userId": studentEmail,
-    //                     "courseId": googleCourseID,
-    //                 },
-    //                 {
-    //                 "headers": {
-    //                     "Authorization": `Bearer ${google_access_token}`,
-    //                 },
-    //             });
-    //             setInviteStatus("Accepted");
-    //             setGoogleClassroomStatusMessage("Unenroll");
-    //         }
-    //         catch(error){
-    //             if(error.status == "NOT_FOUND"){
-    //                 if(inviteStatus == "Sent"){
-    //                     setInviteStatus("Not Accepted");
-    //                     setGoogleClassroomStatusMessage("Send Invite");
-    //                 }
-    //             }
-    //         }
-    //     }
-	// }
   
     const getGoogleClassCode = (courses, courseID) => {
         let googleClassCode;
@@ -201,24 +172,6 @@ const ClassEnrollmentRow = ({
                 alert("Error creating invite");
             }
         }
-        else if (googleClassroomStatusMessage == "Unenroll"){
-            setGoogleClassroomStatusMessage("Send Invite");
-            try {
-                if(googleCourseID && studentEmail){
-                    const resp = await axios.delete(`https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`, 
-                        {
-                        "headers": {
-                            "Authorization": `Bearer ${google_access_token}`,
-                        },
-                        }
-                    );
-                setInviteStatus("Enrolled");
-                }
-            } catch(error){
-                setInviteStatus(<Typography color="error">Unsent</Typography>);
-                alert("Error unenrolling");
-            }
-        }
         else if(googleClassroomStatusMessage == "Refresh"){
             console.log("Refreshing");
             if(googleCourseID && studentEmail) {
@@ -233,13 +186,16 @@ const ClassEnrollmentRow = ({
                     });
                     console.log({resp});
                     setInviteStatus("Accepted");
-                    setGoogleClassroomStatusMessage("Unenroll");
+                    setGoogleClassroomStatusMessage("Invite Accepted");
                 }
                 catch(error){
                     setInviteStatus("Not Accepted");
-                    setGoogleClassroomStatusMessage("Send Invite");
+                    setGoogleClassroomStatusMessage("Resend Invite");
                 }
             }
+        }
+        else if (googleClassroomStatusMessage == "Invite Accepted"){
+            return;
         }
     };
 
