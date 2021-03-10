@@ -22,7 +22,7 @@ const useStyles = makeStyles({
     },
 });
 
-export const AuthenticatedComponent = ({children}) => {
+export const AuthenticatedComponent = ({ children }) => {
     // AUTH selector
     const { token } = useSelector(({ auth }) => auth);
     if (token) {

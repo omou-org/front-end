@@ -1,17 +1,17 @@
-import * as types from "./actionTypes";
-import {instance, MISC_FAIL, REQUEST_STARTED} from "./apiActions";
-import {useCallback, useEffect, useMemo, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {isExistingTutoring, uniques} from "utils";
+import * as types from './actionTypes';
+import { instance, MISC_FAIL, REQUEST_STARTED } from './apiActions';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { isExistingTutoring, uniques } from 'utils';
 
-const enrollmentEndpoint = "/course/enrollment/";
-const courseEndpoint = "/course/catalog/";
-const paymentEndpoint = "/payment/payment/";
+const enrollmentEndpoint = '/course/enrollment/';
+const courseEndpoint = '/course/catalog/';
+const paymentEndpoint = '/payment/payment/';
 
 export const useSubmitRegistration = (registrationDependencies) => {
     // REGISTRATION selector
     const currentPayingParent = useSelector(
-        ({Registration}) => Registration.CurrentParent,
+        ({ Registration }) => Registration.CurrentParent
     );
     const [status, setStatus] = useState(null);
     const dispatch = useDispatch();
@@ -38,60 +38,62 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     payment,
                 } = registrationDependencies;
                 tutoringRegistrations = tutoringRegistrations.map(
-                    ({newTutoringCourse, ...rest}) => ({
+                    ({ newTutoringCourse, ...rest }) => ({
                         ...rest,
-                        "newTutoringCourse": {
+                        newTutoringCourse: {
                             ...newTutoringCourse,
-                            "end_time":
-                                newTutoringCourse.end_time.indexOf("T") > -1 ?
-                                    newTutoringCourse.end_time.slice(1) :
-                                    newTutoringCourse.end_time,
-                            "start_time":
-                                newTutoringCourse.start_time.indexOf("T") > -1 ?
-                                    newTutoringCourse.start_time.slice(1) :
-                                    newTutoringCourse.start_time,
+                            end_time:
+                                newTutoringCourse.end_time.indexOf('T') > -1
+                                    ? newTutoringCourse.end_time.slice(1)
+                                    : newTutoringCourse.end_time,
+                            start_time:
+                                newTutoringCourse.start_time.indexOf('T') > -1
+                                    ? newTutoringCourse.start_time.slice(1)
+                                    : newTutoringCourse.start_time,
                         },
-                    }),
+                    })
                 );
                 const newTutorings = tutoringRegistrations.filter(
-                    ({courseID}) => !isExistingTutoring(courseID),
+                    ({ courseID }) => !isExistingTutoring(courseID)
                 );
                 const existingTutorings = tutoringRegistrations.filter(
-                    ({courseID}) => isExistingTutoring(courseID),
+                    ({ courseID }) => isExistingTutoring(courseID)
                 );
                 tutoringRegistrations = [...newTutorings, ...existingTutorings];
                 try {
                     const TutoringCourses = [
-                        ...await Promise.all(
-                            newTutorings.map(({newTutoringCourse}) =>
-                                instance.post(courseEndpoint, newTutoringCourse)),
-                        ),
-                        ...await Promise.all(
+                        ...(await Promise.all(
+                            newTutorings.map(({ newTutoringCourse }) =>
+                                instance.post(courseEndpoint, newTutoringCourse)
+                            )
+                        )),
+                        ...(await Promise.all(
                             existingTutorings.map(
-                                ({newTutoringCourse, courseID}) =>
+                                ({ newTutoringCourse, courseID }) =>
                                     instance.patch(
                                         `${courseEndpoint}${courseID}/`,
-                                        newTutoringCourse,
-                                    ),
-                            ),
-                        ),
+                                        newTutoringCourse
+                                    )
+                            )
+                        )),
                     ];
                     dispatch({
-                        "payload": TutoringCourses,
-                        "type": types.POST_COURSE_SUCCESSFUL,
+                        payload: TutoringCourses,
+                        type: types.POST_COURSE_SUCCESSFUL,
                     });
                     const tutoringEnrollments = tutoringRegistrations
-                        .filter(({courseID}) => !isExistingTutoring(courseID))
+                        .filter(({ courseID }) => !isExistingTutoring(courseID))
                         .map((tutoringReg, i) => ({
-                            "course": TutoringCourses[i].data.id,
-                            "student": tutoringReg.student,
+                            course: TutoringCourses[i].data.id,
+                            student: tutoringReg.student,
                         }));
                     // get existing enrollments involving the given student-course pairs
                     let currEnrollments = await Promise.all(
-                        classRegistrations.map(({student, course}) =>
+                        classRegistrations.map(({ student, course }) =>
                             instance.get(
-                                `/course/enrollment/?student_id=${student}&course_id=${course}`,
-                            )),
+                                `/course/enrollment/?student_id=${student}&course_id=${course}`
+                            )
+                        )
                     );
                     // filter for the ones that found matches
                     currEnrollments = currEnrollments
@@ -102,23 +104,23 @@ export const useSubmitRegistration = (registrationDependencies) => {
                     // set enrollment attribute appropriately
                     classRegistrations = classRegistrations.map((reg) => {
                         const matchingEnrollment = currEnrollments.find(
-                            ({student, course}) =>
+                            ({ student, course }) =>
                                 `${student}` === `${reg.student}` &&
-                                `${course}` === `${reg.course}`,
+                                `${course}` === `${reg.course}`
                         );
                         return {
                             ...reg,
                             // true if matching enrollment
-                            "enrollment": matchingEnrollment ?
-                                matchingEnrollment.id :
-                                null,
+                            enrollment: matchingEnrollment
+                                ? matchingEnrollment.id
+                                : null,
                         };
                     });
 
                     // remove existing enrollments
                     const courseEnrollments = classRegistrations
                         .filter((classReg) => !classReg.enrollment)
-                        .map(({course, student}) => ({
+                        .map(({ course, student }) => ({
                             course,
                             student,
                         }))
@@ -126,7 +128,8 @@ export const useSubmitRegistration = (registrationDependencies) => {
 
                     const Enrollments = await Promise.all(
                         courseEnrollments.map((enrollment) =>
-                            instance.post(enrollmentEndpoint, enrollment)),
+                            instance.post(enrollmentEndpoint, enrollment)
+                        )
                     );
                     const enrollmentSessions = (index) => {
                         if (index < classRegistrations.length) {
@@ -139,37 +142,37 @@ export const useSubmitRegistration = (registrationDependencies) => {
 
                     // Add back in filtered out existing enrollments
                     const previouslyEnrolledCourses = classRegistrations.filter(
-                        (classReg) => classReg.enrollment,
+                        (classReg) => classReg.enrollment
                     );
 
                     const registrations = Enrollments.map((enrollment, i) => ({
-                        "enrollment": enrollment.data.id,
-                        "num_sessions": enrollmentSessions(i),
+                        enrollment: enrollment.data.id,
+                        num_sessions: enrollmentSessions(i),
                     })).concat(
                         previouslyEnrolledCourses.map(
-                            ({enrollment, sessions}) => ({
+                            ({ enrollment, sessions }) => ({
                                 enrollment,
-                                "num_sessions": sessions,
-                            }),
-                        ),
+                                num_sessions: sessions,
+                            })
+                        )
                     );
 
                     const finalPayment = await instance.post(paymentEndpoint, {
                         ...payment,
                         registrations,
-                        "parent": currentPayingParent.user.id,
+                        parent: currentPayingParent.user.id,
                     });
                     dispatch({
-                        "payload": finalPayment,
-                        "type": types.POST_PAYMENT_SUCCESS,
+                        payload: finalPayment,
+                        type: types.POST_PAYMENT_SUCCESS,
                     });
                     dispatch({
-                        "payload": {},
-                        "type": types.COMPLETE_REGISTRATION,
+                        payload: {},
+                        type: types.COMPLETE_REGISTRATION,
                     });
                     setStatus({
-                        "paymentID": finalPayment.data.id,
-                        "status": finalPayment.status,
+                        paymentID: finalPayment.data.id,
+                        status: finalPayment.status,
                     });
                 } catch (error) {
                     if (!aborted) {
@@ -202,27 +205,27 @@ export const usePayment = (id) => {
                 try {
                     setStatus(REQUEST_STARTED);
                     const Payment = await instance.request({
-                        "url": `${paymentEndpoint}${id}/`,
-                        "method": "get",
+                        url: `${paymentEndpoint}${id}/`,
+                        method: 'get',
                     });
-                    Payment.type = "parent";
+                    Payment.type = 'parent';
 
                     dispatch({
-                        "type": types.GET_PAYMENT_SUCCESS,
-                        "payload": Payment,
+                        type: types.GET_PAYMENT_SUCCESS,
+                        payload: Payment,
                     });
                     const ParentResponse = await instance.request({
-                        "url": `/account/parent/${Payment.data.parent}/`,
-                        "method": "get",
+                        url: `/account/parent/${Payment.data.parent}/`,
+                        method: 'get',
                     });
                     dispatch({
-                        "type": types.FETCH_PARENT_SUCCESSFUL,
-                        "payload": ParentResponse,
+                        type: types.FETCH_PARENT_SUCCESSFUL,
+                        payload: ParentResponse,
                     });
 
                     const studentIDs = Payment.data.registrations.map(
                         (registration) =>
-                            registration.enrollment_details.student,
+                            registration.enrollment_details.student
                     );
 
                     // get students
@@ -230,32 +233,34 @@ export const usePayment = (id) => {
                     const StudentResponses = await Promise.all(
                         uniqueStudentIDs.map((studentID) =>
                             instance.request({
-                                "url": `/account/student/${studentID.toString()}/`,
-                                "method": "get",
-                            })),
+                                url: `/account/student/${studentID.toString()}/`,
+                                method: 'get',
+                            })
+                        )
                     );
                     StudentResponses.forEach((studentResponse) => {
                         dispatch({
-                            "type": types.FETCH_STUDENT_SUCCESSFUL,
-                            "payload": studentResponse,
+                            type: types.FETCH_STUDENT_SUCCESSFUL,
+                            payload: studentResponse,
                         });
                     });
                     // get courses
                     const courseIDs = Payment.data.registrations.map(
-                        (registration) => registration.enrollment_details.course,
+                        (registration) => registration.enrollment_details.course
                     );
                     const uniqueCourseIDs = uniques(courseIDs);
                     const CourseResponses = await Promise.all(
                         uniqueCourseIDs.map((courseID) =>
                             instance.request({
-                                "url": `/course/catalog/${courseID}/`,
-                                "method": "get",
-                            })),
+                                url: `/course/catalog/${courseID}/`,
+                                method: 'get',
+                            })
+                        )
                     );
                     CourseResponses.forEach((courseResponse) => {
                         dispatch({
-                            "type": types.FETCH_COURSE_SUCCESSFUL,
-                            "payload": courseResponse,
+                            type: types.FETCH_COURSE_SUCCESSFUL,
+                            payload: courseResponse,
                         });
                     });
                     setStatus(200);

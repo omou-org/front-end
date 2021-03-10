@@ -34,7 +34,7 @@ const AddSessions = ({
     );
 
     // USERS selector
-    const students = useSelector(({Users}) => Users.StudentList);
+    const students = useSelector(({ Users }) => Users.StudentList);
     // COURSE selector
     const courses = useSelector(({ Course }) => Course.NewCourseList);
     // REGISTRATION selector

@@ -35,7 +35,7 @@ const GET_PARENT_QUERY = gql`
 
 const RegistrationActions = () => {
     // AUTH selector
-    const AuthUser = useSelector(({auth}) => auth);
+    const AuthUser = useSelector(({ auth }) => auth);
     // REGISTRATION selector
     const { currentParent, ...registrationState } = useSelector(
         (state) => state.Registration

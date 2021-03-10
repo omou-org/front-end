@@ -1,29 +1,28 @@
-import * as types from "./actionTypes";
-import {instance} from "./apiActions";
+import * as types from './actionTypes';
+import { instance } from './apiActions';
 
 const typeToEndpoint = {
-    "student": "/account/student/",
-    "parent": "/account/parent/",
-    "instructor": "/account/instructor/",
-    "course": "/course/catalog/",
-    "admin": "/account/admin/",
+    student: '/account/student/',
+    parent: '/account/parent/',
+    instructor: '/account/instructor/',
+    course: '/course/catalog/',
+    admin: '/account/admin/',
 };
 
 export const typeToPostActions = {
-    "student": [types.POST_STUDENT_SUCCESSFUL, types.POST_STUDENT_FAILED],
-    "parent": [types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
-    "instructor": [
+    student: [types.POST_STUDENT_SUCCESSFUL, types.POST_STUDENT_FAILED],
+    parent: [types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
+    instructor: [
         types.POST_INSTRUCTOR_SUCCESSFUL,
         types.POST_INSTRUCTOR_FAILED,
     ],
-    "course": [types.POST_COURSE_SUCCESSFUL, types.POST_COURSE_FAILED],
-    "course category": [
+    course: [types.POST_COURSE_SUCCESSFUL, types.POST_COURSE_FAILED],
+    'course category': [
         types.POST_CATEGORY_SUCCESS,
         types.POST_CATEGORY_FAILED,
     ],
-    "admin": [types.POST_ADMIN_SUCCESSFUL, types.POST_ADMIN_FAILED],
+    admin: [types.POST_ADMIN_SUCCESSFUL, types.POST_ADMIN_FAILED],
 };
-
 
 export const postData = (type, body) => {
     if (typeToEndpoint.hasOwnProperty(type)) {
@@ -32,30 +31,29 @@ export const postData = (type, body) => {
         return (dispatch) =>
             new Promise((resolve) => {
                 dispatch({
-                    "type": types.SUBMIT_INITIATED,
-                    "payload": null,
+                    type: types.SUBMIT_INITIATED,
+                    payload: null,
                 });
                 resolve();
             }).then(() => {
                 instance
                     .post(endpoint, body)
                     .then((response) => {
-                        const {data} = response;
+                        const { data } = response;
                         dispatch({
-                            "type": successAction,
-                            "payload": data,
+                            type: successAction,
+                            payload: data,
                         });
                     })
                     .catch((error) => {
-                        dispatch({"type": failAction,
-                            "payload": error});
+                        dispatch({ type: failAction, payload: error });
                     });
             });
     }
     console.error(
-            `Invalid data type ${type}, must be one of ${Object.keys(
-                typeToEndpoint,
-            )}`,
+        `Invalid data type ${type}, must be one of ${Object.keys(
+            typeToEndpoint
+        )}`
     );
 };
 
@@ -66,29 +64,28 @@ export const patchData = (type, body, id) => {
         return (dispatch) =>
             new Promise((resolve) => {
                 dispatch({
-                    "type": types.SUBMIT_INITIATED,
-                    "payload": null,
+                    type: types.SUBMIT_INITIATED,
+                    payload: null,
                 });
                 resolve();
             }).then(() => {
                 instance
                     .patch(`${endpoint}${id}/`, body)
-                    .then(({data}) => {
+                    .then(({ data }) => {
                         dispatch({
-                            "type": successAction,
-                            "payload": data,
+                            type: successAction,
+                            payload: data,
                         });
                     })
                     .catch((error) => {
-                        dispatch({"type": failAction,
-                            "payload": error});
+                        dispatch({ type: failAction, payload: error });
                     });
             });
     }
     console.error(
-            `Invalid data type ${type}, must be one of ${Object.keys(
-                typeToEndpoint,
-            )}`,
+        `Invalid data type ${type}, must be one of ${Object.keys(
+            typeToEndpoint
+        )}`
     );
 };
 
@@ -96,7 +93,7 @@ export const submitParentAndStudent = (
     parent,
     student,
     parentID,
-    studentID,
+    studentID
 ) => {
     const studentEndpoint = typeToEndpoint.student;
     const parentEndpoint = typeToEndpoint.parent;
@@ -105,8 +102,8 @@ export const submitParentAndStudent = (
     return (dispatch) =>
         new Promise((resolve) => {
             dispatch({
-                "type": types.SUBMIT_INITIATED,
-                "payload": null,
+                type: types.SUBMIT_INITIATED,
+                payload: null,
             });
             resolve();
         }).then(() => {
@@ -115,49 +112,47 @@ export const submitParentAndStudent = (
                 .substring(0, 10);
             instance
                 .request({
-                    "data": {...parent,
-                        "birth_date": formatDate},
-                    "method": parentID ? "patch" : "post",
-                    "url": parentID ?
-                        `${parentEndpoint}${parentID}/` :
-                        parentEndpoint,
+                    data: { ...parent, birth_date: formatDate },
+                    method: parentID ? 'patch' : 'post',
+                    url: parentID
+                        ? `${parentEndpoint}${parentID}/`
+                        : parentEndpoint,
                 })
                 .then(
                     (parentResponse) => {
                         dispatch({
-                            "type": parentSuccessAction,
-                            "payload": parentResponse.data,
+                            type: parentSuccessAction,
+                            payload: parentResponse.data,
                         });
                         instance
                             .request({
-                                "data": {
+                                data: {
                                     ...student,
-                                    "primary_parent": parentResponse.data.user.id,
+                                    primary_parent: parentResponse.data.user.id,
                                 },
-                                "method": studentID ? "patch" : "post",
-                                "url": studentID ?
-                                    `${studentEndpoint}${studentID}/` :
-                                    studentEndpoint,
+                                method: studentID ? 'patch' : 'post',
+                                url: studentID
+                                    ? `${studentEndpoint}${studentID}/`
+                                    : studentEndpoint,
                             })
                             .then(
                                 (studentResponse) => {
                                     dispatch({
-                                        "type": studentSuccessAction,
-                                        "payload": studentResponse.data,
+                                        type: studentSuccessAction,
+                                        payload: studentResponse.data,
                                     });
                                 },
                                 (error) => {
                                     dispatch({
-                                        "type": studentFailAction,
-                                        "payload": error,
+                                        type: studentFailAction,
+                                        payload: error,
                                     });
-                                },
+                                }
                             );
                     },
                     (error) => {
-                        dispatch({"type": parentFailAction,
-                            "payload": error});
-                    },
+                        dispatch({ type: parentFailAction, payload: error });
+                    }
                 );
         });
 };

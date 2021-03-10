@@ -71,9 +71,9 @@ const Scheduler = (props) => {
     const history = useHistory();
 
     // COURSE selector
-    const courses = useSelector(({Course}) => Course.NewCourseList);
+    const courses = useSelector(({ Course }) => Course.NewCourseList);
     // CALENDAR selector
-    const sessions = useSelector(({Calendar}) => Calendar.CourseSessions);
+    const sessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
     // USERS selector
     const instructors = useSelector(({ Users }) => Users.InstructorList);
 

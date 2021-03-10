@@ -16,7 +16,7 @@ export function CompleteCourseRegistration({
 }) {
     // USERS selector
     const students = useSelector(({ Users }) => Users.StudentList);
-    const instructors = useSelector(({Users}) => Users.InstructorList);
+    const instructors = useSelector(({ Users }) => Users.InstructorList);
     // COURSE selector
     const courses = useSelector(({ Course }) => Course.NewCourseList);
 

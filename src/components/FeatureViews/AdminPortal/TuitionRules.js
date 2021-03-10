@@ -37,7 +37,7 @@ const TuitionRules = () => {
     ]);
     const [tuitionRules, setTuitionRules] = useState([]);
     // ADMIN selector
-    const priceRules = useSelector(({Admin: {PriceRules}}) => PriceRules);
+    const priceRules = useSelector(({ Admin: { PriceRules } }) => PriceRules);
     // COURSE selector
     const categories = useSelector(
         ({ Course: { CourseCategories } }) => CourseCategories

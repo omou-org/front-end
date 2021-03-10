@@ -46,7 +46,7 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
     const history = useHistory();
     // AUTH selector
     const isAdmin =
-        useSelector(({auth}) => auth.accountType) === USER_TYPES.admin;
+        useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
     // REGISTRATION selector
     const currentPayingParent = useSelector(
         ({ Registration }) => Registration.CurrentParent
