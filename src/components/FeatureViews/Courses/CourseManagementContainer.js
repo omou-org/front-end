@@ -13,9 +13,9 @@ import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import Loading from '../../OmouComponents/Loading';
-import axios from "axios"; 
-import * as actions from "actions/actionTypes";
-import googleClassroomLogo from "../../GoogleClassroomIcon.png";
+import axios from 'axios';
+import * as actions from 'actions/actionTypes';
+import googleClassroomLogo from '../../GoogleClassroomIcon.png';
 
 import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
 import { fullName, gradeOptions } from 'utils';
@@ -178,21 +178,25 @@ const ClassListItem = ({
     const dispatch = useDispatch();
 
     const handleClick = (e) => history.push(`/courses/class/${id}`);
-    
-    function GoogleClassroomIntegrationIcon(googleCode){  
-        let isIntegrated = false;
-        if(googleCode && google_courses){
-            google_courses.forEach(function(course) {
-            if(course.enrollmentCode == googleCode){
-                isIntegrated = true;
-            } 
-            });
-            return isIntegrated ? <img src={googleClassroomLogo} width="30" height="30"/> : <div></div>;
-        } 
-        return;
-    }   
 
-  return (
+    function GoogleClassroomIntegrationIcon(googleCode) {
+        let isIntegrated = false;
+        if (googleCode && google_courses) {
+            google_courses.forEach(function (course) {
+                if (course.enrollmentCode == googleCode) {
+                    isIntegrated = true;
+                }
+            });
+            return isIntegrated ? (
+                <img src={googleClassroomLogo} width='30' height='30' />
+            ) : (
+                <div></div>
+            );
+        }
+        return;
+    }
+
+    return (
         <>
             <Grid
                 container
@@ -420,10 +424,10 @@ const CourseManagementContainer = () => {
     const handleChange = (event) => setSortByDate(event.target.value);
 
     const checkAccountForQuery =
-    accountInfo.accountType === 'ADMIN' ||
-    accountInfo.accountType === 'INSTRUCTOR'
-        ? 'instructorId'
-        : 'parentId';
+        accountInfo.accountType === 'ADMIN' ||
+        accountInfo.accountType === 'INSTRUCTOR'
+            ? 'instructorId'
+            : 'parentId';
 
     const accountId =
         accountInfo.accountType === 'ADMIN' ? '' : accountInfo.user.id;
@@ -462,17 +466,17 @@ const CourseManagementContainer = () => {
         error: courseError,
     } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
         variables: { accountId },
-
     });
 
     const { data, loading, error } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
         variables: { accountId },
         onCompleted: (data) => {
-          dispatch({
-            type: actions.STORE_COURSES, 
-            payload: {courses: data.courses}
-          })
-        }});
+            dispatch({
+                type: actions.STORE_COURSES,
+                payload: { courses: data.courses },
+            });
+        },
+    });
 
     const {
         data: studentData,

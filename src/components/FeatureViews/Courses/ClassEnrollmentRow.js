@@ -31,7 +31,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import StudentEnrollmentBackground from './ClassEnrollmentBackground';
 
-import axios from "axios"; 
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -123,53 +123,62 @@ const ClassEnrollmentRow = ({
   
     const getGoogleClassCode = (courses, courseID) => {
         let googleClassCode;
-        if(courses){
-            courses.forEach(function(course){
-            if(courseID == course.id){
-                googleClassCode = course.googleClassCode;
-            }
-            })
+        if (courses) {
+            courses.forEach(function (course) {
+                if (courseID == course.id) {
+                    googleClassCode = course.googleClassCode;
+                }
+            });
             return googleClassCode;
-        } 
+        }
     };
-  
+
     const getGoogleCourseID = (google_courses, courses, courseID) => {
         let googleCourseID;
-        let googleClassCode = getGoogleClassCode(courses, courseID)
-        if(google_courses && googleClassCode){
-            google_courses.forEach(function(course){
-                if(course.enrollmentCode == googleClassCode){
-                    googleCourseID = course.id
+        let googleClassCode = getGoogleClassCode(courses, courseID);
+        if (google_courses && googleClassCode) {
+            google_courses.forEach(function (course) {
+                if (course.enrollmentCode == googleClassCode) {
+                    googleCourseID = course.id;
                 }
             });
             return googleCourseID;
         }
-    }
-  
+    };
+
     const handleInvite = async () => {
-        let googleCourseID = getGoogleCourseID(google_courses, courses, courseID);
-        if(googleClassroomStatusMessage == "Resend Invite" || inviteStatus == "Unsent"){
-            setGoogleClassroomStatusMessage("Resend Invite");
+        let googleCourseID = getGoogleCourseID(
+            google_courses,
+            courses,
+            courseID
+        );
+        if (
+            googleClassroomStatusMessage == 'Resend Invite' ||
+            inviteStatus == 'Unsent'
+        ) {
+            setGoogleClassroomStatusMessage('Resend Invite');
             try {
-                if(googleCourseID && studentEmail){
-                    const resp = await axios.post(`https://classroom.googleapis.com/v1/invitations`, {
-                            "userId": studentEmail,
-                            "courseId": googleCourseID,
-                            "role": "STUDENT"
+                if (googleCourseID && studentEmail) {
+                    const resp = await axios.post(
+                        `https://classroom.googleapis.com/v1/invitations`,
+                        {
+                            userId: studentEmail,
+                            courseId: googleCourseID,
+                            role: 'STUDENT',
                         },
                         {
-                        "headers": {
-                            "Authorization": `Bearer ${google_access_token}`,
-                        },
+                            headers: {
+                                Authorization: `Bearer ${google_access_token}`,
+                            },
                         }
                     );
-                setInviteStatus("Sent");
-                setGoogleClassroomStatusMessage("Refresh");
+                    setInviteStatus('Sent');
+                    setGoogleClassroomStatusMessage('Refresh');
                 }
-            } catch{
-                console.log("Error")
-                setInviteStatus(<Typography color="error">Unsent</Typography>);
-                alert("Error creating invite");
+            } catch {
+                console.log('Error');
+                setInviteStatus(<Typography color='error'>Unsent</Typography>);
+                alert('Error creating invite');
             }
         }
         else if(googleClassroomStatusMessage == "Refresh"){
@@ -178,7 +187,8 @@ const ClassEnrollmentRow = ({
                 try {
                     console.log(googleCourseID);
                     console.log(studentEmail);
-                    const resp = await axios.get(`https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`, 
+                    const resp = await axios.get(
+                        `https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`,
                         {
                         "headers": {
                             "Authorization": `Bearer ${google_access_token}`,
@@ -297,9 +307,7 @@ const ClassEnrollmentRow = ({
                         >
                             {phoneNumber}
                         </TableCell>
-                        <TableCell>
-                            {inviteStatus}
-                        </TableCell>
+                        <TableCell>{inviteStatus}</TableCell>
                         <TableCell>
                             <ResponsiveButton onClick={handleInvite}>
                                 {googleClassroomStatusMessage}
