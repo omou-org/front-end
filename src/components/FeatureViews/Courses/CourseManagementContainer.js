@@ -391,6 +391,7 @@ const CourseManagementContainer = () => {
     const [subectFilterValue, setSubjectFilterValue] = useState('');
     const [instructorsFilterValue, setInstructorFilterValue] = useState('');
     const [studentFilterValue, setStudentFilterValue] = useState('');
+    // AUTH selector
     const accountInfo = useSelector(({ auth }) => auth);
 
     const handleChange = (event) => setSortByDate(event.target.value);

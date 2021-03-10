@@ -1,28 +1,22 @@
-import { combineReducers } from 'redux';
-import RequestStatus from './apiReducer';
-import Registration from './registrationReducer';
-import auth from './authReducer';
-import Course from './courseReducer';
-import Users from './usersReducer';
-import Calendar from './calendarReducer';
-import Enrollments from './enrollmentReducer';
-import Payments from './paymentsReducer';
-import Search from './searchResultsReducer';
-import Admin from './adminReducer';
-import Cat from './catReducer';
+import Admin from "./adminReducer";
+import auth from "./authReducer";
+import Calendar from "./calendarReducer";
+import {combineReducers} from "redux";
+import Course from "./courseReducer";
+import Payments from "./paymentsReducer";
+import Registration from "./registrationReducer";
+import Search from "./searchResultsReducer";
+import Users from "./usersReducer";
 
 const rootReducer = combineReducers({
-    auth,
+    Admin,
     Calendar,
     Course,
-    Enrollments,
     Payments,
     Registration,
-    Users,
-    RequestStatus,
     Search,
-    Admin,
-    Cat,
+    Users,
+    auth,
 });
 
 export default rootReducer;

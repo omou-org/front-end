@@ -68,6 +68,7 @@ const ResetPassword = ({ isSet }) => {
     });
     const email = emailStatus.data?.emailFromToken;
     const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
+    // AUTH selector
     const { token } = useSelector(({ auth }) => auth);
 
     const label = isSet ? 'Set' : 'Reset';

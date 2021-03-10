@@ -18,6 +18,7 @@ import { GET_CATEGORIES } from 'queryFragments';
 const TutoringList = () => {
     const { data, loading, error } = useQuery(GET_CATEGORIES);
 
+    // REGISTRATION selector
     const registeringParent = useSelector(
         ({ Registration }) => Registration.CurrentParent
     );

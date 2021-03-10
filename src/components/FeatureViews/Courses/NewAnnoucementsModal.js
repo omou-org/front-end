@@ -141,6 +141,7 @@ const NewAnnouncementsModal = ({
     const [announcementBody, setAnnouncementBody] = useState('');
     const [announcementSubject, setAnnouncementSubject] = useState('');
     const courseId = useParams();
+    // AUTH selector
     const { user } = useSelector(({ auth }) => auth) || [];
     const user_id = user.id;
 

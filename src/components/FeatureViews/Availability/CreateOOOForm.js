@@ -92,6 +92,7 @@ export default function CreateOOOForm() {
     const [OOOFormState, setOOOFormState] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const steps = getSteps();
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const [createOOO, createOOOResults] = useMutation(CREATE_INSTRUCTOR_OOO, {
         onCompleted: () => {
@@ -144,11 +145,11 @@ export default function CreateOOOForm() {
     return (
         <OOOContext.Provider value={{ OOOFormState, updateOOOFormState }}>
             <Grid container direction='row'>
-                {/* 
-                
+                {/*
+
                 We need to comment this out because the final design is a step feature. I believe we are waiting
-                 for an api to check if there will be schedule conflicts with the instructors OOO and their working hours. 
-                
+                 for an api to check if there will be schedule conflicts with the instructors OOO and their working hours.
+
                 <Grid item>
 				<Stepper style={{width: "100%", backgroundColor: "transparent"}}>
 					{
@@ -162,7 +163,7 @@ export default function CreateOOOForm() {
 			</Grid>
 			<Grid item>
 			<h2 >Submit Out of Office Notice</h2>
-				<Grid item xs={12} alignContent="left"> 
+				<Grid item xs={12} alignContent="left">
 					// <Typography variant="body1" >{`Instructor: ${AuthUser.user.firstName} ${AuthUser.user.lastName} `}</Typography>
 				</Grid> */}
                 {/* {getStepContent(activeStep)} */}

@@ -88,6 +88,7 @@ export default function TimeAvailabilityContainer() {
     ]);
     const [openSaveAvailability, setOpenSaveAvailability] = useState(false);
     const [updatedAvailability, setUpdatedAvailability] = useState([]);
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const { data, loading } = useQuery(GET_INSTRUCTOR_AVAILABILITY, {
         variables: { instructorId: AuthUser.user.id },

@@ -314,51 +314,15 @@ export const useCourse = wrapUseEndpoint(
     types.FETCH_COURSE_SUCCESSFUL
 );
 
-export const useEnrollment = wrapUseEndpoint(
-    '/course/enrollment/',
-    types.FETCH_ENROLLMENT_SUCCESSFUL
-);
-
 export const useCategory = wrapUseEndpoint(
     '/course/categories/',
     types.GET_CATEGORY_SUCCESS
-);
-
-export const usePriceRules = wrapUseEndpoint(
-    '/pricing/rule/',
-    types.GET_PRICE_RULE_SUCCESS
 );
 
 export const useOutOfOffice = wrapUseEndpoint(
     '/account/instructor-out-of-office/',
     types.FETCH_OOO_SUCCESS
 );
-
-export const useEnrollmentByCourse = (courseID) =>
-    wrapUseEndpoint('/course/enrollment/', types.FETCH_ENROLLMENT_SUCCESSFUL)(
-        null,
-        useMemo(
-            () => ({
-                params: {
-                    course_id: courseID,
-                },
-            }),
-            [courseID]
-        )
-    );
-
-export const useEnrollmentByStudent = (studentID) =>
-    wrapUseEndpoint('/course/enrollment/', types.FETCH_ENROLLMENT_SUCCESSFUL)(
-        null,
-        useMemo(
-            () => ({
-                params: {
-                    student_id: studentID,
-                },
-            }),
-            [studentID]
-        )
-    );
 
 export const usePaymentByParent = (parentID) =>
     wrapUseEndpoint('/payment/payment/', types.GET_PAYMENT_PARENT_SUCCESS)(

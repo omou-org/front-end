@@ -35,6 +35,7 @@ const PaymentTable = ({
     courseID,
     rootRoute = '/accounts/parent/payment/',
 }) => {
+    // COURSE selector
     const course = useSelector(({ Course }) => Course.NewCourseList[courseID]);
 
     const numPaidSessionsByPayment = useCallback(

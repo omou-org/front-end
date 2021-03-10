@@ -85,6 +85,7 @@ const ModalTextEditor = ({
     const classes = useStyles();
     const [subject, setSubject] = useState(noteSubject);
     const [body, setBody] = useState(noteBody);
+    // AUTH selector
     const { user } = useSelector(({ auth }) => auth) || [];
 
     const poster_id = user.id;

@@ -1,46 +1,36 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import React, {useCallback, useEffect, useState} from "react";
+import {Link, useParams} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import gql from "graphql-tag";
+import {useQuery} from "@apollo/react-hooks";
 
-import EnrollmentSessionRow from './EnrollmentSessionRow';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import Grid from '@material-ui/core/Grid';
-import NoListAlert from '../../../OmouComponents/NoListAlert';
-import Paper from '@material-ui/core/Paper';
-import PaymentTable from './PaymentTable';
-import SessionPaymentStatusChip from 'components/OmouComponents/SessionPaymentStatusChip';
-import Switch from '@material-ui/core/Switch';
-import LoadingError from './LoadingCourseError';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { LabelBadge } from '../../../../theme/ThemedComponents/Badge/LabelBadge';
+import EnrollmentSessionRow from "./EnrollmentSessionRow";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@material-ui/core/FormGroup";
+import Grid from "@material-ui/core/Grid";
+import NoListAlert from "../../../OmouComponents/NoListAlert";
+import PaymentTable from "./PaymentTable";
+import Switch from "@material-ui/core/Switch";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
+import Typography from "@material-ui/core/Typography";
+import {makeStyles} from "@material-ui/core/styles";
+import {LabelBadge} from "../../../../theme/ThemedComponents/Badge/LabelBadge";
 
-import * as hooks from 'actions/hooks';
-import { upcomingSession, useGoToRoute } from 'utils';
 import {
-    deleteEnrollment,
     initializeRegistration,
-} from 'actions/registrationActions';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
-import AddSessions from 'components/OmouComponents/AddSessions';
-import BackButton from 'components/OmouComponents/BackButton';
-import Loading from 'components/OmouComponents/Loading';
-import Notes from 'components/FeatureViews/Notes/Notes';
-import { useEnrollmentNotes } from 'actions/userActions';
-import { useSessionsWithConfig } from 'actions/calendarActions';
-import Moment from 'react-moment';
-import { fullName } from '../../../../utils';
+} from "actions/registrationActions";
+import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
+import AddSessions from "components/OmouComponents/AddSessions";
+import Loading from "components/OmouComponents/Loading";
+import Notes from "components/FeatureViews/Notes/Notes";
+import {fullName} from "../../../../utils";
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -106,41 +96,41 @@ export const GET_SESSIONS = gql`
 `;
 
 const timeOptions = {
-    hour: '2-digit',
-    minute: '2-digit',
+    "hour": "2-digit",
+    "minute": "2-digit",
 };
 const dateOptions = {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
+    "day": "numeric",
+    "month": "numeric",
+    "year": "numeric",
 };
 
 const CourseSessionStatus = () => {
     const dispatch = useDispatch();
-    const { enrollmentId } = useParams();
+    const {enrollmentId} = useParams();
 
     const {
-        data: enrollmentData,
-        loading: enrollmentLoading,
-        error: enrollmentError,
+        "data": enrollmentData,
+        "loading": enrollmentLoading,
+        "error": enrollmentError,
     } = useQuery(GET_ENROLLMENT, {
-        variables: { enrollmentId },
+        "variables": {enrollmentId},
     });
 
     const {
-        data: sessionsData,
-        loading: sessionsLoading,
-        error: sessionsError,
+        "data": sessionsData,
+        "loading": sessionsLoading,
+        "error": sessionsError,
     } = useQuery(GET_SESSIONS, {
-        variables: { courseId: enrollmentData?.enrollment.course.id },
-        skip: enrollmentLoading || enrollmentError,
+        "variables": {"courseId": enrollmentData?.enrollment.course.id},
+        "skip": enrollmentLoading || enrollmentError,
     });
     const useStyles = makeStyles({
-        MuiIndicator: {
-            height: '1px',
+        "MuiIndicator": {
+            "height": "1px",
         },
-        wrapper: {
-            flexDirection: 'row',
+        "wrapper": {
+            "flexDirection": "row",
         },
     });
     const classes = useStyles();
@@ -164,13 +154,8 @@ const CourseSessionStatus = () => {
     const closeUnenrollDialog = useCallback(
         (toUnenroll) => () => {
             setUnenrollWarningOpen(false);
-            //TODO: migrate unenroll to graph ql
-            // if (toUnenroll) {
-            //     deleteEnrollment(enrollment)(dispatch);
-            //     goToRoute(`/accounts/student/${studentID}`);
-            // }
-        }
-        // [dispatch, enrollment, goToRoute, studentID]
+            // TODO: migrate unenroll to graph ql
+        },
     );
 
     useEffect(() => {
@@ -183,18 +168,18 @@ const CourseSessionStatus = () => {
     if (enrollmentError || sessionsError) {
         return (
             <Typography>
-                There's been an error! Error:{' '}
+                There's been an error! Error:{" "}
+
                 {enrollmentError.message || sessionsError.message}
             </Typography>
         );
     }
     sessionsData.sessions.sort((a, b) =>
-        a.startDatetime > b.startDatetime
-            ? 1
-            : b.startDatetime > a.startDatetime
-            ? -1
-            : 0
-    );
+        (a.startDatetime > b.startDatetime ?
+            1 :
+            b.startDatetime > a.startDatetime ?
+                -1 :
+                0));
     const {
         course,
         enrollmentnoteSet,
@@ -210,72 +195,69 @@ const CourseSessionStatus = () => {
                 return (
                     <>
                         <Grid
-                            className='accounts-table-heading'
+                            className="accounts-table-heading"
                             container
                             item
-                            xs={12}
-                        >
+                            xs={12}>
                             <Grid item xs={1} />
+
                             <Grid item xs={2}>
-                                <Typography align='left' className='table-text'>
+                                <Typography align="left" className="table-text">
                                     Session Date
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={2}>
-                                <Typography align='left' className='table-text'>
+                                <Typography align="left" className="table-text">
                                     Day
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={3}>
-                                <Typography align='left' className='table-text'>
+                                <Typography align="left" className="table-text">
                                     Time
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={1}>
-                                <Typography align='left' className='table-text'>
+                                <Typography align="left" className="table-text">
                                     Tuition
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={2}>
                                 <Typography
-                                    align='center'
-                                    className='table-text'
-                                >
+                                    align="center"
+                                    className="table-text">
                                     Status
                                 </Typography>
                             </Grid>
                         </Grid>
+
                         <Grid
                             container
-                            spacing={1}
-                            data-cy='enrollment-sessions'
-                        >
-                            {sessionsData.sessions.length !== 0 ? (
-                                sessionsData.sessions.map((session) => {
-                                    return (
-                                        <EnrollmentSessionRow
-                                            session={session}
-                                            enrollmentData={enrollmentData}
-                                            highlightSession={highlightSession}
-                                        />
-                                    );
-                                })
-                            ) : (
-                                <NoListAlert list='Course' />
-                            )}
+                            data-cy="enrollment-sessions"
+                            spacing={1}>
+                            {sessionsData.sessions.length !== 0 ?
+                                sessionsData.sessions.map((session) => (
+                                    <EnrollmentSessionRow
+                                        enrollmentData={enrollmentData}
+                                        highlightSession={highlightSession}
+                                        session={session} />
+                                )) :
+                                <NoListAlert list="Course" />}
                         </Grid>
                     </>
                 );
             case 1:
-                return <Notes ownerID={id} ownerType='enrollment' />;
+                return <Notes ownerID={id} ownerType="enrollment" />;
             case 2:
                 return (
                     <PaymentTable
                         courseID={course.id}
                         enrollmentID={id}
                         paymentList={paymentList}
-                        type='enrollment'
-                    />
+                        type="enrollment" />
                 );
             default:
                 return null;
@@ -283,150 +265,157 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Grid item xs={12} container>
-            <Grid className='course-session-status' container>
+        <Grid container item xs={12}>
+            <Grid className="course-session-status" container>
                 <Grid item xs={12}>
                     <hr />
                 </Grid>
+
                 <Grid item xs={12}>
                     <Typography
-                        align='left'
-                        className='course-session-title'
-                        variant='h1'
-                    >
+                        align="left"
+                        className="course-session-title"
+                        variant="h1">
                         {course.title}
                     </Typography>
                 </Grid>
+
                 <Grid item md={12}>
                     <Grid
-                        alignItems='center'
-                        className='session-actions'
+                        alignItems="center"
+                        className="session-actions"
                         container
-                        direction='row'
-                        justify='flex-start'
-                        spacing={2}
-                    >
+                        direction="row"
+                        justify="flex-start"
+                        spacing={2}>
                         <Grid item>
                             <AddSessions
-                                componentOption='button'
+                                componentOption="button"
                                 enrollment={enrollmentData}
-                                parentOfCurrentStudent={student.parent}
-                            />
+                                parentOfCurrentStudent={student.parent} />
                         </Grid>
+
                         <Grid item>
                             <ResponsiveButton
-                                className='button unenroll'
-                                onClick={openUnenrollDialog}
-                            >
+                                className="button unenroll"
+                                onClick={openUnenrollDialog}>
                                 Unenroll Course
                             </ResponsiveButton>
                         </Grid>
                     </Grid>
-                    <Grid className='participants' item xs={12}>
-                        <Typography align='left'>
-                            Student:{' '}
+
+                    <Grid className="participants" item xs={12}>
+                        <Typography align="left">
+                            Student:{" "}
+
                             <Link to={`/accounts/student/${student.is}`}>
                                 {fullName(student.user)}
                             </Link>
                         </Typography>
-                        <Typography align='left'>
-                            Instructor:{' '}
+
+                        <Typography align="left">
+                            Instructor:{" "}
+
                             <Link
-                                to={`/accounts/instructor/${course.instructor_id}`}
-                            >
+                                to={`/accounts/instructor/${course.instructor_id}`}>
                                 {fullName(course.instructor.user)}
                             </Link>
                         </Typography>
-                        <Typography align='left'>
+
+                        <Typography align="left">
                             Enrollment Balance Left: ${enrollmentBalance}
                         </Typography>
                     </Grid>
+
                     {activeTab === 0 && (
-                        <Grid alignItems='flex-start' container item xs={3}>
+                        <Grid alignItems="flex-start" container item xs={3}>
                             <Grid item>
-                                <FormControl component='fieldset'>
+                                <FormControl component="fieldset">
                                     <FormGroup>
                                         <FormControlLabel
                                             control={
                                                 <Switch
                                                     checked={highlightSession}
-                                                    color='primary'
+                                                    color="primary"
                                                     onChange={
                                                         handleHighlightSwitch
                                                     }
-                                                    value='upcoming-session'
-                                                />
+                                                    value="upcoming-session" />
                                             }
-                                            label='Highlight Upcoming Session'
-                                        />
+                                            label="Highlight Upcoming Session" />
                                     </FormGroup>
                                 </FormControl>
                             </Grid>
                         </Grid>
                     )}
                 </Grid>
+
                 <Tabs
-                    classes={{ indicator: classes.MuiIndicator }}
-                    className='enrollment-tabs'
+                    className="enrollment-tabs"
+                    classes={{"indicator": classes.MuiIndicator}}
                     onChange={handleTabChange}
-                    value={activeTab}
-                >
+                    value={activeTab}>
                     <Tab label={<> Registration </>} />
+
                     <Tab
-                        classes={{ wrapper: classes.wrapper }}
+                        classes={{"wrapper": classes.wrapper}}
                         label={
                             Object.values(enrollmentnoteSet).some(
-                                ({ important }) => important
+                                ({important}) => important,
                             ) ? (
                                 <>
-                                    Notes
-                                    <LabelBadge
-                                        style={{ marginLeft: '8px' }}
-                                        variant='round-count'
-                                    >
-                                        1
-                                    </LabelBadge>
-                                </>
-                            ) : (
-                                <> Notes </>
-                            )
-                        }
-                    />
+                                        Notes
+                                        <LabelBadge
+                                            style={{"marginLeft": "8px"}}
+                                            variant="round-count">
+                                            1
+                                        </LabelBadge>
+                                    </>
+                                ) :
+                                    <> Notes </>
+
+                        } />
+
                     <Tab label={<> Payments </>} />
                 </Tabs>
+
                 <br />
+
                 {mainContent()}
             </Grid>
+
             <Dialog
-                aria-labelledby='warn-unenroll'
+                aria-labelledby="warn-unenroll"
                 onClose={closeUnenrollDialog(false)}
-                open={unenrollWarningOpen}
-            >
-                <DialogTitle disableTypography id='warn-unenroll'>
+                open={unenrollWarningOpen}>
+                <DialogTitle disableTypography id="warn-unenroll">
                     Unenroll in {course.title}
                 </DialogTitle>
+
                 <DialogContent>
                     <DialogContentText>
-                        You are about to unenroll in <b>{course.title}</b> for{' '}
+                        You are about to unenroll in <b>{course.title}</b> for{" "}
+
                         <b>{fullName(student.user)}</b>. Performing this action
+
                         will credit <b>${enrollmentBalance}</b> back to the
                         parent's account balance. Are you sure you want to
                         unenroll?
                     </DialogContentText>
                 </DialogContent>
+
                 <DialogActions>
                     <ResponsiveButton
-                        variant='outlined'
-                        color='secondary'
+                        color="secondary"
                         onClick={closeUnenrollDialog(true)}
-                    >
+                        variant="outlined">
                         Yes, unenroll
                     </ResponsiveButton>
+
                     <ResponsiveButton
-                        variant='outlined'
-                        color='primary'
+                        color="primary"
                         onClick={closeUnenrollDialog(false)}
-                    >
+                        variant="outlined">
                         Cancel
                     </ResponsiveButton>
                 </DialogActions>

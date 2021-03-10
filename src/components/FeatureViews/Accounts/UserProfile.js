@@ -256,7 +256,7 @@ const UserProfile = () => {
     const { accountType, accountID } = useParams();
     const [tabIndex, setTabIndex] = useState(0);
     const [displayTabs, setDisplayTabs] = useState(userTabs[accountType]);
-
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
 
     // reset to first tab when profile changes

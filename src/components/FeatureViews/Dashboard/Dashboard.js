@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
     const classes = useStyles();
+    // AUTH selector
     const { email } = useSelector(({ auth }) => auth) || [];
     const [currentFilter, setCurrentFilter] = useState({
         showFiltered: false,

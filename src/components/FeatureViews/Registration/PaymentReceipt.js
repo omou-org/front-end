@@ -67,7 +67,7 @@ const PaymentReceipt = ({ paymentID }) => {
     const { data, loading, error } = useQuery(GET_PAYMENT, {
         variables: { paymentId: params.paymentID || paymentID },
     });
-
+    // REGISTRATION selector
     const currentPayingParent = useSelector(
         ({ Registration }) => Registration.CurrentParent
     );

@@ -35,6 +35,7 @@ export const GET_PARENT_PAYMENTS_FILTERED = gql`
 `;
 
 export default function MyPaymentHistory() {
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const [getPayments, { loading, data, error, called }] = useLazyQuery(
         GET_PARENT_PAYMENTS_FILTERED,

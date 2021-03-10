@@ -67,6 +67,7 @@ const NoOOOInformation = () => {
 };
 
 export const UpcomingOOO = () => {
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const { data, loading, error } = useQuery(GET_UPCOMING_INSTRUCTOR_OOO, {
         variables: { instructorID: AuthUser.user.id },
@@ -117,6 +118,7 @@ export const UpcomingOOO = () => {
 
 export const LogOOO = () => {
     const currentDate = moment().utc().format();
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const { data, loading, error } = useQuery(GET_UPCOMING_INSTRUCTOR_OOO, {
         variables: { instructorID: AuthUser.user.id },

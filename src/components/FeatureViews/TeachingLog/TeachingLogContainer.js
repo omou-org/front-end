@@ -118,6 +118,7 @@ const TeachingLogHeader = () => (
 
 export default function TeachingLogContainer() {
     const classes = useStyles();
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const [getSessions, { loading, data }] = useLazyQuery(
         GET_INSTRUCTOR_SESSIONS

@@ -23,6 +23,7 @@ const REFRESH_TOKEN = gql`
 `;
 
 export default function IdleTimerPrompt() {
+    // AUTH selector
     const savedToken = useSelector(({ auth }) => auth.token);
     const [openIdlePrompt, setIdlePrompt] = useState(false);
     const history = useHistory();

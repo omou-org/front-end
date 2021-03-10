@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Accounts from '../FeatureViews/Accounts/Accounts';
 import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
 import AuthenticatedRoute from './AuthenticatedRoute';
-import CatsPage from '../CatsPage/CatsPage';
 import EnrollmentView from '../FeatureViews/Accounts/TabComponents/EnrollmentView';
 import EditSessionView from '../FeatureViews/Scheduler/EditSessionView';
 import ErrorNotFoundPage from '../ErrorNotFoundPage/ErrorNotFoundPage';
@@ -41,6 +40,7 @@ import OnboardingRoutes from './OnboardingRoutes';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     dispatch(resetSubmitStatus());
 
@@ -115,9 +115,6 @@ export const RootRoutes = () => {
 
             <AuthenticatedRoute exact path='/search'>
                 <SearchResults />
-            </AuthenticatedRoute>
-            <AuthenticatedRoute exact path='/cats'>
-                <CatsPage />
             </AuthenticatedRoute>
             <AuthenticatedRoute exact path='/noresults'>
                 <NoResultsPage />
