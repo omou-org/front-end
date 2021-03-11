@@ -21,6 +21,7 @@ import { ResponsiveButton } from '../../theme/ThemedComponents/Button/Responsive
 
 const useStyles = makeStyles({
     buttons: {
+        display: 'flex',
         '& Button': {
             margin: '10px',
         },
@@ -135,6 +136,13 @@ const Form = ({
                         })
                     )}
                     <div className={classes.buttons}>
+                        <BackButton
+                            data-cy='cancelButton'
+                            variant='contained'
+                            icon='cancel'
+                            label='cancel'
+                        />
+
                         {index > 0 && index < sections.length && (
                             <ResponsiveButton
                                 data-cy='backButton'
@@ -155,13 +163,6 @@ const Form = ({
                                 Next
                             </ResponsiveButton>
                         )}
-
-                        <BackButton
-                            data-cy='cancelButton'
-                            variant='contained'
-                            icon='cancel'
-                            label='cancel'
-                        />
 
                         <Prompt message='Are you sure you want to continue?' />
 

@@ -301,7 +301,6 @@ const Accounts = () => {
             <Grid container alignItems='flex-start' spacing={4}>
                 <Grid item>
                     <ResponsiveButton
-                        component={Link}
                         to='/form/student/add'
                         variant='outlined'
                     >
@@ -310,7 +309,6 @@ const Accounts = () => {
                 </Grid>
                 <Grid item>
                     <ResponsiveButton
-                        component={Link}
                         to='/form/parent/add'
                         variant='outlined'
                     >
