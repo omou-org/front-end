@@ -107,6 +107,7 @@ const instructorSelect = (name) => (
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
         noOptionsText='No instructors available'
+        style={{width:"200px"}}
     />
 );
 
@@ -197,7 +198,7 @@ const DAY_OF_WEEK_OPTIONS = [
 
 export const ACADEMIC_LVL_FIELD = {
         name: 'academicLevel',
-        label: 'Academic Level',
+        label: 'Select Grade Level',
         ...selectField([
             {
                 label: 'Elementary School',
@@ -589,6 +590,7 @@ const categorySelect = (name) => (
         optionsMap={categoryMap}
         request={GET_CATEGORIES}
         noOptionsText='No categories available'
+        style={{width:"200px"}}
     />
 );
 
@@ -1337,7 +1339,15 @@ export default {
                     },
                     {
                         name: 'description',
+                        required: true,
                         ...stringField('Course Description'),
+                    },
+                    {
+                        name: 'maxCapacity',
+                        label: 'Enrollment Capacity',
+                        required: true,
+                        component: <Fields.TextField style={{width:"180px"}} />,
+                        validator: Yup.number().min(1).integer(),
                     },
                     {
                         ...ACADEMIC_LVL_FIELD,
@@ -1345,8 +1355,8 @@ export default {
                     },
                     {
                         name: 'courseCategory',
-                        label: 'Subject',
-                        required: 'true',
+                        label: 'Select Subject',
+                        required: true,
                         component: categorySelect('courseCategory'),
                         validator: Yup.mixed(),
                     },
@@ -1356,14 +1366,8 @@ export default {
                         component: instructorSelect('instructor'),
                         validator: Yup.mixed(),
                     },
-                    INSTRUCTOR_CONFIRM_FIELD,
+                    // INSTRUCTOR_CONFIRM_FIELD,
                     //!TODO FIX TO DISPLAY N NUMBER OF OTPIONS
-                    {
-                        name: 'maxCapacity',
-                        label: 'Capacity',
-                        component: <Fields.TextField />,
-                        validator: Yup.number().min(1).integer(),
-                    },
                 ],
                 next: 'dayAndTime',
             },
