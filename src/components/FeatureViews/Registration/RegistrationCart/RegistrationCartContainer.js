@@ -3,6 +3,7 @@ import { useValidateRegisteringParent } from '../../../OmouComponents/Registrati
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Loading from '../../../OmouComponents/Loading';
+import BackgroundPaper from '../../../OmouComponents/BackgroundPaper';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -25,45 +26,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
 import { GET_REGISTRATION_CART } from '../SelectParentDialog';
-
-const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
-    query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
-        userInfos(userIds: $userIds) {
-            ... on StudentType {
-                user {
-                    firstName
-                    lastName
-                    email
-                    id
-                }
-            }
-        }
-        courses(courseIds: $courseIds) {
-            id
-            title
-            startDate
-            endDate
-            hourlyTuition
-            availabilityList {
-                dayOfWeek
-                endTime
-                startTime
-            }
-            academicLevelPretty
-            courseCategory {
-                id
-                name
-            }
-            instructor {
-                user {
-                    id
-                    firstName
-                    lastName
-                }
-            }
-        }
-    }
-`;
+import { GET_COURSES_AND_STUDENTS_TO_REGISTER } from '../../../../queries/CoursesQuery/CourseQuery';
 
 export const CREATE_REGISTRATION_CART = gql`
     mutation CreateRegisteringCart(

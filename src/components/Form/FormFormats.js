@@ -16,9 +16,13 @@ import { fullName } from '../../utils';
 import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
 import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
-import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
-import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
 
+import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
+import {
+    GET_CATEGORIES,
+    GET_COURSES,
+    GET_COURSE,
+} from '../../queries/CoursesQuery/CourseQuery';
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
         admin(userId: $userID) {
@@ -518,34 +522,6 @@ const SEARCH_PARENTS = gql`
                         firstName
                         lastName
                     }
-                }
-            }
-        }
-    }
-`;
-
-const GET_CATEGORIES = gql`
-    query GetCategories {
-        courseCategories {
-            id
-            name
-        }
-    }
-`;
-
-const GET_COURSES = gql`
-    query GetCourses {
-        courses {
-            title
-            id
-            enrollmentSet {
-                id
-            }
-            maxCapacity
-            instructor {
-                user {
-                    lastName
-                    firstName
                 }
             }
         }
@@ -1394,41 +1370,6 @@ export default {
             },
         ],
         load: async (id) => {
-            const GET_COURSE = gql`
-                query CourseFetch($id: ID!) {
-                    course(courseId: $id) {
-                        title
-                        id
-                        description
-                        instructor {
-                            user {
-                                id
-                                firstName
-                                lastName
-                            }
-                        }
-                        startDate
-                        maxCapacity
-                        courseCategory {
-                            id
-                            name
-                        }
-                        academicLevel
-                        academicLevelPretty
-                        endDate
-                        totalTuition
-                        hourlyTuition
-                        isConfirmed
-                        activeAvailabilityList {
-                            dayOfWeek
-                            endTime
-                            id
-                            startTime
-                        }
-                    }
-                }
-            `;
-
             try {
                 const {
                     data: { course },
@@ -1660,7 +1601,7 @@ export default {
                             });
                         } else {
                             const cachedCourse = cache.readQuery({
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },
@@ -1672,7 +1613,7 @@ export default {
                                         ...newCourse,
                                     },
                                 },
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },
