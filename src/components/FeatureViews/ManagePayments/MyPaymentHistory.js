@@ -1,3 +1,8 @@
+/**
+ * @description Not is use - working to migrate to new Invoices component 
+ * 
+ */
+
 import React, { useEffect, useState } from 'react';
 import PaymentTable from '../Accounts/TabComponents/PaymentTable';
 import gql from 'graphql-tag';

@@ -1,3 +1,9 @@
+/**
+ * @description Not is use - working to migrate to new Invoices component 
+ * 
+ */
+
+
 import React, { useCallback, useState } from 'react';
 import MyPaymentsRoutes from '../../Routes/MyPaymentsRoutes';
 import Typography from '@material-ui/core/Typography';
