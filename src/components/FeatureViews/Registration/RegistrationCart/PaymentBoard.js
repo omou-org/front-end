@@ -17,9 +17,9 @@ import { useHistory } from 'react-router-dom';
 import { GET_PAYMENT } from '../PaymentReceipt';
 import { GET_ALL_COURSES } from '../RegistrationLanding';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../../../../queries/AccountsQuery/AccountsQuery';
-import { GET_REGISTRATION_CART } from '../../../../queries/Payment/PaymentQuery';
+import { GET_REGISTRATION_CART } from '../../../../queries/PaymentQuery/PaymentQuery';
 import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
-import { GET_PRICE_QUOTE } from '../../../../queries/Pricing/PricingQuery';
+import { GET_PRICE_QUOTE } from '../../../../queries/PricingQuery/PricingQuery';
 
 const CREATE_ENROLLMENTS = gql`
     mutation CreateEnrollments($enrollments: [EnrollmentInput]!) {

@@ -9,7 +9,7 @@ import {
     DATE_RANGE_DISCOUNTS,
     DATE_RANGE_DISCOUNT,
     PAYMENT_METHOD_DISCOUNTS,
-} from '../../../queries/Pricing/PricingQuery';
+} from '../../../queries/PricingQuery/PricingQuery';
 import {
     GET_SCHOOL,
     GET_SCHOOLS,

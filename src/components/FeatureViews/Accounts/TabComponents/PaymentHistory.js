@@ -4,7 +4,7 @@ import Loading from 'components/OmouComponents/Loading';
 import PaymentTable from './PaymentTable';
 import { useQuery } from '@apollo/react-hooks';
 import Typography from '@material-ui/core/Typography';
-import { GET_PARENT_PAYMENTS } from '../../../../queries/Payment/PaymentQuery';
+import { GET_PARENT_PAYMENTS } from '../../../../queries/PaymentQuery/PaymentQuery';
 
 const PaymentHistory = ({ user_id }) => {
     const { data, loading, error } = useQuery(GET_PARENT_PAYMENTS, {

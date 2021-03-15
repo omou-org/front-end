@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { GET_REGISTRATION_CART } from '../../../queries/Payment/PaymentQuery';
+import { GET_REGISTRATION_CART } from '../../../queries/PaymentQuery/PaymentQuery';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
