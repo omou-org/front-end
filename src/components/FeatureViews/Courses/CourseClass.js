@@ -26,6 +26,7 @@ import { StudentCourseLabel } from './StudentBadge';
 import { filterEvent } from 'actions/calendarActions';
 import { GET_STUDENTS_BY_ENROLLMENT } from '../../../queries/AccountsQuery/AccountsQuery';
 import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
+import { GET_ANNOUNCEMENTS } from '../../../queries/CommsQuery/CommsQuery';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 
@@ -59,21 +60,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const GET_ANNOUNCEMENTS = gql`
-    query getAnnouncement($id: ID!) {
-        announcements(courseId: $id) {
-            subject
-            id
-            body
-            createdAt
-            updatedAt
-            poster {
-                firstName
-                lastName
-            }
-        }
-    }
-`;
+
 
 const CourseClass = () => {
     const { id } = useParams();

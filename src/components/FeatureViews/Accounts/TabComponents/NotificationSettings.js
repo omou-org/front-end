@@ -14,6 +14,7 @@ import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Loading from '../../../OmouComponents/Loading';
+import { GET_INSTRUCTOR_NOTIFICATION_SETTINGS, GET_PARENT_NOTIFICATION_SETTINGS } from '../../../../queries/CommsQuery/CommsQuery';
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -84,29 +85,6 @@ const CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS = gql`
                 sessionReminderEmail
                 sessionReminderSms
             }
-        }
-    }
-`;
-
-const GET_INSTRUCTOR_NOTIFICATION_SETTINGS = gql`
-    query GetInstructorNotificationSettings($instructorId: ID!) {
-        instructorNotificationSettings(instructorId: $instructorId) {
-            courseRequestsSms
-            scheduleUpdatesSms
-            sessionReminderEmail
-            sessionReminderSms
-        }
-    }
-`;
-
-const GET_PARENT_NOTIFICATION_SETTINGS = gql`
-    query GetParentNotificationSettings($parentId: ID!) {
-        parentNotificationSettings(parentId: $parentId) {
-            paymentReminderEmail
-            paymentReminderSms
-            scheduleUpdatesSms
-            sessionReminderEmail
-            sessionReminderSms
         }
     }
 `;

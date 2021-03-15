@@ -16,7 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { omouBlue } from '../../../theme/muiTheme';
-import { GET_ANNOUNCEMENTS } from './CourseClass';
+import { GET_ANNOUNCEMENTS } from '../../../queries/CommsQuery/CommsQuery';
 import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
