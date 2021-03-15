@@ -39,20 +39,20 @@ const CHECK_BUSINESS_EXISTS = gql`
     }
 `;
 
-
 export const onFailure = (response) => {
-    console.log('Login Failed: ', response)
-}
+    console.log('Login Failed: ', response);
+};
 
 export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState('visible');
+    const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(
+        'visible'
+    );
     const [gClassResp, setGClassResp] = useState();
     const [exitButtonMessage, setExitButtonMessage] = useState('No');
     var triggerState = false;
     const dispatch = useDispatch();
-
 
     const { accountType, email, google_access_token, google_courses } =
         useSelector(({ auth }) => auth) || [];
@@ -162,10 +162,10 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
             sessionStorage.getItem('google_access_token')
         );
         getCourses();
-    
+
         refreshTokenSetup(response);
     };
-    
+
     function handleClose() {
         setGoogleLoginPromptOpen('hidden');
     }
