@@ -12,24 +12,6 @@ export default (state = Authentication, {payload, type}) => {
             };
         case actions.LOGOUT:
             return Authentication;
-<<<<<<< Updated upstream
-=======
-        case actions.SET_GOOGLE_TOKEN:
-            return {
-                ...state,
-                ...payload,
-            }
-        case actions.SET_GOOGLE_COURSES:
-            return {
-                ...state,
-                ...payload,
-            }
-        case actions.STORE_COURSES:
-            return {
-                ...state,
-                ...payload,
-            }
->>>>>>> Stashed changes
         default:
             return state;
     }
