@@ -14,7 +14,10 @@ import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Loading from '../../../OmouComponents/Loading';
-import { GET_INSTRUCTOR_NOTIFICATION_SETTINGS, GET_PARENT_NOTIFICATION_SETTINGS } from '../../../../queries/CommsQuery/CommsQuery';
+import {
+    GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
+    GET_PARENT_NOTIFICATION_SETTINGS,
+} from '../../../../queries/CommsQuery/CommsQuery';
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
