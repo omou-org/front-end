@@ -66,33 +66,38 @@ export const fetchParents = (id) =>
         { id }
     );
 
-export const postParent = (parent) =>
-    wrapPost(
-        '/account/parent/',
-        [null, types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
-        parent
-    );
-
-export const patchParent = (id, parent) =>
-    wrapPatch(
-        '/account/parent/',
-        [null, types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
-        {
-            data: parent,
-            id,
-        }
-    );
-
-export const fetchInstructors = (id) =>
-    wrapGet(
-        '/account/instructor/',
-        [
-            types.FETCH_INSTRUCTOR_STARTED,
-            types.FETCH_INSTRUCTOR_SUCCESSFUL,
-            types.FETCH_INSTRUCTOR_FAILED,
-        ],
-        { id }
-    );
+export const postParent = (parent) => wrapPost(
+    "/account/parent/",
+    [
+        null,
+        types.POST_PARENT_SUCCESSFUL,
+        types.POST_PARENT_FAILED,
+    ],
+    parent,
+);
+/*
+export const patchParent = (id, parent) => wrapPatch(
+    "/account/parent/",
+    [
+        null,
+        types.POST_PARENT_SUCCESSFUL,
+        types.POST_PARENT_FAILED,
+    ],
+    {
+        "data": parent,
+        id,
+    },
+);
+*/
+export const fetchInstructors = (id) => wrapGet(
+    "/account/instructor/",
+    [
+		types.FETCH_INSTRUCTOR_STARTED,
+		types.FETCH_INSTRUCTOR_SUCCESSFUL,
+		types.FETCH_INSTRUCTOR_FAILED,
+    ],
+		{id}
+	);
 
 export const fetchAdmins = (id) =>
     wrapGet(
@@ -175,29 +180,30 @@ const wrapNotePatch = (
     [startType, successType, failType],
     payloadInfo
 ) => (id, data, ownerType, ownerID) => async (dispatch) => {
-    // creates a new action based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            payload: {
-                ...(payloadInfo || {}),
-                ownerID,
-                ownerType,
-                response,
-            },
-            type,
-        });
-    };
-    // request starting
-    newAction(startType, {});
-
-    try {
-        const response = await instance.patch(`${endpoint}${id}/`, data);
-        // succesful request
-        newAction(successType, response);
-    } catch (error) {
-        // failed request
-        newAction(failType, error.response);
-    }
+	// creates a new action based on the response given
+	const newAction = (type, response) => {
+		dispatch({
+			payload: {
+				...(payloadInfo || {}),
+				ownerID,
+				ownerType,
+				response,
+			},
+			type,
+		});
+	};
+	// request starting
+	newAction(startType, {});
+	/*
+	try {
+		const response = await instance.patch(`${endpoint}${id}/`, data);
+		// succesful request
+		newAction(successType, response);
+	} catch (error) {
+		// failed request
+		newAction(failType, error.response);
+	}
+	*/
 };
 
 export const fetchAccountNotes = wrapNoteGet('/account/note/', 'user_id', [

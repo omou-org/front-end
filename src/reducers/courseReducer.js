@@ -2,35 +2,43 @@ import * as actions from '../actions/actionTypes';
 import initialState from './initialState';
 import { REQUEST_ALL } from '../actions/apiActions';
 
-export default (state = initialState.Course, { payload, type }) => {
-    switch (type) {
-        case actions.POST_CATEGORY_SUCCESS:
-            return updateCourseCategories(state, payload, 'POST');
-        case actions.POST_CATEGORY_FAILED:
-            return state;
-        case actions.GET_CATEGORY_SUCCESS:
-            return updateCourseCategories(state, payload, 'GET');
-        case actions.PATCH_CATEGORY_SUCCESS:
-            return updateCourseCategories(state, payload, 'PATCH');
-        case actions.FETCH_COURSE_SUCCESSFUL:
-            return handleCoursesFetch(state, payload);
-        case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
-            return handleNotesFetch(state, payload);
-        case actions.POST_COURSE_SUCCESSFUL:
-            return handleCoursePost(state, payload);
-        case actions.POST_COURSE_NOTE_SUCCESSFUL:
-        case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
-            return handleNotesPost(state, payload);
-        case actions.DELETE_COURSE_NOTE_SUCCESSFUL:
-            return handleNoteDelete(state, payload);
-        case actions.ADD_SMALL_GROUP_REGISTRATION:
-            const { new_course } = payload;
-            return handleCoursePost(state, new_course);
-        case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
-            return handleCourseSearchResults(state, payload);
-        default:
-            return state;
-    }
+export default (state = initialState.Course, {payload, type}) => {
+  switch (type) {
+    case actions.POST_CATEGORY_SUCCESS:
+      return updateCourseCategories(state, payload, "POST");
+    case actions.POST_CATEGORY_FAILED:
+      return state;
+    case actions.GET_CATEGORY_SUCCESS:
+      return updateCourseCategories(state, payload, "GET");
+    case actions.PATCH_CATEGORY_SUCCESS:
+      return updateCourseCategories(state, payload, "PATCH");
+    case actions.FETCH_COURSE_SUCCESSFUL:
+      return handleCoursesFetch(state, payload);
+    case actions.FETCH_COURSE_NOTE_SUCCESSFUL:
+      return handleNotesFetch(state, payload);
+    case actions.POST_COURSE_SUCCESSFUL:
+      return handleCoursePost(state, payload);
+    case actions.POST_COURSE_NOTE_SUCCESSFUL:
+    // case actions.PATCH_COURSE_NOTE_SUCCESSFUL:
+    //   return handleNotesPost(state, payload);
+    case actions.DELETE_COURSE_NOTE_SUCCESSFUL:
+      return handleNoteDelete(state, payload);
+    case actions.ADD_SMALL_GROUP_REGISTRATION:
+      const {new_course} = payload;
+      return handleCoursePost(state, new_course);
+    case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
+      return handleCourseSearchResults(state, payload);
+    case actions.DELETE_ENROLLMENT_SUCCESS:
+      const newState = {...state};
+      const courseRoster = newState.NewCourseList[payload.courseID].roster;
+      newState.NewCourseList[payload.courseID].roster.splice(
+          courseRoster.indexOf(payload.studentID),
+          1
+      );
+      return JSON.parse(JSON.stringify(newState));
+    default:
+      return state;
+  }
 };
 
 const parseTime = (time) => {
