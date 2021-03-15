@@ -66,15 +66,12 @@ export const fetchParents = (id) =>
         { id }
     );
 
-export const postParent = (parent) => wrapPost(
-    "/account/parent/",
-    [
-        null,
-        types.POST_PARENT_SUCCESSFUL,
-        types.POST_PARENT_FAILED,
-    ],
-    parent,
-);
+export const postParent = (parent) =>
+    wrapPost(
+        '/account/parent/',
+        [null, types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
+        parent
+    );
 /*
 export const patchParent = (id, parent) => wrapPatch(
     "/account/parent/",
@@ -89,15 +86,16 @@ export const patchParent = (id, parent) => wrapPatch(
     },
 );
 */
-export const fetchInstructors = (id) => wrapGet(
-    "/account/instructor/",
-    [
-		types.FETCH_INSTRUCTOR_STARTED,
-		types.FETCH_INSTRUCTOR_SUCCESSFUL,
-		types.FETCH_INSTRUCTOR_FAILED,
-    ],
-		{id}
-	);
+export const fetchInstructors = (id) =>
+    wrapGet(
+        '/account/instructor/',
+        [
+            types.FETCH_INSTRUCTOR_STARTED,
+            types.FETCH_INSTRUCTOR_SUCCESSFUL,
+            types.FETCH_INSTRUCTOR_FAILED,
+        ],
+        { id }
+    );
 
 export const fetchAdmins = (id) =>
     wrapGet(
@@ -180,21 +178,21 @@ const wrapNotePatch = (
     [startType, successType, failType],
     payloadInfo
 ) => (id, data, ownerType, ownerID) => async (dispatch) => {
-	// creates a new action based on the response given
-	const newAction = (type, response) => {
-		dispatch({
-			payload: {
-				...(payloadInfo || {}),
-				ownerID,
-				ownerType,
-				response,
-			},
-			type,
-		});
-	};
-	// request starting
-	newAction(startType, {});
-	/*
+    // creates a new action based on the response given
+    const newAction = (type, response) => {
+        dispatch({
+            payload: {
+                ...(payloadInfo || {}),
+                ownerID,
+                ownerType,
+                response,
+            },
+            type,
+        });
+    };
+    // request starting
+    newAction(startType, {});
+    /*
 	try {
 		const response = await instance.patch(`${endpoint}${id}/`, data);
 		// succesful request

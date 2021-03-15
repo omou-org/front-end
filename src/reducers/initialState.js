@@ -78,86 +78,86 @@ export default {
 };
 
 function initRequests() {
-	return {
-		admin: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		course: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		category: {
-			[GET]: "",
-			[PATCH]: {},
-			[POST]: "",
-		},
-		instructor: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		parent: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		student: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		schedule: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		enrollment: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		accountNote: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		courseNote: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		enrollmentNote: {
-			[GET]: {},
-			[PATCH]: {},
-		},
-		priceRule: {
-			[GET]: {},
-			[PATCH]: {},
-			[POST]: {},
-		},
-		discount: {
-			dateRange: {
-				[GET]: {},
-				[POST]: {},
-			},
-			multiCourse: {
-				[GET]: {},
-				[PATCH]: {},
-				[POST]: {},
-			},
-			paymentMethod: {
-				[GET]: {},
-				[POST]: {},
-			},
-			[DELETE]: "",
-			[PATCH]: "",
-		},
-		registration: {
-			enrollment: {
-				[POST]: {},
-			},
-		},
-		registeringParent: "",
-		payment: {
-			[GET]: {},
-		},
-	};
+    return {
+        admin: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        course: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        category: {
+            [GET]: '',
+            [PATCH]: {},
+            [POST]: '',
+        },
+        instructor: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        parent: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        student: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        schedule: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        enrollment: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        accountNote: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        courseNote: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        enrollmentNote: {
+            [GET]: {},
+            [PATCH]: {},
+        },
+        priceRule: {
+            [GET]: {},
+            [PATCH]: {},
+            [POST]: {},
+        },
+        discount: {
+            dateRange: {
+                [GET]: {},
+                [POST]: {},
+            },
+            multiCourse: {
+                [GET]: {},
+                [PATCH]: {},
+                [POST]: {},
+            },
+            paymentMethod: {
+                [GET]: {},
+                [POST]: {},
+            },
+            [DELETE]: '',
+            [PATCH]: '',
+        },
+        registration: {
+            enrollment: {
+                [POST]: {},
+            },
+        },
+        registeringParent: '',
+        payment: {
+            [GET]: {},
+        },
+    };
 }
 
 function initSignUpForm() {
-	return {};
+    return {};
 }

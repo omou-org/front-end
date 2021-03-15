@@ -44,30 +44,38 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         setMobileOpen((open) => !open);
     }, []);
 
-	useEffect(() => {
-        if(email !== null && (google_access_token === null || google_access_token === undefined)){
+    useEffect(() => {
+        if (
+            email !== null &&
+            (google_access_token === null || google_access_token === undefined)
+        ) {
             setGoogleLoginPromptOpen(true);
         }
-	}, [email]);
+    }, [email]);
 
-	useEffect(() => {
-		if(gClassResp === null || gClassResp === undefined){
-		  (async () => {
-			setGClassResp( await axios.get("https://classroom.googleapis.com/v1/courses", {
-			  "headers": {
-				"Authorization": `Bearer ${google_access_token}`,
-			  },
-			}));
-		  })();
-		}
-		if(google_courses === undefined || google_courses == null){
-			dispatch({
-			  type: actions.SET_GOOGLE_COURSES,
-			  payload: {google_courses: gClassResp?.data.courses}
-			})
-		}
-	  }, [google_access_token]);
-	
+    useEffect(() => {
+        if (gClassResp === null || gClassResp === undefined) {
+            (async () => {
+                setGClassResp(
+                    await axios.get(
+                        'https://classroom.googleapis.com/v1/courses',
+                        {
+                            headers: {
+                                Authorization: `Bearer ${google_access_token}`,
+                            },
+                        }
+                    )
+                );
+            })();
+        }
+        if (google_courses === undefined || google_courses == null) {
+            dispatch({
+                type: actions.SET_GOOGLE_COURSES,
+                payload: { google_courses: gClassResp?.data.courses },
+            });
+        }
+    }, [google_access_token]);
+
     if (loading) return <Loading />;
     if (error) return <div>There's been an error! {error.message}</div>;
 

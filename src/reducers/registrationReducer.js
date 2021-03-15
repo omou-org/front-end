@@ -11,110 +11,115 @@ export default function registration(
     state = initialState.RegistrationForms,
     { payload, type }
 ) {
-  let newState = JSON.parse(JSON.stringify(state));
-  switch (type) {
-    case actions.ADD_STUDENT_FIELD:
-      newState = addAStudentField(state);
-      return newState;
-    case actions.ADD_COURSE_FIELD:
-      newState = addACourseField(state);
-      return newState;
-    case actions.ADD_FIELD:
-      newState = addField(state, payload);
-      return newState;
-    case actions.REMOVE_FIELD:
-      const path = payload[0];
-      const removeFieldIndex = payload[1];
-      const conditional = payload[2];
-      if (conditional) {
-        path.push(conditional);
-      }
-      newState = removeField(state, path, removeFieldIndex, conditional);
-      return newState;
-    case actions.POST_STUDENT_SUCCESSFUL:
-      return successSubmit(state);
-    case actions.POST_STUDENT_FAILED:
-      return failedSubmit(state);
-    case actions.POST_ADMIN_SUCCESSFUL:
-      return successSubmit(state);
-    case actions.POST_PARENT_SUCCESSFUL:
-      return successSubmit(state);
-    case actions.POST_PARENT_FAILED:
-      return failedSubmit(state);
-    case actions.POST_INSTRUCTOR_SUCCESSFUL:
-      return successSubmit(state);
-    case actions.POST_INSTRUCTOR_FAILED:
-      return failedSubmit(state);
-    case actions.PATCH_COURSE_SUCCESSFUL:
-      return successSubmit(state, payload);
-    case actions.PATCH_COURSE_FAILED:
-      return failedSubmit(state);
-    case actions.POST_COURSE_SUCCESSFUL:
-      return successSubmit(state, payload);
-    case actions.POST_COURSE_FAILED:
-      return failedSubmit(state);
-    case actions.SUBMIT_INITIATED:
-      return onSubmit(state);
-    case actions.RESET_SUBMIT_STATUS:
-      return onSubmit(state);
-    case actions.POST_PRICE_RULE_SUCCESS:
-      return successSubmit(state);
-    case actions.POST_DISCOUNT_DATE_RANGE_SUCCESS:
-      return successSubmit(state);
-    case actions.POST_DISCOUNT_MULTI_COURSE_SUCCESS:
-      return successSubmit(state);
-    case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
-      return successSubmit(state);
-    case actions.SET_PARENT:
-      setParentRegistrationCart(payload);
-      return {
-        currentParent: payload,
-      };
-    case actions.RESET_REGISTRATION:
-      newState.registered_courses = {};
-      return newState;
-    case actions.ADD_CLASS_REGISTRATION:
-      return addClassRegistration(payload);
-    case actions.ADD_TUTORING_REGISTRATION:
-      return addTutoringRegistration(newState, payload);
-    // case actions.ADD_SMALL_GROUP_REGISTRATION:
-    //   return addSmallGroupRegistration(newState, payload);
-    case actions.INIT_COURSE_REGISTRATION:
-      return initializeRegistration(newState, payload);
-    case actions.DELETE_COURSE_REGISTRATION:
-      const {studentId, courseId} = payload
-      const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
-      const indexOfRegistration = registrationState[studentId]
-          .map(({course}) => course)
-          .indexOf(courseId);
+    let newState = JSON.parse(JSON.stringify(state));
+    switch (type) {
+        case actions.ADD_STUDENT_FIELD:
+            newState = addAStudentField(state);
+            return newState;
+        case actions.ADD_COURSE_FIELD:
+            newState = addACourseField(state);
+            return newState;
+        case actions.ADD_FIELD:
+            newState = addField(state, payload);
+            return newState;
+        case actions.REMOVE_FIELD:
+            const path = payload[0];
+            const removeFieldIndex = payload[1];
+            const conditional = payload[2];
+            if (conditional) {
+                path.push(conditional);
+            }
+            newState = removeField(state, path, removeFieldIndex, conditional);
+            return newState;
+        case actions.POST_STUDENT_SUCCESSFUL:
+            return successSubmit(state);
+        case actions.POST_STUDENT_FAILED:
+            return failedSubmit(state);
+        case actions.POST_ADMIN_SUCCESSFUL:
+            return successSubmit(state);
+        case actions.POST_PARENT_SUCCESSFUL:
+            return successSubmit(state);
+        case actions.POST_PARENT_FAILED:
+            return failedSubmit(state);
+        case actions.POST_INSTRUCTOR_SUCCESSFUL:
+            return successSubmit(state);
+        case actions.POST_INSTRUCTOR_FAILED:
+            return failedSubmit(state);
+        case actions.PATCH_COURSE_SUCCESSFUL:
+            return successSubmit(state, payload);
+        case actions.PATCH_COURSE_FAILED:
+            return failedSubmit(state);
+        case actions.POST_COURSE_SUCCESSFUL:
+            return successSubmit(state, payload);
+        case actions.POST_COURSE_FAILED:
+            return failedSubmit(state);
+        case actions.SUBMIT_INITIATED:
+            return onSubmit(state);
+        case actions.RESET_SUBMIT_STATUS:
+            return onSubmit(state);
+        case actions.POST_PRICE_RULE_SUCCESS:
+            return successSubmit(state);
+        case actions.POST_DISCOUNT_DATE_RANGE_SUCCESS:
+            return successSubmit(state);
+        case actions.POST_DISCOUNT_MULTI_COURSE_SUCCESS:
+            return successSubmit(state);
+        case actions.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS:
+            return successSubmit(state);
+        case actions.SET_PARENT:
+            setParentRegistrationCart(payload);
+            return {
+                currentParent: payload,
+            };
+        case actions.RESET_REGISTRATION:
+            newState.registered_courses = {};
+            return newState;
+        case actions.ADD_CLASS_REGISTRATION:
+            return addClassRegistration(payload);
+        case actions.ADD_TUTORING_REGISTRATION:
+            return addTutoringRegistration(newState, payload);
+        // case actions.ADD_SMALL_GROUP_REGISTRATION:
+        //   return addSmallGroupRegistration(newState, payload);
+        case actions.INIT_COURSE_REGISTRATION:
+            return initializeRegistration(newState, payload);
+        case actions.DELETE_COURSE_REGISTRATION:
+            const { studentId, courseId } = payload;
+            const registrationState = JSON.parse(
+                sessionStorage.getItem('registrations')
+            );
+            const indexOfRegistration = registrationState[studentId]
+                .map(({ course }) => course)
+                .indexOf(courseId);
 
-      registrationState[studentId].splice(indexOfRegistration, 1);
+            registrationState[studentId].splice(indexOfRegistration, 1);
 
-      sessionStorage.setItem("registrations", JSON.stringify({
-        ...registrationState,
-        [studentId]: registrationState[studentId],
-      }));
+            sessionStorage.setItem(
+                'registrations',
+                JSON.stringify({
+                    ...registrationState,
+                    [studentId]: registrationState[studentId],
+                })
+            );
 
-      return {
-        ...registrationState,
-        [studentId]: registrationState[studentId],
-      }
-    case actions.CLOSE_COURSE_REGISTRATION:
-      return closeRegistration(newState);
-    case actions.EDIT_COURSE_REGISTRATION:
-      return editCourseRegistration(newState, payload);
-    case actions.SET_REGISTRATION:
-      newState.registration = payload;
-      return {...newState};
-    case actions.COMPLETE_REGISTRATION:
-      newState.registration = {
-        ...newState.registration,
-        complete: true,
-      };
-      return {...newState};
-    default:
-      return state;
-  }
+            return {
+                ...registrationState,
+                [studentId]: registrationState[studentId],
+            };
+        case actions.CLOSE_COURSE_REGISTRATION:
+            return closeRegistration(newState);
+        case actions.EDIT_COURSE_REGISTRATION:
+            return editCourseRegistration(newState, payload);
+        case actions.SET_REGISTRATION:
+            newState.registration = payload;
+            return { ...newState };
+        case actions.COMPLETE_REGISTRATION:
+            newState.registration = {
+                ...newState.registration,
+                complete: true,
+            };
+            return { ...newState };
+        default:
+            return state;
+    }
 }
 
 const addAStudentField = (prevState) => {

@@ -3,31 +3,31 @@ import { wrapDelete, wrapGet, wrapPatch, wrapPost } from './apiActions';
 import { wrapUseEndpoint } from './hooks';
 
 export const addCategory = (categoryName, categoryDescription) =>
-	wrapPost(
-    "/course/categories/",
-    [
-		types.POST_CATEGORY_STARTED,
-		types.POST_CATEGORY_SUCCESS,
-		types.POST_CATEGORY_FAILED,
-    ],
-    {
-		description: categoryDescription,
-		name: categoryName,
-    }
-	);
+    wrapPost(
+        '/course/categories/',
+        [
+            types.POST_CATEGORY_STARTED,
+            types.POST_CATEGORY_SUCCESS,
+            types.POST_CATEGORY_FAILED,
+        ],
+        {
+            description: categoryDescription,
+            name: categoryName,
+        }
+    );
 
 export const fetchCategories = (id) =>
-	wrapGet(
-    "/course/categories/",
-    [
-		types.GET_CATEGORY_STARTED,
-		types.GET_CATEGORY_SUCCESS,
-		types.GET_CATEGORY_FAILED,
-    ],
-    {
-		id,
-    }
-	);
+    wrapGet(
+        '/course/categories/',
+        [
+            types.GET_CATEGORY_STARTED,
+            types.GET_CATEGORY_SUCCESS,
+            types.GET_CATEGORY_FAILED,
+        ],
+        {
+            id,
+        }
+    );
 
 // export const useCategories = wrapUseEndpoint(
 // 	"/course/categories/",

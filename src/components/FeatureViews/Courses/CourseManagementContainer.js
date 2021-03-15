@@ -406,17 +406,17 @@ const CourseManagementContainer = () => {
         error: courseError,
     } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
         variables: { accountId },
-
     });
 
     const { data, loading, error } = useQuery(GET_COURSES, {
         variables: { accountId },
         onCompleted: (data) => {
-          dispatch({
-            type: actions.STORE_COURSES, 
-            payload: {courses: data.courses}
-          })
-        }});
+            dispatch({
+                type: actions.STORE_COURSES,
+                payload: { courses: data.courses },
+            });
+        },
+    });
 
     const {
         data: studentData,

@@ -414,7 +414,7 @@ export const useInstructorAvailability = (instructorID) =>
 //     "/payment/unpaid-sessions/",
 //     types.GET_UNPAID_SUCCESS
 // );
-    
+
 // Hook
 export const usePrevious = (value) => {
     // The ref object is a generic container whose current property is mutable
