@@ -39,14 +39,20 @@ const CHECK_BUSINESS_EXISTS = gql`
     }
 `;
 
+
+export const onFailure = (response) => {
+    console.log('Login Failed: ', response)
+}
+
 export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
-    const dispatch = useDispatch();
+    const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState('visible');
     const [gClassResp, setGClassResp] = useState();
     const [exitButtonMessage, setExitButtonMessage] = useState('No');
     var triggerState = false;
+    const dispatch = useDispatch();
+
 
     const { accountType, email, google_access_token, google_courses } = useSelector(({ auth }) => auth) || [];
     // const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
@@ -79,7 +85,8 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     useEffect(() => {
         if(email !== null && sessionStorage.getItem('google_access_token') === null)
         {
-            setGoogleLoginPromptOpen(true);
+            console.log('Run')
+            setGoogleLoginPromptOpen('visible');
         }
         else {
             console.log('Use Effect: ' , sessionStorage.getItem('google_access_token'));
@@ -113,15 +120,7 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         }
         console.log('gClassResp: ', gClassResp)
     };
-    
-    function handleClose() {
-        setGoogleLoginPromptOpen(false);
-    }
 
-    const onFailure = (response) => {
-        console.log('Login Failed: ', response)
-    }
-    
     const onSuccess = (response) => {
         console.log('onSuccess runs');
         console.log('response: ', response);
@@ -133,9 +132,14 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         sessionStorage.setItem('google_access_token', response.tokenObj.access_token);
         console.log('Token on Success 1, ', sessionStorage.getItem('google_access_token'));
         getCourses();
-
+    
         refreshTokenSetup(response);
     };
+    
+    function handleClose() {
+        setGoogleLoginPromptOpen('hidden');
+    }
+
     // if (loading) return <Loading />;
     // if (error) return <div>There's been an error! {error.message}</div>;
 
@@ -169,11 +173,11 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
                         </main>
                     </MuiPickersUtilsProvider>
                     <Dialog
-                    open={googleLoginPromptOpen}
                     onClose={handleClose}
                     aria-labelledby='dialog-title'
                     aria-describedby='dialog-description'
-                >
+                    style={{visibility:googleLoginPromptOpen}}
+                    >
                     <DialogTitle disableTypography id='dialog-title'>{'Sign in with Google'}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id='dialog-description'>
