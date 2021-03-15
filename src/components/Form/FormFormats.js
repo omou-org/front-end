@@ -107,7 +107,7 @@ const instructorSelect = (name) => (
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
         noOptionsText='No instructors available'
-        style={{width:"200px"}}
+        variant='outlined'
     />
 );
 

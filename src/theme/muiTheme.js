@@ -236,6 +236,11 @@ const theme = createMuiTheme({
                 marginTop: '4px',
             },
         },
+        MuiAutocomplete: {
+            root: {
+                width: '30px'
+            }
+        },
         MuiChip: {
             root: {
                 height: '24px',
