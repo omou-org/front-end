@@ -60,8 +60,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
-
 const CourseClass = () => {
     const { id } = useParams();
     const classes = useStyles();
