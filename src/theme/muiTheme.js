@@ -107,6 +107,20 @@ const defaultFontProps = {
     fontWeight: 700,
 };
 
+export const new_course_form = {
+    dropdowns: {
+        width: '216px'
+    },
+    textFields: {
+        width: '432px',
+        display: 'block'
+    },
+    textFields_short: {
+        width: '180px',
+        display: 'block'
+    }
+}
+
 const theme = createMuiTheme({
     palette: {
         primary: { main: omouBlue },
@@ -235,11 +249,6 @@ const theme = createMuiTheme({
                 marginRight: '6px',
                 marginTop: '4px',
             },
-        },
-        MuiAutocomplete: {
-            root: {
-                width: '30px'
-            }
         },
         MuiChip: {
             root: {

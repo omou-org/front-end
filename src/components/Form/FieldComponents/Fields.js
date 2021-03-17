@@ -29,6 +29,7 @@ const useSelectStyles = makeStyles({
 });
 
 export const fieldsMargins = {
+    width: '216px',
     marginTop: '16px',
     marginBottom: '8px',
 };
@@ -178,6 +179,7 @@ export const DataSelect = ({ request, optionsMap, name, variant, ...props }) => 
     // const renderInput = useCallback(
     //     () => <TextField variant="outlined" label="10,000 options" />, []
     // );
+    console.log(<Fields.Autocomplete/>);
 
     return (
         <Fields.Autocomplete
@@ -188,6 +190,8 @@ export const DataSelect = ({ request, optionsMap, name, variant, ...props }) => 
             getOptionSelected={defaultSelectedHandler}
             options={options}
             renderOption={renderOption}
+            classes={{inputRoot:{ fontSize:"70px"}}}
+            // style={{border:"1px solid black", height:"30px"}}
             {...props}
         />
     );

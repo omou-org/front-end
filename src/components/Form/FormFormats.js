@@ -18,6 +18,7 @@ import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
 import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
+import { new_course_form } from '../../theme/muiTheme';
 
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
@@ -65,10 +66,10 @@ export const selectField = (options) => ({
         component: <Fields.Select style={fieldsMargins} data={options} />,
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
-    stringField = (label) => ({
+    stringField = (label, style) => ({
         component: (
             <Fields.TextField
-                style={{ marginTop: '8px ', marginBottom: '24px' }}
+                style={{ marginTop: '8px ', marginBottom: '24px', ...style }}
                 name={label}
             />
         ),
@@ -101,13 +102,14 @@ const userMap = ({ accountSearch }) =>
         value: user.id,
     }));
 
-const instructorSelect = (name) => (
+const instructorSelect = (name, style) => (
     <Fields.DataSelect
         name={name}
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
         noOptionsText='No instructors available'
         variant='outlined'
+        style={style}
     />
 );
 
@@ -584,13 +586,13 @@ const categoryMap = ({ courseCategories }) =>
         value: id,
     }));
 
-const categorySelect = (name) => (
+const categorySelect = (name, style) => (
     <Fields.DataSelect
         name={name}
         optionsMap={categoryMap}
         request={GET_CATEGORIES}
         noOptionsText='No categories available'
-        style={{width:"200px"}}
+        style={style}
     />
 );
 
@@ -1335,18 +1337,18 @@ export default {
                     {
                         name: 'title',
                         required: true,
-                        ...stringField('Course Name'),
+                        ...stringField('Course Name', new_course_form.textFields),
                     },
                     {
                         name: 'description',
                         required: true,
-                        ...stringField('Course Description'),
+                        ...stringField('Course Description', new_course_form.textFields),
                     },
                     {
                         name: 'maxCapacity',
                         label: 'Enrollment Capacity',
                         required: true,
-                        component: <Fields.TextField style={{width:"180px"}} />,
+                        component: <Fields.TextField style={new_course_form.textFields_short} />,
                         validator: Yup.number().min(1).integer(),
                     },
                     {
@@ -1357,13 +1359,13 @@ export default {
                         name: 'courseCategory',
                         label: 'Select Subject',
                         required: true,
-                        component: categorySelect('courseCategory'),
+                        component: categorySelect('courseCategory', new_course_form.dropdowns),
                         validator: Yup.mixed(),
                     },
                     {
                         name: 'instructor',
                         label: 'Select Instructor',
-                        component: instructorSelect('instructor'),
+                        component: instructorSelect('instructor', new_course_form.dropdowns),
                         validator: Yup.mixed(),
                     },
                     // INSTRUCTOR_CONFIRM_FIELD,
