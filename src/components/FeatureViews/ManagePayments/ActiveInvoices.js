@@ -1,6 +1,6 @@
 /**
- * @description Not is use - working to migrate to new Invoices component 
- * 
+ * @description Not is use - working to migrate to new Invoices component
+ *
  */
 
 import React from 'react';
