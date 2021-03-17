@@ -30,8 +30,8 @@ const useSelectStyles = makeStyles({
 
 export const fieldsMargins = {
     width: '216px',
-    marginTop: '16px',
-    marginBottom: '8px',
+    marginTop: '14px',
+    marginBottom: '10px',
 };
 
 export const { TextField, Checkboxes } = Fields;
