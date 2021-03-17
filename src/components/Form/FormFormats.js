@@ -1384,7 +1384,7 @@ export default {
                         ),
                         validator: Yup.mixed(),
                     },
-                    // INSTRUCTOR_CONFIRM_FIELD,
+                    INSTRUCTOR_CONFIRM_FIELD,
                     //!TODO FIX TO DISPLAY N NUMBER OF OTPIONS
                 ],
                 next: 'dayAndTime',
