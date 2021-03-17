@@ -46,8 +46,127 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
+const ClassEnrollmentList = ({
+    fullStudentName,
+    accountType,
+    studentId,
+    parentAccountType,
+    parentId,
+    concatFullParentName,
+    phoneNumber,
+    handleOpenModal,
+}) => {
     const classes = useStyles();
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleClick = (event) => setAnchorEl(event.currentTarget);
+
+    const handleClose = () => setAnchorEl(null);
+
+    const handleOpen = (e) => {
+        e.preventDefault();
+        const currentValue = e.currentTarget.value;
+        const dataType = e.currentTarget.dataset.type;
+        handleOpenModal(currentValue, dataType);
+        setAnchorEl(null);
+    };
+
+    if (!courses) return 'Loading';
+
+    return (
+        <TableRow key={fullStudentName} style={{ wordBreak: 'break-word' }}>
+            <TableCell
+                component='th'
+                scope='row'
+                component={Link}
+                to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
+                style={{ textDecoration: 'none', fontWeight: 700 }}
+            >
+                {fullStudentName}
+            </TableCell>
+            <TableCell
+                component={Link}
+                to={`/accounts/${parentAccountType.toLowerCase()}/${parentId}`}
+                style={{ textDecoration: 'none' }}
+            >
+                {concatFullParentName}
+            </TableCell>
+            <TableCell>{phoneNumber}</TableCell>
+            <TableCell align='right' padding='none' size='small'>
+                <Button
+                    aria-controls='simple-menu'
+                    aria-haspopup='true'
+                    onClick={handleClick}
+                >
+                    <MailOutlineIcon style={{ color: 'rgb(112,105,110)' }} />
+                </Button>
+                <AccessControlComponent
+                    permittedAccountTypes={[
+                        USER_TYPES.admin,
+                        USER_TYPES.instructor,
+                        USER_TYPES.receptionist,
+                    ]}
+                >
+                    <Menu
+                        id='simple-menu'
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                        classes={{ list: classes.dropdown }}
+                    >
+                        <MenuItem
+                            onClick={handleOpen}
+                            className={classes.menuSelected}
+                            value={studentId}
+                            data-type={accountType}
+                        >
+                            Email Student
+                        </MenuItem>
+                        <MenuItem
+                            onClick={handleOpen}
+                            className={classes.menuSelected}
+                            value={parentId}
+                            data-type={parentAccountType}
+                        >
+                            Email Parent
+                        </MenuItem>
+                    </Menu>
+                </AccessControlComponent>
+            </TableCell>
+            <TableCell
+                align='right'
+                padding='none'
+                size='small'
+                className={classes.icon}
+            >
+                <Button disabled>
+                    <ChatOutlinedIcon style={{ color: 'rgb(112,105,110)' }} />
+                </Button>
+            </TableCell>
+            <TableCell
+                align='right'
+                padding='none'
+                size='small'
+                className={classes.carrot}
+            >
+                <Button>
+                    <ExpandMoreIcon
+                        style={{ color: omouBlue }}
+                        fontSize='large'
+                    />
+                </Button>
+            </TableCell>
+        </TableRow>
+    );
+};
+
+const Studentenrollment = ({ enrollmentList, loggedInUser }) => {
+    const classes = useStyles();
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [typeOfAccount, setTypeOfAccount] = useState();
+    const [userId, setUserId] = useState();
 
     const [modalOpen, setModalOpen] = useState(false);
     const [typeOfAccount, setTypeOfAccount] = useState();
@@ -59,33 +178,20 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
         setModalOpen(true);
     };
 
-    const handleCloseModal = () => setModalOpen(false);
-
     return (
         <Grid item xs={12}>
             <TableContainer>
-                <Table>
+                <Table className={classes.table}>
                     <TableHeadSecondary>
-                        <TableRow className={classes.borderBottom}>
-                            <TableCell
-                                className={`${classes.studentAccordionSpacing} ${classes.noBorderBottom}`}
-                            >
-                                Student
-                            </TableCell>
-                            <TableCell
-                                className={`${classes.parentAccordionSpacing} ${classes.noBorderBottom}`}
-                            >
-                                Parent
-                            </TableCell>
-                            <TableCell className={classes.noBorderBottom}>
-                                Phone
-                            </TableCell>
+                        <TableRow>
+                            <TableCell>Student</TableCell>
+                            <TableCell>Parent</TableCell>
+                            <TableCell>Phone</TableCell>
+                            <TableCell />
+                            <TableCell />
+                            <TableCell />
                         </TableRow>
                     </TableHeadSecondary>
-                </Table>
-            </TableContainer>
-            <TableContainer>
-                <Table className={classes.table}>
                     <TableBody>
                         {enrollmentList
                             .sort((firstStudent, secondStudent) =>
@@ -99,7 +205,6 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                     accountType,
                                     primaryParent,
                                     user,
-                                    studentschoolinfoSet,
                                 } = students.student;
                                 const fullStudentName = fullName(user);
                                 const studentId = user.id;
@@ -111,9 +216,8 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                 const phoneNumber = primaryParent.phoneNumber;
                                 const parentId = primaryParent.user.id;
                                 const parentEmail = primaryParent.user.email;
-                                const studentInfo = studentschoolinfoSet;
                                 return (
-                                    <ClassEnrollmentRow
+                                    <ClassEnrollmentList
                                         fullStudentName={fullStudentName}
                                         accountType={accountType}
                                         studentId={studentId}
@@ -124,7 +228,6 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                         }
                                         phoneNumber={phoneNumber}
                                         handleOpenModal={handleOpenModal}
-                                        studentInfo={studentInfo}
                                     />
                                 );
                             })}

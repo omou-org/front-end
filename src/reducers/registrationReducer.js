@@ -77,8 +77,8 @@ export default function registration(
             return addClassRegistration(payload);
         case actions.ADD_TUTORING_REGISTRATION:
             return addTutoringRegistration(newState, payload);
-        case actions.ADD_SMALL_GROUP_REGISTRATION:
-            return addSmallGroupRegistration(newState, payload);
+        // case actions.ADD_SMALL_GROUP_REGISTRATION:
+        //   return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState, payload);
         case actions.DELETE_COURSE_REGISTRATION:

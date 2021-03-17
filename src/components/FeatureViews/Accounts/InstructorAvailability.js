@@ -56,6 +56,7 @@ const endpoint = '/account/instructor-availability/';
 
 const InstructorAvailability = ({ instructorID, button = true }) => {
     const dispatch = useDispatch();
+    // USERS selector
     const instructor = useSelector(
         ({ Users }) => Users.InstructorList[instructorID]
     );

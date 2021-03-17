@@ -9,6 +9,7 @@ const courseEndpoint = '/course/catalog/';
 const paymentEndpoint = '/payment/payment/';
 
 export const useSubmitRegistration = (registrationDependencies) => {
+    // REGISTRATION selector
     const currentPayingParent = useSelector(
         ({ Registration }) => Registration.CurrentParent
     );
@@ -130,10 +131,6 @@ export const useSubmitRegistration = (registrationDependencies) => {
                             instance.post(enrollmentEndpoint, enrollment)
                         )
                     );
-                    dispatch({
-                        type: types.POST_ENROLLMENT_SUCCESS,
-                        payload: Enrollments,
-                    });
                     const enrollmentSessions = (index) => {
                         if (index < classRegistrations.length) {
                             return classRegistrations[index].sessions;
@@ -275,71 +272,5 @@ export const usePayment = (id) => {
             })();
         }
     }, [dispatch, handleError, id]);
-    return status;
-};
-
-export const useCourseSearch = (query) => {
-    const [status, setStatus] = useState(null);
-    const dispatch = useDispatch();
-
-    const handleError = useCallback((error) => {
-        if (error && error.response && error.response.status) {
-            setStatus(error.response.status);
-        } else {
-            setStatus(MISC_FAIL);
-            console.error(error);
-        }
-    }, []);
-
-    const requestSettings = useMemo(
-        () => ({
-            params: {
-                query,
-            },
-        }),
-        [query]
-    );
-
-    useEffect(() => {
-        if (typeof query !== 'undefined') {
-            (async () => {
-                const aborted = false;
-                try {
-                    setStatus(REQUEST_STARTED);
-                    const courseSearchResults = await instance.request({
-                        url: '/search/course/',
-                        ...requestSettings,
-                        method: 'get',
-                    });
-                    dispatch({
-                        type: types.GET_COURSE_SEARCH_QUERY_SUCCESS,
-                        payload: courseSearchResults,
-                    });
-                    const instructors = courseSearchResults.map(
-                        ({ data }) => data.instructor
-                    );
-
-                    const instructorResults = await Promise.all(
-                        instructors.map((instructorID) => {
-                            instance.request({
-                                url: `/account/instructor/${instructorID}/`,
-                                method: 'get',
-                            });
-                        })
-                    );
-                    dispatch({
-                        type: types.FETCH_INSTRUCTOR_SUCCESSFUL,
-                        payload: instructorResults,
-                    });
-                    setStatus(200);
-                } catch (error) {
-                    if (!aborted) {
-                        handleError(error);
-                    }
-                }
-            })();
-        }
-    }, [query, dispatch, requestSettings, handleError]);
-
     return status;
 };

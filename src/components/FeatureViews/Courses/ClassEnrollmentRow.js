@@ -1,7 +1,6 @@
-import React, { useState, useCallback } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { deleteEnrollment } from 'actions/registrationActions';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,8 +12,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { USER_TYPES, fullName } from '../../../utils';
-import { omouBlue, highlightColor } from '../../../theme/muiTheme';
+import { fullName, USER_TYPES } from '../../../utils';
+import { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import IconButton from '@material-ui/core/IconButton';
 import MobileMenu from '@material-ui/icons/MoreVert';
 
@@ -102,7 +101,7 @@ const ClassEnrollmentRow = ({
     const paramsID = useParams();
     const dispatch = useDispatch();
 
-    let courseID = paramsID.id ? paramsID.id : paramsID.courseID;
+    const courseID = paramsID.id ? paramsID.id : paramsID.courseID;
 
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -150,7 +149,7 @@ const ClassEnrollmentRow = ({
     const closeUnenrollDialog = useCallback(
         (toUnenroll) => () => {
             if (toUnenroll) {
-                deleteEnrollment(unenroll.enrollment)(dispatch);
+                // TODO: implement graphQL enrollment deletion
             }
             setUnenroll({
                 enrollment: null,
@@ -164,69 +163,73 @@ const ClassEnrollmentRow = ({
     return (
         <>
             <Accordion
-                expanded={expanded}
                 classes={{ root: classes.MuiAccordionroot }}
+                expanded={expanded}
             >
                 <AccordionSummary
+                    aria-controls={`studentinfo-${studentId}-content`}
+                    eventKey={`studentinfo-${studentId}-details`}
                     expandIcon={
                         <ExpandMoreIcon
-                            style={{ color: omouBlue }}
                             fontSize='large'
                             onClick={handleChange}
+                            style={{ color: omouBlue }}
                         />
                     }
-                    aria-controls={'studentinfo-' + studentId + '-content'}
-                    id={'studentinfo-' + studentId + '-details'}
-                    eventKey={'studentinfo-' + studentId + '-details'}
+                    id={`studentinfo-${studentId}-details`}
                 >
                     <TableRow
-                        key={fullStudentName}
                         className={
                             location.pathname !==
                                 `/coursemanagement/class/${courseID}` &&
                             classes.center
                         }
+                        key={fullStudentName}
                         style={{ wordBreak: 'break-word' }}
                     >
                         <TableCell
-                            component='th'
-                            scope='row'
-                            component={Link}
-                            to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
-                            style={{ textDecoration: 'none', fontWeight: 700 }}
                             className={`${classes.studentRenderAccordionSpacing} ${classes.noBorderBottom}`}
+                            component='th'
+                            component={Link}
+                            scope='row'
+                            style={{ textDecoration: 'none', fontWeight: 700 }}
+                            to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
                         >
                             {fullStudentName}
                         </TableCell>
+
                         <TableCell
-                            component={Link}
-                            to={`/accounts/${parentAccountType.toLowerCase()}/${parentId}`}
-                            style={{ textDecoration: 'none' }}
                             className={`${classes.parentRenderAccordionSpacing} ${classes.noBorderBottom}`}
+                            component={Link}
+                            style={{ textDecoration: 'none' }}
+                            to={`/accounts/${parentAccountType.toLowerCase()}/${parentId}`}
                         >
                             {concatFullParentName}
                         </TableCell>
+
                         <TableCell
                             className={`${classes.actionsRenderAccordionSpacing} ${classes.noBorderBottom}`}
                         >
                             {phoneNumber}
                         </TableCell>
+
                         <TableCell
                             align='right'
+                            className={classes.noBorderBottom}
                             padding='none'
                             size='small'
-                            className={classes.noBorderBottom}
                         >
                             <ResponsiveButton
                                 aria-controls='simple-menu'
                                 aria-haspopup='true'
-                                onClick={handleClick}
                                 className={`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`}
+                                onClick={handleClick}
                             >
                                 <MailOutlineIcon
                                     style={{ color: 'rgb(112,105,110)' }}
                                 />
                             </ResponsiveButton>
+
                             <AccessControlComponent
                                 permittedAccountTypes={[
                                     USER_TYPES.admin,
@@ -235,39 +238,41 @@ const ClassEnrollmentRow = ({
                                 ]}
                             >
                                 <Menu
-                                    id='simple-menu'
                                     anchorEl={anchorEl}
-                                    keepMounted
-                                    open={Boolean(anchorEl)}
-                                    onClose={handleClose}
                                     classes={{ list: classes.dropdown }}
+                                    id='simple-menu'
+                                    keepMounted
+                                    onClose={handleClose}
+                                    open={Boolean(anchorEl)}
                                 >
                                     <MenuItem
-                                        onClick={handleOpen}
                                         className={classes.menuSelected}
-                                        value={studentId}
                                         data-type={accountType}
+                                        onClick={handleOpen}
+                                        value={studentId}
                                     >
                                         Email Student
                                     </MenuItem>
+
                                     <MenuItem
-                                        onClick={handleOpen}
                                         className={classes.menuSelected}
-                                        value={parentId}
                                         data-type={parentAccountType}
+                                        onClick={handleOpen}
+                                        value={parentId}
                                     >
                                         Email Parent
                                     </MenuItem>
                                 </Menu>
                             </AccessControlComponent>
                         </TableCell>
+
                         {location.pathname ===
                         `/coursemanagement/class/${courseID}` ? (
                             <TableCell
                                 align='right'
+                                className={`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`}
                                 padding='none'
                                 size='small'
-                                className={`${classes.iconRenderAccordionSpacing} ${classes.noBorderBottom}`}
                             >
                                 <ResponsiveButton
                                     disabled
@@ -289,6 +294,7 @@ const ClassEnrollmentRow = ({
                                 >
                                     <MobileMenu />
                                 </IconButton>
+
                                 <Menu
                                     anchorEl={studentMenuAnchorEl}
                                     id='simple-menu'
@@ -303,6 +309,7 @@ const ClassEnrollmentRow = ({
                                     >
                                         View Enrollment
                                     </MenuItem>
+
                                     <MenuItem
                                         onClick={handleUnenroll(enrollmentID)}
                                     >
@@ -311,16 +318,19 @@ const ClassEnrollmentRow = ({
                                 </Menu>
                             </TableCell>
                         )}
+
                         <TableCell
                             align='right'
+                            className={classes.noBorderBottom}
                             padding='none'
                             size='small'
-                            className={classes.noBorderBottom}
-                        ></TableCell>
+                        />
                     </TableRow>
                 </AccordionSummary>
+
                 <StudentEnrollmentBackground studentInfo={studentInfo} />
             </Accordion>
+
             <Dialog
                 aria-describedby='unenroll-dialog-description'
                 aria-labelledby='unenroll-dialog-title'
@@ -333,7 +343,9 @@ const ClassEnrollmentRow = ({
                 <DialogTitle id='unenroll-dialog-title'>
                     Unenroll in {courseTitle}
                 </DialogTitle>
+
                 <Divider />
+
                 <DialogContent>
                     <DialogContentText>
                         You are about to unenroll in <b>{courseTitle}</b> for{' '}
@@ -350,18 +362,20 @@ const ClassEnrollmentRow = ({
                         Are you sure you want to unenroll?
                     </DialogContentText>
                 </DialogContent>
+
                 <DialogActions>
                     <ResponsiveButton
-                        variant='outlined'
                         color='secondary'
                         onClick={closeUnenrollDialog(true)}
+                        variant='outlined'
                     >
                         Yes, unenroll
                     </ResponsiveButton>
+
                     <ResponsiveButton
-                        variant='outlined'
                         color='primary'
                         onClick={closeUnenrollDialog(false)}
+                        variant='outlined'
                     >
                         Cancel
                     </ResponsiveButton>

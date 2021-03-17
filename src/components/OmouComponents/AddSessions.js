@@ -33,9 +33,11 @@ const AddSessions = ({
         [dispatch]
     );
 
+    // USERS selector
     const students = useSelector(({ Users }) => Users.StudentList);
+    // COURSE selector
     const courses = useSelector(({ Course }) => Course.NewCourseList);
-
+    // REGISTRATION selector
     const registeringParent = useSelector(
         ({ Registration }) => Registration.CurrentParent
     );

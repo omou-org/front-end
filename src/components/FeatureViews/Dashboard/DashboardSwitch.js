@@ -4,6 +4,7 @@ import Dashboard from './Dashboard';
 import InstructorDashboard from './InstructorDashboard';
 
 export default function DashboardSwitch() {
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const ACCOUNT_TYPE = AuthUser.accountType;
     return {

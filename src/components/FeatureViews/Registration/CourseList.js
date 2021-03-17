@@ -123,6 +123,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const [interestCourseID, setInterestCourseID] = useState(null);
     const [quickStudent, setQuickStudent] = useState('');
 
+    // REGISTRATION selector
     const { currentParent, ...registrationCartState } = useSelector(
         (state) => state.Registration
     );

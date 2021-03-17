@@ -83,6 +83,7 @@ export const CREATE_REGISTRATION_CART = gql`
 `;
 
 export default function RegistrationCartContainer() {
+    // REGISTRATION selector
     const { currentParent, ...registrationCartState } = useSelector(
         (state) => state.Registration
     );

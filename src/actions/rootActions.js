@@ -9,16 +9,6 @@ const typeToEndpoint = {
     admin: '/account/admin/',
 };
 
-const typeToFetchActions = {
-    student: [types.FETCH_STUDENT_SUCCESSFUL, types.FETCH_STUDENT_FAILED],
-    parent: [types.FETCH_PARENT_SUCCESSFUL, types.FETCH_PARENT_FAILED],
-    instructor: [
-        types.FETCH_INSTRUCTOR_SUCCESSFUL,
-        types.FETCH_INSTRUCTOR_FAILED,
-    ],
-    course: [types.FETCH_COURSE_SUCCESSFUL, types.FETCH_COURSE_FAILED],
-};
-
 export const typeToPostActions = {
     student: [types.POST_STUDENT_SUCCESSFUL, types.POST_STUDENT_FAILED],
     parent: [types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
@@ -32,31 +22,6 @@ export const typeToPostActions = {
         types.POST_CATEGORY_FAILED,
     ],
     admin: [types.POST_ADMIN_SUCCESSFUL, types.POST_ADMIN_FAILED],
-};
-
-export const fetchData = (type) => {
-    if (typeToEndpoint.hasOwnProperty(type)) {
-        const endpoint = typeToEndpoint[type];
-        const [successAction, failAction] = typeToFetchActions[type];
-        return (dispatch) =>
-            instance
-                .get(endpoint)
-                .then(({ data }) => {
-                    dispatch({
-                        type: successAction,
-                        payload: data,
-                    });
-                })
-                .catch((error) => {
-                    dispatch({ type: failAction, payload: error });
-                });
-    } else {
-        console.error(
-            `Invalid data type ${type}, must be one of ${Object.keys(
-                typeToEndpoint
-            )}`
-        );
-    }
 };
 
 export const postData = (type, body) => {
@@ -74,7 +39,7 @@ export const postData = (type, body) => {
                 instance
                     .post(endpoint, body)
                     .then((response) => {
-                        let { data } = response;
+                        const { data } = response;
                         dispatch({
                             type: successAction,
                             payload: data,
@@ -84,13 +49,12 @@ export const postData = (type, body) => {
                         dispatch({ type: failAction, payload: error });
                     });
             });
-    } else {
-        console.error(
-            `Invalid data type ${type}, must be one of ${Object.keys(
-                typeToEndpoint
-            )}`
-        );
     }
+    console.error(
+        `Invalid data type ${type}, must be one of ${Object.keys(
+            typeToEndpoint
+        )}`
+    );
 };
 
 export const patchData = (type, body, id) => {
@@ -117,13 +81,12 @@ export const patchData = (type, body, id) => {
                         dispatch({ type: failAction, payload: error });
                     });
             });
-    } else {
-        console.error(
-            `Invalid data type ${type}, must be one of ${Object.keys(
-                typeToEndpoint
-            )}`
-        );
     }
+    console.error(
+        `Invalid data type ${type}, must be one of ${Object.keys(
+            typeToEndpoint
+        )}`
+    );
 };
 
 export const submitParentAndStudent = (
@@ -132,12 +95,10 @@ export const submitParentAndStudent = (
     parentID,
     studentID
 ) => {
-    const studentEndpoint = typeToEndpoint['student'];
-    const parentEndpoint = typeToEndpoint['parent'];
-    const [studentSuccessAction, studentFailAction] = typeToPostActions[
-        'student'
-    ];
-    const [parentSuccessAction, parentFailAction] = typeToPostActions['parent'];
+    const studentEndpoint = typeToEndpoint.student;
+    const parentEndpoint = typeToEndpoint.parent;
+    const [studentSuccessAction, studentFailAction] = typeToPostActions.student;
+    const [parentSuccessAction, parentFailAction] = typeToPostActions.parent;
     return (dispatch) =>
         new Promise((resolve) => {
             dispatch({
@@ -146,7 +107,7 @@ export const submitParentAndStudent = (
             });
             resolve();
         }).then(() => {
-            let formatDate = new Date(parent.birth_date)
+            const formatDate = new Date(parent.birth_date)
                 .toISOString()
                 .substring(0, 10);
             instance

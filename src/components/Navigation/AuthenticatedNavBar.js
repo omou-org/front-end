@@ -24,6 +24,7 @@ import { closeRegistrationCart } from '../OmouComponents/RegistrationUtils';
 const AuthenticatedNavBar = ({ toggleDrawer }) => {
     const dispatch = useDispatch();
     const history = useHistory();
+    // AUTH selector
     const authUser = useSelector(({ auth }) => auth);
 
     const [mobileOpen, setMobileOpen] = useState(false);

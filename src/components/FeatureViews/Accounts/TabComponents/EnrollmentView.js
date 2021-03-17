@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -15,31 +15,19 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import NoListAlert from '../../../OmouComponents/NoListAlert';
-import Paper from '@material-ui/core/Paper';
 import PaymentTable from './PaymentTable';
-import SessionPaymentStatusChip from 'components/OmouComponents/SessionPaymentStatusChip';
 import Switch from '@material-ui/core/Switch';
-import LoadingError from './LoadingCourseError';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { LabelBadge } from '../../../../theme/ThemedComponents/Badge/LabelBadge';
 
-import * as hooks from 'actions/hooks';
-import { upcomingSession, useGoToRoute } from 'utils';
-import {
-    deleteEnrollment,
-    initializeRegistration,
-} from 'actions/registrationActions';
+import { initializeRegistration } from 'actions/registrationActions';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from 'components/OmouComponents/AddSessions';
-import BackButton from 'components/OmouComponents/BackButton';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
-import { useEnrollmentNotes } from 'actions/userActions';
-import { useSessionsWithConfig } from 'actions/calendarActions';
-import Moment from 'react-moment';
 import { fullName } from '../../../../utils';
 
 const GET_ENROLLMENT = gql`
@@ -161,17 +149,10 @@ const CourseSessionStatus = () => {
         setUnenrollWarningOpen(true);
     }, []);
 
-    const closeUnenrollDialog = useCallback(
-        (toUnenroll) => () => {
-            setUnenrollWarningOpen(false);
-            //TODO: migrate unenroll to graph ql
-            // if (toUnenroll) {
-            //     deleteEnrollment(enrollment)(dispatch);
-            //     goToRoute(`/accounts/student/${studentID}`);
-            // }
-        }
-        // [dispatch, enrollment, goToRoute, studentID]
-    );
+    const closeUnenrollDialog = useCallback((toUnenroll) => () => {
+        setUnenrollWarningOpen(false);
+        // TODO: migrate unenroll to graph ql
+    });
 
     useEffect(() => {
         dispatch(initializeRegistration());
@@ -216,26 +197,31 @@ const CourseSessionStatus = () => {
                             xs={12}
                         >
                             <Grid item xs={1} />
+
                             <Grid item xs={2}>
                                 <Typography align='left' className='table-text'>
                                     Session Date
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={2}>
                                 <Typography align='left' className='table-text'>
                                     Day
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={3}>
                                 <Typography align='left' className='table-text'>
                                     Time
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={1}>
                                 <Typography align='left' className='table-text'>
                                     Tuition
                                 </Typography>
                             </Grid>
+
                             <Grid item xs={2}>
                                 <Typography
                                     align='center'
@@ -245,21 +231,20 @@ const CourseSessionStatus = () => {
                                 </Typography>
                             </Grid>
                         </Grid>
+
                         <Grid
                             container
-                            spacing={1}
                             data-cy='enrollment-sessions'
+                            spacing={1}
                         >
                             {sessionsData.sessions.length !== 0 ? (
-                                sessionsData.sessions.map((session) => {
-                                    return (
-                                        <EnrollmentSessionRow
-                                            session={session}
-                                            enrollmentData={enrollmentData}
-                                            highlightSession={highlightSession}
-                                        />
-                                    );
-                                })
+                                sessionsData.sessions.map((session) => (
+                                    <EnrollmentSessionRow
+                                        enrollmentData={enrollmentData}
+                                        highlightSession={highlightSession}
+                                        session={session}
+                                    />
+                                ))
                             ) : (
                                 <NoListAlert list='Course' />
                             )}
@@ -283,11 +268,12 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Grid item xs={12} container>
+        <Grid container item xs={12}>
             <Grid className='course-session-status' container>
                 <Grid item xs={12}>
                     <hr />
                 </Grid>
+
                 <Grid item xs={12}>
                     <Typography
                         align='left'
@@ -297,6 +283,7 @@ const CourseSessionStatus = () => {
                         {course.title}
                     </Typography>
                 </Grid>
+
                 <Grid item md={12}>
                     <Grid
                         alignItems='center'
@@ -313,6 +300,7 @@ const CourseSessionStatus = () => {
                                 parentOfCurrentStudent={student.parent}
                             />
                         </Grid>
+
                         <Grid item>
                             <ResponsiveButton
                                 className='button unenroll'
@@ -322,6 +310,7 @@ const CourseSessionStatus = () => {
                             </ResponsiveButton>
                         </Grid>
                     </Grid>
+
                     <Grid className='participants' item xs={12}>
                         <Typography align='left'>
                             Student:{' '}
@@ -329,6 +318,7 @@ const CourseSessionStatus = () => {
                                 {fullName(student.user)}
                             </Link>
                         </Typography>
+
                         <Typography align='left'>
                             Instructor:{' '}
                             <Link
@@ -337,10 +327,12 @@ const CourseSessionStatus = () => {
                                 {fullName(course.instructor.user)}
                             </Link>
                         </Typography>
+
                         <Typography align='left'>
                             Enrollment Balance Left: ${enrollmentBalance}
                         </Typography>
                     </Grid>
+
                     {activeTab === 0 && (
                         <Grid alignItems='flex-start' container item xs={3}>
                             <Grid item>
@@ -365,13 +357,15 @@ const CourseSessionStatus = () => {
                         </Grid>
                     )}
                 </Grid>
+
                 <Tabs
-                    classes={{ indicator: classes.MuiIndicator }}
                     className='enrollment-tabs'
+                    classes={{ indicator: classes.MuiIndicator }}
                     onChange={handleTabChange}
                     value={activeTab}
                 >
                     <Tab label={<> Registration </>} />
+
                     <Tab
                         classes={{ wrapper: classes.wrapper }}
                         label={
@@ -392,11 +386,15 @@ const CourseSessionStatus = () => {
                             )
                         }
                     />
+
                     <Tab label={<> Payments </>} />
                 </Tabs>
+
                 <br />
+
                 {mainContent()}
             </Grid>
+
             <Dialog
                 aria-labelledby='warn-unenroll'
                 onClose={closeUnenrollDialog(false)}
@@ -405,6 +403,7 @@ const CourseSessionStatus = () => {
                 <DialogTitle disableTypography id='warn-unenroll'>
                     Unenroll in {course.title}
                 </DialogTitle>
+
                 <DialogContent>
                     <DialogContentText>
                         You are about to unenroll in <b>{course.title}</b> for{' '}
@@ -414,18 +413,20 @@ const CourseSessionStatus = () => {
                         unenroll?
                     </DialogContentText>
                 </DialogContent>
+
                 <DialogActions>
                     <ResponsiveButton
-                        variant='outlined'
                         color='secondary'
                         onClick={closeUnenrollDialog(true)}
+                        variant='outlined'
                     >
                         Yes, unenroll
                     </ResponsiveButton>
+
                     <ResponsiveButton
-                        variant='outlined'
                         color='primary'
                         onClick={closeUnenrollDialog(false)}
+                        variant='outlined'
                     >
                         Cancel
                     </ResponsiveButton>

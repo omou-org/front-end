@@ -72,17 +72,20 @@ export const postParent = (parent) =>
         [null, types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
         parent
     );
-
-export const patchParent = (id, parent) =>
-    wrapPatch(
-        '/account/parent/',
-        [null, types.POST_PARENT_SUCCESSFUL, types.POST_PARENT_FAILED],
-        {
-            data: parent,
-            id,
-        }
-    );
-
+/*
+export const patchParent = (id, parent) => wrapPatch(
+    "/account/parent/",
+    [
+        null,
+        types.POST_PARENT_SUCCESSFUL,
+        types.POST_PARENT_FAILED,
+    ],
+    {
+        "data": parent,
+        id,
+    },
+);
+*/
 export const fetchInstructors = (id) =>
     wrapGet(
         '/account/instructor/',
@@ -189,15 +192,16 @@ const wrapNotePatch = (
     };
     // request starting
     newAction(startType, {});
-
-    try {
-        const response = await instance.patch(`${endpoint}${id}/`, data);
-        // succesful request
-        newAction(successType, response);
-    } catch (error) {
-        // failed request
-        newAction(failType, error.response);
-    }
+    /*
+	try {
+		const response = await instance.patch(`${endpoint}${id}/`, data);
+		// succesful request
+		newAction(successType, response);
+	} catch (error) {
+		// failed request
+		newAction(failType, error.response);
+	}
+	*/
 };
 
 export const fetchAccountNotes = wrapNoteGet('/account/note/', 'user_id', [
@@ -255,79 +259,6 @@ export const patchCourseNote = wrapNotePatch('/course/catalog_note/', [
     types.PATCH_COURSE_NOTE_SUCCESSFUL,
     types.PATCH_COURSE_NOTE_FAILED,
 ]);
-
-export const fetchEnrollmentNotes = (enrollmentID, studentID, courseID) =>
-    wrapNoteGet(
-        '/course/enrollment_note/',
-        'enrollment_id',
-        [
-            types.FETCH_ENROLLMENT_NOTE_STARTED,
-            types.FETCH_ENROLLMENT_NOTE_SUCCESSFUL,
-            types.FETCH_ENROLLMENT_NOTE_FAILED,
-        ],
-        {
-            courseID,
-            enrollmentID,
-            studentID,
-        }
-    )(enrollmentID, 'enrollment');
-
-export const useEnrollmentNotes = (enrollmentID, studentID, courseID) =>
-    wrapUseNote(
-        '/course/enrollment_note/',
-        types.FETCH_ENROLLMENT_NOTE_SUCCESSFUL,
-        {
-            courseID,
-            enrollmentID,
-            studentID,
-        }
-    )(
-        null,
-        useMemo(
-            () => ({
-                params: {
-                    enrollment_id: enrollmentID,
-                },
-            }),
-            [enrollmentID]
-        )
-    );
-
-export const postEnrollmentNote = (data, enrollmentID, studentID, courseID) =>
-    wrapNotePost(
-        '/course/enrollment_note/',
-        [
-            types.POST_ENROLLMENT_NOTE_STARTED,
-            types.POST_ENROLLMENT_NOTE_SUCCESSFUL,
-            types.POST_ENROLLMENT_NOTE_FAILED,
-        ],
-        {
-            courseID,
-            enrollmentID,
-            studentID,
-        }
-    )(data, 'enrollment');
-
-export const patchEnrollmentNote = (
-    id,
-    data,
-    enrollmentID,
-    studentID,
-    courseID
-) =>
-    wrapNotePatch(
-        '/course/enrollment_note/',
-        [
-            types.PATCH_ENROLLMENT_NOTE_STARTED,
-            types.PATCH_ENROLLMENT_NOTE_SUCCESSFUL,
-            types.PATCH_ENROLLMENT_NOTE_FAILED,
-        ],
-        {
-            courseID,
-            enrollmentID,
-            studentID,
-        }
-    )(id, data, 'enrollment', enrollmentID);
 
 export const fetchOutOfOffice = () =>
     wrapGet(

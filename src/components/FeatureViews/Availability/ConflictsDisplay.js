@@ -29,6 +29,7 @@ const GET_INSTRUCTOR_SESSIONS = gql`
 
 export default function ConflictsDisplay() {
     const { updateOOOFormState, OOOFormState } = useContext(OOOContext);
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const { loading, data, error } = useQuery(GET_INSTRUCTOR_SESSIONS, {
         variables: {

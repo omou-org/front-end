@@ -50,6 +50,7 @@ const SelectParentDialog = ({ onClose, open }) => {
     const [parent, setParent] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [searching, setSearching] = useState(false);
+    // REGISTRATION selector
     const { currentParent, ...registrationCartState } = useSelector(
         (state) => state.Registration
     );

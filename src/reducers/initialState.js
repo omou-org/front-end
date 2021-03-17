@@ -1,5 +1,3 @@
-import { DELETE, GET, PATCH, POST } from 'actions/actionTypes';
-
 export default {
     Authentication: {
         token: null,
@@ -8,13 +6,12 @@ export default {
         attemptedLogin: false,
     },
     RegistrationForms: {},
-    SignUpForm: initSignUpForm(),
+    SignUpForm: {},
     Course: {
         CourseCategories: [],
         NewCourseList: {},
         CourseSessions: {},
     },
-    Enrollments: {},
     Payments: {},
     Users: {
         StudentList: {},
@@ -60,7 +57,6 @@ export default {
     CalendarData: {
         CourseSessions: {},
     },
-    RequestStatus: initRequests(),
     SearchResults: {
         accountResultsNum: 0,
         accounts: {},

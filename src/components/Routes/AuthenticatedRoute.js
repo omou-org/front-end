@@ -11,6 +11,7 @@ const AuthenticatedRoute = ({
     users = Object.values(USER_TYPES),
     ...rest
 }) => {
+    // AUTH selector
     const { accountType, token } = useSelector(({ auth }) => auth);
 
     const renderFunc = useCallback(

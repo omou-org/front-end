@@ -78,6 +78,7 @@ const RegistrationCourse = () => {
     const {
         params: { courseID },
     } = useRouteMatch();
+    // AUTH selector
     const isAdmin =
         useSelector(({ auth }) => auth.accountType) === USER_TYPES.admin;
 

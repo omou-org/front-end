@@ -129,6 +129,7 @@ const ProfileHeading = ({ ownerID }) => {
     const [editButtonActive, setEditButtonActive] = useState(false);
     const { accountType } = useParams();
 
+    // AUTH selector
     const loggedInUserID = useSelector(({ auth }) => auth.user.id);
     const loggedInAuth = useSelector(({ auth }) => auth);
 

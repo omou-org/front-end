@@ -57,6 +57,7 @@ export const SubmitNotice = forwardRef((props, ref) => {
     const [outAllDay, setOutAllDay] = useState(false);
     const [description, setDescription] = useState('');
     const { updateOOOFormState } = useContext(OOOContext);
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const classes = useStyles();
     const handleUpdateForm = (updatedState) => {

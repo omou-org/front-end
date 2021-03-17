@@ -43,6 +43,7 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
+    // AUTH selector
     const { token, attemptedLogin } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [email, setEmail] = useState(state?.email);

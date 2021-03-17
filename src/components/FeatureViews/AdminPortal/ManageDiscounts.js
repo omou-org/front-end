@@ -10,6 +10,7 @@ import { isLoading } from 'actions/hooks';
 import Loading from 'components/OmouComponents/Loading';
 
 const ManageDiscounts = () => {
+    // ADMIN selector
     const discountList = useSelector(({ Admin: { Discounts } }) => Discounts);
     const multiCourseStatus = adminActions.useMultiCourseDiscount();
     const paymentMethodStatus = adminActions.usePaymentMethodDiscount();

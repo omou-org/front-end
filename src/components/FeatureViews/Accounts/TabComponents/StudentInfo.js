@@ -48,6 +48,7 @@ const GET_STUDENTS = gql`
 `;
 
 const StudentInfo = () => {
+    // AUTH selector
     const { accountType } = useSelector(({ auth }) => auth);
     const { accountID } = useParams();
     const { data, loading, error } = useQuery(GET_STUDENTS, {

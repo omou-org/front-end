@@ -41,6 +41,7 @@ const ForgotPassword = () => {
     const { state } = useLocation();
     const history = useHistory();
     const [email, setEmail] = useState(state?.email || '');
+    // AUTH selector
     const { token } = useSelector(({ auth }) => auth);
     const [requested, setRequested] = useState(false);
     const [requestReset] = useMutation(REQUEST_RESET, {

@@ -105,6 +105,7 @@ export const removeRegistration = (student, course) => {
  * @description returns boolean of if the current logged in user is the parent registering
  * */
 export const useValidateRegisteringParent = () => {
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
     const { currentParent } = getRegistrationCart();
     return {

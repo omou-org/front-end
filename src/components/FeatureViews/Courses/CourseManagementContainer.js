@@ -140,6 +140,7 @@ export const GET_STUDENTS = gql`
                     firstName
                     id
                     lastName
+                    email
                 }
                 enrollmentSet {
                     course {
@@ -391,6 +392,7 @@ const CourseManagementContainer = () => {
     const [subectFilterValue, setSubjectFilterValue] = useState('');
     const [instructorsFilterValue, setInstructorFilterValue] = useState('');
     const [studentFilterValue, setStudentFilterValue] = useState('');
+    // AUTH selector
     const accountInfo = useSelector(({ auth }) => auth);
 
     const handleChange = (event) => setSortByDate(event.target.value);
@@ -404,6 +406,16 @@ const CourseManagementContainer = () => {
         error: courseError,
     } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
         variables: { accountId },
+    });
+
+    const { data, loading, error } = useQuery(GET_COURSES, {
+        variables: { accountId },
+        onCompleted: (data) => {
+            dispatch({
+                type: actions.STORE_COURSES,
+                payload: { courses: data.courses },
+            });
+        },
     });
 
     const {

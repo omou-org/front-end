@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { USER_TYPES } from '../../../utils';
 
 const ComponentViewer = ({ inView, user, id }) => {
+    // AUTH selector
     const AuthUser = useSelector(({ auth }) => auth);
 
     // All components should take an user id. Components will do all the gql calls

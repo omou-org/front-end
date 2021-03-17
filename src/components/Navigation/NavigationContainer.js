@@ -23,6 +23,7 @@ const useStyles = makeStyles({
 });
 
 export const AuthenticatedComponent = ({ children }) => {
+    // AUTH selector
     const { token } = useSelector(({ auth }) => auth);
     if (token) {
         return children;
@@ -33,6 +34,7 @@ export const AuthenticatedComponent = ({ children }) => {
 
 const NavigationContainer = () => {
     const classes = useStyles();
+    // AUTH selector
     const { token } = useSelector(({ auth }) => auth);
 
     const ACCOUNT_TYPE = useSelector(({ auth }) => auth.accountType);

@@ -1,7 +1,4 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useSearchSession } from 'actions/searchActions';
-import * as hooks from 'actions/hooks';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import TodayCard from './TodayCard';
 import Card from '@material-ui/core/Card';
@@ -12,39 +9,39 @@ import Grid from '@material-ui/core/Grid';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
-const Today = (filter) => {
-    const TODAY_SESSION_QUERY = gql`
-        query todaySessionQuery($filter: String = "") {
-            sessionSearch(query: $filter, time: "today", sort: "timeAsc") {
-                results {
+const TODAY_SESSION_QUERY = gql`
+    query todaySessionQuery($filter: String = "") {
+        sessionSearch(query: $filter, time: "today", sort: "timeAsc") {
+            results {
+                id
+                course {
+                    title
+                    availabilityList {
+                        startTime
+                    }
+                    maxCapacity
                     id
-                    course {
-                        title
-                        availabilityList {
-                            startTime
-                        }
-                        maxCapacity
+                    enrollmentSet {
                         id
-                        enrollmentSet {
+                    }
+                    courseCategory {
+                        id
+                        name
+                    }
+                    instructor {
+                        user {
+                            firstName
+                            lastName
                             id
-                        }
-                        courseCategory {
-                            id
-                            name
-                        }
-                        instructor {
-                            user {
-                                firstName
-                                lastName
-                                id
-                            }
                         }
                     }
                 }
             }
         }
-    `;
+    }
+`;
 
+const Today = (filter) => {
     const { data, loading, error } = useQuery(TODAY_SESSION_QUERY, {
         variables: filter,
     });
@@ -60,7 +57,7 @@ const Today = (filter) => {
 
     const sessionArray = data.sessionSearch.results;
 
-    if (!sessionArray || sessionArray.length === 0) {
+    if (sessionArray.length === 0) {
         return (
             <Card className='today-card'>
                 <CardContent>
@@ -68,17 +65,12 @@ const Today = (filter) => {
                 </CardContent>
             </Card>
         );
-    } else if (sessionArray) {
-        return (
-            <>
-                {sessionArray.map((session) => (
-                    <Grid item md={6} lg={3}>
-                        <TodayCard key={session} session={session} />
-                    </Grid>
-                ))}
-            </>
-        );
     }
+    return sessionArray.map((session) => (
+        <Grid item key={session} lg={3} md={6}>
+            <TodayCard session={session} />
+        </Grid>
+    ));
 };
 
 export default Today;

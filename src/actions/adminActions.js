@@ -1,8 +1,4 @@
 import * as types from './actionTypes';
-import {
-    academicLevelParse,
-    courseTypeParse,
-} from 'reducers/registrationReducer';
 import { wrapDelete, wrapGet, wrapPatch, wrapPost } from './apiActions';
 import { wrapUseEndpoint } from './hooks';
 
@@ -33,23 +29,23 @@ export const fetchCategories = (id) =>
         }
     );
 
-export const useCategories = wrapUseEndpoint(
-    '/course/categories/',
-    types.GET_CATEGORY_SUCCESS
-);
+// export const useCategories = wrapUseEndpoint(
+// 	"/course/categories/",
+// 	types.GET_CATEGORY_SUCCESS
+// );
 
-export const fetchUnpaid = (id) =>
-    wrapGet(
-        '/payment/unpaid-sessions/',
-        [
-            types.GET_UNPAID_STARTED,
-            types.GET_UNPAID_SUCCESS,
-            types.GET_UNPAID_FAILED,
-        ],
-        {
-            id,
-        }
-    );
+// export const fetchUnpaid = (id) =>
+// 	wrapGet(
+//     "/payment/unpaid-sessions/",
+//     [
+// 		types.GET_UNPAID_STARTED,
+// 		types.GET_UNPAID_SUCCESS,
+// 		types.GET_UNPAID_FAILED,
+//     ],
+//     {
+// 		id,
+//     }
+// 	);
 
 export const updateCategory = (id, updatedCategory) =>
     wrapPatch(
@@ -81,23 +77,6 @@ export const usePriceRules = wrapUseEndpoint(
     types.GET_PRICE_RULE_SUCCESS
 );
 
-export const setPrice = ({ Pricing }) =>
-    wrapPost(
-        '/pricing/rule/',
-        [
-            types.POST_PRICE_RULE_STARTED,
-            types.POST_PRICE_RULE_SUCCESS,
-            types.POST_PRICE_RULE_FAILED,
-        ],
-        {
-            name: Pricing['Price Rule Name'],
-            category: Pricing.Category.value,
-            academic_level: academicLevelParse[Pricing['Select Grade']],
-            hourly_tuition: Pricing['Set Hourly Tuition ($)'],
-            course_type: courseTypeParse[Pricing['Select Course Size']],
-        }
-    );
-
 export const updatePriceRule = (id, updatedPriceRule) =>
     wrapPatch(
         '/pricing/rule/',
@@ -110,79 +89,6 @@ export const updatePriceRule = (id, updatedPriceRule) =>
             id,
             data: updatedPriceRule,
         }
-    );
-
-export const setDiscount = (discountType, discountPayload) => {
-    switch (discountType) {
-        case 'Bulk Order Discount': {
-            return wrapPost(
-                'pricing/discount-multi-course/',
-                [
-                    types.POST_DISCOUNT_MULTI_COURSE_STARTED,
-                    types.POST_DISCOUNT_MULTI_COURSE_SUCCESS,
-                    types.POST_DISCOUNT_MULTI_COURSE_FAILED,
-                ],
-                discountPayload
-            );
-        }
-        case 'Date Range Discount': {
-            return wrapPost(
-                'pricing/discount-date-range/',
-                [
-                    types.POST_DISCOUNT_DATE_RANGE_START,
-                    types.POST_DISCOUNT_DATE_RANGE_SUCCESS,
-                    types.POST_DISCOUNT_DATE_RANGE_FAILED,
-                ],
-                discountPayload
-            );
-        }
-        case 'Payment Method Discount': {
-            return wrapPost(
-                'pricing/discount-payment-method/',
-                [
-                    types.POST_DISCOUNT_PAYMENT_METHOD_STARTED,
-                    types.POST_DISCOUNT_PAYMENT_METHOD_SUCCESS,
-                    types.POST_DISCOUNT_PAYMENT_METHOD_FAILED,
-                ],
-                discountPayload
-            );
-        }
-        default:
-            console.warn('Unhandled discount type', discountType);
-    }
-};
-
-export const fetchMultiCourseDiscount = () =>
-    wrapGet(
-        '/pricing/discount-multi-course/',
-        [
-            types.GET_DISCOUNT_MULTI_COURSE_STARTED,
-            types.GET_DISCOUNT_MULTI_COURSE_SUCCESS,
-            types.GET_DISCOUNT_MULTI_COURSE_FAILED,
-        ],
-        {}
-    );
-
-export const fetchPaymentMethodDiscount = () =>
-    wrapGet(
-        '/pricing/discount-payment-method/',
-        [
-            types.GET_DISCOUNT_PAYMENT_METHOD_STARTED,
-            types.GET_DISCOUNT_PAYMENT_METHOD_SUCCESS,
-            types.GET_DISCOUNT_PAYMENT_METHOD_FAILED,
-        ],
-        {}
-    );
-
-export const fetchDateRangeDiscount = () =>
-    wrapGet(
-        '/pricing/discount-date-range/',
-        [
-            types.GET_DISCOUNT_DATE_RANGE_START,
-            types.GET_DISCOUNT_DATE_RANGE_SUCCESS,
-            types.GET_DISCOUNT_DATE_RANGE_FAILED,
-        ],
-        {}
     );
 
 export const useMultiCourseDiscount = wrapUseEndpoint(

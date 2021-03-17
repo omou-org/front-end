@@ -7,7 +7,6 @@ import {
     wrapPatch,
     wrapPost,
 } from './apiActions';
-import { wrapUseEndpoint } from './hooks';
 
 const parseGender = {
     Male: 'male',
@@ -252,17 +251,6 @@ export const resetSubmitStatus = () => ({
     payload: null,
 });
 
-export const fetchEnrollments = () =>
-    wrapGet(
-        '/course/enrollment/',
-        [
-            types.FETCH_ENROLLMENT_STARTED,
-            types.FETCH_ENROLLMENT_SUCCESSFUL,
-            types.FETCH_ENROLLMENT_FAILED,
-        ],
-        {}
-    );
-
 export const initializeRegistration = () => ({
     type: types.INIT_COURSE_REGISTRATION,
     payload: '',
@@ -336,38 +324,7 @@ export const initRegistration = (
     },
 });
 
-const enrollmentEndpoint = '/course/enrollment/';
 const courseEndpoint = '/course/catalog/';
-
-export const fetchEnrollmentsByStudent = (student_id) =>
-    wrapGet(
-        enrollmentEndpoint,
-        [
-            types.FETCH_ENROLLMENT_STARTED,
-            types.FETCH_ENROLLMENT_SUCCESSFUL,
-            types.FETCH_ENROLLMENT_FAILED,
-        ],
-        {
-            config: {
-                params: {
-                    student_id,
-                },
-            },
-        }
-    );
-
-const enrollmentByStudentConfig = (id) => ({
-    params: {
-        student_id: id,
-    },
-});
-
-export const useEnrollmentsByStudent = (studentID) =>
-    wrapUseEndpoint(enrollmentEndpoint, types.FETCH_ENROLLMENT_SUCCESSFUL)(
-        studentID,
-        enrollmentByStudentConfig,
-        true
-    );
 
 export const addCourse = (course) =>
     wrapPost(
@@ -379,33 +336,3 @@ export const addCourse = (course) =>
         ],
         course
     );
-
-export const deleteEnrollment = ({
-    enrollment_id,
-    course_id,
-    student_id,
-}) => async (dispatch) => {
-    dispatch({
-        type: types.DELETE_ENROLLMENT_STARTED,
-        payload: {},
-    });
-    try {
-        const unenrollResponse = await instance.delete(
-            `${enrollmentEndpoint}${enrollment_id}/`
-        );
-        dispatch({
-            type: types.DELETE_ENROLLMENT_SUCCESS,
-            payload: {
-                courseID: course_id,
-                studentID: student_id,
-                response: unenrollResponse,
-            },
-        });
-    } catch (error) {
-        console.error(error);
-        dispatch({
-            type: types.DELETE_ENROLLMENT_FAILED,
-            payload: error,
-        });
-    }
-};

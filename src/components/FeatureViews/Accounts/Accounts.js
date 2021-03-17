@@ -106,6 +106,7 @@ const stopPropagation = (event) => {
 };
 
 const Accounts = () => {
+    // AUTH selector
     const userID = useSelector(({ auth }) => auth.user.id);
 
     const { loading, error, data } = useQuery(QUERY_USERS);

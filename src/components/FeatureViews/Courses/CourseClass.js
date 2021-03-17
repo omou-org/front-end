@@ -113,6 +113,7 @@ export const GET_CLASS = gql`
                         firstName
                         lastName
                         id
+                        email
                     }
                     primaryParent {
                         user {
@@ -159,6 +160,7 @@ const CourseClass = () => {
     const classes = useStyles();
     const [index, setIndex] = useState(0);
 
+    // AUTH selector
     const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
     const [studentInCourse, setStudentInCourse] = useState([]);
 

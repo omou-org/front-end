@@ -14,8 +14,10 @@ export function CompleteCourseRegistration({
     registeredCourseForm,
     courseType,
 }) {
+    // USERS selector
     const students = useSelector(({ Users }) => Users.StudentList);
     const instructors = useSelector(({ Users }) => Users.InstructorList);
+    // COURSE selector
     const courses = useSelector(({ Course }) => Course.NewCourseList);
 
     let studentID = registeredCourseForm.student_id;

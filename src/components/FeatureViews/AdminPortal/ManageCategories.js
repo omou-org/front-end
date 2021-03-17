@@ -26,6 +26,7 @@ const ManageCategories = () => {
     const [categoryDescription, setCategoryDescription] = useState('');
     const [categoryList, setCategoryList] = useState([]);
 
+    // COURSE selector
     const categories = useSelector(
         ({ Course: { CourseCategories } }) => CourseCategories
     );
