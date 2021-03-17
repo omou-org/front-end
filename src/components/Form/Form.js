@@ -240,6 +240,7 @@ const Form = ({
                 className='heading'
                 data-cy='formTitle'
                 variant='h1'
+                style={{marginLeft: '24px'}}
             >
                 {title}
             </Typography>

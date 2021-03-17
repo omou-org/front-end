@@ -50,6 +50,9 @@ const FormPage = () => {
         if (action === 'edit') {
             return title.edit || `Edit ${title}`;
         } else {
+            if (title === 'Class') {
+                return 'Create New Class';
+            }
             return title.create || `Add New ${title}`;
         }
     };
