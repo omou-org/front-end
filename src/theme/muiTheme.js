@@ -109,17 +109,17 @@ const defaultFontProps = {
 
 export const new_course_form = {
     dropdowns: {
-        width: '216px'
+        width: '216px',
     },
     textFields: {
         width: '432px',
-        display: 'block'
+        display: 'block',
     },
     textFields_short: {
         width: '180px',
-        display: 'block'
-    }
-}
+        display: 'block',
+    },
+};
 
 const theme = createMuiTheme({
     palette: {

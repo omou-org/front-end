@@ -1337,18 +1337,28 @@ export default {
                     {
                         name: 'title',
                         required: true,
-                        ...stringField('Course Name', new_course_form.textFields),
+                        ...stringField(
+                            'Course Name',
+                            new_course_form.textFields
+                        ),
                     },
                     {
                         name: 'description',
                         required: true,
-                        ...stringField('Course Description', new_course_form.textFields),
+                        ...stringField(
+                            'Course Description',
+                            new_course_form.textFields
+                        ),
                     },
                     {
                         name: 'maxCapacity',
                         label: 'Enrollment Capacity',
                         required: true,
-                        component: <Fields.TextField style={new_course_form.textFields_short} />,
+                        component: (
+                            <Fields.TextField
+                                style={new_course_form.textFields_short}
+                            />
+                        ),
                         validator: Yup.number().min(1).integer(),
                     },
                     {
@@ -1359,13 +1369,19 @@ export default {
                         name: 'courseCategory',
                         label: 'Select Subject',
                         required: true,
-                        component: categorySelect('courseCategory', new_course_form.dropdowns),
+                        component: categorySelect(
+                            'courseCategory',
+                            new_course_form.dropdowns
+                        ),
                         validator: Yup.mixed(),
                     },
                     {
                         name: 'instructor',
                         label: 'Select Instructor',
-                        component: instructorSelect('instructor', new_course_form.dropdowns),
+                        component: instructorSelect(
+                            'instructor',
+                            new_course_form.dropdowns
+                        ),
                         validator: Yup.mixed(),
                     },
                     // INSTRUCTOR_CONFIRM_FIELD,
