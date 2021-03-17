@@ -1403,13 +1403,34 @@ export default {
             },
             {
                 name: 'tuition',
-                label: 'Tuition',
+                label: 'Location & Tuition',
                 fields: [
+                    {
+                        name: 'classroomLocation',
+                        ...stringField(
+                            'Classroom Location',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'meetingLink',
+                        ...stringField(
+                            'Meeting Link',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'gclassroomEnrollmentCode',
+                        ...stringField(
+                            'GClassromm EnrollmentCode',
+                            new_course_form.textFields
+                        ),
+                    },
                     {
                         name: 'totalTuition',
                         label: 'Total Tuition',
                         required: true,
-                        component: <Fields.TextField />,
+                        component: <Fields.TextField style={new_course_form.textFields}/>,
                         validator: Yup.number().min(0),
                     },
                 ],
