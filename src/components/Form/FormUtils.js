@@ -257,6 +257,10 @@ export function arr_diff(a1, a2) {
     return diff;
 }
 
+// Function definition with passing two arrays
+export const findCommonElement = (array1, array2) =>
+    array1.some((item) => array2.includes(item));
+
 /**
  * @description Searches for matching instructors
  * @param {String} input search input
