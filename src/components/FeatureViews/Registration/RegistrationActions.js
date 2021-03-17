@@ -10,7 +10,7 @@ import SelectParentDialog from './SelectParentDialog';
 import { fullName, USER_TYPES } from '../../../utils';
 import { useValidateRegisteringParent } from '../../OmouComponents/RegistrationUtils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';

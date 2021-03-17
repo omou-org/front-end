@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import PaymentTable from '../Accounts/TabComponents/PaymentTable';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/client';
 import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../OmouComponents/Loading';

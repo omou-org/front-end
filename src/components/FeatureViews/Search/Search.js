@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import gql from 'graphql-tag';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import { useSearchParams } from 'actions/hooks';
 import { omouBlue } from '../../../theme/muiTheme';

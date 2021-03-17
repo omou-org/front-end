@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import * as types from 'actions/actionTypes';
 import AccountCard from '../Search/cards/AccountCard';
 import gql from 'graphql-tag';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/client';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { fullName } from '../../../utils';
 import TextField from '@material-ui/core/TextField';
