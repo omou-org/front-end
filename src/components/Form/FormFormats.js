@@ -107,7 +107,7 @@ const instructorSelect = (name) => (
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
         noOptionsText='No instructors available'
-        style={{width:"200px"}}
+        style={{ width: '200px' }}
     />
 );
 
@@ -590,7 +590,7 @@ const categorySelect = (name) => (
         optionsMap={categoryMap}
         request={GET_CATEGORIES}
         noOptionsText='No categories available'
-        style={{width:"200px"}}
+        style={{ width: '200px' }}
     />
 );
 
@@ -1346,7 +1346,9 @@ export default {
                         name: 'maxCapacity',
                         label: 'Enrollment Capacity',
                         required: true,
-                        component: <Fields.TextField style={{width:"180px"}} />,
+                        component: (
+                            <Fields.TextField style={{ width: '180px' }} />
+                        ),
                         validator: Yup.number().min(1).integer(),
                     },
                     {

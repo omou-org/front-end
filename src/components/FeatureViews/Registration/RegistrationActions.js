@@ -117,17 +117,16 @@ const RegistrationActions = () => {
             >
                 <Grid item md={2}>
                     {AuthUser.accountType === 'ADMIN' && (
-                        <ResponsiveButton 
+                        <ResponsiveButton
                             to='/form/course_details/add'
                             variant='contained'
-                            startIcon={<AddIcon/>}
+                            startIcon={<AddIcon />}
                         >
                             New Class
                         </ResponsiveButton>
                     )}
                 </Grid>
                 <Grid item md={7}>
-                
                     {displayRegistrationButton && (
                         <Grid item xs={2}>
                             <ResponsiveButton

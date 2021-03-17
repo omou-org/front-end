@@ -300,18 +300,12 @@ const Accounts = () => {
         <Grid className='Accounts' item xs={12}>
             <Grid container alignItems='flex-start' spacing={4}>
                 <Grid item>
-                    <ResponsiveButton
-                        to='/form/student/add'
-                        variant='outlined'
-                    >
+                    <ResponsiveButton to='/form/student/add' variant='outlined'>
                         new student
                     </ResponsiveButton>
                 </Grid>
                 <Grid item>
-                    <ResponsiveButton
-                        to='/form/parent/add'
-                        variant='outlined'
-                    >
+                    <ResponsiveButton to='/form/parent/add' variant='outlined'>
                         new parent
                     </ResponsiveButton>
                 </Grid>
