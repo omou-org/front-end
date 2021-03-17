@@ -10,11 +10,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import InvoiceTable from './InvoiceTable';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/client';
 import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../OmouComponents/Loading';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/client';
 import {
     Grid,
     Button,
