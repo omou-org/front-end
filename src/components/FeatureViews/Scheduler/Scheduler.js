@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Calendar, momentLocalizer} from 'react-big-calendar';
+import React, { useEffect, useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
@@ -7,12 +7,12 @@ import {useQuery} from '@apollo/client';
 import {SchedulerContext} from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {fullName} from '../../../utils';
-import {useHistory} from 'react-router-dom';
-import {instructorPalette} from '../../../theme/muiTheme';
-import {findCommonElement} from '../../Form/FormUtils';
-import {SessionPopover} from './SessionPopover';
-import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
+import { fullName } from '../../../utils';
+import { useHistory } from 'react-router-dom';
+import { instructorPalette } from '../../../theme/muiTheme';
+import { findCommonElement } from '../../Form/FormUtils';
+import { SessionPopover } from './SessionPopover';
+import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
 
 const useStyles = makeStyles((theme) => ({
     sessionPopover: {
