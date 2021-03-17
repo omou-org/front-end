@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { OOOContext } from './OOOContext';
+import {OOOContext} from './OOOContext';
 import gql from 'graphql-tag';
-import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import {useSelector} from 'react-redux';
+import {useQuery} from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 
 const GET_INSTRUCTOR_SESSIONS = gql`

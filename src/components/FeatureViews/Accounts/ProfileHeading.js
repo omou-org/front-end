@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React, {useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import {useQuery} from '@apollo/client';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import Grid from '@material-ui/core/Grid';
@@ -13,20 +13,20 @@ import Hidden from '@material-ui/core/Hidden';
 import MoneyIcon from '@material-ui/icons/LocalAtmOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
-import { darkGrey } from 'theme/muiTheme';
+import {makeStyles} from '@material-ui/core';
+import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
+import {darkGrey} from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
 import ResetPasswordDialogs from './ResetPasswordDialogs';
 import Loading from 'components/OmouComponents/Loading';
 import './Accounts.scss';
-import { addDashes } from './accountUtils';
-import { ReactComponent as GradeIcon } from '../../grade.svg';
-import { ReactComponent as IDIcon } from '../../identifier.svg';
-import { ReactComponent as SchoolIcon } from '../../school.svg';
+import {addDashes} from './accountUtils';
+import {ReactComponent as GradeIcon} from '../../grade.svg';
+import {ReactComponent as IDIcon} from '../../identifier.svg';
+import {ReactComponent as SchoolIcon} from '../../school.svg';
 
-import { capitalizeString, fullName, USER_TYPES } from 'utils';
+import {capitalizeString, fullName, USER_TYPES} from 'utils';
 import moment from 'moment';
 
 const useStyles = makeStyles({

@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import {NavLink, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/react-hooks';
+import {useQuery} from '@apollo/client';
 import {Tooltip, Typography, withStyles} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';

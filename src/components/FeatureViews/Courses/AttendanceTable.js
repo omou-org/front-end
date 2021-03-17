@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {useMutation, useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
 import moment from 'moment';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,14 +14,11 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Add, Check } from '@material-ui/icons';
+import {Add, Check} from '@material-ui/icons';
 import Loading from '../../OmouComponents/Loading';
-import {
-    StudentFilterOrSortDropdown,
-    SessionDropdownButton,
-} from './AttendanceButtons';
-import { buttonThemeBlue } from '../../../theme/muiTheme';
-import { fullName } from '../../../utils';
+import {SessionDropdownButton, StudentFilterOrSortDropdown,} from './AttendanceButtons';
+import {buttonThemeBlue} from '../../../theme/muiTheme';
+import {fullName} from '../../../utils';
 
 const useStyles = makeStyles((theme) => ({
     table: {

@@ -1,19 +1,11 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import {
-    Typography,
-    Grid,
-    Divider,
-    List,
-    ListItemText,
-    ListItem,
-    Paper,
-} from '@material-ui/core';
-import { useQuery } from '@apollo/react-hooks';
-import { useSelector } from 'react-redux';
+import {Divider, Grid, List, ListItem, ListItemText, Typography,} from '@material-ui/core';
+import {useQuery} from '@apollo/client';
+import {useSelector} from 'react-redux';
 import Loading from '../../OmouComponents/Loading';
-import { makeStyles } from '@material-ui/core/styles';
-import { skyBlue, omouBlue } from '../../../theme/muiTheme';
+import {makeStyles} from '@material-ui/core/styles';
+import {omouBlue, skyBlue} from '../../../theme/muiTheme';
 
 import moment from 'moment';
 

@@ -1,8 +1,8 @@
-import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import {useSelector} from 'react-redux';
+import {useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link} from 'react-router-dom';
 import './Dashboard.scss';
 import Today from './Today';
 import UnpaidSessions from './../AdminPortal/UnpaidSessions';
@@ -15,9 +15,9 @@ import DashboardNotes from './DashboardNotes';
 import moment from 'moment';
 import Moment from 'react-moment';
 import Select from 'react-select';
-import { makeStyles } from '@material-ui/styles';
+import {makeStyles} from '@material-ui/styles';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {

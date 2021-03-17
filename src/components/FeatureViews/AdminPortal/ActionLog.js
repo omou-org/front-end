@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -7,29 +7,25 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import Moment from 'react-moment';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Pagination from '@material-ui/lab/Pagination';
-import Checkbox from '@material-ui/core/Checkbox';
-import { useLazyQuery, useMutation } from '@apollo/react-hooks';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from 'graphql-tag';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { useQuery } from '@apollo/react-hooks';
-import { DateRange } from 'react-date-range';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {useQuery} from '@apollo/client';
+import {DateRange} from 'react-date-range';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import ErrorIcon from '@material-ui/icons/Error';
-import { fullName } from '../../../utils';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import {fullName} from '../../../utils';
+import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
 
 const GET_LOGS = gql`
     query GetLogs(

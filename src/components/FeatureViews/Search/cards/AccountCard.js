@@ -1,21 +1,21 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
-import { useQuery } from '@apollo/react-hooks';
+import {useQuery} from '@apollo/client';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import Grid from '@material-ui/core/Grid';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import theme from '../../../../theme/muiTheme';
 
-import { truncateStrings } from '../../../../utils';
-import { ReactComponent as IDIcon } from '../../../identifier.svg';
-import { stringToColor } from 'components/FeatureViews/Accounts/accountUtils';
-import { makeStyles } from '@material-ui/core/styles';
+import {truncateStrings} from '../../../../utils';
+import {ReactComponent as IDIcon} from '../../../identifier.svg';
+import {stringToColor} from 'components/FeatureViews/Accounts/accountUtils';
+import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     cardContainer: {

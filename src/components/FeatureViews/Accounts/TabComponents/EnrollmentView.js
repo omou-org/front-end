@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import {useQuery} from '@apollo/client';
 
 import EnrollmentSessionRow from './EnrollmentSessionRow';
 import Dialog from '@material-ui/core/Dialog';
@@ -15,32 +15,19 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import NoListAlert from '../../../OmouComponents/NoListAlert';
-import Paper from '@material-ui/core/Paper';
 import PaymentTable from './PaymentTable';
-import SessionPaymentStatusChip from 'components/OmouComponents/SessionPaymentStatusChip';
 import Switch from '@material-ui/core/Switch';
-import LoadingError from './LoadingCourseError';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { LabelBadge } from '../../../../theme/ThemedComponents/Badge/LabelBadge';
-
-import * as hooks from 'actions/hooks';
-import { upcomingSession, useGoToRoute } from 'utils';
-import {
-    deleteEnrollment,
-    initializeRegistration,
-} from 'actions/registrationActions';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {makeStyles} from '@material-ui/core/styles';
+import {LabelBadge} from '../../../../theme/ThemedComponents/Badge/LabelBadge';
+import {initializeRegistration,} from 'actions/registrationActions';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from 'components/OmouComponents/AddSessions';
-import BackButton from 'components/OmouComponents/BackButton';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
-import { useEnrollmentNotes } from 'actions/userActions';
-import { useSessionsWithConfig } from 'actions/calendarActions';
-import Moment from 'react-moment';
-import { fullName } from '../../../../utils';
+import {fullName} from '../../../../utils';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {

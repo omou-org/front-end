@@ -1,29 +1,29 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import ForwardArrow from '@material-ui/icons/ArrowForward';
 import Grid from '@material-ui/core/Grid';
 import Grow from '@material-ui/core/Grow';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Loading from 'components/OmouComponents/Loading';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import LoadingError from '../Accounts/TabComponents/LoadingCourseError';
-import { truncateStrings } from 'utils';
-import { useQuery } from '@apollo/react-hooks';
-import { GET_CATEGORIES } from 'queryFragments';
+import {truncateStrings} from 'utils';
+import {useQuery} from '@apollo/client';
+import {GET_CATEGORIES} from 'queryFragments';
 
 const TutoringList = () => {
-    const { data, loading, error } = useQuery(GET_CATEGORIES);
+    const {data, loading, error} = useQuery(GET_CATEGORIES);
 
     const registeringParent = useSelector(
-        ({ Registration }) => Registration.CurrentParent
+        ({Registration}) => Registration.CurrentParent
     );
 
     if (loading) {
-        return <Loading />;
+        return <Loading/>;
     }
     if (error) {
         return <LoadingError error={error.message} />;

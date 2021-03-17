@@ -1,23 +1,18 @@
 import * as serviceWorker from './serviceWorker';
-import { applyMiddleware, createStore } from 'redux';
+import {applyMiddleware, createStore} from 'redux';
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import {BrowserRouter} from 'react-router-dom';
+import {composeWithDevTools} from 'redux-devtools-extension';
 import Provider from 'react-redux/es/components/Provider';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import rootReducer from './reducers/rootReducer.js';
 import thunk from 'redux-thunk';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { onError } from 'apollo-link-error';
-import { ApolloLink } from 'apollo-link';
-
-import { createUploadLink } from 'apollo-upload-client';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { setContext } from 'apollo-link-context';
-
-import { setToken } from 'actions/authActions';
+import {ApolloClient, ApolloLink, ApolloProvider, InMemoryCache} from '@apollo/client';
+import {onError} from '@apollo/client/link/error';
+import {setContext} from '@apollo/client/link/context';
+import {createUploadLink} from 'apollo-upload-client';
+import {setToken} from 'actions/authActions';
 import * as actionCreators from 'actions/actionTypes';
 import initialState from './reducers/initialState';
 import invariant from 'redux-immutable-state-invariant';
