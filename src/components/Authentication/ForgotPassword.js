@@ -1,22 +1,22 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import gql from 'graphql-tag';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import useAuthStyles from './styles';
-import {useMutation} from '@apollo/client';
-import {useSelector} from 'react-redux';
+import { useMutation } from '@apollo/client';
+import { useSelector } from 'react-redux';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 
-import {Link, Redirect, useHistory, useLocation} from 'react-router-dom';
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { Link, Redirect, useHistory, useLocation } from 'react-router-dom';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import {ReactComponent as Ellipse1} from './loginImages/ellipse1.svg';
-import {ReactComponent as Ellipse2} from './loginImages/ellipse2.svg';
-import {ReactComponent as Picture1} from './loginImages/picture1.svg';
+import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
+import { ReactComponent as Ellipse2 } from './loginImages/ellipse2.svg';
+import { ReactComponent as Picture1 } from './loginImages/picture1.svg';
 
 const useStyles = makeStyles((theme) => ({
     info: {

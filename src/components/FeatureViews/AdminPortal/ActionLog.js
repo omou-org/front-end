@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -13,19 +13,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Pagination from '@material-ui/lab/Pagination';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from 'graphql-tag';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import {useQuery} from '@apollo/client';
-import {DateRange} from 'react-date-range';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { useQuery } from '@apollo/client';
+import { DateRange } from 'react-date-range';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import ErrorIcon from '@material-ui/icons/Error';
-import {fullName} from '../../../utils';
-import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
+import { fullName } from '../../../utils';
+import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 
 const GET_LOGS = gql`
     query GetLogs(

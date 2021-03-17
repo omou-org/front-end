@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,12 +10,12 @@ import Grid from '@material-ui/core/Grid';
 import * as types from 'actions/actionTypes';
 import AccountCard from '../Search/cards/AccountCard';
 import gql from 'graphql-tag';
-import {useLazyQuery} from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {fullName} from '../../../utils';
+import { fullName } from '../../../utils';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const GET_PARENTS_QUERY = gql`
     query GetParents($query: String!) {

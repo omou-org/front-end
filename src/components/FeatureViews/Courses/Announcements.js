@@ -1,22 +1,22 @@
-import React, {useRef, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {Cancel, Create} from '@material-ui/icons';
+import { Cancel, Create } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
-import theme, {highlightColor, omouBlue} from '../../../theme/muiTheme';
+import theme, { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import moment from 'moment';
 import NewAnnouncementModal from './NewAnnoucementsModal';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 
 import AddIcon from '@material-ui/icons/Add';
-import {GET_ANNOUNCEMENTS} from './CourseClass';
-import {fullName, sortTime, USER_TYPES} from '../../../utils';
+import { GET_ANNOUNCEMENTS } from './CourseClass';
+import { fullName, sortTime, USER_TYPES } from '../../../utils';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
     announcementContainer: {

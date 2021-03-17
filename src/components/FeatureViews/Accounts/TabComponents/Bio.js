@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Loading from '../../../OmouComponents/Loading';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 const GET_USER_BIO = gql`
     query getUserBio($ownerID: ID!) {

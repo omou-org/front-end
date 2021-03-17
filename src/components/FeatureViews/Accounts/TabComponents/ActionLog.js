@@ -1,7 +1,7 @@
 import React from 'react';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -11,8 +11,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableContainer from '@material-ui/core/TableContainer';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
-import {makeStyles} from '@material-ui/core/styles';
-import {Redirect} from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import { Redirect } from 'react-router-dom';
 
 const GET_ADMIN_LOG = gql`
     query AdminLogQuery($ownerID: ID!) {

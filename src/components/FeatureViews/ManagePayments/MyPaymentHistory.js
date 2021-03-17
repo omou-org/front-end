@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import PaymentTable from '../Accounts/TabComponents/PaymentTable';
 import gql from 'graphql-tag';
-import {useSelector} from 'react-redux';
-import {useLazyQuery} from '@apollo/client';
+import { useSelector } from 'react-redux';
+import { useLazyQuery } from '@apollo/client';
 import moment from 'moment';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../OmouComponents/Loading';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import {omouBlue} from '../../../theme/muiTheme';
+import { omouBlue } from '../../../theme/muiTheme';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import Moment from 'react-moment';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import {DateRange} from 'react-date-range';
+import { DateRange } from 'react-date-range';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 

@@ -9,7 +9,7 @@ import ClassEnrollmentList from '../Courses/ClassEnrollmentList';
 import 'theme/theme.scss';
 import './registration.scss';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 export const DELETE_ENROLLMENT = gql`
     mutation DeleteEnrollment($enrollmentId: ID) {

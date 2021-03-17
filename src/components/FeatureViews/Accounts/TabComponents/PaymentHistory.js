@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/OmouComponents/Loading';
 import PaymentTable from './PaymentTable';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 

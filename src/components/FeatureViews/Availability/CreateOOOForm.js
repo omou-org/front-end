@@ -1,16 +1,16 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {OOOContext} from './OOOContext';
-import {SubmitNotice} from './SubmitNotice';
+import { OOOContext } from './OOOContext';
+import { SubmitNotice } from './SubmitNotice';
 import ConflictsDisplay from './ConflictsDisplay';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
-import {useSelector} from 'react-redux';
+import { useMutation } from '@apollo/client';
+import { useSelector } from 'react-redux';
 import OOOConfirmation from './OOOConfirmation';
 import Typography from '@material-ui/core/Typography';
-import {GET_UPCOMING_INSTRUCTOR_OOO} from './UpcomingLogOOO';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {

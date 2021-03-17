@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import moment from 'moment';
 
-import {handleToolTip} from '../../Scheduler/SchedulerUtils';
-import {fullName} from 'utils.js';
-import {stringToColor} from '../accountUtils';
+import { handleToolTip } from '../../Scheduler/SchedulerUtils';
+import { fullName } from 'utils.js';
+import { stringToColor } from '../accountUtils';
 import Loading from 'components/OmouComponents/Loading';
-import {Typography} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 const GET_INSTRUCTOR_INFO = gql`
     query getCourses($instructorID: ID!) {

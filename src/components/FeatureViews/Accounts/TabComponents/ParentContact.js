@@ -5,10 +5,10 @@ import ProfileCard from '../ProfileCard';
 import PropTypes from 'prop-types';
 import React from 'react';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import LoadingError from './LoadingCourseError';
-import {fullName} from '../../../../utils';
-import {useParams} from 'react-router-dom';
+import { fullName } from '../../../../utils';
+import { useParams } from 'react-router-dom';
 
 const GET_PARENTS = gql`
     query getParentAsStudent($userID: ID!) {

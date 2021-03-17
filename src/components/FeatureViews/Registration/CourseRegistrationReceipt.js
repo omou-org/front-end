@@ -2,19 +2,19 @@ import React from 'react';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import AccountCard from '../Search/cards/AccountCard';
-import {useParams} from 'react-router-dom';
-import {useQuery} from '@apollo/client';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import Typography from '@material-ui/core/Typography';
-import {fullName} from '../../../utils';
+import { fullName } from '../../../utils';
 import Moment from 'react-moment';
 import Avatar from '@material-ui/core/Avatar';
-import {stringToColor} from '../Accounts/accountUtils';
+import { stringToColor } from '../Accounts/accountUtils';
 import Divider from '@material-ui/core/Divider';
 import NavLinkNoDup from '../../Routes/NavLinkNoDup';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const GET_COURSE = gql`
     query GetCourse($courseId: ID!) {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -7,10 +7,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import {fullName} from 'utils';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { fullName } from 'utils';
 import generatePassword from 'password-generator';
 
 const RESET_PASSWORD = gql`

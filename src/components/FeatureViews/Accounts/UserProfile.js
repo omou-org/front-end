@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Redirect, useParams} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Redirect, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import BioIcon from '@material-ui/icons/PersonOutlined';
 import ContactIcon from '@material-ui/icons/ContactPhoneOutlined';
@@ -18,11 +18,11 @@ import ComponentViewer from './ComponentViewer.js';
 import Loading from 'components/OmouComponents/Loading';
 
 import SettingsIcon from '@material-ui/icons/Settings';
-import {USER_TYPES} from '../../../utils';
+import { USER_TYPES } from '../../../utils';
 
 import UserProfileInfo from './UserProfileInfo';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 const userTabs = {
     instructor: [

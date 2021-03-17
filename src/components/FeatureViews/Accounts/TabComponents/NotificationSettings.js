@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
@@ -10,9 +10,9 @@ import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
-import {omouBlue} from '../../../../theme/muiTheme';
+import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import {useMutation, useQuery} from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
 
 const StyledTableRow = withStyles((theme) => ({

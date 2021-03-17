@@ -1,7 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
-import {LabelBadge} from '../../../theme/ThemedComponents/Badge/LabelBadge';
+import { useQuery } from '@apollo/client';
+import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import ListDetailedItem, {
     ListActions,
     ListBadge,

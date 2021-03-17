@@ -1,9 +1,9 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 import Avatar from '@material-ui/core/Avatar';
 import Delete from '@material-ui/icons/Delete';
@@ -24,10 +24,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ReadMoreText from 'components/OmouComponents/ReadMoreText';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './Notes.scss';
-import {AddItemButton} from 'components/OmouComponents/AddItemButton';
+import { AddItemButton } from 'components/OmouComponents/AddItemButton';
 
 const useStyles = makeStyles((theme) => ({
     icons: {

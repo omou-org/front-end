@@ -1,20 +1,20 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import Grid from '@material-ui/core/Grid';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import {addDashes, stringToColor} from './accountUtils';
+import { makeStyles } from '@material-ui/core/styles';
+import { addDashes, stringToColor } from './accountUtils';
 import theme from '../../../theme/muiTheme';
 
 import './Accounts.scss';
-import {capitalizeString} from 'utils';
-import {ReactComponent as IDIcon} from 'components/identifier.svg';
-import {useMutation} from '@apollo/client';
+import { capitalizeString } from 'utils';
+import { ReactComponent as IDIcon } from 'components/identifier.svg';
+import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 
 const useStyles = makeStyles({
