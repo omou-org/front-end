@@ -23,14 +23,16 @@ import {
     DialogActions,
     Typography,
     Box,
+    TextField,
     Input,
+    InputAdornment,
     FormControl,
 } from '@material-ui/core';
 
 import { omouBlue } from '../../../theme/muiTheme';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import Moment from 'react-moment';
-
+import SearchIcon from '@material-ui/icons/Search';
 import { DateRange } from 'react-date-range';
 
 export const GET_INVOICES_FILTERED = gql`
@@ -39,13 +41,14 @@ export const GET_INVOICES_FILTERED = gql`
         $startDate: String
         $query: String
         $paymentStatus: PaymentChoiceEnum
+        $page: Int
     ) {
         invoices(
             query: $query
             startDate: $startDate
             endDate: $endDate
             paymentStatus: $paymentStatus
-            page: 1
+            page: $page
             pageSize: 15
         ) {
             results {
@@ -66,29 +69,28 @@ export const GET_INVOICES_FILTERED = gql`
 
 export default function Invoices() {
     const AuthUser = useSelector(({ auth }) => auth);
-    const [search, setSearch] = useState();
     const [results, setResults] = useState([]);
     const [paymentStatus, setPaymentStatus] = useState('');
+
     const client = useApolloClient();
-    const [getInvoices, { loading, data, error, called }] = useLazyQuery(
-        GET_INVOICES_FILTERED
-    );
 
     const [filter, setFilter] = useState({
         query: '',
         startDate: null,
         endDate: null,
         paymentStatus: null,
+        page: 1,
     });
 
-    const paymenyKeys = {
-        PAID: 'PAID',
-        UNPAID: 'UNPAID',
-        CANCEL: 'CANCEL',
-    };
-
     const searchInvoices = useCallback(
-        async (search, startDate, endDate, paymentStatus) => {
+        async (search, startDate, endDate, paymentStatus, page) => {
+            let status = paymentStatus;
+            if (paymentStatus === 'ALL') {
+                status = null;
+            }
+            console.log(page);
+            console.log(!page && 1);
+
             try {
                 const {
                     data: {
@@ -100,7 +102,8 @@ export default function Invoices() {
                         query: search,
                         startDate: startDate,
                         endDate: endDate,
-                        paymentStatus: paymentStatus,
+                        paymentStatus: status,
+                        page: !page && 1,
                     },
                 });
 
@@ -123,27 +126,51 @@ export default function Invoices() {
     ]);
 
     useEffect(() => {
-        searchInvoices();
-        // getInvoices({});
+        searchInvoices('', '', '');
     }, []);
+
+    const handleInputChange = (query) => {
+        searchInvoices(query);
+    };
 
     const handleDateRangeCalendarChange = (item) => {
         const newDateRange = item.selection;
         setDateSelector([newDateRange]);
-        searchInvoices(search, newDateRange.startDate, newDateRange.endDate);
+
+        setFilter({
+            ...filter,
+            startDate: newDateRange.startDate,
+            endDate: newDateRange.endDate,
+        });
     };
 
     const handleSaveDateRange = () => {
         setOpenCalendar(false);
-        getInvoices({});
+        searchInvoices(
+            filter.query,
+            filter.startDate,
+            filter.endDate,
+            filter.paymentStatus
+        );
     };
 
-    const handleStatusChange = (e) => {
-        setPaymentStatus(e.target.value);
+    const handlePageChange = (e, newPage) => {
+        searchInvoices(
+            filter.query,
+            filter.startDate,
+            filter.endDate,
+            filter.paymentStatus,
+            newPage
+        );
+    };
+
+    const handleStatusChange = (event) => {
+        setPaymentStatus(event);
+        searchInvoices(filter.query, filter.startDate, filter.endDate, event);
     };
 
     // if (loading || !called) return <Loading />;
-    if (error) return <div>An Error has occurred! {error.message}</div>;
+    // if (error) return <div>An Error has occurred! {error.message}</div>;
 
     // const { results } = data.invoices;
 
@@ -158,7 +185,7 @@ export default function Invoices() {
                     </Box>
                 </Grid>
                 <Grid item container direction='row' alignItems='center'>
-                    <Grid item xs={5} align='left'>
+                    <Grid item xs={8} align='left'>
                         <ButtonGroup variant='contained'>
                             <Button style={{ backgroundColor: omouBlue }}>
                                 <CalendarIcon style={{ color: 'white' }} />
@@ -243,12 +270,28 @@ export default function Invoices() {
                             </DialogActions>
                         </Dialog>
                     </Grid>
-                    <Grid item xs={6}>
-                        <form onChange={(e) => searchInvoices(e.target.value)}>
-                            <input
+                    <Grid item xs={4}>
+                        <form
+                            onChange={(e) => handleInputChange(e.target.value)}
+                        >
+                            <TextField
                                 type='text'
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder='Search Customer or ID'
+                                value={filter.query}
+                                variant='outlined'
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position='end'>
+                                            <SearchIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                onChange={(e) =>
+                                    setFilter({
+                                        ...filter,
+                                        query: e.target.value,
+                                    })
+                                }
                             />
                         </form>
                     </Grid>
@@ -260,7 +303,8 @@ export default function Invoices() {
                     rootRoute='/invoices/'
                     type='parent'
                     handleStatusChange={handleStatusChange}
-                    paymentStatus={paymentStatus}
+                    page={filter.page}
+                    handlePageChange={handlePageChange}
                 />
             </Grid>
         </Grid>
