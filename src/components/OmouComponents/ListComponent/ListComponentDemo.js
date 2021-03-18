@@ -1,20 +1,19 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { useQuery } from '@apollo/client';
 import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import ListDetailedItem, {
-    ListContent,
     ListActions,
-    ListHeading,
-    ListTitle,
-    ListDetails,
+    ListBadge,
+    ListButton,
+    ListContent,
     ListDetail,
     ListDetailLink,
-    ListButton,
-    ListBadge,
-    ListStatus,
+    ListDetails,
     ListDivider,
+    ListHeading,
+    ListStatus,
+    ListTitle,
 } from './ListDetailedItem';
 
 const GET_COURSES = gql`

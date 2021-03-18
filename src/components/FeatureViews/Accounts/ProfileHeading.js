@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import EditIcon from '@material-ui/icons/EditOutlined';

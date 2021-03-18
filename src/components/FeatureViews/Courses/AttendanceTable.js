@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import moment from 'moment';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,8 +17,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { Add, Check } from '@material-ui/icons';
 import Loading from '../../OmouComponents/Loading';
 import {
-    StudentFilterOrSortDropdown,
     SessionDropdownButton,
+    StudentFilterOrSortDropdown,
 } from './AttendanceButtons';
 import { buttonThemeBlue } from '../../../theme/muiTheme';
 import { fullName } from '../../../utils';

@@ -1,26 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 // Material UI Imports
 import Grid from '@material-ui/core/Grid';
-import {
-    useHistory,
-    useLocation,
-    withRouter,
-    useParams,
-    NavLink,
-} from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import Loading from 'components/OmouComponents/Loading';
 
 import gql from 'graphql-tag';
-import { useQuery, useMutation } from '@apollo/react-hooks';
-
-import { bindActionCreators } from 'redux';
-import * as registrationActions from '../../../actions/registrationActions';
-import * as calendarActions from '../../../actions/calendarActions';
-import * as userActions from '../../../actions/userActions.js';
-import { useDispatch, useSelector } from 'react-redux';
+import { useMutation, useQuery } from '@apollo/client';
 import { FormControl, Typography } from '@material-ui/core';
-import * as apiActions from '../../../actions/apiActions';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { DatePicker } from '@material-ui/pickers/DatePicker/DatePicker';
 import { TimePicker } from '@material-ui/pickers/TimePicker/TimePicker';
@@ -28,10 +14,6 @@ import SearchSelect from 'react-select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
-import { dateFormat, timeFormat } from '../../../utils';
-import InstructorConflictCheck from 'components/OmouComponents/InstructorConflictCheck';
-import BackButton from '../../OmouComponents/BackButton';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import './scheduler.scss';
 import GET_SESSIONS from '../Accounts/TabComponents/EnrollmentView';
@@ -39,7 +21,6 @@ import GET_SESSIONS from '../Accounts/TabComponents/EnrollmentView';
 import { fullName } from '../../../utils';
 
 import moment from 'moment';
-import { GET_SESSIONS_FAILED } from 'actions/actionTypes';
 
 const GET_CATEGORIES = gql`
     query EditSessionCategoriesQuery {
@@ -477,9 +458,7 @@ const EditSessionView = () => {
                 });
             }
         }
-        history.push(
-            `/scheduler/view-session/${course_id}/${session_id}/${sessionFields.instructor.value}`
-        );
+        history.push(`/scheduler/session/${session_id}`);
     };
 
     if (loading || categoriesLoading || instructorsLoading) {

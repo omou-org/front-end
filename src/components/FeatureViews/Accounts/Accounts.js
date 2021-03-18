@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import gql from 'graphql-tag';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 
 import CardView from '@material-ui/icons/ViewModule';

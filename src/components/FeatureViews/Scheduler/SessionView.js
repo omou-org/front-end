@@ -1,28 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { Tooltip, Typography, withStyles } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Button from '@material-ui/core/Button';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Divider from '@material-ui/core/Divider';
-import DialogContent from '@material-ui/core/DialogContent';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Radio from '@material-ui/core/Radio';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
-import BackButton from 'components/OmouComponents/BackButton';
 import Menu from '@material-ui/core/Menu';
-import { fullName } from '../../../utils';
+import { fullName, USER_TYPES } from '../../../utils';
 import moment from 'moment';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
+import { RescheduleBtn } from './RescheduleBtn';
 
 const StyledMenu = withStyles({
     paper: {
@@ -52,9 +45,6 @@ const styles = (username) => ({
     fontSize: 15,
     marginRight: 10,
 });
-
-const EDIT_ALL_SESSIONS = 'all';
-const EDIT_CURRENT_SESSION = 'current';
 
 const GET_SESSION = gql`
     query SessionViewQuery($sessionId: ID!) {
@@ -112,35 +102,10 @@ const GET_SESSION = gql`
 
 const SessionView = () => {
     const { session_id } = useParams();
-    const [edit, setEdit] = useState(false);
-    const [editSelection, setEditSelection] = useState(EDIT_CURRENT_SESSION);
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
     });
-
-    const handleEditToggle = (cancel) => (event) => {
-        event.preventDefault();
-        if (!cancel && edit) {
-            handleToggleEditing(editSelection);
-        } else {
-            setEdit(!edit);
-        }
-    };
-
-    const handleToggleEditing = (editSelection) => {
-        this.setState((oldState) => {
-            return {
-                ...oldState,
-                editing: !oldState.editing,
-                editSelection: editSelection,
-            };
-        });
-    };
-
-    const handleEditSelection = (event) => {
-        setEditSelection(event.target.value);
-    };
 
     if (loading) {
         return <Loading />;
@@ -304,86 +269,26 @@ const SessionView = () => {
                     {/* <InstructorSchedule instructorID={instructor_id} /> */}
                 </Grid>
             </Grid>
-            <Grid
-                className='session-detail-action-control'
-                container
-                direction='row'
-                justify='flex-end'
-            >
+            <Grid container direction='row' justify='flex-end' spacing={1}>
                 <Grid item>
-                    <Button
-                        className='button'
-                        color='secondary'
+                    <ResponsiveButton
                         component={NavLink}
-                        to={`/registration/course/${course_id}`}
+                        to={`/courses/class/${course_id}`}
                         variant='outlined'
                     >
                         Course Page
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
-                <Grid item></Grid>
                 <Grid item>
-                    <Button
-                        className='editButton'
-                        color='primary'
-                        onClick={handleEditToggle(true)}
-                        variant='outlined'
+                    <AccessControlComponent
+                        permittedAccountTypes={[
+                            USER_TYPES.admin,
+                            USER_TYPES.receptionist,
+                            USER_TYPES.instructor,
+                        ]}
                     >
-                        Reschedule
-                    </Button>
-                    <Dialog
-                        aria-describedby='form-dialog-description'
-                        aria-labelledby='form-dialog-title'
-                        className='session-view-modal'
-                        fullWidth
-                        maxWidth='xs'
-                        onClose={handleEditToggle(true)}
-                        open={edit}
-                    >
-                        <DialogTitle disableTypography id='form-dialog-title'>
-                            Edit Session
-                        </DialogTitle>
-                        <Divider />
-                        <DialogContent>
-                            <RadioGroup
-                                aria-label='delete'
-                                name='delete'
-                                onChange={handleEditSelection}
-                                value={editSelection}
-                            >
-                                <FormControlLabel
-                                    control={<Radio color='primary' />}
-                                    label='This Session'
-                                    labelPlacement='end'
-                                    value={EDIT_CURRENT_SESSION}
-                                />
-                                <FormControlLabel
-                                    control={<Radio color='primary' />}
-                                    label='All Sessions'
-                                    labelPlacement='end'
-                                    value={EDIT_ALL_SESSIONS}
-                                />
-                            </RadioGroup>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button
-                                color='primary'
-                                onClick={handleEditToggle(true)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                color='primary'
-                                component={NavLink}
-                                to={{
-                                    pathname: `/scheduler/edit-session/${course_id}/${session_id}/${instructor.user.id}/edit`,
-                                    state: { allOrCurrent: editSelection },
-                                }}
-                            >
-                                Confirm to Edit
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                        <RescheduleBtn />
+                    </AccessControlComponent>
                 </Grid>
             </Grid>
         </>

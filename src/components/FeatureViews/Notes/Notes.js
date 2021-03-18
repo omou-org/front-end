@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -27,12 +27,6 @@ import ReadMoreText from 'components/OmouComponents/ReadMoreText';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './Notes.scss';
-import {
-    DELETE_ACCOUNT_NOTE_SUCCESSFUL,
-    DELETE_COURSE_NOTE_SUCCESSFUL,
-    DELETE_ENROLLMENT_NOTE_SUCCESSFUL,
-} from 'actions/actionTypes';
-import { instance } from 'actions/apiActions';
 import { AddItemButton } from 'components/OmouComponents/AddItemButton';
 
 const useStyles = makeStyles((theme) => ({
@@ -43,10 +37,6 @@ const useStyles = makeStyles((theme) => ({
     },
     notePaper: {
         height: '150px',
-    },
-    notesTitle: {
-        letterSpacing: '0.01071em',
-        fontSize: '0.875rem',
     },
     dateDisplay: {
         bottom: '40px !important',

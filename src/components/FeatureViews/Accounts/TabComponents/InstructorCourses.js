@@ -11,7 +11,7 @@ import Moment from 'react-moment';
 import moment from 'moment';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Loading from 'components/OmouComponents/Loading';
 import { DayAbbreviation } from 'utils';
 
