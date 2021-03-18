@@ -103,7 +103,7 @@ const userTabs = {
         {
             icon: <SettingsIcon className='SettingsIcon' />,
             tab_heading: 'Notification Settings',
-            access_permissions: [USER_TYPES.parent],
+            access_permissions: [USER_TYPES.parent, USER_TYPES.admin, USER_TYPES.receptionist],
             tab_id: 11,
         },
     ],

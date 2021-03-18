@@ -14,6 +14,7 @@ import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import Loading from '../../../OmouComponents/Loading';
+import { Divider } from '@material-ui/core';
 
 const StyledTableRow = withStyles((theme) => ({
     root: {
@@ -210,6 +211,20 @@ export default function NotificationSettings({ user }) {
                     checked: userSettings?.sessionReminderSms || false,
                 }
             ),
+            createNotificationSetting(
+                'Missed Session Notification',
+                'Get notified when your student did not attend a session',
+                {
+                    settingName: 'missedSessionNotificationEmail',
+                    checked:
+                        userSettings?.missedSessionReminderEmail || false
+                },
+                {
+                    settingName: 'missedSessionNotificationSms',
+                    checked:
+                        userSettings?.missedSessionReminderSMS || false
+                }
+            ),
             ...(userInfo.accountType === 'PARENT'
                 ? [
                       createNotificationSetting(
@@ -298,7 +313,6 @@ export default function NotificationSettings({ user }) {
             <Grid
                 container
                 style={{
-                    backgroundColor: '#F5F5F5',
                     padding: '1%',
                     marginTop: '30px',
                 }}
