@@ -215,13 +215,11 @@ export default function NotificationSettings({ user }) {
                 'Get notified when your student did not attend a session',
                 {
                     settingName: 'missedSessionNotificationEmail',
-                    checked:
-                        userSettings?.missedSessionReminderEmail || false
+                    checked: userSettings?.missedSessionReminderEmail || false,
                 },
                 {
                     settingName: 'missedSessionNotificationSms',
-                    checked:
-                        userSettings?.missedSessionReminderSMS || false
+                    checked: userSettings?.missedSessionReminderSMS || false,
                 }
             ),
             ...(userInfo.accountType === 'PARENT'
@@ -317,7 +315,13 @@ export default function NotificationSettings({ user }) {
                     borderBottom: '1px solid #C4C4C4',
                 }}
             >
-                <Typography style={{ color: omouBlue, fontWeight: 500, fontSize: '1rem' }}>
+                <Typography
+                    style={{
+                        color: omouBlue,
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                    }}
+                >
                     Notification Settings
                 </Typography>
             </Grid>
@@ -341,7 +345,7 @@ export default function NotificationSettings({ user }) {
                                         style={{
                                             fontSize: '14px',
                                             fontWeight: 'bold',
-                                            lineHeight: '1.375rem'
+                                            lineHeight: '1.375rem',
                                         }}
                                         display='block'
                                     >
@@ -391,7 +395,13 @@ export default function NotificationSettings({ user }) {
                     borderBottom: '1px solid #C4C4C4',
                 }}
             >
-                <Typography style={{ color: omouBlue, fontWeight: 500, fontSize: '1rem' }}>
+                <Typography
+                    style={{
+                        color: omouBlue,
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                    }}
+                >
                     Opt-in SMS Notifications
                 </Typography>
             </Grid>
@@ -409,7 +419,7 @@ export default function NotificationSettings({ user }) {
                                         style={{
                                             fontSize: '14px',
                                             fontWeight: 'bold',
-                                            lineHeight: '1.375rem'
+                                            lineHeight: '1.375rem',
                                         }}
                                         display='block'
                                     >
