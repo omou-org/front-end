@@ -187,6 +187,8 @@ export default function Invoices() {
         searchInvoices(filter.query, filter.startDate, filter.endDate, event);
     };
 
+    const isParent = AuthUser.accountType === 'PARENT';
+
     // if (loading || !called) return <Loading />;
     // if (error) return <div>An Error has occurred! {error.message}</div>;
 
@@ -300,7 +302,11 @@ export default function Invoices() {
                             <TextField
                                 size='small'
                                 type='text'
-                                placeholder='Search Customer or ID'
+                                placeholder={
+                                    isParent
+                                        ? 'Search by Invoice ID'
+                                        : 'Search by Parent or Invoice ID'
+                                }
                                 value={filter.query}
                                 variant='outlined'
                                 InputProps={{
