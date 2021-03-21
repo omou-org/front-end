@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/client';
 import {
     Grid,
     Button,
@@ -117,8 +117,6 @@ export default function Invoices() {
             }
         }
     );
-
-    // defualt date is "Start Date " & "End Date "
 
     const [openCalendar, setOpenCalendar] = useState(false);
     const [dateSelector, setDateSelector] = useState([
