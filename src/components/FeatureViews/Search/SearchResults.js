@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { useSearchParams } from 'actions/hooks';
 
 import Grid from '@material-ui/core/Grid';

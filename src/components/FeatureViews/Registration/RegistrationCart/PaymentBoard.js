@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { RegistrationContext } from './RegistrationContext';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/react-hooks';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';

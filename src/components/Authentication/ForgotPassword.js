@@ -2,15 +2,13 @@ import React, { useCallback, useState } from 'react';
 import gql from 'graphql-tag';
 import { makeStyles } from '@material-ui/core/styles';
 import useAuthStyles from './styles';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { useSelector } from 'react-redux';
 
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 
 import { Link, Redirect, useHistory, useLocation } from 'react-router-dom';
-
-import Button from '@material-ui/core/Button';
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';

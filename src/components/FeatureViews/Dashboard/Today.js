@@ -1,7 +1,4 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useSearchSession } from 'actions/searchActions';
-import * as hooks from 'actions/hooks';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import TodayCard from './TodayCard';
 import Card from '@material-ui/core/Card';
@@ -10,7 +7,7 @@ import Loading from 'components/OmouComponents/Loading';
 import './Dashboard.scss';
 import Grid from '@material-ui/core/Grid';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const Today = (filter) => {
     const TODAY_SESSION_QUERY = gql`
