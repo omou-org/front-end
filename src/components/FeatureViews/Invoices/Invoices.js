@@ -1,7 +1,7 @@
 /**
  * @description invoice componet to display table of parents invoices
- * @todo code to match figma design
- *
+ * @todo  Improve component state,
+ *  - pagination bug - if you go to page 2, and filter, updated page is not set on front-end.
  *
  */
 
@@ -29,7 +29,8 @@ import {
 } from '@material-ui/core';
 
 import { omouBlue } from '../../../theme/muiTheme';
-import CalendarIcon from '@material-ui/icons/CalendarToday';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import EventBusyIcon from '@material-ui/icons/EventBusy';
 import Moment from 'react-moment';
 import SearchIcon from '@material-ui/icons/Search';
 import { DateRange } from 'react-date-range';
@@ -109,7 +110,6 @@ export default function Invoices() {
                 });
 
                 let parsedTotal = Math.ceil(invoices.total / 15);
-                console.log(invoices.results);
                 setTotalPages(parsedTotal);
                 setResults(invoices.results);
             } catch (err) {
@@ -148,6 +148,17 @@ export default function Invoices() {
         });
     };
 
+    const handleResetDateRange = () => {
+        setDateSelector([{ startDate: null, key: 'selection', endDate: null }]);
+        searchInvoices(filter.query, null, null, filter.paymentStatus);
+
+        setFilter({
+            ...filter,
+            startDate: null,
+            endDate: null,
+        });
+    };
+
     const handleSaveDateRange = () => {
         setOpenCalendar(false);
         searchInvoices(
@@ -181,8 +192,6 @@ export default function Invoices() {
     // if (loading || !called) return <Loading />;
     // if (error) return <div>An Error has occurred! {error.message}</div>;
 
-    // const { results } = data.invoices;
-
     return (
         <Grid container direction='row' spacing={4}>
             <Grid item xs={12} container>
@@ -197,7 +206,14 @@ export default function Invoices() {
                     <Grid item xs={8} align='left'>
                         <ButtonGroup variant='contained'>
                             <Button style={{ backgroundColor: omouBlue }}>
-                                <CalendarIcon style={{ color: 'white' }} />
+                                {filter.startDate ? (
+                                    <EventBusyIcon
+                                        style={{ color: 'white' }}
+                                        onClick={handleResetDateRange}
+                                    />
+                                ) : (
+                                    <DateRangeIcon style={{ color: 'white' }} />
+                                )}
                             </Button>
                             <Button
                                 style={{
