@@ -44,6 +44,9 @@ const useStyles = makeStyles({
     tableHeader: {
         padding: '2px',
     },
+    tableFooter: {
+        paddingTop: '1vh',
+    },
 });
 
 const InvoiceTable = ({
@@ -52,6 +55,7 @@ const InvoiceTable = ({
     handleStatusChange,
     handlePageChange,
     page,
+    totalPages,
 }) => {
     const isParent = useSelector(({ auth }) => auth.accountType === 'PARENT');
 
@@ -175,20 +179,25 @@ const InvoiceTable = ({
                         </TableRow>
                     ))}
                 </TableBody>
-                <TableFooter>
-                    {/* <div className={classes.tableFooter}>
-                        <TablePagination
-                            page={page}
-                            colSpan={3}
-                            rowsPerPageOptions={10}
-                            count={[]}
-                            ActionsComponent={InvoiceTablePagination}
-                            onChangePage={handlePageChange}
-                        />
-                    </div> */}
-                </TableFooter>
             </Table>
+
             {invoiceList.length === 0 && <NoListAlert list='Payments' />}
+
+            <Grid
+                container
+                direction='row'
+                justify='center'
+                alignItems='center'
+                className={classes.tableFooter}
+            >
+                <InvoiceTablePagination
+                    page={page}
+                    colSpan={3}
+                    rowsPerPageOptions={10}
+                    totalPages={totalPages}
+                    onChangePage={handlePageChange}
+                />
+            </Grid>
         </Grid>
     );
 };

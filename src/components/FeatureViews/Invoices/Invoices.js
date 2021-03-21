@@ -10,10 +10,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import InvoiceTable from './InvoiceTable';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
-import { useLazyQuery } from '@apollo/react-hooks';
-import moment from 'moment';
+
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import Loading from '../../OmouComponents/Loading';
+
 import { useApolloClient } from '@apollo/react-hooks';
 import {
     Grid,
@@ -51,6 +50,7 @@ export const GET_INVOICES_FILTERED = gql`
             page: $page
             pageSize: 15
         ) {
+            total
             results {
                 id
                 total
@@ -71,31 +71,31 @@ export default function Invoices() {
     const AuthUser = useSelector(({ auth }) => auth);
     const [results, setResults] = useState([]);
     const [paymentStatus, setPaymentStatus] = useState('');
-
+    const [totalPages, setTotalPages] = useState(0);
     const client = useApolloClient();
 
     const [filter, setFilter] = useState({
         query: '',
         startDate: null,
         endDate: null,
-        paymentStatus: null,
+        paymentStatus: 'PAID',
         page: 1,
+        totalPages: totalPages,
     });
 
     const searchInvoices = useCallback(
         async (search, startDate, endDate, paymentStatus, page) => {
             let status = paymentStatus;
+
             if (paymentStatus === 'ALL') {
                 status = null;
             }
-            console.log(page);
-            console.log(!page && 1);
+
+            let currPage = !page ? 1 : page;
 
             try {
                 const {
-                    data: {
-                        invoices: { results },
-                    },
+                    data: { invoices },
                 } = await client.query({
                     query: GET_INVOICES_FILTERED,
                     variables: {
@@ -103,11 +103,15 @@ export default function Invoices() {
                         startDate: startDate,
                         endDate: endDate,
                         paymentStatus: status,
-                        page: !page && 1,
+                        page: currPage,
+                        pageSize: 15,
                     },
                 });
 
-                setResults(results);
+                let parsedTotal = Math.ceil(invoices.total / 15);
+                console.log(invoices.results);
+                setTotalPages(parsedTotal);
+                setResults(invoices.results);
             } catch (err) {
                 console.error(err);
             }
@@ -154,7 +158,7 @@ export default function Invoices() {
         );
     };
 
-    const handlePageChange = (e, newPage) => {
+    const handlePageChange = (newPage) => {
         searchInvoices(
             filter.query,
             filter.startDate,
@@ -162,6 +166,11 @@ export default function Invoices() {
             filter.paymentStatus,
             newPage
         );
+
+        setFilter({
+            ...filter,
+            page: newPage,
+        });
     };
 
     const handleStatusChange = (event) => {
@@ -304,6 +313,7 @@ export default function Invoices() {
                     type='parent'
                     handleStatusChange={handleStatusChange}
                     page={filter.page}
+                    totalPages={totalPages}
                     handlePageChange={handlePageChange}
                 />
             </Grid>
