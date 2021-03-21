@@ -1,7 +1,7 @@
 /**
  * @description invoice componet to display table of parents invoices
  * @todo  Improve component state,
- *  - pagination bug - if you go to page 2, and filter, updated page is not set on front-end.
+ *  - pagination bug - if you go to page 2, and filter, updated page will not be set on the front-end.
  *
  */
 
