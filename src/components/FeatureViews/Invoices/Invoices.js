@@ -300,6 +300,7 @@ export default function Invoices() {
                             onChange={(e) => handleInputChange(e.target.value)}
                         >
                             <TextField
+                                size='small'
                                 type='text'
                                 placeholder='Search Customer or ID'
                                 value={filter.query}
