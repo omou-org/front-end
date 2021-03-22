@@ -16,6 +16,7 @@ import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { skyBlue, darkBlue } from 'theme/muiTheme'
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities'
 import { makeStyles } from '@material-ui/core/styles';
 
 export const GET_PAYMENT = gql`
@@ -38,6 +39,12 @@ export const GET_PAYMENT = gql`
                                 lastName
                                 firstName
                             }
+                        }
+                        activeAvailabilityList {
+                            id
+                            startTime
+                            endTime
+                            dayOfWeek
                         }
                     }
                     id
@@ -117,8 +124,7 @@ const PaymentReceipt = ({ invoiceId }) => {
     }
     
     const { invoice } = data;
-    const { parent, registrationSet, enrollments } = invoice;
-    const daysAndTimesOfWeek = enrollments.map(enrollment => enrollment.course.activeAvailabilityList)
+    const { parent, registrationSet } = invoice;
     const studentIDs = uniques(
         registrationSet.map(
             (registration) => registration.enrollment.student.user.id
@@ -142,7 +148,7 @@ const PaymentReceipt = ({ invoiceId }) => {
     const renderCourse = (registration) => {
         const { enrollment } = registration;
         const { course, student } = enrollment;
-        const { instructor } = course;
+        const { instructor, activeAvailabilityList } = course;
         return (
             <Grid item key={enrollment.id}> 
                 <Grid
@@ -248,21 +254,9 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Typography 
-                                            align='left'
-                                            variant='body1'
-                                        >
-                                            {
-                                                daysAndTimesOfWeek[0]
-                                                .map(({ dayOfWeek, startTime, endTime}) => 
-                                                    <> 
-                                                        <div>
-                                                            {capitalizeString(dayOfWeek.toLowerCase())} {' '}
-                                                            {startTime.substring(0, startTime.length-3)} - {endTime.substring(0, endTime.length-3)}
-                                                        </div>
-                                                    </>
-                                                )}
-                                        </Typography>
+                                        <CourseAvailabilites
+                                            availabilityList={activeAvailabilityList}
+                                        />
                                     </Grid>
                                     <Grid item xs={1}>
                                         <Typography
