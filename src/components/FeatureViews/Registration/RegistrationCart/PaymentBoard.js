@@ -205,7 +205,6 @@ export default function PaymentBoard() {
                 //     query: GET_PARENT_ENROLLMENTS,
                 //     variables: { studentIds: currentParent.studentIdList },
                 // }).enrollments;
-
                 // cache.writeQuery({
                 //     query: GET_PARENT_ENROLLMENTS,
                 //     data: {
@@ -242,21 +241,18 @@ export default function PaymentBoard() {
                 //         ],
                 //     };
                 // });
-
                 // cache.writeQuery({
                 //     query: GET_ALL_COURSES,
                 //     data: {
                 //         courses: cachedCourses,
                 //     },
                 // });
-
                 // const { userInfos, enrollments } = cache.readQuery({
                 //     query: GET_STUDENTS_AND_ENROLLMENTS,
                 //     variables: {
                 //         userIds: currentParent.studentIdList,
                 //     },
                 // });
-
                 // const newQueryEnrollments = data.createEnrollments.enrollments.map(
                 //     (enrollment) => ({
                 //         id: enrollment.id,
@@ -265,7 +261,6 @@ export default function PaymentBoard() {
                 //         },
                 //     })
                 // );
-
                 // cache.writeQuery({
                 //     query: GET_STUDENTS_AND_ENROLLMENTS,
                 //     data: {
@@ -424,7 +419,7 @@ export default function PaymentBoard() {
                 disabledDiscounts: [],
                 priceAdjustment: Number(priceAdjustmentValue),
                 registrations: registrations,
-                paymentStatus: "PAID"
+                paymentStatus: 'PAID',
             },
         });
 
