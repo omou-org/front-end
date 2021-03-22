@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 
 import * as registrationActions from 'actions/registrationActions';
 import Loading from 'components/OmouComponents/Loading';
-import { paymentToString, uniques } from 'utils';
+import { paymentToString, uniques, capitalizeString } from 'utils';
 import Moment from 'react-moment';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
@@ -15,7 +15,8 @@ import { bindActionCreators } from 'redux';
 import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-
+import { skyBlue, darkBlue } from 'theme/muiTheme'
+import { makeStyles } from '@material-ui/core/styles';
 
 export const GET_PAYMENT = gql`
     query Payment($invoiceId: ID!) {
@@ -62,14 +63,33 @@ export const GET_PAYMENT = gql`
             priceAdjustment
             subTotal
             discountTotal
+            enrollments {
+                course {
+                    activeAvailabilityList {
+                        dayOfWeek
+                        endTime
+                        startTime
+                        id
+                    }
+                }
+            }
         }
     }
 `;
+
+const useStyles = makeStyles({
+    daysRemaining: {
+        background: skyBlue, 
+        color: darkBlue, 
+        padding: '16px'
+    }
+  });
 
 const PaymentReceipt = ({ invoiceId }) => {
     const history = useHistory();
     const location = useLocation();
     const params = useParams();
+    const classes = useStyles();
 
     const { data, loading, error } = useQuery(GET_PAYMENT, {
         variables: { invoiceId: params.paymentID || invoiceId },
@@ -96,10 +116,9 @@ const PaymentReceipt = ({ invoiceId }) => {
         );
     }
     
-
     const { invoice } = data;
-    console.log(invoice)
-    const { parent, registrationSet } = invoice;
+    const { parent, registrationSet, enrollments } = invoice;
+    const daysAndTimesOfWeek = enrollments.map(enrollment => enrollment.course.activeAvailabilityList)
     const studentIDs = uniques(
         registrationSet.map(
             (registration) => registration.enrollment.student.user.id
@@ -121,12 +140,11 @@ const PaymentReceipt = ({ invoiceId }) => {
     };
 
     const renderCourse = (registration) => {
-        console.log(registration)
         const { enrollment } = registration;
         const { course, student } = enrollment;
         const { instructor } = course;
         return (
-            <Grid item key={enrollment.id}>
+            <Grid item key={enrollment.id}> 
                 <Grid
                     className='enrolled-course'
                     container
@@ -234,7 +252,16 @@ const PaymentReceipt = ({ invoiceId }) => {
                                             align='left'
                                             variant='body1'
                                         >
-                                            Day and time here
+                                            {
+                                                daysAndTimesOfWeek[0]
+                                                .map(({ dayOfWeek, startTime, endTime}) => 
+                                                    <> 
+                                                        <div>
+                                                            {capitalizeString(dayOfWeek.toLowerCase())} {' '}
+                                                            {startTime.substring(0, startTime.length-3)} - {endTime.substring(0, endTime.length-3)}
+                                                        </div>
+                                                    </>
+                                                )}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={1}>
@@ -303,9 +330,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                         Invoice Details
                     </Typography>
                     </Grid>
-                   
-
-                    <Grid item xs={4} >
+                    <Grid alignContent='flex-end' item xs={4} >
                         <ResponsiveButton style={{marginRight: '0.75em'}} variant='contained'>
                             update invoice
                         </ResponsiveButton>
@@ -397,8 +422,14 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
+            <Grid container justify='flex-end'>
                 <Grid className='receipt-details' item xs={12}>
-                    <Grid alignItems='flex-end' container direction='column'>
+                    <Grid className={classes.daysRemaining} alignItems='flex-start' item xs={3} >
+                        <Typography variant='h4'>
+                            Days Remaining To Pay: 3 days
+                        </Typography>
+                    </Grid> 
+                    <Grid  alignItems='flex-end' container direction='column'>
                         {invoice.discountTotal >= 0 && (
                             <Grid item style={{ width: '100%' }} xs={3}>
                                 <Grid container direction='row'>
@@ -456,6 +487,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
+            </Grid>
                 <Grid className='receipt-actions' item xs={12}>
                     <Grid
                         container
