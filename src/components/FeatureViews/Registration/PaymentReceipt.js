@@ -33,7 +33,7 @@ export const GET_PAYMENT = gql`
                         startDate
                         endDate
                         id
-                        instructor{
+                        instructor {
                             user {
                                 id
                                 lastName
@@ -86,11 +86,11 @@ export const GET_PAYMENT = gql`
 
 const useStyles = makeStyles({
     daysRemaining: {
-        background: skyBlue, 
-        color: darkBlue, 
-        padding: '16px'
-    }
-  });
+        background: skyBlue,
+        color: darkBlue,
+        padding: '16px',
+    },
+});
 
 const PaymentReceipt = ({ invoiceId }) => {
     const history = useHistory();
@@ -122,7 +122,7 @@ const PaymentReceipt = ({ invoiceId }) => {
             </Typography>
         );
     }
-    
+
     const { invoice } = data;
     const { parent, registrationSet } = invoice;
     const studentIDs = uniques(
@@ -150,18 +150,15 @@ const PaymentReceipt = ({ invoiceId }) => {
         const { course, student } = enrollment;
         const { instructor, activeAvailabilityList } = course;
         return (
-            <Grid item key={enrollment.id}> 
+            <Grid item key={enrollment.id}>
                 <Grid
                     className='enrolled-course'
                     container
                     direction='column'
                     justify='flex-start'
                 >
-                    <Grid style={{marginBottom: '1.5em'}} item>
-                        <Typography
-                            align='left'
-                            variant='h4'
-                        >
+                    <Grid style={{ marginBottom: '1.5em' }} item>
+                        <Typography align='left' variant='h4'>
                             {course.title}
                         </Typography>
                     </Grid>
@@ -178,12 +175,13 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Typography 
+                                        <Typography
                                             align='left'
                                             variant='body1'
                                         >
-                                            {student.user.firstName} {student.user.lastName}
-                                        </Typography>     
+                                            {student.user.firstName}{' '}
+                                            {student.user.lastName}
+                                        </Typography>
                                     </Grid>
                                     <Grid item xs={2}>
                                         <Typography
@@ -194,7 +192,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Typography 
+                                        <Typography
                                             align='left'
                                             variant='body1'
                                         >
@@ -218,10 +216,10 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={1}>
-                                        <Typography 
-                                        align='left'
-                                        variant='body1'
-                                    >
+                                        <Typography
+                                            align='left'
+                                            variant='body1'
+                                        >
                                             {registration.numSessions}
                                         </Typography>
                                     </Grid>
@@ -238,11 +236,12 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <Typography 
+                                        <Typography
                                             align='left'
                                             variant='body1'
                                         >
-                                            {instructor.user.firstName} {instructor.user.lastName}
+                                            {instructor.user.firstName}{' '}
+                                            {instructor.user.lastName}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={2}>
@@ -267,10 +266,10 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={1}>
-                                    <Typography 
-                                        align='left'
-                                        variant='body1'
-                                    >
+                                        <Typography
+                                            align='left'
+                                            variant='body1'
+                                        >
                                             $
                                             {Math.round(
                                                 course.hourlyTuition *
@@ -292,20 +291,16 @@ const PaymentReceipt = ({ invoiceId }) => {
         const student = registrations[0].enrollment.student.user;
         return (
             <Grid container direction='column' key={student.id}>
-                    {registrations.map((registration) =>
-                        renderCourse(registration)
-                    )}
+                {registrations.map((registration) =>
+                    renderCourse(registration)
+                )}
             </Grid>
         );
     };
 
     return (
         <div className='registration-receipt'>
-            {params.paymentID && (
-                <>
-                    {/* <hr /> */}
-                </>
-            )}
+            {params.paymentID && <>{/* <hr /> */}</>}
             <Prompt
                 message='Remember to please close out the parent first!'
                 when={
@@ -316,19 +311,25 @@ const PaymentReceipt = ({ invoiceId }) => {
             <Grid container direction='column' spacing={2}>
                 <Grid container direction='row'>
                     <Grid item xs={8}>
-                    <Typography
-                        align='left'
-                        variant='h2'
-                        data-cy='payment-header'
-                    >
-                        Invoice Details
-                    </Typography>
+                        <Typography
+                            align='left'
+                            variant='h2'
+                            data-cy='payment-header'
+                        >
+                            Invoice Details
+                        </Typography>
                     </Grid>
-                    <Grid alignContent='flex-end' item xs={4} >
-                        <ResponsiveButton style={{marginRight: '0.75em'}} variant='contained'>
+                    <Grid alignContent='flex-end' item xs={4}>
+                        <ResponsiveButton
+                            style={{ marginRight: '0.75em' }}
+                            variant='contained'
+                        >
                             update invoice
                         </ResponsiveButton>
-                        <ResponsiveButton style={{marginLeft: '0.75em'}} variant='outlined'>
+                        <ResponsiveButton
+                            style={{ marginLeft: '0.75em' }}
+                            variant='outlined'
+                        >
                             print
                         </ResponsiveButton>
                     </Grid>
@@ -338,7 +339,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                         <Grid item xs={12}>
                             <Grid container direction='row'>
                                 <Grid item xs={2}>
-                                    <Typography align='left' >
+                                    <Typography align='left'>
                                         Invoice ID
                                     </Typography>
                                 </Grid>
@@ -367,7 +368,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                 </Grid>
                                 <Grid item xs={2}>
                                     <Typography align='left'>
-                                    {paymentToString(invoice.method)}
+                                        {paymentToString(invoice.method)}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -375,7 +376,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                         <Grid item xs={12}>
                             <Grid container direction='row'>
                                 <Grid item xs={2}>
-                                    <Typography align='left' >
+                                    <Typography align='left'>
                                         Bill To
                                     </Typography>
                                 </Grid>
@@ -416,72 +417,87 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-            <Grid container justify='flex-end'>
-                <Grid className='receipt-details' item xs={12}>
-                    <Grid className={classes.daysRemaining} alignItems='flex-start' item xs={3} >
-                        <Typography variant='h4'>
-                            Days Remaining To Pay: 3 days
-                        </Typography>
-                    </Grid> 
-                    <Grid  alignItems='flex-end' container direction='column'>
-                        {invoice.discountTotal >= 0 && (
+                <Grid container justify='flex-end'>
+                    <Grid className='receipt-details' item xs={12}>
+                        <Grid
+                            className={classes.daysRemaining}
+                            alignItems='flex-start'
+                            item
+                            xs={3}
+                        >
+                            <Typography variant='h4'>
+                                Days Remaining To Pay: 3 days
+                            </Typography>
+                        </Grid>
+                        <Grid
+                            alignItems='flex-end'
+                            container
+                            direction='column'
+                        >
+                            {invoice.discountTotal >= 0 && (
+                                <Grid item style={{ width: '100%' }} xs={3}>
+                                    <Grid container direction='row'>
+                                        <Grid item xs={7}>
+                                            <Typography
+                                                align='right'
+                                                variant='body2'
+                                            >
+                                                Discount Amount
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <Typography
+                                                align='right'
+                                                variant='h4'
+                                            >
+                                                - ${invoice.discountTotal}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            )}
+                            {invoice.priceAdjustment > 0 && (
+                                <Grid item style={{ width: '100%' }} xs={3}>
+                                    <Grid container direction='row'>
+                                        <Grid item xs={7}>
+                                            <Typography
+                                                align='right'
+                                                variant='p'
+                                            >
+                                                Price Adjustment
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <Typography
+                                                align='right'
+                                                variant='subtitle1'
+                                            >
+                                                {invoice.priceAdjustment}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            )}
                             <Grid item style={{ width: '100%' }} xs={3}>
                                 <Grid container direction='row'>
                                     <Grid item xs={7}>
-                                        <Typography 
+                                        <Typography
                                             align='right'
                                             variant='body2'
                                         >
-                                            Discount Amount
+                                            Total
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={5}>
-                                        <Typography
-                                            align='right'
-                                            variant='h4'
-                                        >
-                                            - ${invoice.discountTotal}
+                                        <Typography align='right' variant='h4'>
+                                            ${invoice.total}
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                            </Grid>
-                        )}
-                        {invoice.priceAdjustment > 0 && (
-                            <Grid item style={{ width: '100%' }} xs={3}>
-                                <Grid container direction='row'>
-                                    <Grid item xs={7}>
-                                        <Typography align='right' variant='p'>
-                                            Price Adjustment
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={5}>
-                                        <Typography
-                                            align='right'
-                                            variant='subtitle1'
-                                        >
-                                            {invoice.priceAdjustment}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        )}
-                        <Grid item style={{ width: '100%' }} xs={3}>
-                            <Grid container direction='row'>
-                                <Grid item xs={7}>
-                                    <Typography align='right' variant='body2'>
-                                        Total
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={5}>
-                                    <Typography align='right' variant='h4'>
-                                        ${invoice.total}
-                                    </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
                 <Grid className='receipt-actions' item xs={12}>
                     <Grid
                         container
