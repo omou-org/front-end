@@ -15,8 +15,8 @@ import { bindActionCreators } from 'redux';
 import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import { skyBlue, darkBlue } from 'theme/muiTheme'
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities'
+import { skyBlue, darkBlue } from 'theme/muiTheme';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import { makeStyles } from '@material-ui/core/styles';
 
 export const GET_PAYMENT = gql`
@@ -254,7 +254,9 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     </Grid>
                                     <Grid item xs={3}>
                                         <CourseAvailabilites
-                                            availabilityList={activeAvailabilityList}
+                                            availabilityList={
+                                                activeAvailabilityList
+                                            }
                                         />
                                     </Grid>
                                     <Grid item xs={1}>
