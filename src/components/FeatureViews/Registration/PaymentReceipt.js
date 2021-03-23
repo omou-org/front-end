@@ -15,9 +15,9 @@ import { bindActionCreators } from 'redux';
 import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge'
-import { skyBlue, darkBlue } from 'theme/muiTheme'
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities'
+import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import { skyBlue, darkBlue } from 'theme/muiTheme';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import { makeStyles } from '@material-ui/core/styles';
 
 export const GET_PAYMENT = gql`
@@ -151,12 +151,8 @@ const PaymentReceipt = ({ invoiceId }) => {
         const { course, student } = enrollment;
         const { instructor, activeAvailabilityList } = course;
         return (
-            <Grid  item key={enrollment.id}>
-                <Grid
-                    container
-                    direction='column'
-                    justify='flex-start'
-                >
+            <Grid item key={enrollment.id}>
+                <Grid container direction='column' justify='flex-start'>
                     <Grid style={{ marginBottom: '1.5em' }} item>
                         <Typography align='left' variant='h4'>
                             {course.title}
@@ -313,20 +309,26 @@ const PaymentReceipt = ({ invoiceId }) => {
             <Grid container direction='row' spacing={2}>
                 <Grid container direction='row'>
                     <Grid direction='row' item xs={9}>
-                        
                         <Typography
                             align='left'
                             variant='h2'
                             data-cy='payment-header'
                         >
                             Invoice Details
-                            <LabelBadge style={{ marginLeft: '1.5em'}} variant='status-negative' >Unpaid</LabelBadge>
+                            <LabelBadge
+                                style={{ marginLeft: '1.5em' }}
+                                variant='status-negative'
+                            >
+                                Unpaid
+                            </LabelBadge>
                         </Typography>
-                        
                     </Grid>
-                    <Grid style={{whiteSpace: 'nowrap'}} item xs={3}>
+                    <Grid style={{ whiteSpace: 'nowrap' }} item xs={3}>
                         <ResponsiveButton
-                            style={{ marginLeft: '5.5em', marginRight: '0.75em' }}
+                            style={{
+                                marginLeft: '5.5em',
+                                marginRight: '0.75em',
+                            }}
                             variant='contained'
                         >
                             update invoice
@@ -422,8 +424,8 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid style={{ marginTop: '2em'}} container justify='flex-end'>
-                    <Grid item xs={12} >
+                <Grid style={{ marginTop: '2em' }} container justify='flex-end'>
+                    <Grid item xs={12}>
                         <Grid
                             className={classes.daysRemaining}
                             alignItems='flex-start'
@@ -503,7 +505,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid style={{ marginTop: '4.125em'}} item xs={12}>
+                <Grid style={{ marginTop: '4.125em' }} item xs={12}>
                     <Grid
                         container
                         direction='row'
