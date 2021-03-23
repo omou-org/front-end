@@ -15,6 +15,7 @@ import { bindActionCreators } from 'redux';
 import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge'
 import { skyBlue, darkBlue } from 'theme/muiTheme'
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities'
 import { makeStyles } from '@material-ui/core/styles';
@@ -150,9 +151,8 @@ const PaymentReceipt = ({ invoiceId }) => {
         const { course, student } = enrollment;
         const { instructor, activeAvailabilityList } = course;
         return (
-            <Grid item key={enrollment.id}>
+            <Grid  item key={enrollment.id}>
                 <Grid
-                    className='enrolled-course'
                     container
                     direction='column'
                     justify='flex-start'
@@ -183,7 +183,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                             {student.user.lastName}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={1}>
                                         <Typography
                                             align='left'
                                             variant='body2'
@@ -191,7 +191,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                             Dates
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={4}>
                                         <Typography
                                             align='left'
                                             variant='body1'
@@ -244,7 +244,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                             {instructor.user.lastName}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={1}>
                                         <Typography
                                             align='left'
                                             variant='body2'
@@ -252,7 +252,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                             Day & Time
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={4}>
                                         <CourseAvailabilites
                                             availabilityList={activeAvailabilityList}
                                         />
@@ -308,20 +308,23 @@ const PaymentReceipt = ({ invoiceId }) => {
                     location.pathname.includes('receipt')
                 }
             />
-            <Grid container direction='column' spacing={2}>
+            <Grid container direction='row' spacing={2}>
                 <Grid container direction='row'>
-                    <Grid item xs={8}>
+                    <Grid direction='row' item xs={9}>
+                        
                         <Typography
                             align='left'
                             variant='h2'
                             data-cy='payment-header'
                         >
                             Invoice Details
+                            <LabelBadge style={{ marginLeft: '1.5em'}} variant='status-negative' >Unpaid</LabelBadge>
                         </Typography>
+                        
                     </Grid>
-                    <Grid alignContent='flex-end' item xs={4}>
+                    <Grid style={{whiteSpace: 'nowrap'}} item xs={3}>
                         <ResponsiveButton
-                            style={{ marginRight: '0.75em' }}
+                            style={{ marginLeft: '5.5em', marginRight: '0.75em' }}
                             variant='contained'
                         >
                             update invoice
@@ -417,8 +420,8 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid container justify='flex-end'>
-                    <Grid className='receipt-details' item xs={12}>
+                <Grid style={{ marginTop: '2em'}} container justify='flex-end'>
+                    <Grid item xs={12} >
                         <Grid
                             className={classes.daysRemaining}
                             alignItems='flex-start'
@@ -426,7 +429,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                             xs={3}
                         >
                             <Typography variant='h4'>
-                                Days Remaining To Pay: 3 days
+                                Days Remaining To Pay: 0 days
                             </Typography>
                         </Grid>
                         <Grid
@@ -498,7 +501,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid className='receipt-actions' item xs={12}>
+                <Grid style={{ marginTop: '4.125em'}} item xs={12}>
                     <Grid
                         container
                         direction='row'
