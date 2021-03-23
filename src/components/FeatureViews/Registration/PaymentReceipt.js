@@ -254,7 +254,9 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     </Grid>
                                     <Grid item xs={4}>
                                         <CourseAvailabilites
-                                            availabilityList={activeAvailabilityList}
+                                            availabilityList={
+                                                activeAvailabilityList
+                                            }
                                         />
                                     </Grid>
                                     <Grid item xs={1}>
