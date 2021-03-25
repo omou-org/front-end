@@ -323,7 +323,6 @@ const PaymentReceipt = ({ invoiceId }) => {
             <Grid container direction='row' spacing={2}>
                 <Grid container direction='row'>
                     <Grid direction='row' item xs={9}>
-                        
                         <Typography
                             align='left'
                             variant='h2'
@@ -349,7 +348,6 @@ const PaymentReceipt = ({ invoiceId }) => {
                                 }
                             </LabelBadge>
                         </Typography>
-                        
                     </Grid>
                     <Grid style={{whiteSpace: 'nowrap' }} item xs={3}>
                         {paymentStatus === 'UNPAID' && 
@@ -601,7 +599,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                             </Grid>
                         </Grid>
                 </Grid>
-                <Grid style={{ marginTop: '4.125em'}} item xs={12}>
+                <Grid style={{ marginTop: '4.125em' }} item xs={12}>
                     <Grid
                         container
                         direction='row'
