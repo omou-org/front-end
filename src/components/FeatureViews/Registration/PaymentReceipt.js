@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Prompt, useHistory, useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 
 import * as registrationActions from 'actions/registrationActions';
 import Loading from 'components/OmouComponents/Loading';
@@ -16,7 +17,7 @@ import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge'
-import { skyBlue, darkBlue } from 'theme/muiTheme'
+import { skyBlue, darkBlue, darkGrey, buttonThemeBlue, cloudy, charcoal } from 'theme/muiTheme'
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities'
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -71,16 +72,7 @@ export const GET_PAYMENT = gql`
             priceAdjustment
             subTotal
             discountTotal
-            enrollments {
-                course {
-                    activeAvailabilityList {
-                        dayOfWeek
-                        endTime
-                        startTime
-                        id
-                    }
-                }
-            }
+            paymentStatus
         }
     }
 `;
@@ -89,8 +81,18 @@ const useStyles = makeStyles({
     daysRemaining: {
         background: skyBlue,
         color: darkBlue,
-        padding: '16px',
+        padding: '1em',
+        height: '35%'
     },
+    courseInfo: {
+        color: darkGrey
+    },
+    dividerStyle: {
+        width: '100%',
+        color: cloudy,
+        marginTop: '0.5em',
+        marginBottom: '1em'
+    }
 });
 
 const PaymentReceipt = ({ invoiceId }) => {
@@ -125,7 +127,7 @@ const PaymentReceipt = ({ invoiceId }) => {
     }
 
     const { invoice } = data;
-    const { parent, registrationSet } = invoice;
+    const { parent, registrationSet, paymentStatus } = invoice;
     const studentIDs = uniques(
         registrationSet.map(
             (registration) => registration.enrollment.student.user.id
@@ -151,7 +153,7 @@ const PaymentReceipt = ({ invoiceId }) => {
         const { course, student } = enrollment;
         const { instructor, activeAvailabilityList } = course;
         return (
-            <Grid  item key={enrollment.id}>
+            <Grid style={{ marginLeft: '2.5em' }} item key={enrollment.id}>
                 <Grid
                     container
                     direction='column'
@@ -168,6 +170,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                 <Grid container direction='row'>
                                     <Grid item xs={2}>
                                         <Typography
+                                            className={classes.courseInfo}
                                             align='left'
                                             variant='body2'
                                         >
@@ -183,15 +186,16 @@ const PaymentReceipt = ({ invoiceId }) => {
                                             {student.user.lastName}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={1}>
+                                    <Grid item xs={2}>
                                         <Typography
+                                            className={classes.courseInfo}
                                             align='left'
                                             variant='body2'
                                         >
                                             Dates
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={3}>
                                         <Typography
                                             align='left'
                                             variant='body1'
@@ -209,6 +213,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     </Grid>
                                     <Grid item xs={1}>
                                         <Typography
+                                            className={classes.courseInfo}
                                             align='left'
                                             variant='body2'
                                         >
@@ -229,6 +234,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                 <Grid container direction='row'>
                                     <Grid item xs={2}>
                                         <Typography
+                                            className={classes.courseInfo}
                                             align='left'
                                             variant='body2'
                                         >
@@ -244,15 +250,16 @@ const PaymentReceipt = ({ invoiceId }) => {
                                             {instructor.user.lastName}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={1}>
+                                    <Grid item xs={2}>
                                         <Typography
+                                            className={classes.courseInfo}
                                             align='left'
                                             variant='body2'
                                         >
                                             Day & Time
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={4}>
+                                    <Grid item xs={3}>
                                         <CourseAvailabilites
                                             availabilityList={
                                                 activeAvailabilityList
@@ -261,6 +268,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     </Grid>
                                     <Grid item xs={1}>
                                         <Typography
+                                            className={classes.courseInfo}
                                             align='left'
                                             variant='body2'
                                         >
@@ -300,6 +308,8 @@ const PaymentReceipt = ({ invoiceId }) => {
         );
     };
 
+    const unpaid = 'status-negative'
+
     return (
         <div className='registration-receipt'>
             {params.paymentID && <>{/* <hr /> */}</>}
@@ -320,19 +330,39 @@ const PaymentReceipt = ({ invoiceId }) => {
                             data-cy='payment-header'
                         >
                             Invoice Details
-                            <LabelBadge style={{ marginLeft: '1.5em'}} variant='status-negative' >Unpaid</LabelBadge>
+                            <LabelBadge 
+                                style={{ marginLeft: '1.5em'}} 
+                                variant= { 
+                                    paymentStatus === 'PAID' ? 
+                                    'status-positive' 
+                                    : paymentStatus === 'UNPAID' ? 
+                                    'status-negative'
+                                    : 'status-neutral'
+                                }
+                            >
+                                {
+                                paymentStatus === 'PAID' ? 
+                                'Paid' 
+                                : paymentStatus === 'UNPAID' ?
+                                'Unpaid'
+                                : 'Canceled'
+                                }
+                            </LabelBadge>
                         </Typography>
                         
                     </Grid>
-                    <Grid style={{whiteSpace: 'nowrap'}} item xs={3}>
+                    <Grid style={{whiteSpace: 'nowrap' }} item xs={3}>
+                        {paymentStatus === 'UNPAID' && 
+                            <ResponsiveButton
+                                style={{ marginLeft: '5.5em', marginRight: '0.75em', background: buttonThemeBlue}}
+                                variant='contained'
+                            >
+                                update invoice
+                            </ResponsiveButton>
+                        }
+                        
                         <ResponsiveButton
-                            style={{ marginLeft: '5.5em', marginRight: '0.75em' }}
-                            variant='contained'
-                        >
-                            update invoice
-                        </ResponsiveButton>
-                        <ResponsiveButton
-                            style={{ marginLeft: '0.75em' }}
+                            style={{ marginLeft: paymentStatus === 'UNPAID' ? '0.75em' : '14em'}}
                             variant='outlined'
                         >
                             print
@@ -344,7 +374,11 @@ const PaymentReceipt = ({ invoiceId }) => {
                         <Grid item xs={12}>
                             <Grid container direction='row'>
                                 <Grid item xs={2}>
-                                    <Typography align='left'>
+                                    <Typography 
+                                        align='left' 
+                                        className={classes.courseInfo}
+                                        variant='body2'
+                                    >
                                         Invoice ID
                                     </Typography>
                                 </Grid>
@@ -354,7 +388,11 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography align='left'>
+                                    <Typography 
+                                        align='left' 
+                                        className={classes.courseInfo}
+                                        variant='body2'
+                                    >
                                         Date Issued
                                     </Typography>
                                 </Grid>
@@ -367,7 +405,11 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography align='left'>
+                                    <Typography 
+                                        align='left' 
+                                        className={classes.courseInfo}
+                                        variant='body2'
+                                    >
                                         Payment Method
                                     </Typography>
                                 </Grid>
@@ -381,7 +423,11 @@ const PaymentReceipt = ({ invoiceId }) => {
                         <Grid item xs={12}>
                             <Grid container direction='row'>
                                 <Grid item xs={2}>
-                                    <Typography align='left'>
+                                    <Typography 
+                                        align='left'
+                                        className={classes.courseInfo}
+                                        variant='body2'
+                                    >
                                         Bill To
                                     </Typography>
                                 </Grid>
@@ -392,7 +438,11 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={2}>
-                                    <Typography align='left'>
+                                    <Typography 
+                                        align='left'
+                                        className={classes.courseInfo}
+                                        variant='body2'
+                                    >
                                         Date Due
                                     </Typography>
                                 </Grid>
@@ -404,10 +454,29 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         />
                                     </Typography>
                                 </Grid>
+                                {paymentStatus === 'PAID' &&
+                                    <>
+                                        <Grid item xs={2}>
+                                    <Typography 
+                                        align='left'
+                                        className={classes.courseInfo}
+                                        variant='body2'
+                                    >
+                                        Stripe ID
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Typography align='left'>
+                                        ##
+                                    </Typography>
+                                </Grid>
+                                    </>
+                                }
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
+                <Divider className={classes.dividerStyle} />
                 <Grid item xs={12}>
                     <Grid
                         container
@@ -422,38 +491,67 @@ const PaymentReceipt = ({ invoiceId }) => {
                         </Grid>
                     </Grid>
                 </Grid>
+                <Divider className={classes.dividerStyle} />
                 <Grid style={{ marginTop: '2em'}} container justify='flex-end'>
-                    <Grid item xs={12} >
-                        <Grid
-                            className={classes.daysRemaining}
-                            alignItems='flex-start'
-                            item
-                            xs={3}
-                        >
-                            <Typography variant='h4'>
-                                Days Remaining To Pay: 0 days
-                            </Typography>
-                        </Grid>
+                        {paymentStatus === 'UNPAID' &&
+                            <Grid
+                                className={classes.daysRemaining}
+                                alignItems='flex-start'
+                                item
+                                xs={3}
+                            >
+                                <Typography variant='h4'>
+                                    Days Remaining To Pay: 0 days
+                                </Typography>
+                            </Grid>
+                        }
+                        
                         <Grid
                             alignItems='flex-end'
                             container
+                            item
+                            xs={9}
                             direction='column'
                         >
-                            {invoice.discountTotal >= 0 && (
-                                <Grid item style={{ width: '100%' }} xs={3}>
-                                    <Grid container direction='row'>
+                            <Grid item style={{ width: '100%' }} xs={3}>
+                                    <Grid style={{ marginBottom: '2em', marginRight: '2em', paddingTop: '1em'}} container direction='row'>
                                         <Grid item xs={7}>
                                             <Typography
                                                 align='right'
                                                 variant='body2'
+                                                style={{ color: darkGrey}}
                                             >
-                                                Discount Amount
+                                                Subtotal
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={5}>
                                             <Typography
                                                 align='right'
                                                 variant='h4'
+                                            >
+                                                - ${invoice.subTotal}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+
+                            {invoice.discountTotal >= 0 && (
+                                <Grid item style={{ width: '100%'}} xs={3}>
+                                    <Grid container style={{ marginBottom: '2em'}} direction='row'>
+                                        <Grid item xs={7}>
+                                            <Typography
+                                                align='right'
+                                                variant='body2'
+                                                style={{ color: darkGrey}}
+                                            >
+                                                Discount
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <Typography
+                                                align='right'
+                                                variant='h4'
+                                                style={{ color: darkBlue}}
                                             >
                                                 - ${invoice.discountTotal}
                                             </Typography>
@@ -489,6 +587,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                         <Typography
                                             align='right'
                                             variant='body2'
+                                            style={{ color: darkGrey}}
                                         >
                                             Total
                                         </Typography>
@@ -501,7 +600,6 @@ const PaymentReceipt = ({ invoiceId }) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
                 </Grid>
                 <Grid style={{ marginTop: '4.125em'}} item xs={12}>
                     <Grid
