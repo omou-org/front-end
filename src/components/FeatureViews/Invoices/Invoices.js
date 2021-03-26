@@ -79,20 +79,18 @@ export default function Invoices() {
         query: '',
         startDate: null,
         endDate: null,
-        paymentStatus: 'PAID',
+        paymentStatus: null,
         page: 1,
         totalPages: totalPages,
     });
 
     const searchInvoices = useCallback(
         async (search, startDate, endDate, paymentStatus, page) => {
+            let currPage = !page ? 1 : page;
             let status = paymentStatus;
-
             if (paymentStatus === 'ALL') {
                 status = null;
             }
-
-            let currPage = !page ? 1 : page;
 
             try {
                 const {
