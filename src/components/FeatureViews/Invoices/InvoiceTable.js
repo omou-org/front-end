@@ -150,7 +150,7 @@ const InvoiceTable = ({
                             component={NavLinkNoDup}
                             hover
                             key={invoice.id}
-                            to={`${invoice.id}`}
+                            to={`/invoices/${invoice.id}`}
                         >
                             <TableCell>{invoice.id}</TableCell>
                             <TableCell>

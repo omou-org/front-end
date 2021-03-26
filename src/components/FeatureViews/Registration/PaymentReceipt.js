@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import { Prompt, useHistory, useLocation, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useReactToPrint } from 'react-to-print';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -17,12 +18,12 @@ import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge'
-import { skyBlue, darkBlue, darkGrey, buttonThemeBlue, cloudy, charcoal } from 'theme/muiTheme'
+import { skyBlue, darkBlue, darkGrey, buttonThemeBlue, cloudy } from 'theme/muiTheme'
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities'
 import { makeStyles } from '@material-ui/core/styles';
 
 export const GET_PAYMENT = gql`
-    query Payment($invoiceId: ID!) {
+    query Invoice ($invoiceId: ID!) {
         invoice(invoiceId: $invoiceId) {
             id
             createdAt
@@ -100,9 +101,15 @@ const PaymentReceipt = ({ invoiceId }) => {
     const location = useLocation();
     const params = useParams();
     const classes = useStyles();
+    console.log(location)
+
+    const printComponentRef = useRef()
+    const handlePrint = useReactToPrint({
+        content: () => printComponentRef.current
+    })
 
     const { data, loading, error } = useQuery(GET_PAYMENT, {
-        variables: { invoiceId: params.paymentID || invoiceId },
+        variables: { invoiceId: params.paymentID || invoiceId || params.invoiceId },
     });
 
     const currentPayingParent = useSelector(
@@ -308,8 +315,6 @@ const PaymentReceipt = ({ invoiceId }) => {
         );
     };
 
-    const unpaid = 'status-negative'
-
     return (
         <div className='registration-receipt'>
             {params.paymentID && <>{/* <hr /> */}</>}
@@ -320,7 +325,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                     location.pathname.includes('receipt')
                 }
             />
-            <Grid container direction='row' spacing={2}>
+            <Grid ref={printComponentRef} container direction='row' spacing={2}>
                 <Grid container direction='row'>
                     <Grid direction='row' item xs={9}>
                         <Typography
@@ -339,6 +344,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                     : 'status-neutral'
                                 }
                             >
+                                {/* {paymentStatus[0] + paymentStatus.slice(1).toLowerCase()} */}
                                 {
                                 paymentStatus === 'PAID' ? 
                                 'Paid' 
@@ -360,8 +366,9 @@ const PaymentReceipt = ({ invoiceId }) => {
                         }
                         
                         <ResponsiveButton
-                            style={{ marginLeft: paymentStatus === 'UNPAID' ? '0.75em' : '14em'}}
+                            style={{ marginLeft: paymentStatus === 'UNPAID' ? '0.75em' : '13em'}}
                             variant='outlined'
+                            onClick={handlePrint}
                         >
                             print
                         </ResponsiveButton>
@@ -527,7 +534,7 @@ const PaymentReceipt = ({ invoiceId }) => {
                                                 align='right'
                                                 variant='h4'
                                             >
-                                                - ${invoice.subTotal}
+                                                ${invoice.subTotal}
                                             </Typography>
                                         </Grid>
                                     </Grid>
@@ -606,7 +613,9 @@ const PaymentReceipt = ({ invoiceId }) => {
                         justify='flex-end'
                         spacing={1}
                     >
-                        {!location.pathname.includes('parent') && (
+                        {
+                        !location.pathname.includes('parent') || !location.pathname.includes('invoices') 
+                        && (
                             <Grid item>
                                 <ResponsiveButton
                                     variant='contained'
