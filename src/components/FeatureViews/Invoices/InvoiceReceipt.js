@@ -348,12 +348,7 @@ const InvoiceReceipt = ({ invoiceId }) => {
                                         : 'status-neutral'
                                 }
                             >
-                                {/* {paymentStatus[0] + paymentStatus.slice(1).toLowerCase()} */}
-                                {paymentStatus === 'PAID'
-                                    ? 'Paid'
-                                    : paymentStatus === 'UNPAID'
-                                    ? 'Unpaid'
-                                    : 'Canceled'}
+                                {capitalizeString(paymentStatus)}
                             </LabelBadge>
                         </Typography>
                     </Grid>
@@ -629,8 +624,8 @@ const InvoiceReceipt = ({ invoiceId }) => {
                         justify='flex-end'
                         spacing={1}
                     >
-                        {!location.pathname.includes('parent') ||
-                            (!location.pathname.includes('invoices') && (
+                        {location.pathname.includes('registration')
+                            && (
                                 <Grid item>
                                     <ResponsiveButton
                                         variant='contained'
@@ -641,7 +636,7 @@ const InvoiceReceipt = ({ invoiceId }) => {
                                         close parent
                                     </ResponsiveButton>
                                 </Grid>
-                            ))}
+                            )}
                     </Grid>
                 </Grid>
             </Grid>

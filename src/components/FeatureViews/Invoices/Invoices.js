@@ -87,7 +87,7 @@ export default function Invoices() {
 
     const searchInvoices = useCallback(
         async (search, startDate, endDate, paymentStatus, page) => {
-            let currPage = !page ? 1 : page;
+            let currPage = page || 1;
             let status = paymentStatus;
             if (paymentStatus === 'ALL') {
                 status = null;
@@ -187,9 +187,6 @@ export default function Invoices() {
     };
 
     const isParent = AuthUser.accountType === 'PARENT';
-
-    // if (loading || !called) return <Loading />;
-    // if (error) return <div>An Error has occurred! {error.message}</div>;
 
     return (
         <Grid container direction='row' spacing={4}>

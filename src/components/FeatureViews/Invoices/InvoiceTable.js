@@ -71,9 +71,9 @@ const InvoiceTable = ({
     };
 
     const handleFilterSelect = (e) => {
-        let lowerCase = e.target.innerText.toUpperCase();
+        const statusValueLowerCase = e.target.innerText.toUpperCase();
 
-        handleStatusChange(lowerCase);
+        handleStatusChange(statusValueLowerCase);
         setStatus(null);
     };
 
