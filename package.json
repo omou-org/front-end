@@ -29,6 +29,7 @@
         "dotenv": "^8.2.0",
         "final-form": "^4.20.0",
         "graphql": "^15.1.0",
+        "graphql-tag": "^2.11.0",
         "history": "^4.10.1",
         "material-ui-pickers": "^2.2.4",
         "moment": "2.24.0",

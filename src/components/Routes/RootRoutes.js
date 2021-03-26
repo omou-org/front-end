@@ -15,7 +15,7 @@ import LoginPage from '../Authentication/LoginPage.js';
 import NewAccount from '../Authentication/NewAccount';
 import NoResultsPage from '../FeatureViews/Search/NoResults/NoResultsPage';
 import NotEnrolledStudentsDialog from '../FeatureViews/Scheduler/NotEnrolledStudentDialog';
-import PaymentReceipt from '../FeatureViews/Registration/PaymentReceipt';
+import InvoiceReceipt from '../FeatureViews/Invoices/InvoiceReceipt';
 import Registration from '../FeatureViews/Registration/Registration';
 import FormPage from '../Form/FormPage';
 import RegistrationCourse from '../FeatureViews/Registration/RegistrationCourse';
@@ -136,7 +136,7 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
 
             <AuthenticatedRoute exact path='/invoices/:invoiceId'>
-                <PaymentReceipt />
+                <InvoiceReceipt />
             </AuthenticatedRoute>
 
             {/* Accounts */}
@@ -147,7 +147,7 @@ export const RootRoutes = () => {
                 exact
                 path='/accounts/parent/payment/:paymentID'
             >
-                <PaymentReceipt />
+                <InvoiceReceipt />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
@@ -171,7 +171,7 @@ export const RootRoutes = () => {
                 <RegistrationCartContainer />
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/registration/receipt/:paymentID?'>
-                <PaymentReceipt />
+                <InvoiceReceipt />
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/NotEnrolledStudent'>
                 <NotEnrolledStudentsDialog />

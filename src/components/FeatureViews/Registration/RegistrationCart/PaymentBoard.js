@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
 import { useHistory } from 'react-router-dom';
-import { GET_PAYMENT } from '../PaymentReceipt';
+import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
 import { GET_ALL_COURSES } from '../RegistrationLanding';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
 import { GET_REGISTRATION_CART } from '../SelectParentDialog';

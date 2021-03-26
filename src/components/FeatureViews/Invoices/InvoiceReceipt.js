@@ -103,12 +103,11 @@ const useStyles = makeStyles({
     },
 });
 
-const PaymentReceipt = ({ invoiceId }) => {
+const InvoiceReceipt = ({ invoiceId }) => {
     const history = useHistory();
     const location = useLocation();
     const params = useParams();
     const classes = useStyles();
-    console.log(location);
 
     const printComponentRef = useRef();
     const handlePrint = useReactToPrint({
@@ -522,33 +521,6 @@ const PaymentReceipt = ({ invoiceId }) => {
                             </Typography>
                         </Grid>
                     )}
-                    <Grid item style={{ width: '100%' }} xs={3}>
-                        <Grid
-                            style={{
-                                marginBottom: '2em',
-                                marginRight: '2em',
-                                paddingTop: '1em',
-                            }}
-                            container
-                            direction='row'
-                        >
-                            <Grid item xs={7}>
-                                <Typography
-                                    align='right'
-                                    variant='body2'
-                                    style={{ color: darkGrey }}
-                                >
-                                    Subtotal
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={5}>
-                                <Typography align='right' variant='h4'>
-                                    ${invoice.subTotal}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-
                     <Grid
                         alignItems='flex-end'
                         container
@@ -677,4 +649,4 @@ const PaymentReceipt = ({ invoiceId }) => {
     );
 };
 
-export default PaymentReceipt;
+export default InvoiceReceipt;
