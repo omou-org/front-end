@@ -624,19 +624,18 @@ const InvoiceReceipt = ({ invoiceId }) => {
                         justify='flex-end'
                         spacing={1}
                     >
-                        {location.pathname.includes('registration')
-                            && (
-                                <Grid item>
-                                    <ResponsiveButton
-                                        variant='contained'
-                                        data-cy='close-parent'
-                                        className='button primary'
-                                        onClick={handleCloseReceipt()}
-                                    >
-                                        close parent
-                                    </ResponsiveButton>
-                                </Grid>
-                            )}
+                        {location.pathname.includes('registration') && (
+                            <Grid item>
+                                <ResponsiveButton
+                                    variant='contained'
+                                    data-cy='close-parent'
+                                    className='button primary'
+                                    onClick={handleCloseReceipt()}
+                                >
+                                    close parent
+                                </ResponsiveButton>
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
             </Grid>

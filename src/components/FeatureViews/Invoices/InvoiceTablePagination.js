@@ -29,9 +29,10 @@ export function InvoiceTablePagination(props) {
 
     const handleBackButtonClick = () => onChangePage(page - 1);
 
-    const handleNextButtonClick = () => onChangePage(page + 1)
-    
-    const handleLastPageButtonClick = () => onChangePage(Math.max(0, Math.ceil(totalPages / 15) - 1));
+    const handleNextButtonClick = () => onChangePage(page + 1);
+
+    const handleLastPageButtonClick = () =>
+        onChangePage(Math.max(0, Math.ceil(totalPages / 15) - 1));
 
     return (
         <div className={classes.root}>
