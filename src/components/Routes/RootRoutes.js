@@ -124,6 +124,7 @@ export const RootRoutes = () => {
 
             {/* Invoices */}
             <AuthenticatedRoute
+                exact
                 path='/invoices'
                 users={[
                     USER_TYPES.parent,
@@ -132,6 +133,10 @@ export const RootRoutes = () => {
                 ]}
             >
                 <Invoices />
+            </AuthenticatedRoute>
+
+            <AuthenticatedRoute exact path='/invoices/:invoiceId'>
+                <PaymentReceipt />
             </AuthenticatedRoute>
 
             {/* Accounts */}
