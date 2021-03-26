@@ -30,7 +30,7 @@ import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import { makeStyles } from '@material-ui/core/styles';
 
 export const GET_PAYMENT = gql`
-    query Invoice ($invoiceId: ID!) {
+    query Invoice($invoiceId: ID!) {
         invoice(invoiceId: $invoiceId) {
             id
             createdAt
@@ -108,15 +108,17 @@ const PaymentReceipt = ({ invoiceId }) => {
     const location = useLocation();
     const params = useParams();
     const classes = useStyles();
-    console.log(location)
+    console.log(location);
 
-    const printComponentRef = useRef()
+    const printComponentRef = useRef();
     const handlePrint = useReactToPrint({
-        content: () => printComponentRef.current
-    })
+        content: () => printComponentRef.current,
+    });
 
     const { data, loading, error } = useQuery(GET_PAYMENT, {
-        variables: { invoiceId: params.paymentID || invoiceId || params.invoiceId },
+        variables: {
+            invoiceId: params.paymentID || invoiceId || params.invoiceId,
+        },
     });
 
     const currentPayingParent = useSelector(
@@ -348,13 +350,11 @@ const PaymentReceipt = ({ invoiceId }) => {
                                 }
                             >
                                 {/* {paymentStatus[0] + paymentStatus.slice(1).toLowerCase()} */}
-                                {
-                                paymentStatus === 'PAID' ? 
-                                'Paid' 
-                                : paymentStatus === 'UNPAID' ?
-                                'Unpaid'
-                                : 'Canceled'
-                                }
+                                {paymentStatus === 'PAID'
+                                    ? 'Paid'
+                                    : paymentStatus === 'UNPAID'
+                                    ? 'Unpaid'
+                                    : 'Canceled'}
                             </LabelBadge>
                         </Typography>
                     </Grid>
@@ -373,7 +373,12 @@ const PaymentReceipt = ({ invoiceId }) => {
                         )}
 
                         <ResponsiveButton
-                            style={{ marginLeft: paymentStatus === 'UNPAID' ? '0.75em' : '13em'}}
+                            style={{
+                                marginLeft:
+                                    paymentStatus === 'UNPAID'
+                                        ? '0.75em'
+                                        : '13em',
+                            }}
                             variant='outlined'
                             onClick={handlePrint}
                         >
@@ -517,27 +522,32 @@ const PaymentReceipt = ({ invoiceId }) => {
                             </Typography>
                         </Grid>
                     )}
-                            <Grid item style={{ width: '100%' }} xs={3}>
-                                    <Grid style={{ marginBottom: '2em', marginRight: '2em', paddingTop: '1em'}} container direction='row'>
-                                        <Grid item xs={7}>
-                                            <Typography
-                                                align='right'
-                                                variant='body2'
-                                                style={{ color: darkGrey}}
-                                            >
-                                                Subtotal
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography
-                                                align='right'
-                                                variant='h4'
-                                            >
-                                                ${invoice.subTotal}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
+                    <Grid item style={{ width: '100%' }} xs={3}>
+                        <Grid
+                            style={{
+                                marginBottom: '2em',
+                                marginRight: '2em',
+                                paddingTop: '1em',
+                            }}
+                            container
+                            direction='row'
+                        >
+                            <Grid item xs={7}>
+                                <Typography
+                                    align='right'
+                                    variant='body2'
+                                    style={{ color: darkGrey }}
+                                >
+                                    Subtotal
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Typography align='right' variant='h4'>
+                                    ${invoice.subTotal}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
 
                     <Grid
                         alignItems='flex-end'
@@ -647,20 +657,19 @@ const PaymentReceipt = ({ invoiceId }) => {
                         justify='flex-end'
                         spacing={1}
                     >
-                        {
-                        !location.pathname.includes('parent') || !location.pathname.includes('invoices') 
-                        && (
-                            <Grid item>
-                                <ResponsiveButton
-                                    variant='contained'
-                                    data-cy='close-parent'
-                                    className='button primary'
-                                    onClick={handleCloseReceipt()}
-                                >
-                                    close parent
-                                </ResponsiveButton>
-                            </Grid>
-                        )}
+                        {!location.pathname.includes('parent') ||
+                            (!location.pathname.includes('invoices') && (
+                                <Grid item>
+                                    <ResponsiveButton
+                                        variant='contained'
+                                        data-cy='close-parent'
+                                        className='button primary'
+                                        onClick={handleCloseReceipt()}
+                                    >
+                                        close parent
+                                    </ResponsiveButton>
+                                </Grid>
+                            ))}
                     </Grid>
                 </Grid>
             </Grid>
