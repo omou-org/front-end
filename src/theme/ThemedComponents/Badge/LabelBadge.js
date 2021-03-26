@@ -68,10 +68,10 @@ export const LabelBadge = ({
             labelColor: colors.white,
             ...badgeCategory.statusBadge,
         },
-        'status-neutral':{
+        'status-neutral': {
             chipColor: colors.cloudy,
             labelColor: colors.charcoal,
-            ...badgeCategory.statusBadge
+            ...badgeCategory.statusBadge,
         },
         'status-past': {
             chipColor: colors.gloom,
