@@ -103,14 +103,14 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                 } = students.student;
                                 const fullStudentName = fullName(user);
                                 const studentId = user.id;
-                                const concatFullParentName = fullName(
-                                    primaryParent.user
-                                );
+                                const concatFullParentName = primaryParent
+                                    ? fullName(primaryParent.user)
+                                    : 'N/A';
                                 const parentAccountType =
-                                    primaryParent.accountType;
-                                const phoneNumber = primaryParent.phoneNumber;
-                                const parentId = primaryParent.user.id;
-                                const parentEmail = primaryParent.user.email;
+                                    primaryParent?.accountType;
+                                const phoneNumber = primaryParent?.phoneNumber;
+                                const parentId = primaryParent?.user.id;
+                                const parentEmail = primaryParent?.user.email;
                                 const studentInfo = studentschoolinfoSet;
                                 const studentEmail = user.email;
                                 return (

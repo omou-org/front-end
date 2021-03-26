@@ -11,7 +11,7 @@ import Loading from 'components/OmouComponents/Loading';
 import { paymentToString, uniques } from 'utils';
 import Moment from 'react-moment';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { bindActionCreators } from 'redux';
 import { fullName } from '../../../utils';
 import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';

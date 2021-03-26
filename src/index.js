@@ -8,15 +8,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import rootReducer from './reducers/rootReducer.js';
 import thunk from 'redux-thunk';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { onError } from 'apollo-link-error';
-import { ApolloLink } from 'apollo-link';
-
+import {
+    ApolloClient,
+    ApolloLink,
+    ApolloProvider,
+    InMemoryCache,
+} from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
-import { ApolloProvider } from '@apollo/react-hooks';
-import { setContext } from 'apollo-link-context';
-
 import { setToken } from 'actions/authActions';
 import * as actionCreators from 'actions/actionTypes';
 import initialState from './reducers/initialState';

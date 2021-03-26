@@ -79,7 +79,6 @@ const NavigationContainer = () => {
                 {NavigationList &&
                     NavigationList.map((NavItem) => (
                         <ListItem
-                            button
                             className={`listItem ${classes.navigationIconStyle}`}
                             component={NavLinkNoDup}
                             isActive={(match, location) => {
