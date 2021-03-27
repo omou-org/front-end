@@ -10,12 +10,11 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import * as Fields from 'mui-rff';
 import { makeStyles } from '@material-ui/core/styles';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import { fullName } from '../../../utils';
 import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
-import { TrendingUpRounded } from '@material-ui/icons';
 import { Schedule } from '@material-ui/icons';
 
 const getLabel = ({ label }) => label || '';

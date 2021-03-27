@@ -11,7 +11,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 const REFRESH_TOKEN = gql`
     mutation RefreshToken($token: String!) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -9,7 +9,7 @@ import ClassEnrollmentList from '../Courses/ClassEnrollmentList';
 import 'theme/theme.scss';
 import './registration.scss';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 export const DELETE_ENROLLMENT = gql`
     mutation DeleteEnrollment($enrollmentId: ID) {

@@ -1,15 +1,13 @@
 import './TabComponents.scss';
-import * as hooks from 'actions/hooks';
 import Grid from '@material-ui/core/Grid';
 import Loading from 'components/OmouComponents/Loading';
 import ProfileCard from '../ProfileCard';
 import PropTypes from 'prop-types';
 import React from 'react';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import LoadingError from './LoadingCourseError';
 import { fullName } from '../../../../utils';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 const GET_PARENTS = gql`
