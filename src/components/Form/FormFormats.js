@@ -1422,7 +1422,7 @@ export default {
                     {
                         name: 'gclassroomEnrollmentCode',
                         ...stringField(
-                            'GClassromm EnrollmentCode',
+                            'GClassromm Enrollment Code',
                             new_course_form.textFields
                         ),
                     },
@@ -1574,6 +1574,7 @@ export default {
                     $maxCapacity: Int
                     $totalTuition: Decimal
                     $title: String!
+                    $course_link: String
                 ) {
                     createCourse(
                         id: $id
@@ -1590,6 +1591,7 @@ export default {
                         totalTuition: $totalTuition
                         isConfirmed: $isConfirmed
                         availabilities: $availabilities
+                        course_link: $course_link
                     ) {
                         created
                         course {
