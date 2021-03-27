@@ -241,39 +241,6 @@ export default function NotificationSettings({ user }) {
         }[accountType]);
 
         const notReceptionOrAdmin = (userInfo.accountType !== 'RECEPTION' && userInfo.accountType !== 'ADMIN');
-        console.log({notReceptionOrAdmin})
-        console.log([
-            // ...(notReceptionOrAdmin ? createNotificationSetting(
-            //     'Session Reminder',
-            //     'Get notified when a session is coming up.',
-            //     {
-            //         settingName: 'sessionReminderEmail',
-            //         checked: userSettings?.sessionReminderEmail || false,
-            //     },
-            //     {
-            //         settingName: 'sessionReminderSms',
-            //         checked: userSettings?.sessionReminderSms || false,
-            //     }
-            // ): []),
-            // ...((notReceptionOrAdmin && userInfo.accountType === 'PARENT')
-            //     ? [
-            //           createNotificationSetting(
-            //               'Payment Reminder',
-            //               'Get notified when a payment is coming up.',
-            //               {
-            //                   settingName: 'paymentReminderEmail',
-            //                   checked:
-            //                       userSettings?.paymentReminderEmail || false,
-            //               },
-            //               {
-            //                   settingName: 'paymentReminderSms',
-            //                   checked:
-            //                       userSettings?.paymentReminderSms || false,
-            //               }
-            //           ),
-            //       ]
-            //     : []),
-        ]);
         setNotificationRows([
             ...(notReceptionOrAdmin ? createNotificationSetting(
                 'Session Reminder',

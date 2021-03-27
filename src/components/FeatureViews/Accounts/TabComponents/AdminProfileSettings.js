@@ -39,6 +39,7 @@ const useStyles = makeStyles({
 export default function AdminProfileSettings(){
     const classes = useStyles();
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
+    const [gClassSetting, setGClassSetting] = useState(false);
     const [gClassResp, setGClassResp] = useState();
     const [exitButtonMessage, setExitButtonMessage] = useState('No');
     var triggerState = false;
@@ -67,10 +68,6 @@ export default function AdminProfileSettings(){
             // setTimeout(refreshToken, refreshTiming);
         })
     }
-
-    // useEffect(() => {
-    //     getCourses();
-    // }, []);
 
     async function getCourses() {
         console.log(
@@ -131,6 +128,8 @@ export default function AdminProfileSettings(){
 
     const handleGClassSettingChange = () => {
         setGoogleLoginPromptOpen(!googleLoginPromptOpen);
+        setGClassSetting(true);
+        
     }
     return (<><Grid
                 container
@@ -173,7 +172,7 @@ export default function AdminProfileSettings(){
                                 style={{ width: '28%' }}
                             >
                                 <Checkbox
-                                    checked={googleLoginPromptOpen}
+                                    checked={gClassSetting}
                                     onChange={handleGClassSettingChange}
                                     color='primary'
                                     inputProps={{
