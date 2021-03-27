@@ -12,11 +12,8 @@ import PaymentIcon from '@material-ui/icons/CreditCardOutlined';
 import ScheduleIcon from '@material-ui/icons/CalendarTodayOutlined';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import { makeStyles } from '@material-ui/core/styles';
 import NotificationIcon from '@material-ui/icons/NotificationImportant';
 import './Accounts.scss';
-
-import BackButton from 'components/OmouComponents/BackButton';
 import ComponentViewer from './ComponentViewer.js';
 import Loading from 'components/OmouComponents/Loading';
 
@@ -25,7 +22,7 @@ import { USER_TYPES } from '../../../utils';
 
 import UserProfileInfo from './UserProfileInfo';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 const userTabs = {
     instructor: [

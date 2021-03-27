@@ -1,7 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';

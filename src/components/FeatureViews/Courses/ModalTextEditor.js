@@ -1,6 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import Input from '@material-ui/core/Input';
 import { omouBlue } from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { GET_SESSION_NOTES } from './ClassSessionView';
 import { useSelector } from 'react-redux';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';

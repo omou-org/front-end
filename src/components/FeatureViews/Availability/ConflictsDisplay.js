@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { OOOContext } from './OOOContext';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 
 const GET_INSTRUCTOR_SESSIONS = gql`
