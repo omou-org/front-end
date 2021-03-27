@@ -1,17 +1,14 @@
 /**
- * @description invoice componet to display table of parents invoices
+ * @description invoice component to display table of parents invoices
  * @todo  Improve component state,
  *  - pagination bug - if you go to page 2, and filter, updated page will not be set on the front-end.
  *
  */
 
 import React, { useCallback, useEffect, useState } from 'react';
-
 import InvoiceTable from './InvoiceTable';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
-import { useLazyQuery } from '@apollo/client';
-import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../OmouComponents/Loading';
 import { useApolloClient } from '@apollo/client';
@@ -28,7 +25,7 @@ import {
     InputAdornment,
     FormControl,
 } from '@material-ui/core';
-
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { omouBlue } from '../../../theme/muiTheme';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
@@ -69,13 +66,35 @@ export const GET_INVOICES_FILTERED = gql`
     }
 `;
 
+const useStyles = makeStyles({
+    root: {
+        boxShadow: 'none',
+        textTransform: 'none',
+    },
+    dateSelector: {
+        border: 0,
+        backgroundColor: omouBlue,
+        boxShadow: 'none',
+        fontVariant: 'none',
+    },
+    contained: {
+        fontVariant: 'none',
+    },
+    startDate: {
+        border: '2px solid #C4C4C4',
+        borderLeft: 0,
+    },
+    searchBox: {
+        width: '256px',
+    },
+});
+
 export default function Invoices() {
     const AuthUser = useSelector(({ auth }) => auth);
     const [results, setResults] = useState([]);
-    const [paymentStatus, setPaymentStatus] = useState('');
     const [totalPages, setTotalPages] = useState(0);
     const client = useApolloClient();
-
+    const classes = useStyles();
     const [filter, setFilter] = useState({
         query: '',
         startDate: null,
@@ -108,8 +127,8 @@ export default function Invoices() {
                     },
                 });
 
-                let parsedTotal = Math.ceil(invoices.total / 15);
-                setTotalPages(parsedTotal);
+                let parsedPageTotal = Math.ceil(invoices.total / 15);
+                setTotalPages(parsedPageTotal);
                 setResults(invoices.results);
             } catch (err) {
                 console.error(err);
@@ -182,7 +201,6 @@ export default function Invoices() {
     };
 
     const handleStatusChange = (event) => {
-        setPaymentStatus(event);
         searchInvoices(filter.query, filter.startDate, filter.endDate, event);
     };
 
@@ -198,10 +216,25 @@ export default function Invoices() {
                         </Typography>
                     </Box>
                 </Grid>
-                <Grid item container direction='row' alignItems='center'>
+                <Grid
+                    item
+                    container
+                    direction='row'
+                    justify='space-between'
+                    alignItems='center'
+                >
                     <Grid item xs={8} align='left'>
-                        <ButtonGroup variant='contained'>
-                            <Button style={{ backgroundColor: omouBlue }}>
+                        <ButtonGroup
+                            classes={{
+                                root: classes.root,
+                                contained: classes.contained,
+                                groupedContainedHorizontal:
+                                    classes.dateSelector,
+                                groupedContained: classes.startDate,
+                            }}
+                            variant='contained'
+                        >
+                            <Button className={classes.startDate}>
                                 {filter.startDate ? (
                                     <EventBusyIcon
                                         style={{ color: 'white' }}
@@ -222,9 +255,10 @@ export default function Invoices() {
                                 {dateSelector[0].startDate === null ? (
                                     <span
                                         style={{
-                                            color: 'black',
+                                            color: '#999999',
                                             fontSize: '15px',
                                             margin: 0,
+                                            textTransform: 'none',
                                         }}
                                     >
                                         Start Date
@@ -234,7 +268,7 @@ export default function Invoices() {
                                         date={dateSelector[0].startDate}
                                         format='MM/DD/YYYY'
                                         style={{
-                                            color: 'black',
+                                            color: '#999999',
                                             fontSize: '15px',
                                         }}
                                     />
@@ -244,14 +278,15 @@ export default function Invoices() {
                                 style={{
                                     fontWeight: 500,
                                     backgroundColor: 'white',
-                                    color: 'black',
+                                    color: '#999999',
+                                    textTransform: 'none',
                                 }}
                                 onClick={() => setOpenCalendar(true)}
                             >
                                 {dateSelector[0].endDate === null ? (
                                     <span
                                         style={{
-                                            color: 'black',
+                                            color: '#999999',
                                             fontSize: '15px',
                                             margin: 0,
                                         }}
@@ -263,7 +298,7 @@ export default function Invoices() {
                                         date={dateSelector[0].endDate}
                                         format='MM/DD/YYYY'
                                         style={{
-                                            color: 'black',
+                                            color: '#999999',
                                             fontSize: '15px',
                                         }}
                                     />
@@ -291,11 +326,12 @@ export default function Invoices() {
                             </DialogActions>
                         </Dialog>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                         <form
                             onChange={(e) => handleInputChange(e.target.value)}
                         >
                             <TextField
+                                className={classes.searchBox}
                                 size='small'
                                 type='text'
                                 placeholder={
