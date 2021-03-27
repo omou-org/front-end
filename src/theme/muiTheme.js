@@ -88,7 +88,7 @@ export const h2 = {
     fontWeight: 'bold',
     fontFamily: 'Roboto',
     lineHeight: '40px',
-    color: slateGrey,
+    color: goth,
 };
 export const h3 = {
     fontSize: '24px',
