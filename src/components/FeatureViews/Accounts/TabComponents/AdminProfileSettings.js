@@ -13,7 +13,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
 import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
@@ -48,6 +48,22 @@ export default function AdminProfileSettings(){
 
     const { accountType, email, google_access_token, google_courses } =
         useSelector(({ auth }) => auth) || [];
+
+    // const [
+    //     createAdmin,
+    //     createAdminSettingsResults,
+    // ] = useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
+    //     update: (cache, { data }) => {
+    //         cache.writeQuery({
+    //             data: {
+    //                 instructorNotificationSettings:
+    //                     data.createInstructorNotificationSetting.settings,
+    //             },
+    //             query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
+    //             variables: { instructorId: userInfo.user.id },
+    //         });
+    //     },
+    // });
 
     function refreshTokenSetup(res) {
 
@@ -129,7 +145,7 @@ export default function AdminProfileSettings(){
     const handleGClassSettingChange = () => {
         setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         setGClassSetting(true);
-        
+
     }
     return (<><Grid
                 container
