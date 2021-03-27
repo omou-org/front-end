@@ -41,6 +41,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
         $scheduleUpdatesSms: Boolean
         $sessionReminderEmail: Boolean
         $sessionReminderSms: Boolean
+        $missedSessionReminderEmail: Boolean
+        $missedSessionReminderSms: Boolean
     ) {
         __typename
         createParentNotificationSetting(
@@ -50,6 +52,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
             scheduleUpdatesSms: $scheduleUpdatesSms
             sessionReminderEmail: $sessionReminderEmail
             sessionReminderSms: $sessionReminderSms
+            missedSessionReminderEmail: $missedSessionReminderEmail
+            missedSessionReminderSms: $missedSessionReminderSms
         ) {
             settings {
                 paymentReminderEmail
@@ -57,6 +61,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
                 scheduleUpdatesSms
                 sessionReminderEmail
                 sessionReminderSms
+                missedSessionReminderEmail
+                missedSessionReminderSms
             }
         }
     }
@@ -107,6 +113,8 @@ const GET_PARENT_NOTIFICATION_SETTINGS = gql`
             scheduleUpdatesSms
             sessionReminderEmail
             sessionReminderSms
+            missedSessionReminderEmail
+            missedSessionReminderSms
         }
     }
 `;
@@ -214,12 +222,12 @@ export default function NotificationSettings({ user }) {
                 'Missed Session Notification',
                 'Get notified when your student did not attend a session',
                 {
-                    settingName: 'missedSessionNotificationEmail',
+                    settingName: 'missedSessionReminderEmail',
                     checked: userSettings?.missedSessionReminderEmail || false,
                 },
                 {
-                    settingName: 'missedSessionNotificationSms',
-                    checked: userSettings?.missedSessionReminderSMS || false,
+                    settingName: 'missedSessionReminderSms',
+                    checked: userSettings?.missedSessionReminderSms || false,
                 }
             ),
             ...(userInfo.accountType === 'PARENT'
@@ -292,7 +300,6 @@ export default function NotificationSettings({ user }) {
             ].checked;
             return newState;
         });
-
         if (userInfo.accountType === 'PARENT') {
             notificationSettings.parent = userInfo.user.id;
             createParentNotification({ variables: notificationSettings });
