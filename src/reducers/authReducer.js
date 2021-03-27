@@ -13,6 +13,7 @@ export default (state = Authentication, { payload, type }) => {
         case actions.LOGOUT:
             return Authentication;
         case actions.SET_GOOGLE_COURSES:
+            console.log({payload});
             return {
                 ...state,
                 ...payload,
