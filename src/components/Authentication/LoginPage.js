@@ -24,6 +24,20 @@ import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
 import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
 import './LoginPage.scss';
 
+// mutation MyMutation {
+//     __typename
+//     socialAuth(accessToken: "ya29.a0AfH6SMD5nAN93y53oTcDPWjsUtjZWv3MOizHh2fqRavDgp7QFcFG3HsWkeId0IaEZjr7zQp7sE5C9NS68kg3b3dTbu7cw-Vwz8yQvlp4FGnFw7_jEaUKkSl3jc5acizSRvrYaY4VtgZtZadoGpAFiHF_5GsY06_b_rJ9M7zglM12MXqFgR2H", provider: "google-oauth2") {
+//       token
+//       social {
+//         created
+//         id
+//         extraData
+//         uid
+//         provider
+//         modified
+//       }
+//     }
+//   }
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
         tokenAuth(password: $password, username: $username) {

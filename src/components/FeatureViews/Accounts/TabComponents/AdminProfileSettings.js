@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyledTableRow} from './NotificationSettings';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
@@ -36,7 +36,26 @@ const useStyles = makeStyles({
     },
 });
 
-export default function AdminProfileSettings(){
+const ADMIN_GC_ENABLED = gql`
+    query AdminGCEnabled($userID: ID!) {
+        admin(userId: $userID) {
+        googleAuthEnabled
+        }
+    }
+`;
+
+const SET_ADMIN_GC_ENABLED = gql`
+    mutation SetAdminGCEnabled($adminType: AdminTypeEnum!, $userID: ID!, $googleAuthEnabled: Boolean!) {
+        createAdmin(user: {id: $userID}, adminType: $adminType, googleAuthEnabled: $googleAuthEnabled) {
+            admin {
+                googleAuthEnabled
+            }
+        }
+    }
+`;  
+
+export default function AdminProfileSettings({ user }){
+    const { userInfo } = user;
     const classes = useStyles();
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
     const [gClassSetting, setGClassSetting] = useState(false);
@@ -45,25 +64,38 @@ export default function AdminProfileSettings(){
     var triggerState = false;
     var isResponseDefined = false;
     const dispatch = useDispatch();
+    const adminGCEnabledResponse = useQuery(
+        ADMIN_GC_ENABLED,
+        {
+            variables: { userID: userInfo.user.id },
+        }
+    );
+
+    const [
+        setAdminGCEnabled,
+        setAdminGCEnabledResults,
+    ] = useMutation(SET_ADMIN_GC_ENABLED, {
+        update: (cache, { data }) => {
+            cache.writeQuery({
+                data: {
+                    admin:
+                        data.createAdmin.admin.googleAuthEnabled,
+                },
+                query: ADMIN_GC_ENABLED,
+                variables: { userID: userInfo.user.id},
+            });
+        },
+    });
 
     const { accountType, email, google_access_token, google_courses } =
         useSelector(({ auth }) => auth) || [];
+        
 
-    // const [
-    //     createAdmin,
-    //     createAdminSettingsResults,
-    // ] = useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
-    //     update: (cache, { data }) => {
-    //         cache.writeQuery({
-    //             data: {
-    //                 instructorNotificationSettings:
-    //                     data.createInstructorNotificationSetting.settings,
-    //             },
-    //             query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
-    //             variables: { instructorId: userInfo.user.id },
-    //         });
-    //     },
-    // });
+    useEffect(() => {
+        if(adminGCEnabledResponse.loading === false){
+            setGClassSetting(adminGCEnabledResponse.data.admin.googleAuthEnabled);
+        }
+    },[adminGCEnabledResponse.loading]);
 
     function refreshTokenSetup(res) {
 
@@ -144,9 +176,15 @@ export default function AdminProfileSettings(){
 
     const handleGClassSettingChange = () => {
         setGoogleLoginPromptOpen(!googleLoginPromptOpen);
-        setGClassSetting(true);
-
+        console.log("Before, ", gClassSetting);
+        setGClassSetting(!gClassSetting);
+        console.log("After, ", !gClassSetting);
+        setAdminGCEnabled({variables: {userID: userInfo.user.id, adminType: userInfo.adminType, googleAuthEnabled: !gClassSetting}});
     }
+
+    if (adminGCEnabledResponse.loading)
+        return <Loading />;
+
     return (<><Grid
                 container
                 style={{
