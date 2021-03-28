@@ -9,22 +9,18 @@ import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
 import googleClassroomLogo from '../../GoogleClassroomIcon.png';
 
-import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
-import { fullName, gradeOptions } from 'utils';
+import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
+import {fullName, gradeOptions} from 'utils';
 import moment from 'moment';
-import {
-    activeColor,
-    highlightColor,
-    pastColor,
-} from '../../../theme/muiTheme';
+import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
 export const BootstrapInput = withStyles((theme) => ({
@@ -146,6 +142,7 @@ export const GET_STUDENTS = gql`
                     email
                 }
                 enrollmentSet {
+                    id
                     course {
                         id
                         title
@@ -333,7 +330,7 @@ const CourseFilterDropdown = ({
     const ChosenFiltersOption = filterList.map(filterOptionsMapper);
 
     return (
-        <Grid item xs={3}>
+        <Grid item>
             <FormControl className={classes.margin}>
                 <Select
                     labelId='course-management-sort-tab'
@@ -341,8 +338,8 @@ const CourseFilterDropdown = ({
                     displayEmpty
                     value={filter}
                     onChange={handleChange}
-                    classes={{ select: classes.menuSelect }}
-                    input={<BootstrapInput />}
+                    classes={{select: classes.menuSelect}}
+                    input={<BootstrapInput/>}
                     MenuProps={{
                         classes: { list: classes.dropdown },
                         anchorOrigin: {
