@@ -175,7 +175,9 @@ export default function AdminProfileSettings({ user }){
     };
 
     const handleGClassSettingChange = () => {
-        setGoogleLoginPromptOpen(!googleLoginPromptOpen);
+        if(!gClassSetting){
+            setGoogleLoginPromptOpen(!googleLoginPromptOpen);
+        }
         console.log("Before, ", gClassSetting);
         setGClassSetting(!gClassSetting);
         console.log("After, ", !gClassSetting);
