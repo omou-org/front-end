@@ -426,7 +426,7 @@ const InvoiceReceipt = ({ invoiceId }) => {
                                 </Grid>
                                 <Grid item xs={2}>
                                     <Typography align='left'>
-                                        {paymentToString(invoice.method)}
+                                        {paymentToString(invoice.method.toLowerCase())}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -544,7 +544,7 @@ const InvoiceReceipt = ({ invoiceId }) => {
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Typography align='right' variant='h4'>
-                                        - ${invoice.subTotal}
+                                        ${invoice.subTotal}
                                     </Typography>
                                 </Grid>
                             </Grid>
