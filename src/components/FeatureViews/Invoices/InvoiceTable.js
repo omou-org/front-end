@@ -190,13 +190,15 @@ const InvoiceTable = ({
                 alignItems='center'
                 className={classes.tableFooter}
             >
-                <InvoiceTablePagination
-                    page={page}
-                    colSpan={3}
-                    rowsPerPageOptions={10}
-                    totalPages={totalPages}
-                    onChangePage={handlePageChange}
-                />
+                {invoiceList.length > 0 && (
+                    <InvoiceTablePagination
+                        page={page}
+                        colSpan={3}
+                        rowsPerPageOptions={10}
+                        totalPages={totalPages}
+                        onChangePage={handlePageChange}
+                    />
+                )}
             </Grid>
         </Grid>
     );
