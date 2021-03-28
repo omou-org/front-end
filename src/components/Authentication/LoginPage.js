@@ -218,7 +218,6 @@ const LoginPage = () => {
                                 >
                                     SIGN IN
                                 </ResponsiveButton>
-                                
                             </Grid>
                             <Grid item md={2} />
                         </Grid>
