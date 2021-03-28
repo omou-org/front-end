@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 const ADMIN_GC_ENABLED = gql`
     query AdminGCEnabled($userID: ID!) {
         admin(userId: $userID) {
-        googleAuthEnabled
+            googleAuthEnabled
         }
     }
 `;

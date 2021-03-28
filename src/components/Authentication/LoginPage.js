@@ -49,9 +49,14 @@ const LOGIN = gql`
 
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
-        userType(userName: $username)
+        userType(userName: $username) {
+        userType
+        googleAuthEnabled
+        }
     }
 `;
+
+
 
 const LoginPage = () => {
     const history = useHistory();
@@ -59,6 +64,7 @@ const LoginPage = () => {
     const dispatch = useDispatch();
     const { token, attemptedLogin } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
+    const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
@@ -67,7 +73,8 @@ const LoginPage = () => {
     const [getUserType] = useLazyQuery(GET_USER_TYPE, {
         variables: { username: email },
         onCompleted: (data) => {
-            setUserType(data.userType);
+            setUserType(data.userType.userType);
+            setGoogleAuthEnabled(data.userType.googleAuthEnabled);
             if (userType === null) {
                 setHasError(true);
             }
@@ -211,6 +218,7 @@ const LoginPage = () => {
                                 >
                                     SIGN IN
                                 </ResponsiveButton>
+                                
                             </Grid>
                             <Grid item md={2} />
                         </Grid>
