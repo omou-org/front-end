@@ -151,6 +151,9 @@ export default function AdminProfileSettings({ user }){
     }
 
     function handleClose() {
+        if(exitButtonMessage=="No"){
+            setGClassSetting(false);
+        }
         setGoogleLoginPromptOpen(false);
     }
 

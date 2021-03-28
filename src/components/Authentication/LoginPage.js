@@ -58,8 +58,8 @@ const GOOGLE_LOGIN = gql`
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
         userType(userName: $username) {
-        userType
-        googleAuthEnabled
+            userType
+            googleAuthEnabled
         }
     }
 `;
@@ -80,6 +80,8 @@ const LoginPage = () => {
         variables: { username: email },
         onCompleted: (data) => {
             console.log(data)
+            console.log(data?.userType?.userType)
+            console.log(data?.userType?.googleAuthEnabled)
             setUserType(data?.userType?.userType);
             setGoogleAuthEnabled(data?.userType?.googleAuthEnabled);
             if (userType === null) {
@@ -92,19 +94,18 @@ const LoginPage = () => {
         errorPolicy: 'ignore',
         ignoreResults: true,
         onCompleted: async ({ tokenAuth }) => {
-            dispatch(await setToken(tokenAuth.token, shouldSave));
+            dispatch(await setToken(tokenAuth.token, shouldSave, email));
         },
         // for whatever reason, this function prevents an unhandled rejection
         onError: () => {
             setHasError(true);
         },
     });
-
     const [googleLogin] = useMutation(GOOGLE_LOGIN, {
         errorPolicy: 'ignore',
         ignoreResults: true,
         onCompleted: async ({ socialAuth }) => {
-            dispatch(await setToken(socialAuth.token, shouldSave));
+            dispatch(await setToken(socialAuth.token, true, email));
         },
         // for whatever reason, this function prevents an unhandled rejection
         onError: () => {
@@ -143,7 +144,6 @@ const LoginPage = () => {
             });
             if (loginResponse?.data?.tokenAuth) {
                 history.push('/');
-                console.log("Login response")
             }
         },
         [login, email, password]
@@ -162,12 +162,11 @@ const LoginPage = () => {
     
     function refreshTokenSetup(res) {
 
-        return new Promise((resolve, reject) => { console.log('Refresh Token runs');
+        return new Promise((resolve, reject) => { 
             let refreshTiming = 10000;
 
             const refreshToken = async () => {
                 const newAuthRes = await res.reloadAuthResponse();
-                console.log('newAuthRes: ', newAuthRes);
                 sessionStorage.setItem(
                     'google_access_token',
                     newAuthRes.access_token
@@ -181,10 +180,6 @@ const LoginPage = () => {
     }
 
     async function getCourses() {
-        console.log(
-            'Courses Token: ',
-            sessionStorage.getItem('google_access_token')
-        );
         if (
             (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
         ) {
@@ -220,12 +215,10 @@ const LoginPage = () => {
         })
         console.log(socialAuthResponse)
         refreshTokenSetup(response).then(()=>{getCourses();});
-        history.push('/');
         if (socialAuthResponse?.data?.socialAuth) {
-            console.log("Success!")
+            history.push('/');
         }
-
-    }
+    };
 
     const onFailure = (response) => {
         
