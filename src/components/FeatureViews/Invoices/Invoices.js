@@ -314,9 +314,12 @@ export default function Invoices() {
                                 onChange={handleDateRangeCalendarChange}
                                 moveRangeOnFirstSelection={false}
                                 ranges={dateSelector}
+                                rangeColors={omouBlue}
+                                color={omouBlue}
                             />
                             <DialogActions>
                                 <ResponsiveButton
+                                    style={{ border: 'none' }}
                                     variant='contained'
                                     onClick={handleSaveDateRange}
                                     color='primary'
