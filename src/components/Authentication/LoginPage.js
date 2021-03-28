@@ -79,9 +79,6 @@ const LoginPage = () => {
     const [getUserType] = useLazyQuery(GET_USER_TYPE, {
         variables: { username: email },
         onCompleted: (data) => {
-            console.log(data)
-            console.log(data?.userType?.userType)
-            console.log(data?.userType?.googleAuthEnabled)
             setUserType(data?.userType?.userType);
             setGoogleAuthEnabled(data?.userType?.googleAuthEnabled);
             if (userType === null) {
@@ -200,7 +197,6 @@ const LoginPage = () => {
                         payload: { google_courses: response?.data.courses },
                     });
                 }
-                console.log(response)
             } catch (error) {
                 console.log(error);
             }
@@ -213,7 +209,6 @@ const LoginPage = () => {
                 accessToken: response.accessToken,
             },
         })
-        console.log(socialAuthResponse)
         refreshTokenSetup(response).then(()=>{getCourses();});
         if (socialAuthResponse?.data?.socialAuth) {
             history.push('/');

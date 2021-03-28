@@ -54,8 +54,6 @@ const GET_ACCOUNT_TYPE = gql`
 `;
 
 export const setToken = async (token, shouldSave, usernameEmail="") => {
-    console.log({token})
-    console.log({shouldSave})
     try {
         const {
             data: { verifyToken },
@@ -86,7 +84,6 @@ export const setToken = async (token, shouldSave, usernameEmail="") => {
             query: GET_ACCOUNT_TYPE,
             variables: { username: email },
         });
-        console.log(userInfo)
         const { accountType, user, phoneNumber } = userInfo;
         if (shouldSave) {
             localStorage.setItem('token', token);

@@ -181,16 +181,12 @@ const ClassEnrollmentRow = ({
                     setGoogleClassroomStatusMessage('Refresh');
                 }
             } catch {
-                console.log('Error');
                 setInviteStatus(<Typography color='error'>Unsent</Typography>);
                 alert('Error creating invite');
             }
         } else if (googleClassroomStatusMessage == 'Refresh') {
-            console.log('Refreshing');
             if (googleCourseID && studentEmail) {
                 try {
-                    console.log(googleCourseID);
-                    console.log(studentEmail);
                     const resp = await axios.get(
                         `https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`,
                         {
@@ -199,7 +195,6 @@ const ClassEnrollmentRow = ({
                             },
                         }
                     );
-                    console.log({ resp });
                     setInviteStatus('Accepted');
                     setGoogleClassroomStatusMessage('Invite Accepted');
                 } catch (error) {

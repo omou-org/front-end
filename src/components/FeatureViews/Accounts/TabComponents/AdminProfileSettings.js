@@ -98,12 +98,11 @@ export default function AdminProfileSettings({ user }){
 
     function refreshTokenSetup(res) {
 
-        return new Promise((resolve, reject) => { console.log('Refresh Token runs');
+        return new Promise((resolve, reject) => { 
             let refreshTiming = 10000;
 
             const refreshToken = async () => {
                 const newAuthRes = await res.reloadAuthResponse();
-                console.log('newAuthRes: ', newAuthRes);
                 sessionStorage.setItem(
                     'google_access_token',
                     newAuthRes.access_token
@@ -117,10 +116,6 @@ export default function AdminProfileSettings({ user }){
     }
 
     async function getCourses() {
-        console.log(
-            'Courses Token: ',
-            sessionStorage.getItem('google_access_token')
-        );
         if (
             (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
         ) {
@@ -158,7 +153,6 @@ export default function AdminProfileSettings({ user }){
     }
 
     const onFailure = (response) => {
-        console.log('Login Failed: ', response);
     };
 
     const onSuccess = (response) => {
@@ -169,9 +163,7 @@ export default function AdminProfileSettings({ user }){
         if(!gClassSetting){
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         }
-        console.log("Before, ", gClassSetting);
         setGClassSetting(!gClassSetting);
-        console.log("After, ", !gClassSetting);
         setAdminGCEnabled({variables: {userID: userInfo.user.id, adminType: userInfo.adminType, googleAuthEnabled: !gClassSetting}});
     }
 
