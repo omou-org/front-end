@@ -11,6 +11,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
+import GoogleLoginButton from '../OmouComponents/GoogleLoginButton.js';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import axios from 'axios';
+import * as actions from 'actions/actionTypes';
 
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { setToken } from 'actions/authActions.js';
@@ -23,21 +27,8 @@ import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
 import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
 import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
 import './LoginPage.scss';
+import { LocalConvenienceStoreOutlined } from '@material-ui/icons';
 
-// mutation MyMutation {
-//     __typename
-//     socialAuth(accessToken: "ya29.a0AfH6SMD5nAN93y53oTcDPWjsUtjZWv3MOizHh2fqRavDgp7QFcFG3HsWkeId0IaEZjr7zQp7sE5C9NS68kg3b3dTbu7cw-Vwz8yQvlp4FGnFw7_jEaUKkSl3jc5acizSRvrYaY4VtgZtZadoGpAFiHF_5GsY06_b_rJ9M7zglM12MXqFgR2H", provider: "google-oauth2") {
-//       token
-//       social {
-//         created
-//         id
-//         extraData
-//         uid
-//         provider
-//         modified
-//       }
-//     }
-//   }
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
         tokenAuth(password: $password, username: $username) {
@@ -47,6 +38,23 @@ const LOGIN = gql`
     }
 `;
 
+const GOOGLE_LOGIN = gql`
+    mutation GoogleLogin($accessToken: String!) {
+        __typename
+        socialAuth(accessToken: $accessToken, provider: "google-oauth2") {
+            token
+            social {
+                created
+                id
+                extraData
+                uid
+                provider
+                modified
+            }
+        }
+    }
+  `
+
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
         userType(userName: $username) {
@@ -55,8 +63,6 @@ const GET_USER_TYPE = gql`
         }
     }
 `;
-
-
 
 const LoginPage = () => {
     const history = useHistory();
@@ -73,8 +79,9 @@ const LoginPage = () => {
     const [getUserType] = useLazyQuery(GET_USER_TYPE, {
         variables: { username: email },
         onCompleted: (data) => {
-            setUserType(data.userType.userType);
-            setGoogleAuthEnabled(data.userType.googleAuthEnabled);
+            console.log(data)
+            setUserType(data?.userType?.userType);
+            // setGoogleAuthEnabled(data.userType.googleAuthEnabled);
             if (userType === null) {
                 setHasError(true);
             }
@@ -92,6 +99,18 @@ const LoginPage = () => {
             setHasError(true);
         },
     });
+
+    // const [googleLogin] = useMutation(GOOGLE_LOGIN, {
+    //     errorPolicy: 'ignore',
+    //     ignoreResults: true,
+    //     onCompleted: async ({ socialAuth }) => {
+    //         dispatch(await setToken(socialAuth.token, shouldSave));
+    //     },
+    //     // for whatever reason, this function prevents an unhandled rejection
+    //     onError: () => {
+    //         setHasError(true);
+    //     },
+    // });
 
     // must wait for token to update in redux before redirecting
     // otherwise ProtectedRoute's check will trigger and redirect us back here
@@ -124,6 +143,7 @@ const LoginPage = () => {
             });
             if (loginResponse?.data?.tokenAuth) {
                 history.push('/');
+                console.log("Login response")
             }
         },
         [login, email, password]
@@ -138,6 +158,23 @@ const LoginPage = () => {
             getUserType();
         }
     };
+    
+    // const onSuccess = async (response) => {
+    //     const socialAuthResponse = await googleLogin({
+    //         variables: {
+    //             accessToken: response.accessToken,
+    //         },
+    //     })
+    //     console.log(socialAuthResponse)
+    //     history.push('/');
+    //     if (socialAuthResponse?.data?.socialAuth) {
+    //         console.log("Success!")
+    //     }
+    // }
+
+    // const onFailure = (response) => {
+        
+    // }
 
     const renderEmailLogin = () => (
         <>
@@ -343,6 +380,19 @@ const LoginPage = () => {
                                     SIGN IN
                                 </ResponsiveButton>
                             </Grid>
+                            {/* <Grid className='buttonSpacing' item md={4}>
+                                <GoogleLogin
+                                    render={renderProps => (
+                                        <GoogleLoginButton onClick={renderProps.onClick} disabled={renderProps.disabled}/>
+                                      )}
+                                    buttonText='Login'
+                                    clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
+                                    onSuccess={onSuccess}
+                                    onFailure={onFailure}
+                                    cookiePolicy={'single_host_origin'}
+                                    scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
+                                />
+                            </Grid> */}
                             <Grid item md={4} />
                         </Grid>
                     </Grid>

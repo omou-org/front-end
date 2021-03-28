@@ -7,12 +7,12 @@ const useStyles = makeStyles(() => ({
     ...GoogleLoginButtonStyles
 }));
 
-export const GoogleLoginButton = () => {
+const GoogleLoginButton = ({onClick}) => {
 
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <div className={classes.root} onClick={onClick}>
             <div className={classes.logoBackground}>
                 <img src={google_logo} width='16px' height='16px'/>
             </div>
@@ -22,3 +22,5 @@ export const GoogleLoginButton = () => {
         </div>
     )
 }
+
+export default GoogleLoginButton
