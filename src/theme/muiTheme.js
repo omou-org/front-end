@@ -147,6 +147,36 @@ const defaultFontProps = {
     fontWeight: 700,
 };
 
+export const GoogleLoginButtonStyles = {
+    root: {
+        width: '213px',
+        height: '36px',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: gloom,
+        borderRadius: '5px',
+        border: `1px solid ${darkGrey}`,
+        cursor: 'pointer',
+    },
+    logoBackground: {
+        borderTopLeftRadius: '5px',
+        borderBottomLeftRadius: '5px',
+        backgroundColor: '#EEEEEE',
+        width: '40px',
+        height: '35px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        textAlign: 'center',
+        marginLeft: '30px',
+        color: white,
+        ...h5
+    }
+}
+
 const theme = createMuiTheme({
     palette: {
         primary: { main: omouBlue },
