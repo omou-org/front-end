@@ -480,7 +480,11 @@ const InvoiceReceipt = ({ invoiceId }) => {
                                         </Grid>
                                         <Grid item xs={2}>
                                             <Typography align='left'>
-                                                { !invoice.method.toLowerCase().includes('card') ? 'N/A' : '##' }
+                                                {!invoice.method
+                                                    .toLowerCase()
+                                                    .includes('card')
+                                                    ? 'N/A'
+                                                    : '##'}
                                             </Typography>
                                         </Grid>
                                     </>
