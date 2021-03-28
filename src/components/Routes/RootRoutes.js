@@ -38,6 +38,7 @@ import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
 import Scheduler from '../FeatureViews/Scheduler/Scheduler';
+import { GoogleLoginButton } from 'components/OmouComponents/GoogleLoginButton';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -46,6 +47,11 @@ export const RootRoutes = () => {
 
     return (
         <Switch>
+
+            <Route path='/demo'>
+                <GoogleLoginButton/>
+            </Route>
+
             {/* Authentication views */}
             <Route path='/forgotpassword'>
                 <ForgotPassword />
