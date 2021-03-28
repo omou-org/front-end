@@ -68,7 +68,7 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const { token, attemptedLogin } = useSelector(({ auth }) => auth);
+    const { token, attemptedLogin, google_access_token, google_courses } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
     const [email, setEmail] = useState(state?.email);
@@ -81,7 +81,7 @@ const LoginPage = () => {
         onCompleted: (data) => {
             console.log(data)
             setUserType(data?.userType?.userType);
-            // setGoogleAuthEnabled(data.userType.googleAuthEnabled);
+            setGoogleAuthEnabled(data?.userType?.googleAuthEnabled);
             if (userType === null) {
                 setHasError(true);
             }
@@ -100,17 +100,17 @@ const LoginPage = () => {
         },
     });
 
-    // const [googleLogin] = useMutation(GOOGLE_LOGIN, {
-    //     errorPolicy: 'ignore',
-    //     ignoreResults: true,
-    //     onCompleted: async ({ socialAuth }) => {
-    //         dispatch(await setToken(socialAuth.token, shouldSave));
-    //     },
-    //     // for whatever reason, this function prevents an unhandled rejection
-    //     onError: () => {
-    //         setHasError(true);
-    //     },
-    // });
+    const [googleLogin] = useMutation(GOOGLE_LOGIN, {
+        errorPolicy: 'ignore',
+        ignoreResults: true,
+        onCompleted: async ({ socialAuth }) => {
+            dispatch(await setToken(socialAuth.token, shouldSave));
+        },
+        // for whatever reason, this function prevents an unhandled rejection
+        onError: () => {
+            setHasError(true);
+        },
+    });
 
     // must wait for token to update in redux before redirecting
     // otherwise ProtectedRoute's check will trigger and redirect us back here
@@ -159,22 +159,78 @@ const LoginPage = () => {
         }
     };
     
-    // const onSuccess = async (response) => {
-    //     const socialAuthResponse = await googleLogin({
-    //         variables: {
-    //             accessToken: response.accessToken,
-    //         },
-    //     })
-    //     console.log(socialAuthResponse)
-    //     history.push('/');
-    //     if (socialAuthResponse?.data?.socialAuth) {
-    //         console.log("Success!")
-    //     }
-    // }
+    
+    function refreshTokenSetup(res) {
 
-    // const onFailure = (response) => {
+        return new Promise((resolve, reject) => { console.log('Refresh Token runs');
+            let refreshTiming = 10000;
+
+            const refreshToken = async () => {
+                const newAuthRes = await res.reloadAuthResponse();
+                console.log('newAuthRes: ', newAuthRes);
+                sessionStorage.setItem(
+                    'google_access_token',
+                    newAuthRes.access_token
+                );
+                resolve()
+                // setTimeout(refreshToken, refreshTiming);
+            };
+            refreshToken();
+            // setTimeout(refreshToken, refreshTiming);
+        })
+    }
+
+    async function getCourses() {
+        console.log(
+            'Courses Token: ',
+            sessionStorage.getItem('google_access_token')
+        );
+        if (
+            (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
+        ) {
+            try {
+                const response = await axios.get(
+                        'https://classroom.googleapis.com/v1/courses',
+                        {
+                            headers: {
+                                Authorization: `Bearer ${sessionStorage.getItem(
+                                    'google_access_token'
+                                )}`,
+                            },
+                        }
+                    );
+                if (google_courses === undefined || google_courses === null){
+                    dispatch({
+                        type: actions.SET_GOOGLE_COURSES,
+                        payload: { google_courses: response?.data.courses },
+                    });
+                }
+                console.log(response)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+    const onSuccess = async (response) => {
+        const socialAuthResponse = await googleLogin({
+            variables: {
+                accessToken: response.accessToken,
+            },
+        })
+        console.log(socialAuthResponse)
+        refreshTokenSetup(response).then(()=>{getCourses();});
+        history.push('/');
+        if (socialAuthResponse?.data?.socialAuth) {
+            console.log("Success!")
+        }
+
+    }
+
+    const onFailure = (response) => {
         
-    // }
+    }
+
 
     const renderEmailLogin = () => (
         <>
@@ -330,6 +386,23 @@ const LoginPage = () => {
                             value={email}
                             variant='outlined'
                         />
+                        {googleAuthEnabled ?  
+                        <Grid className='optionsContainer' justify="center" container item>
+                            <Grid className='buttonSpacing' item md={4}>
+                                <GoogleLogin
+                                    render={renderProps => (
+                                        <GoogleLoginButton onClick={renderProps.onClick} disabled={renderProps.disabled}/>
+                                      )}
+                                    buttonText='Login'
+                                    clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
+                                    onSuccess={onSuccess}
+                                    onFailure={onFailure}
+                                    cookiePolicy={'single_host_origin'}
+                                    scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
+                                />
+                            </Grid>
+                        </Grid>
+                        : <>
                         <PasswordInput
                             autoComplete='current-password'
                             error={hasError || password === ''}
@@ -380,21 +453,9 @@ const LoginPage = () => {
                                     SIGN IN
                                 </ResponsiveButton>
                             </Grid>
-                            {/* <Grid className='buttonSpacing' item md={4}>
-                                <GoogleLogin
-                                    render={renderProps => (
-                                        <GoogleLoginButton onClick={renderProps.onClick} disabled={renderProps.disabled}/>
-                                      )}
-                                    buttonText='Login'
-                                    clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
-                                    onSuccess={onSuccess}
-                                    onFailure={onFailure}
-                                    cookiePolicy={'single_host_origin'}
-                                    scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
-                                />
-                            </Grid> */}
                             <Grid item md={4} />
                         </Grid>
+                        </>}
                     </Grid>
                 </Grid>
             </form>

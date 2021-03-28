@@ -62,7 +62,6 @@ export default function AdminProfileSettings({ user }){
     const [gClassResp, setGClassResp] = useState();
     const [exitButtonMessage, setExitButtonMessage] = useState('No');
     var triggerState = false;
-    var isResponseDefined = false;
     const dispatch = useDispatch();
     const adminGCEnabledResponse = useQuery(
         ADMIN_GC_ENABLED,
@@ -125,12 +124,7 @@ export default function AdminProfileSettings({ user }){
         if (
             (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
         ) {
-            console.log("BEFORE ASYNC");
             try {
-                console.log("SESSION");
-                console.log(`Bearer ${sessionStorage.getItem(
-                    'google_access_token'
-                )}`);
                 const response = await axios.get(
                         'https://classroom.googleapis.com/v1/courses',
                         {
@@ -141,16 +135,13 @@ export default function AdminProfileSettings({ user }){
                             },
                         }
                     );
-                console.log('gClassResp at dispatch: ', response);
-                console.log("Break!")
                 if (google_courses === undefined || google_courses === null){
                     dispatch({
                         type: actions.SET_GOOGLE_COURSES,
                         payload: { google_courses: response?.data.courses },
                     });
-                    isResponseDefined=true;
                 }
-                if (isResponseDefined) {
+                if (gClassResp) {
                     setExitButtonMessage('Exit');
                 }
             } catch (error) {
@@ -168,9 +159,6 @@ export default function AdminProfileSettings({ user }){
     };
 
     const onSuccess = (response) => {
-        console.log('onSuccess runs');
-        console.log('response: ', response);
-        console.log('Response.Access: ', response.accessToken);
         refreshTokenSetup(response).then(()=>{getCourses();});
     };
 
