@@ -175,11 +175,9 @@ const LoginPage = () => {
             // setTimeout(refreshToken, refreshTiming);
         })
     }
-
+    const noGoogleCoursesFoundOnInitialGoogleLogin = (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
     async function getCourses() {
-        if (
-            (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
-        ) {
+        if (noGoogleCoursesFoundOnInitialGoogleLogin) {
             try {
                 const response = await axios.get(
                         'https://classroom.googleapis.com/v1/courses',
@@ -191,12 +189,10 @@ const LoginPage = () => {
                             },
                         }
                     );
-                if (google_courses === undefined || google_courses === null){
-                    dispatch({
-                        type: actions.SET_GOOGLE_COURSES,
-                        payload: { google_courses: response?.data.courses },
-                    });
-                }
+                dispatch({
+                    type: actions.SET_GOOGLE_COURSES,
+                    payload: { google_courses: response?.data.courses },
+                });
             } catch (error) {
                 console.log(error);
             }

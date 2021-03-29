@@ -108,17 +108,14 @@ export default function AdminProfileSettings({ user }){
                     newAuthRes.access_token
                 );
                 resolve()
-                // setTimeout(refreshToken, refreshTiming);
             };
             refreshToken();
-            // setTimeout(refreshToken, refreshTiming);
         })
     }
 
+    const noGoogleCoursesFoundOnInitialGoogleLogin = (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
     async function getCourses() {
-        if (
-            (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
-        ) {
+        if (noGoogleCoursesFoundOnInitialGoogleLogin) {
             try {
                 const response = await axios.get(
                         'https://classroom.googleapis.com/v1/courses',
@@ -136,7 +133,7 @@ export default function AdminProfileSettings({ user }){
                         payload: { google_courses: response?.data.courses },
                     });
                 }
-                if (gClassResp) {
+                if (response) {
                     setExitButtonMessage('Exit');
                 }
             } catch (error) {
@@ -164,7 +161,13 @@ export default function AdminProfileSettings({ user }){
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         }
         setGClassSetting(!gClassSetting);
-        setAdminGCEnabled({variables: {userID: userInfo.user.id, adminType: userInfo.adminType, googleAuthEnabled: !gClassSetting}});
+        setAdminGCEnabled({
+            variables: {
+                userID: userInfo.user.id, 
+                adminType: userInfo.adminType, 
+                googleAuthEnabled: !gClassSetting
+            }
+        });
     }
 
     if (adminGCEnabledResponse.loading)
