@@ -151,43 +151,46 @@ const ClassEnrollmentRow = ({
         }
     };
 
+    function sendGoogleClassroomInvite(){
+        try {
+            if (googleCourseID && studentEmail) {
+                const invitationResponse = await axios.post(
+                    `https://classroom.googleapis.com/v1/invitations`,
+                    {
+                        userId: studentEmail,
+                        courseId: googleCourseID,
+                        role: 'STUDENT',
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${google_access_token}`,
+                        },
+                    }
+                );
+                setInviteStatus('Sent');
+                setGoogleClassroomStatusMessage('Refresh');
+            }
+        } catch {
+            setInviteStatus(<Typography color='error'>Unsent</Typography>);
+            alert('Error creating invite');
+        }
+    }
+
     const handleInvite = async () => {
-        let googleCourseID = getGoogleCourseID(
+        let omouGoogleIntegratedCourseID = getGoogleCourseID(
             google_courses,
             courses,
             courseID
         );
-        if (
-            googleClassroomStatusMessage == 'Resend Invite' ||
-            inviteStatus == 'Unsent'
-        ) {
+        const isInviteUnsent = googleClassroomStatusMessage == 'Resend Invite' || inviteStatus == 'Unsent'
+
+        if ( isInviteUnsent) {
             setGoogleClassroomStatusMessage('Resend Invite');
-            try {
-                if (googleCourseID && studentEmail) {
-                    const resp = await axios.post(
-                        `https://classroom.googleapis.com/v1/invitations`,
-                        {
-                            userId: studentEmail,
-                            courseId: googleCourseID,
-                            role: 'STUDENT',
-                        },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${google_access_token}`,
-                            },
-                        }
-                    );
-                    setInviteStatus('Sent');
-                    setGoogleClassroomStatusMessage('Refresh');
-                }
-            } catch {
-                setInviteStatus(<Typography color='error'>Unsent</Typography>);
-                alert('Error creating invite');
-            }
+            sendGoogleClassroomInvite();
         } else if (googleClassroomStatusMessage == 'Refresh') {
             if (googleCourseID && studentEmail) {
                 try {
-                    const resp = await axios.get(
+                    const studentEnrollmentResponse = await axios.get(
                         `https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`,
                         {
                             headers: {

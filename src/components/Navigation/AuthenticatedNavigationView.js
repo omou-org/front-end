@@ -30,16 +30,11 @@ const CHECK_BUSINESS_EXISTS = gql`
     }
 `;
 
-
-export const onFailure = (response) => {
-    console.log('Login Failed: ', response)
-}
-
 export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const { accountType, email, google_access_token, google_courses } =
+    const { accountType, email } =
         useSelector(({ auth }) => auth) || [];
     // const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
     //     skip: accountType !== 'ADMIN',

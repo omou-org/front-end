@@ -25,21 +25,6 @@ import { useGoogleLogin } from 'react-google-login';
 import {onFailure} from './AuthenticatedNavigationView.js';
 
 const AuthenticatedNavBar = ({ toggleDrawer }) => {
-    const onSuccess = (response) => {
-        console.log('onSuccess runs');
-    };
-
-    // const { signIn, loaded } = useGoogleLogin({
-    //     buttonText:'Login',
-    //     clientId:'1059849289788-0tpge112i2bfe5llak523fdopu8foul7.apps.googleusercontent.com',
-    //     isSignedIn:true,
-    //     onSuccess:{onSuccess},
-    //     onFailure:{onFailure},
-    //     cookiePolicy:'single_host_origin',
-    //     prompt:'consent',
-    //     access_type:'offline',
-    //     scope : 'https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters ',
-    // })
 
     const dispatch = useDispatch();
     const history = useHistory();
