@@ -1,69 +1,68 @@
-import React, {useEffect, useState} from "react";
-import {useValidateRegisteringParent} from "../../../OmouComponents/RegistrationUtils";
-import gql from "graphql-tag";
-import {useMutation, useQuery} from "@apollo/react-hooks";
-import Loading from "../../../OmouComponents/Loading";
-import BackgroundPaper from "../../../OmouComponents/BackgroundPaper";
-import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import {RegistrationContext} from "./RegistrationContext";
-import StudentRegistrationEntry from "./StudentRegistrationsEntry";
-import PaymentBoard from "./PaymentBoard";
-import RegistrationActions from "../RegistrationActions";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import {omouBlue, skyBlue} from "../../../../theme/muiTheme";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Box from "@material-ui/core/Box";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import {Link} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import * as types from "../../../../actions/actionTypes";
-import {GET_REGISTRATION_CART} from "../SelectParentDialog";
+import React, { useEffect, useState } from 'react';
+import { useValidateRegisteringParent } from '../../../OmouComponents/RegistrationUtils';
+import gql from 'graphql-tag';
+import { useMutation, useQuery } from '@apollo/client';
+import Loading from '../../../OmouComponents/Loading';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import { RegistrationContext } from './RegistrationContext';
+import StudentRegistrationEntry from './StudentRegistrationsEntry';
+import PaymentBoard from './PaymentBoard';
+import RegistrationActions from '../RegistrationActions';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import { omouBlue, skyBlue } from '../../../../theme/muiTheme';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Box from '@material-ui/core/Box';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import * as types from '../../../../actions/actionTypes';
+import { GET_REGISTRATION_CART } from '../SelectParentDialog';
 
 const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
-  query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
-    userInfos(userIds: $userIds) {
-      ... on StudentType {
-        user {
-          firstName
-          lastName
-          email
-          id
+    query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
+        userInfos(userIds: $userIds) {
+            ... on StudentType {
+                user {
+                    firstName
+                    lastName
+                    email
+                    id
+                }
+            }
         }
-      }
-    }
-    courses(courseIds: $courseIds) {
-      id
-      title
-      startDate
-      endDate
-      hourlyTuition
-      availabilityList {
-        dayOfWeek
-        endTime
-        startTime
-      }
-      academicLevelPretty
-      courseCategory {
-        id
-        name
-      }
-      instructor {
-        user {
-          id
-          firstName
-          lastName
+        courses(courseIds: $courseIds) {
+            id
+            title
+            startDate
+            endDate
+            hourlyTuition
+            availabilityList {
+                dayOfWeek
+                endTime
+                startTime
+            }
+            academicLevelPretty
+            courseCategory {
+                id
+                name
+            }
+            instructor {
+                user {
+                    id
+                    firstName
+                    lastName
+                }
+            }
         }
-      }
     }
-  }
 `;
 
 export const CREATE_REGISTRATION_CART = gql`
@@ -136,10 +135,10 @@ const RegistrationCartContainer = () => {
 
     useEffect(() => {
         dispatch({
-            "type": types.INIT_COURSE_REGISTRATION,
-            "payload": {},
+            type: types.INIT_COURSE_REGISTRATION,
+            payload: {},
         });
-    }, [dispatch]);
+    }, [types.INIT_COURSE_REGISTRATION, dispatch]);
 
     useEffect(() => {
         const numOfRegistrations = Object.values(registrationCartState)
@@ -221,15 +220,13 @@ const RegistrationCartContainer = () => {
                 <Grid container>
                     <RegistrationActions />
                 </Grid>
-                <hr />
-                <Typography align="left" variant="h2">Registration Cart</Typography>
-                <Typography
-                    align="left"
-                    data-cy="payment-title"
-                    gutterBottom
-                    style={{"fontSize": "2em"}}>
-                    Pay for Course(s)
-                </Typography>
+				<Typography
+					variant='h1'
+					align='left'
+					style={{ marginBottom: '48px' }}
+				>
+					Registration Cart
+				</Typography>
                 <Grid container item>
                     <Grid container direction="row" spacing={5}>
                         {
@@ -241,12 +238,15 @@ const RegistrationCartContainer = () => {
                                         student={studentData.find((student) => student.user.id === studentId)} />))
                         }
                     </Grid>
-                    <Grid alignItems={parentIsLoggedIn && "flex-end"} container
-                        direction={parentIsLoggedIn ? "column" : "row"}
-                        item
-                        justify={parentIsLoggedIn ? "flex-end" : "space-between"}
-                        spacing={parentIsLoggedIn && 4}
-                        style={{"marginTop": "50px"}}>
+					<Grid
+						container
+						item
+						justify={parentIsLoggedIn ? 'flex-end' : 'space-between'}
+						alignItems={parentIsLoggedIn && 'flex-end'}
+						direction={parentIsLoggedIn ? 'column' : 'row'}
+						spacing={parentIsLoggedIn && 4}
+						style={{ marginTop: '50px' }}
+					>
                         {parentIsLoggedIn ?
                             <>
                                 <Grid item xs={5}>

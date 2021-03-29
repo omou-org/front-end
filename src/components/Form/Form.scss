@@ -2,81 +2,80 @@
 @import '../../theme/sizes';
 @import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700');
 
-.price-quote-form{
-  margin-top:15px;
+.price-quote-form {
+    margin-top: 15px;
 
-  .price-label{
-    font-weight: 600 !important;
-  }
-  .discount{
-    color: $primaryColor !important;
-  }
-  .icon {
-    cursor: pointer;
-    margin-bottom: -6px;
-    margin-right: 8px;
-    &.remove{
-      color: rgba(208, 0, 0, 0.82);
+    .price-label {
+        font-weight: 600 !important;
     }
-    &.add{
-      color: #008000;
+    .discount {
+        color: $primaryColor !important;
     }
-  }
-  .discount-amount {
-    color: lightgray;
-    &.enable{
-      color: black;
+    .icon {
+        cursor: pointer;
+        margin-bottom: -6px;
+        margin-right: 8px;
+        &.remove {
+            color: rgba(208, 0, 0, 0.82);
+        }
+        &.add {
+            color: #008000;
+        }
     }
-  }
-
-  .price-adjustment-wrapper{
-    margin-bottom:25px;
-
-    .price-label{
-      margin-top:17px;
+    .discount-amount {
+        color: lightgray;
+        &.enable {
+            color: black;
+        }
     }
 
-    .price-adjustment{
-      width:80%;
+    .price-adjustment-wrapper {
+        margin-bottom: 25px;
+
+        .price-label {
+            margin-top: 17px;
+        }
+
+        .price-adjustment {
+            width: 80%;
+        }
     }
-  }
 
-  .total-price{
-    font-size: 1.5em;
-  }
-
+    .total-price {
+        font-size: 1.5em;
+    }
 }
 
-.tutoring-price-quote{
-  padding-top:4%;
-  padding-bottom:2%;
-  .field{
-    width:80%;
-  }
+.tutoring-price-quote {
+    padding-top: 4%;
+    padding-bottom: 2%;
+    .field {
+        width: 80%;
+    }
 }
 
-.course-receipt{
-  &.paper{
-    padding: $paperPadding;
-    background-color:white !important;
-    margin-top:15px;
-  }
+.course-receipt {
+    &.paper {
+        padding: $paperPadding;
+        background-color: white !important;
+        margin-top: 15px;
+    }
 
-  .course-info{
-    border-right: 1px solid gray(0) !important;
-  }
+    .course-info {
+        border-right: 1px solid gray(0) !important;
+    }
 
-  .course-receipt-label{
-    font-weight:500;
-    color:gray(130);
-    margin-top: 10px;
-  }
+    .course-receipt-label {
+        font-weight: 500;
+        color: gray(130);
+        margin-top: 10px;
+    }
 
-  .button{
-    margin-left: 5px;
-  }
+    .button {
+        margin-left: 5px;
+    }
 }
 
 .select {
-  width: 200px;
+    width: 200px;
 }

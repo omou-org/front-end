@@ -1,15 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import Card from '@material-ui/core/Card';
-import Chip from '@material-ui/core/Chip';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Loading from '../../../OmouComponents/Loading';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
-import Tab from '@material-ui/core/Tab';
+import { useQuery } from '@apollo/client';
+
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -54,11 +47,11 @@ const ActionLog = ({ ownerID }) => {
     });
 
     if (loading) return null;
-    if (error) return <Redirect to="/PageNotFound" />;
+    if (error) return <Redirect to='/PageNotFound' />;
 
     const { logs } = data;
 
-    const ActionBoxStyle = (actionType) => {
+    const ActionLabel = (actionType) => {
         const actionTypeBackgrounds = {
             Add: '#6CE086',
             Edit: '#FFDD59',
@@ -116,10 +109,13 @@ const ActionLog = ({ ownerID }) => {
                                     <TableCell style={{ width: '30%' }}>
                                         {moment(date).format('LLLL')}
                                     </TableCell>
-                                    <TableCell>
-                                        {ActionBoxStyle(action)}
-                                    </TableCell>
-                                    <TableCell style={{ paddingLeft: '6em' }}>
+                                    <TableCell>{ActionLabel(action)}</TableCell>
+                                    <TableCell
+                                        style={{
+                                            paddingLeft: '6em',
+                                            textTransform: 'capitalize',
+                                        }}
+                                    >
                                         {objectType}
                                     </TableCell>
                                     <TableCell>{objectRepr}</TableCell>

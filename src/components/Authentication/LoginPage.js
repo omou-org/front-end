@@ -2,11 +2,11 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Link, useHistory, useLocation} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import gql from 'graphql-tag';
-import {useLazyQuery, useMutation} from '@apollo/react-hooks';
+import {useLazyQuery, useMutation} from '@apollo/client';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import {PasswordInput} from '../Form/Fields';
+import {PasswordInput} from '../Form/FieldComponents/Fields';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -43,7 +43,7 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const {token, attemptedLogin} = useSelector(({auth}) => auth);
+    const { token, attemptedLogin } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
@@ -64,7 +64,11 @@ const LoginPage = () => {
         errorPolicy: 'ignore',
         ignoreResults: true,
         onCompleted: async ({ tokenAuth }) => {
-            dispatch(await setToken(tokenAuth.token, shouldSave));
+            try {
+                dispatch(await setToken(tokenAuth.token, shouldSave));
+            } catch {
+                setHasError(true);
+            }
         },
         // for whatever reason, this function prevents an unhandled rejection
         onError: () => {
@@ -120,14 +124,20 @@ const LoginPage = () => {
 
     const renderEmailLogin = () => (
         <>
-            <Ellipse1 className="picture var1" />
-            <Ellipse2 className="picture var2" />
-            <Picture1 className="picture var4" />
-            <div className="logo var2">
-                <Typography className="title" variant="h1" style={{color: "white"}}>omou</Typography>
+            <Ellipse1 className='picture var1' />
+            <Ellipse2 className='picture var2' />
+            <Picture1 className='picture var4' />
+            <div className='logo var2'>
+                <Typography
+                    className='title'
+                    variant='h1'
+                    style={{ color: 'white' }}
+                >
+                    omou
+                </Typography>
             </div>
             <form
-                className="Login"
+                className='Login'
                 onSubmit={(e) => {
                     e.preventDefault();
                     handleCheck();
@@ -136,20 +146,20 @@ const LoginPage = () => {
                 <Grid container>
                     <Grid item md={6} />
                     <Grid item md={6}>
-                        <Typography className="welcomeText">
+                        <Typography className='welcomeText'>
                             Welcome to Summit
                         </Typography>
                         <TextField
                             InputProps={{
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment position='start'>
                                         <EmailOutlinedIcon
                                             style={{ color: 'grey' }}
                                         />
                                     </InputAdornment>
                                 ),
                             }}
-                            className="TextField"
+                            className='TextField'
                             error={hasError || email === ''}
                             fullWidth
                             helperText={
@@ -158,18 +168,19 @@ const LoginPage = () => {
                                     : ' '
                             }
                             inputProps={{ 'data-cy': 'emailField' }}
-                            margin="normal"
+                            margin='normal'
                             onChange={handleTextInput(setEmail)}
-                            placeholder="E-Mail"
+                            data-cy='emailField-input'
+                            placeholder='E-Mail'
                             value={email}
-                            variant="outlined"
+                            variant='outlined'
                         />
-                        <Grid className="buttonContainer" container item>
+                        <Grid className='buttonContainer' container item>
                             <Grid item md={2} />
                             <Grid item md={4}>
                                 <ResponsiveButton
                                     component={Link}
-                                    data-cy="createAccountButton"
+                                    data-cy='createAccountButton'
                                     to={{
                                         pathname: '/new/parent',
                                         state: {
@@ -177,16 +188,16 @@ const LoginPage = () => {
                                             password,
                                         },
                                     }}
-                                    variant="contained"
+                                    variant='contained'
                                 >
                                     CREATE ACCOUNT
                                 </ResponsiveButton>
                             </Grid>
                             <Grid item md={4}>
                                 <ResponsiveButton
-                                    data-cy="nextButton"
+                                    data-cy='signInButton'
                                     onClick={handleCheck}
-                                    variant="outlined"
+                                    variant='outlined'
                                 >
                                     SIGN IN
                                 </ResponsiveButton>
@@ -203,22 +214,22 @@ const LoginPage = () => {
         switch (userType) {
             case 'Parent':
                 return {
-                    picture: <Picture2 className="picture var4" />,
+                    picture: <Picture2 className='picture var4' />,
                     text: 'Hello Summit Parent',
                 };
             case 'Instructor':
                 return {
-                    picture: <Picture4 className="picture var4" />,
+                    picture: <Picture4 className='picture var4' />,
                     text: 'Hello Summit Instructor',
                 };
             case 'Admin':
                 return {
-                    picture: <Picture3 className="picture var4" />,
+                    picture: <Picture3 className='picture var4' />,
                     text: 'Hello Summit Admin',
                 };
             default:
                 return {
-                    picture: <Picture1 className="picture var4" />,
+                    picture: <Picture1 className='picture var4' />,
                     text: 'Hello User',
                 };
         }
@@ -226,51 +237,57 @@ const LoginPage = () => {
 
     const renderOtherLogins = () => (
         <>
-            <Ellipse3 className="picture var3" />
-            <Ellipse4 className="picture var4" />
+            <Ellipse3 className='picture var3' />
+            <Ellipse4 className='picture var4' />
             {renderUserDifferences().picture}
-            <div className="logo var2">
-                <Typography className="title" variant="h1" style={{color: "white"}}>omou</Typography>
+            <div className='logo var2'>
+                <Typography
+                    className='title'
+                    variant='h1'
+                    style={{ color: 'white' }}
+                >
+                    omou
+                </Typography>
             </div>
-            <form className="Login" onSubmit={handleLogin}>
+            <form className='Login' onSubmit={handleLogin}>
                 <Grid container>
                     <Grid item md={6} />
                     <Grid item md={6}>
-                        <Typography className="welcomeText">
+                        <Typography className='welcomeText'>
                             {renderUserDifferences().text}
                         </Typography>
                         <TextField
                             InputProps={{
                                 startAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment position='start'>
                                         <EmailOutlinedIcon
                                             style={{ color: 'grey' }}
                                         />
                                     </InputAdornment>
                                 ),
                             }}
-                            className="TextField"
+                            className='TextField'
                             error={hasError}
                             fullWidth
                             inputProps={{ 'data-cy': 'emailField' }}
-                            margin="normal"
+                            margin='normal'
                             onChange={handleTextInput(setEmail)}
-                            placeholder="E-Mail"
+                            placeholder='E-Mail'
                             value={email}
-                            variant="outlined"
+                            variant='outlined'
                         />
                         <PasswordInput
-                            autoComplete="current-password"
+                            autoComplete='current-password'
                             error={hasError || password === ''}
                             inputProps={{ 'data-cy': 'passwordField' }}
                             isField={false}
-                            label="Password"
-                            className="TextField"
-                            variant="outlined"
+                            label='Password'
+                            className='TextField'
+                            variant='outlined'
                             onChange={handleTextInput(setPassword)}
                             value={password}
                         />
-                        <Grid className="optionsContainer" container item>
+                        <Grid className='optionsContainer' container item>
                             <Grid item md={2} />
                             <Grid item md={4}>
                                 <FormControlLabel
@@ -283,13 +300,13 @@ const LoginPage = () => {
                                             onChange={toggleSavePassword}
                                         />
                                     }
-                                    label="Remember Me"
+                                    label='Remember Me'
                                 />
                             </Grid>
                             <Grid item md={4} style={{ paddingTop: 10 }}>
                                 <Link
-                                    className="forgotPassword"
-                                    data-cy="forgotPassword"
+                                    className='forgotPassword'
+                                    data-cy='forgotPassword'
                                     to={{
                                         pathname: '/forgotpassword',
                                         state: { email },
@@ -300,11 +317,11 @@ const LoginPage = () => {
                             </Grid>
                             <Grid item md={2} />
                             <Grid item md={4} />
-                            <Grid className="buttonSpacing" item md={4}>
+                            <Grid className='buttonSpacing' item md={4}>
                                 <ResponsiveButton
-                                    data-cy="signInButton"
-                                    type="submit"
-                                    variant="contained"
+                                    data-cy='signInButton'
+                                    type='submit'
+                                    variant='contained'
                                 >
                                     SIGN IN
                                 </ResponsiveButton>

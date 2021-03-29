@@ -1,22 +1,24 @@
-import React, {useCallback, useContext, useState} from "react";
-import {RegistrationContext} from "./RegistrationContext";
-import {useMutation, useQuery} from "@apollo/react-hooks";
-import gql from "graphql-tag";
-import Grid from "@material-ui/core/Grid";
-import Table from "@material-ui/core/Table";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TextField from "@material-ui/core/TextField/TextField";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import Typography from "@material-ui/core/Typography";
-import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
-import Loading from "../../../OmouComponents/Loading";
-import {GET_PAYMENT} from "../PaymentReceipt";
-import {GET_COURSES} from "../RegistrationLanding";
-import {GET_STUDENTS_AND_ENROLLMENTS} from "../CourseList";
-import {GET_REGISTRATION_CART} from "../SelectParentDialog";
-import {CREATE_REGISTRATION_CART} from "./RegistrationCartContainer";
-
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { RegistrationContext } from './RegistrationContext';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import Grid from '@material-ui/core/Grid';
+import Checkbox from '@material-ui/core/Checkbox/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Table from '@material-ui/core/Table';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TextField from '@material-ui/core/TextField/TextField';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@material-ui/core/Typography';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import Loading from '../../../OmouComponents/Loading';
+import { useHistory } from 'react-router-dom';
+import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
+import { GET_ALL_COURSES } from '../RegistrationLanding';
+import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
+import { GET_REGISTRATION_CART } from '../SelectParentDialog';
+import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -26,14 +28,22 @@ import FormLabel from "@material-ui/core/FormLabel";
 import {GET_ENROLLMENT_DETAILS} from "../RegistrationCourseEnrollments";
 
 const GET_PRICE_QUOTE = gql`
-    query GetPriceQuote($method: String!,
-                        $disabledDiscounts: [ID],
-                        $priceAdjustment: Float,
-                        $classes: [ ClassQuote ],
-                        $tutoring: [ TutoringQuote ],
-                        $parent: ID!) {
-        priceQuote(method: $method, disabledDiscounts: $disabledDiscounts, priceAdjustment: $priceAdjustment,
-                    classes:$classes, tutoring:$tutoring, parent:$parent) {
+    query GetPriceQuote(
+        $method: String!
+        $disabledDiscounts: [ID]
+        $priceAdjustment: Float
+        $classes: [ClassQuote]
+        $tutoring: [TutoringQuote]
+        $parent: ID!
+    ) {
+        priceQuote(
+            method: $method
+            disabledDiscounts: $disabledDiscounts
+            priceAdjustment: $priceAdjustment
+            classes: $classes
+            tutoring: $tutoring
+            parent: $parent
+        ) {
             subTotal
             priceAdjustment
             accountBalance
@@ -47,31 +57,44 @@ const GET_PRICE_QUOTE = gql`
     }
 `;
 
-const CREATE_ENROLLMENTS = gql`mutation CreateEnrollments($enrollments:[EnrollmentInput]!) {
-  __typename
-  createEnrollments(enrollments:$enrollments) {
-    enrollments {
-      id
-      course {
-        id
-      }
-      student {
-        user {
-          id
+const CREATE_ENROLLMENTS = gql`
+    mutation CreateEnrollments($enrollments: [EnrollmentInput]!) {
+        __typename
+        createEnrollments(enrollments: $enrollments) {
+            enrollments {
+                id
+                course {
+                    id
+                }
+                student {
+                    user {
+                        id
+                    }
+                }
+            }
         }
-      }
     }
-  }
-}`;
+`;
 
 const CREATE_PAYMENT = gql`
     mutation CreateInvoice(
-        $method:String!, $parent:ID!, $classes:[ClassQuote]!,
-        $disabledDiscounts:[ID], $priceAdjustment: Float,
-        $registrations:[EnrollmentQuote]!) {
-        createInvoice(method: $method, parent: $parent, classes: $classes,
-        disabledDiscounts: $disabledDiscounts,
-        priceAdjustment: $priceAdjustment, registrations: $registrations) {
+			$method:String!
+			$parent:ID!
+			$classes:[ClassQuote]!
+			$disabledDiscounts:[ID]
+			$priceAdjustment: Float
+			$registrations:[EnrollmentQuote]!
+        ) {
+         	__typename
+			createInvoice(
+			method: $method
+			parent: $parent
+			classes: $classes
+			disabledDiscounts: $disabledDiscounts
+			priceAdjustment: $priceAdjustment
+			registrations: $registrations
+			paymentStatus: $paymentStatus
+        ) {
             stripeCheckoutId
             stripeConnectedAccount
             invoice {
@@ -82,6 +105,10 @@ const CREATE_PAYMENT = gql`
                 enrollments {
                     course {
                         title
+                        availabilityList {
+                            endTime
+                            startTime
+                        }
                         startDate
                         instructor {
                             user {
@@ -151,9 +178,9 @@ const GET_PARENT_ENROLLMENTS = gql`
     }`;
 
 const useRowStyles = makeStyles({
-    "root": {
-        "& > *": {
-            "borderBottom": "unset",
+    root: {
+        '& > *': {
+            borderBottom: 'unset',
         },
     },
 });
@@ -367,6 +394,8 @@ const PaymentBoard = () => {
     }, []);
 
     const handlePayment = async () => {
+		const paymentMethod = paymentMethodState.find(({ checked }) => checked)
+			?.value;
         const {"data": {enrollments}} = enrollmentResponse;
         const isSameEnrollment = ({enrollment, course, student}) =>
             enrollment.student.user.id === student && enrollment.course.id === course;
@@ -427,6 +456,7 @@ const PaymentBoard = () => {
                     "disabledDiscounts": [],
                     "priceAdjustment": Number(priceAdjustment),
                     registrations,
+					paymentStatus: 'PAID',
                 },
             });
 
@@ -437,6 +467,9 @@ const PaymentBoard = () => {
                     "registrationPreferences": "",
                 },
             });
+			history.push(
+				`/registration/receipt/${payment.data.createInvoice.invoice.id}`
+			);
         } catch (error) {
             console.error(error);
         }
@@ -444,20 +477,23 @@ const PaymentBoard = () => {
 
     if (error || enrollmentResponse.error) {
         console.error(error?.message, enrollmentResponse.error?.message);
-        return <div>There has been an error! : {error?.message} {enrollmentResponse.error?.message}</div>;
+        return (
+        	<div>
+				There has been an error! : {error?.message}{' '}
+				{enrollmentResponse.error?.message}
+			</div>
+		);
     }
 
     const priceQuote = data?.priceQuote || {
-        "accountBalance": "-",
-        "discounts": [],
-        "priceAdjustment": "-",
-        "subTotal": "-",
-        "total": "-",
+        subTotal: '-',
+        priceAdjustment: '-',
+        accountBalance: '-',
+        total: '-',
+        discounts: [],
     };
 
-    if (enrollmentResponse.loading) {
-        return <Loading />;
-    }
+    if (enrollmentResponse.loading) return <Loading />;
 
     return (
         <>

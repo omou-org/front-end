@@ -10,8 +10,8 @@ import './Navigation.scss';
 import OmouTheme from '../../theme/muiTheme';
 import {NavList} from './NavigationAccessList';
 import Loading from '../OmouComponents/Loading';
-import AuthenticatedNavigationView from "./AuthenticatedNavigationView";
-import LoginPage from "../Authentication/LoginPage";
+import AuthenticatedNavigationView from './AuthenticatedNavigationView';
+import LoginPage from '../Authentication/LoginPage';
 
 const useStyles = makeStyles({
     navigationIconStyle: {
@@ -22,65 +22,108 @@ const useStyles = makeStyles({
     },
 });
 
-export const AuthenticatedComponent = ({children}) => {
-    const {token} = useSelector(({auth}) => auth);
+export const AuthenticatedComponent = ({ children }) => {
+    const { token } = useSelector(({ auth }) => auth);
     if (token) {
-        return children
+        return children;
     } else {
-        return <div/>
+        return <div />;
     }
-}
+};
 
 const NavigationContainer = () => {
     const classes = useStyles();
-    const {token} = useSelector(({auth}) => auth);
+    const { token } = useSelector(({ auth }) => auth);
 
-    const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
+    const ACCOUNT_TYPE = useSelector(({ auth }) => auth.accountType);
     const NavigationList = NavList[ACCOUNT_TYPE];
+
+    const isAccountFormActive = (location, NavItem) => {
+        let active = false;
+        if (location) {
+            ['student', 'admin', 'instructor', 'parent'].forEach(
+                (accountType) => {
+                    if (
+                        location.pathname.includes(accountType) &&
+                        !location.pathname.includes('adminportal') &&
+                        NavItem.name === 'Accounts'
+                    ) {
+                        active = true;
+                    }
+                }
+            );
+        }
+        return active;
+    };
+
+    const isCourseFormActive = (location, NavItem) => {
+        let active = false;
+        if (location) {
+            if (
+                location.pathname.includes('course_details') &&
+                NavItem.name === 'Courses'
+            ) {
+                active = true;
+            }
+        }
+        return active;
+    };
+
+    const isAccountLandingView = (accountType, NavItemName, location) => {
+        const isDashboardLanding = NavItemName === "Dashboard" && location.pathname === "/";
+        const isSchedulerLanding = NavItemName === "Schedule" && location.pathname === "/";
+        const isInstructorOrParentLanding = (accountType === "INSTRUCTOR" || accountType === "PARENT") &&
+            isSchedulerLanding;
+        const isReceptionistOrAdminLanding = (accountType === "RECEPTIONIST" || accountType === "ADMIN") &&
+            isDashboardLanding;
+        return isReceptionistOrAdminLanding || isInstructorOrParentLanding;
+    }
 
     if ((!NavigationList || !ACCOUNT_TYPE) && token) {
         return <Loading/>;
     }
 
     const UserNavigationOptions = (
-        <div className="DrawerList">
-            <List className="list">
+        <div className='DrawerList'>
+            <List className='list'>
                 {NavigationList &&
                 NavigationList.map((NavItem) => (
                         <ListItem
-                            button
                             className={`listItem ${classes.navigationIconStyle}`}
                             component={NavLinkNoDup}
-                            isActive={(match, location) =>
-                                match?.isExact ||
-                                (NavItem.name === 'Dashboard' &&
-                                    location.pathname === '/')
-                            }
+                            isActive={(match, location) => {
+                                return (
+                                    match?.url ||
+                                    isAccountFormActive(location, NavItem) ||
+                                    isCourseFormActive(location, NavItem) ||
+                                    isAccountLandingView(ACCOUNT_TYPE, NavItem.name, location)
+                                );
+                            }}
                             key={NavItem.name}
-                                to={NavItem.link}
-                            >
-                                <ListItemIcon className="icon">
-                                    {NavItem.icon}
-                                </ListItemIcon>
-                                <ListItemText
-                                    className="text"
-                                    primary={NavItem.name}
-                                />
-                            </ListItem>
-                        )
-                    )}
+                            to={NavItem.link}
+                        >
+                            <ListItemIcon className='icon'>
+                                {NavItem.icon}
+                            </ListItemIcon>
+                            <ListItemText
+                                className='text'
+                                primary={NavItem.name}
+                            />
+                        </ListItem>
+                    ))}
             </List>
         </div>
     );
 
-
     return (
         <ThemeProvider theme={OmouTheme}>
-            {
-                token ?
-                    <AuthenticatedNavigationView UserNavigationOptions={UserNavigationOptions}/> :
-                    <LoginPage/>
-            }
+            {token ? (
+                <AuthenticatedNavigationView
+                    UserNavigationOptions={UserNavigationOptions}
+                />
+            ) : (
+                <LoginPage />
+            )}
         </ThemeProvider>
     );
 };
