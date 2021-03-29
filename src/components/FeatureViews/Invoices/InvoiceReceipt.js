@@ -426,7 +426,9 @@ const InvoiceReceipt = ({ invoiceId }) => {
                                 </Grid>
                                 <Grid item xs={2}>
                                     <Typography align='left'>
-                                        {paymentToString(invoice.method.toLowerCase())}
+                                        {paymentToString(
+                                            invoice.method.toLowerCase()
+                                        )}
                                     </Typography>
                                 </Grid>
                             </Grid>
