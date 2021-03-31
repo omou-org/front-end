@@ -151,7 +151,7 @@ const ClassEnrollmentRow = ({
         }
     };
 
-    function sendGoogleClassroomInvite(){
+    async function sendGoogleClassroomInvite(googleCourseID){
         try {
             if (googleCourseID && studentEmail) {
                 const invitationResponse = await axios.post(
@@ -186,12 +186,12 @@ const ClassEnrollmentRow = ({
 
         if ( isInviteUnsent) {
             setGoogleClassroomStatusMessage('Resend Invite');
-            sendGoogleClassroomInvite();
+            sendGoogleClassroomInvite(omouGoogleIntegratedCourseID);
         } else if (googleClassroomStatusMessage == 'Refresh') {
-            if (googleCourseID && studentEmail) {
+            if (omouGoogleIntegratedCourseID && studentEmail) {
                 try {
                     const studentEnrollmentResponse = await axios.get(
-                        `https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`,
+                        `https://classroom.googleapis.com/v1/courses/${omouGoogleIntegratedCourseID}/students/${studentEmail}`,
                         {
                             headers: {
                                 Authorization: `Bearer ${google_access_token}`,
