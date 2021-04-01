@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Modal from '@material-ui/core/Modal';
 
 import './AdminPortal.scss';
 import AdminActionCenter from './AdminActionCenter';
 import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
+import BulkUploadModal from './BulkUploadModal'
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton'
 
-const AdminPortal = () => (
+const AdminPortal = () => {
+    const [ modalOpen, setModalOpen ] = useState(false);
+    const handleModalOpen = () => setModalOpen(true);
+    const handleModalClose = () => setModalOpen(false);
+
+return (
     <form>
         <Grid container direction='row'>
             <Grid container direction='row'>
@@ -18,8 +25,19 @@ const AdminPortal = () => (
                     </Typography>
                 </Grid>
                 <Grid item xs={6} style={{ textAlign:'right'}}>
-                    <ResponsiveButton variant='outlined' >Bulk Upload</ResponsiveButton>
+                    <ResponsiveButton 
+                        variant='outlined'
+                        onClick={handleModalOpen} 
+                    >
+                        Bulk Upload
+                    </ResponsiveButton>
                 </Grid>
+                <Modal
+                    open={modalOpen}
+                    onClose={handleModalClose}
+                >
+                    <BulkUploadModal closeModal={handleModalClose} />
+                </Modal>
             </Grid>
             <Grid item xs={12}>
                 <AdminActionCenter />
@@ -29,7 +47,7 @@ const AdminPortal = () => (
             </Grid>
         </Grid>
     </form>
-);
+)};
 
 AdminPortal.propTypes = {};
 
