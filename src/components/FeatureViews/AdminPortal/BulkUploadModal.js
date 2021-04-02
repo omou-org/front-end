@@ -31,6 +31,12 @@ const useStyles = makeStyles({
         lineHeight: '22px',
         textDecoration: 'underline',
     },
+    errorLink: {
+        ...h6,
+        color: omouBlue,
+        lineHeight: '22px',
+        textDecoration: 'underline',
+    }
 });
 
 const BulkUploadModal = ({ closeModal }) => {
@@ -129,13 +135,13 @@ const BulkUploadModal = ({ closeModal }) => {
                 );
             case 1:
                 return (
-                    <Grid container className={classes.modalStyle}>
+                    <Grid container style={{ height: '19em' }} className={classes.modalStyle}>
                         <Grid item style={{ padding: '2em' }} xs={12}>
                             <Typography
                                 className={classes.modalTypography}
                                 variant='h3'
                             >
-                                Upload Template
+                                Upload {template || 'Data'}
                             </Typography>
 
                             <Typography
@@ -148,8 +154,8 @@ const BulkUploadModal = ({ closeModal }) => {
                                 a time.
                             </Typography>
 
-                            <div style={{ margin: '1em 0px' }}>
-                                <ResponsiveButton>Select File</ResponsiveButton>
+                            <div style={{ margin: '2em 0px' }}>
+                                <ResponsiveButton variant='contained' >Select File</ResponsiveButton>
                             </div>
 
                             <Grid style={{ textAlign: 'right' }} item xs={12}>
@@ -164,6 +170,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                     style={{ border: 'none' }}
                                     variant='outlined'
                                     template={template}
+                                    onClick={handleStepChange}
                                 >
                                     Upload
                                 </ResponsiveButton>
@@ -172,7 +179,55 @@ const BulkUploadModal = ({ closeModal }) => {
                     </Grid>
                 );
             case 2:
-                return <div>Case 3</div>;
+                return (
+                    <Grid container style={{ height: '17em' }} className={classes.modalStyle}>
+                        <Grid item style={{ padding: '2em' }} xs={12}>
+                            <Typography
+                                className={classes.modalTypography}
+                                variant='h3'
+                            >
+                                {' '}
+                                Upload Results
+                            </Typography>
+
+                            <Typography
+                                align='left'
+                                className={classes.modalTypography}
+                                variant='body1'
+                            >
+                                1435 rows uploaded successfully.
+                            </Typography>
+
+                            <div style={{ margin: '1em 0px' }}>
+                            <Link
+                                className={`${classes.modalTypography} ${classes.errorLink}`}
+                            >
+                                Download Error File
+                            </Link>
+
+                                <IconButton>
+                                    <SvgIcon>
+                                        <path
+                                            d='M17.5 13.75V17.5H2.5V13.75H0V17.5C0 18.875 1.125 20 2.5 20H17.5C18.875 20 20 18.875 20 17.5V13.75H17.5ZM16.25 8.75L14.4875 6.9875L11.25 10.2125V0H8.75V10.2125L5.5125 6.9875L3.75 8.75L10 15L16.25 8.75Z'
+                                            fill={omouBlue}
+                                        />
+                                    </SvgIcon>
+                                </IconButton>
+                            </div>
+
+                            <Grid style={{ textAlign: 'right', marginTop: '2em' }} item xs={12}>
+                                <ResponsiveButton
+                                    style={{ border: 'none' }}
+                                    variant='outlined'
+                                    template={template}
+                                    onClick={closeModal}
+                                >
+                                    done
+                                </ResponsiveButton>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                );
             default:
                 return 'Unknown';
         }
