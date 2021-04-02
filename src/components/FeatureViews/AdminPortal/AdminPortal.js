@@ -7,47 +7,49 @@ import Modal from '@material-ui/core/Modal';
 import './AdminPortal.scss';
 import AdminActionCenter from './AdminActionCenter';
 import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
-import BulkUploadModal from './BulkUploadModal'
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton'
+import BulkUploadModal from './BulkUploadModal';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const AdminPortal = () => {
-    const [ modalOpen, setModalOpen ] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
 
-return (
-    <form>
-        <Grid container direction='row'>
+    return (
+        <form>
             <Grid container direction='row'>
-                <Grid item xs={6}>
-                    <Typography align='left' variant='h1'>
-                        Admin Portal
-                    </Typography>
-                </Grid>
-                <Grid item xs={6} style={{ textAlign:'right'}}>
-                    <ResponsiveButton 
-                        variant='outlined'
-                        onClick={handleModalOpen} 
+                <Grid container direction='row'>
+                    <Grid item xs={6}>
+                        <Typography align='left' variant='h1'>
+                            Admin Portal
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: 'right' }}>
+                        <ResponsiveButton
+                            variant='outlined'
+                            onClick={handleModalOpen}
+                        >
+                            Bulk Upload
+                        </ResponsiveButton>
+                    </Grid>
+                    <Modal
+                        disableBackdropClick
+                        open={modalOpen}
+                        onClose={handleModalClose}
                     >
-                        Bulk Upload
-                    </ResponsiveButton>
+                        <BulkUploadModal closeModal={handleModalClose} />
+                    </Modal>
                 </Grid>
-                <Modal
-                    open={modalOpen}
-                    onClose={handleModalClose}
-                >
-                    <BulkUploadModal closeModal={handleModalClose} />
-                </Modal>
+                <Grid item xs={12}>
+                    <AdminActionCenter />
+                </Grid>
+                <Grid item xs={12}>
+                    <AdminViewsRoutes />
+                </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <AdminActionCenter />
-            </Grid>
-            <Grid item xs={12}>
-                <AdminViewsRoutes />
-            </Grid>
-        </Grid>
-    </form>
-)};
+        </form>
+    );
+};
 
 AdminPortal.propTypes = {};
 
