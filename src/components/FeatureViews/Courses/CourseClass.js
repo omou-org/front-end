@@ -86,6 +86,7 @@ export const GET_CLASS = gql`
             courseLinkUser {
                 firstName
                 lastName
+                id
             }
             courseCategory {
                 name
@@ -121,13 +122,16 @@ export const GET_CLASS = gql`
                         }
                         accountType
                         phoneNumber
+                        studentIdList
                     }
                     studentschoolinfoSet {
                         textbook
                         teacher
                         name
+                        id
                     }
                     accountType
+                    userUuid
                 }
             }
             sessionSet {
@@ -140,6 +144,7 @@ export const GET_CLASS = gql`
                 dayOfWeek
                 id
             }
+            courseId
         }
         enrollments(courseId: $id) {
             id
@@ -159,6 +164,18 @@ export const GET_CLASS = gql`
                     accountType
                     phoneNumber
                 }
+            }
+        }
+        announcements(courseId: $id) {
+            subject
+            id
+            body
+            createdAt
+            updatedAt
+            poster {
+                firstName
+                lastName
+                id
             }
         }
     }
@@ -189,19 +206,12 @@ const CourseClass = () => {
     ];
 
     const parentNostudentEnrolledTab = [{ label: 'About Course' }];
-
     const { data, loading, error } = useQuery(GET_CLASS, {
+        fetchPolicy: 'network-only',
         variables: {
             id: id,
         },
     });
-
-    const getAnnouncements = useQuery(GET_ANNOUNCEMENTS, {
-        variables: {
-            id: id,
-        },
-    });
-
     const {
         data: studentData,
         loading: studentLoading,
@@ -232,13 +242,9 @@ const CourseClass = () => {
         },
     });
 
-    if (loading || getAnnouncements.loading || studentLoading)
-        return <Loading />;
-    if (error) return console.error(error);
-    if (studentError) return console.error(studentError);
+    if (loading || studentLoading) return <Loading />;
+    if (error || studentError) return console.error(error);
 
-    if (getAnnouncements.error)
-        return console.error(getAnnouncements.error.message);
     const {
         academicLevel,
         courseLink,
@@ -253,6 +259,7 @@ const CourseClass = () => {
         sessionSet,
         courseLinkUser,
     } = data.course;
+
     const { name: courseCategory } = data.course.courseCategory;
 
     const startingDate = moment(startDate).format('L');
@@ -479,11 +486,7 @@ const CourseClass = () => {
                     </TabPanel>
 
                     <TabPanel index={1} value={index}>
-                        <Announcements
-                            announcementsData={
-                                getAnnouncements.data.announcements
-                            }
-                        />
+                        <Announcements announcementsData={data.announcements} />
                     </TabPanel>
 
                     <TabPanel index={2} value={index}>
