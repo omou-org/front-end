@@ -41,8 +41,7 @@ const EventPopoverWrapper = ({ children, popover }) => {
     };
 
     const handlePopoverOpen = (event) => {
-        console.log(event.currentTarget);
-        setAnchorEl(event.currentTarget);
+        setAnchorEl(event.target);
     };
 
     const handlePopoverClose = () => {

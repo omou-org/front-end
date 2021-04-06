@@ -65,8 +65,8 @@ export const DayAbbreviation = {
 // vs.
 // M 10:00 AM - 11:00 AM and W 2:00 PM - 3:00 PM -> false
 export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let firstAvailabilityStartTime = availabilityList[0].startTime;
-    let firstAvailabilityEndTime = availabilityList[0].endTime;
+    let firstAvailabilityStartTime = availabilityList[0]?.startTime;
+    let firstAvailabilityEndTime = availabilityList[0]?.endTime;
 
     for (let availability of availabilityList) {
         if (

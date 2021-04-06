@@ -17,10 +17,10 @@ const CourseAvailabilites = ({ availabilityList, variant, style, rest }) => {
                 ''
             );
 
-            const startTime = moment(availabilityList[0].startTime, [
+            const startTime = moment(availabilityList[0]?.startTime, [
                 'HH:mm:ss',
             ]).format('h:mma');
-            const endTime = moment(availabilityList[0].endTime, [
+            const endTime = moment(availabilityList[0]?.endTime, [
                 'HH:mm:ss',
             ]).format('h:mma');
 
