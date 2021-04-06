@@ -1,14 +1,14 @@
 import React from 'react';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import NavLinkNoDup from '../Routes/NavLinkNoDup';
-import {makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import './Navigation.scss';
 import OmouTheme from '../../theme/muiTheme';
-import {NavList} from './NavigationAccessList';
+import { NavList } from './NavigationAccessList';
 import Loading from '../OmouComponents/Loading';
 import AuthenticatedNavigationView from './AuthenticatedNavigationView';
 import LoginPage from '../Authentication/LoginPage';
@@ -70,24 +70,28 @@ const NavigationContainer = () => {
     };
 
     const isAccountLandingView = (accountType, NavItemName, location) => {
-        const isDashboardLanding = NavItemName === "Dashboard" && location.pathname === "/";
-        const isSchedulerLanding = NavItemName === "Schedule" && location.pathname === "/";
-        const isInstructorOrParentLanding = (accountType === "INSTRUCTOR" || accountType === "PARENT") &&
+        const isDashboardLanding =
+            NavItemName === 'Dashboard' && location.pathname === '/';
+        const isSchedulerLanding =
+            NavItemName === 'Schedule' && location.pathname === '/';
+        const isInstructorOrParentLanding =
+            (accountType === 'INSTRUCTOR' || accountType === 'PARENT') &&
             isSchedulerLanding;
-        const isReceptionistOrAdminLanding = (accountType === "RECEPTIONIST" || accountType === "ADMIN") &&
+        const isReceptionistOrAdminLanding =
+            (accountType === 'RECEPTIONIST' || accountType === 'ADMIN') &&
             isDashboardLanding;
         return isReceptionistOrAdminLanding || isInstructorOrParentLanding;
-    }
+    };
 
     if ((!NavigationList || !ACCOUNT_TYPE) && token) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     const UserNavigationOptions = (
         <div className='DrawerList'>
             <List className='list'>
                 {NavigationList &&
-                NavigationList.map((NavItem) => (
+                    NavigationList.map((NavItem) => (
                         <ListItem
                             className={`listItem ${classes.navigationIconStyle}`}
                             component={NavLinkNoDup}
@@ -96,7 +100,11 @@ const NavigationContainer = () => {
                                     match?.url ||
                                     isAccountFormActive(location, NavItem) ||
                                     isCourseFormActive(location, NavItem) ||
-                                    isAccountLandingView(ACCOUNT_TYPE, NavItem.name, location)
+                                    isAccountLandingView(
+                                        ACCOUNT_TYPE,
+                                        NavItem.name,
+                                        location
+                                    )
                                 );
                             }}
                             key={NavItem.name}
