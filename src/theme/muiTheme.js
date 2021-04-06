@@ -151,17 +151,17 @@ export const new_course_form = {
     dropdowns: {
         width: '216px',
         display: 'block',
-        margin: '2px 0 14px 0'
+        margin: '2px 0 14px 0',
     },
     textFields: {
         width: '432px',
         display: 'block',
-        margin: '14px 0 10px 0'
+        margin: '14px 0 10px 0',
     },
     textFields_short: {
         width: '180px',
         display: 'block',
-        margin: '14px 0 10px 0'
+        margin: '14px 0 10px 0',
     },
 };
 

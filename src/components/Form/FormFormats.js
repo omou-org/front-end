@@ -1,21 +1,24 @@
 import * as types from 'actions/actionTypes';
-import {createTutoringDetails, submitRegistration,} from '../OmouComponents/RegistrationUtils';
-import {instance} from 'actions/apiActions';
+import {
+    createTutoringDetails,
+    submitRegistration,
+} from '../OmouComponents/RegistrationUtils';
+import { instance } from 'actions/apiActions';
 import React from 'react';
-import {FORM_ERROR} from 'final-form';
+import { FORM_ERROR } from 'final-form';
 import * as Fields from './FieldComponents/Fields';
-import {fieldsMargins, StudentSelect} from './FieldComponents/Fields';
+import { fieldsMargins, StudentSelect } from './FieldComponents/Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
-import {client} from 'index';
+import { client } from 'index';
 import gql from 'graphql-tag';
-import {fullName} from '../../utils';
+import { fullName } from '../../utils';
 import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
-import {USER_QUERIES} from '../FeatureViews/Accounts/UserProfile';
+import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
-import {GET_CLASS} from '../FeatureViews/Courses/CourseClass';
-import {GET_ALL_COURSES} from '../FeatureViews/Registration/RegistrationLanding';
-import {new_course_form} from '../../theme/muiTheme';
+import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
+import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
+import { new_course_form } from '../../theme/muiTheme';
 
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
@@ -1427,7 +1430,11 @@ export default {
                         name: 'totalTuition',
                         label: 'Total Tuition',
                         required: true,
-                        component: <Fields.TextField style={new_course_form.textFields}/>,
+                        component: (
+                            <Fields.TextField
+                                style={new_course_form.textFields}
+                            />
+                        ),
                         validator: Yup.number().min(0),
                     },
                 ],
