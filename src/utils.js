@@ -345,7 +345,7 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
 };
 
 export const capitalizeString = (string) =>
-    string.replace(/^\w/, (lowerCaseString) => lowerCaseString.toUpperCase());
+    string[0].toUpperCase() + string.slice(1).toLowerCase();
 
 export const startAndEndDate = (start, end, pacific) => {
     let endDate, getEndDate, setDate, startDate;

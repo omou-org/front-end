@@ -88,7 +88,7 @@ export const h2 = {
     fontWeight: 'bold',
     fontFamily: 'Roboto',
     lineHeight: '40px',
-    color: slateGrey,
+    color: goth,
 };
 export const h3 = {
     fontSize: '24px',
@@ -227,7 +227,7 @@ const theme = createMuiTheme({
                 '&:hover': {
                     backgroundColor: buttonBlue,
                     opacity: '80%',
-                    border: 'rgba(40, 159, 195, 0.8)',
+                    border: '2px solid rgba(40, 159, 195, 0.8)',
                     '-webkit-background-clip': 'padding-box',
                     'background-clip': 'padding-box',
                 },

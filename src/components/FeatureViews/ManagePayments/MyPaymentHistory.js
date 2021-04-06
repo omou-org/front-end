@@ -1,3 +1,8 @@
+/**
+ * @description Not is use - working to migrate to new Invoices component
+ *
+ */
+
 import React, { useEffect, useState } from 'react';
 import PaymentTable from '../Accounts/TabComponents/PaymentTable';
 import gql from 'graphql-tag';
@@ -17,12 +22,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 
 export const GET_PARENT_PAYMENTS_FILTERED = gql`
-    query ParentPayments($parentId: ID!, $startDate: String, $endDate: String) {
-        payments(
-            parentId: $parentId
-            startDate: $startDate
-            endDate: $endDate
-        ) {
+    query ParentPayments {
+        invoices {
             id
             createdAt
             registrationSet {

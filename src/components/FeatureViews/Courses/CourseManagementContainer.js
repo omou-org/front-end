@@ -142,6 +142,7 @@ export const GET_STUDENTS = gql`
                     lastName
                 }
                 enrollmentSet {
+                    id
                     course {
                         id
                         title
@@ -305,7 +306,7 @@ const CourseFilterDropdown = ({
     const ChosenFiltersOption = filterList.map(filterOptionsMapper);
 
     return (
-        <Grid item xs={3}>
+        <Grid item>
             <FormControl className={classes.margin}>
                 <Select
                     labelId='course-management-sort-tab'
@@ -313,8 +314,8 @@ const CourseFilterDropdown = ({
                     displayEmpty
                     value={filter}
                     onChange={handleChange}
-                    classes={{ select: classes.menuSelect }}
-                    input={<BootstrapInput />}
+                    classes={{select: classes.menuSelect}}
+                    input={<BootstrapInput/>}
                     MenuProps={{
                         classes: { list: classes.dropdown },
                         anchorOrigin: {
