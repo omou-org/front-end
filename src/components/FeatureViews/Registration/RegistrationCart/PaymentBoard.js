@@ -1,24 +1,20 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
-import { RegistrationContext } from './RegistrationContext';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import React, {useCallback, useContext, useState} from 'react';
+import {RegistrationContext} from './RegistrationContext';
+import {useMutation, useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
-import Checkbox from '@material-ui/core/Checkbox/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
-import { useHistory } from 'react-router-dom';
-import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
-import { GET_ALL_COURSES } from '../RegistrationLanding';
-import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
-import { GET_REGISTRATION_CART } from '../SelectParentDialog';
-import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
+import {GET_PAYMENT} from '../../Invoices/InvoiceReceipt';
+import {GET_STUDENTS_AND_ENROLLMENTS} from '../CourseList';
+import {GET_REGISTRATION_CART} from '../SelectParentDialog';
+import {CREATE_REGISTRATION_CART} from './RegistrationCartContainer';
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -26,6 +22,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import {GET_ENROLLMENT_DETAILS} from "../RegistrationCourseEnrollments";
+import {GET_ALL_COURSES} from "../RegistrationLanding";
 
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote(
@@ -208,7 +205,7 @@ const STRIPE_API_KEY = process.env.REACT_APP_STRIPE_KEY;
 
 const PaymentBoard = () => {
     const {registrationCart, currentParent} = useContext(RegistrationContext);
-    const [paymentMethod, setPaymentMethod] = useState(null);
+    const [paymentMethodState, setPaymentMethod] = useState(null);
 
     const classRegistrations = [].concat(Object.values(registrationCart).flat())
         .filter((registration) => registration.course.id && registration.checked)
@@ -227,7 +224,7 @@ const PaymentBoard = () => {
             "disabledDiscounts": [],
             priceAdjustment,
         },
-        "skip": paymentMethod === null,
+        "skip": paymentMethodStateState === null,
     });
     const classes = useRowStyles();
 
@@ -251,7 +248,7 @@ const PaymentBoard = () => {
                 "variables": {"studentIds": currentParent.studentList},
             });
             const cachedCourses = cache.readQuery({
-                "query": GET_COURSES,
+                "query": GET_ALL_COURSES,
             }).courses;
 
             const newEnrollments = data.createEnrollments.enrollments.map((enrollment) => ({
@@ -506,16 +503,16 @@ const PaymentBoard = () => {
                             </Typography>
                         </FormLabel>
                         <RadioGroup aria-label="gender" name="gender1"
-                            onChange={handleMethodChange} value={paymentMethod}>
+                                    onChange={handleMethodChange} value={paymentMethodState}>
                             {
                                 paymentOptions.map(({label, value}) => (
                                     <FormControlLabel
                                         color="primary"
-                                        control={<Radio />}
+                                        control={<Radio/>}
                                         data-cy={`${label}-checkbox`}
                                         key={value}
                                         label={label}
-                                        value={value} />
+                                        value={value}/>
                                 ))
                             }
                         </RadioGroup>
@@ -564,10 +561,10 @@ const PaymentBoard = () => {
                     <ResponsiveButton
                         color="primary"
                         data-cy="pay-action"
-                        disabled={paymentMethod === null || priceQuote.total === "-" || priceQuote < 0}
+                        disabled={paymentMethodState === null || priceQuote.total === "-" || priceQuote < 0}
                         onClick={handlePayment}
                         variant="contained">
-                        {paymentMethod === "credit_card" ? "Pay Now" : "Pay Later"}
+                        {paymentMethodState === "credit_card" ? "Pay Now" : "Pay Later"}
                     </ResponsiveButton>
                 </Grid>
             </Grid>
