@@ -18,6 +18,7 @@ import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
 import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
+import { GET_COURSES_BY_ACCOUNT_ID } from '../FeatureViews/Courses/CourseManagementContainer';
 import { new_course_form } from '../../theme/muiTheme';
 
 export const GET_ADMIN = gql`
@@ -1699,25 +1700,40 @@ export default {
                         const newCourse = data.createCourse.course;
                         const created = data.createCourse.created;
 
-                        console.log({created});
-                        console.log({newCourse});
-
                         if (created) {
-                            const cachedCourses = cache.readQuery({
+                            // Update cache for Registration Courses
+                            const cachedRegistrationCourses = cache.readQuery({
                                 query: GET_ALL_COURSES,
                             });
 
-                            console.log({cachedCourses});
-
-                            if (cachedCourses !== null) {
+                            if (cachedRegistrationCourses !== null) {
                                 cache.writeQuery({
                                     data: {
-                                        courses: [...cachedCourses.courses, newCourse],
+                                        courses: [...cachedRegistrationCourses.courses, newCourse],
                                     },
                                     query: GET_ALL_COURSES,
                                 });
                             }
 
+                            // Update cache for Course Management Courses
+                            const cachedCourseManagementCourses = cache.readQuery({
+                                query: GET_COURSES_BY_ACCOUNT_ID,
+                                variables: {
+                                    accountId: ''
+                                }
+                            });
+
+                            if (cachedCourseManagementCourses !== null) {
+                                cache.writeQuery({
+                                    data: {
+                                        courses: [...cachedCourseManagementCourses.courses, newCourse],
+                                    },
+                                    query: GET_COURSES_BY_ACCOUNT_ID,
+                                    variables: {
+                                        accountId: ''
+                                    }
+                                });
+                            }
                         } else {
                             const cachedCourse = cache.readQuery({
                                 query: GET_CLASS,
