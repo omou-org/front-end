@@ -1,4 +1,5 @@
 import React, {useCallback, useContext, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import {RegistrationContext} from './RegistrationContext';
 import {useMutation, useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
@@ -15,7 +16,6 @@ import {GET_PAYMENT} from '../../Invoices/InvoiceReceipt';
 import {GET_STUDENTS_AND_ENROLLMENTS} from '../CourseList';
 import {GET_REGISTRATION_CART} from '../SelectParentDialog';
 import {CREATE_REGISTRATION_CART} from './RegistrationCartContainer';
-
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -81,6 +81,7 @@ const CREATE_PAYMENT = gql`
 			$disabledDiscounts:[ID]
 			$priceAdjustment: Float
 			$registrations:[EnrollmentQuote]!
+			$paymentStatus:PaymentChoiceEnum!
         ) {
          	__typename
 			createInvoice(
@@ -205,7 +206,8 @@ const STRIPE_API_KEY = process.env.REACT_APP_STRIPE_KEY;
 
 const PaymentBoard = () => {
     const {registrationCart, currentParent} = useContext(RegistrationContext);
-    const [paymentMethodState, setPaymentMethod] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState(null);
+    const history = useHistory();
 
     const classRegistrations = [].concat(Object.values(registrationCart).flat())
         .filter((registration) => registration.course.id && registration.checked)
@@ -224,10 +226,10 @@ const PaymentBoard = () => {
             "disabledDiscounts": [],
             priceAdjustment,
         },
-        "skip": paymentMethodStateState === null,
+        "skip": paymentMethod === null,
     });
     const classes = useRowStyles();
-
+    console.log(STRIPE_API_KEY)
     const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {"variables": {"studentIds": currentParent.studentIdList}});
     const [createEnrollments] = useMutation(CREATE_ENROLLMENTS, {
         "update": (cache, {data}) => {
@@ -271,7 +273,7 @@ const PaymentBoard = () => {
             });
 
             cache.writeQuery({
-                "query": GET_COURSES,
+                "query": GET_ALL_COURSES,
                 "data": {
                     "courses": cachedCourses,
                 },
@@ -351,6 +353,8 @@ const PaymentBoard = () => {
     });
     const [createPayment] = useMutation(CREATE_PAYMENT, {
         "onCompleted": ({createInvoice}) => {
+            console.log(STRIPE_API_KEY, process.env["REACT_APP_STRIPE_KEY "])
+
             // eslint-disable-next-line no-undef
             const stripe = Stripe(STRIPE_API_KEY, {
                 "stripeAccount": createInvoice.stripeConnectedAccount,
@@ -391,8 +395,6 @@ const PaymentBoard = () => {
     }, []);
 
     const handlePayment = async () => {
-		const paymentMethod = paymentMethodState.find(({ checked }) => checked)
-			?.value;
         const {"data": {enrollments}} = enrollmentResponse;
         const isSameEnrollment = ({enrollment, course, student}) =>
             enrollment.student.user.id === student && enrollment.course.id === course;
@@ -421,16 +423,17 @@ const PaymentBoard = () => {
                     registration.course === enrollment.course.id &&
                     registration.student === enrollment.student.user.id).id,
             }));
-
+        console.log(enrollmentsToCreate, existingEnrollments);
         try {
-            const newEnrollmentIDs = await createEnrollments({
+            const areThereNewEnrollments = enrollmentsToCreate.length > 0;
+            const newEnrollments = areThereNewEnrollments ? await createEnrollments({
                 "variables": {
                     "enrollments": enrollmentsToCreate,
                 },
-            });
+            }).data.createEnrollments.enrollments : [];
 
             const registrations = [
-                ...newEnrollmentIDs.data.createEnrollments.enrollments.map((enrollment) => ({
+                ...newEnrollments.map((enrollment) => ({
                     "enrollment": enrollment.id,
                     "numSessions": classRegistrations.find(({course, student}) =>
                         isSameEnrollment({
@@ -445,7 +448,7 @@ const PaymentBoard = () => {
                 })),
             ];
 
-            await createPayment({
+            const payment = await createPayment({
                 "variables": {
                     "parent": currentParent.user.id,
                     "method": paymentMethod,
@@ -453,7 +456,7 @@ const PaymentBoard = () => {
                     "disabledDiscounts": [],
                     "priceAdjustment": Number(priceAdjustment),
                     registrations,
-					paymentStatus: 'PAID',
+                    paymentStatus: 'PAID',
                 },
             });
 
@@ -503,7 +506,7 @@ const PaymentBoard = () => {
                             </Typography>
                         </FormLabel>
                         <RadioGroup aria-label="gender" name="gender1"
-                                    onChange={handleMethodChange} value={paymentMethodState}>
+                                    onChange={handleMethodChange} value={paymentMethod}>
                             {
                                 paymentOptions.map(({label, value}) => (
                                     <FormControlLabel
@@ -561,10 +564,10 @@ const PaymentBoard = () => {
                     <ResponsiveButton
                         color="primary"
                         data-cy="pay-action"
-                        disabled={paymentMethodState === null || priceQuote.total === "-" || priceQuote < 0}
+                        disabled={paymentMethod === null || priceQuote.total === "-" || priceQuote < 0}
                         onClick={handlePayment}
                         variant="contained">
-                        {paymentMethodState === "credit_card" ? "Pay Now" : "Pay Later"}
+                        {paymentMethod === "credit_card" ? "Pay Now" : "Pay Later"}
                     </ResponsiveButton>
                 </Grid>
             </Grid>
