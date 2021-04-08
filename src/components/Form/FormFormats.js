@@ -1413,14 +1413,14 @@ export default {
                         ),
                     },
                     {
-                        name: 'meetingLink',
+                        name: 'courseLink',
                         ...stringField(
                             'Meeting Link',
                             new_course_form.textFields
                         ),
                     },
                     {
-                        name: 'gclassroomEnrollmentCode',
+                        name: 'googleClassCode',
                         ...stringField(
                             'GClassromm Enrollment Code',
                             new_course_form.textFields
@@ -1578,7 +1578,9 @@ export default {
                     $maxCapacity: Int
                     $totalTuition: Decimal
                     $title: String!
-                    $course_link: String
+                    $courseLink: String
+                    $classroomLocation: String
+                    $googleClassCode: String
                 ) {
                     createCourse(
                         id: $id
@@ -1589,13 +1591,14 @@ export default {
                         instructor: $instructor
                         startDate: $startDate
                         endDate: $endDate
-                        room: "Stanford Room"
+                        room: $classroomLocation
                         maxCapacity: $maxCapacity
                         courseCategory: $courseCategory
                         totalTuition: $totalTuition
                         isConfirmed: $isConfirmed
                         availabilities: $availabilities
-                        course_link: $course_link
+                        courseLink: $courseLink
+                        googleClassCode: $googleClassCode
                     ) {
                         created
                         course {
@@ -1696,17 +1699,25 @@ export default {
                         const newCourse = data.createCourse.course;
                         const created = data.createCourse.created;
 
+                        console.log({created});
+                        console.log({newCourse});
+
                         if (created) {
                             const cachedCourses = cache.readQuery({
                                 query: GET_ALL_COURSES,
                             });
 
-                            cache.writeQuery({
-                                data: {
-                                    courses: [...cachedCourses, newCourse],
-                                },
-                                query: GET_ALL_COURSES,
-                            });
+                            console.log({cachedCourses});
+
+                            if (cachedCourses !== null) {
+                                cache.writeQuery({
+                                    data: {
+                                        courses: [...cachedCourses.courses, newCourse],
+                                    },
+                                    query: GET_ALL_COURSES,
+                                });
+                            }
+
                         } else {
                             const cachedCourse = cache.readQuery({
                                 query: GET_CLASS,
