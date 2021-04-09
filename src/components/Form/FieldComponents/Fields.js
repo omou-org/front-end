@@ -148,40 +148,6 @@ export const DataSelect = ({
     const defaultSelectedHandler = (option, value) =>
         option.value === value.value || value === '';
 
-    const DataSelectInput = useCallback(() => (
-        <Autocomplete
-            // label={label}
-            // required={required}
-            // helperText={isError ? error || submitError : helperText}
-            // error={isError}
-            // options={options}
-            // name={name}
-            // // placeholder={placeholder}
-            // variant={variant}
-            getOptionLabel={getLabel}
-            loading={loading}
-            name={name}
-            onInputChange={handleQueryChange}
-            getOptionSelected={defaultSelectedHandler}
-            options={options}
-            renderOption={renderOption}
-            {...props}
-            // {...restTextFieldProps}
-            // fullWidth={true}
-        />
-    ));
-
-    let renderInput;
-    // switch (variant) {
-    //     case "outlined":
-    //         props.renderInput = DataSelectInput;
-    //         break;
-
-    // }
-
-    // const renderInput = useCallback(
-    //     () => <TextField variant="outlined" label="10,000 options" />, []
-    // );
     console.log(<Fields.Autocomplete />);
 
     return (
