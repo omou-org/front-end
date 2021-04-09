@@ -148,8 +148,6 @@ export const DataSelect = ({
     const defaultSelectedHandler = (option, value) =>
         option.value === value.value || value === '';
 
-    console.log(<Fields.Autocomplete />);
-
     return (
         <Fields.Autocomplete
             getOptionLabel={getLabel}
@@ -160,7 +158,6 @@ export const DataSelect = ({
             options={options}
             renderOption={renderOption}
             classes={{ inputRoot: { fontSize: '70px' } }}
-            // style={{border:"1px solid black", height:"30px"}}
             {...props}
         />
     );
