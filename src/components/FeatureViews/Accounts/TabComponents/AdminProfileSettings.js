@@ -86,7 +86,7 @@ export default function AdminProfileSettings({ user }){
         },
     });
 
-    const { accountType, email, google_access_token, google_courses } =
+    const { accountType, email, google_courses } =
         useSelector(({ auth }) => auth) || [];
         
 
@@ -154,6 +154,8 @@ export default function AdminProfileSettings({ user }){
 
     const onSuccess = (response) => {
         refreshTokenSetup(response).then(()=>{getCourses();});
+        // check if googleAuthEmail is filled
+        // setGoogleAuthEmail in mainframe
     };
 
     const handleGClassSettingChange = () => {
