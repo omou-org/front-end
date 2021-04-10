@@ -1709,29 +1709,37 @@ export default {
                             if (cachedRegistrationCourses !== null) {
                                 cache.writeQuery({
                                     data: {
-                                        courses: [...cachedRegistrationCourses.courses, newCourse],
+                                        courses: [
+                                            ...cachedRegistrationCourses.courses,
+                                            newCourse,
+                                        ],
                                     },
                                     query: GET_ALL_COURSES,
                                 });
                             }
 
                             // Update cache for Course Management Courses
-                            const cachedCourseManagementCourses = cache.readQuery({
-                                query: GET_COURSES_BY_ACCOUNT_ID,
-                                variables: {
-                                    accountId: ''
+                            const cachedCourseManagementCourses = cache.readQuery(
+                                {
+                                    query: GET_COURSES_BY_ACCOUNT_ID,
+                                    variables: {
+                                        accountId: '',
+                                    },
                                 }
-                            });
+                            );
 
                             if (cachedCourseManagementCourses !== null) {
                                 cache.writeQuery({
                                     data: {
-                                        courses: [...cachedCourseManagementCourses.courses, newCourse],
+                                        courses: [
+                                            ...cachedCourseManagementCourses.courses,
+                                            newCourse,
+                                        ],
                                     },
                                     query: GET_COURSES_BY_ACCOUNT_ID,
                                     variables: {
-                                        accountId: ''
-                                    }
+                                        accountId: '',
+                                    },
                                 });
                             }
                         } else {
