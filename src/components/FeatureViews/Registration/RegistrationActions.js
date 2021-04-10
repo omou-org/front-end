@@ -16,6 +16,7 @@ import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
+import AddIcon from '@material-ui/icons/Add';
 import * as types from 'actions/actionTypes';
 
 const GET_PARENT_QUERY = gql`
@@ -114,7 +115,19 @@ const RegistrationActions = () => {
                     marginBottom: '24px',
                 }}
             >
-                <Grid item md={9}>
+                <Grid item md={2}>
+                    {AuthUser.accountType === 'ADMIN' && (
+                        <ResponsiveButton
+                            component={Link}
+                            to='/form/course_details/add'
+                            variant='contained'
+                            startIcon={<AddIcon />}
+                        >
+                            New Class
+                        </ResponsiveButton>
+                    )}
+                </Grid>
+                <Grid item md={7}>
                     {displayRegistrationButton && (
                         <Grid item xs={2}>
                             <ResponsiveButton

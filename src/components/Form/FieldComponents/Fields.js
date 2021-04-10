@@ -28,8 +28,9 @@ const useSelectStyles = makeStyles({
 });
 
 export const fieldsMargins = {
-    marginTop: '16px',
-    marginBottom: '8px',
+    width: '216px',
+    marginTop: '14px',
+    marginBottom: '10px',
 };
 
 export const { TextField, Checkboxes } = Fields;
@@ -119,7 +120,13 @@ export const Autocomplete = ({ name, options, ...props }) => {
     );
 };
 
-export const DataSelect = ({ request, optionsMap, name, ...props }) => {
+export const DataSelect = ({
+    request,
+    optionsMap,
+    name,
+    variant,
+    ...props
+}) => {
     const [query, setQuery] = useState();
 
     const handleQueryChange = useCallback((_, newQuery) => {
@@ -150,6 +157,7 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
             getOptionSelected={defaultSelectedHandler}
             options={options}
             renderOption={renderOption}
+            classes={{ inputRoot: { fontSize: '70px' } }}
             {...props}
         />
     );
