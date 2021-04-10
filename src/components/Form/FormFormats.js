@@ -1423,7 +1423,7 @@ export default {
                     {
                         name: 'googleClassCode',
                         ...stringField(
-                            'GClassromm Enrollment Code',
+                            'GClassroom Enrollment Code',
                             new_course_form.textFields
                         ),
                     },
