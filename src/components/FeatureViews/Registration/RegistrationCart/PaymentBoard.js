@@ -423,7 +423,7 @@ const PaymentBoard = () => {
                     registration.course === enrollment.course.id &&
                     registration.student === enrollment.student.user.id).id,
             }));
-        console.log(enrollmentsToCreate, existingEnrollments);
+        console.log({enrollmentsToCreate, existingEnrollments});
         try {
             const areThereNewEnrollments = enrollmentsToCreate.length > 0;
             const newEnrollments = areThereNewEnrollments ? await createEnrollments({

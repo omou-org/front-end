@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 
 import EnrollmentSessionRow from './EnrollmentSessionRow';
 import Dialog from '@material-ui/core/Dialog';
@@ -20,14 +20,14 @@ import Switch from '@material-ui/core/Switch';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { LabelBadge } from '../../../../theme/ThemedComponents/Badge/LabelBadge';
-import { initializeRegistration } from 'actions/registrationActions';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {makeStyles} from '@material-ui/core/styles';
+import {LabelBadge} from '../../../../theme/ThemedComponents/Badge/LabelBadge';
+import {initializeRegistration} from 'actions/registrationActions';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from 'components/OmouComponents/AddSessions';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
-import { fullName } from '../../../../utils';
+import {fullName} from '../../../../utils';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -165,7 +165,7 @@ const CourseSessionStatus = () => {
     }, [dispatch]);
 
     if (enrollmentLoading || sessionsLoading) {
-        return <Loading />;
+        return <Loading/>;
     }
     if (enrollmentError || sessionsError) {
         return (
@@ -175,7 +175,8 @@ const CourseSessionStatus = () => {
             </Typography>
         );
     }
-    sessionsData.sessions.sort((a, b) =>
+    console.log(sessionsData);
+    sessionsData.sessions.slice().sort((a, b) =>
         a.startDatetime > b.startDatetime
             ? 1
             : b.startDatetime > a.startDatetime
@@ -270,11 +271,8 @@ const CourseSessionStatus = () => {
     };
 
     return (
-        <Grid item xs={12} container>
-            <Grid className='course-session-status' container>
-                <Grid item xs={12}>
-                    <hr />
-                </Grid>
+        <>
+            <Grid container>
                 <Grid item xs={12}>
                     <Typography
                         align='left'
@@ -418,7 +416,7 @@ const CourseSessionStatus = () => {
                     </ResponsiveButton>
                 </DialogActions>
             </Dialog>
-        </Grid>
+        </>
     );
 };
 
