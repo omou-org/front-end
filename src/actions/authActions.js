@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-import { client } from 'index';
+import {client} from 'index';
 import gql from 'graphql-tag';
 
 const GET_EMAIL = gql`
@@ -85,10 +85,13 @@ export const setToken = async (token, shouldSave) => {
                 },
             },
             query: GET_ACCOUNT_TYPE,
-            variables: { username: email },
+            variables: {username: email},
         });
 
-        const { accountType, user, phoneNumber } = userInfo;
+        const {accountType, user, phoneNumber} = userInfo;
+
+        sessionStorage.setItem('token', token);
+
         if (shouldSave) {
             localStorage.setItem('token', token);
         }
@@ -130,6 +133,7 @@ export const setToken = async (token, shouldSave) => {
 
 export const logout = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     client.clearStore();
     return {
         type: types.LOGOUT,

@@ -229,7 +229,7 @@ const PaymentBoard = () => {
         "skip": paymentMethod === null,
     });
     const classes = useRowStyles();
-    console.log(STRIPE_API_KEY)
+
     const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {"variables": {"studentIds": currentParent.studentIdList}});
     const [createEnrollments] = useMutation(CREATE_ENROLLMENTS, {
         "update": (cache, {data}) => {
@@ -423,17 +423,19 @@ const PaymentBoard = () => {
                     registration.course === enrollment.course.id &&
                     registration.student === enrollment.student.user.id).id,
             }));
-        console.log({enrollmentsToCreate, existingEnrollments});
+        // console.log({enrollmentsToCreate, existingEnrollments});
         try {
             const areThereNewEnrollments = enrollmentsToCreate.length > 0;
             const newEnrollments = areThereNewEnrollments ? await createEnrollments({
                 "variables": {
                     "enrollments": enrollmentsToCreate,
                 },
-            }).data.createEnrollments.enrollments : [];
-
+            }) : [];
+            // console.log(newEnrollments)
+            const actualNewEnrollments = newEnrollments.data.createEnrollments.enrollments
+            // console.log(actualNewEnrollments);
             const registrations = [
-                ...newEnrollments.map((enrollment) => ({
+                ...actualNewEnrollments.map((enrollment) => ({
                     "enrollment": enrollment.id,
                     "numSessions": classRegistrations.find(({course, student}) =>
                         isSameEnrollment({
