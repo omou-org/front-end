@@ -332,9 +332,12 @@ const CourseClass = () => {
                         style={{ marginTop: '.65em' }}
                     >
                         {title}
-                        {accountType === 'ADMIN' && 
-                            <GoolgeClassroomIntegrationicon googleCode={googleClassCode} style={{ marginLeft: '24px' }}/>
-                        }
+                        {accountType === 'ADMIN' && (
+                            <GoolgeClassroomIntegrationicon
+                                googleCode={googleClassCode}
+                                style={{ marginLeft: '24px' }}
+                            />
+                        )}
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>

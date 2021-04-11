@@ -48,7 +48,6 @@ export const RootRoutes = () => {
 
     return (
         <Switch>
-
             {/* Authentication views */}
             <Route path='/forgotpassword'>
                 <ForgotPassword />

@@ -122,9 +122,7 @@ const ClassEnrollmentRow = ({
         googleClassroomStatusMessage,
         setGoogleClassroomStatusMessage,
     ] = useState('Send Invite');
-    const { courses, google_courses } = useSelector(
-        ({ auth }) => auth
-    );
+    const { courses, google_courses } = useSelector(({ auth }) => auth);
 
     const getGoogleClassCode = (courses, courseID) => {
         let googleClassCode;
@@ -151,7 +149,7 @@ const ClassEnrollmentRow = ({
         }
     };
 
-    async function sendGoogleClassroomInvite(googleCourseID){
+    async function sendGoogleClassroomInvite(googleCourseID) {
         try {
             if (googleCourseID && studentEmail) {
                 const invitationResponse = await axios.post(
@@ -183,9 +181,11 @@ const ClassEnrollmentRow = ({
             courses,
             courseID
         );
-        const isInviteUnsent = googleClassroomStatusMessage == 'Resend Invite' || inviteStatus == 'Unsent'
+        const isInviteUnsent =
+            googleClassroomStatusMessage == 'Resend Invite' ||
+            inviteStatus == 'Unsent';
 
-        if ( isInviteUnsent) {
+        if (isInviteUnsent) {
             setGoogleClassroomStatusMessage('Resend Invite');
             sendGoogleClassroomInvite(omouGoogleIntegratedCourseID);
         } else if (googleClassroomStatusMessage == 'Invite Accepted') {

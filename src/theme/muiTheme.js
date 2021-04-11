@@ -173,9 +173,9 @@ export const GoogleLoginButtonStyles = {
         textAlign: 'center',
         marginLeft: '30px',
         color: white,
-        ...h5
-    }
-}
+        ...h5,
+    },
+};
 export const new_course_form = {
     dropdowns: {
         width: '216px',

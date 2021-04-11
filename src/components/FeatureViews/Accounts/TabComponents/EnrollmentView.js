@@ -134,9 +134,7 @@ const CourseSessionStatus = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [highlightSession, setHighlightSession] = useState(false);
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
-    const { courses, google_courses } = useSelector(
-        ({ auth }) => auth
-    );
+    const { courses, google_courses } = useSelector(({ auth }) => auth);
 
     const handleTabChange = useCallback((_, newTab) => {
         setActiveTab(newTab);
@@ -173,30 +171,29 @@ const CourseSessionStatus = () => {
         }
     };
 
-    async function googleClassroomUnenroll(){
+    async function googleClassroomUnenroll() {
         let googleCourseID = getGoogleCourseID(
             google_courses,
             courses,
             courseID
         );
-        console.log(googleCourseID)
+        console.log(googleCourseID);
         try {
             const response = await axios.delete(
-                    'https://classroom.googleapis.com/v1/courses',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem(
-                                'google_access_token'
-                            )}`,
-                            "Access-Control-Allow-Origin": "*",
-                        },
-                        data: {
-                            userId: studentEmail,
-                            courseId: googleCourseID
-                        }
-                    }
-                );
-
+                'https://classroom.googleapis.com/v1/courses',
+                {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem(
+                            'google_access_token'
+                        )}`,
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    data: {
+                        userId: studentEmail,
+                        courseId: googleCourseID,
+                    },
+                }
+            );
         } catch (error) {
             console.log(error);
         }

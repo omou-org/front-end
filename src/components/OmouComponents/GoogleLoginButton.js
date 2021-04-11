@@ -4,23 +4,20 @@ import google_logo from '../Google__G__Logo.svg.webp';
 import { GoogleLoginButtonStyles } from '../../theme/muiTheme';
 
 const useStyles = makeStyles(() => ({
-    ...GoogleLoginButtonStyles
+    ...GoogleLoginButtonStyles,
 }));
 
-const GoogleLoginButton = ({onClick}) => {
-
+const GoogleLoginButton = ({ onClick }) => {
     const classes = useStyles();
 
     return (
         <div className={classes.root} onClick={onClick}>
             <div className={classes.logoBackground}>
-                <img src={google_logo} width='16px' height='16px'/>
+                <img src={google_logo} width='16px' height='16px' />
             </div>
-            <div className={classes.buttonText}>
-                SIGN IN WITH GOOGLE
-            </div>
+            <div className={classes.buttonText}>SIGN IN WITH GOOGLE</div>
         </div>
-    )
-}
+    );
+};
 
-export default GoogleLoginButton
+export default GoogleLoginButton;

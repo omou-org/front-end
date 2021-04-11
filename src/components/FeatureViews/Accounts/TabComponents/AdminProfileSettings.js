@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {StyledTableRow} from './NotificationSettings';
+import React, { useEffect, useState } from 'react';
+import { StyledTableRow } from './NotificationSettings';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
@@ -45,16 +45,24 @@ const ADMIN_GC_ENABLED = gql`
 `;
 
 const SET_ADMIN_GC_ENABLED = gql`
-    mutation SetAdminGCEnabled($adminType: AdminTypeEnum!, $userID: ID!, $googleAuthEnabled: Boolean!) {
-        createAdmin(user: {id: $userID}, adminType: $adminType, googleAuthEnabled: $googleAuthEnabled) {
+    mutation SetAdminGCEnabled(
+        $adminType: AdminTypeEnum!
+        $userID: ID!
+        $googleAuthEnabled: Boolean!
+    ) {
+        createAdmin(
+            user: { id: $userID }
+            adminType: $adminType
+            googleAuthEnabled: $googleAuthEnabled
+        ) {
             admin {
                 googleAuthEnabled
             }
         }
     }
-`;  
+`;
 
-export default function AdminProfileSettings({ user }){
+export default function AdminProfileSettings({ user }) {
     const { userInfo } = user;
     const classes = useStyles();
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
@@ -63,42 +71,38 @@ export default function AdminProfileSettings({ user }){
     const [exitButtonMessage, setExitButtonMessage] = useState('No');
     var triggerState = false;
     const dispatch = useDispatch();
-    const adminGCEnabledResponse = useQuery(
-        ADMIN_GC_ENABLED,
+    const adminGCEnabledResponse = useQuery(ADMIN_GC_ENABLED, {
+        variables: { userID: userInfo.user.id },
+    });
+
+    const [setAdminGCEnabled, setAdminGCEnabledResults] = useMutation(
+        SET_ADMIN_GC_ENABLED,
         {
-            variables: { userID: userInfo.user.id },
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        admin: data.createAdmin.admin.googleAuthEnabled,
+                    },
+                    query: ADMIN_GC_ENABLED,
+                    variables: { userID: userInfo.user.id },
+                });
+            },
         }
     );
 
-    const [
-        setAdminGCEnabled,
-        setAdminGCEnabledResults,
-    ] = useMutation(SET_ADMIN_GC_ENABLED, {
-        update: (cache, { data }) => {
-            cache.writeQuery({
-                data: {
-                    admin:
-                        data.createAdmin.admin.googleAuthEnabled,
-                },
-                query: ADMIN_GC_ENABLED,
-                variables: { userID: userInfo.user.id},
-            });
-        },
-    });
-
     const { accountType, email, google_courses } =
         useSelector(({ auth }) => auth) || [];
-        
 
     useEffect(() => {
-        if(adminGCEnabledResponse.loading === false){
-            setGClassSetting(adminGCEnabledResponse.data.admin.googleAuthEnabled);
+        if (adminGCEnabledResponse.loading === false) {
+            setGClassSetting(
+                adminGCEnabledResponse.data.admin.googleAuthEnabled
+            );
         }
-    },[adminGCEnabledResponse.loading]);
+    }, [adminGCEnabledResponse.loading]);
 
     function refreshTokenSetup(res) {
-
-        return new Promise((resolve, reject) => { 
+        return new Promise((resolve, reject) => {
             let refreshTiming = 10000;
 
             const refreshToken = async () => {
@@ -107,27 +111,29 @@ export default function AdminProfileSettings({ user }){
                     'google_access_token',
                     newAuthRes.access_token
                 );
-                resolve()
+                resolve();
             };
             refreshToken();
-        })
+        });
     }
 
-    const noGoogleCoursesFoundOnInitialGoogleLogin = (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
+    const noGoogleCoursesFoundOnInitialGoogleLogin =
+        (google_courses === null || google_courses === undefined) &&
+        sessionStorage.getItem('google_access_token');
     async function getCourses() {
         if (noGoogleCoursesFoundOnInitialGoogleLogin) {
             try {
                 const response = await axios.get(
-                        'https://classroom.googleapis.com/v1/courses',
-                        {
-                            headers: {
-                                Authorization: `Bearer ${sessionStorage.getItem(
-                                    'google_access_token'
-                                )}`,
-                            },
-                        }
-                    );
-                if (google_courses === undefined || google_courses === null){
+                    'https://classroom.googleapis.com/v1/courses',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem(
+                                'google_access_token'
+                            )}`,
+                        },
+                    }
+                );
+                if (google_courses === undefined || google_courses === null) {
                     dispatch({
                         type: actions.SET_GOOGLE_COURSES,
                         payload: { google_courses: response?.data.courses },
@@ -143,39 +149,41 @@ export default function AdminProfileSettings({ user }){
     }
 
     function handleClose() {
-        if(exitButtonMessage=="No"){
+        if (exitButtonMessage == 'No') {
             setGClassSetting(false);
         }
         setGoogleLoginPromptOpen(false);
     }
 
-    const onFailure = (response) => {
-    };
+    const onFailure = (response) => {};
 
     const onSuccess = (response) => {
-        refreshTokenSetup(response).then(()=>{getCourses();});
+        refreshTokenSetup(response).then(() => {
+            getCourses();
+        });
         // check if googleAuthEmail is filled
         // setGoogleAuthEmail in mainframe
     };
 
     const handleGClassSettingChange = () => {
-        if(!gClassSetting){
+        if (!gClassSetting) {
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         }
         setGClassSetting(!gClassSetting);
         setAdminGCEnabled({
             variables: {
-                userID: userInfo.user.id, 
-                adminType: userInfo.adminType, 
-                googleAuthEnabled: !gClassSetting
-            }
+                userID: userInfo.user.id,
+                adminType: userInfo.adminType,
+                googleAuthEnabled: !gClassSetting,
+            },
         });
-    }
+    };
 
-    if (adminGCEnabledResponse.loading)
-        return <Loading />;
+    if (adminGCEnabledResponse.loading) return <Loading />;
 
-    return (<><Grid
+    return (
+        <>
+            <Grid
                 container
                 style={{
                     backgroundColor: '#F5F5F5',
@@ -190,7 +198,7 @@ export default function AdminProfileSettings({ user }){
             <TableContainer>
                 <Table className={classes.table} aria-label='simple table'>
                     <TableBody>
-                    <StyledTableRow>
+                        <StyledTableRow>
                             <TableCell
                                 component='th'
                                 scope='row'
@@ -206,15 +214,16 @@ export default function AdminProfileSettings({ user }){
                                     Google Classroom Integration
                                 </Typography>
                                 <span>
-                                    Enable admins to check the students Google Classroom enrollment invite and status. <br/> 
-                                    Enable admins to invite students to a Google Classroom. <br/> 
-                                    Enable admins to unenroll a student from a Google Classroom <br/>
+                                    Enable admins to check the students Google
+                                    Classroom enrollment invite and status.{' '}
+                                    <br />
+                                    Enable admins to invite students to a Google
+                                    Classroom. <br />
+                                    Enable admins to unenroll a student from a
+                                    Google Classroom <br />
                                 </span>
                             </TableCell>
-                            <TableCell
-                                align='center'
-                                style={{ width: '28%' }}
-                            >
+                            <TableCell align='center' style={{ width: '28%' }}>
                                 <Checkbox
                                     checked={gClassSetting}
                                     onChange={handleGClassSettingChange}
@@ -230,37 +239,35 @@ export default function AdminProfileSettings({ user }){
                 </Table>
             </TableContainer>
             <Dialog
-                        open={googleLoginPromptOpen}
-                        onClose={handleClose}
-                        aria-labelledby='dialog-title'
-                        aria-describedby='dialog-description'
-                    >
-                        <DialogTitle disableTypography id='dialog-title'>
-                            {'Sign in with Google'}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id='dialog-description'>
-                                Allow us to access your Google Classroom courses
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <ResponsiveButton
-                                onClick={handleClose}
-                                color='primary'
-                            >
-                                {exitButtonMessage}
-                            </ResponsiveButton>
-                            <GoogleLogin
-                                buttonText='Login'
-                                clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
-                                isSignedIn= 'True'
-                                onSuccess={onSuccess}
-                                onFailure={onFailure}
-                                cookiePolicy={'single_host_origin'}
-                                prompt='consent'
-                                scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
-                            />
-                        </DialogActions>
+                open={googleLoginPromptOpen}
+                onClose={handleClose}
+                aria-labelledby='dialog-title'
+                aria-describedby='dialog-description'
+            >
+                <DialogTitle disableTypography id='dialog-title'>
+                    {'Sign in with Google'}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id='dialog-description'>
+                        Allow us to access your Google Classroom courses
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton onClick={handleClose} color='primary'>
+                        {exitButtonMessage}
+                    </ResponsiveButton>
+                    <GoogleLogin
+                        buttonText='Login'
+                        clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
+                        isSignedIn='True'
+                        onSuccess={onSuccess}
+                        onFailure={onFailure}
+                        cookiePolicy={'single_host_origin'}
+                        prompt='consent'
+                        scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
+                    />
+                </DialogActions>
             </Dialog>
-            </>)
-};
+        </>
+    );
+}

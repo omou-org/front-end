@@ -22,17 +22,15 @@ import { fullName } from '../../utils';
 import { closeRegistrationCart } from '../OmouComponents/RegistrationUtils';
 
 import { useGoogleLogin } from 'react-google-login';
-import {onFailure} from './AuthenticatedNavigationView.js';
+import { onFailure } from './AuthenticatedNavigationView.js';
 
 const AuthenticatedNavBar = ({ toggleDrawer }) => {
-
     const dispatch = useDispatch();
     const history = useHistory();
     const authUser = useSelector(({ auth }) => auth);
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);
-
 
     const handleDrawerToggle = useCallback(() => {
         toggleDrawer(!mobileOpen);

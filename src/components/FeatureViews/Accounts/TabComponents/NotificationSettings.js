@@ -205,64 +205,70 @@ export default function NotificationSettings({ user }) {
                 userSettings = instructorNotificationSettings;
             }
         }
-        const SMSCourseAndScheduleUpdateSettings = [createOptInSetting(
-            'SMS Schedule Updates',
-            'Get notified for schedule changes by SMS',
-            {
-                settingName: 'scheduleUpdatesSms',
-                checked: userSettings?.scheduleUpdatesSms || false,
-            }
-        ),
-        createOptInSetting(
-            'SMS Course Requests',
-            'Get notified for cancellations by SMS',
-            {
-                settingName: 'courseRequestsSms',
-                checked: userSettings?.courseRequestsSms || false,
-            }
-        )];
-        const setUserSettings = (accountType) => ({
-            'PARENT': SMSCourseAndScheduleUpdateSettings,
-            'INSTRUCTOR': SMSCourseAndScheduleUpdateSettings,
-            'ADMIN': [
-                createOptInSetting(
-                    'Google Classroom Integration',
-                    'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
-                    {
-                        settingName: 'gClassIntegrationSetting',
-                        checked: false,
-                    },
-                ),
-            ],
-            'RECEPTIONIST': [
-                createOptInSetting(
-                    'Google Classroom Integration',
-                    'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
-                    {
-                        settingName: 'gClassIntegrationSetting',
-                        checked: false,
-                    },
-                ),
-            ],
-            'INSTRUCTOR':[],
-
-        }[accountType]);
-
-        const notReceptionOrAdmin = (userInfo.accountType !== 'RECEPTION' && userInfo.accountType !== 'ADMIN');
-        setNotificationRows([
-            ...(notReceptionOrAdmin ? createNotificationSetting(
-                'Session Reminder',
-                'Get notified when a session is coming up.',
+        const SMSCourseAndScheduleUpdateSettings = [
+            createOptInSetting(
+                'SMS Schedule Updates',
+                'Get notified for schedule changes by SMS',
                 {
-                    settingName: 'sessionReminderEmail',
-                    checked: userSettings?.sessionReminderEmail || false,
-                },
-                {
-                    settingName: 'sessionReminderSms',
-                    checked: userSettings?.sessionReminderSms || false,
+                    settingName: 'scheduleUpdatesSms',
+                    checked: userSettings?.scheduleUpdatesSms || false,
                 }
-            ): []),
-            ...((notReceptionOrAdmin && userInfo.accountType === 'PARENT')
+            ),
+            createOptInSetting(
+                'SMS Course Requests',
+                'Get notified for cancellations by SMS',
+                {
+                    settingName: 'courseRequestsSms',
+                    checked: userSettings?.courseRequestsSms || false,
+                }
+            ),
+        ];
+        const setUserSettings = (accountType) =>
+            ({
+                PARENT: SMSCourseAndScheduleUpdateSettings,
+                INSTRUCTOR: SMSCourseAndScheduleUpdateSettings,
+                ADMIN: [
+                    createOptInSetting(
+                        'Google Classroom Integration',
+                        'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
+                        {
+                            settingName: 'gClassIntegrationSetting',
+                            checked: false,
+                        }
+                    ),
+                ],
+                RECEPTIONIST: [
+                    createOptInSetting(
+                        'Google Classroom Integration',
+                        'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
+                        {
+                            settingName: 'gClassIntegrationSetting',
+                            checked: false,
+                        }
+                    ),
+                ],
+                INSTRUCTOR: [],
+            }[accountType]);
+
+        const notReceptionOrAdmin =
+            userInfo.accountType !== 'RECEPTION' &&
+            userInfo.accountType !== 'ADMIN';
+        setNotificationRows([
+            ...(notReceptionOrAdmin
+                ? createNotificationSetting(
+                      'Session Reminder',
+                      'Get notified when a session is coming up.',
+                      {
+                          settingName: 'sessionReminderEmail',
+                          checked: userSettings?.sessionReminderEmail || false,
+                      },
+                      {
+                          settingName: 'sessionReminderSms',
+                          checked: userSettings?.sessionReminderSms || false,
+                      }
+                  )
+                : []),
+            ...(notReceptionOrAdmin && userInfo.accountType === 'PARENT'
                 ? [
                       createNotificationSetting(
                           'Payment Reminder',

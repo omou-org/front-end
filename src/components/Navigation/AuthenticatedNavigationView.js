@@ -34,8 +34,7 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const { accountType, email } =
-        useSelector(({ auth }) => auth) || [];
+    const { accountType, email } = useSelector(({ auth }) => auth) || [];
     // const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
     //     skip: accountType !== 'ADMIN',
     // });

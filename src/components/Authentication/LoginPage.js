@@ -53,7 +53,7 @@ const GOOGLE_LOGIN = gql`
             }
         }
     }
-  `
+`;
 
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
@@ -68,7 +68,12 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const { token, attemptedLogin, google_access_token, google_courses } = useSelector(({ auth }) => auth);
+    const {
+        token,
+        attemptedLogin,
+        google_access_token,
+        google_courses,
+    } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
     const [email, setEmail] = useState(state?.email);
@@ -157,11 +162,9 @@ const LoginPage = () => {
             getUserType();
         }
     };
-    
-    
-    function refreshTokenSetup(res) {
 
-        return new Promise((resolve, reject) => { 
+    function refreshTokenSetup(res) {
+        return new Promise((resolve, reject) => {
             let refreshTiming = 10000;
 
             const refreshToken = async () => {
@@ -170,27 +173,29 @@ const LoginPage = () => {
                     'google_access_token',
                     newAuthRes.access_token
                 );
-                resolve()
+                resolve();
                 // setTimeout(refreshToken, refreshTiming);
             };
             refreshToken();
             // setTimeout(refreshToken, refreshTiming);
-        })
+        });
     }
-    const noGoogleCoursesFoundOnInitialGoogleLogin = (google_courses === null || google_courses === undefined) && sessionStorage.getItem('google_access_token')
+    const noGoogleCoursesFoundOnInitialGoogleLogin =
+        (google_courses === null || google_courses === undefined) &&
+        sessionStorage.getItem('google_access_token');
     async function getCourses() {
         if (noGoogleCoursesFoundOnInitialGoogleLogin) {
             try {
                 const response = await axios.get(
-                        'https://classroom.googleapis.com/v1/courses',
-                        {
-                            headers: {
-                                Authorization: `Bearer ${sessionStorage.getItem(
-                                    'google_access_token'
-                                )}`,
-                            },
-                        }
-                    );
+                    'https://classroom.googleapis.com/v1/courses',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem(
+                                'google_access_token'
+                            )}`,
+                        },
+                    }
+                );
                 dispatch({
                     type: actions.SET_GOOGLE_COURSES,
                     payload: { google_courses: response?.data.courses },
@@ -206,17 +211,16 @@ const LoginPage = () => {
             variables: {
                 accessToken: response.accessToken,
             },
-        })
-        refreshTokenSetup(response).then(()=>{getCourses();});
+        });
+        refreshTokenSetup(response).then(() => {
+            getCourses();
+        });
         if (socialAuthResponse?.data?.socialAuth) {
             history.push('/');
         }
     };
 
-    const onFailure = (response) => {
-        
-    }
-
+    const onFailure = (response) => {};
 
     const renderEmailLogin = () => (
         <>
@@ -372,76 +376,96 @@ const LoginPage = () => {
                             value={email}
                             variant='outlined'
                         />
-                        {googleAuthEnabled ?  
-                        <Grid className='optionsContainer' justify="center" container item>
-                            <Grid className='buttonSpacing' item md={4}>
-                                <GoogleLogin
-                                    render={renderProps => (
-                                        <GoogleLoginButton onClick={renderProps.onClick} disabled={renderProps.disabled}/>
-                                      )}
-                                    buttonText='Login'
-                                    clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
-                                    onSuccess={onSuccess}
-                                    onFailure={onFailure}
-                                    cookiePolicy={'single_host_origin'}
-                                    scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
-                                />
+                        {googleAuthEnabled ? (
+                            <Grid
+                                className='optionsContainer'
+                                justify='center'
+                                container
+                                item
+                            >
+                                <Grid className='buttonSpacing' item md={4}>
+                                    <GoogleLogin
+                                        render={(renderProps) => (
+                                            <GoogleLoginButton
+                                                onClick={renderProps.onClick}
+                                                disabled={renderProps.disabled}
+                                            />
+                                        )}
+                                        buttonText='Login'
+                                        clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
+                                        onSuccess={onSuccess}
+                                        onFailure={onFailure}
+                                        cookiePolicy={'single_host_origin'}
+                                        scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
+                                    />
+                                </Grid>
                             </Grid>
-                        </Grid>
-                        : <>
-                        <PasswordInput
-                            autoComplete='current-password'
-                            error={hasError || password === ''}
-                            inputProps={{ 'data-cy': 'passwordField' }}
-                            isField={false}
-                            label='Password'
-                            className='TextField'
-                            variant='outlined'
-                            onChange={handleTextInput(setPassword)}
-                            value={password}
-                        />
-                        <Grid className='optionsContainer' container item>
-                            <Grid item md={2} />
-                            <Grid item md={4}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={shouldSave}
-                                            inputProps={{
-                                                'data-cy': 'rememberMe',
-                                            }}
-                                            onChange={toggleSavePassword}
+                        ) : (
+                            <>
+                                <PasswordInput
+                                    autoComplete='current-password'
+                                    error={hasError || password === ''}
+                                    inputProps={{ 'data-cy': 'passwordField' }}
+                                    isField={false}
+                                    label='Password'
+                                    className='TextField'
+                                    variant='outlined'
+                                    onChange={handleTextInput(setPassword)}
+                                    value={password}
+                                />
+                                <Grid
+                                    className='optionsContainer'
+                                    container
+                                    item
+                                >
+                                    <Grid item md={2} />
+                                    <Grid item md={4}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={shouldSave}
+                                                    inputProps={{
+                                                        'data-cy': 'rememberMe',
+                                                    }}
+                                                    onChange={
+                                                        toggleSavePassword
+                                                    }
+                                                />
+                                            }
+                                            label='Remember Me'
                                         />
-                                    }
-                                    label='Remember Me'
-                                />
-                            </Grid>
-                            <Grid item md={4} style={{ paddingTop: 10 }}>
-                                <Link
-                                    className='forgotPassword'
-                                    data-cy='forgotPassword'
-                                    to={{
-                                        pathname: '/forgotpassword',
-                                        state: { email },
-                                    }}
-                                >
-                                    Forgot Password?
-                                </Link>
-                            </Grid>
-                            <Grid item md={2} />
-                            <Grid item md={4} />
-                            <Grid className='buttonSpacing' item md={4}>
-                                <ResponsiveButton
-                                    data-cy='signInButton'
-                                    type='submit'
-                                    variant='contained'
-                                >
-                                    SIGN IN
-                                </ResponsiveButton>
-                            </Grid>
-                            <Grid item md={4} />
-                        </Grid>
-                        </>}
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        md={4}
+                                        style={{ paddingTop: 10 }}
+                                    >
+                                        <Link
+                                            className='forgotPassword'
+                                            data-cy='forgotPassword'
+                                            to={{
+                                                pathname: '/forgotpassword',
+                                                state: { email },
+                                            }}
+                                        >
+                                            Forgot Password?
+                                        </Link>
+                                    </Grid>
+                                    <Grid item md={2} />
+                                    <Grid item md={4} />
+                                    <Grid className='buttonSpacing' item md={4}>
+                                        <ResponsiveButton
+                                            data-cy='signInButton'
+                                            type='submit'
+                                            variant='contained'
+                                        >
+                                            SIGN IN
+                                        </ResponsiveButton>
+                                    </Grid>
+                                    <Grid item md={4} />
+                                </Grid>
+                            </>
+                        )}
                     </Grid>
                 </Grid>
             </form>

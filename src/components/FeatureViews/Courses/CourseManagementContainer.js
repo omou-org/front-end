@@ -215,7 +215,9 @@ const ClassListItem = ({
                         </Typography>
                     </Grid>
                     <Grid item xs={1} sm={1} md={1}>
-                        <GoogleClassroomIntegrationIcon googleCode={googleClassCode}/>
+                        <GoogleClassroomIntegrationIcon
+                            googleCode={googleClassCode}
+                        />
                     </Grid>
                     <Grid
                         item
