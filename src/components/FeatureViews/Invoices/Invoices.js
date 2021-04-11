@@ -32,6 +32,7 @@ import EventBusyIcon from '@material-ui/icons/EventBusy';
 import Moment from 'react-moment';
 import SearchIcon from '@material-ui/icons/Search';
 import { DateRange } from 'react-date-range';
+import { fil } from 'date-fns/locale';
 
 export const GET_INVOICES_FILTERED = gql`
     query GetInvoices(
@@ -150,7 +151,17 @@ export default function Invoices() {
     }, []);
 
     const handleInputChange = (query) => {
-        searchInvoices(query);
+        searchInvoices(
+            query,
+            filter.startDate,
+            filter.endDate,
+            filter.paymentStatus,
+            filter.page
+        );
+        setFilter({
+            ...filter,
+            query: query,
+        });
     };
 
     const handleDateRangeCalendarChange = (item) => {
