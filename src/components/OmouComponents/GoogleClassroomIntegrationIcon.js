@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import googleClassroomLogo from '../GoogleClassroomIcon.png';
 
-const GoogleClassroomIntegrationIcon = ({googleCode}) => {
+const GoogleClassroomIntegrationIcon = ({googleCode, style}) => {
 
     const { google_courses } = useSelector(({ auth }) => auth);
 
@@ -12,7 +12,7 @@ const GoogleClassroomIntegrationIcon = ({googleCode}) => {
         let isIntegrated = google_courses.some((course) => course.enrollmentCode === googleCode);
 
         if (isIntegrated) {
-            component = <img src={googleClassroomLogo} width='30' height='30' />;
+            component = <img src={googleClassroomLogo} width='30' height='30' style={style}/>;
         }
     }
 

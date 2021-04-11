@@ -24,6 +24,7 @@ import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import GoolgeClassroomIntegrationicon from '../../OmouComponents/GoogleClassroomIntegrationIcon';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,6 +81,7 @@ export const GET_CLASS = gql`
             startDate
             endDate
             description
+            googleClassCode
             courseLink
             courseLinkDescription
             courseLinkUpdatedAt
@@ -259,6 +261,7 @@ const CourseClass = () => {
         activeAvailabilityList,
         sessionSet,
         courseLinkUser,
+        googleClassCode,
     } = data.course;
 
     const { name: courseCategory } = data.course.courseCategory;
@@ -329,6 +332,9 @@ const CourseClass = () => {
                         style={{ marginTop: '.65em' }}
                     >
                         {title}
+                        {accountType === 'ADMIN' && 
+                            <GoolgeClassroomIntegrationicon googleCode={googleClassCode} style={{ marginLeft: '24px' }}/>
+                        }
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>
