@@ -102,6 +102,8 @@ const LoginPage = () => {
         errorPolicy: 'ignore',
         ignoreResults: true,
         onCompleted: async ({ socialAuth }) => {
+            // is email same as googleAuthEmail
+            // kick em out if not
             dispatch(await setToken(socialAuth.token, true, email));
         },
         // for whatever reason, this function prevents an unhandled rejection
