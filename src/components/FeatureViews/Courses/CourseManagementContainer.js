@@ -13,9 +13,8 @@ import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
-import axios from 'axios';
 import * as actions from 'actions/actionTypes';
-import googleClassroomLogo from '../../GoogleClassroomIcon.png';
+import GoogleClassroomIntegrationIcon from '../../OmouComponents/GoogleClassroomIntegrationIcon';
 
 import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
 import { fullName, gradeOptions } from 'utils';
@@ -174,28 +173,10 @@ const ClassListItem = ({
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
-    const { google_courses } = useSelector(({ auth }) => auth);
     const [courses, setCourses] = useState();
     const dispatch = useDispatch();
 
     const handleClick = (e) => history.push(`/courses/class/${id}`);
-
-    function GoogleClassroomIntegrationIcon(googleCode) {
-        let isIntegrated = false;
-        if (googleCode && google_courses) {
-            google_courses.forEach(function (course) {
-                if (course.enrollmentCode == googleCode) {
-                    isIntegrated = true;
-                }
-            });
-            return isIntegrated ? (
-                <img src={googleClassroomLogo} width='30' height='30' />
-            ) : (
-                <div></div>
-            );
-        }
-        return;
-    }
 
     return (
         <>
@@ -234,7 +215,7 @@ const ClassListItem = ({
                         </Typography>
                     </Grid>
                     <Grid item xs={1} sm={1} md={1}>
-                        {GoogleClassroomIntegrationIcon(googleClassCode)}
+                        <GoogleClassroomIntegrationIcon googleCode={googleClassCode}/>
                     </Grid>
                     <Grid
                         item

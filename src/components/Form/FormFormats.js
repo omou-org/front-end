@@ -1377,10 +1377,6 @@ export default {
                         validator: Yup.mixed(),
                     },
                     {
-                        name: 'google_classroom_code',
-                        ...stringField('[Optional] Google Classroom Code'),
-                    },
-                    {
                         name: 'instructor',
                         label: 'Select Instructor',
                         component: instructorSelect(
