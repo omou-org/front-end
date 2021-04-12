@@ -586,7 +586,10 @@ export const CHECK_EMAIL = gql`
 // LoginPage.js
 export const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
-        userType(userName: $username)
+        userType(userName: $username) {
+            userType
+            googleAuthEnabled
+        }
     }
 `;
 

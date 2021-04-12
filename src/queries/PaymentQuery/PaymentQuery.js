@@ -40,8 +40,13 @@ export const UNPAID_SESSION_QUERY = gql`
             course {
                 id
                 title
-                startTime
-                endTime
+                endDate
+                startDate
+                availabilityList {
+                    dayOfWeek
+                    startTime
+                    endTime
+                }
                 hourlyTuition
             }
             sessionsLeft
