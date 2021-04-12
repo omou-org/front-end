@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -103,14 +103,14 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                 } = students.student;
                                 const fullStudentName = fullName(user);
                                 const studentId = user.id;
-                                const concatFullParentName = fullName(
-                                    primaryParent.user
-                                );
+                                const concatFullParentName = primaryParent
+                                    ? fullName(primaryParent.user)
+                                    : 'N/A';
                                 const parentAccountType =
-                                    primaryParent.accountType;
-                                const phoneNumber = primaryParent.phoneNumber;
-                                const parentId = primaryParent.user.id;
-                                const parentEmail = primaryParent.user.email;
+                                    primaryParent?.accountType;
+                                const phoneNumber = primaryParent?.phoneNumber;
+                                const parentId = primaryParent?.user.id;
+                                const parentEmail = primaryParent?.user.email;
                                 const studentInfo = studentschoolinfoSet;
                                 return (
                                     <ClassEnrollmentRow

@@ -1,15 +1,14 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import {
-    Typography,
-    Grid,
     Divider,
+    Grid,
     List,
-    ListItemText,
     ListItem,
-    Paper,
+    ListItemText,
+    Typography,
 } from '@material-ui/core';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import Loading from '../../OmouComponents/Loading';
 import { makeStyles } from '@material-ui/core/styles';

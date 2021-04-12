@@ -10,12 +10,11 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import * as Fields from 'mui-rff';
 import { makeStyles } from '@material-ui/core/styles';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import { fullName } from '../../../utils';
 import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
-import { TrendingUpRounded } from '@material-ui/icons';
 import { Schedule } from '@material-ui/icons';
 import { GET_STUDENTS_USER_INFOS } from '../../../queries/AccountsQuery/AccountsQuery';
 
@@ -30,8 +29,9 @@ const useSelectStyles = makeStyles({
 });
 
 export const fieldsMargins = {
-    marginTop: '16px',
-    marginBottom: '8px',
+    width: '216px',
+    marginTop: '14px',
+    marginBottom: '10px',
 };
 
 export const { TextField, Checkboxes } = Fields;
@@ -121,7 +121,13 @@ export const Autocomplete = ({ name, options, ...props }) => {
     );
 };
 
-export const DataSelect = ({ request, optionsMap, name, ...props }) => {
+export const DataSelect = ({
+    request,
+    optionsMap,
+    name,
+    variant,
+    ...props
+}) => {
     const [query, setQuery] = useState();
 
     const handleQueryChange = useCallback((_, newQuery) => {
@@ -152,6 +158,7 @@ export const DataSelect = ({ request, optionsMap, name, ...props }) => {
             getOptionSelected={defaultSelectedHandler}
             options={options}
             renderOption={renderOption}
+            classes={{ inputRoot: { fontSize: '70px' } }}
             {...props}
         />
     );

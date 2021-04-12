@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { RegistrationContext } from './RegistrationContext';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/react-hooks';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';
@@ -14,7 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
 import { useHistory } from 'react-router-dom';
-import { GET_PAYMENT } from '../PaymentReceipt';
+import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
 import { GET_ALL_COURSES } from '../RegistrationLanding';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../../../../queries/AccountsQuery/AccountsQuery';
 import { GET_REGISTRATION_CART } from '../../../../queries/PaymentQuery/PaymentQuery';
@@ -40,25 +40,33 @@ const CREATE_ENROLLMENTS = gql`
     }
 `;
 
+// enum paymentStatusType {
+//     PAID = "PAID",
+//     UNPAID = "UNPAID",
+//     CANCELED = "CANCELED"
+// }
+
 const CREATE_PAYMENT = gql`
-    mutation CreatePayment(
+    mutation CreateInvoice(
         $method: String!
         $parent: ID!
         $classes: [ClassQuote]!
         $disabledDiscounts: [ID]
         $priceAdjustment: Float
         $registrations: [EnrollmentQuote]!
+        $paymentStatus: paymentStatus!
     ) {
         __typename
-        createPayment(
+        createInvoice(
             method: $method
             parent: $parent
             classes: $classes
             disabledDiscounts: $disabledDiscounts
             priceAdjustment: $priceAdjustment
             registrations: $registrations
+            paymentStatus: $paymentStatus
         ) {
-            payment {
+            invoice {
                 id
                 accountBalance
                 createdAt
@@ -164,78 +172,73 @@ export default function PaymentBoard() {
         CREATE_ENROLLMENTS,
         {
             update: (cache, { data }) => {
-                const existingEnrollmentsFromGetParent = cache.readQuery({
-                    query: GET_PARENT_ENROLLMENTS,
-                    variables: { studentIds: currentParent.studentIdList },
-                }).enrollments;
-
-                cache.writeQuery({
-                    query: GET_PARENT_ENROLLMENTS,
-                    data: {
-                        enrollments: [
-                            ...existingEnrollmentsFromGetParent,
-                            ...data['createEnrollments'].enrollments,
-                        ],
-                    },
-                    variables: { studentIds: currentParent.studentIdList },
-                });
-                let cachedCourses = cache.readQuery({
-                    query: GET_ALL_COURSES,
-                }).courses;
-                const newEnrollments = data.createEnrollments.enrollments.map(
-                    (enrollment) => {
-                        return {
-                            course: enrollment.course.id,
-                            student: enrollment.student.user.id,
-                        };
-                    }
-                );
-                newEnrollments.forEach((newEnrollment) => {
-                    const matchingIndex = cachedCourses.findIndex(
-                        (course) => course.id === newEnrollment.course
-                    );
-                    cachedCourses[matchingIndex] = {
-                        ...cachedCourses[matchingIndex],
-                        enrollmentSet: [
-                            ...cachedCourses[matchingIndex].enrollmentSet,
-                            {
-                                student: newEnrollment.student,
-                                course: newEnrollment.course,
-                            },
-                        ],
-                    };
-                });
-
-                cache.writeQuery({
-                    query: GET_ALL_COURSES,
-                    data: {
-                        courses: cachedCourses,
-                    },
-                });
-
-                const { userInfos, enrollments } = cache.readQuery({
-                    query: GET_STUDENTS_AND_ENROLLMENTS,
-                    variables: {
-                        userIds: currentParent.studentIdList,
-                    },
-                });
-
-                const newQueryEnrollments = data.createEnrollments.enrollments.map(
-                    (enrollment) => ({
-                        id: enrollment.id,
-                        course: {
-                            id: enrollment.course.id,
-                        },
-                    })
-                );
-
-                cache.writeQuery({
-                    query: GET_STUDENTS_AND_ENROLLMENTS,
-                    data: {
-                        userInfos,
-                        enrollments: [...enrollments, ...newQueryEnrollments],
-                    },
-                });
+                // const existingEnrollmentsFromGetParent = cache.readQuery({
+                //     query: GET_PARENT_ENROLLMENTS,
+                //     variables: { studentIds: currentParent.studentIdList },
+                // }).enrollments;
+                // cache.writeQuery({
+                //     query: GET_PARENT_ENROLLMENTS,
+                //     data: {
+                //         enrollments: [
+                //             ...existingEnrollmentsFromGetParent,
+                //             ...data['createEnrollments'].enrollments,
+                //         ],
+                //     },
+                //     variables: { studentIds: currentParent.studentIdList },
+                // });
+                // let cachedCourses = cache.readQuery({
+                //     query: GET_ALL_COURSES,
+                // }).courses;
+                // const newEnrollments = data.createEnrollments.enrollments.map(
+                //     (enrollment) => {
+                //         return {
+                //             course: enrollment.course.id,
+                //             student: enrollment.student.user.id,
+                //         };
+                //     }
+                // );
+                // newEnrollments.forEach((newEnrollment) => {
+                //     const matchingIndex = cachedCourses.findIndex(
+                //         (course) => course.id === newEnrollment.course
+                //     );
+                //     cachedCourses[matchingIndex] = {
+                //         ...cachedCourses[matchingIndex],
+                //         enrollmentSet: [
+                //             ...cachedCourses[matchingIndex].enrollmentSet,
+                //             {
+                //                 student: newEnrollment.student,
+                //                 course: newEnrollment.course,
+                //             },
+                //         ],
+                //     };
+                // });
+                // cache.writeQuery({
+                //     query: GET_ALL_COURSES,
+                //     data: {
+                //         courses: cachedCourses,
+                //     },
+                // });
+                // const { userInfos, enrollments } = cache.readQuery({
+                //     query: GET_STUDENTS_AND_ENROLLMENTS,
+                //     variables: {
+                //         userIds: currentParent.studentIdList,
+                //     },
+                // });
+                // const newQueryEnrollments = data.createEnrollments.enrollments.map(
+                //     (enrollment) => ({
+                //         id: enrollment.id,
+                //         course: {
+                //             id: enrollment.course.id,
+                //         },
+                //     })
+                // );
+                // cache.writeQuery({
+                //     query: GET_STUDENTS_AND_ENROLLMENTS,
+                //     data: {
+                //         userInfos,
+                //         enrollments: [...enrollments, ...newQueryEnrollments],
+                //     },
+                // });
             },
         }
     );
@@ -387,6 +390,7 @@ export default function PaymentBoard() {
                 disabledDiscounts: [],
                 priceAdjustment: Number(priceAdjustmentValue),
                 registrations: registrations,
+                paymentStatus: 'PAID',
             },
         });
 
@@ -397,9 +401,8 @@ export default function PaymentBoard() {
                 registrationPreferences: '',
             },
         });
-
         history.push(
-            `/registration/receipt/${payment.data.createPayment.payment.id}`
+            `/registration/receipt/${payment.data.createInvoice.invoice.id}`
         );
     };
 

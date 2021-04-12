@@ -15,12 +15,11 @@ import LoginPage from '../Authentication/LoginPage.js';
 import NewAccount from '../Authentication/NewAccount';
 import NoResultsPage from '../FeatureViews/Search/NoResults/NoResultsPage';
 import NotEnrolledStudentsDialog from '../FeatureViews/Scheduler/NotEnrolledStudentDialog';
-import PaymentReceipt from '../FeatureViews/Registration/PaymentReceipt';
+import InvoiceReceipt from '../FeatureViews/Invoices/InvoiceReceipt';
 import Registration from '../FeatureViews/Registration/Registration';
 import FormPage from '../Form/FormPage';
 import RegistrationCourse from '../FeatureViews/Registration/RegistrationCourse';
 import ResetPassword from '../Authentication/ResetPassword';
-import Scheduler from '../FeatureViews/Scheduler/Scheduler';
 import SearchResults from '../FeatureViews/Search/SearchResults';
 import SessionView from '../FeatureViews/Scheduler/SessionView';
 import UserProfile from '../FeatureViews/Accounts/UserProfile';
@@ -38,6 +37,9 @@ import AvailabilityContainer from '../FeatureViews/Availability/AvailabilityCont
 import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
+import Scheduler from '../FeatureViews/Scheduler/Scheduler';
+
+import Invoices from '../FeatureViews/Invoices/Invoices';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -100,15 +102,12 @@ export const RootRoutes = () => {
             <AuthenticatedRoute exact path='/scheduler'>
                 <Scheduler />
             </AuthenticatedRoute>
-            <AuthenticatedRoute
-                exact
-                path='/scheduler/view-session/:course_id/:session_id/:instructor_id'
-            >
+            <AuthenticatedRoute exact path='/scheduler/session/:session_id'>
                 <SessionView />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/scheduler/edit-session/:course_id/:session_id/:instructor_id/edit'
+                path='/scheduler/session/:session_id/edit'
             >
                 <EditSessionView />
             </AuthenticatedRoute>
@@ -123,6 +122,23 @@ export const RootRoutes = () => {
                 <NoResultsPage />
             </AuthenticatedRoute>
 
+            {/* Invoices */}
+            <AuthenticatedRoute
+                exact
+                path='/invoices'
+                users={[
+                    USER_TYPES.parent,
+                    USER_TYPES.receptionist,
+                    USER_TYPES.admin,
+                ]}
+            >
+                <Invoices />
+            </AuthenticatedRoute>
+
+            <AuthenticatedRoute exact path='/invoices/:invoiceId'>
+                <InvoiceReceipt />
+            </AuthenticatedRoute>
+
             {/* Accounts */}
             <AuthenticatedRoute exact path='/accounts/:accountType/:accountID'>
                 <UserProfile />
@@ -131,7 +147,7 @@ export const RootRoutes = () => {
                 exact
                 path='/accounts/parent/payment/:paymentID'
             >
-                <PaymentReceipt />
+                <InvoiceReceipt />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
@@ -155,7 +171,7 @@ export const RootRoutes = () => {
                 <RegistrationCartContainer />
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/registration/receipt/:paymentID?'>
-                <PaymentReceipt />
+                <InvoiceReceipt />
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/NotEnrolledStudent'>
                 <NotEnrolledStudentsDialog />

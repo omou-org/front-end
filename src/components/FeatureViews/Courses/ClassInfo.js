@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import {
     Button,
     fade,
@@ -193,7 +193,7 @@ const ClassInfo = ({
     };
 
     return (
-        <>
+        <Grid container item xs={12}>
             <Grid item xs={7}>
                 <Typography
                     className={classes.aboutCourseDescription}
@@ -203,7 +203,6 @@ const ClassInfo = ({
                     {description}
                 </Typography>
             </Grid>
-
             <Grid item container>
                 <Typography style={{ fontSize: '17px' }}>
                     Course Link
@@ -291,7 +290,7 @@ const ClassInfo = ({
                     </Grid>
                 )}
             </Grid>
-        </>
+        </Grid>
     );
 };
 

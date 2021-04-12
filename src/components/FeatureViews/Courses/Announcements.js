@@ -7,7 +7,7 @@ import { Cancel, Create } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
 import theme, { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import moment from 'moment';
 import NewAnnouncementModal from './NewAnnoucementsModal';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';

@@ -7,7 +7,7 @@ import { instance } from 'actions/apiActions';
 import React from 'react';
 import { FORM_ERROR } from 'final-form';
 import * as Fields from './FieldComponents/Fields';
-import { StudentSelect, fieldsMargins } from './FieldComponents/Fields';
+import { fieldsMargins, StudentSelect } from './FieldComponents/Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
 import { client } from 'index';
@@ -34,6 +34,9 @@ import {
     GET_COURSES,
     GET_COURSE,
 } from '../../queries/CoursesQuery/CourseQuery';
+import { GET_COURSES_BY_ACCOUNT_ID } from '../FeatureViews/Courses/CourseManagementContainer';
+import { new_course_form } from '../../theme/muiTheme';
+
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
         admin(userId: $userID) {
@@ -80,10 +83,10 @@ export const selectField = (options) => ({
         component: <Fields.Select style={fieldsMargins} data={options} />,
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
-    stringField = (label) => ({
+    stringField = (label, style) => ({
         component: (
             <Fields.TextField
-                style={{ marginTop: '8px ', marginBottom: '24px' }}
+                style={{ marginTop: '8px ', marginBottom: '24px', ...style }}
                 name={label}
             />
         ),
@@ -116,12 +119,14 @@ const userMap = ({ accountSearch }) =>
         value: user.id,
     }));
 
-const instructorSelect = (name) => (
+const instructorSelect = (name, style) => (
     <Fields.DataSelect
         name={name}
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
         noOptionsText='No instructors available'
+        variant='outlined'
+        style={style}
     />
 );
 
@@ -212,7 +217,7 @@ const DAY_OF_WEEK_OPTIONS = [
 
 export const ACADEMIC_LVL_FIELD = {
         name: 'academicLevel',
-        label: 'Academic Level',
+        label: 'Select Grade Level',
         ...selectField([
             {
                 label: 'Elementary School',
@@ -570,12 +575,13 @@ const categoryMap = ({ courseCategories }) =>
         value: id,
     }));
 
-const categorySelect = (name) => (
+const categorySelect = (name, style) => (
     <Fields.DataSelect
         name={name}
         optionsMap={categoryMap}
         request={GET_CATEGORIES}
         noOptionsText='No categories available'
+        style={style}
     />
 );
 
@@ -885,7 +891,7 @@ export default {
                         ...parent,
                         birthDate: parseDate(parent.birthDate),
                         id,
-                        password: '',
+                        // password: '',
                     },
                 });
             } catch (error) {
@@ -1205,11 +1211,29 @@ export default {
                     {
                         name: 'title',
                         required: true,
-                        ...stringField('Course Name'),
+                        ...stringField(
+                            'Course Name',
+                            new_course_form.textFields
+                        ),
                     },
                     {
                         name: 'description',
-                        ...stringField('Course Description'),
+                        required: true,
+                        ...stringField(
+                            'Course Description',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'maxCapacity',
+                        label: 'Enrollment Capacity',
+                        required: true,
+                        component: (
+                            <Fields.TextField
+                                style={new_course_form.textFields_short}
+                            />
+                        ),
+                        validator: Yup.number().min(1).integer(),
                     },
                     {
                         ...ACADEMIC_LVL_FIELD,
@@ -1217,25 +1241,25 @@ export default {
                     },
                     {
                         name: 'courseCategory',
-                        label: 'Subject',
-                        required: 'true',
-                        component: categorySelect('courseCategory'),
+                        label: 'Select Subject',
+                        required: true,
+                        component: categorySelect(
+                            'courseCategory',
+                            new_course_form.dropdowns
+                        ),
                         validator: Yup.mixed(),
                     },
                     {
                         name: 'instructor',
                         label: 'Select Instructor',
-                        component: instructorSelect('instructor'),
+                        component: instructorSelect(
+                            'instructor',
+                            new_course_form.dropdowns
+                        ),
                         validator: Yup.mixed(),
                     },
                     INSTRUCTOR_CONFIRM_FIELD,
                     //!TODO FIX TO DISPLAY N NUMBER OF OTPIONS
-                    {
-                        name: 'maxCapacity',
-                        label: 'Capacity',
-                        component: <Fields.TextField />,
-                        validator: Yup.number().min(1).integer(),
-                    },
                 ],
                 next: 'dayAndTime',
             },
@@ -1253,13 +1277,38 @@ export default {
             },
             {
                 name: 'tuition',
-                label: 'Tuition',
+                label: 'Location & Tuition',
                 fields: [
+                    {
+                        name: 'classroomLocation',
+                        ...stringField(
+                            'Classroom Location',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'courseLink',
+                        ...stringField(
+                            'Meeting Link',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'googleClassCode',
+                        ...stringField(
+                            'GClassroom Enrollment Code',
+                            new_course_form.textFields
+                        ),
+                    },
                     {
                         name: 'totalTuition',
                         label: 'Total Tuition',
                         required: true,
-                        component: <Fields.TextField />,
+                        component: (
+                            <Fields.TextField
+                                style={new_course_form.textFields}
+                            />
+                        ),
                         validator: Yup.number().min(0),
                     },
                 ],
@@ -1368,6 +1417,9 @@ export default {
                     $maxCapacity: Int
                     $totalTuition: Decimal
                     $title: String!
+                    $courseLink: String
+                    $classroomLocation: String
+                    $googleClassCode: String
                 ) {
                     createCourse(
                         id: $id
@@ -1378,12 +1430,14 @@ export default {
                         instructor: $instructor
                         startDate: $startDate
                         endDate: $endDate
-                        room: "Stanford Room"
+                        room: $classroomLocation
                         maxCapacity: $maxCapacity
                         courseCategory: $courseCategory
                         totalTuition: $totalTuition
                         isConfirmed: $isConfirmed
                         availabilities: $availabilities
+                        courseLink: $courseLink
+                        googleClassCode: $googleClassCode
                     ) {
                         created
                         course {
@@ -1485,16 +1539,47 @@ export default {
                         const created = data.createCourse.created;
 
                         if (created) {
-                            const cachedCourses = cache.readQuery({
+                            // Update cache for Registration Courses
+                            const cachedRegistrationCourses = cache.readQuery({
                                 query: GET_ALL_COURSES,
                             });
 
-                            cache.writeQuery({
-                                data: {
-                                    courses: [...cachedCourses, newCourse],
-                                },
-                                query: GET_ALL_COURSES,
-                            });
+                            if (cachedRegistrationCourses !== null) {
+                                cache.writeQuery({
+                                    data: {
+                                        courses: [
+                                            ...cachedRegistrationCourses.courses,
+                                            newCourse,
+                                        ],
+                                    },
+                                    query: GET_ALL_COURSES,
+                                });
+                            }
+
+                            // Update cache for Course Management Courses
+                            const cachedCourseManagementCourses = cache.readQuery(
+                                {
+                                    query: GET_COURSES_BY_ACCOUNT_ID,
+                                    variables: {
+                                        accountId: '',
+                                    },
+                                }
+                            );
+
+                            if (cachedCourseManagementCourses !== null) {
+                                cache.writeQuery({
+                                    data: {
+                                        courses: [
+                                            ...cachedCourseManagementCourses.courses,
+                                            newCourse,
+                                        ],
+                                    },
+                                    query: GET_COURSES_BY_ACCOUNT_ID,
+                                    variables: {
+                                        accountId: '',
+                                    },
+                                });
+                            }
                         } else {
                             const cachedCourse = cache.readQuery({
                                 query: GET_COURSE,

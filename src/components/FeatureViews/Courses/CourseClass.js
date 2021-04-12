@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import Toolbar from '@material-ui/core/Toolbar';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
-import ChromeTabs from '../../OmouComponents/ChromeTabs';
 import TabPanel from '../../OmouComponents/TabPanel';
 import ClassInfo from './ClassInfo';
 import Announcements from './Announcements';
@@ -19,7 +16,6 @@ import ClassEnrollmentList from './ClassEnrollmentList';
 import ClassSessionContainer from './ClassSessionContainer';
 import { useSelector } from 'react-redux';
 import { fullName, gradeLvl, USER_TYPES } from 'utils';
-import theme from '../../../theme/muiTheme';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
@@ -29,6 +25,8 @@ import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
 import { GET_ANNOUNCEMENTS } from '../../../queries/CommsQuery/CommsQuery';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -87,17 +85,11 @@ const CourseClass = () => {
     const parentNostudentEnrolledTab = [{ label: 'About Course' }];
 
     const { data, loading, error } = useQuery(GET_COURSE, {
+        fetchPolicy: 'network-only',
         variables: {
             id: id,
         },
     });
-
-    const getAnnouncements = useQuery(GET_ANNOUNCEMENTS, {
-        variables: {
-            id: id,
-        },
-    });
-
     const {
         data: studentData,
         loading: studentLoading,
@@ -128,13 +120,9 @@ const CourseClass = () => {
         },
     });
 
-    if (loading || getAnnouncements.loading || studentLoading)
-        return <Loading />;
-    if (error) return console.error(error);
-    if (studentError) return console.error(studentError);
+    if (loading || studentLoading) return <Loading />;
+    if (error || studentError) return console.error(error);
 
-    if (getAnnouncements.error)
-        return console.error(getAnnouncements.error.message);
     const {
         academicLevel,
         courseLink,
@@ -149,6 +137,7 @@ const CourseClass = () => {
         sessionSet,
         courseLinkUser,
     } = data.course;
+
     const { name: courseCategory } = data.course.courseCategory;
 
     const startingDate = moment(startDate).format('L');
@@ -325,18 +314,27 @@ const CourseClass = () => {
                 </Grid>
             </Grid>
 
-            <Grid container style={{ marginTop: '2.5em' }}>
+            <Grid
+                container
+                style={{ marginTop: '2.5em' }}
+                direction='column'
+                spacing={2}
+            >
                 <Grid item xs={12} sm={12}>
-                    <ThemeProvider theme={theme}>
-                        <Toolbar disableGutters>
-                            <ChromeTabs
-                                className={tabSelection()}
-                                tabs={setTabsForAccountTypes(
-                                    accountType,
-                                    data.parent?.studentList,
-                                    data.enrollments
-                                )}
-                                tabStyle={{
+                    <Tabs
+                        className={tabSelection()}
+                        value={index}
+                        onChange={handleChange}
+                    >
+                        {setTabsForAccountTypes(
+                            accountType,
+                            data.parent?.studentList,
+                            data.enrollments
+                        ).map((tab) => (
+                            <Tab
+                                key={tab.label}
+                                {...tab}
+                                styles={{
                                     bgColor: '#ffffff',
                                     selectedBgColor: '#EBFAFF',
                                     color: 'rgba(102, 102, 102, 0.87)',
@@ -344,64 +342,48 @@ const CourseClass = () => {
                                     leftValue: 0,
                                     rightValue: 0,
                                 }}
-                                value={index}
-                                onChange={handleChange}
                             />
-                        </Toolbar>
-                        <Grid container>
-                            <TabPanel
-                                index={0}
-                                value={index}
-                                backgroundColor='#FFFFFF'
-                                style={{ width: '100%' }}
-                            >
-                                <ClassInfo
-                                    id={id}
-                                    courseLink={courseLink}
-                                    description={description}
-                                    courseLinkDescription={
-                                        courseLinkDescription
-                                    }
-                                    courseLinkUpdatedAt={courseLinkUpdatedAt}
-                                    courseLinkUser={courseLinkUser}
-                                />
-                            </TabPanel>
-
-                            <TabPanel index={1} value={index}>
-                                <Announcements
-                                    announcementsData={
-                                        getAnnouncements.data.announcements
-                                    }
-                                />
-                            </TabPanel>
-
-                            <TabPanel index={2} value={index}>
-                                <ClassEnrollmentList
-                                    enrollmentList={enrollmentSet}
-                                />
-                            </TabPanel>
-                            <TabPanel index={3} value={index}>
-                                <ClassSessionContainer
-                                    sessionList={sessionSet}
-                                />
-                            </TabPanel>
-                            <TabPanel
-                                index={4}
-                                value={index}
-                                style={{ width: '100%' }}
-                            >
-                                <AttendanceContainer />
-                            </TabPanel>
-                            <TabPanel
-                                index={5}
-                                value={index}
-                                style={{ width: '100%', marginTop: '48px' }}
-                            >
-                                <Notes ownerID={id} ownerType='course' />
-                            </TabPanel>
-                        </Grid>
-                    </ThemeProvider>
+                        ))}
+                    </Tabs>
                 </Grid>
+                <>
+                    <TabPanel
+                        index={0}
+                        value={index}
+                        backgroundColor='#FFFFFF'
+                        style={{ width: '100%' }}
+                    >
+                        <ClassInfo
+                            id={id}
+                            courseLink={courseLink}
+                            description={description}
+                            courseLinkDescription={courseLinkDescription}
+                            courseLinkUpdatedAt={courseLinkUpdatedAt}
+                            courseLinkUser={courseLinkUser}
+                        />
+                    </TabPanel>
+
+                    <TabPanel index={1} value={index}>
+                        <Announcements announcementsData={data.announcements} />
+                    </TabPanel>
+
+                    <TabPanel index={2} value={index}>
+                        <ClassEnrollmentList enrollmentList={enrollmentSet} />
+                    </TabPanel>
+                    <TabPanel index={3} value={index}>
+                        <ClassSessionContainer sessionList={sessionSet} />
+                    </TabPanel>
+                    <TabPanel index={4} value={index} style={{ width: '100%' }}>
+                        <AttendanceContainer />
+                    </TabPanel>
+                    <TabPanel
+                        index={5}
+                        value={index}
+                        style={{ width: '100%', marginTop: '48px' }}
+                    >
+                        <Notes ownerID={id} ownerType='course' />
+                    </TabPanel>
+                </>
             </Grid>
         </Grid>
     );

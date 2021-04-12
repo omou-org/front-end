@@ -7,7 +7,7 @@ import Loading from 'components/OmouComponents/Loading';
 import LoadingError from './LoadingCourseError';
 import { makeStyles } from '@material-ui/core/styles';
 import ProfileCard from '../ProfileCard';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { AddItemButton } from '../../../OmouComponents/AddItemButton';
 import { PropTypes } from 'prop-types';

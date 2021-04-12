@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import LoadingError from '../Accounts/TabComponents/LoadingCourseError';
 import { truncateStrings } from 'utils';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { GET_CATEGORIES } from '../../../queries/queryFragments';
 
 const TutoringList = () => {

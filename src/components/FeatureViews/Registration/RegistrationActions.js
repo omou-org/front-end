@@ -10,12 +10,13 @@ import SelectParentDialog from './SelectParentDialog';
 import { fullName, USER_TYPES } from '../../../utils';
 import { useValidateRegisteringParent } from '../../OmouComponents/RegistrationUtils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
+import AddIcon from '@material-ui/icons/Add';
 import * as types from 'actions/actionTypes';
 import { GET_PARENT_QUERY_AND_STUDENTLIST } from '../../../queries/AccountsQuery/AccountsQuery';
 
@@ -26,7 +27,7 @@ const RegistrationActions = () => {
     );
     const { parentIsLoggedIn } = useValidateRegisteringParent();
     const dispatch = useDispatch();
-
+    console.log(AuthUser.user.id);
     const [dialogOpen, setDialog] = useState(false);
     const { data, error, loading } = useQuery(
         GET_PARENT_QUERY_AND_STUDENTLIST,
@@ -103,7 +104,19 @@ const RegistrationActions = () => {
                     marginBottom: '24px',
                 }}
             >
-                <Grid item md={9}>
+                <Grid item md={2}>
+                    {AuthUser.accountType === 'ADMIN' && (
+                        <ResponsiveButton
+                            component={Link}
+                            to='/form/course_details/add'
+                            variant='contained'
+                            startIcon={<AddIcon />}
+                        >
+                            New Class
+                        </ResponsiveButton>
+                    )}
+                </Grid>
+                <Grid item md={7}>
                     {displayRegistrationButton && (
                         <Grid item xs={2}>
                             <ResponsiveButton

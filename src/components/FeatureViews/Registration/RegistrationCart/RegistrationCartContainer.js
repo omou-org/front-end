@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useValidateRegisteringParent } from '../../../OmouComponents/RegistrationUtils';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
 import BackgroundPaper from '../../../OmouComponents/BackgroundPaper';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';

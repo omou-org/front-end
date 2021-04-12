@@ -22,7 +22,7 @@ import RegistrationActions from './RegistrationActions';
 import RegistrationCourseEnrollments from './RegistrationCourseEnrollments';
 import UserAvatar from '../Accounts/UserAvatar';
 import { weeklySessionsParser } from 'components/Form/FormUtils';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import { SIMPLE_COURSE_DATA } from '../../../queries/queryFragments';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent.js';

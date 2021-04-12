@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import gql from 'graphql-tag';
 import { makeStyles } from '@material-ui/core/styles';
 import useAuthStyles from './styles';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'actions/hooks';
 

@@ -11,7 +11,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import { GET_STUDENTS_BY_ENROLLMENT } from '../../../queries/AccountsQuery/AccountsQuery';
 import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
@@ -282,7 +282,7 @@ const CourseFilterDropdown = ({
     const ChosenFiltersOption = filterList.map(filterOptionsMapper);
 
     return (
-        <Grid item xs={3}>
+        <Grid item>
             <FormControl className={classes.margin}>
                 <Select
                     labelId='course-management-sort-tab'

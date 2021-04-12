@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import AccountCard from '../Search/cards/AccountCard';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import Typography from '@material-ui/core/Typography';
 import { fullName } from '../../../utils';

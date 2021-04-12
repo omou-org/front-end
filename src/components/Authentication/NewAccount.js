@@ -7,7 +7,7 @@ import { PHONE_NUMBER_FIELD, stringField } from '../Form/FormFormats';
 import { FORM_ERROR } from 'final-form';
 import * as Yup from 'yup';
 import gql from 'graphql-tag';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/client';
 import { Form as ReactForm } from 'react-final-form';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';

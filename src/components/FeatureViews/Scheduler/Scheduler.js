@@ -1,635 +1,365 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useEffect, useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import Typography from '@material-ui/core/Typography';
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/client';
+import { SchedulerContext } from './SchedulerContext';
+import Popover from '@material-ui/core/Popover';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { fullName } from '../../../utils';
 import { useHistory } from 'react-router-dom';
+import { instructorPalette } from '../../../theme/muiTheme';
+import { findCommonElement } from '../../Form/FormUtils';
+import { SessionPopover } from './SessionPopover';
+import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
 import { useSelector } from 'react-redux';
 
-import dayGridPlugin from '@fullcalendar/daygrid';
-import FullCalendar from '@fullcalendar/react';
-import interactionPlugin from '@fullcalendar/interaction';
-import listViewPlugin from '@fullcalendar/list';
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
-import timeGridPlugin from '@fullcalendar/timegrid';
-
-import ChevronLeftOutlined from '@material-ui/icons/ChevronLeftOutlined';
-import ChevronRightOutlined from '@material-ui/icons/ChevronRightOutlined';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
-import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import TodayIcon from '@material-ui/icons/Today';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-import ListIcon from '@material-ui/icons/List';
-import CalendarIcon from '@material-ui/icons/CalendarToday';
-
-import './scheduler.scss';
-import * as calendarActions from 'actions/calendarActions';
-import * as hooks from 'actions/hooks';
-import { BootstrapInput, handleToolTip, sessionArray } from './SchedulerUtils';
-import { arr_diff } from '../../Form/FormUtils';
-import SessionFilters from './SessionFilters';
-import { stringToColor } from '../Accounts/accountUtils';
-import { uniques } from 'utils';
-import { secondaryFontColor } from '../../../theme/muiTheme';
-import BackButton from '../../OmouComponents/BackButton';
-import Box from '@material-ui/core/Box';
-
 const useStyles = makeStyles((theme) => ({
-    bootstrapFormLabel: {
-        fontSize: '18px',
+    sessionPopover: {
+        padding: theme.spacing(3),
+        height: '100%',
+        cursor: 'pointer',
     },
-    courseFilter: {
-        paddingRight: '10px',
+    popover: {
+        pointerEvents: 'none',
     },
-    dropdownStyle: {
-        borderRadius: '10px',
-    },
-    margin: {
-        margin: theme.spacing(1),
-    },
-    root: {
+    sessionInfo: {
         display: 'flex',
+        alignItems: 'center',
         flexWrap: 'wrap',
+        marginTop: theme.spacing(1),
     },
 }));
 
-const calendarViewToFilterVal = {
-    dayGridMonth: 'month',
-    timeGridDay: 'day',
-    timeGridWeek: 'week',
-};
-
-const Scheduler = (props) => {
+const EventPopoverWrapper = ({ children, popover }) => {
     const classes = useStyles();
+    const [anchorEl, setAnchorEl] = useState(null);
     const history = useHistory();
 
-    const courses = useSelector(({ Course }) => Course.NewCourseList);
-    const sessions = useSelector(({ Calendar }) => Calendar.CourseSessions);
-    const instructors = useSelector(({ Users }) => Users.InstructorList);
-
-    const prevState =
-        JSON.parse(sessionStorage.getItem('schedulerState')) || {};
-    const [courseType, setCourseType] = useState(
-        prevState.courseType || 'tutoring'
-    );
-    const [courseFilter, setCourseFilter] = useState(prevState.courseFilter);
-    const [instructorFilter, setInstructorFilter] = useState(
-        prevState.instructorFilter
-    );
-    const [timeShift, setTimeShift] = useState(prevState.timeShift || 0);
-    const timeView = props?.location?.state
-        ? 'timeGridDay'
-        : prevState.view || 'timeGridDay';
-    const [view, setView] = useState(timeView);
-
-    hooks.useCourse();
-    hooks.useInstructor();
-    hooks.useOutOfOffice();
-    calendarActions.useSessions(
-        calendarViewToFilterVal[view],
-        timeShift,
-        courseType
-    );
-
-    const calendarRef = useRef();
-    const calendarApi = calendarRef.current && calendarRef.current.getApi();
-    const palette = [
-        '#F503B2',
-        '#F47FD4',
-        '#FCA8E4',
-        '#FFC5EF',
-        '#DD0000',
-        '#EA2632',
-        '#EB5757',
-        '#FF9191',
-        '#2F80ED',
-        '#2D9CDB',
-        '#56CCF2',
-        '#9B51E0',
-        '#46D943',
-        '#219653',
-        '#27AE60',
-        '#6FCF97',
-        '#F78017',
-        '#F2994A',
-        '#FEBF87',
-        '#FFE3CA',
-        '#FFC103',
-        '#F2C94C',
-        '#F4D77D',
-        '#FFEDB5',
-        '#72FFFF',
-        '#43D9D9',
-        '#92E2DE',
-        '#BAF7F3',
-        '#1F82A1',
-        '#588FA0',
-        '#88ACB7',
-        '#BEDAE2',
-        '#96007E',
-        '#B96AAC',
-        '#CD9BC5',
-        '#CD9BC5',
-    ];
-    const hashCode = (string) => {
-        let hash = 0;
-        for (let i = 0; i < string.length; i += 1) {
-            hash += string.charCodeAt(i);
-        }
-        return hash;
-    };
-    const colorizer = (string) => {
-        return palette[hashCode(string) % 40];
+    const handleClick = () => {
+        history.push(`/scheduler/session/${popover.props.session.id}`);
     };
 
-    const formatSessions = useCallback(
-        (sessionState) =>
-            Object.values(sessionState).reduce(
-                (all, sessionList) =>
-                    all.concat(
-                        Object.values(sessionList)
-                            .filter(({ course }) => course && courses[course])
-                            .map((session) => {
-                                const instructorName =
-                                    instructors[session.instructor].name || '';
-                                return {
-                                    color: colorizer(instructorName),
-                                    courseID: session.course,
-                                    description: session.description,
-                                    end: new Date(session.end_datetime),
-                                    id: session.id,
-                                    instructor: instructorName,
-                                    instructor_id: session.instructor,
-                                    isConfirmed: session.is_confirmed,
-                                    resourceId: courses[session.course_id]
-                                        ? courses[session.course_id].room_id
-                                        : 1,
-                                    start: new Date(session.start_datetime),
-                                    title: session.title,
-                                    type: courses[session.course].type,
-                                };
-                            })
-                    ),
-                []
-            ),
-        [courses, instructors]
-    );
-
-    const OOOEvents = useMemo(() => {
-        if (courseFilter) {
-            return [];
-        }
-        let OOOlist = Object.values(instructors);
-        if (instructorFilter) {
-            const IDList = instructorFilter.map(({ value }) => String(value));
-            OOOlist = OOOlist.filter(({ user_id }) =>
-                IDList.includes(String(user_id))
-            );
-        }
-        return OOOlist.map(({ schedule }) => schedule.time_off).reduce(
-            (allOOO, OOO) =>
-                allOOO.concat(
-                    Object.values(OOO).map(
-                        ({
-                            start,
-                            end,
-                            description,
-                            instructor_id,
-                            all_day,
-                            ooo_id,
-                        }) => {
-                            const instructor = instructors[instructor_id];
-                            const title =
-                                description ||
-                                (instructor
-                                    ? `${instructor.name} Out of Office`
-                                    : 'Out of Office');
-                            const endDate = new Date(end);
-                            // since the end date for allDay events is EXCLUSIVE
-                            // must add one day to include the end specified by user
-                            if (all_day) {
-                                endDate.setDate(endDate.getDate() + 1);
-                            }
-                            return {
-                                allDay: all_day,
-                                color: stringToColor(instructor.name || ''),
-                                end: endDate,
-                                ooo_id,
-                                start,
-                                title,
-                            };
-                        }
-                    )
-                ),
-            []
-        );
-    }, [courseFilter, instructorFilter, instructors]);
-
-    const currentDate = calendarApi && calendarApi.view.title;
-
-    // Change from day,week, and month views
-    const changeView = (value) => {
-        calendarApi.changeView(value);
-        calendarApi.today();
-        setView(value);
-        setTimeShift(0);
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.target);
     };
 
-    const handleViewChange = ({ target }) => {
-        const gridValue = {
-            day: 'timeGridDay',
-            week: 'timeGridWeek',
-            month: 'dayGridMonth',
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+
+    return (
+        <>
+            <div
+                aria-owns={open ? 'mouse-over-popover' : undefined}
+                aria-haspopup='true'
+                onMouseEnter={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}
+                onClick={handleClick}
+            >
+                {children}
+            </div>
+            <Popover
+                id='mouse-over-popover'
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'left',
+                }}
+                className={classes.popover}
+                disableRestoreFocus
+            >
+                {popover}
+            </Popover>
+        </>
+    );
+};
+
+const localizer = momentLocalizer(moment);
+
+const BigCalendar = (props) => {
+    const eventStyleGetter = ({ instructor }) => {
+        const hashCode = (string) => {
+            let hash = 0;
+            for (let i = 0; i < string.length; i += 1) {
+                hash += string.charCodeAt(i);
+            }
+            return hash;
         };
-        const listValue = {
-            day: 'listDay',
-            week: 'listWeek',
-            month: 'listMonth',
+        const colorizer = (string) => {
+            return instructorPalette[(hashCode(string) % 40) - 2];
         };
-        const viewType = view.toLowerCase().includes('grid')
-            ? gridValue
-            : listValue;
-        changeView(viewType[target.value]);
-    };
 
-    const goToNext = () => {
-        calendarApi.next();
-        setTimeShift((prevShift) => prevShift + 1);
-    };
-
-    const goToPrev = () => {
-        calendarApi.prev();
-        setTimeShift((prevShift) => prevShift - 1);
-    };
-
-    const goToToday = () => {
-        calendarApi.today();
-        setTimeShift(0);
-    };
-
-    const handleCourseTypeChange = useCallback(({ target }) => {
-        setCourseType(target.value);
-    }, []);
-
-    useEffect(() => {
-        if (calendarApi) {
-            const storedState =
-                JSON.parse(sessionStorage.getItem('schedulerState')) || {};
-            const oldView = storedState.view;
-            if (oldView) {
-                changeView(oldView);
-            }
-            // if time is earlier, go back, otherwise go forward
-            goToToday();
-            for (
-                let oldTimeShift = storedState.timeShift;
-                oldTimeShift > 0;
-                oldTimeShift--
-            ) {
-                goToNext();
-            }
-            for (
-                let oldTimeShift = storedState.timeShift;
-                oldTimeShift < 0;
-                oldTimeShift++
-            ) {
-                goToPrev();
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [calendarApi]);
-
-    const goToSessionView = useCallback(
-        ({ event }) => {
-            const sessionID = event.id;
-            const { courseID, instructor_id } = event.extendedProps;
-            // dont redirect for OOO clicks
-            if (sessionID && courseID && instructor_id) {
-                history.push(
-                    `/scheduler/view-session/${courseID}/${sessionID}/${instructor_id}`
-                );
-            }
-        },
-        [history]
-    );
-
-    const calendarEvents = useMemo(() => {
-        const filteredEvents = JSON.parse(JSON.stringify(sessions));
-
-        // apply instructors filter
-        const calendarInstructorIDs = Object.keys(sessions);
-        const nonSelectedInstructors = instructorFilter
-            ? arr_diff(
-                  instructorFilter.map(({ value }) => value),
-                  calendarInstructorIDs
-              )
-            : [];
-        nonSelectedInstructors.forEach((instructorID) => {
-            delete filteredEvents[instructorID];
-        });
-
-        // apply course type filter
-        const courseSessionsArray = sessionArray(sessions) || [];
-        if (
-            courseType !== 'all' &&
-            courseSessionsArray.length > 0 &&
-            Object.keys(courses).length > 0
-        ) {
-            courseSessionsArray
-                .filter(
-                    ({ course }) => courses[course].course_type !== courseType
-                )
-                .forEach((session) => {
-                    if (filteredEvents[session.instructor]) {
-                        delete filteredEvents[session.instructor][session.id];
-                    }
-                });
-        }
-
-        // apply courses filter
-        const selectedCourseIDs =
-            courseFilter && courseFilter.map((course) => course.value);
-        const calendarCourseIDs = uniques(
-            courseSessionsArray.map(({ course }) => course)
-        );
-        const nonSelectedCourseIDs = courseFilter
-            ? arr_diff(selectedCourseIDs, calendarCourseIDs)
-            : [];
-
-        nonSelectedCourseIDs.forEach((courseID) => {
-            courseSessionsArray
-                // eslint-disable-next-line eqeqeq
-                .filter(({ course }) => course == courseID)
-                .forEach((session) => {
-                    delete filteredEvents[session.instructor][session.id];
-                });
-        });
-
-        return formatSessions(filteredEvents);
-    }, [
-        courseFilter,
-        courseType,
-        courses,
-        formatSessions,
-        instructorFilter,
-        sessions,
-    ]);
-
-    const instructorOptions = useMemo(
-        () =>
-            Object.entries(instructors).map(([instructorID, instructor]) => ({
-                label: instructor.name,
-                value: instructorID,
-            })),
-        [instructors]
-    );
-    const courseSessionsArray = sessionArray(sessions);
-    const courseOptions = useMemo(
-        () =>
-            courseSessionsArray &&
-            uniques(courseSessionsArray.map((session) => session.course)).map(
-                (courseID) => ({
-                    label: courses[courseID] && courses[courseID].title,
-                    value: courseID,
-                })
-            ),
-        [courseSessionsArray, courses]
-    );
-
-    useEffect(() => {
-        sessionStorage.setItem(
-            'schedulerState',
-            JSON.stringify({
-                courseFilter,
-                courseType,
-                instructorFilter,
-                timeShift,
-                view,
-            })
-        );
-    }, [courseType, courseFilter, instructorFilter, timeShift, view]);
-
-    const viewType = () => {
-        const currentView = view.toLowerCase();
-        if (currentView.includes('month')) {
-            return 'month';
-        } else if (currentView.includes('week')) {
-            return 'week';
-        } else if (currentView.includes('day')) {
-            return 'day';
-        }
-        return 'day';
+        return {
+            style: {
+                backgroundColor: colorizer(fullName(instructor)),
+            },
+        };
     };
 
     return (
-        <Grid item xs={12} container>
-            <Box paddingBottom='16px'>
-                <Typography
-                    align='left'
-                    className='scheduler-title'
-                    variant='h1'
-                >
-                    Scheduler
-                </Typography>
-            </Box>
-            <br />
-            <Grid
-                className='scheduler-header scheduler-wrapper'
-                container
-                item
-                xs={12}
-            >
-                <Grid item xs={4}>
-                    <Grid
-                        className='scheduler-header-firstSet'
-                        container
-                        direction='row'
-                    >
-                        <Grid item>
-                            <IconButton
-                                onClick={() => changeView('timeGridDay')}
-                            >
-                                <CalendarIcon
-                                    style={{
-                                        color:
-                                            view
-                                                .toLowerCase()
-                                                .includes('grid') &&
-                                            secondaryFontColor,
-                                    }}
-                                />
-                            </IconButton>
-                        </Grid>
-                        <Grid item>
-                            <IconButton onClick={() => changeView('listWeek')}>
-                                <ListIcon
-                                    style={{
-                                        color:
-                                            view === 'listWeek' &&
-                                            secondaryFontColor,
-                                    }}
-                                />
-                            </IconButton>
-                        </Grid>
-                        <Grid item>
-                            <SessionFilters
-                                CourseOptions={courseOptions}
-                                CourseValue={courseFilter}
-                                InstructorOptions={instructorOptions}
-                                InstructorValue={instructorFilter}
-                                onCourseSelect={setCourseFilter}
-                                onInstructorSelect={setInstructorFilter}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl className='filter-select'>
-                                <Select
-                                    input={
-                                        <BootstrapInput
-                                            id='filter-calendar-type'
-                                            name='courseFilter'
-                                        />
-                                    }
-                                    MenuProps={{
-                                        classes: {
-                                            paper: classes.dropdownStyle,
-                                        },
-                                    }}
-                                    onChange={handleCourseTypeChange}
-                                    value={courseType}
-                                >
-                                    <MenuItem value='all'>All</MenuItem>
-                                    <MenuItem value='class'>Class</MenuItem>
-                                    <MenuItem value='tutoring'>
-                                        Tutoring
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid
-                    item
-                    xs={4}
-                    container
-                    direction='row'
-                    justify='center'
-                    alignItems='center'
-                >
-                    <Grid item>
-                        <IconButton
-                            aria-label='prev-month'
-                            className='prev-month'
-                            onClick={goToPrev}
-                        >
-                            <ChevronLeftOutlined />
-                        </IconButton>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant='h6'>{currentDate}</Typography>
-                    </Grid>
-                    <Grid item>
-                        <IconButton
-                            aria-label='next-month'
-                            className='next-month'
-                            onClick={goToNext}
-                        >
-                            <ChevronRightOutlined />
-                        </IconButton>
-                    </Grid>
-                </Grid>
-                <Grid item xs={2} />
-                <Grid item xs={2}>
-                    <Grid
-                        className='scheduler-header-last'
-                        container
-                        direction='row'
-                        justify='flex-end'
-                    >
-                        <Grid item xs={3}>
-                            <Tooltip title='Go to Today'>
-                                <IconButton
-                                    aria-label='current-date-button'
-                                    className='current-date-button'
-                                    onClick={goToToday}
-                                >
-                                    <TodayIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <FormControl className='filter-select'>
-                                <Select
-                                    input={
-                                        <BootstrapInput
-                                            id='filter-calendar-type'
-                                            name='courseFilter'
-                                        />
-                                    }
-                                    MenuProps={{
-                                        classes: {
-                                            paper: classes.dropdownStyle,
-                                        },
-                                    }}
-                                    onChange={handleViewChange}
-                                    value={viewType()}
-                                >
-                                    <MenuItem value='day'>Day</MenuItem>
-                                    <MenuItem value='week'>Week</MenuItem>
-                                    <MenuItem value='month'>Month</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
-            <Grid className='omou-calendar' item xs={12}>
-                <FullCalendar
-                    contentHeight='400'
-                    defaultView='timeGridDay'
-                    displayEventTime
-                    eventClick={goToSessionView}
-                    eventColor='none'
-                    eventLimit={4}
-                    eventMouseEnter={handleToolTip}
-                    events={[...calendarEvents, ...OOOEvents]}
-                    header={false}
-                    minTime='07:00:00'
-                    aspectRatio='2'
-                    nowIndicator
-                    plugins={[
-                        dayGridPlugin,
-                        timeGridPlugin,
-                        interactionPlugin,
-                        listViewPlugin,
-                        resourceTimelinePlugin,
-                    ]}
-                    ref={calendarRef}
-                    resourceAreaWidth='20%'
-                    resourceOrder='title'
-                    schedulerLicenseKey='GPL-My-Project-Is-Open-Source'
-                    themeSystem='standard'
-                    timeZone='local'
-                    titleFormat={{
-                        day: 'numeric',
-                        month: 'long',
-                    }}
-                    views={{
-                        dayGrid: {
-                            titleFormat: { month: 'long' },
-                        },
-                    }}
-                />
-            </Grid>
-        </Grid>
+        <Calendar
+            popup
+            localizer={localizer}
+            events={props.eventList}
+            timeslots={4}
+            components={{
+                toolbar: OmouSchedulerToolbar,
+                eventWrapper: (props) => (
+                    <EventPopoverWrapper
+                        {...props}
+                        popover={<SessionPopover session={props.event} />}
+                    />
+                ),
+            }}
+            startAccessor='start'
+            endAccessor='end'
+            onSelectEvent={props.onSelectEvent}
+            style={{ height: 700 }}
+            eventPropGetter={eventStyleGetter}
+        />
     );
 };
 
-export default Scheduler;
+const GET_SESSIONS = gql`
+    query GetSessionsQuery($timeFrame: String, $timeShift: Int, $userId: ID) {
+        sessions(
+            timeFrame: $timeFrame
+            timeShift: $timeShift
+            userId: $userId
+        ) {
+            id
+            endDatetime
+            startDatetime
+            title
+            instructor {
+                user {
+                    id
+                    firstName
+                    lastName
+                }
+            }
+            course {
+                enrollmentSet {
+                    student {
+                        user {
+                            id
+                            firstName
+                            lastName
+                        }
+                    }
+                    id
+                }
+                title
+                id
+            }
+        }
+    }
+`;
+
+export default function Scheduler() {
+    const defaultSchedulerState = {
+        timeFrame: 'month',
+        timeShift: 0,
+        instructorOptions: [],
+        selectedInstructors: [],
+        courseOptions: [],
+        selectedCourses: [],
+        studentOptions: [],
+        selectedStudents: [],
+    };
+    const AuthUser = useSelector(({ auth }) => auth);
+    const [schedulerState, setSchedulerState] = useState(defaultSchedulerState);
+    const [sessionsInView, setSessionsInView] = useState([]);
+    const [filteredSessionsInView, setFilteredSessionsInView] = useState([]);
+
+    const setFilteredSessions = (schedulerState, allSessionsInView) => {
+        const atLeastOneFilter = (selectedOptions) =>
+            selectedOptions.length > 0;
+
+        const filterSessionsBySelectedOptions = (
+            selectedOptions,
+            sessionsList,
+            getMatchId
+        ) => {
+            if (atLeastOneFilter(selectedOptions)) {
+                const selectedIds = selectedOptions.map(
+                    (option) => option.value
+                );
+                const bySelectedOptions = (selectedOptionsList, id) => {
+                    if (Array.isArray(id)) {
+                        return findCommonElement(selectedOptionsList, id);
+                    } else {
+                        return selectedOptionsList.includes(id);
+                    }
+                };
+                return sessionsList.filter((session) =>
+                    bySelectedOptions(selectedIds, getMatchId(session))
+                );
+            } else {
+                return sessionsList;
+            }
+        };
+        const getInstructorId = (session) => session.instructor.id;
+        const sessionsFilteredByInstructors = filterSessionsBySelectedOptions(
+            schedulerState.selectedInstructors,
+            allSessionsInView,
+            getInstructorId
+        );
+
+        const getCourseId = (session) => session.course.id;
+        const sessionsFilteredByInstructorsAndCourses = filterSessionsBySelectedOptions(
+            schedulerState.selectedCourses,
+            sessionsFilteredByInstructors,
+            getCourseId
+        );
+
+        const getStudentId = (session) =>
+            session.students.map((student) => student.id);
+        const sessionsFilteredByInstructorsCoursesStudents = filterSessionsBySelectedOptions(
+            schedulerState.selectedStudents,
+            sessionsFilteredByInstructorsAndCourses,
+            getStudentId
+        );
+
+        setFilteredSessionsInView(sessionsFilteredByInstructorsCoursesStudents);
+    };
+
+    useEffect(() => {
+        setSchedulerState(defaultSchedulerState);
+    }, []);
+
+    useEffect(() => {
+        const { timeFrame, timeShift, ...rest } = schedulerState;
+        if (timeFrame && timeShift) {
+            setSchedulerState({
+                ...rest,
+                timeFrame,
+                timeShift,
+            });
+        }
+    }, [schedulerState.timeFrame, schedulerState.timeShift]);
+
+    useEffect(() => {
+        setFilteredSessions(schedulerState, sessionsInView);
+    }, [
+        schedulerState.selectedInstructors.length,
+        schedulerState.selectedCourses.length,
+        schedulerState.selectedStudents.length,
+    ]);
+
+    const uniqueValuesById = (objectList) => {
+        const result = [];
+        const map = new Map();
+        for (const item of objectList) {
+            if (!map.has(item.id)) {
+                map.set(item.id, true); // set any value to Map
+                result.push(item);
+            }
+        }
+        return result;
+    };
+
+    const createOptions = (objectList, labelFunc) =>
+        objectList.map((object) => ({
+            value: object.id,
+            label: labelFunc(object),
+        }));
+
+    const isParentOrInstructorLoggedIn =
+        AuthUser.accountType === 'PARENT' ||
+        AuthUser.accountType === 'INSTRUCTOR';
+
+    const { data, loading, error } = useQuery(GET_SESSIONS, {
+        variables: {
+            timeFrame: schedulerState.timeFrame,
+            timeShift: schedulerState.timeShift,
+            ...(isParentOrInstructorLoggedIn && { userId: AuthUser.user.id }),
+        },
+        onCompleted: (data) => {
+            const { sessions } = data;
+            const parsedBigCalendarSessions = sessions.map(
+                ({
+                    id,
+                    endDatetime,
+                    startDatetime,
+                    title,
+                    instructor,
+                    course,
+                }) => ({
+                    id,
+                    title,
+                    course,
+                    students: course.enrollmentSet.map(
+                        (enrollment) => enrollment.student.user
+                    ),
+                    start: new Date(startDatetime),
+                    end: new Date(endDatetime),
+                    instructor: instructor.user,
+                })
+            );
+            setSessionsInView(parsedBigCalendarSessions);
+            setFilteredSessions(schedulerState, parsedBigCalendarSessions);
+
+            const instructors = sessions.map(
+                (session) => session.instructor.user
+            );
+            const uniqueInstructors = uniqueValuesById(instructors);
+            const instructorOptions = createOptions(
+                uniqueInstructors,
+                (instructor) => fullName(instructor)
+            );
+
+            const courses = sessions.map((session) => session.course);
+            const uniqueCourses = uniqueValuesById(courses);
+            const courseOptions = createOptions(
+                uniqueCourses,
+                (course) => course.title
+            );
+
+            const enrollmentLists = sessions.map(
+                (session) => session.course.enrollmentSet
+            );
+            const students = enrollmentLists
+                .flat()
+                .map((enrollment) => enrollment.student.user);
+            const uniqueStudents = uniqueValuesById(students);
+            const studentOptions = createOptions(uniqueStudents, (student) =>
+                fullName(student)
+            );
+
+            setSchedulerState((prevState) => ({
+                ...prevState,
+                instructorOptions,
+                courseOptions,
+                studentOptions,
+            }));
+        },
+    });
+
+    const updateSchedulerState = (newState) => setSchedulerState(newState);
+
+    return (
+        <SchedulerContext.Provider
+            value={{ schedulerState, updateSchedulerState }}
+        >
+            <Typography
+                variant='h1'
+                align='left'
+                style={{ marginBottom: '24px' }}
+            >
+                Scheduler
+            </Typography>
+            <BigCalendar eventList={filteredSessionsInView} />
+        </SchedulerContext.Provider>
+    );
+}

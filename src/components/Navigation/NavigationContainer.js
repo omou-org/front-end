@@ -69,6 +69,20 @@ const NavigationContainer = () => {
         return active;
     };
 
+    const isAccountLandingView = (accountType, NavItemName, location) => {
+        const isDashboardLanding =
+            NavItemName === 'Dashboard' && location.pathname === '/';
+        const isSchedulerLanding =
+            NavItemName === 'Schedule' && location.pathname === '/';
+        const isInstructorOrParentLanding =
+            (accountType === 'INSTRUCTOR' || accountType === 'PARENT') &&
+            isSchedulerLanding;
+        const isReceptionistOrAdminLanding =
+            (accountType === 'RECEPTIONIST' || accountType === 'ADMIN') &&
+            isDashboardLanding;
+        return isReceptionistOrAdminLanding || isInstructorOrParentLanding;
+    };
+
     if ((!NavigationList || !ACCOUNT_TYPE) && token) {
         return <Loading />;
     }
@@ -79,7 +93,6 @@ const NavigationContainer = () => {
                 {NavigationList &&
                     NavigationList.map((NavItem) => (
                         <ListItem
-                            button
                             className={`listItem ${classes.navigationIconStyle}`}
                             component={NavLinkNoDup}
                             isActive={(match, location) => {
@@ -87,8 +100,11 @@ const NavigationContainer = () => {
                                     match?.url ||
                                     isAccountFormActive(location, NavItem) ||
                                     isCourseFormActive(location, NavItem) ||
-                                    (NavItem.name === 'Dashboard' &&
-                                        location.pathname === '/')
+                                    isAccountLandingView(
+                                        ACCOUNT_TYPE,
+                                        NavItem.name,
+                                        location
+                                    )
                                 );
                             }}
                             key={NavItem.name}

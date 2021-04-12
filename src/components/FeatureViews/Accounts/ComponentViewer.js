@@ -139,15 +139,13 @@ const ComponentViewer = ({ inView, user, id }) => {
                     id: 10,
                 },
                 {
-                    component: (
-                        <UserAccessControl key={11} userID={id}>
-                            <NotificationSettings user={user} />
-                        </UserAccessControl>
-                    ),
+                    component: <NotificationSettings user={user} />,
                     access_permissions: [
                         USER_TYPES.student,
                         USER_TYPES.parent,
                         USER_TYPES.instructor,
+                        USER_TYPES.admin,
+                        USER_TYPES.receptionist,
                     ],
                     id: 11,
                 },

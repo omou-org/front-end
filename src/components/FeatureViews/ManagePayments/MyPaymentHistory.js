@@ -1,8 +1,13 @@
+/**
+ * @description Not is use - working to migrate to new Invoices component
+ *
+ */
+
 import React, { useEffect, useState } from 'react';
 import PaymentTable from '../Accounts/TabComponents/PaymentTable';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/client';
 import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../OmouComponents/Loading';
@@ -17,12 +22,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 
 export const GET_PARENT_PAYMENTS_FILTERED = gql`
-    query ParentPayments($parentId: ID!, $startDate: String, $endDate: String) {
-        payments(
-            parentId: $parentId
-            startDate: $startDate
-            endDate: $endDate
-        ) {
+    query ParentPayments {
+        invoices {
             id
             createdAt
             registrationSet {

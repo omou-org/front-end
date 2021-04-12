@@ -35,6 +35,46 @@ export const statusYellow = '#FFDD59';
 export const statusRed = '#FF6766';
 export const defaultBoxShadow = '0px 0px 8px rgb(196 196 196 / 60%)';
 
+// Instructor Profile Color Palette
+export const instructorPalette = [
+    '#F503B2',
+    '#F47FD4',
+    '#FCA8E4',
+    '#FFC5EF',
+    '#DD0000',
+    '#EA2632',
+    '#EB5757',
+    '#FF9191',
+    '#2F80ED',
+    '#2D9CDB',
+    '#56CCF2',
+    '#9B51E0',
+    '#46D943',
+    '#219653',
+    '#27AE60',
+    '#6FCF97',
+    '#F78017',
+    '#F2994A',
+    '#FEBF87',
+    '#FFE3CA',
+    '#FFC103',
+    '#F2C94C',
+    '#F4D77D',
+    '#FFEDB5',
+    '#72FFFF',
+    '#43D9D9',
+    '#92E2DE',
+    '#BAF7F3',
+    '#1F82A1',
+    '#588FA0',
+    '#88ACB7',
+    '#BEDAE2',
+    '#96007E',
+    '#B96AAC',
+    '#CD9BC5',
+    '#CD9BC5',
+];
+
 // Typography
 export const h1 = {
     fontSize: '40px',
@@ -48,7 +88,7 @@ export const h2 = {
     fontWeight: 'bold',
     fontFamily: 'Roboto',
     lineHeight: '40px',
-    color: slateGrey,
+    color: goth,
 };
 export const h3 = {
     fontSize: '24px',
@@ -105,6 +145,24 @@ export const subtitle1 = {
 const defaultFontProps = {
     fontFamily: 'Roboto Slab',
     fontWeight: 700,
+};
+
+export const new_course_form = {
+    dropdowns: {
+        width: '216px',
+        display: 'block',
+        margin: '2px 0 14px 0',
+    },
+    textFields: {
+        width: '432px',
+        display: 'block',
+        margin: '14px 0 10px 0',
+    },
+    textFields_short: {
+        width: '180px',
+        display: 'block',
+        margin: '14px 0 10px 0',
+    },
 };
 
 const theme = createMuiTheme({

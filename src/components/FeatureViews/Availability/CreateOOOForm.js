@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Button from '@material-ui/core/Button';
 import { OOOContext } from './OOOContext';
 import { SubmitNotice } from './SubmitNotice';
 import ConflictsDisplay from './ConflictsDisplay';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import OOOConfirmation from './OOOConfirmation';
-import checkMarkIcon from 'components/FeatureViews/Scheduler/icons/bluecheckmark.svg';
 import Typography from '@material-ui/core/Typography';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';

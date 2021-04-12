@@ -12,7 +12,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
 import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
 import {
     GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
@@ -45,6 +45,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
         $scheduleUpdatesSms: Boolean
         $sessionReminderEmail: Boolean
         $sessionReminderSms: Boolean
+        $missedSessionReminderEmail: Boolean
+        $missedSessionReminderSms: Boolean
     ) {
         __typename
         createParentNotificationSetting(
@@ -54,6 +56,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
             scheduleUpdatesSms: $scheduleUpdatesSms
             sessionReminderEmail: $sessionReminderEmail
             sessionReminderSms: $sessionReminderSms
+            missedSessionReminderEmail: $missedSessionReminderEmail
+            missedSessionReminderSms: $missedSessionReminderSms
         ) {
             settings {
                 paymentReminderEmail
@@ -61,6 +65,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
                 scheduleUpdatesSms
                 sessionReminderEmail
                 sessionReminderSms
+                missedSessionReminderEmail
+                missedSessionReminderSms
             }
         }
     }
@@ -191,6 +197,18 @@ export default function NotificationSettings({ user }) {
                     checked: userSettings?.sessionReminderSms || false,
                 }
             ),
+            createNotificationSetting(
+                'Missed Session Notification',
+                'Get notified when your student did not attend a session',
+                {
+                    settingName: 'missedSessionReminderEmail',
+                    checked: userSettings?.missedSessionReminderEmail || false,
+                },
+                {
+                    settingName: 'missedSessionReminderSms',
+                    checked: userSettings?.missedSessionReminderSms || false,
+                }
+            ),
             ...(userInfo.accountType === 'PARENT'
                 ? [
                       createNotificationSetting(
@@ -261,7 +279,6 @@ export default function NotificationSettings({ user }) {
             ].checked;
             return newState;
         });
-
         if (userInfo.accountType === 'PARENT') {
             notificationSettings.parent = userInfo.user.id;
             createParentNotification({ variables: notificationSettings });
@@ -279,12 +296,18 @@ export default function NotificationSettings({ user }) {
             <Grid
                 container
                 style={{
-                    backgroundColor: '#F5F5F5',
                     padding: '1%',
                     marginTop: '30px',
+                    borderBottom: '1px solid #C4C4C4',
                 }}
             >
-                <Typography style={{ color: omouBlue, fontWeight: 600 }}>
+                <Typography
+                    style={{
+                        color: omouBlue,
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                    }}
+                >
                     Notification Settings
                 </Typography>
             </Grid>
@@ -308,6 +331,7 @@ export default function NotificationSettings({ user }) {
                                         style={{
                                             fontSize: '14px',
                                             fontWeight: 'bold',
+                                            lineHeight: '1.375rem',
                                         }}
                                         display='block'
                                     >
@@ -352,12 +376,18 @@ export default function NotificationSettings({ user }) {
             <Grid
                 container
                 style={{
-                    backgroundColor: '#F5F5F5',
                     padding: '1%',
-                    marginTop: '2%',
+                    marginTop: '30px',
+                    borderBottom: '1px solid #C4C4C4',
                 }}
             >
-                <Typography style={{ color: omouBlue, fontWeight: 600 }}>
+                <Typography
+                    style={{
+                        color: omouBlue,
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                    }}
+                >
                     Opt-in SMS Notifications
                 </Typography>
             </Grid>
@@ -375,6 +405,7 @@ export default function NotificationSettings({ user }) {
                                         style={{
                                             fontSize: '14px',
                                             fontWeight: 'bold',
+                                            lineHeight: '1.375rem',
                                         }}
                                         display='block'
                                     >

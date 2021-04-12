@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';

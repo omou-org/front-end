@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import gql from 'graphql-tag';
-import { useLazyQuery, useMutation } from '@apollo/react-hooks';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
@@ -59,7 +59,11 @@ const LoginPage = () => {
         errorPolicy: 'ignore',
         ignoreResults: true,
         onCompleted: async ({ tokenAuth }) => {
-            dispatch(await setToken(tokenAuth.token, shouldSave));
+            try {
+                dispatch(await setToken(tokenAuth.token, shouldSave));
+            } catch {
+                setHasError(true);
+            }
         },
         // for whatever reason, this function prevents an unhandled rejection
         onError: () => {

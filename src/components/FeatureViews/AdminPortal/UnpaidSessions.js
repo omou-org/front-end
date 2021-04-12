@@ -1,6 +1,5 @@
 import React from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
+import { useQuery } from '@apollo/client';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
