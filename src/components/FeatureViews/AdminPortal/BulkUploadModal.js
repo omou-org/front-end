@@ -132,7 +132,9 @@ const BulkUploadModal = ({ closeModal }) => {
                                     <MenuItem 
                                         value=''  
                                         ListItemClasses={{ selected: classes.menuSelected }} 
-                                        className={classes.menuSelect}>
+                                        className={classes.menuSelect}
+                                        disabled
+                                        >
                                             Select Template
                                     </MenuItem>
                                     <MenuItem 
@@ -176,9 +178,9 @@ const BulkUploadModal = ({ closeModal }) => {
                                     cancel
                                 </ResponsiveButton>
                                 <ResponsiveButton
-                                    style={{border: 'none', ...h5}}
+                                    style={{border: 'none', background: white}}
                                     disabled={!template && true}
-                                    variant={template && 'outlined' }
+                                    variant={template ? 'outlined' : 'contained' }
                                     template={template}
                                     onClick={handleStepChange}
                                 >
