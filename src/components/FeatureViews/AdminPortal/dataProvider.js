@@ -1,16 +1,19 @@
 import { client } from 'index';
 import gql from 'graphql-tag';
-
-const discountInfo = gql`
-    fragment DiscountInfo on DiscountInterface {
-        active
-        amount
-        amountType
-        description
-        id
-        name
-    }
-`;
+import {
+    getPriceRules,
+    getTutitionRule,
+    discountInfo,
+    BULK_DISCOUNTS,
+    BULK_DISCOUNT,
+    DATE_RANGE_DISCOUNTS,
+    DATE_RANGE_DISCOUNT,
+    PAYMENT_METHOD_DISCOUNTS,
+} from '../../../queries/PricingQuery/PricingQuery';
+import {
+    GET_SCHOOL,
+    GET_SCHOOLS,
+} from '../../../queries/AccountsQuery/AccountsQuery';
 
 const QUERIES_LIST = {
     courseCategories: gql`
@@ -23,57 +26,11 @@ const QUERIES_LIST = {
             }
         }
     `,
-    schools: gql`
-        query getSchools {
-            schools {
-                id
-                name
-                district
-                zipcode
-            }
-        }
-    `,
-    bulkDiscounts: gql`
-        query GetBulkDiscounts {
-            multiCourseDiscounts {
-                ...DiscountInfo
-                numSessions
-            }
-        }
-        ${discountInfo}
-    `,
-    dateRangeDiscounts: gql`
-        query GetDateRangeDiscounts {
-            dateRangeDiscounts {
-                ...DiscountInfo
-                startDate
-                endDate
-            }
-        }
-        ${discountInfo}
-    `,
-    paymentMethodDiscounts: gql`
-        query GetPaymentMethodDiscounts {
-            paymentMethodDiscounts {
-                ...DiscountInfo
-                paymentMethod
-            }
-        }
-        ${discountInfo}
-    `,
-    tuitionRules: gql`
-        query GetPriceRules {
-            priceRules {
-                id
-                courseType
-                category {
-                    id
-                    name
-                }
-                academicLevel
-            }
-        }
-    `,
+    schools: GET_SCHOOLS,
+    bulkDiscounts: BULK_DISCOUNTS,
+    dateRangeDiscounts: DATE_RANGE_DISCOUNTS,
+    paymentMethodDiscounts: PAYMENT_METHOD_DISCOUNTS,
+    tuitionRules: getPriceRules,
 };
 
 const QUERIES_ONE = {
@@ -86,35 +43,9 @@ const QUERIES_ONE = {
             }
         }
     `,
-    schools: gql`
-        query getSchool($id: ID) {
-            school(schoolId: $id) {
-                id
-                name
-                district
-                zipcode
-            }
-        }
-    `,
-    bulkDiscounts: gql`
-        query GetBulkDiscount($id: ID!) {
-            multiCourseDiscount(multiCourseDiscountId: $id) {
-                ...DiscountInfo
-                numSessions
-            }
-        }
-        ${discountInfo}
-    `,
-    dateRangeDiscounts: gql`
-        query GetDateRangeDiscount($id: ID!) {
-            dateRangeDiscount(dateRangeDiscountId: $id) {
-                ...DiscountInfo
-                startDate
-                endDate
-            }
-        }
-        ${discountInfo}
-    `,
+    schools: GET_SCHOOL,
+    bulkDiscounts: BULK_DISCOUNT,
+    dateRangeDiscounts: DATE_RANGE_DISCOUNT,
     paymentMethodDiscounts: gql`
         query GetPaymentMethodDiscount($id: ID!) {
             paymentMethodDiscount(paymentMethodDiscountId: $id) {
@@ -124,20 +55,7 @@ const QUERIES_ONE = {
         }
         ${discountInfo}
     `,
-    tuitionRules: gql`
-        query getTuitionRule($id: ID) {
-            priceRule(priceRuleId: $id) {
-                academicLevel
-                courseType
-                hourlyTuition
-                id
-                category {
-                    name
-                    id
-                }
-            }
-        }
-    `,
+    tuitionRules: getTutitionRule,
 };
 
 const MUTATION_ADD = {

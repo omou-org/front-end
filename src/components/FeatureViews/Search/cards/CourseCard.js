@@ -1,5 +1,4 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/client';
 
@@ -9,10 +8,10 @@ import Grid from '@material-ui/core/Grid';
 import { Link } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-
 import '../Search.scss';
 import { truncateStrings } from 'utils';
 import { LabelBadge } from '../../../../theme/ThemedComponents/Badge/LabelBadge';
+import { GET_COURSE } from '../../../../queries/CoursesQuery/CourseQuery';
 
 const getLocaleDateString = (start, end) => {
     if (start && end) {
@@ -22,29 +21,9 @@ const getLocaleDateString = (start, end) => {
     }
 };
 
-const COURSE_QUERY = gql`
-    query CourseFetch($courseID: ID!) {
-        course(courseId: $courseID) {
-            instructor {
-                user {
-                    firstName
-                    lastName
-                }
-            }
-            enrollmentSet {
-                id
-            }
-            maxCapacity
-            endDate
-            title
-            startDate
-        }
-    }
-`;
-
 const CourseCard = ({ courseID, isLoading = false }) => {
-    const { data, loading } = useQuery(COURSE_QUERY, {
-        variables: { courseID },
+    const { data, loading } = useQuery(GET_COURSE, {
+        variables: { id: courseID },
     });
 
     if (loading || isLoading) {
@@ -64,7 +43,6 @@ const CourseCard = ({ courseID, isLoading = false }) => {
             </Grid>
         );
     }
-
     const { course } = data;
     const instructorName = `${course.instructor.user.firstName} ${course.instructor.user.lastName}`;
 

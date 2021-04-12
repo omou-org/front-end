@@ -12,20 +12,10 @@ import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import Loading from '../../OmouComponents/Loading';
 import { makeStyles } from '@material-ui/core/styles';
-import { omouBlue, skyBlue } from '../../../theme/muiTheme';
+import { skyBlue, omouBlue } from '../../../theme/muiTheme';
+import { GET_UPCOMING_INSTRUCTOR_OOO } from '../../../queries/AccountsQuery/AccountsQuery';
 
 import moment from 'moment';
-
-export const GET_UPCOMING_INSTRUCTOR_OOO = gql`
-    query getInstructorOOO($instructorID: ID!) {
-        instructorOoo(instructorId: $instructorID) {
-            id
-            description
-            endDatetime
-            startDatetime
-        }
-    }
-`;
 
 const useStyles = makeStyles((theme) => ({
     root: {

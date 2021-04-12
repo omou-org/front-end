@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import gql from 'graphql-tag';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -9,33 +8,9 @@ import Typography from '@material-ui/core/Typography';
 import Loading from 'components/OmouComponents/Loading';
 import UnpaidSessionCard from './UnpaidSessionCard';
 import './AdminPortal.scss';
+import { UNPAID_SESSION_QUERY } from '../../../queries/PaymentQuery/PaymentQuery';
 
 const UnpaidSessions = () => {
-    const UNPAID_SESSION_QUERY = gql`
-        query unpaidSessionQuery {
-            unpaidSessions {
-                student {
-                    user {
-                        firstName
-                        lastName
-                        id
-                    }
-                }
-                course {
-                    id
-                    title
-                    availabilityList {
-                        startTime
-                        endTime
-                    }
-                    hourlyTuition
-                }
-                sessionsLeft
-                lastPaidSessionDatetime
-            }
-        }
-    `;
-
     const { data, loading, error } = useQuery(UNPAID_SESSION_QUERY);
 
     if (loading) {

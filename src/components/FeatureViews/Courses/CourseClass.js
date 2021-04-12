@@ -19,7 +19,10 @@ import { fullName, gradeLvl, USER_TYPES } from 'utils';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
-import { GET_STUDENTS } from './CourseManagementContainer';
+import { filterEvent } from 'actions/calendarActions';
+import { GET_STUDENTS_BY_ENROLLMENT } from '../../../queries/AccountsQuery/AccountsQuery';
+import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
+import { GET_ANNOUNCEMENTS } from '../../../queries/CommsQuery/CommsQuery';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 import Tabs from '@material-ui/core/Tabs';
@@ -55,132 +58,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const GET_ANNOUNCEMENTS = gql`
-    query getAnnouncement($id: ID!) {
-        announcements(courseId: $id) {
-            subject
-            id
-            body
-            createdAt
-            updatedAt
-            poster {
-                firstName
-                lastName
-            }
-        }
-    }
-`;
-
-export const GET_CLASS = gql`
-    query getClass($id: ID!) {
-        course(courseId: $id) {
-            id
-            academicLevel
-            title
-            startDate
-            endDate
-            description
-            courseLink
-            courseLinkDescription
-            courseLinkUpdatedAt
-            courseLinkUser {
-                firstName
-                lastName
-                id
-            }
-            courseCategory {
-                name
-                id
-            }
-            activeAvailabilityList {
-                dayOfWeek
-                endTime
-                startTime
-                id
-            }
-            instructor {
-                user {
-                    firstName
-                    lastName
-                    id
-                }
-            }
-            enrollmentSet {
-                id
-                student {
-                    user {
-                        firstName
-                        lastName
-                        id
-                    }
-                    primaryParent {
-                        user {
-                            firstName
-                            lastName
-                            id
-                            email
-                        }
-                        accountType
-                        phoneNumber
-                        studentIdList
-                    }
-                    studentschoolinfoSet {
-                        textbook
-                        teacher
-                        name
-                        id
-                    }
-                    accountType
-                    userUuid
-                }
-            }
-            sessionSet {
-                startDatetime
-                id
-            }
-            availabilityList {
-                startTime
-                endTime
-                dayOfWeek
-                id
-            }
-            courseId
-        }
-        enrollments(courseId: $id) {
-            id
-            student {
-                user {
-                    firstName
-                    lastName
-                    id
-                }
-                primaryParent {
-                    user {
-                        firstName
-                        lastName
-                        email
-                        id
-                    }
-                    accountType
-                    phoneNumber
-                }
-            }
-        }
-        announcements(courseId: $id) {
-            subject
-            id
-            body
-            createdAt
-            updatedAt
-            poster {
-                firstName
-                lastName
-                id
-            }
-        }
-    }
-`;
-
 const CourseClass = () => {
     const { id } = useParams();
     const classes = useStyles();
@@ -206,7 +83,8 @@ const CourseClass = () => {
     ];
 
     const parentNostudentEnrolledTab = [{ label: 'About Course' }];
-    const { data, loading, error } = useQuery(GET_CLASS, {
+
+    const { data, loading, error } = useQuery(GET_COURSE, {
         fetchPolicy: 'network-only',
         variables: {
             id: id,
@@ -216,7 +94,7 @@ const CourseClass = () => {
         data: studentData,
         loading: studentLoading,
         error: studentError,
-    } = useQuery(GET_STUDENTS, {
+    } = useQuery(GET_STUDENTS_BY_ENROLLMENT, {
         variables: { accountId: user.id },
         skip: accountType !== 'PARENT',
         onCompleted: () => {

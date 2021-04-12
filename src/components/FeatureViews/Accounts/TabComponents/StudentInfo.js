@@ -10,6 +10,8 @@ import ProfileCard from '../ProfileCard';
 import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { AddItemButton } from '../../../OmouComponents/AddItemButton';
+import { PropTypes } from 'prop-types';
+import { GET_STUDENTS_BY_PARENT } from '../../../../queries/AccountsQuery/AccountsQuery';
 
 const useStyles = makeStyles({
     center: {
@@ -24,33 +26,10 @@ const useStyles = makeStyles({
     },
 });
 
-const GET_STUDENTS = gql`
-    query GetStudents($id: ID) {
-        parent(userId: $id) {
-            studentPrimaryParent {
-                ...StudentInfo
-            }
-            studentSecondaryParent {
-                ...StudentInfo
-            }
-        }
-    }
-
-    fragment StudentInfo on StudentType {
-        phoneNumber
-        user {
-            id
-            firstName
-            lastName
-            email
-        }
-    }
-`;
-
 const StudentInfo = () => {
     const { accountType } = useSelector(({ auth }) => auth);
     const { accountID } = useParams();
-    const { data, loading, error } = useQuery(GET_STUDENTS, {
+    const { data, loading, error } = useQuery(GET_STUDENTS_BY_PARENT, {
         variables: { id: accountID },
     });
 

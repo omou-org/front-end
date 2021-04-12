@@ -12,44 +12,13 @@ import { fullName } from 'utils.js';
 import { stringToColor } from '../accountUtils';
 import Loading from 'components/OmouComponents/Loading';
 import { Typography } from '@material-ui/core';
-
-const GET_INSTRUCTOR_INFO = gql`
-    query getCourses($instructorID: ID!) {
-        instructor(userId: $instructorID) {
-            accountType
-            user {
-                firstName
-                lastName
-                id
-                instructor {
-                    sessionSet {
-                        endDatetime
-                        startDatetime
-                        title
-                    }
-                    instructoravailabilitySet {
-                        dayOfWeek
-                        endDatetime
-                        startDatetime
-                        startTime
-                        endTime
-                    }
-                    instructoroutofofficeSet {
-                        endDatetime
-                        startDatetime
-                        description
-                    }
-                }
-            }
-        }
-    }
-`;
+import { GET_INSTRUCTOR_COURSE_INFO } from '../../../../queries/AccountsQuery/AccountsQuery';
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
 //TODO: Refactor instructor schedule to graphQL
 const InstructorSchedule = ({ instructorID }) => {
-    const { loading, error, data } = useQuery(GET_INSTRUCTOR_INFO, {
+    const { loading, error, data } = useQuery(GET_INSTRUCTOR_COURSE_INFO, {
         variables: { instructorID },
     });
 

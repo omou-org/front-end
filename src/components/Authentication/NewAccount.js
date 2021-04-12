@@ -21,6 +21,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Stepper from '@material-ui/core/Stepper';
 import { makeValidate } from 'mui-rff';
+import { CHECK_EMAIL } from '../../queries/AccountsQuery/AccountsQuery';
 
 const basicInfo = [
     <Fields.TextField
@@ -73,12 +74,6 @@ const basicInfo = [
         variant='outlined'
     />,
 ];
-
-const CHECK_EMAIL = gql`
-    query CheckEmail($email: String) {
-        userType(userName: $email)
-    }
-`;
 
 const NewAccount = () => {
     const client = useApolloClient();

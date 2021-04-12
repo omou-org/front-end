@@ -13,29 +13,8 @@ import { stringToColor } from '../Accounts/accountUtils';
 import Divider from '@material-ui/core/Divider';
 import NavLinkNoDup from '../../Routes/NavLinkNoDup';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
-
+import { GET_COURSE } from '../../../queries/CoursesQuery/CourseQuery';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-
-const GET_COURSE = gql`
-    query GetCourse($courseId: ID!) {
-        course(courseId: $courseId) {
-            title
-            startDate
-            availabilityList {
-                endTime
-                startTime
-                dayOfWeek
-            }
-            endDate
-            instructor {
-                user {
-                    firstName
-                    lastName
-                }
-            }
-        }
-    }
-`;
 
 export default function CourseRegistrationReceipt({ formData, format }) {
     const { type } = useParams();

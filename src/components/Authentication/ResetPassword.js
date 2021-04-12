@@ -18,6 +18,8 @@ import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
 import { ReactComponent as Ellipse2 } from './loginImages/ellipse2.svg';
 import { ReactComponent as Picture1 } from './loginImages/picture1.svg';
 
+import { GET_EMAIL } from '../../queries/AccountsQuery/AccountsQuery';
+
 const useStyles = makeStyles((theme) => ({
     email: {},
     info: {
@@ -31,12 +33,6 @@ const useStyles = makeStyles((theme) => ({
         'margin-top': '20px',
     },
 }));
-
-const GET_EMAIL = gql`
-    query GetEmail($token: String) {
-        emailFromToken(token: $token)
-    }
-`;
 
 const RESET_PASSWORD = gql`
     mutation ResetPassword(

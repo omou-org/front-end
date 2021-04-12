@@ -20,86 +20,16 @@ import CourseCard from './cards/CourseCard';
 import NoResultsPage from './NoResults/NoResultsPage';
 import { capitalizeString } from 'utils';
 
+import {
+    ACCOUNT_SEARCH_RESULTS,
+    COURSE_SEARCH_RESULTS,
+} from '../../../queries/SearchQuery/SearchQuery';
+
 const changePage = (setter, delta) => () => {
     setter((prevVal) => prevVal + delta);
 };
 
 const getPageSize = (filter) => (filter ? 12 : 4);
-
-const ACCOUNT_SEARCH = gql`
-    query AccountSearch(
-        $grade: Int
-        $page: Int
-        $pageSize: Int
-        $profile: String
-        $query: String!
-        $sort: String
-    ) {
-        accountSearch(
-            query: $query
-            page: $page
-            pageSize: $pageSize
-            grade: $grade
-            profile: $profile
-            sort: $sort
-        ) {
-            results {
-                ... on StudentType {
-                    user {
-                        id
-                    }
-                    accountType
-                }
-                ... on ParentType {
-                    user {
-                        id
-                    }
-                    accountType
-                }
-                ... on InstructorType {
-                    user {
-                        id
-                    }
-                    accountType
-                }
-                ... on AdminType {
-                    user {
-                        id
-                    }
-                    accountType
-                }
-            }
-            total
-        }
-    }
-`;
-
-const COURSE_SEARCH = gql`
-    query CourseSearch(
-        $query: String!
-        $availability: String
-        $size: Int
-        $type: String
-        $page: Int
-        $pageSize: Int
-        $sort: String
-    ) {
-        courseSearch(
-            query: $query
-            availability: $availability
-            courseSize: $size
-            courseType: $type
-            page: $page
-            pageSize: $pageSize
-            sort: $sort
-        ) {
-            total
-            results {
-                id
-            }
-        }
-    }
-`;
 
 const SearchResults = () => {
     const [accountsPage, setAccountsPage] = useState(1);
@@ -110,7 +40,7 @@ const SearchResults = () => {
         query = searchParams.get('query'),
         sort = searchParams.get('sort'),
         profile = searchParams.get('profile')?.toUpperCase();
-    const accountQuery = useQuery(ACCOUNT_SEARCH, {
+    const accountQuery = useQuery(ACCOUNT_SEARCH_RESULTS, {
         variables: {
             grade: searchParams.get('grade'),
             page: accountsPage,
@@ -121,7 +51,7 @@ const SearchResults = () => {
         },
     });
 
-    const courseQuery = useQuery(COURSE_SEARCH, {
+    const courseQuery = useQuery(COURSE_SEARCH_RESULTS, {
         variables: {
             availability: searchParams.get('availability'),
             page: coursePage,

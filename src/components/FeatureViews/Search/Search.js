@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import gql from 'graphql-tag';
+
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { useApolloClient } from '@apollo/client';
@@ -13,6 +13,10 @@ import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
 import SearchIcon from '@material-ui/icons/Search';
 import Select from '@material-ui/core/Select';
+import {
+    ACCOUNT_SEARCH,
+    COURSE_SEARCH,
+} from '../../../queries/SearchQuery/SearchQuery';
 
 import './Search.scss';
 
@@ -53,53 +57,6 @@ const styles = {
         ...provided,
     }),
 };
-
-const ACCOUNT_SEARCH = gql`
-        query AccountSearch($query: String!) {
-            accountSearch(query: $query, page: 1) {
-                results {
-                    ... on StudentType {
-                        user {
-                            lastName
-                            firstName
-                            id
-                        }
-                    }
-                    ... on ParentType {
-                        user {
-                            lastName
-                            firstName
-                            id
-                        }
-                    }
-                    ... on InstructorType {
-                        user {
-                            lastName
-                            firstName
-                            id
-                        }
-                    }
-                    ... on AdminType {
-                        user {
-                            lastName
-                            firstName
-                            id
-                        }
-                    }
-                }
-            }
-        }
-    `,
-    COURSE_SEARCH = gql`
-        query CourseSearch($query: String!) {
-            courseSearch(query: $query, page: 1) {
-                results {
-                    id
-                    title
-                }
-            }
-        }
-    `;
 
 const Search = ({ onMobileType = () => {} }) => {
     const history = useHistory();

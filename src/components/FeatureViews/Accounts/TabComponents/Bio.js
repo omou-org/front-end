@@ -6,23 +6,8 @@ import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Loading from '../../../OmouComponents/Loading';
-import gql from 'graphql-tag';
+import { GET_USER_BIO } from '../../../../queries/AccountsQuery/AccountsQuery';
 import { useQuery } from '@apollo/client';
-
-const GET_USER_BIO = gql`
-    query getUserBio($ownerID: ID!) {
-        userInfo(userId: $ownerID) {
-            ... on InstructorType {
-                biography
-                experience
-                language
-                subjects {
-                    name
-                }
-            }
-        }
-    }
-`;
 
 const Bio = ({ ownerID }) => {
     const { data, loading, error } = useQuery(GET_USER_BIO, {

@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
-
+import { GET_STUDENTS_BY_ENROLLMENT } from '../../../queries/AccountsQuery/AccountsQuery';
 import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
 import { fullName, gradeOptions } from 'utils';
 import moment from 'moment';
@@ -128,30 +128,6 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
-
-export const GET_STUDENTS = gql`
-    query getStudents($accountId: ID!) {
-        parent(userId: $accountId) {
-            user {
-                id
-            }
-            studentList {
-                user {
-                    firstName
-                    id
-                    lastName
-                }
-                enrollmentSet {
-                    id
-                    course {
-                        id
-                        title
-                    }
-                }
-            }
-        }
-    }
-`;
 
 const ClassListItem = ({
     title,
@@ -411,7 +387,7 @@ const CourseManagementContainer = () => {
         data: studentData,
         loading: studentLoading,
         error: studentError,
-    } = useQuery(GET_STUDENTS, {
+    } = useQuery(GET_STUDENTS_BY_ENROLLMENT, {
         variables: { accountId },
         skip: accountInfo.accountType !== 'PARENT',
     });

@@ -23,21 +23,13 @@ import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
 import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
 import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
 import './LoginPage.scss';
+import { GET_USER_TYPE } from '../../queries/AccountsQuery/AccountsQuery';
 
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
         tokenAuth(password: $password, username: $username) {
             token
             payload
-        }
-    }
-`;
-
-const GET_USER_TYPE = gql`
-    query GetUserType($username: String!) {
-        userType(userName: $username) {
-            userType
-            googleAuthEnabled
         }
     }
 `;

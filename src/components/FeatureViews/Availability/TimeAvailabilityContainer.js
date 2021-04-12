@@ -18,6 +18,7 @@ import Moment from 'react-moment';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { GET_INSTRUCTOR_AVAILABILITY } from '../../../queries/AccountsQuery/AccountsQuery';
 
 const CREATE_INSTRUCTOR_AVAILABILITIES = gql`
     mutation CreateInstructorAvailabilities(
@@ -40,17 +41,6 @@ const DELETE_INSTRUCTOR_AVAILABILITY = gql`
         __typename
         deleteInstructorAvailabilities(availabilities: $availabilities) {
             deleted
-        }
-    }
-`;
-
-const GET_INSTRUCTOR_AVAILABILITY = gql`
-    query GetInstructorAvailability($instructorId: ID!) {
-        instructorAvailability(instructorId: $instructorId) {
-            endTime
-            startTime
-            id
-            dayOfWeek
         }
     }
 `;

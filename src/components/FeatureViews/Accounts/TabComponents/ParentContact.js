@@ -9,25 +9,7 @@ import { useQuery } from '@apollo/client';
 import LoadingError from './LoadingCourseError';
 import { fullName } from '../../../../utils';
 import { useParams } from 'react-router-dom';
-
-const GET_PARENTS = gql`
-    query getParentAsStudent($userID: ID!) {
-        student(userId: $userID) {
-            primaryParent {
-                accountType
-                user {
-                    id
-                    firstName
-                    lastName
-                    email
-                    parent {
-                        phoneNumber
-                    }
-                }
-            }
-        }
-    }
-`;
+import { GET_STUDENT_PARENTS } from 'queries/AccountsQuery/AccountsQuery';
 
 // I click into a student account - Take the ID from param
 //
@@ -35,7 +17,7 @@ const GET_PARENTS = gql`
 const ParentContact = () => {
     const { accountID } = useParams();
 
-    const { data, loading, error } = useQuery(GET_PARENTS, {
+    const { data, loading, error } = useQuery(GET_STUDENT_PARENTS, {
         variables: { userID: accountID },
     });
 

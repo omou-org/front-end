@@ -29,6 +29,8 @@ import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
 import { fullName } from '../../../../utils';
 
+import { GET_SESSIONS } from '../../../../queries/SchedulerQuery/SchedulerQuery';
+
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
         enrollment(enrollmentId: $enrollmentId) {
@@ -70,24 +72,6 @@ const GET_ENROLLMENT = gql`
                     }
                 }
             }
-        }
-    }
-`;
-
-export const GET_SESSIONS = gql`
-    query GetSessions($courseId: ID!) {
-        sessions(courseId: $courseId) {
-            course {
-                availabilityList {
-                    startTime
-                    endTime
-                }
-                id
-                hourlyTuition
-            }
-            id
-            startDatetime
-            endDatetime
         }
     }
 `;

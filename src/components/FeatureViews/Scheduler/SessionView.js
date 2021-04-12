@@ -13,6 +13,7 @@ import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Menu from '@material-ui/core/Menu';
 import { fullName, USER_TYPES } from '../../../utils';
 import moment from 'moment';
+import { GET_SESSION } from '../../../queries/SchedulerQuery/SchedulerQuery';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { RescheduleBtn } from './RescheduleBtn';
@@ -46,59 +47,8 @@ const styles = (username) => ({
     marginRight: 10,
 });
 
-const GET_SESSION = gql`
-    query SessionViewQuery($sessionId: ID!) {
-        session(sessionId: $sessionId) {
-            id
-            startDatetime
-            title
-            instructor {
-                user {
-                    id
-                    firstName
-                    lastName
-                }
-            }
-            course {
-                id
-                isConfirmed
-                room
-                availabilityList {
-                    dayOfWeek
-                    startTime
-                    endTime
-                }
-                startDate
-                endDate
-                courseCategory {
-                    id
-                    name
-                }
-                instructor {
-                    user {
-                        id
-                        firstName
-                        lastName
-                    }
-                    subjects {
-                        name
-                    }
-                }
-                enrollmentSet {
-                    student {
-                        user {
-                            id
-                            firstName
-                            lastName
-                        }
-                    }
-                }
-            }
-            endDatetime
-            startDatetime
-        }
-    }
-`;
+const EDIT_ALL_SESSIONS = 'all';
+const EDIT_CURRENT_SESSION = 'current';
 
 const SessionView = () => {
     const { session_id } = useParams();

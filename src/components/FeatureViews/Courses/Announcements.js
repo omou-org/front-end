@@ -13,7 +13,7 @@ import NewAnnouncementModal from './NewAnnoucementsModal';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 
 import AddIcon from '@material-ui/icons/Add';
-import { GET_ANNOUNCEMENTS } from './CourseClass';
+import { GET_ANNOUNCEMENTS } from '../../../queries/CommsQuery/CommsQuery';
 import { fullName, sortTime, USER_TYPES } from '../../../utils';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';

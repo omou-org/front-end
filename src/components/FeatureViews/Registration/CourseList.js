@@ -37,26 +37,7 @@ import ListDetailedItem, {
 } from '../../OmouComponents/ListComponent/ListDetailedItem';
 import { DialogContentText } from '@material-ui/core';
 import ParentCourseInterestBtn from './ParentCourseInterestBtn';
-
-export const GET_STUDENTS_AND_ENROLLMENTS = gql`
-    query GetStudents($userIds: [ID]!) {
-        userInfos(userIds: $userIds) {
-            ... on StudentType {
-                user {
-                    firstName
-                    lastName
-                    id
-                }
-            }
-        }
-        enrollments(studentIds: $userIds) {
-            id
-            course {
-                id
-            }
-        }
-    }
-`;
+import { GET_STUDENTS_AND_ENROLLMENTS } from '../../../queries/AccountsQuery/AccountsQuery';
 
 const GET_PARENT_INTEREST = gql`
     query GetParentInterest($parentId: ID!) {

@@ -18,6 +18,22 @@ import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
 import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
 import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
+import {
+    GET_ADMIN_INFO,
+    GET_INFO,
+    GET_INSTRUCTOR_INFO,
+    GET_NAME,
+    GET_PARENT_INFO,
+    GET_USER_TYPE_AND_PARENT_TYPE,
+    GET_ALL_STUDENTS,
+    GET_SCHOOLS,
+    GET_ALL_ADMINS,
+} from '../../queries/AccountsQuery/AccountsQuery';
+import {
+    GET_CATEGORIES,
+    GET_COURSES,
+    GET_COURSE,
+} from '../../queries/CoursesQuery/CourseQuery';
 import { GET_COURSES_BY_ACCOUNT_ID } from '../FeatureViews/Courses/CourseManagementContainer';
 import { new_course_form } from '../../theme/muiTheme';
 
@@ -528,34 +544,6 @@ const SEARCH_PARENTS = gql`
     }
 `;
 
-const GET_CATEGORIES = gql`
-    query GetCategories {
-        courseCategories {
-            id
-            name
-        }
-    }
-`;
-
-const GET_COURSES = gql`
-    query GetCourses {
-        courses {
-            title
-            id
-            enrollmentSet {
-                id
-            }
-            maxCapacity
-            instructor {
-                user {
-                    lastName
-                    firstName
-                }
-            }
-        }
-    }
-`;
-
 const parentSelect = (name) => (
     <Fields.DataSelect
         name={name}
@@ -603,15 +591,6 @@ const schoolMap = ({ schools }) =>
         value: id,
     }));
 
-const GET_SCHOOLS = gql`
-    query GetSchools {
-        schools {
-            name
-            id
-        }
-    }
-`;
-
 const schoolSelect = (name) => (
     <Fields.DataSelect
         name={name}
@@ -620,19 +599,6 @@ const schoolSelect = (name) => (
         noOptionsText='No schools available'
     />
 );
-
-const GET_USER_TYPE = gql`
-    query GET_USER_TYPE($id: ID!) {
-        userInfo(userId: $id) {
-            ... on StudentType {
-                accountType
-            }
-            ... on ParentType {
-                accountType
-            }
-        }
-    }
-`;
 
 export default {
     student: {
@@ -684,20 +650,10 @@ export default {
                 const {
                     data: { userInfo },
                 } = await client.query({
-                    query: GET_USER_TYPE,
+                    query: GET_USER_TYPE_AND_PARENT_TYPE,
                     variables: { id },
                 });
                 if (userInfo.accountType === 'PARENT') {
-                    const GET_NAME = gql`
-                        query GetName($id: ID!) {
-                            parent(userId: $id) {
-                                user {
-                                    firstName
-                                    lastName
-                                }
-                            }
-                        }
-                    `;
                     const {
                         data: { parent },
                     } = await client.query({
@@ -713,37 +669,6 @@ export default {
                         },
                     };
                 } else if (userInfo.accountType === 'STUDENT') {
-                    const GET_INFO = gql`
-                        query GetInfo($id: ID!) {
-                            student(userId: $id) {
-                                address
-                                zipcode
-                                city
-                                state
-                                birthDate
-                                gender
-                                grade
-                                phoneNumber
-                                primaryParent {
-                                    user {
-                                        firstName
-                                        lastName
-                                        id
-                                    }
-                                }
-                                school {
-                                    name
-                                    id
-                                }
-                                user {
-                                    firstName
-                                    lastName
-                                    email
-                                    id
-                                }
-                            }
-                        }
-                    `;
                     const {
                         data: { student },
                     } = await client.query({
@@ -828,21 +753,6 @@ export default {
                 }
             `;
 
-            const GET_ALL_STUDENTS = gql`
-                query GetAllStudents {
-                    students {
-                        accountType
-                        phoneNumber
-                        user {
-                            email
-                            lastName
-                            firstName
-                            id
-                        }
-                    }
-                }
-            `;
-
             try {
                 await client.mutate({
                     mutation: ADD_STUDENT,
@@ -920,31 +830,11 @@ export default {
         title: 'Parent',
         form: [PARENT_FIELDS],
         load: async (id) => {
-            const GET_PARENT = gql`
-                query GetParent($id: ID!) {
-                    parent(userId: $id) {
-                        user {
-                            firstName
-                            lastName
-                            email
-                        }
-                        relationship
-                        gender
-                        phoneNumber
-                        birthDate
-                        address
-                        city
-                        state
-                        zipcode
-                    }
-                }
-            `;
-
             try {
                 const {
                     data: { parent },
                 } = await client.query({
-                    query: GET_PARENT,
+                    query: GET_PARENT_INFO,
                     variables: { id },
                 });
                 return {
@@ -1067,7 +957,7 @@ export default {
                 const {
                     data: { admin },
                 } = await client.query({
-                    query: GET_ADMIN,
+                    query: GET_ADMIN_INFO,
                     variables: {
                         userID: id,
                     },
@@ -1131,23 +1021,6 @@ export default {
                                 lastName
                             }
                         }
-                    }
-                }
-            `;
-
-            const GET_ALL_ADMINS = gql`
-                query GetAllAdmins {
-                    admins {
-                        accountType
-                        adminType
-                        phoneNumber
-                        user {
-                            email
-                            firstName
-                            id
-                            lastName
-                        }
-                        userUuid
                     }
                 }
             `;
@@ -1442,41 +1315,6 @@ export default {
             },
         ],
         load: async (id) => {
-            const GET_COURSE = gql`
-                query CourseFetch($id: ID!) {
-                    course(courseId: $id) {
-                        title
-                        id
-                        description
-                        instructor {
-                            user {
-                                id
-                                firstName
-                                lastName
-                            }
-                        }
-                        startDate
-                        maxCapacity
-                        courseCategory {
-                            id
-                            name
-                        }
-                        academicLevel
-                        academicLevelPretty
-                        endDate
-                        totalTuition
-                        hourlyTuition
-                        isConfirmed
-                        activeAvailabilityList {
-                            dayOfWeek
-                            endTime
-                            id
-                            startTime
-                        }
-                    }
-                }
-            `;
-
             try {
                 const {
                     data: { course },
@@ -1744,7 +1582,7 @@ export default {
                             }
                         } else {
                             const cachedCourse = cache.readQuery({
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },
@@ -1756,7 +1594,7 @@ export default {
                                         ...newCourse,
                                     },
                                 },
-                                query: GET_CLASS,
+                                query: GET_COURSE,
                                 variables: {
                                     id: id,
                                 },
@@ -1816,36 +1654,11 @@ export default {
             },
         ],
         load: async (id) => {
-            const GET_INSTRUCTOR = gql`
-                query GetInstructor($userID: ID) {
-                    instructor(userId: $userID) {
-                        address
-                        user {
-                            firstName
-                            lastName
-                            email
-                        }
-                        phoneNumber
-                        gender
-                        city
-                        state
-                        zipcode
-                        birthDate
-                        biography
-                        experience
-                        language
-                        subjects {
-                            name
-                            id
-                        }
-                    }
-                }
-            `;
             try {
                 const {
                     data: { instructor },
                 } = await client.query({
-                    query: GET_INSTRUCTOR,
+                    query: GET_INSTRUCTOR_INFO,
                     variables: {
                         userID: id,
                     },

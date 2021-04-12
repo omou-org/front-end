@@ -16,21 +16,9 @@ import Loading from '../../OmouComponents/Loading';
 import * as Fields from 'mui-rff';
 import { OnChange } from 'react-final-form-listeners';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { getPriceRules } from '../../../queries/PricingQuery/PricingQuery';
 
-const GET_TUITION_RULES = gql`
-    query GetTuitionRules {
-        priceRules {
-            id
-            category {
-                name
-                id
-            }
-            hourlyTuition
-            academicLevel
-            courseType
-        }
-    }
-`;
+const GET_TUITION_RULES = getPriceRules;
 
 const useStyles = makeStyles((theme) => ({
     root: {

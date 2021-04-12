@@ -24,11 +24,10 @@ import UserAvatar from '../Accounts/UserAvatar';
 import { weeklySessionsParser } from 'components/Form/FormUtils';
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import { SIMPLE_COURSE_DATA } from 'queryFragments';
+import { SIMPLE_COURSE_DATA } from '../../../queries/queryFragments';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent.js';
 import { fullName, gradeLvl, USER_TYPES } from 'utils';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
-
 export const GET_COURSE_DETAILS = gql`
     query CourseDetails($courseId: ID!) {
         course(courseId: $courseId) {
