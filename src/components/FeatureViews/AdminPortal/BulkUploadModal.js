@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
@@ -130,6 +131,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                     onChange={handleTemplateChange}
                                 >
                                     <MenuItem 
+                                        style={{display: 'none'}}
                                         value=''  
                                         ListItemClasses={{ selected: classes.menuSelected }} 
                                         className={classes.menuSelect}
