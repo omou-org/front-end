@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-
 import { makeStyles } from '@material-ui/core/styles';
 import { white, omouBlue, darkGrey, highlightColor, h6, h5, goth, gloom } from '../../../theme/muiTheme';
+
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
@@ -73,6 +73,43 @@ const BulkUploadModal = ({ closeModal }) => {
 
     const handleDropDown = () => dropDown === 'rotate(0deg)' ? setDropDown('rotate(180deg)') : setDropDown('rotate(0deg)')
 
+    const b64toBlob = (b64Data, contentType, sliceSize) => {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+      
+        let byteCharacters = atob(b64Data);
+        let byteArrays = [];
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+          let slice = byteCharacters.slice(offset, offset + sliceSize);
+      
+          let byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+      
+          let byteArray = new Uint8Array(byteNumbers);
+      
+          byteArrays.push(byteArray);
+        }
+      
+        let blob = new Blob(byteArrays, {type: contentType});
+        return blob;
+    }
+
+
+    function convertBase64ToExcel()
+    {		
+        let data = ''
+        let contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        let blob1 = b64toBlob(data, contentType);
+        let blobUrl1 = URL.createObjectURL(blob1);
+    
+    window.open(blobUrl1);
+    
+    }
+
+
+
     const getStepContent = (step) => {
         switch (step) {
             case 0:
@@ -130,12 +167,14 @@ const BulkUploadModal = ({ closeModal }) => {
                                     displayEmpty
                                     onChange={handleTemplateChange}
                                 >
+                                  
                                     <MenuItem 
                                         style={{display: 'none'}}
                                         value=''  
                                         ListItemClasses={{ selected: classes.menuSelected }} 
                                         className={classes.menuSelect}
                                         disabled
+                                        style={{display: 'none'}}
                                         >
                                             Select Template
                                     </MenuItem>
@@ -161,6 +200,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                 </Select>
                                 <IconButton
                                     disabled={!template && true}
+                                    onClick={convertBase64ToExcel}
                                     >
                                     <SvgIcon>
                                         <path
