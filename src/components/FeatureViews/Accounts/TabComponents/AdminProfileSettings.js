@@ -67,7 +67,6 @@ export default function AdminProfileSettings({ user }) {
     const classes = useStyles();
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
     const [gClassSetting, setGClassSetting] = useState(false);
-    const [exitButtonMessage, setExitButtonMessage] = useState('No');
     var triggerState = false;
     const dispatch = useDispatch();
     const adminGCEnabledResponse = useQuery(ADMIN_GC_ENABLED, {
@@ -138,9 +137,6 @@ export default function AdminProfileSettings({ user }) {
                         payload: { google_courses: response?.data.courses },
                     });
                 }
-                if (response) {
-                    setExitButtonMessage('Exit');
-                }
             } catch (error) {
                 console.log(error);
             }
@@ -148,15 +144,23 @@ export default function AdminProfileSettings({ user }) {
     }
 
     function handleClose() {
-        if (exitButtonMessage == 'No') {
-            setGClassSetting(false);
-        }
         setGoogleLoginPromptOpen(false);
     }
 
     const onFailure = (response) => {};
 
     const onSuccess = (response) => {
+        console.log("On success")
+        setGoogleLoginPromptOpen(false);
+
+        setGClassSetting(!gClassSetting);
+            setAdminGCEnabled({
+                variables: {
+                    userID: userInfo.user.id,
+                    adminType: userInfo.adminType,
+                    googleAuthEnabled: !gClassSetting,
+                },
+            });
         refreshTokenSetup(response).then(() => {
             getCourses();
         });
@@ -165,17 +169,29 @@ export default function AdminProfileSettings({ user }) {
     };
 
     const handleGClassSettingChange = () => {
+
+        // If not integrated
+            // open the dialog
+            // if successful then set google auth enabled
+            // save google auth email
+            // get courses
+        // if are integrated
+            // remove google auth enabled
+            // remove google auth email
         if (!gClassSetting) {
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
+        } else {
+            // get rid of google auth email on user
+            setGClassSetting(!gClassSetting);
+            setAdminGCEnabled({
+                variables: {
+                    userID: userInfo.user.id,
+                    adminType: userInfo.adminType,
+                    googleAuthEnabled: !gClassSetting,
+                },
+            });
         }
-        setGClassSetting(!gClassSetting);
-        setAdminGCEnabled({
-            variables: {
-                userID: userInfo.user.id,
-                adminType: userInfo.adminType,
-                googleAuthEnabled: !gClassSetting,
-            },
-        });
+
     };
 
     if (adminGCEnabledResponse.loading) return <Loading />;
@@ -253,16 +269,14 @@ export default function AdminProfileSettings({ user }) {
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton onClick={handleClose} color='primary'>
-                        {exitButtonMessage}
+                        No
                     </ResponsiveButton>
                     <GoogleLogin
                         buttonText='Login'
                         clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
-                        isSignedIn='True'
                         onSuccess={onSuccess}
                         onFailure={onFailure}
                         cookiePolicy={'single_host_origin'}
-                        prompt='consent'
                         scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
                     />
                 </DialogActions>
