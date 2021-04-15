@@ -15,6 +15,9 @@ import GoogleLoginButton from '../OmouComponents/GoogleLoginButton.js';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
+import { useQuery } from '@apollo/client';
+import { getGoogleClassroomCourses } from '../../utils.js';
+
 
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { setToken } from 'actions/authActions.js';
@@ -64,6 +67,13 @@ const GET_USER_TYPE = gql`
     }
 `;
 
+const VERIFY_GOOGLE_OAUTH_TOKEN = gql`
+    query verifyGoogleOauthToken($loginEmail: String!) {
+        verifyGoogleOauthToken(loginEmail: $loginEmail) {
+            verified
+        }
+    }
+`;
 const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
@@ -76,6 +86,8 @@ const LoginPage = () => {
     } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
+    const [verifyGoogleOauthTokenStatus, setVerifyGoogleOauthTokenStatus] = useState(false);
+    const [googleAuthEmail, setGoogleAuthEmail] = useState(null);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
@@ -87,6 +99,15 @@ const LoginPage = () => {
             setUserType(data?.userType?.userType);
             setGoogleAuthEnabled(data?.userType?.googleAuthEnabled);
             if (userType === null) {
+                setHasError(true);
+            }
+        },
+    });
+    const [getVerifyGoogleOauthTokenStatus] = useLazyQuery(VERIFY_GOOGLE_OAUTH_TOKEN, {
+        variables: { loginEmail: googleAuthEmail },
+        onCompleted: (data) => {
+            setVerifyGoogleOauthTokenStatus(data?.verifyGoogleOauthToken?.verified);
+            if (verifyGoogleOauthTokenStatus === null) {
                 setHasError(true);
             }
         },
@@ -180,40 +201,25 @@ const LoginPage = () => {
             // setTimeout(refreshToken, refreshTiming);
         });
     }
-    const noGoogleCoursesFoundOnInitialGoogleLogin =
-        (google_courses === null || google_courses === undefined) &&
-        sessionStorage.getItem('google_access_token');
-    async function getCourses() {
-        if (noGoogleCoursesFoundOnInitialGoogleLogin) {
-            try {
-                const response = await axios.get(
-                    'https://classroom.googleapis.com/v1/courses',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem(
-                                'google_access_token'
-                            )}`,
-                        },
-                    }
-                );
-                dispatch({
-                    type: actions.SET_GOOGLE_COURSES,
-                    payload: { google_courses: response?.data.courses },
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        }
+
+    const dispatchGoogleCourses= (google_courses) => {
+        dispatch({
+            type: actions.SET_GOOGLE_COURSES,
+            payload: { google_courses },
+        });
     }
 
     const onSuccess = async (response) => {
+        // setGoogleAuthEmail(response.profileObj.email);
+        // getVerifyGoogleOauthTokenStatus();
         const socialAuthResponse = await googleLogin({
             variables: {
                 accessToken: response.accessToken,
             },
         });
         refreshTokenSetup(response).then(() => {
-            getCourses();
+            // getCourses();
+            getGoogleClassroomCourses(google_courses, dispatchGoogleCourses);
         });
         if (socialAuthResponse?.data?.socialAuth) {
             history.push('/');
@@ -396,7 +402,7 @@ const LoginPage = () => {
                                         onSuccess={onSuccess}
                                         onFailure={onFailure}
                                         cookiePolicy={'single_host_origin'}
-                                        scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
+                                        scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters'
                                     />
                                 </Grid>
                             </Grid>

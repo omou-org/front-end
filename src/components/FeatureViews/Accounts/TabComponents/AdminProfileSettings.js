@@ -25,6 +25,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
+import { getGoogleClassroomCourses } from '../../../../utils.js';
 
 const useStyles = makeStyles({
     table: {
@@ -62,6 +63,32 @@ const SET_ADMIN_GC_ENABLED = gql`
     }
 `;
 
+const GOOGLE_AUTH_EMAIL = gql`
+    query GoogleAuthEmail($userID: ID!) {
+        admin(userId: $userID) {
+            googleAuthEmail
+        }
+    }
+`;
+
+const SET_GOOGLE_AUTH_EMAIL = gql`
+    mutation SetGoogleAuthEmail(
+        $adminType: AdminTypeEnum!
+        $userID: ID!
+        $googleAuthEmail: String
+    ) {
+        createAdmin(
+            user: { id: $userID }
+            adminType: $adminType
+            googleAuthEmail: $googleAuthEmail
+        ) {
+            admin {
+                googleAuthEmail
+            }
+        }
+    }
+`;
+
 export default function AdminProfileSettings({ user }) {
     const { userInfo } = user;
     const classes = useStyles();
@@ -84,6 +111,27 @@ export default function AdminProfileSettings({ user }) {
                     query: ADMIN_GC_ENABLED,
                     variables: { userID: userInfo.user.id },
                 });
+                // check if courses exist in cache
+                    // update courses
+                    // remove google classroom icons
+            },
+        }
+    );
+
+    const [setGoogleAuthEmail, setGoogleAuthEmailResults] = useMutation(
+        SET_GOOGLE_AUTH_EMAIL,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        admin: data.createAdmin.admin.googleAuthEmail,
+                    },
+                    query: GOOGLE_AUTH_EMAIL,
+                    variables: { userID: userInfo.user.id },
+                });
+                // check if courses exist in cache
+                    // update courses
+                    // add google classroom icons
             },
         }
     );
@@ -115,42 +163,20 @@ export default function AdminProfileSettings({ user }) {
         });
     }
 
-    const noGoogleCoursesFoundOnInitialGoogleLogin =
-        (google_courses === null || google_courses === undefined) &&
-        sessionStorage.getItem('google_access_token');
-    async function getCourses() {
-        if (noGoogleCoursesFoundOnInitialGoogleLogin) {
-            try {
-                const response = await axios.get(
-                    'https://classroom.googleapis.com/v1/courses',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem(
-                                'google_access_token'
-                            )}`,
-                        },
-                    }
-                );
-                if (google_courses === undefined || google_courses === null) {
-                    dispatch({
-                        type: actions.SET_GOOGLE_COURSES,
-                        payload: { google_courses: response?.data.courses },
-                    });
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    }
-
     function handleClose() {
         setGoogleLoginPromptOpen(false);
+    }
+
+    const dispatchGoogleCourses= (google_courses) => {
+        dispatch({
+            type: actions.SET_GOOGLE_COURSES,
+            payload: { google_courses },
+        });
     }
 
     const onFailure = (response) => {};
 
     const onSuccess = (response) => {
-        console.log("On success")
         setGoogleLoginPromptOpen(false);
 
         setGClassSetting(!gClassSetting);
@@ -162,32 +188,27 @@ export default function AdminProfileSettings({ user }) {
                 },
             });
         refreshTokenSetup(response).then(() => {
-            getCourses();
+            getGoogleClassroomCourses(google_courses, dispatchGoogleCourses)
         });
-        // check if googleAuthEmail is filled
-        // setGoogleAuthEmail in mainframe
+        setGoogleAuthEmail({
+            variables: {
+                userID: userInfo.user.id,
+                adminType: userInfo.adminType,
+                googleAuthEmail: response.profileObj.email,
+            },
+        })
     };
 
     const handleGClassSettingChange = () => {
-
-        // If not integrated
-            // open the dialog
-            // if successful then set google auth enabled
-            // save google auth email
-            // get courses
-        // if are integrated
-            // remove google auth enabled
-            // remove google auth email
         if (!gClassSetting) {
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         } else {
-            // get rid of google auth email on user
-            setGClassSetting(!gClassSetting);
+            setGClassSetting(false);
             setAdminGCEnabled({
                 variables: {
                     userID: userInfo.user.id,
                     adminType: userInfo.adminType,
-                    googleAuthEnabled: !gClassSetting,
+                    googleAuthEnabled: false,
                 },
             });
         }
