@@ -23,6 +23,7 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import {GET_ENROLLMENT_DETAILS} from "../RegistrationCourseEnrollments";
 import {GET_ALL_COURSES} from "../RegistrationLanding";
+import TableBody from "@material-ui/core/TableBody";
 
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote(
@@ -236,7 +237,7 @@ const PaymentBoard = () => {
             const existingEnrollmentsFromGetParent = cache.readQuery({
                 "query": GET_PARENT_ENROLLMENTS,
                 "variables": {"studentIds": currentParent.studentList},
-            }).enrollments;
+            }).createEnrollments.enrollments;
 
             cache.writeQuery({
                 "query": GET_PARENT_ENROLLMENTS,
@@ -350,6 +351,9 @@ const PaymentBoard = () => {
                 });
             });
         },
+        "onError": (error) => {
+            console.log(error);
+        }
     });
     const [createPayment] = useMutation(CREATE_PAYMENT, {
         "onCompleted": ({createInvoice}) => {
@@ -423,58 +427,59 @@ const PaymentBoard = () => {
                     registration.course === enrollment.course.id &&
                     registration.student === enrollment.student.user.id).id,
             }));
-        // console.log({enrollmentsToCreate, existingEnrollments});
-        try {
-            const areThereNewEnrollments = enrollmentsToCreate.length > 0;
-            const newEnrollments = areThereNewEnrollments ? await createEnrollments({
-                "variables": {
-                    "enrollments": enrollmentsToCreate,
-                },
-            }) : [];
-            // console.log(newEnrollments)
-            const actualNewEnrollments = newEnrollments.data.createEnrollments.enrollments
-            // console.log(actualNewEnrollments);
-            const registrations = [
-                ...actualNewEnrollments.map((enrollment) => ({
-                    "enrollment": enrollment.id,
-                    "numSessions": classRegistrations.find(({course, student}) =>
-                        isSameEnrollment({
-                            course,
-                            enrollment,
-                            student,
-                        })).sessions,
-                })),
-                ...existingEnrollments.map((enrollment) => ({
-                    "enrollment": enrollment.id,
-                    "numSessions": enrollment.sessions,
-                })),
-            ];
+        console.log({enrollmentsToCreate, existingEnrollments});
+        const areThereNewEnrollments = enrollmentsToCreate.length > 0;
+        const newEnrollments = areThereNewEnrollments ? await createEnrollments({
+            "variables": {
+                "enrollments": enrollmentsToCreate,
+            },
+        }) : [];
+        console.log(newEnrollments);
+        const actualNewEnrollments = newEnrollments.data.createEnrollments.enrollments
+        console.log(actualNewEnrollments);
+        const registrations = [
+            ...actualNewEnrollments.map((enrollment) => ({
+                "enrollment": enrollment.id,
+                "numSessions": classRegistrations.find(({course, student}) =>
+                    isSameEnrollment({
+                        course,
+                        enrollment,
+                        student,
+                    })).sessions,
+            })),
+            ...existingEnrollments.map((enrollment) => ({
+                "enrollment": enrollment.id,
+                "numSessions": enrollment.sessions,
+            })),
+        ];
 
-            const payment = await createPayment({
-                "variables": {
-                    "parent": currentParent.user.id,
-                    "method": paymentMethod,
-                    "classes": classRegistrations,
-                    "disabledDiscounts": [],
-                    "priceAdjustment": Number(priceAdjustment),
-                    registrations,
-                    paymentStatus: 'PAID',
-                },
-            });
+        const payment = await createPayment({
+            "variables": {
+                "parent": currentParent.user.id,
+                "method": paymentMethod,
+                "classes": classRegistrations,
+                "disabledDiscounts": [],
+                "priceAdjustment": Number(priceAdjustment),
+                registrations,
+                paymentStatus: 'PAID',
+            },
+        });
 
-            // clean out parent registration cart
-            await createRegistrationCart({
-                "variables": {
-                    "parent": currentParent.user.id,
-                    "registrationPreferences": "",
-                },
-            });
-			history.push(
-				`/registration/receipt/${payment.data.createInvoice.invoice.id}`
-			);
-        } catch (error) {
-            console.error(error);
-        }
+        // clean out parent registration cart
+        await createRegistrationCart({
+            "variables": {
+                "parent": currentParent.user.id,
+                "registrationPreferences": "",
+            },
+        });
+        history.push(
+            `/registration/receipt/${payment.data.createInvoice.invoice.id}`
+        );
+        // try {
+        //
+        // } catch (error) {
+        //     console.error(error);
+        // }
     };
 
     if (error || enrollmentResponse.error) {
@@ -525,22 +530,23 @@ const PaymentBoard = () => {
                 </Grid>
                 <Grid item>
                     <Table>
-                        <TableRow className={classes.root}>
-                            <TableCell>Sub-Total</TableCell>
-                            <TableCell>$ {priceQuote.subTotal}</TableCell>
-                        </TableRow>
-                        <TableRow className={classes.root}>
-                            <TableCell>Account Balance</TableCell>
-                            <TableCell>$ {priceQuote.accountBalance}</TableCell>
-                        </TableRow>
-                        <TableRow className={classes.root}>
-                            <TableCell>Discounts</TableCell>
-                            <TableCell> </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Price Adjustment</TableCell>
-                            <TableCell style={{"width": "55%"}}>
-                                $ - <TextField
+                        <TableBody>
+                            <TableRow className={classes.root}>
+                                <TableCell>Sub-Total</TableCell>
+                                <TableCell>$ {priceQuote.subTotal}</TableCell>
+                            </TableRow>
+                            <TableRow className={classes.root}>
+                                <TableCell>Account Balance</TableCell>
+                                <TableCell>$ {priceQuote.accountBalance}</TableCell>
+                            </TableRow>
+                            <TableRow className={classes.root}>
+                                <TableCell>Discounts</TableCell>
+                                <TableCell> </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Price Adjustment</TableCell>
+                                <TableCell style={{"width": "55%"}}>
+                                    $ - <TextField
                                     inputProps={{
                                         "style": {
                                             "padding": 8,
@@ -551,13 +557,14 @@ const PaymentBoard = () => {
                                     style={{"width": "30%"}}
                                     type="number"
                                     value={priceAdjustment}
-                                    variant="outlined" />
-                            </TableCell>
-                        </TableRow>
-                        <TableRow className={classes.root}>
-                            <TableCell>Total</TableCell>
-                            <TableCell>$ {priceQuote.total}</TableCell>
-                        </TableRow>
+                                    variant="outlined"/>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow className={classes.root}>
+                                <TableCell>Total</TableCell>
+                                <TableCell>$ {priceQuote.total}</TableCell>
+                            </TableRow>
+                        </TableBody>
                     </Table>
                 </Grid>
             </Grid>

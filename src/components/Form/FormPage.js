@@ -1,22 +1,29 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Redirect, useParams } from 'react-router-dom';
+import React, {Fragment, useCallback, useEffect, useState} from 'react';
+import {Redirect, useLocation, useParams} from 'react-router-dom';
 
 import Form from './Form';
 import Forms from './FormFormats';
 
+function useRouteQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 const FormPage = () => {
-    const { type, id, action } = useParams();
-    const { form, load, submit, title } = Forms?.[type] || {};
+    const {type, id, action} = useParams();
+    const query = useRouteQuery();
+    const parentIdOfNewStudent = query.get("parentId");
+    const {form, load, submit, title} = Forms?.[type] || {};
     const [initialData, setInitialData] = useState();
-    const onSubmit = useCallback((formData) => submit(formData, id), [
+    const onSubmit = useCallback((formData) => submit(formData, id, parentIdOfNewStudent), [
         id,
         submit,
+        parentIdOfNewStudent
     ]);
     useEffect(() => {
-        if (id) {
+        if (id || parentIdOfNewStudent) {
             let abort = false;
             (async () => {
-                const data = await load(id);
+                const data = await load(id, parentIdOfNewStudent);
                 if (!abort) {
                     setInitialData(data);
                 }
@@ -25,7 +32,7 @@ const FormPage = () => {
                 abort = true;
             };
         }
-    }, [id, load]);
+    }, [id, load, parentIdOfNewStudent]);
 
     const withDefaultData = form?.reduce(
         (data, { name, fields }) => ({

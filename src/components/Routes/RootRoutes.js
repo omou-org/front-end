@@ -1,7 +1,7 @@
 // React Imports
-import { Redirect, Route, Switch } from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 // Local Component Imports
 import Accounts from '../FeatureViews/Accounts/Accounts';
 import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
@@ -27,8 +27,8 @@ import CourseManagementContainer from '../FeatureViews/Courses/CourseManagementC
 import CourseClass from '../FeatureViews/Courses/CourseClass';
 import DemoRoutes from './DemoRoutes';
 
-import { resetSubmitStatus } from 'actions/registrationActions';
-import { USER_TYPES } from 'utils';
+import {resetSubmitStatus} from 'actions/registrationActions';
+import {USER_TYPES} from 'utils';
 import RegistrationForm from '../FeatureViews/Registration/RegistrationForm';
 import RegistrationCartContainer from '../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer';
 import DashboardSwitch from '../FeatureViews/Dashboard/DashboardSwitch';
@@ -209,7 +209,7 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/form/:type/:action/:id?'
+                path='/form/:type/:action/:id?/'
                 users={[USER_TYPES.admin, USER_TYPES.parent]}
             >
                 <FormPage />

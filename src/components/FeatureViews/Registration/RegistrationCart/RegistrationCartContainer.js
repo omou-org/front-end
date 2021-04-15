@@ -91,10 +91,11 @@ const RegistrationCartContainer = () => {
     );
     const {parentIsLoggedIn} = useValidateRegisteringParent();
     // create list of students to fetch
-    const studentIds =
-        (Object.keys(registrationCartState).length > 0 &&
-            Object.keys(registrationCartState)) ||
-        currentParent.studentIdList;
+    // delete registrationCartState["submitStatus"];
+    console.log(registrationCartState)
+    const registrationCartKeys = Object.keys(registrationCartState);
+    const studentIdsFromRegistrationCart = registrationCartKeys.length > 0 && registrationCartKeys;
+    const studentIds = studentIdsFromRegistrationCart || currentParent.studentIdList;
     // create list of courses to fetch
     const courseIds =
         Object.values(registrationCartState).filter((reg) => reg).length > 0 &&
@@ -143,7 +144,8 @@ const RegistrationCartContainer = () => {
     useEffect(() => {
         const numOfRegistrations = Object.values(registrationCartState)
             .filter((registration) => registration).length;
-        if (!loading && numOfRegistrations > 0 && Object.keys(registrationCart).length === 0) {
+        if (!loading && data && numOfRegistrations > 0 && Object.keys(registrationCart).length === 0) {
+            console.log(data);
             const courseData = data.courses;
             setRegistrationCart(() => {
                 const registrationCart = {};

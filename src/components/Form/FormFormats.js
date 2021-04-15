@@ -1,25 +1,22 @@
 import * as types from 'actions/actionTypes';
-import {
-    createTutoringDetails,
-    submitRegistration,
-} from '../OmouComponents/RegistrationUtils';
-import { instance } from 'actions/apiActions';
+import {createTutoringDetails, submitRegistration,} from '../OmouComponents/RegistrationUtils';
+import {instance} from 'actions/apiActions';
 import React from 'react';
-import { FORM_ERROR } from 'final-form';
+import {FORM_ERROR} from 'final-form';
 import * as Fields from './FieldComponents/Fields';
-import { fieldsMargins, StudentSelect } from './FieldComponents/Fields';
+import {fieldsMargins, StudentSelect} from './FieldComponents/Fields';
 import * as Yup from 'yup';
 import * as moment from 'moment';
-import { client } from 'index';
+import {client} from 'index';
 import gql from 'graphql-tag';
-import { fullName } from '../../utils';
+import {fullName} from '../../utils';
 import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
-import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
+import {USER_QUERIES} from '../FeatureViews/Accounts/UserProfile';
 import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
-import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
-import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
-import { GET_COURSES_BY_ACCOUNT_ID } from '../FeatureViews/Courses/CourseManagementContainer';
-import { new_course_form } from '../../theme/muiTheme';
+import {GET_CLASS} from '../FeatureViews/Courses/CourseClass';
+import {GET_ALL_COURSES} from '../FeatureViews/Registration/RegistrationLanding';
+import {GET_COURSES_BY_ACCOUNT_ID} from '../FeatureViews/Courses/CourseManagementContainer';
+import {new_course_form} from '../../theme/muiTheme';
 
 export const GET_ADMIN = gql`
     query GetAdmin($userID: ID!) {
@@ -679,13 +676,16 @@ export default {
                 ],
             },
         ],
-        load: async (id) => {
+        load: async (id, parentIdOfNewStudent) => {
+            // Loads parent id if form was opened from parent profile's "Add Student" button
+            const idToLoad = id ? {id} : {id: parentIdOfNewStudent}
+
             try {
                 const {
-                    data: { userInfo },
+                    data: {userInfo},
                 } = await client.query({
                     query: GET_USER_TYPE,
-                    variables: { id },
+                    variables: idToLoad,
                 });
                 if (userInfo.accountType === 'PARENT') {
                     const GET_NAME = gql`
@@ -702,13 +702,13 @@ export default {
                         data: { parent },
                     } = await client.query({
                         query: GET_NAME,
-                        variables: { id },
+                        variables: idToLoad,
                     });
                     return {
                         student: {
                             primaryParent: {
                                 label: `${parent.user.firstName} ${parent.user.lastName}`,
-                                value: id,
+                                value: idToLoad.id,
                             },
                         },
                     };
@@ -777,7 +777,8 @@ export default {
             }
             return null;
         },
-        submit: async ({ student }, id) => {
+        submit: async ({student}, id, parentIdOfNewStudent) => {
+            console.log(parentIdOfNewStudent, id);
             const ADD_STUDENT = gql`
                 mutation AddStudent(
                     $firstName: String!
@@ -851,7 +852,7 @@ export default {
                         id,
                         email: student.email || '',
                         birthDate: parseDate(student.birthDate),
-                        primaryParent: student.primaryParent?.value,
+                        primaryParent: parentIdOfNewStudent || student.primaryParent?.value,
                         school: student.school?.value,
                     },
                     update: (cache, { data }) => {

@@ -1,21 +1,18 @@
 import initialState from './initialState';
 import * as actions from './../actions/actionTypes';
-import { dateParser, weeklySessionsParser } from 'components/Form/FormUtils';
-import {
-    mapRegistrationInfo,
-    setParentRegistrationCart,
-} from '../components/OmouComponents/RegistrationUtils';
-import { arraysMatch } from '../utils';
+import {dateParser, weeklySessionsParser} from 'components/Form/FormUtils';
+import {mapRegistrationInfo, setParentRegistrationCart,} from '../components/OmouComponents/RegistrationUtils';
+import {arraysMatch} from '../utils';
 
-export default function registration (
-    state = initialState.RegistrationForms,
-    { payload, type }
+export default function registration(
+	state = initialState.RegistrationForms,
+	{payload, type}
 ) {
-    let newState = JSON.parse(JSON.stringify(state));
-    switch (type) {
-        case actions.ADD_STUDENT_FIELD:
-            newState = addAStudentField(state);
-            return newState;
+	let newState = JSON.parse(JSON.stringify(state));
+	switch (type) {
+		case actions.ADD_STUDENT_FIELD:
+			newState = addAStudentField(state);
+			return newState;
         case actions.ADD_COURSE_FIELD:
             newState = addACourseField(state);
             return newState;
@@ -253,17 +250,14 @@ function setSectionFieldList(path, formList, form) {
 
 const onSubmit = (state) => ({
     ...state,
-    submitStatus: null,
 });
 
 const successSubmit = (state) => ({
     ...state,
-    submitStatus: 'success',
 });
 
 const failedSubmit = (state) => ({
     ...state,
-    submitStatus: 'fail',
 });
 
 const saveRegistration = (student, course, registrationState) => {
@@ -421,7 +415,6 @@ const addTutoringRegistration = (prevState, form) => {
         'tutoring',
         enrollmentObject
     );
-    prevState.submitStatus = 'success';
 
     return { ...prevState };
 };
@@ -474,8 +467,8 @@ const addSmallGroupRegistration = (prevState, { formMain, new_course }) => {
         'small group',
         enrollmentObject
     );
-    prevState.submitStatus = 'success';
-    return { ...prevState };
+
+	return { ...prevState };
 };
 
 const addStudentRegistration = (

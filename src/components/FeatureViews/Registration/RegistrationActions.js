@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import {Link, useHistory, useLocation} from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './registration.scss';
 import SelectParentDialog from './SelectParentDialog';
-import { fullName, USER_TYPES } from '../../../utils';
-import { useValidateRegisteringParent } from '../../OmouComponents/RegistrationUtils';
-import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from '@apollo/client';
+import {fullName, USER_TYPES} from '../../../utils';
+import {useValidateRegisteringParent} from '../../OmouComponents/RegistrationUtils';
+import {useDispatch, useSelector} from 'react-redux';
+import {useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
 import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';
@@ -41,7 +41,7 @@ const RegistrationActions = () => {
     );
     const { parentIsLoggedIn } = useValidateRegisteringParent();
     const dispatch = useDispatch();
-    console.log(AuthUser.user.id);
+
     const [dialogOpen, setDialog] = useState(false);
     const { data, error, loading } = useQuery(GET_PARENT_QUERY, {
         variables: { userId: AuthUser.user.id },
@@ -84,7 +84,6 @@ const RegistrationActions = () => {
     const registeringParent = data?.parent || currentParent;
 
     const parentName = registeringParent && fullName(registeringParent.user);
-    const { submitStatus = {}, ...registrationCartState } = registrationState;
     const numberOfRegistrationsInCart = Object.values(registrationState).reduce(
         (accumulator, currentStudent) => accumulator + currentStudent?.length,
         0
