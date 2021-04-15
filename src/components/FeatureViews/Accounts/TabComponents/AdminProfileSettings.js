@@ -180,13 +180,13 @@ export default function AdminProfileSettings({ user }) {
         setGoogleLoginPromptOpen(false);
 
         setGClassSetting(!gClassSetting);
-            setAdminGCEnabled({
-                variables: {
-                    userID: userInfo.user.id,
-                    adminType: userInfo.adminType,
-                    googleAuthEnabled: !gClassSetting,
-                },
-            });
+        setAdminGCEnabled({
+            variables: {
+                userID: userInfo.user.id,
+                adminType: userInfo.adminType,
+                googleAuthEnabled: !gClassSetting,
+            },
+        });
         refreshTokenSetup(response).then(() => {
             getGoogleClassroomCourses(google_courses, dispatchGoogleCourses)
         });
@@ -212,7 +212,6 @@ export default function AdminProfileSettings({ user }) {
                 },
             });
         }
-
     };
 
     if (adminGCEnabledResponse.loading) return <Loading />;
