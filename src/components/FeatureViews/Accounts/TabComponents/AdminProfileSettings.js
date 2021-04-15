@@ -150,17 +150,17 @@ export default function AdminProfileSettings({ user }) {
     const onFailure = (response) => {};
 
     const onSuccess = (response) => {
-        console.log("On success")
+        console.log('On success');
         setGoogleLoginPromptOpen(false);
 
         setGClassSetting(!gClassSetting);
-            setAdminGCEnabled({
-                variables: {
-                    userID: userInfo.user.id,
-                    adminType: userInfo.adminType,
-                    googleAuthEnabled: !gClassSetting,
-                },
-            });
+        setAdminGCEnabled({
+            variables: {
+                userID: userInfo.user.id,
+                adminType: userInfo.adminType,
+                googleAuthEnabled: !gClassSetting,
+            },
+        });
         refreshTokenSetup(response).then(() => {
             getCourses();
         });
@@ -169,15 +169,14 @@ export default function AdminProfileSettings({ user }) {
     };
 
     const handleGClassSettingChange = () => {
-
         // If not integrated
-            // open the dialog
-            // if successful then set google auth enabled
-            // save google auth email
-            // get courses
+        // open the dialog
+        // if successful then set google auth enabled
+        // save google auth email
+        // get courses
         // if are integrated
-            // remove google auth enabled
-            // remove google auth email
+        // remove google auth enabled
+        // remove google auth email
         if (!gClassSetting) {
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         } else {
@@ -191,7 +190,6 @@ export default function AdminProfileSettings({ user }) {
                 },
             });
         }
-
     };
 
     if (adminGCEnabledResponse.loading) return <Loading />;
