@@ -7,6 +7,7 @@ import Modal from '@material-ui/core/Modal';
 import './AdminPortal.scss';
 import AdminActionCenter from './AdminActionCenter';
 import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
+import AdminPortalTabs from './AdminPortalTabs'
 import BulkUploadModal from './BulkUploadModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
@@ -41,11 +42,14 @@ const AdminPortal = () => {
                     </Modal>
                 </Grid>
                 <Grid item xs={12}>
+                    <AdminPortalTabs />
+                </Grid>
+                {/* <Grid item xs={12}>
                     <AdminActionCenter />
                 </Grid>
                 <Grid item xs={12}>
                     <AdminViewsRoutes />
-                </Grid>
+                </Grid> */}
             </Grid>
         </form>
     );
