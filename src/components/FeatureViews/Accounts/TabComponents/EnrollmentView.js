@@ -81,6 +81,10 @@ export const GET_SESSIONS = gql`
     query GetSessions($courseId: ID!) {
         sessions(courseId: $courseId) {
             course {
+                availabilityList {
+                    startTime
+                    endTime
+                }
                 id
                 hourlyTuition
             }

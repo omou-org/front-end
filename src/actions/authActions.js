@@ -67,11 +67,7 @@ export const setToken = async (token, shouldSave, usernameEmail = '') => {
             variables: { token },
         });
         let email = usernameEmail || verifyToken.payload.username;
-        if (usernameEmail == '') {
-            email = verifyToken.payload.username;
-        } else {
-            email = usernameEmail;
-        }
+        
         const {
             data: { userInfo },
         } = await client.query({

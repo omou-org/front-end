@@ -67,7 +67,6 @@ export default function AdminProfileSettings({ user }) {
     const classes = useStyles();
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
     const [gClassSetting, setGClassSetting] = useState(false);
-    const [gClassResp, setGClassResp] = useState();
     const [exitButtonMessage, setExitButtonMessage] = useState('No');
     var triggerState = false;
     const dispatch = useDispatch();
