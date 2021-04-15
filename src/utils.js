@@ -667,7 +667,10 @@ export function useSessionStorage(key, initialValue) {
     return [storedValue, setValue];
 }
 
-export async function getGoogleClassroomCourses(google_courses, dispatchGoogleCourses){
+export async function getGoogleClassroomCourses(
+    google_courses,
+    dispatchGoogleCourses
+) {
     const noGoogleCoursesFoundOnInitialGoogleLogin =
         (google_courses === null || google_courses === undefined) &&
         sessionStorage.getItem('google_access_token');
