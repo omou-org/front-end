@@ -236,9 +236,9 @@ const PaymentBoard = () => {
         "update": (cache, {data}) => {
             const existingEnrollmentsFromGetParent = cache.readQuery({
                 "query": GET_PARENT_ENROLLMENTS,
-                "variables": {"studentIds": currentParent.studentList},
-            }).createEnrollments.enrollments;
-
+                "variables": {"studentIds": currentParent.studentIdList},
+            }).enrollments;
+            console.log(existingEnrollmentsFromGetParent, data);
             cache.writeQuery({
                 "query": GET_PARENT_ENROLLMENTS,
                 "data": {
@@ -248,31 +248,42 @@ const PaymentBoard = () => {
                         ...data.createEnrollments.enrollments,
                     ],
                 },
-                "variables": {"studentIds": currentParent.studentList},
+                "variables": {"studentIds": currentParent.studentIdList},
             });
             const cachedCourses = cache.readQuery({
                 "query": GET_ALL_COURSES,
             }).courses;
-
+            var updatedCourses = cachedCourses;
+            console.log({cachedCourses})
             const newEnrollments = data.createEnrollments.enrollments.map((enrollment) => ({
                 "__typename": "EnrollmentType",
                 "id": enrollment.id,
                 "course": enrollment.course,
                 "student": enrollment.student,
             }));
-
+            console.log({newEnrollments})
             newEnrollments.forEach((newEnrollment) => {
-                const matchingIndex = cachedCourses.findIndex((course) =>
+                let matchingIndex = cachedCourses.findIndex((course) =>
                     course.id === newEnrollment.course.id);
-                cachedCourses[matchingIndex] = {
+                console.log(matchingIndex);
+                console.log({
+                    ...cachedCourses[matchingIndex],
+                    "enrollmentSet": [
+                        ...cachedCourses[matchingIndex].enrollmentSet,
+                        {...newEnrollment},
+                    ],
+                })
+                console.log(newEnrollment, typeof cachedCourses, matchingIndex, updatedCourses)
+                updatedCourses[matchingIndex] = {
                     ...cachedCourses[matchingIndex],
                     "enrollmentSet": [
                         ...cachedCourses[matchingIndex].enrollmentSet,
                         {...newEnrollment},
                     ],
                 };
+                console.log("saved updated course!", cachedCourses[matchingIndex])
             });
-
+            console.log({cachedCourses});
             cache.writeQuery({
                 "query": GET_ALL_COURSES,
                 "data": {
