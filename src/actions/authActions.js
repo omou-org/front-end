@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-import {client} from 'index';
+import { client } from 'index';
 import gql from 'graphql-tag';
 
 const GET_EMAIL = gql`
@@ -10,13 +10,13 @@ const GET_EMAIL = gql`
     }
 `;
 
-
 const GET_STUDENT_ID_LIST = gql`
     query GetParentStudents($id: ID!) {
         parent(userId: $id) {
             studentIdList
         }
-    }`;
+    }
+`;
 
 const GET_ACCOUNT_TYPE = gql`
     query GetAccountType($username: String!) {
@@ -85,10 +85,10 @@ export const setToken = async (token, shouldSave) => {
                 },
             },
             query: GET_ACCOUNT_TYPE,
-            variables: {username: email},
+            variables: { username: email },
         });
 
-        const {accountType, user, phoneNumber} = userInfo;
+        const { accountType, user, phoneNumber } = userInfo;
 
         sessionStorage.setItem('token', token);
 
@@ -96,29 +96,31 @@ export const setToken = async (token, shouldSave) => {
             localStorage.setItem('token', token);
         }
         let finalUser = user;
-        if (accountType === "PARENT") {
-            const {"data": {parent}} = await client.query({
-                "context": {
-                    "headers": {
-                        "Authorization": `JWT ${token}`,
+        if (accountType === 'PARENT') {
+            const {
+                data: { parent },
+            } = await client.query({
+                context: {
+                    headers: {
+                        Authorization: `JWT ${token}`,
                     },
                 },
-                "query": GET_STUDENT_ID_LIST,
-                "variables": {"id": user.id},
+                query: GET_STUDENT_ID_LIST,
+                variables: { id: user.id },
             });
             finalUser = {
                 ...user,
-                "studentList": parent.studentIdList,
+                studentList: parent.studentIdList,
             };
         }
         return {
             payload: {
                 accountType,
-                "attemptedLogin": true,
+                attemptedLogin: true,
                 email,
                 phoneNumber,
                 token,
-                "user": finalUser,
+                user: finalUser,
             },
             type: types.SET_CREDENTIALS,
         };

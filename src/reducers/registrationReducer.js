@@ -1,18 +1,21 @@
 import initialState from './initialState';
 import * as actions from './../actions/actionTypes';
-import {dateParser, weeklySessionsParser} from 'components/Form/FormUtils';
-import {mapRegistrationInfo, setParentRegistrationCart,} from '../components/OmouComponents/RegistrationUtils';
-import {arraysMatch} from '../utils';
+import { dateParser, weeklySessionsParser } from 'components/Form/FormUtils';
+import {
+    mapRegistrationInfo,
+    setParentRegistrationCart,
+} from '../components/OmouComponents/RegistrationUtils';
+import { arraysMatch } from '../utils';
 
 export default function registration(
-	state = initialState.RegistrationForms,
-	{payload, type}
+    state = initialState.RegistrationForms,
+    { payload, type }
 ) {
-	let newState = JSON.parse(JSON.stringify(state));
-	switch (type) {
-		case actions.ADD_STUDENT_FIELD:
-			newState = addAStudentField(state);
-			return newState;
+    let newState = JSON.parse(JSON.stringify(state));
+    switch (type) {
+        case actions.ADD_STUDENT_FIELD:
+            newState = addAStudentField(state);
+            return newState;
         case actions.ADD_COURSE_FIELD:
             newState = addACourseField(state);
             return newState;
@@ -66,7 +69,7 @@ export default function registration(
             setParentRegistrationCart(payload);
             return {
                 ...state,
-                "currentParent": payload,
+                currentParent: payload,
             };
         case actions.RESET_REGISTRATION:
             newState.registered_courses = {};
@@ -80,10 +83,12 @@ export default function registration(
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState, payload);
         case actions.DELETE_COURSE_REGISTRATION:
-            const {studentId, courseId} = payload;
-            const registrationState = JSON.parse(sessionStorage.getItem("registrations"));
+            const { studentId, courseId } = payload;
+            const registrationState = JSON.parse(
+                sessionStorage.getItem('registrations')
+            );
             const indexOfRegistration = registrationState[studentId]
-                .map(({course}) => course)
+                .map(({ course }) => course)
                 .indexOf(courseId);
 
             registrationState[studentId].splice(indexOfRegistration, 1);
@@ -106,23 +111,23 @@ export default function registration(
             return editCourseRegistration(newState, payload);
         case actions.SET_REGISTRATION:
             newState.registration = payload;
-            return {...newState};
+            return { ...newState };
         case actions.COMPLETE_REGISTRATION:
             newState.registration = {
                 ...newState.registration,
-                "complete": true,
+                complete: true,
             };
-            return {...newState};
+            return { ...newState };
 
         case actions.SET_CREDENTIALS:
-            if (payload.accountType === "PARENT") {
+            if (payload.accountType === 'PARENT') {
                 setParentRegistrationCart({
-                    "user": payload.user,
+                    user: payload.user,
                 });
                 return {
                     ...state,
-                    "currentParent": {
-                        "user": payload.user,
+                    currentParent: {
+                        user: payload.user,
                     },
                 };
             }
@@ -134,15 +139,15 @@ export default function registration(
 
 const addAStudentField = (prevState) => {
     const SmallGroupList =
-        prevState.registration_form.tutoring["Student(s)"]["Small Group"];
+        prevState.registration_form.tutoring['Student(s)']['Small Group'];
     const NewStudentField = {
         ...SmallGroupList[0],
-        "field": `Student ${(SmallGroupList.length + 1).toString()} Name`,
-        "required": false,
+        field: `Student ${(SmallGroupList.length + 1).toString()} Name`,
+        required: false,
     };
     SmallGroupList.push(NewStudentField);
-    prevState.registration_form.tutoring["Student(s)"][
-        "Small Group"
+    prevState.registration_form.tutoring['Student(s)'][
+        'Small Group'
     ] = SmallGroupList;
     return prevState;
 };
@@ -468,14 +473,14 @@ const addSmallGroupRegistration = (prevState, { formMain, new_course }) => {
         enrollmentObject
     );
 
-	return { ...prevState };
+    return { ...prevState };
 };
 
 const addStudentRegistration = (
     studentID,
     registeredCourses,
     courseType,
-    enrollmentObject,
+    enrollmentObject
 ) => {
     let enrollmentExists = false;
     const isStudentCurrentlyRegistered = registeredCourses
