@@ -262,16 +262,19 @@ const PaymentBoard = () => {
             }).courses;
             var updatedCourses = JSON.parse(JSON.stringify(cachedCourses));
 
-            const newEnrollments = data.createEnrollments.enrollments.map((enrollment) => ({
-                "__typename": "EnrollmentType",
-                "id": enrollment.id,
-                "course": enrollment.course,
-                "student": enrollment.student,
-            }));
+            const newEnrollments = data.createEnrollments.enrollments.map(
+                (enrollment) => ({
+                    __typename: 'EnrollmentType',
+                    id: enrollment.id,
+                    course: enrollment.course,
+                    student: enrollment.student,
+                })
+            );
 
             newEnrollments.forEach((newEnrollment) => {
-                let matchingIndex = cachedCourses.findIndex((course) =>
-                    course.id === newEnrollment.course.id);
+                let matchingIndex = cachedCourses.findIndex(
+                    (course) => course.id === newEnrollment.course.id
+                );
 
                 updatedCourses[matchingIndex] = {
                     ...cachedCourses[matchingIndex],
@@ -289,10 +292,10 @@ const PaymentBoard = () => {
                 },
             });
 
-            const {userInfos, enrollments} = cache.readQuery({
-                "query": GET_STUDENTS_AND_ENROLLMENTS,
-                "variables": {
-                    "userIds": currentParent.studentIdList,
+            const { userInfos, enrollments } = cache.readQuery({
+                query: GET_STUDENTS_AND_ENROLLMENTS,
+                variables: {
+                    userIds: currentParent.studentIdList,
                 },
             });
 
@@ -481,13 +484,16 @@ const PaymentBoard = () => {
             }));
 
         const areThereNewEnrollments = enrollmentsToCreate.length > 0;
-        const newEnrollments = areThereNewEnrollments ? await createEnrollments({
-            "variables": {
-                "enrollments": enrollmentsToCreate,
-            },
-        }) : [];
+        const newEnrollments = areThereNewEnrollments
+            ? await createEnrollments({
+                  variables: {
+                      enrollments: enrollmentsToCreate,
+                  },
+              })
+            : [];
 
-        const actualNewEnrollments = newEnrollments.data.createEnrollments.enrollments
+        const actualNewEnrollments =
+            newEnrollments.data.createEnrollments.enrollments;
 
         const registrations = [
             ...actualNewEnrollments.map((enrollment) => ({
