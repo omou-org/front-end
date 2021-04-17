@@ -1,21 +1,21 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {useDispatch} from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import {LabelBadge} from '../../../theme/ThemedComponents/Badge/LabelBadge';
-import {initializeRegistration} from 'actions/registrationActions';
+import { makeStyles } from '@material-ui/core/styles';
+import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
+import { initializeRegistration } from 'actions/registrationActions';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
-import InvoiceTable from "../Invoices/InvoiceTable";
-import EnrollmentSummaryTab from "./EnrollmentSummaryTab";
-import EnrollmentDetails from "./EnrollmentDetails";
-import EnrollmentProgress from "./EnrollmentProgress";
+import InvoiceTable from '../Invoices/InvoiceTable';
+import EnrollmentSummaryTab from './EnrollmentSummaryTab';
+import EnrollmentDetails from './EnrollmentDetails';
+import EnrollmentProgress from './EnrollmentProgress';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -139,7 +139,7 @@ const CourseSessionStatus = () => {
     }, [dispatch]);
 
     if (enrollmentLoading || sessionsLoading) {
-        return <Loading/>;
+        return <Loading />;
     }
     if (enrollmentError || sessionsError) {
         return (
@@ -151,15 +151,23 @@ const CourseSessionStatus = () => {
     }
     const isTutoring = true;
 
-    const ActiveTabView = ({ActiveTab}) => {
-        const TutoringSummaryTabView = isTutoring ?
-            [<EnrollmentSummaryTab sessions={sessionsData.sessions} enrollment={enrollmentData}/>] : [];
+    const ActiveTabView = ({ ActiveTab }) => {
+        const TutoringSummaryTabView = isTutoring
+            ? [
+                  <EnrollmentSummaryTab
+                      sessions={sessionsData.sessions}
+                      enrollment={enrollmentData}
+                  />,
+              ]
+            : [];
 
         return [
             ...TutoringSummaryTabView,
-            <EnrollmentProgress/>,
-            <InvoiceTable invoiceList={enrollmentData.enrollment.paymentList}/>,
-            <Notes ownerID={enrollmentId} ownerType='enrollment'/>,
+            <EnrollmentProgress />,
+            <InvoiceTable
+                invoiceList={enrollmentData.enrollment.paymentList}
+            />,
+            <Notes ownerID={enrollmentId} ownerType='enrollment' />,
         ][ActiveTab];
     };
 
@@ -174,25 +182,19 @@ const CourseSessionStatus = () => {
                 : 0
         );
 
-    const enrollmentNoteTabLabel = (enrollmentnoteSet) => (
-        Object.values(enrollmentnoteSet).some(
-            ({important}) => important
-        ) ? (
+    const enrollmentNoteTabLabel = (enrollmentnoteSet) =>
+        Object.values(enrollmentnoteSet).some(({ important }) => important) ? (
             <>
                 Notes
-                <LabelBadge
-                    style={{marginLeft: '8px'}}
-                    variant='round-count'
-                >
+                <LabelBadge style={{ marginLeft: '8px' }} variant='round-count'>
                     1
                 </LabelBadge>
             </>
-        ) : "Notes");
+        ) : (
+            'Notes'
+        );
 
-    const {
-        course,
-        enrollmentnoteSet,
-    } = enrollmentData.enrollment;
+    const { course, enrollmentnoteSet } = enrollmentData.enrollment;
 
     return (
         <Grid container>
@@ -205,23 +207,23 @@ const CourseSessionStatus = () => {
                     {course.title}
                 </Typography>
             </Grid>
-            <EnrollmentDetails enrollment={enrollmentData.enrollment}/>
+            <EnrollmentDetails enrollment={enrollmentData.enrollment} />
             <Tabs
-                classes={{indicator: classes.MuiIndicator}}
+                classes={{ indicator: classes.MuiIndicator }}
                 className='enrollment-tabs'
                 onChange={handleTabChange}
                 value={activeTab}
             >
-                {isTutoring && <Tab label="Summary"/>}
-                <Tab label="Progress"/>
-                <Tab label="Invoices"/>
+                {isTutoring && <Tab label='Summary' />}
+                <Tab label='Progress' />
+                <Tab label='Invoices' />
                 <Tab
-                    classes={{wrapper: classes.wrapper}}
+                    classes={{ wrapper: classes.wrapper }}
                     label={enrollmentNoteTabLabel(enrollmentnoteSet)}
                 />
             </Tabs>
-            <br/>
-            <ActiveTabView ActiveTab={activeTab}/>
+            <br />
+            <ActiveTabView ActiveTab={activeTab} />
         </Grid>
     );
 };

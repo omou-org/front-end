@@ -1,24 +1,24 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 // Material UI Imports
 import Grid from '@material-ui/core/Grid';
-import {useHistory, useLocation, useParams} from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import Loading from 'components/OmouComponents/Loading';
 
 import gql from 'graphql-tag';
-import {useMutation, useQuery} from '@apollo/client';
-import {FormControl, Typography} from '@material-ui/core';
+import { useMutation, useQuery } from '@apollo/client';
+import { FormControl, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import {DatePicker} from '@material-ui/pickers/DatePicker/DatePicker';
-import {TimePicker} from '@material-ui/pickers/TimePicker/TimePicker';
+import { DatePicker } from '@material-ui/pickers/DatePicker/DatePicker';
+import { TimePicker } from '@material-ui/pickers/TimePicker/TimePicker';
 import SearchSelect from 'react-select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {ResponsiveButton} from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import './scheduler.scss';
 import GET_SESSIONS from '../Enrollment/EnrollmentView';
 
-import {fullName} from '../../../utils';
+import { fullName } from '../../../utils';
 
 import moment from 'moment';
 
