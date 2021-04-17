@@ -149,7 +149,7 @@ const CourseSessionStatus = () => {
         },
         enrollmentDetails: {
             marginTop: '39px',
-            marginBottom: '55px'
+            marginBottom: '40px'
         }
     });
     const classes = useStyles();
