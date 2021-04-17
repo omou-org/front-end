@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/OmouComponents/Loading';
 import InvoicesTable from './InvoicesTable';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 
@@ -38,7 +38,7 @@ const PaymentHistory = ({ user_id }) => {
 
     const { invoices } = data;
 
-    return <InvoicesTable paymentList={invoices} type='parent'/>;
+    return <InvoicesTable paymentList={invoices} type='parent' />;
 };
 
 PaymentHistory.propTypes = {

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import {useSelector} from 'react-redux';
-import React, {useCallback} from 'react';
+import { useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -9,7 +9,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import {paymentToString, tuitionAmount} from 'utils';
+import { paymentToString, tuitionAmount } from 'utils';
 import Loading from 'components/OmouComponents/Loading';
 import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
@@ -29,13 +29,13 @@ const courseLabel = (enrollments) =>
     `${enrollments.length} Course${enrollments.length !== 1 ? 's' : ''}`;
 
 const InvoicesTable = ({
-                           paymentList,
-                           type,
-                           enrollmentID,
-                           courseID,
-                           rootRoute = '/accounts/parent/payment/',
-                       }) => {
-    const course = useSelector(({Course}) => Course.NewCourseList[courseID]);
+    paymentList,
+    type,
+    enrollmentID,
+    courseID,
+    rootRoute = '/accounts/parent/payment/',
+}) => {
+    const course = useSelector(({ Course }) => Course.NewCourseList[courseID]);
 
     const numPaidSessionsByPayment = useCallback(
         (paymentID) => {
