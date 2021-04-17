@@ -141,16 +141,16 @@ const CourseSessionStatus = () => {
             flexDirection: 'row',
         },
         enrollmentViewRoot: {
-            marginTop: '10px'
+            marginTop: '10px',
         },
         StudentNameHeading: {
             color: slateGrey,
-            textAlign: 'left'
+            textAlign: 'left',
         },
         enrollmentDetails: {
             marginTop: '39px',
-            marginBottom: '40px'
-        }
+            marginBottom: '40px',
+        },
     });
     const classes = useStyles();
 
@@ -223,16 +223,12 @@ const CourseSessionStatus = () => {
     const { course, enrollmentnoteSet } = enrollmentData.enrollment;
 
     return (
-        <Grid 
-            container 
-            direction="column"
+        <Grid
+            container
+            direction='column'
             className={classes.enrollmentViewRoot}
         >
-            <Grid 
-                container 
-                justify='space-between'
-                alignItems='flex-start'
-            >
+            <Grid container justify='space-between' alignItems='flex-start'>
                 <Grid item xs={8}>
                     <Typography
                         className={classes.StudentNameHeading}
@@ -252,10 +248,7 @@ const CourseSessionStatus = () => {
                     <EnrollmentActions enrollment={enrollmentData.enrollment} />
                 </Grid>
             </Grid>
-            <Grid 
-                item
-                className={classes.enrollmentDetails}
-            >
+            <Grid item className={classes.enrollmentDetails}>
                 <EnrollmentDetails enrollment={enrollmentData.enrollment} />
             </Grid>
             <Grid item>
