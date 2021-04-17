@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Moment from 'react-moment';
-import NoListAlert from '../../../OmouComponents/NoListAlert';
 import SessionPaymentStatusChip from 'components/OmouComponents/SessionPaymentStatusChip';
 import moment from 'moment';
 
@@ -22,7 +21,7 @@ function EnrollmentSessionRow({ session, enrollmentData, highlightSession }) {
             item
             data-cy='view-session-link'
             key={id}
-            to={`/scheduler/view-session/${course.id}/${session.id}/${course.instructor.user.id}`}
+            to={`/scheduler/session/${session.id}`}
             xs={12}
         >
             <Paper

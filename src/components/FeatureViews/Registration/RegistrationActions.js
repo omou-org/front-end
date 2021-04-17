@@ -41,7 +41,7 @@ const RegistrationActions = () => {
     );
     const { parentIsLoggedIn } = useValidateRegisteringParent();
     const dispatch = useDispatch();
-    console.log(AuthUser.user.id);
+
     const [dialogOpen, setDialog] = useState(false);
     const { data, error, loading } = useQuery(GET_PARENT_QUERY, {
         variables: { userId: AuthUser.user.id },
@@ -84,7 +84,6 @@ const RegistrationActions = () => {
     const registeringParent = data?.parent || currentParent;
 
     const parentName = registeringParent && fullName(registeringParent.user);
-    const { submitStatus = {}, ...registrationCartState } = registrationState;
     const numberOfRegistrationsInCart = Object.values(registrationState).reduce(
         (accumulator, currentStudent) => accumulator + currentStudent?.length,
         0

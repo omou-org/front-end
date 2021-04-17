@@ -679,13 +679,16 @@ export default {
                 ],
             },
         ],
-        load: async (id) => {
+        load: async (id, parentIdOfNewStudent) => {
+            // Loads parent id if form was opened from parent profile's "Add Student" button
+            const idToLoad = id ? { id } : { id: parentIdOfNewStudent };
+
             try {
                 const {
                     data: { userInfo },
                 } = await client.query({
                     query: GET_USER_TYPE,
-                    variables: { id },
+                    variables: idToLoad,
                 });
                 if (userInfo.accountType === 'PARENT') {
                     const GET_NAME = gql`
@@ -702,13 +705,13 @@ export default {
                         data: { parent },
                     } = await client.query({
                         query: GET_NAME,
-                        variables: { id },
+                        variables: idToLoad,
                     });
                     return {
                         student: {
                             primaryParent: {
                                 label: `${parent.user.firstName} ${parent.user.lastName}`,
-                                value: id,
+                                value: idToLoad.id,
                             },
                         },
                     };
@@ -777,7 +780,8 @@ export default {
             }
             return null;
         },
-        submit: async ({ student }, id) => {
+        submit: async ({ student }, id, parentIdOfNewStudent) => {
+            console.log(parentIdOfNewStudent, id);
             const ADD_STUDENT = gql`
                 mutation AddStudent(
                     $firstName: String!
@@ -851,7 +855,9 @@ export default {
                         id,
                         email: student.email || '',
                         birthDate: parseDate(student.birthDate),
-                        primaryParent: student.primaryParent?.value,
+                        primaryParent:
+                            parentIdOfNewStudent ||
+                            student.primaryParent?.value,
                         school: student.school?.value,
                     },
                     update: (cache, { data }) => {

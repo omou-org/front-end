@@ -17,7 +17,6 @@ import {
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import { createUploadLink } from 'apollo-upload-client';
-import { setToken } from 'actions/authActions';
 import * as actionCreators from 'actions/actionTypes';
 import initialState from './reducers/initialState';
 import invariant from 'redux-immutable-state-invariant';
@@ -62,14 +61,6 @@ export const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: authLink.concat(httpLink),
 });
-
-const token = localStorage.getItem('token');
-
-if (token) {
-    (async () => {
-        store.dispatch(await setToken(token));
-    })();
-}
 
 ReactDOM.render(
     <Provider store={store}>
