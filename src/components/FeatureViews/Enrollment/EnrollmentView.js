@@ -35,12 +35,22 @@ const GET_ENROLLMENT = gql`
                 id
                 title
                 courseType
+                startDate
+                endDate
                 instructor {
                     user {
                         firstName
                         id
                         lastName
                     }
+                }
+                courseCategory {
+                    name
+                }
+                availabilityList {
+                    dayOfWeek
+                    endTime
+                    startTime
                 }
             }
             paymentList {
@@ -69,6 +79,7 @@ const GET_ENROLLMENT = gql`
                         }
                     }
                 }
+                grade
             }
         }
     }
@@ -129,9 +140,16 @@ const CourseSessionStatus = () => {
         wrapper: {
             flexDirection: 'row',
         },
+        enrollmentViewRoot: {
+            marginTop: '38px'
+        },
         StudentNameHeading: {
             color: slateGrey,
             textAlign: 'left'
+        },
+        enrollmentDetails: {
+            marginTop: '39px',
+            marginBottom: '55px'
         }
     });
     const classes = useStyles();
@@ -205,7 +223,11 @@ const CourseSessionStatus = () => {
     const { course, enrollmentnoteSet } = enrollmentData.enrollment;
 
     return (
-        <Grid container>
+        <Grid 
+            container 
+            direction="column"
+            className={classes.enrollmentViewRoot}
+        >
             <Grid 
                 container 
                 justify='space-between'
@@ -230,21 +252,28 @@ const CourseSessionStatus = () => {
                     <EnrollmentActions enrollment={enrollmentData.enrollment} />
                 </Grid>
             </Grid>
-            <EnrollmentDetails enrollment={enrollmentData.enrollment} />
-            <Tabs
-                classes={{ indicator: classes.MuiIndicator }}
-                className='enrollment-tabs'
-                onChange={handleTabChange}
-                value={activeTab}
+            <Grid 
+                item
+                className={classes.enrollmentDetails}
             >
-                {isTutoring && <Tab label='Summary' />}
-                <Tab label='Progress' />
-                <Tab label='Invoices' />
-                <Tab
-                    classes={{ wrapper: classes.wrapper }}
-                    label={enrollmentNoteTabLabel(enrollmentnoteSet)}
-                />
-            </Tabs>
+                <EnrollmentDetails enrollment={enrollmentData.enrollment} />
+            </Grid>
+            <Grid item>
+                <Tabs
+                    classes={{ indicator: classes.MuiIndicator }}
+                    className='enrollment-tabs'
+                    onChange={handleTabChange}
+                    value={activeTab}
+                >
+                    {isTutoring && <Tab label='Summary' />}
+                    <Tab label='Progress' />
+                    <Tab label='Invoices' />
+                    <Tab
+                        classes={{ wrapper: classes.wrapper }}
+                        label={enrollmentNoteTabLabel(enrollmentnoteSet)}
+                    />
+                </Tabs>
+            </Grid>
             <br />
             <ActiveTabView ActiveTab={activeTab} />
         </Grid>
