@@ -19,16 +19,6 @@ export default function EnrollmentDetails({ enrollment }) {
                 justify='flex-start'
                 spacing={2}
             >
-                <Grid item>
-                    <AddSessions
-                        componentOption='button'
-                        enrollment={enrollment}
-                        parentOfCurrentStudent={student.parent}
-                    />
-                </Grid>
-                <Grid item>
-                    <UnenrollButton enrollment={enrollment} />
-                </Grid>
             </Grid>
             <Grid className='participants' item xs={12}>
                 <Typography align='left'>

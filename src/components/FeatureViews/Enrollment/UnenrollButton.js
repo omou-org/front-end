@@ -31,8 +31,8 @@ export default function UnenrollButton({ enrollment }) {
     return (
         <>
             <ResponsiveButton
-                className='button unenroll'
                 onClick={openUnenrollDialog}
+                variant='outlined'
             >
                 Unenroll Course
             </ResponsiveButton>

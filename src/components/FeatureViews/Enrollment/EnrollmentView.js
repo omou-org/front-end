@@ -16,6 +16,10 @@ import InvoiceTable from '../Invoices/InvoiceTable';
 import EnrollmentSummaryTab from './EnrollmentSummaryTab';
 import EnrollmentDetails from './EnrollmentDetails';
 import EnrollmentProgress from './EnrollmentProgress';
+import enrollment from 'reducers/enrollmentReducer';
+import { fullName } from '../../../utils';
+import { slateGrey } from '../../../theme/muiTheme';
+import EnrollmentActions from './EnrollmentActions';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -125,6 +129,10 @@ const CourseSessionStatus = () => {
         wrapper: {
             flexDirection: 'row',
         },
+        StudentNameHeading: {
+            color: slateGrey,
+            textAlign: 'left'
+        }
     });
     const classes = useStyles();
 
@@ -198,14 +206,29 @@ const CourseSessionStatus = () => {
 
     return (
         <Grid container>
-            <Grid item xs={12}>
-                <Typography
-                    align='left'
-                    className='course-session-title'
-                    variant='h1'
-                >
-                    {course.title}
-                </Typography>
+            <Grid 
+                container 
+                justify='space-between'
+                alignItems='flex-start'
+            >
+                <Grid item xs={8}>
+                    <Typography
+                        className={classes.StudentNameHeading}
+                        variant='h4'
+                    >
+                        {fullName(enrollmentData.enrollment.student.user)}
+                    </Typography>
+                    <Typography
+                        align='left'
+                        className='course-session-title'
+                        variant='h1'
+                    >
+                        {course.title}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <EnrollmentActions enrollment={enrollmentData.enrollment} />
+                </Grid>
             </Grid>
             <EnrollmentDetails enrollment={enrollmentData.enrollment} />
             <Tabs
