@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 
 import EnrollmentSessionRow from './EnrollmentSessionRow';
 import Dialog from '@material-ui/core/Dialog';
@@ -15,19 +15,19 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import Grid from '@material-ui/core/Grid';
 import NoListAlert from '../../../OmouComponents/NoListAlert';
-import PaymentTable from './PaymentTable';
 import Switch from '@material-ui/core/Switch';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { LabelBadge } from '../../../../theme/ThemedComponents/Badge/LabelBadge';
-import { initializeRegistration } from 'actions/registrationActions';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {makeStyles} from '@material-ui/core/styles';
+import {LabelBadge} from '../../../../theme/ThemedComponents/Badge/LabelBadge';
+import {initializeRegistration} from 'actions/registrationActions';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddSessions from 'components/OmouComponents/AddSessions';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
-import { fullName } from '../../../../utils';
+import {fullName} from '../../../../utils';
+import InvoiceTable from "../../Invoices/InvoiceTable";
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -53,7 +53,15 @@ const GET_ENROLLMENT = gql`
             }
             paymentList {
                 id
+                total
+                paymentStatus
                 createdAt
+                parent {
+                    user {
+                        firstName
+                        lastName
+                    }
+                }
             }
             lastPaidSessionDatetime
             student {
@@ -175,7 +183,7 @@ const CourseSessionStatus = () => {
             </Typography>
         );
     }
-    console.log(sessionsData);
+
     sessionsData.sessions
         .slice()
         .sort((a, b) =>
@@ -260,11 +268,8 @@ const CourseSessionStatus = () => {
                 return <Notes ownerID={id} ownerType='enrollment' />;
             case 2:
                 return (
-                    <PaymentTable
-                        courseID={course.id}
-                        enrollmentID={id}
-                        paymentList={paymentList}
-                        type='enrollment'
+                    <InvoiceTable
+                        invoiceList={enrollmentData.enrollment.paymentList}
                     />
                 );
             default:

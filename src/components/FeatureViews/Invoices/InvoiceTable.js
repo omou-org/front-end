@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import React, { useState } from 'react';
+import {useSelector} from 'react-redux';
+import React, {useState} from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -8,11 +8,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TableFooter from '@material-ui/core/TableFooter';
-import TablePagination from '@material-ui/core/TablePagination';
-import { InvoiceTablePagination } from './InvoiceTablePagination';
+import {InvoiceTablePagination} from './InvoiceTablePagination';
 
-import { paymentToString, tuitionAmount, fullName } from 'utils';
+import {fullName} from 'utils';
 import Loading from 'components/OmouComponents/Loading';
 import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
@@ -23,7 +21,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import StatusBadge from '../../OmouComponents/StatusBadge';
 
 import './invoice.scss';
@@ -85,6 +83,8 @@ const InvoiceTable = ({
 
     return (
         <Grid className='payments-history' item md={12}>
+            {invoiceList.length === 0 && <NoListAlert list='Payments'/>}
+
             <Table>
                 <TableHead>
                     <TableRow>
@@ -181,8 +181,6 @@ const InvoiceTable = ({
                 </TableBody>
             </Table>
 
-            {invoiceList.length === 0 && <NoListAlert list='Payments' />}
-
             <Grid
                 container
                 direction='row'
@@ -190,7 +188,7 @@ const InvoiceTable = ({
                 alignItems='center'
                 className={classes.tableFooter}
             >
-                {invoiceList.length > 0 && (
+                {invoiceList.length > 15 && (
                     <InvoiceTablePagination
                         page={page}
                         colSpan={3}
@@ -205,10 +203,7 @@ const InvoiceTable = ({
 };
 
 InvoiceTable.propTypes = {
-    courseID: PropTypes.number.isRequired,
-    enrollmentID: PropTypes.number.isRequired,
-    paymentList: PropTypes.array.isRequired,
-    type: PropTypes.oneOf(['enrollment', 'parent']).isRequired,
+    invoiceList: PropTypes.array.isRequired,
 };
 
 export default InvoiceTable;
