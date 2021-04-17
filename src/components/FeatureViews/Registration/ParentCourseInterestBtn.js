@@ -1,15 +1,14 @@
 import React from 'react';
-import { buttonBlue, gloom, white } from 'theme/muiTheme';
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import {buttonBlue, gloom, white} from 'theme/muiTheme';
+import {ResponsiveButton} from 'theme/ThemedComponents/Button/ResponsiveButton';
 import AddIcon from '@material-ui/icons/Add';
 import CheckIcon from '@material-ui/icons/Check';
 
 const ParentCourseInterestBtn = ({
-    courseID,
-    isCourseOnParentInterestList,
-    handleInterestRegister,
-}) => {
-    console.log(isCourseOnParentInterestList);
+                                     courseID,
+                                     isCourseOnParentInterestList,
+                                     handleInterestRegister,
+                                 }) => {
 
     return isCourseOnParentInterestList(courseID) ? (
         <ResponsiveButton

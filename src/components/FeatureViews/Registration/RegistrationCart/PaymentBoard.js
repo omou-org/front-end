@@ -238,7 +238,7 @@ const PaymentBoard = () => {
                 "query": GET_PARENT_ENROLLMENTS,
                 "variables": {"studentIds": currentParent.studentIdList},
             }).enrollments;
-            console.log(existingEnrollmentsFromGetParent, data);
+
             cache.writeQuery({
                 "query": GET_PARENT_ENROLLMENTS,
                 "data": {
@@ -253,27 +253,19 @@ const PaymentBoard = () => {
             const cachedCourses = cache.readQuery({
                 "query": GET_ALL_COURSES,
             }).courses;
-            var updatedCourses = cachedCourses;
-            console.log({cachedCourses})
+            var updatedCourses = JSON.parse(JSON.stringify(cachedCourses));
+
             const newEnrollments = data.createEnrollments.enrollments.map((enrollment) => ({
                 "__typename": "EnrollmentType",
                 "id": enrollment.id,
                 "course": enrollment.course,
                 "student": enrollment.student,
             }));
-            console.log({newEnrollments})
+
             newEnrollments.forEach((newEnrollment) => {
                 let matchingIndex = cachedCourses.findIndex((course) =>
                     course.id === newEnrollment.course.id);
-                console.log(matchingIndex);
-                console.log({
-                    ...cachedCourses[matchingIndex],
-                    "enrollmentSet": [
-                        ...cachedCourses[matchingIndex].enrollmentSet,
-                        {...newEnrollment},
-                    ],
-                })
-                console.log(newEnrollment, typeof cachedCourses, matchingIndex, updatedCourses)
+
                 updatedCourses[matchingIndex] = {
                     ...cachedCourses[matchingIndex],
                     "enrollmentSet": [
@@ -281,9 +273,8 @@ const PaymentBoard = () => {
                         {...newEnrollment},
                     ],
                 };
-                console.log("saved updated course!", cachedCourses[matchingIndex])
             });
-            console.log({cachedCourses});
+
             cache.writeQuery({
                 "query": GET_ALL_COURSES,
                 "data": {
@@ -294,7 +285,7 @@ const PaymentBoard = () => {
             const {userInfos, enrollments} = cache.readQuery({
                 "query": GET_STUDENTS_AND_ENROLLMENTS,
                 "variables": {
-                    "userIds": currentParent.studentList,
+                    "userIds": currentParent.studentIdList,
                 },
             });
 
@@ -438,16 +429,16 @@ const PaymentBoard = () => {
                     registration.course === enrollment.course.id &&
                     registration.student === enrollment.student.user.id).id,
             }));
-        console.log({enrollmentsToCreate, existingEnrollments});
+
         const areThereNewEnrollments = enrollmentsToCreate.length > 0;
         const newEnrollments = areThereNewEnrollments ? await createEnrollments({
             "variables": {
                 "enrollments": enrollmentsToCreate,
             },
         }) : [];
-        console.log(newEnrollments);
+
         const actualNewEnrollments = newEnrollments.data.createEnrollments.enrollments
-        console.log(actualNewEnrollments);
+
         const registrations = [
             ...actualNewEnrollments.map((enrollment) => ({
                 "enrollment": enrollment.id,
@@ -486,11 +477,6 @@ const PaymentBoard = () => {
         history.push(
             `/registration/receipt/${payment.data.createInvoice.invoice.id}`
         );
-        // try {
-        //
-        // } catch (error) {
-        //     console.error(error);
-        // }
     };
 
     if (error || enrollmentResponse.error) {
