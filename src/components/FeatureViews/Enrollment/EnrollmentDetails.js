@@ -3,11 +3,10 @@ import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { fullName } from '../../../utils';
+import { fullName, formatAvailabilityListHours, formatAvailabilityListDays } from '../../../utils';
 
 export default function EnrollmentDetails({ enrollment }) {
-    const { course, student, enrollmentBalance } = enrollment;
-    console.log({enrollment})
+    const { course, student } = enrollment;
 
     const detailData = [
         {
@@ -40,11 +39,11 @@ export default function EnrollmentDetails({ enrollment }) {
         },
         {
             title: 'Days',
-            info: 'Monday'
+            info: formatAvailabilityListDays(course.availabilityList)
         },
         {
             title: 'Time',
-            info: '4:30 PM - 6:00 PM'
+            info: formatAvailabilityListHours(course.availabilityList)
         }
     ]
 
@@ -76,6 +75,8 @@ export default function EnrollmentDetails({ enrollment }) {
             </Grid>
         )
     }
+
+    
 
     return (
         <Grid 

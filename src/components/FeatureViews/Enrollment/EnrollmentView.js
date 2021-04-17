@@ -141,7 +141,7 @@ const CourseSessionStatus = () => {
             flexDirection: 'row',
         },
         enrollmentViewRoot: {
-            marginTop: '38px'
+            marginTop: '10px'
         },
         StudentNameHeading: {
             color: slateGrey,
