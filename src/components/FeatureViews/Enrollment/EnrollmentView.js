@@ -15,6 +15,7 @@ import Notes from 'components/FeatureViews/Notes/Notes';
 import InvoiceTable from "../Invoices/InvoiceTable";
 import EnrollmentSummaryTab from "./EnrollmentSummaryTab";
 import EnrollmentDetails from "./EnrollmentDetails";
+import EnrollmentProgress from "./EnrollmentProgress";
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -138,7 +139,7 @@ const CourseSessionStatus = () => {
     }, [dispatch]);
 
     if (enrollmentLoading || sessionsLoading) {
-        return <Loading />;
+        return <Loading/>;
     }
     if (enrollmentError || sessionsError) {
         return (
@@ -148,6 +149,19 @@ const CourseSessionStatus = () => {
             </Typography>
         );
     }
+    const isTutoring = true;
+
+    const ActiveTabView = ({ActiveTab}) => {
+        const TutoringSummaryTabView = isTutoring ?
+            [<EnrollmentSummaryTab sessions={sessionsData.sessions} enrollment={enrollmentData}/>] : [];
+
+        return [
+            ...TutoringSummaryTabView,
+            <EnrollmentProgress/>,
+            <InvoiceTable invoiceList={enrollmentData.enrollment.paymentList}/>,
+            <Notes ownerID={enrollmentId} ownerType='enrollment'/>,
+        ][ActiveTab];
+    };
 
     // sorting sessions by oldest to newest
     sessionsData.sessions
@@ -160,44 +174,24 @@ const CourseSessionStatus = () => {
                 : 0
         );
 
-    const ActiveEnrollmentTabView = ({activeTab}) => {
-        switch (activeTab) {
-            case 0:
-                return <EnrollmentSummaryTab sessions={sessionsData.sessions} enrollment={enrollmentData}/>
-            case 1:
-                return <Notes ownerID={id} ownerType='enrollment'/>;
-            case 2:
-                return <InvoiceTable invoiceList={enrollmentData.enrollment.paymentList}/>;
-            default:
-                return null;
-        }
-    };
-
-    const EnrollmentNoteTab = ({classes, enrollmentnoteSet}) => (<Tab
-        classes={{wrapper: classes.wrapper}}
-        label={
-            Object.values(enrollmentnoteSet).some(
-                ({important}) => important
-            ) ? (
-                <>
-                    Notes
-                    <LabelBadge
-                        style={{marginLeft: '8px'}}
-                        variant='round-count'
-                    >
-                        1
-                    </LabelBadge>
-                </>
-            ) : (
-                <> Notes </>
-            )
-        }
-    />);
+    const enrollmentNoteTabLabel = (enrollmentnoteSet) => (
+        Object.values(enrollmentnoteSet).some(
+            ({important}) => important
+        ) ? (
+            <>
+                Notes
+                <LabelBadge
+                    style={{marginLeft: '8px'}}
+                    variant='round-count'
+                >
+                    1
+                </LabelBadge>
+            </>
+        ) : "Notes");
 
     const {
         course,
         enrollmentnoteSet,
-        id,
     } = enrollmentData.enrollment;
 
     return (
@@ -218,12 +212,16 @@ const CourseSessionStatus = () => {
                 onChange={handleTabChange}
                 value={activeTab}
             >
-                <Tab label={<> Registration </>}/>
-                <EnrollmentNoteTab enrollmentnoteSet={enrollmentnoteSet} classes={classes}/>
-                <Tab label={<> Payments </>}/>
+                {isTutoring && <Tab label="Summary"/>}
+                <Tab label="Progress"/>
+                <Tab label="Invoices"/>
+                <Tab
+                    classes={{wrapper: classes.wrapper}}
+                    label={enrollmentNoteTabLabel(enrollmentnoteSet)}
+                />
             </Tabs>
             <br/>
-            <ActiveEnrollmentTabView activeTab={activeTab}/>
+            <ActiveTabView ActiveTab={activeTab}/>
         </Grid>
     );
 };

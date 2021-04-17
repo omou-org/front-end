@@ -14,8 +14,6 @@ export default function UnenrollButton({enrollment}) {
 		enrollmentBalance
 	} = enrollment;
 
-	console.log(enrollment);
-
 	const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
 	const openUnenrollDialog = useCallback(() => {
