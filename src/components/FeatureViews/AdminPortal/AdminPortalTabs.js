@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+    adminPortalTabsStyle: {
+        marginTop: '2rem',
+    },
+});
+
 
 const AdminPortalTabs = () => {
     const [tabIndex, setTabIndex] = useState(0);
@@ -10,32 +16,27 @@ const AdminPortalTabs = () => {
         setTabIndex(currentTabIndex);
     };
 
-    const useStyles = makeStyles({
-        adminPortalTabsStyle: {
-            marginTop: '2rem',
-        },
-    });
-
     const classes = useStyles();
+
+    const adminPortalTabs = [
+        { label: 'overview', tab_id: 0 },
+        { label: 'course tags', tab_id: 1},
+        { label: 'tuition rates', tab_id: 2},
+        { label: 'access control', tab_id: 3},
+        { label: 'admin log', tab_id: 4},
+        { label: 'settings', tab_id: 5},
+    ];
 
     // *** Components for each tab to be created and placed in respective tabContent property in adminPortalTabs array ***
 
-    const adminPortalTabs = [
-        { label: 'overview', tab_id: 0, tabContent: 'overview content'},
-        { label: 'course tags', tab_id: 1, tabContent: 'course tags content' },
-        { label: 'tuition rates', tab_id: 2, tabContent: 'tuition rates content' },
-        { label: 'access control', tab_id: 3, tabContent: 'access control content' },
-        { label: 'admin log', tab_id: 4, tabContent: 'admin log content' },
-        { label: 'settings', tab_id: 5, tabContent: 'settings content' },
-    ];
-
-    const TabContent = (props) => {
-        const { children, value, index, ...rest } = props;
-
-        return (
-            <div>{value === index && <Typography>{children}</Typography>}</div>
-        );
-    };
+    const tabContent = {
+        0: { content: 'overview content'},
+        1: { content: 'course tags content'},
+        2: { content: 'tuition content'},
+        3: { content: 'access control content'},
+        4: { content: 'admin log content'},
+        5: { content: 'settings content'},
+    }
 
     return (
         <>
@@ -49,11 +50,7 @@ const AdminPortalTabs = () => {
                 ))}
             </Tabs>
 
-            {adminPortalTabs.map((currentTab) => (
-                <TabContent value={tabIndex} index={currentTab.tab_id}>
-                    {currentTab.tabContent}
-                </TabContent>
-            ))}
+            {tabContent[tabIndex].content}
         </>
     );
 };
