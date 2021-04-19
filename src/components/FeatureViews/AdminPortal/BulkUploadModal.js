@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { white, omouBlue, darkGrey, highlightColor, h6, h5, goth, gloom } from '../../../theme/muiTheme';
+import {
+    white,
+    omouBlue,
+    darkGrey,
+    highlightColor,
+    h6,
+    h5,
+    goth,
+    gloom,
+} from '../../../theme/muiTheme';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -46,7 +55,7 @@ const useStyles = makeStyles({
     },
     selectDisplay: {
         background: white,
-        border:`1px solid ${omouBlue}`,
+        border: `1px solid ${omouBlue}`,
         borderRadius: '5px',
         width: '13.375em',
         padding: '0.5em 3em 0.5em 1em',
@@ -57,7 +66,7 @@ const BulkUploadModal = ({ closeModal }) => {
     const [template, setTemplate] = useState('');
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
-    const [dropDown, setDropDown] = useState('rotate(0deg)')
+    const [dropDown, setDropDown] = useState('rotate(0deg)');
 
     const handleTemplateChange = (e) => {
         setTemplate(e.target.value);
@@ -71,44 +80,47 @@ const BulkUploadModal = ({ closeModal }) => {
         setActiveStep((prevState) => prevState - 1);
     };
 
-    const handleDropDown = () => dropDown === 'rotate(0deg)' ? setDropDown('rotate(180deg)') : setDropDown('rotate(0deg)')
+    const handleDropDown = () =>
+        dropDown === 'rotate(0deg)'
+            ? setDropDown('rotate(180deg)')
+            : setDropDown('rotate(0deg)');
 
     const b64toBlob = (b64Data, contentType, sliceSize) => {
         contentType = contentType || '';
         sliceSize = sliceSize || 512;
-      
+
         let byteCharacters = atob(b64Data);
         let byteArrays = [];
-        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-          let slice = byteCharacters.slice(offset, offset + sliceSize);
-      
-          let byteNumbers = new Array(slice.length);
-          for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-          }
-      
-          let byteArray = new Uint8Array(byteNumbers);
-      
-          byteArrays.push(byteArray);
+        for (
+            let offset = 0;
+            offset < byteCharacters.length;
+            offset += sliceSize
+        ) {
+            let slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            let byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            let byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
         }
-      
-        let blob = new Blob(byteArrays, {type: contentType});
+
+        let blob = new Blob(byteArrays, { type: contentType });
         return blob;
-    }
+    };
 
-
-    function convertBase64ToExcel()
-    {		
-        let data = ''
-        let contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    function convertBase64ToExcel() {
+        let data = '';
+        let contentType =
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         let blob1 = b64toBlob(data, contentType);
         let blobUrl1 = URL.createObjectURL(blob1);
-    
-    window.open(blobUrl1);
-    
+
+        window.open(blobUrl1);
     }
-
-
 
     const getStepContent = (step) => {
         switch (step) {
@@ -145,63 +157,82 @@ const BulkUploadModal = ({ closeModal }) => {
                                     onOpen={handleDropDown}
                                     onClose={handleDropDown}
                                     SelectDisplayProps={{
-                                        className: classes.selectDisplay
+                                        className: classes.selectDisplay,
                                     }}
                                     disableUnderline
-                                    MenuProps={
-                                        { 
-                                        anchorOrigin: { vertical: 'bottom', horizontal: 'left' }, 
+                                    MenuProps={{
+                                        anchorOrigin: {
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        },
                                         getContentAnchorEl: null,
-                                        }
-                                    }
-                                    IconComponent={() => (                          
+                                    }}
+                                    IconComponent={() => (
                                         <SvgIcon
-                                            style={{ position: 'absolute', top: '24%', left: '84.25%', pointerEvents: 'none', transform: dropDown }} 
+                                            style={{
+                                                position: 'absolute',
+                                                top: '24%',
+                                                left: '84.25%',
+                                                pointerEvents: 'none',
+                                                transform: dropDown,
+                                            }}
                                             fontSize='small'
-                                            viewBox="0 0 16 10" 
+                                            viewBox='0 0 16 10'
                                         >
-                                            <path d="M1.90255 0.623718L0.57505 1.95122L8.00005 9.37622L15.425 1.95122L14.0975 0.623718L8.00005 6.72122L1.90255 0.623718V0.623718Z" fill="#43B5D9"/>
-                                        </SvgIcon>                                      
-                                      )}
+                                            <path
+                                                d='M1.90255 0.623718L0.57505 1.95122L8.00005 9.37622L15.425 1.95122L14.0975 0.623718L8.00005 6.72122L1.90255 0.623718V0.623718Z'
+                                                fill='#43B5D9'
+                                            />
+                                        </SvgIcon>
+                                    )}
                                     value={template}
                                     displayEmpty
                                     onChange={handleTemplateChange}
                                 >
-                                  
-                                    <MenuItem 
-                                        style={{display: 'none'}}
-                                        value=''  
-                                        ListItemClasses={{ selected: classes.menuSelected }} 
+                                    <MenuItem
+                                        style={{ display: 'none' }}
+                                        value=''
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
                                         className={classes.menuSelect}
                                         disabled
-                                        style={{display: 'none'}}
-                                        >
-                                            Select Template
+                                        style={{ display: 'none' }}
+                                    >
+                                        Select Template
                                     </MenuItem>
-                                    <MenuItem 
-                                        value='Accounts' 
-                                        ListItemClasses={{ selected: classes.menuSelected }} 
-                                        className={classes.menuSelect}>
-                                            Accounts
-                                    </MenuItem>
-                                    <MenuItem 
-                                        value='Courses' 
-                                        ListItemClasses={{ selected: classes.menuSelected }} 
-                                        className={classes.menuSelect}>
-                                            Courses
-                                    </MenuItem>
-                                    <MenuItem 
-                                        value='Course Enrollments' 
-                                        ListItemClasses={{ selected: classes.menuSelected }} 
+                                    <MenuItem
+                                        value='Accounts'
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
                                         className={classes.menuSelect}
-                                        >
-                                            Course Enrollments
+                                    >
+                                        Accounts
+                                    </MenuItem>
+                                    <MenuItem
+                                        value='Courses'
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
+                                        className={classes.menuSelect}
+                                    >
+                                        Courses
+                                    </MenuItem>
+                                    <MenuItem
+                                        value='Course Enrollments'
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
+                                        className={classes.menuSelect}
+                                    >
+                                        Course Enrollments
                                     </MenuItem>
                                 </Select>
                                 <IconButton
                                     disabled={!template && true}
                                     onClick={convertBase64ToExcel}
-                                    >
+                                >
                                     <SvgIcon>
                                         <path
                                             d='M17.5 13.75V17.5H2.5V13.75H0V17.5C0 18.875 1.125 20 2.5 20H17.5C18.875 20 20 18.875 20 17.5V13.75H17.5ZM16.25 8.75L14.4875 6.9875L11.25 10.2125V0H8.75V10.2125L5.5125 6.9875L3.75 8.75L10 15L16.25 8.75Z'
@@ -220,9 +251,14 @@ const BulkUploadModal = ({ closeModal }) => {
                                     cancel
                                 </ResponsiveButton>
                                 <ResponsiveButton
-                                    style={{border: 'none', background: white}}
+                                    style={{
+                                        border: 'none',
+                                        background: white,
+                                    }}
                                     disabled={!template && true}
-                                    variant={template ? 'outlined' : 'contained' }
+                                    variant={
+                                        template ? 'outlined' : 'contained'
+                                    }
                                     template={template}
                                     onClick={handleStepChange}
                                 >
@@ -234,7 +270,11 @@ const BulkUploadModal = ({ closeModal }) => {
                 );
             case 1:
                 return (
-                    <Grid container style={{ height: '19em' }} className={classes.modalStyle}>
+                    <Grid
+                        container
+                        style={{ height: '19em' }}
+                        className={classes.modalStyle}
+                    >
                         <Grid item style={{ padding: '2em' }} xs={12}>
                             <Typography
                                 className={classes.modalTypography}
@@ -254,7 +294,9 @@ const BulkUploadModal = ({ closeModal }) => {
                             </Typography>
 
                             <div style={{ margin: '2em 0px' }}>
-                                <ResponsiveButton variant='contained' >Select File</ResponsiveButton>
+                                <ResponsiveButton variant='contained'>
+                                    Select File
+                                </ResponsiveButton>
                             </div>
 
                             <Grid style={{ textAlign: 'right' }} item xs={12}>
@@ -279,7 +321,11 @@ const BulkUploadModal = ({ closeModal }) => {
                 );
             case 2:
                 return (
-                    <Grid container style={{ height: '17em' }} className={classes.modalStyle}>
+                    <Grid
+                        container
+                        style={{ height: '17em' }}
+                        className={classes.modalStyle}
+                    >
                         <Grid item style={{ padding: '2em' }} xs={12}>
                             <Typography
                                 className={classes.modalTypography}
@@ -298,11 +344,11 @@ const BulkUploadModal = ({ closeModal }) => {
                             </Typography>
 
                             <div style={{ margin: '1em 0px' }}>
-                            <Link
-                                className={`${classes.modalTypography} ${classes.errorLink}`}
-                            >
-                                Download Error File
-                            </Link>
+                                <Link
+                                    className={`${classes.modalTypography} ${classes.errorLink}`}
+                                >
+                                    Download Error File
+                                </Link>
 
                                 <IconButton>
                                     <SvgIcon>
@@ -314,7 +360,11 @@ const BulkUploadModal = ({ closeModal }) => {
                                 </IconButton>
                             </div>
 
-                            <Grid style={{ textAlign: 'right', marginTop: '2em' }} item xs={12}>
+                            <Grid
+                                style={{ textAlign: 'right', marginTop: '2em' }}
+                                item
+                                xs={12}
+                            >
                                 <ResponsiveButton
                                     style={{ border: 'none' }}
                                     variant='outlined'

@@ -9,7 +9,6 @@ const useStyles = makeStyles({
     },
 });
 
-
 const AdminPortalTabs = () => {
     const [tabIndex, setTabIndex] = useState(0);
     const handleTabChange = (event, currentTabIndex) => {
@@ -20,23 +19,23 @@ const AdminPortalTabs = () => {
 
     const adminPortalTabs = [
         { label: 'overview', tab_id: 0 },
-        { label: 'course tags', tab_id: 1},
-        { label: 'tuition rates', tab_id: 2},
-        { label: 'access control', tab_id: 3},
-        { label: 'admin log', tab_id: 4},
-        { label: 'settings', tab_id: 5},
+        { label: 'course tags', tab_id: 1 },
+        { label: 'tuition rates', tab_id: 2 },
+        { label: 'access control', tab_id: 3 },
+        { label: 'admin log', tab_id: 4 },
+        { label: 'settings', tab_id: 5 },
     ];
 
     // *** Components for each tab to be created and placed in respective tabContent property in adminPortalTabs array ***
 
     const tabContent = {
-        0: { content: 'overview content'},
-        1: { content: 'course tags content'},
-        2: { content: 'tuition content'},
-        3: { content: 'access control content'},
-        4: { content: 'admin log content'},
-        5: { content: 'settings content'},
-    }
+        0: { content: 'overview content' },
+        1: { content: 'course tags content' },
+        2: { content: 'tuition content' },
+        3: { content: 'access control content' },
+        4: { content: 'admin log content' },
+        5: { content: 'settings content' },
+    };
 
     return (
         <>

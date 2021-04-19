@@ -7,7 +7,7 @@ import Modal from '@material-ui/core/Modal';
 import './AdminPortal.scss';
 import AdminActionCenter from './AdminActionCenter';
 import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
-import AdminPortalTabs from './AdminPortalTabs'
+import AdminPortalTabs from './AdminPortalTabs';
 import BulkUploadModal from './BulkUploadModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 

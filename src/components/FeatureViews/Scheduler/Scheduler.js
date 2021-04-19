@@ -1,19 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {Calendar, momentLocalizer} from 'react-big-calendar';
+import React, { useEffect, useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
-import {SchedulerContext} from './SchedulerContext';
+import { useQuery } from '@apollo/client';
+import { SchedulerContext } from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {fullName} from '../../../utils';
-import {useHistory} from 'react-router-dom';
-import {instructorPalette} from '../../../theme/muiTheme';
-import {findCommonElement} from '../../Form/FormUtils';
-import {SessionPopover} from './SessionPopover';
-import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
-import {useSelector} from "react-redux";
+import { fullName } from '../../../utils';
+import { useHistory } from 'react-router-dom';
+import { instructorPalette } from '../../../theme/muiTheme';
+import { findCommonElement } from '../../Form/FormUtils';
+import { SessionPopover } from './SessionPopover';
+import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     sessionPopover: {
@@ -133,7 +133,11 @@ const BigCalendar = (props) => {
 
 const GET_SESSIONS = gql`
     query GetSessionsQuery($timeFrame: String, $timeShift: Int, $userId: ID) {
-        sessions(timeFrame: $timeFrame, timeShift: $timeShift, userId: $userId) {
+        sessions(
+            timeFrame: $timeFrame
+            timeShift: $timeShift
+            userId: $userId
+        ) {
             id
             endDatetime
             startDatetime
@@ -174,7 +178,7 @@ export default function Scheduler() {
         studentOptions: [],
         selectedStudents: [],
     };
-    const AuthUser = useSelector(({auth}) => auth);
+    const AuthUser = useSelector(({ auth }) => auth);
     const [schedulerState, setSchedulerState] = useState(defaultSchedulerState);
     const [sessionsInView, setSessionsInView] = useState([]);
     const [filteredSessionsInView, setFilteredSessionsInView] = useState([]);
@@ -272,16 +276,18 @@ export default function Scheduler() {
             label: labelFunc(object),
         }));
 
-    const isParentOrInstructorLoggedIn = AuthUser.accountType === "PARENT" || AuthUser.accountType === "INSTRUCTOR"
+    const isParentOrInstructorLoggedIn =
+        AuthUser.accountType === 'PARENT' ||
+        AuthUser.accountType === 'INSTRUCTOR';
 
-    const {data, loading, error} = useQuery(GET_SESSIONS, {
+    const { data, loading, error } = useQuery(GET_SESSIONS, {
         variables: {
             timeFrame: schedulerState.timeFrame,
             timeShift: schedulerState.timeShift,
-            ...(isParentOrInstructorLoggedIn && {userId: AuthUser.user.id})
+            ...(isParentOrInstructorLoggedIn && { userId: AuthUser.user.id }),
         },
         onCompleted: (data) => {
-            const {sessions} = data;
+            const { sessions } = data;
             const parsedBigCalendarSessions = sessions.map(
                 ({
                     id,
