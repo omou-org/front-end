@@ -80,8 +80,8 @@ export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
 };
 
 /**
- * @param {*} availabilityList 
- * @returns a string with the days from an availiability list 
+ * @param {*} availabilityList
+ * @returns a string with the days from an availiability list
  *          formatted as "Monday / Wednesday"
  */
 export const formatAvailabilityListDays = (availabilityList) => {
@@ -92,47 +92,44 @@ export const formatAvailabilityListDays = (availabilityList) => {
         dayStr += (index !== availabilityList.length - 1) ? " / " : "";
     } )
     return dayStr;
-}
+};
 
 /**
- * @param {*} availabilityList 
- * @returns a string with the hours from an availiability list 
+ * @param {*} availabilityList
+ * @returns a string with the hours from an availiability list
  *          formatted as "1:00 PM - 2:00 PM / 3:00 PM - 4:00 PM"
  */
 export const formatAvailabilityListHours = (availabilityList) => {
     let startTime;
-    let endTime
-    
+    let endTime;
+
     if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
-        startTime = moment(availabilityList[0]?.startTime, [
-            'HH:mm:ss',
-        ]).format('h:mm A');
-        endTime = moment(availabilityList[0]?.endTime, [
-            'HH:mm:ss',
-        ]).format('h:mm A');
+        startTime = moment(availabilityList[0]?.startTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
+        endTime = moment(availabilityList[0]?.endTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
 
         return `${startTime} - ${endTime}`;
     } else {
-        return availabilityList.reduce(
-            (allAvailabilites, availability, i) => {
-                const startTime = moment(availability.startTime, [
-                    'HH:mm:ss',
-                ]).format('h:mm A');
-                const endTime = moment(availability.endTime, [
-                    'HH:mm:ss',
-                ]).format('h:mm A');
+        return availabilityList.reduce((allAvailabilites, availability, i) => {
+            const startTime = moment(availability.startTime, [
+                'HH:mm:ss',
+            ]).format('h:mm A');
+            const endTime = moment(availability.endTime, ['HH:mm:ss']).format(
+                'h:mm A'
+            );
 
-                return (
-                    allAvailabilites +
-                    `${startTime} - ${endTime}${
-                        i !== availabilityList.length - 1 ? ' / ' : ''
-                    }`
-                );
-            },
-            ''
-        );
+            return (
+                allAvailabilites +
+                `${startTime} - ${endTime}${
+                    i !== availabilityList.length - 1 ? ' / ' : ''
+                }`
+            );
+        }, '');
     }
-}
+};
 
 /**
  * Pads a number to the desired length, filling with leading zeros

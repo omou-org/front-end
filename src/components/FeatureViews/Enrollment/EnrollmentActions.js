@@ -6,12 +6,8 @@ import UnenrollButton from './UnenrollButton';
 const EnrollmentActions = ({ enrollment }) => {
     const { student } = enrollment;
 
-    return ( 
-        <Grid 
-            container
-            direction='row'
-            spacing={2}
-        >
+    return (
+        <Grid container direction='row' spacing={2}>
             <Grid item>
                 <AddSessions
                     componentOption='button'
@@ -23,8 +19,7 @@ const EnrollmentActions = ({ enrollment }) => {
                 <UnenrollButton enrollment={enrollment} />
             </Grid>
         </Grid>
-    )
-
-}
+    );
+};
 
 export default EnrollmentActions;

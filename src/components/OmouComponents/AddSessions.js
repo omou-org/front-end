@@ -11,8 +11,7 @@ import Dialog from '@material-ui/core/Dialog';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import { courseToRegister, useGoToRoute } from 'utils';
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton'
-
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 /**
  * @description button/menu item to start registering for more sessions for a course.

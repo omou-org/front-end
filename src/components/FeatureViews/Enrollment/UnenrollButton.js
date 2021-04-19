@@ -30,10 +30,7 @@ export default function UnenrollButton({ enrollment }) {
 
     return (
         <>
-            <ResponsiveButton
-                onClick={openUnenrollDialog}
-                variant='outlined'
-            >
+            <ResponsiveButton onClick={openUnenrollDialog} variant='outlined'>
                 Unenroll
             </ResponsiveButton>
             <Dialog
