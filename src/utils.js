@@ -88,11 +88,9 @@ export const formatAvailabilityListDays = (availabilityList) => {
     let dayStr = '';
 
     availabilityList.forEach((availability, index) => {
-        console.log(availability.dayOfWeek)
         dayStr += capitalizeString(availability.dayOfWeek); 
         dayStr += (index !== availabilityList.length - 1) ? " / " : "";
     } )
-    console.log(dayStr)
     return dayStr;
 }
 
