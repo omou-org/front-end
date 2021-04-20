@@ -11,7 +11,7 @@ import { useIdleTimer } from 'react-idle-timer';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 const REFRESH_TOKEN = gql`
     mutation RefreshToken($token: String!) {
@@ -59,9 +59,11 @@ export default function IdleTimerPrompt() {
     };
 
     const handleLogout = useCallback(() => {
-        closeRegistrationCart();
-        dispatch(logout());
-        history.push('/login');
+        if (openIdlePrompt) {
+            closeRegistrationCart();
+            dispatch(logout());
+            history.push('/login');
+        }
     }, [dispatch, history]);
 
     useEffect(() => {
@@ -83,7 +85,7 @@ export default function IdleTimerPrompt() {
     return (
         <Dialog open={openIdlePrompt}>
             <DialogTitle disableTypography>
-                <Typography variant="h4">Are you still there?</Typography>
+                <Typography variant='h4'>Are you still there?</Typography>
             </DialogTitle>
             <DialogContent>
                 Looks like you've been idle for a while. To make sure no one
@@ -93,8 +95,8 @@ export default function IdleTimerPrompt() {
             <DialogActions>
                 <ResponsiveButton
                     onClick={handleOnPromptClose}
-                    color="primary"
-                    variant="contained"
+                    color='primary'
+                    variant='contained'
                 >
                     Yes
                 </ResponsiveButton>

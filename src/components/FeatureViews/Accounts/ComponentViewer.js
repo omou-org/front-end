@@ -102,7 +102,7 @@ const ComponentViewer = ({ inView, user, id }) => {
                 },
                 {
                     component: (
-                        <Notes ownerID={id} ownerType="account" key={7} />
+                        <Notes ownerID={id} ownerType='account' key={7} />
                     ),
                     access_permissions: [
                         USER_TYPES.receptionist,
@@ -139,15 +139,13 @@ const ComponentViewer = ({ inView, user, id }) => {
                     id: 10,
                 },
                 {
-                    component: (
-                        <UserAccessControl key={11} userID={id}>
-                            <NotificationSettings user={user} />
-                        </UserAccessControl>
-                    ),
+                    component: <NotificationSettings user={user} />,
                     access_permissions: [
                         USER_TYPES.student,
                         USER_TYPES.parent,
                         USER_TYPES.instructor,
+                        USER_TYPES.admin,
+                        USER_TYPES.receptionist,
                     ],
                     id: 11,
                 },
@@ -158,7 +156,7 @@ const ComponentViewer = ({ inView, user, id }) => {
     );
 
     return (
-        <Grid className="profile-component-container">
+        <Grid className='profile-component-container'>
             {componentsArray.find(({ id }) => id == inView)?.component}
         </Grid>
     );

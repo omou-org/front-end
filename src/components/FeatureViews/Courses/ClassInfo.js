@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { useMutation, useApolloClient, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import {
-    Typography,
+    Button,
+    fade,
     Grid,
     IconButton,
-    Button,
     InputBase,
-    fade,
-    withStyles,
     Link,
+    Typography,
+    withStyles,
 } from '@material-ui/core/';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
 import moment from 'moment';
 import gql from 'graphql-tag';
-import { USER_TYPES } from '../../../utils';
-import { fullName } from '../../../utils';
-import { GET_CLASSES } from './CourseClasses';
+import { fullName, USER_TYPES } from '../../../utils';
+import { GET_CLASS } from './CourseClass';
 
 const useStyles = makeStyles({
     courseLink: {
@@ -136,7 +134,7 @@ const ClassInfo = ({
         update: (cache, { data }) => {
             const newCourseLink = data.createCourse.course;
             const cachedCourseLink = cache.readQuery({
-                query: GET_CLASSES,
+                query: GET_CLASS,
                 variables: { id: id },
             }).course;
 
@@ -144,7 +142,7 @@ const ClassInfo = ({
                 data: {
                     course: { ...cachedCourseLink, ...newCourseLink },
                 },
-                query: GET_CLASSES,
+                query: GET_CLASS,
                 variables: { id: id },
             });
         },
@@ -195,17 +193,16 @@ const ClassInfo = ({
     };
 
     return (
-        <>
+        <Grid container item xs={12}>
             <Grid item xs={7}>
                 <Typography
                     className={classes.aboutCourseDescription}
-                    align="left"
+                    align='left'
                     style={{ marginBottom: '1em', marginTop: '2em' }}
                 >
                     {description}
                 </Typography>
             </Grid>
-
             <Grid item container>
                 <Typography style={{ fontSize: '17px' }}>
                     Course Link
@@ -215,8 +212,8 @@ const ClassInfo = ({
                         <Grid container>
                             <Grid item xs={7}>
                                 <BootstrapInput
-                                    id="courseLink"
-                                    variant="outlined"
+                                    id='courseLink'
+                                    variant='outlined'
                                     defaultValue={courseURL}
                                     style={{ width: '100%' }}
                                     InputProps={{
@@ -226,7 +223,7 @@ const ClassInfo = ({
                                 />
                                 <BootstrapInput
                                     multiline
-                                    variant="outlined"
+                                    variant='outlined'
                                     rows={4}
                                     defaultValue={courseLinkDescription}
                                     style={{ width: '100%', paddingTop: '1em' }}
@@ -241,14 +238,14 @@ const ClassInfo = ({
                                 <Button
                                     onClick={cancelUpdate}
                                     className={classes.cancelButton}
-                                    variant="outlined"
+                                    variant='outlined'
                                 >
                                     Cancel
                                 </Button>
                                 <Button
                                     onClick={updateLinkAndDescription}
                                     className={classes.updateButton}
-                                    variant="contained"
+                                    variant='contained'
                                 >
                                     Update
                                 </Button>
@@ -261,8 +258,8 @@ const ClassInfo = ({
                             <Typography className={classes.courseLink}>
                                 <Link
                                     href={courseLink}
-                                    color="inherit"
-                                    target="_blank"
+                                    color='inherit'
+                                    target='_blank'
                                 >
                                     {courseLink}
                                 </Link>
@@ -293,7 +290,7 @@ const ClassInfo = ({
                     </Grid>
                 )}
             </Grid>
-        </>
+        </Grid>
     );
 };
 

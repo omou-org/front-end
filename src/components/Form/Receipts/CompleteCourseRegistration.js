@@ -2,13 +2,13 @@ import React from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Paper, Tooltip, Typography } from '@material-ui/core';
-import AccountCard from '../FeatureViews/Search/cards/AccountCard';
+import AccountCard from '../../FeatureViews/Search/cards/AccountCard';
 import Grid from '@material-ui/core/Grid';
-import * as hooks from '../../actions/hooks';
-import Loading from '../OmouComponents/Loading';
-import { stringToColor } from '../FeatureViews/Accounts/accountUtils';
+import * as hooks from '../../../actions/hooks';
+import Loading from '../../OmouComponents/Loading';
+import { stringToColor } from '../../FeatureViews/Accounts/accountUtils';
 import Avatar from '@material-ui/core/Avatar';
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 export function CompleteCourseRegistration({
     registeredCourseForm,
@@ -94,13 +94,13 @@ export function CompleteCourseRegistration({
                     <Grid item xs={6}>
                         <Grid
                             container
-                            direction="column"
-                            justify="flex-start"
-                            alignItems="flex-start"
+                            direction='column'
+                            justify='flex-start'
+                            alignItems='flex-start'
                         >
-                            <div className="course-info">
+                            <div className='course-info'>
                                 <Grid item>
-                                    <Typography align={'left'} variant="h4">
+                                    <Typography align={'left'} variant='h4'>
                                         {course.title}
                                     </Typography>
                                 </Grid>
@@ -139,7 +139,7 @@ export function CompleteCourseRegistration({
                                     >
                                         <Tooltip
                                             title={instructor.name}
-                                            aria-label="Instructor Name"
+                                            aria-label='Instructor Name'
                                         >
                                             <Avatar
                                                 style={styles(instructor.name)}
@@ -157,9 +157,9 @@ export function CompleteCourseRegistration({
                     <Grid item xs={6}>
                         <Grid
                             container
-                            direction="column"
-                            justify="flex-end"
-                            alignItems="center"
+                            direction='column'
+                            justify='flex-end'
+                            alignItems='center'
                         >
                             <Grid item xs={8}>
                                 <AccountCard user={student} />
@@ -170,18 +170,18 @@ export function CompleteCourseRegistration({
                         <Grid container direction={'row'} justify={'flex-end'}>
                             <Grid item>
                                 <ResponsiveButton
-                                    variant="outlined"
-                                    className="button"
+                                    variant='outlined'
+                                    className='button'
                                 >
                                     Add Sessions
                                 </ResponsiveButton>
                             </Grid>
                             <Grid item>
                                 <ResponsiveButton
-                                    variant="outlined"
+                                    variant='outlined'
                                     component={NavLink}
                                     to={'/registration'}
-                                    className="button"
+                                    className='button'
                                 >
                                     Register More
                                 </ResponsiveButton>
@@ -190,8 +190,8 @@ export function CompleteCourseRegistration({
                                 <ResponsiveButton
                                     component={NavLink}
                                     to={'/registration/cart'}
-                                    variant="contained"
-                                    color="primary"
+                                    variant='contained'
+                                    color='primary'
                                     style={{ color: 'white' }}
                                 >
                                     Checkout

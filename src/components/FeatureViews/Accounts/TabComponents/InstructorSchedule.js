@@ -1,144 +1,156 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import FullCalendar from "@fullcalendar/react";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import { useQuery } from "@apollo/react-hooks";
-import gql from "graphql-tag";
-import moment from "moment";
+import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { useQuery } from '@apollo/client';
+import gql from 'graphql-tag';
+import moment from 'moment';
 
-import {handleToolTip} from "../../Scheduler/SchedulerUtils";
-import { fullName } from "utils.js";
-import {stringToColor} from "../accountUtils";
-import Loading from "components/OmouComponents/Loading";
-import { Typography } from "@material-ui/core";
+import { handleToolTip } from '../../Scheduler/SchedulerUtils';
+import { fullName } from 'utils.js';
+import { stringToColor } from '../accountUtils';
+import Loading from 'components/OmouComponents/Loading';
+import { Typography } from '@material-ui/core';
 
 const GET_INSTRUCTOR_INFO = gql`
-	query getCourses($instructorID: ID!) {
-		instructor(userId: $instructorID) {
-			accountType
-			user {
-			  firstName
-			  lastName
-			  id
-			  instructor {
-				sessionSet {
-				  endDatetime
-				  startDatetime
-				  title
-				}
-				instructoravailabilitySet {
-				  dayOfWeek
-				  endDatetime
-				  startDatetime
-				  startTime
-				  endTime
-				}
-				instructoroutofofficeSet {
-					endDatetime
-					startDatetime
-					description
-				  }
-			  }
-			}
-		  }
-	  }
-`
+    query getCourses($instructorID: ID!) {
+        instructor(userId: $instructorID) {
+            accountType
+            user {
+                firstName
+                lastName
+                id
+                instructor {
+                    sessionSet {
+                        endDatetime
+                        startDatetime
+                        title
+                    }
+                    instructoravailabilitySet {
+                        dayOfWeek
+                        endDatetime
+                        startDatetime
+                        startTime
+                        endTime
+                    }
+                    instructoroutofofficeSet {
+                        endDatetime
+                        startDatetime
+                        description
+                    }
+                }
+            }
+        }
+    }
+`;
 
 const toHours = (ms) => ms / 1000 / 60 / 60;
 
 //TODO: Refactor instructor schedule to graphQL
-const InstructorSchedule = ({instructorID}) => {
+const InstructorSchedule = ({ instructorID }) => {
+    const { loading, error, data } = useQuery(GET_INSTRUCTOR_INFO, {
+        variables: { instructorID },
+    });
 
+    if (loading) return <Loading small />;
 
-	const { loading, error, data } = useQuery(GET_INSTRUCTOR_INFO, {
-		variables: {instructorID}
-	})
+    if (error)
+        return <Typography>There was an error {error.message}</Typography>;
 
-	if (loading ) return <Loading small/>;
+    const {
+        user,
+        user: { instructor },
+    } = data.instructor;
 
-	if (error ) return  <Typography>There was an error {error.message}</Typography>;
+    const today = moment();
 
-	const { user, user : { instructor } } = data.instructor;
+    const hoursWorkedThisMonth = parseInt(
+        instructor.sessionSet.reduce((hours, session) => {
+            const start = moment(session.startDatetime);
+            const end = moment(session.endDatetime);
 
-	const today = moment();
+            // Ignore sessions in the future
+            if (today.diff(start) < 0) {
+                return hours;
+            }
+            // If session is in the same month add hours
+            else if (
+                start.month() === today.month() &&
+                start.year() === today.year()
+            ) {
+                return hours + toHours(end.diff(start));
+            } else {
+                return hours;
+            }
+        }, 0)
+    );
 
-	const hoursWorkedThisMonth = parseInt(instructor.sessionSet.reduce((hours, session) => {
-		const start = moment(session.startDatetime);
-		const end = moment(session.endDatetime);
+    const instructorBusinessHours = instructor.instructoravailabilitySet.map(
+        ({ dayOfWeek, startTime, endTime }) => ({
+            dayOfWeek: [dayOfWeek],
+            startTime,
+            endTime,
+        })
+    );
 
-		// Ignore sessions in the future
-		if (today.diff(start) < 0) {
-			return hours;
-		}
-		// If session is in the same month add hours
-		else if (start.month() === today.month() &&
-			start.year() === today.year()) {
-			return hours + toHours(end.diff(start));
-		} else {
-			return hours;
-		}
+    const teachingSessions = instructor.sessionSet.map(
+        ({ endDatetime, startDatetime, title }) => ({
+            title: title,
+            start: new Date(startDatetime),
+            end: new Date(endDatetime),
+        })
+    );
 
-	}, 0));
+    let allDayOOO = false;
+    // Out Of Office
+    const OOOEvents = instructor.instructoroutofofficeSet.map(
+        ({ startDatetime, endDatetime, description }) => {
+            let start = new Date(startDatetime);
+            let end = new Date(endDatetime);
+            let allDay = false;
 
-	const instructorBusinessHours = instructor.instructoravailabilitySet.map(({dayOfWeek, startTime, endTime}) => ({
-		dayOfWeek: [dayOfWeek],
-		startTime, 
-		endTime
-	}))
+            if (start.diff(end, 'days') >= 1) {
+                start = null;
+                allDay = true;
+                allDayOOO = true;
+            }
+            return {
+                title: description,
+                start,
+                end,
+                allDay,
+            };
+        }
+    );
 
-	const teachingSessions = instructor.sessionSet.map(({endDatetime, startDatetime, title}) => ({
-		title: title,
-		start: new Date(startDatetime),
-		end: new Date(endDatetime)
-	}));
-
-	let allDayOOO = false;
-	// Out Of Office
-	const OOOEvents = instructor.instructoroutofofficeSet.map(({startDatetime, endDatetime, description}) => {
-		let start = new Date(startDatetime);
-		let end = new Date(endDatetime);
-		let allDay = false;
-
-		if (start.diff(end, 'days') >= 1 ) {
-			start = null;
-			allDay = true;
-			allDayOOO = true;
-		}
-		return {
-			title: description,
-			start,
-			end,
-			allDay
-		}
-	});
-	
-	return (
-		<>
-			<h3 style={{float: "left"}}>
-				{hoursWorkedThisMonth} hour{hoursWorkedThisMonth !== 1 && "s"} worked this month
-			</h3>
-			<FullCalendar
-				allDaySlot={allDayOOO}
-				businessHours={instructorBusinessHours}
-				columnHeaderFormat={{weekday: "short"}}
-				defaultView="timeGridWeek"
-				eventColor={stringToColor(fullName(user) || "")}
-				eventMouseEnter={handleToolTip}
-				events={[...teachingSessions, ...OOOEvents]}
-				header={false}
-				height={337}
-				minTime="09:00:00"
-				plugins={[timeGridPlugin]}
-				slotDuration="01:00"
-			/>
-		</>
-	);
+    return (
+        <>
+            <h3 style={{ float: 'left' }}>
+                {hoursWorkedThisMonth} hour{hoursWorkedThisMonth !== 1 && 's'}{' '}
+                worked this month
+            </h3>
+            <FullCalendar
+                allDaySlot={allDayOOO}
+                businessHours={instructorBusinessHours}
+                columnHeaderFormat={{ weekday: 'short' }}
+                defaultView='timeGridWeek'
+                eventColor={stringToColor(fullName(user) || '')}
+                eventMouseEnter={handleToolTip}
+                events={[...teachingSessions, ...OOOEvents]}
+                header={false}
+                height={337}
+                minTime='09:00:00'
+                plugins={[timeGridPlugin]}
+                slotDuration='01:00'
+            />
+        </>
+    );
 };
 
 InstructorSchedule.propTypes = {
-	instructorID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-		.isRequired,
+    instructorID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+        .isRequired,
 };
 
 export default InstructorSchedule;

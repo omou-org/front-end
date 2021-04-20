@@ -1,43 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import { ThemeProvider } from '@material-ui/styles';
-import { createMuiTheme } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
-import Hidden from '@material-ui/core/Hidden';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import Toolbar from '@material-ui/core/Toolbar';
-import Divider from '@material-ui/core/Divider';
 import gql from 'graphql-tag';
-
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
-
-import BackButton from '../../OmouComponents/BackButton';
-import ChromeTabs from '../../OmouComponents/ChromeTabs';
 import TabPanel from '../../OmouComponents/TabPanel';
 import ClassInfo from './ClassInfo';
 import Announcements from './Announcements';
 import ClassEnrollmentList from './ClassEnrollmentList';
 import ClassSessionContainer from './ClassSessionContainer';
 import { useSelector } from 'react-redux';
-import { gradeLvl, USER_TYPES, fullName } from 'utils';
-import theme from '../../../theme/muiTheme';
+import { fullName, gradeLvl, USER_TYPES } from 'utils';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
-import { filterEvent } from 'actions/calendarActions';
 import { GET_STUDENTS } from './CourseManagementContainer';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import Notes from '../Notes/Notes';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
     editcoursebutton: {
-        border: '1px solid #999999',
         height: '2.25em',
         borderRadius: '0',
         width: '2.25em',
@@ -79,11 +71,11 @@ export const GET_ANNOUNCEMENTS = gql`
     }
 `;
 
-export const GET_CLASSES = gql`
+export const GET_CLASS = gql`
     query getClass($id: ID!) {
         course(courseId: $id) {
+            id
             academicLevel
-
             title
             startDate
             endDate
@@ -94,6 +86,7 @@ export const GET_CLASSES = gql`
             courseLinkUser {
                 firstName
                 lastName
+                id
             }
             courseCategory {
                 name
@@ -103,14 +96,17 @@ export const GET_CLASSES = gql`
                 dayOfWeek
                 endTime
                 startTime
+                id
             }
             instructor {
                 user {
                     firstName
                     lastName
+                    id
                 }
             }
             enrollmentSet {
+                id
                 student {
                     user {
                         firstName
@@ -126,32 +122,66 @@ export const GET_CLASSES = gql`
                         }
                         accountType
                         phoneNumber
+                        studentIdList
+                    }
+                    studentschoolinfoSet {
+                        textbook
+                        teacher
+                        name
+                        id
                     }
                     accountType
+                    userUuid
                 }
             }
             sessionSet {
                 startDatetime
                 id
             }
-
             availabilityList {
                 startTime
                 endTime
                 dayOfWeek
+                id
             }
+            courseId
         }
         enrollments(courseId: $id) {
+            id
             student {
                 user {
+                    firstName
+                    lastName
                     id
                 }
+                primaryParent {
+                    user {
+                        firstName
+                        lastName
+                        email
+                        id
+                    }
+                    accountType
+                    phoneNumber
+                }
+            }
+        }
+        announcements(courseId: $id) {
+            subject
+            id
+            body
+            createdAt
+            updatedAt
+            poster {
+                firstName
+                lastName
+                id
             }
         }
     }
 `;
 
-const CourseClasses = () => {
+const CourseClass = () => {
     const { id } = useParams();
     const classes = useStyles();
     const [index, setIndex] = useState(0);
@@ -165,6 +195,7 @@ const CourseClasses = () => {
         { label: 'Student Enrolled' },
         { label: 'Sessions' },
         { label: 'Attendance' },
+        { label: 'Notes' },
     ];
 
     const parentTabWithStudentEnrolledTabs = [
@@ -175,19 +206,12 @@ const CourseClasses = () => {
     ];
 
     const parentNostudentEnrolledTab = [{ label: 'About Course' }];
-
-    const { data, loading, error } = useQuery(GET_CLASSES, {
+    const { data, loading, error } = useQuery(GET_CLASS, {
+        fetchPolicy: 'network-only',
         variables: {
             id: id,
         },
     });
-
-    const getAnnouncements = useQuery(GET_ANNOUNCEMENTS, {
-        variables: {
-            id: id,
-        },
-    });
-
     const {
         data: studentData,
         loading: studentLoading,
@@ -197,29 +221,29 @@ const CourseClasses = () => {
         skip: accountType !== 'PARENT',
         onCompleted: () => {
             if (accountType === 'PARENT') {
-                studentData.parent.studentList.map(
-                    ({ enrollmentSet, user }) => {
-                        enrollmentSet.map(({ course }) => {
-                            if (course.id === id) {
-                                setStudentInCourse((prevState) => [
-                                    ...prevState,
-                                    `${user.firstName} ${user.lastName}`,
-                                ]);
-                            }
-                        });
+                const identifyCourseHasEnrolledStudent = ({
+                    course,
+                    student: { user },
+                }) => {
+                    const isStudentEnrolledInCurrentCourse = (courseId) =>
+                        courseId === id;
+                    if (isStudentEnrolledInCurrentCourse(course.id)) {
+                        const updateStudentsInCourseList = (prevState) => [
+                            ...prevState,
+                            `${user.firstName} ${user.lastName}`,
+                        ];
+                        setStudentInCourse(updateStudentsInCourseList);
                     }
-                );
+                };
+                studentData.parent.studentList.forEach(({ enrollmentSet }) => {
+                    enrollmentSet.forEach(identifyCourseHasEnrolledStudent);
+                });
             }
         },
     });
 
-    if (loading || getAnnouncements.loading || studentLoading)
-        return <Loading />;
-    if (error) return console.error(error);
-    if (studentError) return console.error(studentError);
-
-    if (getAnnouncements.error)
-        return console.error(getAnnouncements.error.message);
+    if (loading || studentLoading) return <Loading />;
+    if (error || studentError) return console.error(error);
 
     const {
         academicLevel,
@@ -238,15 +262,6 @@ const CourseClasses = () => {
 
     const { name: courseCategory } = data.course.courseCategory;
 
-    const abbreviatedDay = moment(startDate).format('ddd');
-    const startingTime = moment(
-        activeAvailabilityList[0].startTime,
-        'HH:mm'
-    ).format('h:mm A');
-    const endingTime = moment(
-        activeAvailabilityList[0].endTime,
-        'HH:mm'
-    ).format('h:mm A');
     const startingDate = moment(startDate).format('L');
     const endingDate = moment(endDate).format('L');
 
@@ -293,13 +308,10 @@ const CourseClasses = () => {
                 return classes.chromeTab;
         }
     };
-
     return (
         <Grid item xs={12}>
-            <Grid container justify="space-between" alignContent="center">
-                <Grid item>
-                    <BackButton />
-                </Grid>
+            <Grid container justify='space-between' alignContent='center'>
+                <Grid item />
                 <Grid item>
                     {accountType === 'PARENT' &&
                         studentInCourse.map((student, i) => (
@@ -307,15 +319,12 @@ const CourseClasses = () => {
                         ))}
                 </Grid>
             </Grid>
-            <Hidden xsDown>
-                <hr />
-            </Hidden>
             <Grid container>
                 <Grid item xs={6}>
                     <Typography
-                        align="left"
-                        className="heading"
-                        variant="h1"
+                        align='left'
+                        className='heading'
+                        variant='h1'
                         style={{ marginTop: '.65em' }}
                     >
                         {title}
@@ -331,27 +340,27 @@ const CourseClasses = () => {
                     >
                         <IconButton
                             className={classes.editcoursebutton}
-                            size="small"
+                            size='small'
                             component={Link}
-                            to={`/registration/form/course_details/${id}`}
+                            to={`/form/course_details/edit/${id}`}
                         >
                             <EditIcon />
                         </IconButton>
                     </AccessControlComponent>
                 </Grid>
             </Grid>
-            <Grid container justify="flex-start" style={{ marginTop: '2.5em' }}>
+            <Grid container justify='flex-start' style={{ marginTop: '2.5em' }}>
                 <Grid item xs={2} md={4} lg={3} xl={2}>
                     <Typography
-                        variant="body2"
-                        align="left"
+                        variant='body2'
+                        align='left'
                         className={classes.alignTitleLeft}
                     >
                         Date
                     </Typography>
                     <Typography
-                        variant="body1"
-                        align="left"
+                        variant='body1'
+                        align='left'
                         className={classes.dataFontDate}
                     >
                         {`${startingDate} - ${endingDate}`}
@@ -359,33 +368,35 @@ const CourseClasses = () => {
                 </Grid>
                 <Grid item xs={2} md={4} lg={3} xl={2}>
                     <Typography
-                        variant="body2"
-                        align="left"
+                        variant='body2'
+                        align='left'
                         className={classes.alignTitleLeft}
                     >
-                        Time
+                        Time(s)
                     </Typography>
                     <Typography
-                        variant="body1"
-                        align="left"
+                        variant='body1'
+                        align='left'
                         className={classes.dataFontDate}
                     >
-                        {`${abbreviatedDay} ${startingTime} - ${endingTime}`}
+                        <CourseAvailabilites
+                            availabilityList={activeAvailabilityList}
+                        />
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid container justify="flex-start" style={{ marginTop: '2em' }}>
+            <Grid container justify='flex-start' style={{ marginTop: '2em' }}>
                 <Grid item xs={2} md={4} lg={2} xl={2}>
                     <Typography
-                        variant="body2"
-                        align="left"
+                        variant='body2'
+                        align='left'
                         className={classes.alignTitleLeft}
                     >
                         Instructor
                     </Typography>
                     <Typography
-                        variant="body1"
-                        align="left"
+                        variant='body1'
+                        align='left'
                         className={classes.dataFontDate}
                     >
                         {fullName(data.course.instructor.user)}
@@ -393,15 +404,15 @@ const CourseClasses = () => {
                 </Grid>
                 <Grid item xs={2} md={4} lg={2} xl={2}>
                     <Typography
-                        variant="body2"
-                        align="left"
+                        variant='body2'
+                        align='left'
                         className={classes.alignTitleLeft}
                     >
                         Grade
                     </Typography>
                     <Typography
-                        variant="body1"
-                        align="left"
+                        variant='body1'
+                        align='left'
                         className={classes.dataFontDate}
                     >
                         {gradeLvl(academicLevel)}
@@ -409,15 +420,15 @@ const CourseClasses = () => {
                 </Grid>
                 <Grid item xs={2} md={4} lg={2} xl={2}>
                     <Typography
-                        variant="body2"
-                        align="left"
+                        variant='body2'
+                        align='left'
                         className={classes.alignTitleLeft}
                     >
                         Subject
                     </Typography>
                     <Typography
-                        variant="body1"
-                        align="left"
+                        variant='body1'
+                        align='left'
                         className={classes.dataFontDate}
                     >
                         {courseCategory}
@@ -425,18 +436,27 @@ const CourseClasses = () => {
                 </Grid>
             </Grid>
 
-            <Grid container style={{ marginTop: '2.5em' }}>
+            <Grid
+                container
+                style={{ marginTop: '2.5em' }}
+                direction='column'
+                spacing={2}
+            >
                 <Grid item xs={12} sm={12}>
-                    <ThemeProvider theme={theme}>
-                        <Toolbar disableGutters>
-                            <ChromeTabs
-                                className={tabSelection()}
-                                tabs={setTabsForAccountTypes(
-                                    accountType,
-                                    data.parent?.studentList,
-                                    data.enrollments
-                                )}
-                                tabStyle={{
+                    <Tabs
+                        className={tabSelection()}
+                        value={index}
+                        onChange={handleChange}
+                    >
+                        {setTabsForAccountTypes(
+                            accountType,
+                            data.parent?.studentList,
+                            data.enrollments
+                        ).map((tab) => (
+                            <Tab
+                                key={tab.label}
+                                {...tab}
+                                styles={{
                                     bgColor: '#ffffff',
                                     selectedBgColor: '#EBFAFF',
                                     color: 'rgba(102, 102, 102, 0.87)',
@@ -444,65 +464,51 @@ const CourseClasses = () => {
                                     leftValue: 0,
                                     rightValue: 0,
                                 }}
-                                tabProps={{
-                                    disableRipple: true,
-                                }}
-                                value={index}
-                                onChange={handleChange}
                             />
-                        </Toolbar>
-                        <Divider classes={{ root: classes.dividerColor }} />
-                        <Grid container>
-                            <TabPanel
-                                index={0}
-                                value={index}
-                                backgroundColor="#FFFFFF"
-                                style={{ width: '100%' }}
-                            >
-                                <ClassInfo
-                                    id={id}
-                                    courseLink={courseLink}
-                                    description={description}
-                                    courseLinkDescription={
-                                        courseLinkDescription
-                                    }
-                                    courseLinkUpdatedAt={courseLinkUpdatedAt}
-                                    courseLinkUser={courseLinkUser}
-                                />
-                            </TabPanel>
-
-                            <TabPanel index={1} value={index}>
-                                <Announcements
-                                    announcementsData={
-                                        getAnnouncements.data.announcements
-                                    }
-                                />
-                            </TabPanel>
-
-                            <TabPanel index={2} value={index}>
-                                <ClassEnrollmentList
-                                    enrollmentList={enrollmentSet}
-                                />
-                            </TabPanel>
-                            <TabPanel index={3} value={index}>
-                                <ClassSessionContainer
-                                    sessionList={sessionSet}
-                                />
-                            </TabPanel>
-
-                            <TabPanel
-                                index={4}
-                                value={index}
-                                style={{ width: '100%' }}
-                            >
-                                <AttendanceContainer />
-                            </TabPanel>
-                        </Grid>
-                    </ThemeProvider>
+                        ))}
+                    </Tabs>
                 </Grid>
+                <>
+                    <TabPanel
+                        index={0}
+                        value={index}
+                        backgroundColor='#FFFFFF'
+                        style={{ width: '100%' }}
+                    >
+                        <ClassInfo
+                            id={id}
+                            courseLink={courseLink}
+                            description={description}
+                            courseLinkDescription={courseLinkDescription}
+                            courseLinkUpdatedAt={courseLinkUpdatedAt}
+                            courseLinkUser={courseLinkUser}
+                        />
+                    </TabPanel>
+
+                    <TabPanel index={1} value={index}>
+                        <Announcements announcementsData={data.announcements} />
+                    </TabPanel>
+
+                    <TabPanel index={2} value={index}>
+                        <ClassEnrollmentList enrollmentList={enrollmentSet} />
+                    </TabPanel>
+                    <TabPanel index={3} value={index}>
+                        <ClassSessionContainer sessionList={sessionSet} />
+                    </TabPanel>
+                    <TabPanel index={4} value={index} style={{ width: '100%' }}>
+                        <AttendanceContainer />
+                    </TabPanel>
+                    <TabPanel
+                        index={5}
+                        value={index}
+                        style={{ width: '100%', marginTop: '48px' }}
+                    >
+                        <Notes ownerID={id} ownerType='course' />
+                    </TabPanel>
+                </>
             </Grid>
         </Grid>
     );
 };
 
-export default CourseClasses;
+export default CourseClass;

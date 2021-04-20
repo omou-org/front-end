@@ -1,0 +1,27 @@
+# This workflow runs prettier on each branch that makes a pull request.
+# Adds a new commit to the pull request which includes the formatting changes
+# Source https://mskelton.medium.com/auto-formatting-code-using-prettier-and-github-actions-ed458f58b7df
+
+name: Format
+
+on: [pull_request]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Format
+        run: |
+          npm install prettier
+          npm run format
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4.1.2
+        with:
+          commit_message: Apply formatting changes
+          branch: ${{ github.head_ref }}
