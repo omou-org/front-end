@@ -23,7 +23,7 @@ const AdminPortalTabs = () => {
         { label: 'tuition rates', tab_id: 2 },
         { label: 'access control', tab_id: 3 },
         { label: 'admin log', tab_id: 4 },
-        { label: 'settings', tab_id: 5 },
+        { label: 'business details', tab_id: 5 },
     ];
 
     // *** Components for each tab to be created and placed in respective tabContent property in adminPortalTabs array ***
@@ -34,7 +34,7 @@ const AdminPortalTabs = () => {
         2: { content: 'tuition content' },
         3: { content: 'access control content' },
         4: { content: 'admin log content' },
-        5: { content: 'settings content' },
+        5: { content: 'business details content' },
     };
 
     return (
