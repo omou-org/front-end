@@ -4,6 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useFormState } from 'react-final-form';
 import React from 'react';
 import { TimePicker } from './Fields';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const CourseAvailabilityField = ({ count }) => {
     const { values } = useFormState();
@@ -32,11 +33,11 @@ const CourseAvailabilityField = ({ count }) => {
             <Grid item xs={4}>
                 <TimePicker
                     name={`startTime-${count}`}
-                    label='Start Time'
                     required={count === 1}
                     value={
                         values[`startTime-${count}`] ||
-                        values.dayAndTime[`startTime-${count}`]
+                        values.dayAndTime[`startTime-${count}`] ||
+                        null
                     }
                     emptyLabel='Start Time'
                 />
@@ -44,14 +45,17 @@ const CourseAvailabilityField = ({ count }) => {
             <Grid item xs={4}>
                 <TimePicker
                     name={`endTime-${count}`}
-                    label='End Time'
                     required={count === 1}
                     value={
                         values[`endTime-${count}`] ||
-                        values.dayAndTime[`endTime-${count}`]
+                        values.dayAndTime[`endTime-${count}`] ||
+                        null
                     }
                     emptyLabel='End Time'
                 />
+            </Grid>
+            <Grid item xs={4}>
+                <CancelIcon /> 
             </Grid>
         </Grid>
     );
