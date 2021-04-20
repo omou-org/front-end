@@ -6,6 +6,8 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import { SchedulerContext } from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { fullName } from '../../../utils';
 import { useHistory } from 'react-router-dom';
@@ -38,7 +40,7 @@ const EventPopoverWrapper = ({ children, popover }) => {
     const history = useHistory();
 
     const handleClick = () => {
-        history.push(`/scheduler/session/${popover.props.session.id}`);
+        // history.push(`/scheduler/session/${popover.props.session.id}`);
     };
 
     const handlePopoverOpen = (event) => {
@@ -57,12 +59,22 @@ const EventPopoverWrapper = ({ children, popover }) => {
                 aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup='true'
                 onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}
+                // onMouseLeave={handlePopoverClose}
                 onClick={handleClick}
             >
                 {children}
             </div>
-            <Popover
+            <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handlePopoverClose}
+      >
+        <MenuItem onClick={handlePopoverClose}>Profile</MenuItem>
+        <MenuItem onClick={handlePopoverClose}>My account</MenuItem>
+      </Menu>
+            {/* <Popover
                 id='mouse-over-popover'
                 open={open}
                 anchorEl={anchorEl}
@@ -79,7 +91,7 @@ const EventPopoverWrapper = ({ children, popover }) => {
                 disableRestoreFocus
             >
                 {popover}
-            </Popover>
+            </Popover> */}
         </>
     );
 };

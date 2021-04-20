@@ -1,6 +1,9 @@
 import moment from 'moment';
+import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Face, Schedule } from '@material-ui/icons';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import { Face, Schedule, Create, Delete } from '@material-ui/icons';
 import { fullName } from '../../../utils';
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -29,6 +32,15 @@ export const SessionPopover = ({
 
     const timeText = (time) => moment(time).format('h:mma');
     return (
+            <Grid container>
+                    <Grid item xs={12} justify='flex-start'>
+    <Button>
+        <Create onClick={() => console.log('lol')}/>
+    </Button>
+    <IconButton>
+        <Delete />
+    </IconButton>
+    </Grid>
         <div className={classes.sessionPopover}>
             <Typography variant='h3'>{title}</Typography>
             <div className={classes.sessionInfo}>
@@ -42,5 +54,6 @@ export const SessionPopover = ({
                 <Typography variant='body1'>{fullName(instructor)}</Typography>
             </div>
         </div>
+            </Grid>
     );
 };
