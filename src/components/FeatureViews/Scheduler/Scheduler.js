@@ -40,7 +40,7 @@ const EventPopoverWrapper = ({ children, popover }) => {
     const history = useHistory();
 
     const handleClick = () => {
-        // history.push(`/scheduler/session/${popover.props.session.id}`);
+        history.push(`/scheduler/session/${popover.props.session.id}`);
     };
 
     const handlePopoverOpen = (event) => {
@@ -60,7 +60,6 @@ const EventPopoverWrapper = ({ children, popover }) => {
                 aria-haspopup='true'
                 onMouseEnter={handlePopoverOpen}
                 // onMouseLeave={handlePopoverClose}
-                onClick={handleClick}
             >
                 {children}
             </div>
@@ -71,27 +70,9 @@ const EventPopoverWrapper = ({ children, popover }) => {
         open={Boolean(anchorEl)}
         onClose={handlePopoverClose}
       >
-        <MenuItem onClick={handlePopoverClose}>Profile</MenuItem>
-        <MenuItem onClick={handlePopoverClose}>My account</MenuItem>
+        <MenuItem onClick={handleClick}>Edit This Session</MenuItem>
+        <MenuItem onClick={handlePopoverClose}>Edit All Sessions</MenuItem>
       </Menu>
-            {/* <Popover
-                id='mouse-over-popover'
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handlePopoverClose}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                }}
-                transformOrigin={{
-                    vertical: 'center',
-                    horizontal: 'left',
-                }}
-                className={classes.popover}
-                disableRestoreFocus
-            >
-                {popover}
-            </Popover> */}
         </>
     );
 };

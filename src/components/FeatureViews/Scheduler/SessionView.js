@@ -4,7 +4,7 @@ import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
-import { Tooltip, Typography, withStyles } from '@material-ui/core';
+import { Tooltip, Typography, withStyles, makeStyles, Button } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
@@ -16,6 +16,20 @@ import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { RescheduleBtn } from './RescheduleBtn';
+
+const useStyles = makeStyles((theme) => ({
+    current_session: {
+      fontFamily: 'Roboto',
+      fontStyle: 'normal',
+      fontWeight: 500,
+      lineHeight: '1em',
+      color: '#1F82A1'
+    },
+    course_icon: {
+        width: '.75em',
+        height: '.75em'
+    },
+  }));
 
 const StyledMenu = withStyles({
     paper: {
@@ -102,6 +116,7 @@ const GET_SESSION = gql`
 
 const SessionView = () => {
     const { session_id } = useParams();
+    const classes = useStyles();
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
@@ -166,6 +181,11 @@ const SessionView = () => {
             </Grid>
           </Grid>
         </Grid> */}
+        <Grid container>
+        <Grid align='left' className='session-view-details' item={12}>
+            <Typography variant='h4' className={classes.current_session}>Current Sessions:</Typography>
+        </Grid>
+        </Grid>
                 <Grid
                     align='left'
                     className='session-view-details'
@@ -174,46 +194,28 @@ const SessionView = () => {
                     spacing={2}
                     xs={6}
                 >
-                    <Grid item xs={6}>
+                    <Grid item xs={2}>
                         <Typography variant='h5'>Subject</Typography>
                         <Typography>{courseCategory.name}</Typography>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant='h5'>Room</Typography>
-                        <Typography>{room || 'TBA'}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={2}>
                         <Typography variant='h5'>
                             Instructor
                             {confirmed ? (
-                                <ConfirmIcon className='confirmed course-icon' />
+                                <ConfirmIcon className={`confirmed course-icon ${classes.course_icon}`} />
                             ) : (
-                                <UnconfirmIcon className='unconfirmed course-icon' />
+                                <UnconfirmIcon className={`unconfirmed course-icon ${classes.course_icon}`} />
                             )}
                         </Typography>
                         {course && (
-                            <NavLink
-                                style={{ textDecoration: 'none' }}
-                                to={`/accounts/instructor/${instructor.user.id}`}
-                            >
-                                <Tooltip
-                                    aria-label='Instructor Name'
-                                    title={fullName(instructor.user)}
-                                >
-                                    <Avatar
-                                        style={styles(
-                                            fullName(instructor.user)
-                                        )}
-                                    >
-                                        {fullName(instructor.user)
-                                            .match(/\b(\w)/g)
-                                            .join('')}
-                                    </Avatar>
-                                </Tooltip>
-                            </NavLink>
+                        // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
+                                    <Typography>
+                                        {fullName(instructor.user)}
+                                    </Typography>
+                        // </NavLink>
                         )}
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={8}>
                         <Typography align='left' variant='h5'>
                             Students Enrolled
                         </Typography>
@@ -252,17 +254,14 @@ const SessionView = () => {
                         </Grid>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant='h5'>Day</Typography>
-                        <Typography>{dayOfWeek}</Typography>
+                        <Typography variant='h5'>Date Time</Typography>
                         <Typography>
-                            {new Date(startDatetime).toLocaleDateString()}
+                            {`${dayOfWeek} ${new Date(startDatetime).toLocaleDateString()} ${startSessionTime + ' - ' + endSessionTime}`}
                         </Typography>
                     </Grid>
                     <Grid item xs={6}>
-                        <Typography variant='h5'>Time</Typography>
-                        <Typography>
-                            {startSessionTime + ' - ' + endSessionTime}
-                        </Typography>
+                        <Typography variant='h5'>Room</Typography>
+                        <Typography>{room || 'TBA'}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item xs={6}>
@@ -276,7 +275,7 @@ const SessionView = () => {
                         to={`/courses/class/${course_id}`}
                         variant='outlined'
                     >
-                        Course Page
+                        Cancel
                     </ResponsiveButton>
                 </Grid>
                 <Grid item>
@@ -287,7 +286,9 @@ const SessionView = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <RescheduleBtn />
+                        <Button>
+                            Save
+                        </Button>
                     </AccessControlComponent>
                 </Grid>
             </Grid>
