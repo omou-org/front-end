@@ -4,10 +4,18 @@ import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
-import { Tooltip, Typography, withStyles, makeStyles, Button } from '@material-ui/core';
+import {
+    Tooltip,
+    Typography,
+    withStyles,
+    makeStyles,
+    Button,
+    Divider,
+} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
+import { darkBlue, slateGrey } from '../../../theme/muiTheme';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Menu from '@material-ui/core/Menu';
@@ -16,7 +24,6 @@ import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { RescheduleBtn } from './RescheduleBtn';
-
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -27,12 +34,33 @@ import InputBase from '@material-ui/core/InputBase';
 import 'date-fns';
 import { FormControl } from '@material-ui/core';
 import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-
+const useStyles = makeStyles((theme) => ({
+    current_session: {
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontWeight: 500,
+        lineHeight: '1em',
+    },
+    course_icon: {
+        width: '.75em',
+        height: '.75em',
+    },
+    divider: {
+        backgroundColor: 'black',
+    },
+    new_sessions_typography: {
+        color: darkBlue,
+        fontWeight: 500,
+        lineHeight: '1em',
+        fontSize: '1rem',
+        float: 'left',
+    },
+}));
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -94,7 +122,6 @@ const CourseFilterDropdown = ({
             value: option.value,
             label: option.label,
         }),
-
     }[filterKey];
 
     const ChosenFiltersOption = filterList.map(filterOptionsMapper);
@@ -134,7 +161,9 @@ const CourseFilterDropdown = ({
                                 key={option.value}
                                 value={option.value}
                                 className={classes.menuSelect}
-                                ListItemClasses={{ selected: classes.menuSelected }}
+                                ListItemClasses={{
+                                    selected: classes.menuSelected,
+                                }}
                             >
                                 {filterKey === 'students' ? (
                                     <UserAvatarCircle label={option.label} />
@@ -147,9 +176,7 @@ const CourseFilterDropdown = ({
                     </Select>
                 </FormControl>
             </Grid>
-            <Grid item>
-                
-            </Grid>
+            <Grid item></Grid>
             <Grid item>
                 <KeyboardDatePicker />
             </Grid>
@@ -162,20 +189,6 @@ const CourseFilterDropdown = ({
         </Grid>
     );
 };
-
-const useStyles = makeStyles((theme) => ({
-    current_session: {
-      fontFamily: 'Roboto',
-      fontStyle: 'normal',
-      fontWeight: 500,
-      lineHeight: '1em',
-      color: '#1F82A1'
-    },
-    course_icon: {
-        width: '.75em',
-        height: '.75em'
-    },
-  }));
 
 const StyledMenu = withStyles({
     paper: {
@@ -302,6 +315,7 @@ const SessionView = () => {
                 container
                 direction='row'
                 spacing={1}
+                style={{ marginBottom: '2em' }}
             >
                 <Grid item sm={12}>
                     <Typography
@@ -328,11 +342,20 @@ const SessionView = () => {
             </Grid>
           </Grid>
         </Grid> */}
-        <Grid container>
-        <Grid align='left' className='session-view-details' item={12}>
-            <Typography variant='h4' className={classes.current_session}>Current Sessions:</Typography>
-        </Grid>
-        </Grid>
+                <Grid container>
+                    <Grid
+                        align='left'
+                        className='session-view-details'
+                        item={12}
+                    >
+                        <Typography
+                            variant='h4'
+                            className={classes.current_session}
+                        >
+                            Current Sessions:
+                        </Typography>
+                    </Grid>
+                </Grid>
                 <Grid
                     align='left'
                     className='session-view-details'
@@ -349,17 +372,19 @@ const SessionView = () => {
                         <Typography variant='h5'>
                             Instructor
                             {confirmed ? (
-                                <ConfirmIcon className={`confirmed course-icon ${classes.course_icon}`} />
+                                <ConfirmIcon
+                                    className={`confirmed course-icon ${classes.course_icon}`}
+                                />
                             ) : (
-                                <UnconfirmIcon className={`unconfirmed course-icon ${classes.course_icon}`} />
+                                <UnconfirmIcon
+                                    className={`unconfirmed course-icon ${classes.course_icon}`}
+                                />
                             )}
                         </Typography>
                         {course && (
-                        // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
-                                    <Typography>
-                                        {fullName(instructor.user)}
-                                    </Typography>
-                        // </NavLink>
+                            // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
+                            <Typography>{fullName(instructor.user)}</Typography>
+                            // </NavLink>
                         )}
                     </Grid>
                     <Grid item xs={8}>
@@ -403,7 +428,11 @@ const SessionView = () => {
                     <Grid item xs={6}>
                         <Typography variant='h5'>Date Time</Typography>
                         <Typography>
-                            {`${dayOfWeek} ${new Date(startDatetime).toLocaleDateString()} ${startSessionTime + ' - ' + endSessionTime}`}
+                            {`${dayOfWeek} ${new Date(
+                                startDatetime
+                            ).toLocaleDateString()} ${
+                                startSessionTime + ' - ' + endSessionTime
+                            }`}
                         </Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -415,8 +444,38 @@ const SessionView = () => {
                     {/* <InstructorSchedule instructorID={instructor_id} /> */}
                 </Grid>
             </Grid>
-            <Grid container direction='row'>
-                <Grid item>
+            <Divider className={classes.divider} />
+            <Grid container direction='row' style={{ marginTop: '2em' }}>
+                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
+                    <Typography className={classes.new_sessions_typography}>
+                        New Sessions:
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
+                    <Typography
+                        style={{
+                            color: slateGrey,
+                            float: 'left',
+                            fontWeight: 500,
+                        }}
+                    >
+                        DAY(S) & TIME
+                    </Typography>
+                </Grid>
+                <Grid container style={{ marginBottom: '' }}>
+                <Grid item xs={2}>
+                    <KeyboardDatePicker style={{ float: 'left'}} />
+                    <span>at</span>
+                </Grid>
+                <Grid item xs={2}>
+                    <KeyboardTimePicker style={{ float: 'left'}}/>
+                    <span>-</span> 
+                </Grid>
+                <Grid item xs={2}>
+                    <KeyboardTimePicker style={{ float: 'left'}}/>
+                </Grid>
+                </Grid>
+                {/* <Grid item>
                     <CourseFilterDropdown
                         filterList={gradeOptions}
                         initialValue='All Grades'
@@ -425,19 +484,17 @@ const SessionView = () => {
                         filterKey='grades'
                     />
                 </Grid>
-                <Grid item>
-                </Grid>
-                <Grid item>
-                </Grid>
+                <Grid item></Grid>
+                <Grid item></Grid> */}
             </Grid>
-            <Grid container direction='row'>
+            {/* <Grid container direction='row'>
                 <Grid item>
                 </Grid>
                 <Grid item>
                 </Grid>
                 <Grid item>
                 </Grid>
-            </Grid>
+            </Grid> */}
 
             <Grid container direction='row' justify='flex-end' spacing={1}>
                 <Grid item>
@@ -457,9 +514,7 @@ const SessionView = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <Button>
-                            Save
-                        </Button>
+                        <Button>Save</Button>
                     </AccessControlComponent>
                 </Grid>
             </Grid>
