@@ -348,11 +348,6 @@ const SessionView = () => {
                     <Grid item xs={2}>
                         <Typography variant='h5'>
                             Instructor
-                            {confirmed ? (
-                                <ConfirmIcon className={`confirmed course-icon ${classes.course_icon}`} />
-                            ) : (
-                                <UnconfirmIcon className={`unconfirmed course-icon ${classes.course_icon}`} />
-                            )}
                         </Typography>
                         {course && (
                         // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
@@ -415,39 +410,24 @@ const SessionView = () => {
                     {/* <InstructorSchedule instructorID={instructor_id} /> */}
                 </Grid>
             </Grid>
-            <Grid container direction='row'>
-                <Grid item>
-                    <CourseFilterDropdown
-                        filterList={gradeOptions}
-                        initialValue='All Grades'
-                        setState={setGradeFilterValue}
-                        filter={gradeFilterValue}
-                        filterKey='grades'
-                    />
-                </Grid>
-                <Grid item>
-                </Grid>
-                <Grid item>
-                </Grid>
-            </Grid>
-            <Grid container direction='row'>
-                <Grid item>
-                </Grid>
-                <Grid item>
-                </Grid>
-                <Grid item>
-                </Grid>
-            </Grid>
 
             <Grid container direction='row' justify='flex-end' spacing={1}>
                 <Grid item>
-                    <ResponsiveButton
-                        component={NavLink}
-                        to={`/courses/class/${course_id}`}
-                        variant='outlined'
+                    <AccessControlComponent
+                        permittedAccountTypes={[
+                            USER_TYPES.admin,
+                            USER_TYPES.receptionist,
+                            USER_TYPES.instructor,
+                        ]}
                     >
-                        Cancel
-                    </ResponsiveButton>
+                        <ResponsiveButton
+                            component={NavLink}
+                            to={`/scheduler/session/${session_id}/singlesession`}
+                            variant='outlined'
+                        >
+                            Edit this session
+                        </ResponsiveButton>
+                    </AccessControlComponent>
                 </Grid>
                 <Grid item>
                     <AccessControlComponent
@@ -457,9 +437,13 @@ const SessionView = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <Button>
-                            Save
-                        </Button>
+                        <ResponsiveButton
+                            component={NavLink}
+                            to={`/scheduler/session/${session_id}/singlesession`}
+                            variant='outlined'
+                        >
+                            edit all sessions
+                        </ResponsiveButton>
                     </AccessControlComponent>
                 </Grid>
             </Grid>
