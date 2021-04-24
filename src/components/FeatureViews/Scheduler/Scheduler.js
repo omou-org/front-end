@@ -37,10 +37,6 @@ const EventPopoverWrapper = ({ children, popover }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const history = useHistory();
 
-    const handleClick = () => {
-        history.push(`/scheduler/session/${popover.props.session.id}`);
-    };
-
     const handlePopoverOpen = (event) => {
         setAnchorEl(event.target);
     };

@@ -62,7 +62,7 @@ export const SessionPopover = ({
     };
 
     const handleClick = () => {
-        history.push(`/scheduler/session/${id}`);
+        history.push(`/scheduler/session/${id}/singlesession`);
     };
 
     const timeText = (time) => moment(time).format('h:mma');

@@ -273,7 +273,7 @@ const GET_SESSION = gql`
     }
 `;
 
-const SessionView = () => {
+const SessionViewEdit = () => {
     const { session_id } = useParams();
     const classes = useStyles();
     const [gradeFilterValue, setGradeFilterValue] = useState('');
@@ -530,4 +530,4 @@ const SessionView = () => {
     );
 };
 
-export default SessionView;
+export default SessionViewEdit;
