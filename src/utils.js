@@ -1,6 +1,6 @@
-import {instance} from 'actions/apiActions';
-import {useCallback, useState} from 'react';
-import {useHistory} from 'react-router-dom';
+import { instance } from 'actions/apiActions';
+import { useCallback, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 
 export const USER_TYPES = {
