@@ -1,54 +1,228 @@
 import React, { useState } from 'react';
-// Material UI Imports
 import Grid from '@material-ui/core/Grid';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-import Loading from 'components/OmouComponents/Loading';
+import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/client';
-import { FormControl, Typography } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import { DatePicker } from '@material-ui/pickers/DatePicker/DatePicker';
-import { TimePicker } from '@material-ui/pickers/TimePicker/TimePicker';
-import SearchSelect from 'react-select';
-import InputLabel from '@material-ui/core/InputLabel';
+import { useQuery } from '@apollo/client';
+import {
+    Tooltip,
+    Typography,
+    withStyles,
+    makeStyles,
+    Button,
+    Divider,
+} from '@material-ui/core';
+import Loading from '../../OmouComponents/Loading';
+import Avatar from '@material-ui/core/Avatar';
+import { stringToColor } from '../Accounts/accountUtils';
+import { darkBlue, slateGrey } from '../../../theme/muiTheme';
+import ConfirmIcon from '@material-ui/icons/CheckCircle';
+import UnconfirmIcon from '@material-ui/icons/Cancel';
+import Menu from '@material-ui/core/Menu';
+import { USER_TYPES } from '../../../utils';
+import moment from 'moment';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
+import { RescheduleBtn } from './RescheduleBtn';
+
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import './scheduler.scss';
-import GET_SESSIONS from '../Enrollment/EnrollmentView';
+import { StudentCourseLabel, UserAvatarCircle } from '../Courses/StudentBadge';
+import { fullName, gradeOptions } from 'utils';
+import InputBase from '@material-ui/core/InputBase';
 
-import { fullName } from '../../../utils';
+import 'date-fns';
+import { FormControl } from '@material-ui/core';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
 
-import moment from 'moment';
+const useStyles = makeStyles((theme) => ({
+    current_session: {
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontWeight: 500,
+        lineHeight: '1em',
+    },
+    course_icon: {
+        width: '.75em',
+        height: '.75em',
+    },
+    divider: {
+        backgroundColor: 'black',
+    },
+    new_sessions_typography: {
+        color: darkBlue,
+        fontWeight: 500,
+        lineHeight: '1em',
+        fontSize: '1rem',
+        float: 'left',
+    },
+}));
 
-const GET_CATEGORIES = gql`
-    query EditSessionCategoriesQuery {
-        courseCategories {
-            id
-            name
-        }
-    }
-`;
+export const BootstrapInput = withStyles((theme) => ({
+    root: {
+        'label + &': {
+            marginTop: theme.spacing(3),
+        },
+    },
+    input: {
+        borderRadius: 4,
+        position: 'relative',
+        backgroundColor: theme.palette.background.paper,
+        border: '1px solid #43B5D9',
+        fontSize: 16,
+        padding: '6px 26px 6px 12px',
+        transition: theme.transitions.create(['border-color', 'box-shadow']),
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+        '&:focus': {
+            borderRadius: 4,
+            borderColor: '#80bdff',
+            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+        },
+    },
+}))(InputBase);
 
-const GET_INSTRUCTORS = gql`
-    query EditSessionCategoriesQuery {
-        instructors {
-            user {
-                firstName
-                id
-                lastName
-                email
-            }
-        }
-    }
-`;
+const CourseFilterDropdown = ({
+    initialValue,
+    filterList,
+    setState,
+    filter,
+    filterKey,
+}) => {
+    const classes = useStyles();
+    const handleChange = (event) => setState(event.target.value);
+    const filterOptionsMapper = {
+        instructors: (option) => ({
+            value: option.instructor.user.id,
+            label: fullName(option.instructor.user),
+        }),
+        subjects: (option) => ({
+            value: option.courseCategory.id,
+            label: option.courseCategory.name,
+        }),
+        grades: (option) => ({
+            value: option.value.toUpperCase(),
+            label: option.label,
+        }),
+        students: (option) => ({
+            value: option.value,
+            label: option.label,
+        }),
+    }[filterKey];
+
+    const ChosenFiltersOption = filterList.map(filterOptionsMapper);
+    return (
+        <Grid container>
+            <Grid item>
+                <FormControl className={classes.margin}>
+                    <Select
+                        labelId='course-management-sort-tab'
+                        id='course-management-sort-tab'
+                        displayEmpty
+                        value={filter}
+                        onChange={handleChange}
+                        classes={{ select: classes.menuSelect }}
+                        input={<BootstrapInput />}
+                        MenuProps={{
+                            classes: { list: classes.dropdown },
+                            anchorOrigin: {
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            },
+                            transformOrigin: {
+                                vertical: 'top',
+                                horizontal: 'left',
+                            },
+                            getContentAnchorEl: null,
+                        }}
+                    >
+                        <MenuItem
+                            ListItemClasses={{ selected: classes.menuSelected }}
+                            value=''
+                        >
+                            {initialValue}
+                        </MenuItem>
+                        {ChosenFiltersOption.map((option) => (
+                            <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                className={classes.menuSelect}
+                                ListItemClasses={{
+                                    selected: classes.menuSelected,
+                                }}
+                            >
+                                {filterKey === 'students' ? (
+                                    <UserAvatarCircle label={option.label} />
+                                ) : (
+                                    ''
+                                )}
+                                {option.label}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item></Grid>
+            <Grid item>
+                <KeyboardDatePicker />
+            </Grid>
+            <Grid item>
+                <KeyboardTimePicker />
+            </Grid>
+            <Grid item>
+                <KeyboardTimePicker />
+            </Grid>
+        </Grid>
+    );
+};
+
+const StyledMenu = withStyles({
+    paper: {
+        border: '1px solid #d3d4d5',
+    },
+})((props) => (
+    <Menu
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+        }}
+        elevation={0}
+        getContentAnchorEl={null}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        {...props}
+    />
+));
+
+const styles = (username) => ({
+    backgroundColor: stringToColor(username),
+    color: 'white',
+    width: '3vw',
+    height: '3vw',
+    fontSize: 15,
+    marginRight: 10,
+});
 
 const GET_SESSION = gql`
-    query EditSessionViewQuery($sessionId: ID!) {
+    query SessionViewQuery($sessionId: ID!) {
         session(sessionId: $sessionId) {
             id
-            isConfirmed
             startDatetime
             title
             instructor {
@@ -61,13 +235,14 @@ const GET_SESSION = gql`
             course {
                 id
                 isConfirmed
-                title
+                room
                 availabilityList {
+                    dayOfWeek
                     startTime
                     endTime
-                    dayOfWeek
                 }
-                room
+                startDate
+                endDate
                 courseCategory {
                     id
                     name
@@ -98,562 +273,261 @@ const GET_SESSION = gql`
     }
 `;
 
-const UPDATE_COURSE = gql`
-    mutation UpdateCourse(
-        $courseTitle: String
-        $room: String
-        $courseInstructor: ID
-        $courseCategory: ID
-        $courseId: ID!
-    ) {
-        createCourse(
-            id: $courseId
-            title: $courseTitle
-            room: $room
-            courseCategory: $courseCategory
-            instructor: $courseInstructor
-        ) {
-            course {
-                id
-                title
-                availabilityList {
-                    startTime
-                    endTime
-                    dayOfWeek
-                }
-                courseCategory {
-                    id
-                    name
-                }
-                room
-                instructor {
-                    user {
-                        id
-                        firstName
-                        lastName
-                        email
-                    }
-                }
-            }
-        }
-    }
-`;
-
-const UPDATE_SESSION = gql`
-    mutation UpdateSession(
-        $sessionId: ID!
-        $sessionTitle: String
-        $sessionStartDatetime: DateTime
-        $sessionConfirmed: Boolean
-        $sessionInstructor: ID
-        $sessionEndDatetime: DateTime
-    ) {
-        createSession(
-            id: $sessionId
-            startDatetime: $sessionStartDatetime
-            isConfirmed: $sessionConfirmed
-            endDatetime: $sessionEndDatetime
-            title: $sessionTitle
-            instructor: $sessionInstructor
-        ) {
-            session {
-                id
-                startDatetime
-                isConfirmed
-                endDatetime
-                title
-                instructor {
-                    user {
-                        id
-                        firstName
-                        lastName
-                        email
-                    }
-                }
-            }
-        }
-    }
-`;
-
-const EditSessionView = () => {
-    const { course_id, session_id } = useParams();
-
-    const history = useHistory();
-    const location = useLocation();
+const SessionView = () => {
+    const { session_id } = useParams();
+    const classes = useStyles();
+    const [gradeFilterValue, setGradeFilterValue] = useState('');
+    const [sessionStartTime, setSessionsStartTime] = useState('');
+    const [sessionEndTime, setSessionsEndTime] = useState('');
+    const [sessionDate, setSessionsDate] = useState('');
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
-        onCompleted: (data) => {
-            setFromMigration(data);
-        },
     });
 
-    const {
-        data: categoriesData,
-        loading: categoriesLoading,
-        error: categoriesError,
-    } = useQuery(GET_CATEGORIES, {
-        skip: loading || error,
-    });
-
-    const {
-        data: instructorsData,
-        loading: instructorsLoading,
-        error: instructorsError,
-    } = useQuery(GET_INSTRUCTORS, {
-        skip: loading || error || categoriesLoading || categoriesError,
-    });
-
-    const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
-        update: (cache, { data }) => {
-            const newSession = data.createSession.session;
-            const existingSession = cache.readQuery({
-                query: GET_SESSION,
-                variables: {
-                    sessionId: session_id,
-                },
-            }).session;
-
-            let updatedSessions = [...existingSession];
-            const matchingIndex = updatedSessions.findIndex(
-                ({ id }) => id === session_id
-            );
-            if (matchingIndex === -1) {
-                updatedSessions = [...existingSession, newSession];
-            } else {
-                updatedSessions[matchingIndex] = newSession;
-            }
-            cache.writeQuery({
-                query: GET_SESSION,
-                data: {
-                    session: newSession,
-                },
-                variables: {
-                    sessionId: session_id,
-                },
-            });
-
-            cache.writeQuery({
-                query: GET_SESSIONS,
-                data: {
-                    sessions: updatedSessions,
-                },
-                variables: {
-                    courseId: course_id,
-                },
-            });
-        },
-    });
-
-    const [updateCourse, updateCourseResults] = useMutation(UPDATE_COURSE, {
-        update: (cache, { data }) => {
-            const newCourse = data.createCourse.course;
-            const existingCourse = cache.readQuery({
-                query: GET_SESSION,
-                variables: {
-                    courseId: course_id,
-                },
-            }).course;
-
-            cache.writeQuery({
-                query: GET_SESSION,
-                data: {
-                    course: newCourse,
-                },
-                variables: {
-                    courseId: course_id,
-                },
-            });
-        },
-    });
-
-    const [sessionFields, setSessionFields] = useState({
-        start_time: '',
-        instructor: '',
-        end_time: '',
-        room: '',
-        title: '',
-        category: '',
-        is_confirmed: '',
-        duration: '',
-        updatedDuration: '',
-    });
-
-    //Subject
-    const handleCategoryChange = (event) => {
-        setSessionFields({
-            ...sessionFields,
-            category: event,
-        });
-    };
-
-    const handleInstructorChange = (event) => {
-        setSessionFields({
-            ...sessionFields,
-            instructor: event,
-        });
-    };
-
-    //Updates room and Title
-    const handleTextChange = (field) => (event) => {
-        setSessionFields({
-            ...sessionFields,
-            [field]: event.target.value,
-        });
-    };
-
-    const handleDateChange = (date) => {
-        setSessionFields({
-            ...sessionFields,
-            start_time: date,
-        });
-    };
-
-    const handleTimeChange = (date) => {
-        setSessionFields({
-            ...sessionFields,
-            start_time: date,
-        });
-    };
-
-    const handleDurationSelect = (event) => {
-        const { start_time } = sessionFields;
-        let newEndTime = calculateEndTime(event.target.value, start_time);
-
-        setSessionFields({
-            ...sessionFields,
-            duration: event.target.value,
-            end_time: newEndTime,
-        });
-    };
-
-    const calculateEndTime = (duration, startTime) => {
-        let newEndTime;
-
-        switch (duration) {
-            case 1:
-                var addTime = moment(startTime).add(1, 'hours');
-                newEndTime = moment(addTime).utc().format();
-                break;
-            case 1.5:
-                var addTime = moment(startTime).add({ hours: 1, minutes: 30 });
-                newEndTime = moment(addTime).utc().format();
-                break;
-            case 2:
-                var addTime = moment(startTime).add(2, 'hours');
-                newEndTime = moment(addTime).utc().format();
-                break;
-            case 0.5:
-                var addTime = moment(startTime).add(30, 'minutes');
-                newEndTime = moment(addTime).utc().format();
-                break;
-            default:
-                return;
-        }
-
-        return newEndTime;
-    };
-
-    const onConfirmationChange = (event) => {
-        setSessionFields({
-            ...sessionFields,
-            is_confirmed: event.target.value,
-        });
-    };
-
-    const setFromMigration = (response) => {
-        let confirmedState;
-        let startDatetime;
-        let checkTitle;
-        let instructorValue;
-        let instructorLabel;
-        if (location.state === undefined) {
-            history.push(
-                `/scheduler/view-session/${response.session.course.id}/${response.session.id}/${response.session.course.instructor.user.id}`
-            );
-        } else {
-            switch (location.state.allOrCurrent) {
-                case 'current': {
-                    confirmedState = response.session.isConfirmed;
-                    startDatetime = response.session.startDatetime;
-                    checkTitle = response.session.title;
-                    instructorValue = response.session.instructor.user.id;
-                    instructorLabel = response.session.instructor.user;
-                    break;
-                }
-                case 'all': {
-                    confirmedState = response.session.course.isConfirmed;
-                    checkTitle = response.session.course.title;
-                    instructorValue =
-                        response.session.course.instructor.user.id;
-                    instructorLabel = response.session.course.instructor.user;
-                    break;
-                }
-            }
-
-            const startTime = moment(response.session.startDatetime).format(
-                'H'
-            );
-            const endTime = moment(response.session.endDatetime).format('H');
-
-            let durationHours = Math.abs(endTime - startTime);
-            if (durationHours === 0) {
-                durationHours = 1;
-            }
-
-            setSessionFields({
-                category: {
-                    value: response.session.course.courseCategory.id,
-                    label: response.session.course.courseCategory.name,
-                },
-                instructor: {
-                    value: instructorValue,
-                    label: fullName(instructorLabel),
-                },
-                start_time: startDatetime,
-                end_time: response.session.endDatetime,
-                room: response.session.course.room,
-                duration: durationHours,
-                title: checkTitle,
-                is_confirmed: confirmedState,
-            });
-        }
-    };
-
-    const handleUpdateSession = () => {
-        const {
-            start_time,
-            room,
-            is_confirmed,
-            instructor,
-            category,
-            duration,
-            title,
-        } = sessionFields;
-        let newUTCEndTime = calculateEndTime(duration, start_time);
-        switch (location.state.allOrCurrent) {
-            case 'current': {
-                const UTCstartDatetime = moment(start_time).utc().format();
-                updateSession({
-                    variables: {
-                        sessionId: session_id,
-                        sessionTitle: title,
-                        sessionInstructor: instructor.value,
-                        sessionStartDatetime: UTCstartDatetime,
-                        sessionEndDatetime: newUTCEndTime,
-                        sessionConfirmed: is_confirmed,
-                    },
-                });
-                break;
-            }
-            case 'all': {
-                updateCourse({
-                    variables: {
-                        courseCategoryId: course_id,
-                        courseId: course_id,
-                        courseTitle: title,
-                        courseInstructor: instructor.value,
-                        room: room,
-                    },
-                });
-            }
-        }
-        history.push(`/scheduler/session/${session_id}`);
-    };
-
-    if (loading || categoriesLoading || instructorsLoading) {
+    if (loading) {
         return <Loading />;
     }
 
-    if (error || categoriesError || instructorsError) {
+    if (error) {
         return <Typography>There's been an error!</Typography>;
     }
 
-    const categoriesList = categoriesData.courseCategories.map(
-        ({ id, name }) => ({
-            value: id,
-            label: name,
-        })
-    );
+    const {
+        course,
+        endDatetime,
+        id,
+        title,
+        instructor,
+        startDatetime,
+    } = data.session;
 
-    const instructorList = instructorsData.instructors.map((instructor) => ({
-        value: instructor.user.id,
-        label: `${fullName(instructor.user)} - ${instructor.user.email}`,
-    }));
+    var { courseCategory, enrollmentSet, courseId, room } = course;
 
-    const courseDurationOptions = [1, 1.5, 2, 0.5];
+    const confirmed = course.isConfirmed;
+    const course_id = course.id;
 
-    const course = data.session.course;
-
-    const session = data.session;
+    const dayOfWeek = moment(startDatetime).format('dddd');
+    const startSessionTime = moment(startDatetime).format('h:mm A');
+    const endSessionTime = moment(endDatetime).format('h:mm A');
 
     return (
-        <Grid container className='main-session-view'>
-            <Grid className='session-button' item></Grid>
+        <>
             <Grid
                 className='session-view'
                 container
                 direction='row'
-                spacing={2}
+                spacing={1}
+                style={{ marginBottom: '2em' }}
             >
                 <Grid item sm={12}>
-                    <TextField
-                        fullWidth
-                        onChange={handleTextChange('title')}
-                        value={sessionFields.title}
-                    />
+                    <Typography
+                        align='left'
+                        className='session-view-title'
+                        variant='h1'
+                    >
+                        {title}
+                    </Typography>
+                </Grid>
+                {/* TODO: for tutoring */}
+                {/* <Grid item sm={12}>
+          <Grid container>
+            <Grid className="course-session-status" item xs={2}>
+              {course.course_type === "tutoring" && (
+                <SessionPaymentStatusChip
+                  enrollment={
+                    enrollments[Object.keys(enrollments)[0]][course.course_id]
+                  }
+                  session={session}
+                  setPos
+                />
+              )}
+            </Grid>
+          </Grid>
+        </Grid> */}
+                <Grid container>
+                    <Grid
+                        align='left'
+                        className='session-view-details'
+                        item={12}
+                    >
+                        <Typography
+                            variant='h4'
+                            className={classes.current_session}
+                        >
+                            Current Sessions:
+                        </Typography>
+                    </Grid>
                 </Grid>
                 <Grid
                     align='left'
                     className='session-view-details'
                     container
+                    item
                     spacing={2}
                     xs={6}
                 >
-                    {location.state.allOrCurrent === 'all' && (
-                        <Grid item xs={6}>
-                            <Typography variant='h5'> Subject </Typography>
-                            <SearchSelect
-                                className='search-options'
-                                isClearable
-                                onChange={handleCategoryChange}
-                                options={categoriesList}
-                                placeholder='Choose a Category'
-                                value={sessionFields.category}
-                            />
-                        </Grid>
-                    )}
-                    <Grid item xs={6}>
-                        <Typography variant='h5'> Room</Typography>
-                        <TextField
-                            onChange={handleTextChange('room')}
-                            value={sessionFields.room}
-                        />
+                    <Grid item xs={2}>
+                        <Typography variant='h5'>Subject</Typography>
+                        <Typography>{courseCategory.name}</Typography>
                     </Grid>
-
-                    <Grid item xs={12}>
-                        <Typography variant='h5'> Instructor </Typography>
-                        <SearchSelect
-                            onChange={handleInstructorChange}
-                            options={instructorList}
-                            placeholder='Choose an Instructor'
-                            value={sessionFields.instructor}
-                        />
-                        <EditCurrentSessionField>
-                            <FormControl
-                                style={{
-                                    marginTop: '20px',
-                                    marginBottom: '10px',
-                                }}
-                            >
-                                <InputLabel>
-                                    Is instructor confirmed?
-                                </InputLabel>
-                                <Select
-                                    onChange={onConfirmationChange}
-                                    value={sessionFields.is_confirmed}
-                                >
-                                    <MenuItem value>
-                                        Yes, Instructor Confirmed.
-                                    </MenuItem>
-                                    <MenuItem value={false}>
-                                        No, Instructor is NOT Confirmed.
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-                        </EditCurrentSessionField>
+                    <Grid item xs={2}>
+                        <Typography variant='h5'>
+                            Instructor
+                            {confirmed ? (
+                                <ConfirmIcon
+                                    className={`confirmed course-icon ${classes.course_icon}`}
+                                />
+                            ) : (
+                                <UnconfirmIcon
+                                    className={`unconfirmed course-icon ${classes.course_icon}`}
+                                />
+                            )}
+                        </Typography>
+                        {course && (
+                            // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
+                            <Typography>{fullName(instructor.user)}</Typography>
+                            // </NavLink>
+                        )}
                     </Grid>
-                    <EditCurrentSessionField>
-                        <>
-                            <Grid item xs={6}>
-                                <Typography variant='h5'> Date</Typography>
-                                <DatePicker
-                                    inputVariant='outlined'
-                                    onChange={handleDateChange}
-                                    value={sessionFields.start_time}
-                                />
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <Typography variant='h5'>
-                                    {' '}
-                                    Start Time
-                                </Typography>
-                                <TimePicker
-                                    inputVariant='outlined'
-                                    onChange={handleTimeChange}
-                                    value={sessionFields.start_time}
-                                />
-                            </Grid>
-
-                            <Grid item xs={6}>
-                                <Typography variant='h5'> Duration </Typography>
-                                <Select
-                                    onChange={handleDurationSelect}
-                                    value={sessionFields.duration}
-                                >
-                                    {courseDurationOptions.map(
-                                        (duration, index) => (
-                                            <MenuItem
-                                                key={index}
-                                                value={duration}
+                    <Grid item xs={8}>
+                        <Typography align='left' variant='h5'>
+                            Students Enrolled
+                        </Typography>
+                        <Grid container direction='row'>
+                            {enrollmentSet.length > 0 ? (
+                                enrollmentSet.map((student) => (
+                                    <NavLink
+                                        key={student.student.user.id}
+                                        style={{ textDecoration: 'none' }}
+                                        to={`/accounts/student/${student.student.user.id}/${course_id}`}
+                                    >
+                                        <Tooltip
+                                            title={fullName(
+                                                student.student.user
+                                            )}
+                                        >
+                                            <Avatar
+                                                style={styles(
+                                                    fullName(
+                                                        student.student.user
+                                                    )
+                                                )}
                                             >
-                                                {`${duration} hour(s)`}
-                                            </MenuItem>
-                                        )
-                                    )}
-                                </Select>
-                            </Grid>
-                        </>
-                    </EditCurrentSessionField>
-                </Grid>
-            </Grid>
-
-            <Grid
-                className='session-detail-action-control'
-                container
-                direction='row'
-                justify='flex-end'
-            >
-                <Grid item>
-                    <Grid container>
-                        {/* TODO: Update InstructorConflictCheck */}
-                        {/* <InstructorConflictCheck
-                end={sessionFields.end_time}
-                eventID={
-                  editSelection === EDIT_CURRENT_SESSION
-                    ? session.id
-                    : course.course_id
-                }
-                instructorID={sessionFields.instructor.id}
-                start={course.startTime}
-                type={
-                  editSelection === EDIT_CURRENT_SESSION ? "session" : "course"
-                }
-                onSubmit={updateSession}
-              > */}
-                        <Grid item md={6}>
-                            <ResponsiveButton
-                                className='button'
-                                color='secondary'
-                                variant='outlined'
-                                onClick={handleUpdateSession}
-                            >
-                                Save
-                            </ResponsiveButton>
+                                                {fullName(student.student.user)
+                                                    .match(/\b(\w)/g)
+                                                    .join('')}
+                                            </Avatar>
+                                        </Tooltip>
+                                    </NavLink>
+                                ))
+                            ) : (
+                                <Typography variant='body'>
+                                    No students enrolled yet.
+                                </Typography>
+                            )}
                         </Grid>
-                        {/* </InstructorConflictCheck> */}
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant='h5'>Date Time</Typography>
+                        <Typography>
+                            {`${dayOfWeek} ${new Date(
+                                startDatetime
+                            ).toLocaleDateString()} ${
+                                startSessionTime + ' - ' + endSessionTime
+                            }`}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant='h5'>Room</Typography>
+                        <Typography>{room || 'TBA'}</Typography>
                     </Grid>
                 </Grid>
+                <Grid item xs={6}>
+                    {/* <InstructorSchedule instructorID={instructor_id} /> */}
+                </Grid>
             </Grid>
-        </Grid>
+            <Divider className={classes.divider} />
+            <Grid container direction='row' style={{ marginTop: '2em' }}>
+                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
+                    <Typography className={classes.new_sessions_typography}>
+                        New Sessions:
+                    </Typography>
+                </Grid>
+                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
+                    <Typography
+                        style={{
+                            color: slateGrey,
+                            float: 'left',
+                            fontWeight: 500,
+                        }}
+                    >
+                        DAY(S) & TIME
+                    </Typography>
+                </Grid>
+                <Grid container style={{ marginBottom: '2.8125em' }}>
+                <Grid item xs={2}>
+                    <KeyboardDatePicker style={{ float: 'left'}} />
+                    <span>at</span>
+                </Grid>
+                <Grid item xs={2}>
+                    <KeyboardTimePicker style={{ float: 'left'}} />
+                    <span>-</span> 
+                </Grid>
+                <Grid item xs={2}>
+                    <KeyboardTimePicker style={{ float: 'left'}} />
+                </Grid>
+                </Grid>
+                <Grid container>
+                    <Grid item xs={2}>
+                        
+                    </Grid>
+                </Grid>
+                {/* <Grid item>
+                    <CourseFilterDropdown
+                        filterList={gradeOptions}
+                        initialValue='All Grades'
+                        setState={setGradeFilterValue}
+                        filter={gradeFilterValue}
+                        filterKey='grades'
+                    />
+                </Grid>
+                <Grid item></Grid>
+                <Grid item></Grid> */}
+            </Grid>
+            {/* <Grid container direction='row'>
+                <Grid item>
+                </Grid>
+                <Grid item>
+                </Grid>
+                <Grid item>
+                </Grid>
+            </Grid> */}
+
+            <Grid container direction='row' justify='flex-end' spacing={1}>
+                <Grid item>
+                    <ResponsiveButton
+                        component={NavLink}
+                        to={`/courses/class/${course_id}`}
+                        variant='outlined'
+                    >
+                        Cancel
+                    </ResponsiveButton>
+                </Grid>
+                <Grid item>
+                    <AccessControlComponent
+                        permittedAccountTypes={[
+                            USER_TYPES.admin,
+                            USER_TYPES.receptionist,
+                            USER_TYPES.instructor,
+                        ]}
+                    >
+                        <Button>Save</Button>
+                    </AccessControlComponent>
+                </Grid>
+            </Grid>
+        </>
     );
 };
 
-const EditCurrentSessionField = ({ children }) => {
-    const location = useLocation();
-    if (location.state.allOrCurrent === 'current') return children;
-    else return ' ';
-};
-
-export default EditSessionView;
+export default SessionView;

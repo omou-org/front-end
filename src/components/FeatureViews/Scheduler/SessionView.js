@@ -277,6 +277,9 @@ const SessionView = () => {
     const { session_id } = useParams();
     const classes = useStyles();
     const [gradeFilterValue, setGradeFilterValue] = useState('');
+    const [sessionStartTime, setSessionsStartTime] = useState('');
+    const [sessionEndTime, setSessionsEndTime] = useState('');
+    const [sessionDate, setSessionsDate] = useState('');
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
@@ -462,18 +465,23 @@ const SessionView = () => {
                         DAY(S) & TIME
                     </Typography>
                 </Grid>
-                <Grid container style={{ marginBottom: '' }}>
+                <Grid container style={{ marginBottom: '2.8125em' }}>
                 <Grid item xs={2}>
                     <KeyboardDatePicker style={{ float: 'left'}} />
                     <span>at</span>
                 </Grid>
                 <Grid item xs={2}>
-                    <KeyboardTimePicker style={{ float: 'left'}}/>
+                    <KeyboardTimePicker style={{ float: 'left'}} />
                     <span>-</span> 
                 </Grid>
                 <Grid item xs={2}>
-                    <KeyboardTimePicker style={{ float: 'left'}}/>
+                    <KeyboardTimePicker style={{ float: 'left'}} />
                 </Grid>
+                </Grid>
+                <Grid container>
+                    <Grid item xs={2}>
+                        
+                    </Grid>
                 </Grid>
                 {/* <Grid item>
                     <CourseFilterDropdown
