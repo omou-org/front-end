@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function EnrollmentSessionRow({session, enrollmentData, highlightSession}) {
+function EnrollmentSessionRow({ session, enrollmentData, highlightSession }) {
     const classes = useStyles();
     const {id} = enrollmentData.enrollment;
     const tuitionStartTime = moment(session.startDatetime).format('hh');
