@@ -10,7 +10,7 @@ import {TableCell} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     darkRow: {
-        backgroundColor: "#C4C4C4",
+        backgroundColor: "#EEEEEE",
     },
 }));
 

@@ -1,6 +1,6 @@
-import { instance } from 'actions/apiActions';
-import { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import {instance} from 'actions/apiActions';
+import {useCallback, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
 export const USER_TYPES = {
@@ -219,7 +219,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date === last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(
-        enrollment.sessions_left
+        enrollment.sessionsLeft
     );
     const classSessionNotBeforeFirstPayment = session_date >= first_payment;
 

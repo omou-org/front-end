@@ -25,9 +25,10 @@ export default function EnrollmentSummaryTab({sessions, enrollment}) {
                 <Grid item>
                     <ResponsiveButton
                         onClick={handleHighlightSwitch}
-                        variant="outlined"
+                        variant={highlightSession ? "contained" : "outlined"}
+                        color={highlightSession ? "primary" : ""}
                     >
-                        {highlightSession ? "Upcoming" : "All"}
+                        Upcoming
                     </ResponsiveButton>
                 </Grid>
             </Grid>
