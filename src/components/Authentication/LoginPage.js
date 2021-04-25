@@ -35,7 +35,9 @@ const LOGIN = gql`
 
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
-        userType(userName: $username)
+        userType(userName: $username) {
+            userType
+        }
     }
 `;
 

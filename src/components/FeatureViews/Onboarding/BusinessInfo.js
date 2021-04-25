@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -19,6 +19,10 @@ const useStyles = makeStyles((theme) => ({
 
 const BusinessInfo = () => {
     const classes = useStyles();
+    const [bizName, setBizName] = useState('');
+    const [bizPhone, setBizPhone] = useState('');
+    const [bizEmail, setBizEmail] = useState('');
+    const [bizAddress, setBizAddress] = useState('');
 
     return (
         <Container>
@@ -37,6 +41,7 @@ const BusinessInfo = () => {
                     fullWidth
                     id='name'
                     label='Business Name'
+                    required
                 />{' '}
                 <br />
                 <TextField
@@ -44,6 +49,7 @@ const BusinessInfo = () => {
                     fullWidth
                     id='phone'
                     label='Business Phone'
+                    required
                 />
                 <br />
                 <TextField
@@ -51,6 +57,7 @@ const BusinessInfo = () => {
                     fullWidth
                     id='email'
                     label='Business Email'
+                    required
                 />
                 <br />
                 <TextField
@@ -58,6 +65,7 @@ const BusinessInfo = () => {
                     fullWidth
                     id='address'
                     label='Business Address'
+                    required
                 />
                 <br />
             </form>
