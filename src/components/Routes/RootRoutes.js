@@ -107,7 +107,7 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/scheduler/session/:session_id/edit'
+                path='/scheduler/session/:session_id/singlesession'
             >
                 <EditSessionView />
             </AuthenticatedRoute>

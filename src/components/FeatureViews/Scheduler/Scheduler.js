@@ -6,8 +6,6 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import { SchedulerContext } from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { fullName } from '../../../utils';
 import { useHistory } from 'react-router-dom';
@@ -39,10 +37,6 @@ const EventPopoverWrapper = ({ children, popover }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const history = useHistory();
 
-    const handleClick = () => {
-        history.push(`/scheduler/session/${popover.props.session.id}`);
-    };
-
     const handlePopoverOpen = (event) => {
         setAnchorEl(event.target);
     };
@@ -59,20 +53,25 @@ const EventPopoverWrapper = ({ children, popover }) => {
                 aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup='true'
                 onMouseEnter={handlePopoverOpen}
-                // onMouseLeave={handlePopoverClose}
             >
                 {children}
             </div>
-            <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handlePopoverClose}
-      >
-        <MenuItem onClick={handleClick}>Edit This Session</MenuItem>
-        <MenuItem onClick={handlePopoverClose}>Edit All Sessions</MenuItem>
-      </Menu>
+                  <Popover
+                id='mouse-over-popover'
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'left',
+                }}
+            >
+                {popover}
+            </Popover>
         </>
     );
 };
@@ -110,7 +109,7 @@ const BigCalendar = (props) => {
                 eventWrapper: (props) => (
                     <EventPopoverWrapper
                         {...props}
-                        popover={<SessionPopover session={props.event} />}
+                        popover={<SessionPopover session={props.event} {...props}/>}
                     />
                 ),
             }}

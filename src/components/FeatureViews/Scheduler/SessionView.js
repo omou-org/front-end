@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { NavLink, useParams } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
+import Box from '@material-ui/core/Box';
 
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
-import { Tooltip, Typography, withStyles, makeStyles, Button } from '@material-ui/core';
+import {
+    Tooltip,
+    Typography,
+    withStyles,
+    makeStyles,
+    Button,
+    Divider,
+} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
+import { darkBlue, slateGrey } from '../../../theme/muiTheme';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Menu from '@material-ui/core/Menu';
@@ -16,7 +27,6 @@ import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { RescheduleBtn } from './RescheduleBtn';
-
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -27,12 +37,33 @@ import InputBase from '@material-ui/core/InputBase';
 import 'date-fns';
 import { FormControl } from '@material-ui/core';
 import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-
+const useStyles = makeStyles((theme) => ({
+    current_session: {
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontWeight: 500,
+        lineHeight: '1em',
+    },
+    course_icon: {
+        width: '.75em',
+        height: '.75em',
+    },
+    divider: {
+        backgroundColor: 'black',
+    },
+    new_sessions_typography: {
+        color: darkBlue,
+        fontWeight: 500,
+        lineHeight: '1em',
+        fontSize: '1rem',
+        float: 'left',
+    },
+}));
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -67,115 +98,6 @@ export const BootstrapInput = withStyles((theme) => ({
         },
     },
 }))(InputBase);
-
-const CourseFilterDropdown = ({
-    initialValue,
-    filterList,
-    setState,
-    filter,
-    filterKey,
-}) => {
-    const classes = useStyles();
-    const handleChange = (event) => setState(event.target.value);
-    const filterOptionsMapper = {
-        instructors: (option) => ({
-            value: option.instructor.user.id,
-            label: fullName(option.instructor.user),
-        }),
-        subjects: (option) => ({
-            value: option.courseCategory.id,
-            label: option.courseCategory.name,
-        }),
-        grades: (option) => ({
-            value: option.value.toUpperCase(),
-            label: option.label,
-        }),
-        students: (option) => ({
-            value: option.value,
-            label: option.label,
-        }),
-
-    }[filterKey];
-
-    const ChosenFiltersOption = filterList.map(filterOptionsMapper);
-    return (
-        <Grid container>
-            <Grid item>
-                <FormControl className={classes.margin}>
-                    <Select
-                        labelId='course-management-sort-tab'
-                        id='course-management-sort-tab'
-                        displayEmpty
-                        value={filter}
-                        onChange={handleChange}
-                        classes={{ select: classes.menuSelect }}
-                        input={<BootstrapInput />}
-                        MenuProps={{
-                            classes: { list: classes.dropdown },
-                            anchorOrigin: {
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            },
-                            transformOrigin: {
-                                vertical: 'top',
-                                horizontal: 'left',
-                            },
-                            getContentAnchorEl: null,
-                        }}
-                    >
-                        <MenuItem
-                            ListItemClasses={{ selected: classes.menuSelected }}
-                            value=''
-                        >
-                            {initialValue}
-                        </MenuItem>
-                        {ChosenFiltersOption.map((option) => (
-                            <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                className={classes.menuSelect}
-                                ListItemClasses={{ selected: classes.menuSelected }}
-                            >
-                                {filterKey === 'students' ? (
-                                    <UserAvatarCircle label={option.label} />
-                                ) : (
-                                    ''
-                                )}
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Grid item>
-                
-            </Grid>
-            <Grid item>
-                <KeyboardDatePicker />
-            </Grid>
-            <Grid item>
-                <KeyboardTimePicker />
-            </Grid>
-            <Grid item>
-                <KeyboardTimePicker />
-            </Grid>
-        </Grid>
-    );
-};
-
-const useStyles = makeStyles((theme) => ({
-    current_session: {
-      fontFamily: 'Roboto',
-      fontStyle: 'normal',
-      fontWeight: 500,
-      lineHeight: '1em',
-      color: '#1F82A1'
-    },
-    course_icon: {
-        width: '.75em',
-        height: '.75em'
-    },
-  }));
 
 const StyledMenu = withStyles({
     paper: {
@@ -264,6 +186,9 @@ const SessionView = () => {
     const { session_id } = useParams();
     const classes = useStyles();
     const [gradeFilterValue, setGradeFilterValue] = useState('');
+    const [sessionStartTime, setSessionsStartTime] = useState('');
+    const [sessionEndTime, setSessionsEndTime] = useState('');
+    const [sessionDate, setSessionsDate] = useState('');
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
@@ -290,6 +215,7 @@ const SessionView = () => {
 
     const confirmed = course.isConfirmed;
     const course_id = course.id;
+    //const student_full_name = course.enrollmentSet.student.user.firstName;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const startSessionTime = moment(startDatetime).format('h:mm A');
@@ -302,15 +228,30 @@ const SessionView = () => {
                 container
                 direction='row'
                 spacing={1}
+                style={{ marginBottom: '2em' }}
             >
-                <Grid item sm={12}>
-                    <Typography
-                        align='left'
-                        className='session-view-title'
-                        variant='h1'
-                    >
-                        {title}
-                    </Typography>
+                <Grid item sm={12} container direction='row' alignItems='center'>
+                    <Grid item xs={6}>
+                        <Typography
+                            align='left'
+                            className='session-view-title'
+                            variant='h1'
+                        >
+                            {title}
+                        </Typography>
+                    </Grid>
+                    <Grid container item direction='row' sm={4} alignItems='center'>
+                        <Grid item xs={2}>
+
+                            <AutorenewIcon />
+                        </Grid>
+                        <Grid>
+                            <Typography variant='body1' fontWeight=''>
+                                Weekly recurrence
+                            </Typography>
+                        </Grid>
+
+                    </Grid>
                 </Grid>
                 {/* TODO: for tutoring */}
                 {/* <Grid item sm={12}>
@@ -328,19 +269,48 @@ const SessionView = () => {
             </Grid>
           </Grid>
         </Grid> */}
-        <Grid container>
-        <Grid align='left' className='session-view-details' item={12}>
-            <Typography variant='h4' className={classes.current_session}>Current Sessions:</Typography>
-        </Grid>
-        </Grid>
+                <Grid container>
+                    <Grid
+                        align='left'
+                        className='session-view-details'
+                        item={12}
+                    >
+                        <Typography
+                            variant='h4'
+                            className={classes.current_session}
+                        >
+                            Current Sessions:
+                        </Typography>
+                    </Grid>
+                </Grid>
                 <Grid
                     align='left'
                     className='session-view-details'
                     container
                     item
                     spacing={2}
-                    xs={6}
+                    xs={12}
+                    direction='column'
                 >
+                    <Grid container item direction='row' justify='space-between'>
+                        <Grid item xs={6}>
+                            <Typography variant='h5'>Date Time</Typography>
+                            <Typography>
+                                {`${dayOfWeek} ${new Date(
+                                    startDatetime
+                                ).toLocaleDateString()} ${
+                                    startSessionTime + ' - ' + endSessionTime
+                                }`}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Link underline='always'>
+                                View Course Page
+                            </Link>
+                        </Grid>
+                    </Grid>
+
+                <Grid item container direction='row' justify='flex-start'>
                     <Grid item xs={2}>
                         <Typography variant='h5'>Subject</Typography>
                         <Typography>{courseCategory.name}</Typography>
@@ -350,16 +320,14 @@ const SessionView = () => {
                             Instructor
                         </Typography>
                         {course && (
-                        // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
-                                    <Typography>
-                                        {fullName(instructor.user)}
-                                    </Typography>
-                        // </NavLink>
+                            // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
+                            <Typography>{fullName(instructor.user)}</Typography>
+                            // </NavLink>
                         )}
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={2}>
                         <Typography align='left' variant='h5'>
-                            Students Enrolled
+                            Student
                         </Typography>
                         <Grid container direction='row'>
                             {enrollmentSet.length > 0 ? (
@@ -369,46 +337,24 @@ const SessionView = () => {
                                         style={{ textDecoration: 'none' }}
                                         to={`/accounts/student/${student.student.user.id}/${course_id}`}
                                     >
-                                        <Tooltip
-                                            title={fullName(
-                                                student.student.user
-                                            )}
-                                        >
-                                            <Avatar
-                                                style={styles(
-                                                    fullName(
-                                                        student.student.user
-                                                    )
-                                                )}
-                                            >
-                                                {fullName(student.student.user)
-                                                    .match(/\b(\w)/g)
-                                                    .join('')}
-                                            </Avatar>
-                                        </Tooltip>
+
                                     </NavLink>
                                 ))
                             ) : (
                                 <Typography variant='body'>
-                                    No students enrolled yet.
+                                    {}
                                 </Typography>
                             )}
                         </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant='h5'>Date Time</Typography>
-                        <Typography>
-                            {`${dayOfWeek} ${new Date(startDatetime).toLocaleDateString()} ${startSessionTime + ' - ' + endSessionTime}`}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={2}>
                         <Typography variant='h5'>Room</Typography>
                         <Typography>{room || 'TBA'}</Typography>
                     </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                    {/* <InstructorSchedule instructorID={instructor_id} /> */}
-                </Grid>
+
+                    </Grid>
+
             </Grid>
 
             <Grid container direction='row' justify='flex-end' spacing={1}>
@@ -425,7 +371,7 @@ const SessionView = () => {
                             to={`/scheduler/session/${session_id}/singlesession`}
                             variant='outlined'
                         >
-                            Edit this session
+                            edit this session
                         </ResponsiveButton>
                     </AccessControlComponent>
                 </Grid>
