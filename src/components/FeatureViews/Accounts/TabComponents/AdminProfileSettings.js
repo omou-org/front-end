@@ -62,6 +62,32 @@ const SET_ADMIN_GC_ENABLED = gql`
     }
 `;
 
+const GOOGLE_AUTH_EMAIL = gql`
+    query GoogleAuthEmail($userID: ID!) {
+        admin(userId: $userID) {
+            googleAuthEmail
+        }
+    }
+`;
+
+const SET_GOOGLE_AUTH_EMAIL = gql`
+    mutation SetGoogleAuthEmail(
+        $adminType: AdminTypeEnum!
+        $userID: ID!
+        $googleAuthEmail: String
+    ) {
+        createAdmin(
+            user: { id: $userID }
+            adminType: $adminType
+            googleAuthEmail: $googleAuthEmail
+        ) {
+            admin {
+                googleAuthEmail
+            }
+        }
+    }
+`;
+
 export default function AdminProfileSettings({ user }) {
     const { userInfo } = user;
     const classes = useStyles();
@@ -84,6 +110,24 @@ export default function AdminProfileSettings({ user }) {
                     query: ADMIN_GC_ENABLED,
                     variables: { userID: userInfo.user.id },
                 });
+            },
+        }
+    );
+
+    const [setGoogleAuthEmail, setGoogleAuthEmailResults] = useMutation(
+        SET_GOOGLE_AUTH_EMAIL,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        admin: data.createAdmin.admin.googleAuthEmail,
+                    },
+                    query: GOOGLE_AUTH_EMAIL,
+                    variables: { userID: userInfo.user.id },
+                });
+                // check if courses exist in cache
+                // update courses
+                // add google classroom icons
             },
         }
     );
@@ -150,7 +194,6 @@ export default function AdminProfileSettings({ user }) {
     const onFailure = (response) => {};
 
     const onSuccess = (response) => {
-        console.log('On success');
         setGoogleLoginPromptOpen(false);
 
         setGClassSetting(!gClassSetting);
@@ -164,24 +207,21 @@ export default function AdminProfileSettings({ user }) {
         refreshTokenSetup(response).then(() => {
             getCourses();
         });
-        // check if googleAuthEmail is filled
-        // setGoogleAuthEmail in mainframe
+        setGoogleAuthEmail({
+            variables: {
+                userID: userInfo.user.id,
+                adminType: userInfo.adminType,
+                googleAuthEmail: response.profileObj.email,
+            },
+        });
     };
 
     const handleGClassSettingChange = () => {
-        // If not integrated
-        // open the dialog
-        // if successful then set google auth enabled
-        // save google auth email
-        // get courses
-        // if are integrated
-        // remove google auth enabled
-        // remove google auth email
+
         if (!gClassSetting) {
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         } else {
-            // get rid of google auth email on user
-            setGClassSetting(!gClassSetting);
+            setGClassSetting(false);
             setAdminGCEnabled({
                 variables: {
                     userID: userInfo.user.id,
