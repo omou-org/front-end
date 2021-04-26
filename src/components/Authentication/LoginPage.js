@@ -64,6 +64,15 @@ const GET_USER_TYPE = gql`
     }
 `;
 
+const VERIFY_GOOGLE_OAUTH_TOKEN = gql`
+    query verifyGoogleOauth($loginEmail: String! $oauthEmail: String!) {
+        verifyGoogleOauth(loginEmail: $loginEmail, oauthEmail: $oauthEmail) {
+            token
+            verified
+        }
+    }
+`;
+
 const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
@@ -76,6 +85,11 @@ const LoginPage = () => {
     } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
+    const [
+        verifyGoogleOauthTokenStatus,
+        setVerifyGoogleOauthTokenStatus,
+    ] = useState(false);
+    const [googleAuthEmail, setGoogleAuthEmail] = useState(null);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
@@ -91,6 +105,27 @@ const LoginPage = () => {
             }
         },
     });
+    const [getVerifyGoogleOauthTokenStatus] = useLazyQuery(
+        VERIFY_GOOGLE_OAUTH_TOKEN,
+        {
+            variables: { loginEmail: email, oauthEmail: googleAuthEmail },
+            onCompleted: async (data) => {
+                console.log({data});
+                
+                setVerifyGoogleOauthTokenStatus(
+                    data?.verifyGoogleOauth?.verified
+                );
+                console.log(verifyGoogleOauthTokenStatus)
+                if (data?.verifyGoogleOauth?.verified) {
+                    dispatch(await setToken(data.verifyGoogleOauth.token, true, email));
+                    history.push('/');
+                }
+                if (verifyGoogleOauthTokenStatus === null) {
+                    setHasError(true);
+                }
+            },
+        }
+    );
 
     const [login] = useMutation(LOGIN, {
         errorPolicy: 'ignore',
@@ -207,17 +242,29 @@ const LoginPage = () => {
     }
 
     const onSuccess = async (response) => {
-        const socialAuthResponse = await googleLogin({
-            variables: {
-                accessToken: response.accessToken,
-            },
-        });
+        console.log(response);
+        setGoogleAuthEmail(response.profileObj.email);
+
+
+
+        const googleOauthResponse = await getVerifyGoogleOauthTokenStatus();
+
+        console.log(googleOauthResponse);
+
+        // const socialAuthResponse = await googleLogin({
+        //     variables: {
+        //         accessToken: response.accessToken,
+        //     },
+        // });
         refreshTokenSetup(response).then(() => {
             getCourses();
         });
-        if (socialAuthResponse?.data?.socialAuth) {
-            history.push('/');
-        }
+
+
+        // if (socialAuthResponse?.data?.socialAuth) {
+        //     history.push('/');
+            
+        // }
     };
 
     const onFailure = (response) => {};
