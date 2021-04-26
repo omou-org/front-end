@@ -2,7 +2,8 @@ import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import PeopleIcon from '@material-ui/icons/People';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
+import OnboardingControls from "./OnboardingControls";
 
 const useStyles = makeStyles((theme) => ({
     Icon: {
@@ -35,9 +36,10 @@ const DownloadTemplates = () => {
                 className={classes.Icon}
                 aria-label='Accounts Template'
             >
-                <MenuBookIcon style={{ fontSize: '750%' }} />
+                <MenuBookIcon style={{fontSize: '750%'}}/>
                 <div className={classes.Label}>Courses Template</div>
             </IconButton>
+            <OnboardingControls/>
         </>
     );
 };

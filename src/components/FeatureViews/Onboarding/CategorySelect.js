@@ -2,8 +2,9 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import CreatableSelect from 'react-select/creatable';
+import OnboardingControls from "./OnboardingControls";
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -48,6 +49,7 @@ const CategorySelect = () => {
                     />
                 </Grid>
             </Grid>
+            <OnboardingControls/>
         </>
     );
 };

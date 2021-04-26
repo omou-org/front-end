@@ -1,6 +1,6 @@
-import { instance } from 'actions/apiActions';
-import { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import {instance} from 'actions/apiActions';
+import {useCallback, useState} from 'react';
+import {useHistory, useLocation} from 'react-router-dom';
 import moment from 'moment';
 
 export const USER_TYPES = {
@@ -664,4 +664,10 @@ export function useSessionStorage(key, initialValue) {
     };
 
     return [storedValue, setValue];
+}
+
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+export function useURLQuery() {
+    return new URLSearchParams(useLocation().search);
 }
