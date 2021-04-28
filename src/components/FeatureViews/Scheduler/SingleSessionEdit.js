@@ -25,11 +25,7 @@ import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/Respons
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { EditSessionDropDown } from './EditSessionUtilComponents';
 import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
-import { RescheduleBtn } from './RescheduleBtn';
 
-import { StudentCourseLabel, UserAvatarCircle } from '../Courses/StudentBadge';
-import { fullName } from 'utils';
-import InputBase from '@material-ui/core/InputBase';
 
 import 'date-fns';
 import {
@@ -182,7 +178,7 @@ const styles = (username) => ({
     marginRight: 10,
 });
 
-const SessionViewEdit = () => {
+const SingleSessionEdit = () => {
     const { session_id } = useParams();
     const classes = useStyles();
     const [subjectValue, setSubjectValue] = useState('');
@@ -274,146 +270,6 @@ const SessionViewEdit = () => {
 
     return (
         <>
-            <Grid
-                className='session-view'
-                container
-                direction='row'
-                spacing={1}
-                style={{ marginBottom: '2em' }}
-            >
-                <Grid item xs={12} style={{ padding: 0 }}>
-                    <Typography
-                        align='left'
-                        variant='h1'
-                    >
-                        {title}
-                    </Typography>
-                </Grid>
-                <Grid item xl={1} xs={5} sm={3} md={2} lg={2} className={classes.type_of_edit}>
-                    <Typography align='center' style={{ color: 'white'}}>
-                        Edit This Session
-                    </Typography>
-                </Grid>
-                {/* TODO: for tutoring */}
-                {/* <Grid item sm={12}>
-          <Grid container>
-            <Grid className="course-session-status" item xs={2}>
-              {course.course_type === "tutoring" && (
-                <SessionPaymentStatusChip
-                  enrollment={
-                    enrollments[Object.keys(enrollments)[0]][course.course_id]
-                  }
-                  session={session}
-                  setPos
-                />
-              )}
-            </Grid>
-          </Grid>
-        </Grid> */}
-                <Grid container>
-                    <Grid
-                        align='left'
-                        item
-                        xs={12}
-                    >
-                        <Typography
-                            variant='h4'
-                            className={classes.current_session}
-                        >
-                            Current Sessions:
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid
-                    align='left'
-                    className='session-view-details'
-                    container
-                    item
-                    spacing={2}
-                    xs={8}
-                    xl={6}
-                >
-                    <Grid item md={3} lg={5} xl={6}>
-                        <Typography variant='h5' className={classes.mini_titles_format}>DATE</Typography>
-                        <Typography>
-                            {`${startDateFormat} - ${endDateFormat}`}
-                        </Typography>
-                    </Grid>
-                    <Grid item md={6} lg={6} xl={6}>
-                        <Typography variant='h5' className={classes.mini_titles_format}>DAY & TIME</Typography>
-                        <Typography>
-                            {`${dayOfWeek} at ${
-                                startSessionTime + ' - ' + endSessionTime
-                            }`}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant='h5' className={classes.mini_titles_format}>SUBJECT</Typography>
-                        <Typography>{courseCategory.name}</Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant='h5' className={classes.mini_titles_format}>
-                            INSTRUCTOR
-                            {confirmed ? (
-                                <ConfirmIcon
-                                    className={`confirmed course-icon ${classes.course_icon}`}
-                                />
-                            ) : (
-                                <UnconfirmIcon
-                                    className={`unconfirmed course-icon ${classes.course_icon}`}
-                                />
-                            )}
-                        </Typography>
-                        {course && (
-                            // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
-                            <Typography>{fullName(instructor.user)}</Typography>
-                            // </NavLink>
-                        )}
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography align='left' variant='h5' className={classes.mini_titles_format}>
-                            STUDENTS
-                        </Typography>
-                        <Grid container direction='row'>
-                            {enrollmentSet.length > 0 ? (
-                                enrollmentSet.map((student) => (
-                                    <NavLink
-                                        key={student.student.user.id}
-                                        style={{ textDecoration: 'none' }}
-                                        to={`/accounts/student/${student.student.user.id}/${course_id}`}
-                                    >
-                                        <Tooltip
-                                            title={fullName(
-                                                student.student.user
-                                            )}
-                                        >
-                                            <Avatar
-                                                style={styles(
-                                                    fullName(
-                                                        student.student.user
-                                                    )
-                                                )}
-                                            >
-                                                {fullName(student.student.user)
-                                                    .match(/\b(\w)/g)
-                                                    .join('')}
-                                            </Avatar>
-                                        </Tooltip>
-                                    </NavLink>
-                                ))
-                            ) : (
-                                <Typography variant='body'>
-                                    No students enrolled yet.
-                                </Typography>
-                            )}
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant='h5' className={classes.mini_titles_format}>ROOM</Typography>
-                        <Typography>{room || 'TBA'}</Typography>
-                    </Grid>
-                </Grid>
-            </Grid>
             <Divider className={classes.divider} />
             <Grid container direction='row' style={{ marginTop: '2em' }}>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
@@ -506,4 +362,4 @@ const SessionViewEdit = () => {
     );
 };
 
-export default SessionViewEdit;
+export default SingleSessionEdit;

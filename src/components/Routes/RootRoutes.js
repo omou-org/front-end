@@ -21,7 +21,7 @@ import FormPage from '../Form/FormPage';
 import RegistrationCourse from '../FeatureViews/Registration/RegistrationCourse';
 import ResetPassword from '../Authentication/ResetPassword';
 import SearchResults from '../FeatureViews/Search/SearchResults';
-import SessionView from '../FeatureViews/Scheduler/SessionView';
+import SessionContainer from '../FeatureViews/Scheduler/SessionContainer';
 import UserProfile from '../FeatureViews/Accounts/UserProfile';
 import CourseManagementContainer from '../FeatureViews/Courses/CourseManagementContainer';
 import CourseClass from '../FeatureViews/Courses/CourseClass';
@@ -102,14 +102,8 @@ export const RootRoutes = () => {
             <AuthenticatedRoute exact path='/scheduler'>
                 <Scheduler />
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact path='/scheduler/session/:session_id'>
-                <SessionView />
-            </AuthenticatedRoute>
-            <AuthenticatedRoute
-                exact
-                path='/scheduler/session/:session_id/singlesession'
-            >
-                <EditSessionView />
+            <AuthenticatedRoute exact path='/scheduler/session/:session_id/:editType?'>
+                <SessionContainer />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute exact path='/search'>
