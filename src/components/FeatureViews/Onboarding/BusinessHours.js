@@ -3,8 +3,8 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
-import CreatableSelect from 'react-select/creatable';
 import OnboardingControls from "./OnboardingControls";
+import BusinessHoursForm from "../../Form/BusinessHoursForm";
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -17,41 +17,28 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '40px',
     },
 }));
-const options = [
-    { value: 'math', label: 'Math' },
-    { value: 'chemistry', label: 'Chemistry' },
-    { value: 'biology', label: 'Biology' },
-    { value: 'spanish', label: 'Spanish' },
-    { value: 'english', label: 'English' },
-];
 
-const CategorySelect = () => {
+const BusinessHours = () => {
     const classes = useStyles();
-    const handleChange = (newValue, actionMeta) => {};
+    const handleChange = (newValue, actionMeta) => {
+    };
     return (
         <>
             <Box className={classes.Text}>
-                <Typography variant='h3'>Course Categories</Typography>
+                <Typography variant='h3'>Business Hours</Typography>
                 <Box fontSize='h5.fontSize' className={classes.Subtitle}>
                     <Typography variant='p'>
-                        Please list out the course categories your business
-                        offers, these should include all the categories you
-                        filled in on the templates in Step 2:
+                        Please input your business hours. These hours will show up in invoices and instructor
+                        timesheets.
                     </Typography>
                 </Box>
             </Box>
             <Grid container layout='row' alignItems='center' justify='center'>
-                <Grid item md={6}>
-                    <CreatableSelect
-                        isMulti
-                        options={options}
-                        onChange={handleChange}
-                    />
-                </Grid>
+                <BusinessHoursForm/>
             </Grid>
             <OnboardingControls/>
         </>
     );
 };
 
-export default CategorySelect;
+export default BusinessHours;

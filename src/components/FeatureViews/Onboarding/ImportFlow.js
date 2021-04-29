@@ -8,10 +8,11 @@ import Typography from '@material-ui/core/Typography';
 import DownloadTemplate from './DownloadTemplates';
 import CourseUpload from './CourseUpload';
 import BusinessInfo from './BusinessInfo';
-import CategorySelect from './CategorySelect';
+import BusinessHours from './BusinessHours';
 import AccountsUpload from './AccountsUpload';
 import {OnboardingContext} from "./OnboardingContext";
 import {useURLQuery} from "../../../utils";
+import EnrollmentUpload from "./EnrollmentUpload";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,11 +28,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const onboardingSteps = [
-    'Business info',
+    'Business Info',
+    'Business Hours',
     'Templates',
-    'Course Categories',
     'Accounts',
     'Courses',
+    'Enrollments',
 ];
 
 const ImportFlow = () => {
@@ -54,16 +56,19 @@ const ImportFlow = () => {
             case 0:
                 return <BusinessInfo step={0}/>;
             case 1:
-                return <DownloadTemplate step={1}/>;
+                return <BusinessHours step={1}/>;
             case 2:
-                return <CategorySelect step={2}/>;
+                return <DownloadTemplate step={2}/>;
             case 3:
                 return <AccountsUpload step={3}/>;
             case 4:
                 return <CourseUpload step={4}/>;
+            case 5:
+                return <EnrollmentUpload step={5}/>
             default:
                 return 'Error: Invalid step. No content to display';
         }
+
     }
 
     const isStepOptional = (step) => {
