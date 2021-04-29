@@ -112,8 +112,8 @@ export default function AdminProfileSettings({ user }) {
                     variables: { userID: userInfo.user.id },
                 });
                 // check if courses exist in cache
-                // update courses
-                // remove google classroom icons
+                    // update courses
+                    // remove google classroom icons
             },
         }
     );
@@ -130,8 +130,8 @@ export default function AdminProfileSettings({ user }) {
                     variables: { userID: userInfo.user.id },
                 });
                 // check if courses exist in cache
-                // update courses
-                // add google classroom icons
+                    // update courses
+                    // add google classroom icons
             },
         }
     );
@@ -167,12 +167,12 @@ export default function AdminProfileSettings({ user }) {
         setGoogleLoginPromptOpen(false);
     }
 
-    const dispatchGoogleCourses = (google_courses) => {
+    const dispatchGoogleCourses= (google_courses) => {
         dispatch({
             type: actions.SET_GOOGLE_COURSES,
             payload: { google_courses },
         });
-    };
+    }
 
     const onFailure = (response) => {};
 
@@ -188,7 +188,7 @@ export default function AdminProfileSettings({ user }) {
             },
         });
         refreshTokenSetup(response).then(() => {
-            getGoogleClassroomCourses(google_courses, dispatchGoogleCourses);
+            getGoogleClassroomCourses(google_courses, dispatchGoogleCourses)
         });
         setGoogleAuthEmail({
             variables: {
@@ -196,7 +196,7 @@ export default function AdminProfileSettings({ user }) {
                 adminType: userInfo.adminType,
                 googleAuthEmail: response.profileObj.email,
             },
-        });
+        })
     };
 
     const handleGClassSettingChange = () => {

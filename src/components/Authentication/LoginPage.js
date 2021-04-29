@@ -18,6 +18,7 @@ import * as actions from 'actions/actionTypes';
 import { useQuery } from '@apollo/client';
 import { getGoogleClassroomCourses } from '../../utils.js';
 
+
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { setToken } from 'actions/authActions.js';
 import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
@@ -85,10 +86,7 @@ const LoginPage = () => {
     } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
-    const [
-        verifyGoogleOauthTokenStatus,
-        setVerifyGoogleOauthTokenStatus,
-    ] = useState(false);
+    const [verifyGoogleOauthTokenStatus, setVerifyGoogleOauthTokenStatus] = useState(false);
     const [googleAuthEmail, setGoogleAuthEmail] = useState(null);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
@@ -105,20 +103,15 @@ const LoginPage = () => {
             }
         },
     });
-    const [getVerifyGoogleOauthTokenStatus] = useLazyQuery(
-        VERIFY_GOOGLE_OAUTH_TOKEN,
-        {
-            variables: { loginEmail: googleAuthEmail },
-            onCompleted: (data) => {
-                setVerifyGoogleOauthTokenStatus(
-                    data?.verifyGoogleOauthToken?.verified
-                );
-                if (verifyGoogleOauthTokenStatus === null) {
-                    setHasError(true);
-                }
-            },
-        }
-    );
+    const [getVerifyGoogleOauthTokenStatus] = useLazyQuery(VERIFY_GOOGLE_OAUTH_TOKEN, {
+        variables: { loginEmail: googleAuthEmail },
+        onCompleted: (data) => {
+            setVerifyGoogleOauthTokenStatus(data?.verifyGoogleOauthToken?.verified);
+            if (verifyGoogleOauthTokenStatus === null) {
+                setHasError(true);
+            }
+        },
+    });
 
     const [login] = useMutation(LOGIN, {
         errorPolicy: 'ignore',
@@ -209,12 +202,12 @@ const LoginPage = () => {
         });
     }
 
-    const dispatchGoogleCourses = (google_courses) => {
+    const dispatchGoogleCourses= (google_courses) => {
         dispatch({
             type: actions.SET_GOOGLE_COURSES,
             payload: { google_courses },
         });
-    };
+    }
 
     const onSuccess = async (response) => {
         // setGoogleAuthEmail(response.profileObj.email);
