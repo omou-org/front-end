@@ -41,7 +41,7 @@ const RegistrationActions = () => {
     );
     const { parentIsLoggedIn } = useValidateRegisteringParent();
     const dispatch = useDispatch();
-    console.log(AuthUser.user.id);
+    
     const [dialogOpen, setDialog] = useState(false);
     const { data, error, loading } = useQuery(GET_PARENT_QUERY, {
         variables: { userId: AuthUser.user.id },

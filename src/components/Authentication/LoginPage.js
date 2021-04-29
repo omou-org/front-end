@@ -38,23 +38,6 @@ const LOGIN = gql`
     }
 `;
 
-const GOOGLE_LOGIN = gql`
-    mutation GoogleLogin($accessToken: String!) {
-        __typename
-        socialAuth(accessToken: $accessToken, provider: "google-oauth2") {
-            token
-            social {
-                created
-                id
-                extraData
-                uid
-                provider
-                modified
-            }
-        }
-    }
-`;
-
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
         userType(userName: $username) {
@@ -64,7 +47,7 @@ const GET_USER_TYPE = gql`
     }
 `;
 
-const VERIFY_GOOGLE_OAUTH_TOKEN = gql`
+const VERIFY_GOOGLE_OAUTH = gql`
     query verifyGoogleOauth($loginEmail: String! $oauthEmail: String!) {
         verifyGoogleOauth(loginEmail: $loginEmail, oauthEmail: $oauthEmail) {
             token
@@ -106,16 +89,15 @@ const LoginPage = () => {
         },
     });
     const [getVerifyGoogleOauthTokenStatus] = useLazyQuery(
-        VERIFY_GOOGLE_OAUTH_TOKEN,
+        VERIFY_GOOGLE_OAUTH,
         {
             variables: { loginEmail: email, oauthEmail: googleAuthEmail },
             onCompleted: async (data) => {
-                console.log({data});
                 
                 setVerifyGoogleOauthTokenStatus(
                     data?.verifyGoogleOauth?.verified
                 );
-                console.log(verifyGoogleOauthTokenStatus)
+
                 if (data?.verifyGoogleOauth?.verified) {
                     dispatch(await setToken(data.verifyGoogleOauth.token, true, email));
                     history.push('/');
@@ -132,19 +114,6 @@ const LoginPage = () => {
         ignoreResults: true,
         onCompleted: async ({ tokenAuth }) => {
             dispatch(await setToken(tokenAuth.token, shouldSave, email));
-        },
-        // for whatever reason, this function prevents an unhandled rejection
-        onError: () => {
-            setHasError(true);
-        },
-    });
-    const [googleLogin] = useMutation(GOOGLE_LOGIN, {
-        errorPolicy: 'ignore',
-        ignoreResults: true,
-        onCompleted: async ({ socialAuth }) => {
-            // is email same as googleAuthEmail
-            // kick em out if not
-            dispatch(await setToken(socialAuth.token, true, email));
         },
         // for whatever reason, this function prevents an unhandled rejection
         onError: () => {
@@ -200,7 +169,6 @@ const LoginPage = () => {
 
     function refreshTokenSetup(res) {
         return new Promise((resolve, reject) => {
-            let refreshTiming = 10000;
 
             const refreshToken = async () => {
                 const newAuthRes = await res.reloadAuthResponse();
@@ -209,10 +177,8 @@ const LoginPage = () => {
                     newAuthRes.access_token
                 );
                 resolve();
-                // setTimeout(refreshToken, refreshTiming);
             };
             refreshToken();
-            // setTimeout(refreshToken, refreshTiming);
         });
     }
     const noGoogleCoursesFoundOnInitialGoogleLogin =
@@ -241,30 +207,14 @@ const LoginPage = () => {
         }
     }
 
-    const onSuccess = async (response) => {
-        console.log(response);
+    const onSuccess = (response) => {
         setGoogleAuthEmail(response.profileObj.email);
 
+        getVerifyGoogleOauthTokenStatus();
 
-
-        const googleOauthResponse = await getVerifyGoogleOauthTokenStatus();
-
-        console.log(googleOauthResponse);
-
-        // const socialAuthResponse = await googleLogin({
-        //     variables: {
-        //         accessToken: response.accessToken,
-        //     },
-        // });
         refreshTokenSetup(response).then(() => {
             getCourses();
         });
-
-
-        // if (socialAuthResponse?.data?.socialAuth) {
-        //     history.push('/');
-            
-        // }
     };
 
     const onFailure = (response) => {};
