@@ -2,7 +2,6 @@ import { instance } from 'actions/apiActions';
 import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import axios from 'axios';
 
 export const USER_TYPES = {
     admin: 'ADMIN',
@@ -665,27 +664,4 @@ export function useSessionStorage(key, initialValue) {
     };
 
     return [storedValue, setValue];
-}
-
-export async function getGoogleClassroomCourses(google_courses, dispatchGoogleCourses){
-    const noGoogleCoursesFoundOnInitialGoogleLogin =
-        (google_courses === null || google_courses === undefined) &&
-        sessionStorage.getItem('google_access_token');
-    if (noGoogleCoursesFoundOnInitialGoogleLogin) {
-        try {
-            const response = await axios.get(
-                'https://classroom.googleapis.com/v1/courses',
-                {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem(
-                            'google_access_token'
-                        )}`,
-                    },
-                }
-            );
-            dispatchGoogleCourses(response?.data.courses);
-        } catch (error) {
-            console.log(error);
-        }
-    }
 }

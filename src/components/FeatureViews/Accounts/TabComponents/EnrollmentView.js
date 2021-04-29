@@ -30,10 +30,6 @@ import Notes from 'components/FeatureViews/Notes/Notes';
 import { fullName } from '../../../../utils';
 import axios from 'axios';
 import { CodeSharp } from '@material-ui/icons';
-const gapi = window.gapi;
-gapi.load("client:auth2", function() {
-    gapi.auth2.init({client_id: "45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com"});
-});
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -185,6 +181,7 @@ const CourseSessionStatus = () => {
             courses,
             courseID
         );
+        console.log(googleCourseID);
         try {
             const response = await axios.delete(
                 'https://classroom.googleapis.com/v1/courses',
@@ -194,7 +191,6 @@ const CourseSessionStatus = () => {
                             'google_access_token'
                         )}`,
                         'Access-Control-Allow-Origin': '*',
-                        'Accept': 'application/json',
                     },
                     data: {
                         userId: studentEmail,
