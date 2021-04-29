@@ -314,8 +314,8 @@ const CourseFilterDropdown = ({
                     displayEmpty
                     value={filter}
                     onChange={handleChange}
-                    classes={{select: classes.menuSelect}}
-                    input={<BootstrapInput/>}
+                    classes={{ select: classes.menuSelect }}
+                    input={<BootstrapInput />}
                     MenuProps={{
                         classes: { list: classes.dropdown },
                         anchorOrigin: {

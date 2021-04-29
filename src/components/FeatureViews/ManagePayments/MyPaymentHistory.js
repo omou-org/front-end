@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import PaymentTable from '../Accounts/TabComponents/PaymentTable';
+import InvoicesTable from '../Accounts/TabComponents/InvoicesTable';
 import gql from 'graphql-tag';
 import { useSelector } from 'react-redux';
 import { useLazyQuery } from '@apollo/client';
@@ -22,8 +22,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 
 export const GET_PARENT_PAYMENTS_FILTERED = gql`
-    query ParentPayments {
-        invoices {
+    query ParentPayments($parentId: ID!, $startDate: String, $endDate: String) {
+        invoices(userId: $parentId, startDate: $startDate, endDate: $endDate) {
             id
             createdAt
             registrationSet {
@@ -81,7 +81,7 @@ export default function MyPaymentHistory() {
     if (loading || !called) return <Loading />;
     if (error) return <div>An Error has occurred! {error.message}</div>;
 
-    const { payments } = data;
+    const { invoices } = data;
 
     return (
         <Grid container direction='row' spacing={4}>
@@ -136,8 +136,8 @@ export default function MyPaymentHistory() {
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <PaymentTable
-                    paymentList={payments}
+                <InvoicesTable
+                    paymentList={invoices}
                     rootRoute='/my-payments/payment/'
                     type='parent'
                 />
