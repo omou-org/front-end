@@ -2,17 +2,9 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import { routerMiddleware, connectRouter } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import {
-    adminReducer,
-    adminSaga,
-    USER_LOGOUT,
-} from 'react-admin';
+import { adminReducer, adminSaga, USER_LOGOUT } from 'react-admin';
 
-export default ({
-    authProvider,
-    dataProvider,
-    history,
-}) => {
+export default ({ authProvider, dataProvider, history }) => {
     const reducer = combineReducers({
         admin: adminReducer,
         router: connectRouter(history),
@@ -46,11 +38,11 @@ export default ({
         composeEnhancers(
             applyMiddleware(
                 sagaMiddleware,
-                routerMiddleware(history),
+                routerMiddleware(history)
                 // add your own middlewares here
-            ),
+            )
             // add your own enhancers here
-        ),
+        )
     );
     sagaMiddleware.run(saga);
     return store;

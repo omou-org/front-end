@@ -1,19 +1,18 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import {
-    Typography,
-    Grid,
     Divider,
+    Grid,
     List,
-    ListItemText,
     ListItem,
-    Paper,
+    ListItemText,
+    Typography,
 } from '@material-ui/core';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import Loading from '../../OmouComponents/Loading';
 import { makeStyles } from '@material-ui/core/styles';
-import { skyBlue, omouBlue } from '../../../theme/muiTheme';
+import { omouBlue, skyBlue } from '../../../theme/muiTheme';
 
 import moment from 'moment';
 
@@ -47,9 +46,9 @@ const NoOOOInformation = () => {
         <Grid container className={classes.noOOOInformation}>
             <Grid
                 container
-                direction="row"
-                justify="center"
-                alignItems="center"
+                direction='row'
+                justify='center'
+                alignItems='center'
             >
                 <Grid item xs={8}>
                     <Typography
@@ -87,7 +86,7 @@ export const UpcomingOOO = () => {
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Typography variant="h4" align="left">
+                <Typography variant='h4' align='left'>
                     Upcoming
                 </Typography>
             </Grid>
@@ -99,7 +98,11 @@ export const UpcomingOOO = () => {
                                 <ListItem container>
                                     <ListItemText
                                         primary={description}
-                                        secondary={`${moment(startDatetime).format('L')} - ${moment(endDatetime).format('L')}`}
+                                        secondary={`${moment(
+                                            startDatetime
+                                        ).format('L')} - ${moment(
+                                            endDatetime
+                                        ).format('L')}`}
                                     />
                                 </ListItem>
                             </React.Fragment>
@@ -130,7 +133,7 @@ export const LogOOO = () => {
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Typography variant="h4" align="left">
+                <Typography variant='h4' align='left'>
                     Log
                 </Typography>
             </Grid>
@@ -145,24 +148,26 @@ export const LogOOO = () => {
                                 startDatetime,
                                 endDatetime,
                             }) => (
-                                    <React.Fragment key={id}>
-                                        <ListItem>
-                                            <ListItemText
-                                                primary={description}
-                                                secondary={
-                                                    `${moment(startDatetime).format('L')} - ${moment(endDatetime).format('L')}`
-                                                }
-                                            />
-                                        </ListItem>
-                                        <Divider />
-                                    </React.Fragment>
-                                )
+                                <React.Fragment key={id}>
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={description}
+                                            secondary={`${moment(
+                                                startDatetime
+                                            ).format('L')} - ${moment(
+                                                endDatetime
+                                            ).format('L')}`}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+                                </React.Fragment>
+                            )
                         )
                     ) : (
-                            <>
-                                <NoOOOInformation />
-                            </>
-                        )}
+                        <>
+                            <NoOOOInformation />
+                        </>
+                    )}
                 </List>
             </Grid>
         </Grid>

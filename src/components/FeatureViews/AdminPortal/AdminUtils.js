@@ -1,12 +1,12 @@
 export const statusColor = {
-    "0": "yellow",
-    "-1": "yellow",
-    "-2": "red",
-    "-3": "red",
+    0: 'yellow',
+    '-1': 'yellow',
+    '-2': 'red',
+    '-3': 'red',
 };
 
 export const amountDue = (hourlyTuition, sessionLeft, sessionDuration) =>
-    (hourlyTuition * -(sessionLeft-1) * sessionDuration).toFixed(2);
+    (hourlyTuition * -(sessionLeft - 1) * sessionDuration).toFixed(2);
 
 export const getTime = (time) => {
     const strTime = String(time);

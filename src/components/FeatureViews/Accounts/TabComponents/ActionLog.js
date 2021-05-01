@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -48,7 +47,7 @@ const ActionLog = ({ ownerID }) => {
     });
 
     if (loading) return null;
-    if (error) return <Redirect to="/PageNotFound" />;
+    if (error) return <Redirect to='/PageNotFound' />;
 
     const { logs } = data;
 
@@ -111,7 +110,12 @@ const ActionLog = ({ ownerID }) => {
                                         {moment(date).format('LLLL')}
                                     </TableCell>
                                     <TableCell>{ActionLabel(action)}</TableCell>
-                                    <TableCell style={{ paddingLeft: '6em' , textTransform: "capitalize" }}>
+                                    <TableCell
+                                        style={{
+                                            paddingLeft: '6em',
+                                            textTransform: 'capitalize',
+                                        }}
+                                    >
                                         {objectType}
                                     </TableCell>
                                     <TableCell>{objectRepr}</TableCell>

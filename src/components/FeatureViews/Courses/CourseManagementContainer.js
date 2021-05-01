@@ -8,21 +8,21 @@ import InputBase from '@material-ui/core/InputBase';
 import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 
-import { UserAvatarCircle, StudentCourseLabel } from './StudentBadge';
+import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
 import { fullName, gradeOptions } from 'utils';
 import moment from 'moment';
-import theme, {
-    highlightColor,
+import {
     activeColor,
+    highlightColor,
     pastColor,
 } from '../../../theme/muiTheme';
+import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -124,6 +124,7 @@ const useStyles = makeStyles((theme) => ({
         height: '115px',
         '&:hover': {
             backgroundColor: highlightColor,
+            cursor: 'pointer',
         },
     },
 }));
@@ -141,6 +142,7 @@ export const GET_STUDENTS = gql`
                     lastName
                 }
                 enrollmentSet {
+                    id
                     course {
                         id
                         title
@@ -163,28 +165,19 @@ const ClassListItem = ({
     const classes = useStyles();
     let history = useHistory();
     const concatFullName = fullName(instructor.user);
-    const abbreviatedDay = moment(startDate).format('dddd');
-    const startingTime = moment(
-        activeAvailabilityList[0].startTime,
-        'HH:mm'
-    ).format('h:mm');
-    const endingTime = moment(
-        activeAvailabilityList[0].endTime,
-        'HH:mm'
-    ).format('h:mma');
     const startingDate = moment(startDate).format('MMM D YYYY');
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
-    const handleClick = (e) => history.push(`/coursemanagement/class/${id}`);
+    const handleClick = (e) => history.push(`/courses/class/${id}`);
 
     return (
         <>
             <Grid
                 container
-                justify="flex-start"
+                justify='flex-start'
                 className={classes.mainCardContainer}
-                data-active="inactive"
+                data-active='inactive'
                 onClick={handleClick}
             >
                 <Grid container md={10}>
@@ -207,8 +200,8 @@ const ClassListItem = ({
                     </Grid>
                     <Grid item xs={10} sm={9} md={10}>
                         <Typography
-                            variant="h3"
-                            align="left"
+                            variant='h3'
+                            align='left'
                             style={{ marginLeft: '.85em' }}
                         >
                             {title}
@@ -222,21 +215,21 @@ const ClassListItem = ({
                         md={2}
                         className={classes.displayCardMargins}
                     >
-                        <Typography variant="body1" align="left">
+                        <Typography variant='body1' align='left'>
                             <span className={classes.highlightName}>
                                 {concatFullName}
                             </span>
                         </Typography>
                     </Grid>
                     <Divder
-                        orientation="vertical"
+                        orientation='vertical'
                         flexItem
                         style={{ height: '2em', marginTop: '1em' }}
                     />
                     <Grid item>
                         <Typography
-                            variant="body1"
-                            align="left"
+                            variant='body1'
+                            align='left'
                             style={{ marginLeft: '1.2em', paddingTop: '3px' }}
                             className={classes.displayCardMargins}
                         >
@@ -244,7 +237,7 @@ const ClassListItem = ({
                         </Typography>
                     </Grid>
                     <Divder
-                        orientation="vertical"
+                        orientation='vertical'
                         flexItem
                         style={{
                             height: '2em',
@@ -254,12 +247,14 @@ const ClassListItem = ({
                     />
                     <Grid item>
                         <Typography
-                            variant="body1"
-                            align="left"
+                            variant='body1'
+                            align='left'
                             style={{ marginLeft: '1.2em', paddingTop: '3px' }}
                             className={classes.displayCardMargins}
                         >
-                            {`${abbreviatedDay} ${startingTime} - ${endingTime} `}
+                            <CourseAvailabilites
+                                availabilityList={activeAvailabilityList}
+                            />
                         </Typography>
                     </Grid>
                 </Grid>
@@ -311,11 +306,11 @@ const CourseFilterDropdown = ({
     const ChosenFiltersOption = filterList.map(filterOptionsMapper);
 
     return (
-        <Grid item xs={3}>
+        <Grid item>
             <FormControl className={classes.margin}>
                 <Select
-                    labelId="course-management-sort-tab"
-                    id="course-management-sort-tab"
+                    labelId='course-management-sort-tab'
+                    id='course-management-sort-tab'
                     displayEmpty
                     value={filter}
                     onChange={handleChange}
@@ -336,7 +331,7 @@ const CourseFilterDropdown = ({
                 >
                     <MenuItem
                         ListItemClasses={{ selected: classes.menuSelected }}
-                        value=""
+                        value=''
                     >
                         {initialValue}
                     </MenuItem>
@@ -361,6 +356,35 @@ const CourseFilterDropdown = ({
     );
 };
 
+export const GET_COURSES_BY_ACCOUNT_ID = gql`
+    query getCourses($accountId: ID) {
+        courses(userId: $accountId) {
+            endDate
+            title
+            academicLevel
+            startDate
+            courseId
+            id
+            activeAvailabilityList {
+                dayOfWeek
+                endTime
+                startTime
+            }
+            instructor {
+                user {
+                    firstName
+                    lastName
+                    id
+                }
+            }
+            courseCategory {
+                id
+                name
+            }
+        }
+    }
+`;
+
 const CourseManagementContainer = () => {
     const classes = useStyles();
     const [sortByDate, setSortByDate] = useState('');
@@ -372,49 +396,14 @@ const CourseManagementContainer = () => {
 
     const handleChange = (event) => setSortByDate(event.target.value);
 
-    const checkAccountForQuery =
-        accountInfo.accountType === 'ADMIN' ||
-        accountInfo.accountType === 'INSTRUCTOR'
-            ? 'instructorId'
-            : 'parentId';
-
     const accountId =
         accountInfo.accountType === 'ADMIN' ? '' : accountInfo.user.id;
-
-    const GET_COURSES = gql`
-    query getCourses($accountId:ID!) {
-      courses(${checkAccountForQuery}: $accountId) {
-        endDate
-        title
-        academicLevel
-        startDate
-        courseId
-        id
-        activeAvailabilityList {
-          dayOfWeek
-          endTime
-          startTime
-        }
-        instructor {
-          user {
-            firstName
-            lastName
-            id
-          }
-        }
-        courseCategory {
-          id
-          name
-        }
-      }
-    }
-  `;
 
     const {
         data: courseData,
         loading: courseLoading,
         error: courseError,
-    } = useQuery(GET_COURSES, {
+    } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
         variables: { accountId },
     });
 
@@ -487,9 +476,9 @@ const CourseManagementContainer = () => {
 
     return (
         <Grid item xs={12}>
-            <Grid container direction="row">
+            <Grid container direction='row'>
                 <Grid item xs={6}>
-                    <Typography align="left" className="heading" variant="h1">
+                    <Typography align='left' className='heading' variant='h1'>
                         Course Management
                     </Typography>
                 </Grid>
@@ -497,16 +486,16 @@ const CourseManagementContainer = () => {
                 {accountInfo.accountType === 'PARENT' && (
                     <Grid
                         item
-                        align="right"
+                        align='right'
                         style={{ paddingRight: '2em' }}
                         xs={6}
                     >
                         <CourseFilterDropdown
                             filterList={studentOptionList}
-                            initialValue="All Students"
+                            initialValue='All Students'
                             setState={setStudentFilterValue}
                             filter={studentFilterValue}
-                            filterKey="students"
+                            filterKey='students'
                         />
                     </Grid>
                 )}
@@ -514,14 +503,14 @@ const CourseManagementContainer = () => {
 
             <Grid
                 container
-                alignItems="center"
+                alignItems='center'
                 className={classes.containerMargins}
             >
                 <Grid item xs={3}>
                     <FormControl className={classes.margin}>
                         <Select
-                            labelId="course-management-sort-tab"
-                            id="course-management-sort-tab"
+                            labelId='course-management-sort-tab'
+                            id='course-management-sort-tab'
                             displayEmpty
                             value={sortByDate}
                             onChange={handleChange}
@@ -545,7 +534,7 @@ const CourseManagementContainer = () => {
                                     ListItemClasses={{
                                         selected: classes.menuSelected,
                                     }}
-                                    value=""
+                                    value=''
                                 >
                                     Sort By
                                 </MenuItem>
@@ -573,24 +562,24 @@ const CourseManagementContainer = () => {
                 </Grid>
                 <CourseFilterDropdown
                     filterList={gradeOptions}
-                    initialValue="All Grades"
+                    initialValue='All Grades'
                     setState={setGradeFilterValue}
                     filter={gradeFilterValue}
-                    filterKey="grades"
+                    filterKey='grades'
                 />
                 <CourseFilterDropdown
                     filterList={subjectList}
-                    initialValue="All Subjects"
+                    initialValue='All Subjects'
                     setState={setSubjectFilterValue}
                     filter={subectFilterValue}
-                    filterKey="subjects"
+                    filterKey='subjects'
                 />
                 <CourseFilterDropdown
                     filterList={instructorsList}
-                    initialValue="All Instructors"
+                    initialValue='All Instructors'
                     setState={setInstructorFilterValue}
                     filter={instructorsFilterValue}
-                    filterKey="instructors"
+                    filterKey='instructors'
                 />
             </Grid>
             <hr />

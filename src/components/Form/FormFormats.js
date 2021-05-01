@@ -1,37 +1,46 @@
-import * as types from "actions/actionTypes";
-import {createTutoringDetails, submitRegistration} from "../OmouComponents/RegistrationUtils";
-import {instance} from "actions/apiActions";
-import React from "react";
-import {FORM_ERROR} from "final-form";
-import * as Fields from "./Fields";
-import {StudentSelect} from "./Fields";
-import * as Yup from "yup";
-import * as moment from "moment";
-import {client} from "index";
-import gql from "graphql-tag";
-import {fullName} from "../../utils";
-import TutoringPriceQuote from "./TutoringPriceQuote";
-import {USER_QUERIES} from "../FeatureViews/Accounts/UserProfile";
+import * as types from 'actions/actionTypes';
+import {
+    createTutoringDetails,
+    submitRegistration,
+} from '../OmouComponents/RegistrationUtils';
+import { instance } from 'actions/apiActions';
+import React from 'react';
+import { FORM_ERROR } from 'final-form';
+import * as Fields from './FieldComponents/Fields';
+import { fieldsMargins, StudentSelect } from './FieldComponents/Fields';
+import * as Yup from 'yup';
+import * as moment from 'moment';
+import { client } from 'index';
+import gql from 'graphql-tag';
+import { fullName } from '../../utils';
+import TutoringPriceQuote from './FieldComponents/TutoringPriceQuote';
+import { USER_QUERIES } from '../FeatureViews/Accounts/UserProfile';
+import CourseAvailabilityField from './FieldComponents/CourseAvailabilityField';
+import { GET_CLASS } from '../FeatureViews/Courses/CourseClass';
+import { GET_ALL_COURSES } from '../FeatureViews/Registration/RegistrationLanding';
+import { GET_COURSES_BY_ACCOUNT_ID } from '../FeatureViews/Courses/CourseManagementContainer';
+import { new_course_form } from '../../theme/muiTheme';
 
 export const GET_ADMIN = gql`
-            query GetAdmin($userID: ID!) {
-                admin(userId: $userID) {
-                    user {
-                        id
-                        email
-                        firstName
-                        lastName
-                    }
-                    adminType
-                    gender
-                    phoneNumber
-                    birthDate
-                    address
-                    city
-                    state
-                    zipcode
-                }
-            }`;
+    query GetAdmin($userID: ID!) {
+        admin(userId: $userID) {
+            user {
+                id
+                email
+                firstName
+                lastName
+            }
+            adminType
+            gender
+            phoneNumber
+            birthDate
+            address
+            city
+            state
+            zipcode
+        }
+    }
+`;
 
 Yup.addMethod(Yup.array, 'unique', function (message, mapper = (a) => a) {
     return this.test('unique', message, function (list) {
@@ -55,11 +64,16 @@ export const parseDate = (date) => {
 };
 
 export const selectField = (options) => ({
-        component: <Fields.Select data={options} />,
+        component: <Fields.Select style={fieldsMargins} data={options} />,
         validator: Yup.mixed().oneOf(options.map(({ value }) => value)),
     }),
-    stringField = (label) => ({
-        component: <Fields.TextField />,
+    stringField = (label, style) => ({
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '8px ', marginBottom: '24px', ...style }}
+                name={label}
+            />
+        ),
         label,
         validator: Yup.string().matches(
             /[a-zA-Z][^#&<>"~;$^%{}?]+$/u,
@@ -89,12 +103,14 @@ const userMap = ({ accountSearch }) =>
         value: user.id,
     }));
 
-const instructorSelect = (name) => (
+const instructorSelect = (name, style) => (
     <Fields.DataSelect
         name={name}
         optionsMap={userMap}
         request={SEARCH_INSTRUCTORS}
-        noOptionsText="No instructors available"
+        noOptionsText='No instructors available'
+        variant='outlined'
+        style={style}
     />
 );
 
@@ -185,7 +201,7 @@ const DAY_OF_WEEK_OPTIONS = [
 
 export const ACADEMIC_LVL_FIELD = {
         name: 'academicLevel',
-        label: 'Grade',
+        label: 'Select Grade Level',
         ...selectField([
             {
                 label: 'Elementary School',
@@ -212,7 +228,7 @@ export const ACADEMIC_LVL_FIELD = {
     BIRTH_DATE_FIELD = {
         name: 'birthDate',
         label: 'Birth Date',
-        component: <Fields.DatePicker format="MM/DD/YYYY" openTo="year" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' openTo='year' />,
         validator: Yup.date().max(moment()),
     },
     CITY_FIELD = {
@@ -288,26 +304,26 @@ export const ACADEMIC_LVL_FIELD = {
         name: 'startDate',
         label: 'Start Date',
         required: 'true',
-        component: <Fields.DatePicker format="MM/DD/YYYY" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' />,
         validator: Yup.date(),
     },
     END_DATE_FIELD = {
         name: 'endDate',
         label: 'End Date',
         required: 'true',
-        component: <Fields.DatePicker format="MM/DD/YYYY" />,
+        component: <Fields.DatePicker format='MM/DD/YYYY' />,
         validator: Yup.date(),
     },
     START_TIME_FIELD = {
         name: 'startTime',
         label: 'Start Time',
-        component: <Fields.TimePicker format="hh:mm a" />,
+        component: <Fields.TimePicker format='hh:mm a' />,
         validator: Yup.date(),
     },
     END_TIME_FIELD = {
         name: 'endTime',
         label: 'End Time',
-        component: <Fields.TimePicker format="hh:mm a" />,
+        component: <Fields.TimePicker format='hh:mm a' />,
         validator: Yup.date(),
     },
     STATE_FIELD = {
@@ -315,6 +331,7 @@ export const ACADEMIC_LVL_FIELD = {
         label: 'State',
         component: (
             <Fields.Autocomplete
+                style={{ marginTop: '16px', marginBottom: '8px' }}
                 options={STATE_OPTIONS}
                 textFieldProps={{
                     fullWidth: false,
@@ -326,7 +343,12 @@ export const ACADEMIC_LVL_FIELD = {
     ZIPCODE_FIELD = {
         name: 'zipcode',
         label: 'Zip Code',
-        component: <Fields.TextField textInputProps={{ fullWidth: false }} />,
+        component: (
+            <Fields.TextField
+                style={{ marginTop: '16px', marginBottom: '16px' }}
+                textInputProps={{ fullWidth: false }}
+            />
+        ),
         validator: Yup.string().matches(
             /^\d{5}(?:[-\s]\d{4})?$/u,
             'Invalid zipcode'
@@ -476,12 +498,19 @@ const TUTORING_COURSE_SECTIONS = [
                 // TODO: price quote tool
                 name: 'price',
                 label: 'Price',
-                component: <TutoringPriceQuote courseType="TUTORING" />,
+                component: <TutoringPriceQuote courseType='TUTORING' />,
                 validator: Yup.mixed(),
             },
         ],
     },
 ];
+
+const COURSE_AVAILABILITY_FIELD = (count) => ({
+    name: `CourseAvailability${count}`,
+    label: `CourseAvailability${count}`,
+    component: <CourseAvailabilityField count={count} />,
+    validator: Yup.mixed(),
+});
 
 const SEARCH_PARENTS = gql`
     query ParentSearch($query: String!) {
@@ -532,7 +561,7 @@ const parentSelect = (name) => (
         name={name}
         optionsMap={userMap}
         request={SEARCH_PARENTS}
-        noOptionsText="No parents available"
+        noOptionsText='No parents available'
     />
 );
 
@@ -558,12 +587,13 @@ const categoryMap = ({ courseCategories }) =>
         value: id,
     }));
 
-const categorySelect = (name) => (
+const categorySelect = (name, style) => (
     <Fields.DataSelect
         name={name}
         optionsMap={categoryMap}
         request={GET_CATEGORIES}
-        noOptionsText="No categories available"
+        noOptionsText='No categories available'
+        style={style}
     />
 );
 
@@ -587,7 +617,7 @@ const schoolSelect = (name) => (
         name={name}
         optionsMap={schoolMap}
         request={GET_SCHOOLS}
-        noOptionsText="No schools available"
+        noOptionsText='No schools available'
     />
 );
 
@@ -649,13 +679,16 @@ export default {
                 ],
             },
         ],
-        load: async (id) => {
+        load: async (id, parentIdOfNewStudent) => {
+            // Loads parent id if form was opened from parent profile's "Add Student" button
+            const idToLoad = id ? { id } : { id: parentIdOfNewStudent };
+
             try {
                 const {
                     data: { userInfo },
                 } = await client.query({
                     query: GET_USER_TYPE,
-                    variables: { id },
+                    variables: idToLoad,
                 });
                 if (userInfo.accountType === 'PARENT') {
                     const GET_NAME = gql`
@@ -672,13 +705,13 @@ export default {
                         data: { parent },
                     } = await client.query({
                         query: GET_NAME,
-                        variables: { id },
+                        variables: idToLoad,
                     });
                     return {
                         student: {
                             primaryParent: {
                                 label: `${parent.user.firstName} ${parent.user.lastName}`,
-                                value: id,
+                                value: idToLoad.id,
                             },
                         },
                     };
@@ -747,51 +780,72 @@ export default {
             }
             return null;
         },
-        submit: async ({ student }, id) => {
+        submit: async ({ student }, id, parentIdOfNewStudent) => {
+            console.log(parentIdOfNewStudent, id);
             const ADD_STUDENT = gql`
-            mutation AddStudent(
-            $firstName: String!,
-            $email: String,
-            $lastName: String!,
-            $address: String,
-            $birthDate:Date,
-            $city:String,
-            $gender:GenderEnum,
-            $grade:Int,
-            $phoneNumber:String,
-            $primaryParent:ID,
-            $school:ID,
-            $zipcode:String,
-            $state:String,
-            $id: ID) {
-                createStudent(user: {firstName: $firstName, id: $id, lastName: $lastName,  email:$email}, address: $address, birthDate: $birthDate, school: $school, grade: $grade, gender: $gender, primaryParent: $primaryParent, phoneNumber: $phoneNumber, city: $city, state: $state, zipcode: $zipcode) {
-                    created
-                    student {
-                      accountType
-                      phoneNumber
-                      user {
-                        email
-                        lastName
-                        firstName
-                        id
-                      }
-                    }  
+                mutation AddStudent(
+                    $firstName: String!
+                    $email: String
+                    $lastName: String!
+                    $address: String
+                    $birthDate: Date
+                    $city: String
+                    $gender: GenderEnum
+                    $grade: Int
+                    $phoneNumber: String
+                    $primaryParent: ID
+                    $school: ID
+                    $zipcode: String
+                    $state: String
+                    $id: ID
+                ) {
+                    createStudent(
+                        user: {
+                            firstName: $firstName
+                            id: $id
+                            lastName: $lastName
+                            email: $email
+                        }
+                        address: $address
+                        birthDate: $birthDate
+                        school: $school
+                        grade: $grade
+                        gender: $gender
+                        primaryParent: $primaryParent
+                        phoneNumber: $phoneNumber
+                        city: $city
+                        state: $state
+                        zipcode: $zipcode
+                    ) {
+                        created
+                        student {
+                            accountType
+                            phoneNumber
+                            user {
+                                email
+                                lastName
+                                firstName
+                                id
+                            }
+                        }
+                    }
                 }
-            }`;
+            `;
 
             const GET_ALL_STUDENTS = gql`
                 query GetAllStudents {
                     students {
-                      accountType
-                      phoneNumber
-                      user {
-                        email
-                        lastName
-                        firstName
-                        id
-                      }
+                        accountType
+                        phoneNumber
+                        user {
+                            email
+                            lastName
+                            firstName
+                            id
+                        }
                     }
-                }`
+                }
+            `;
 
             try {
                 await client.mutate({
@@ -801,57 +855,65 @@ export default {
                         id,
                         email: student.email || '',
                         birthDate: parseDate(student.birthDate),
-                        primaryParent: student.primaryParent?.value,
+                        primaryParent:
+                            parentIdOfNewStudent ||
+                            student.primaryParent?.value,
                         school: student.school?.value,
                     },
-                    "update": (cache, { data }) => {
+                    update: (cache, { data }) => {
                         const newStudent = data.createStudent;
 
                         const cachedStudent = cache.readQuery({
-                            query: USER_QUERIES["student"],
+                            query: USER_QUERIES['student'],
                             variables: {
-                                "ownerID": newStudent.student.user.id,
-                            }
+                                ownerID: newStudent.student.user.id,
+                            },
                         });
                         cache.writeQuery({
                             data: {
-                                "student": {
+                                student: {
                                     ...cachedStudent,
-                                    user: {...newStudent.student.user,},
+                                    user: { ...newStudent.student.user },
                                     birthDate: newStudent.student.birthDate,
                                 },
                             },
-                            query: USER_QUERIES["student"],
+                            query: USER_QUERIES['student'],
                             variables: {
                                 ownerId: newStudent.student.user.id,
-                            }
+                            },
                         });
                         // NOTE: Hacky way to check if the students cache exists yet.
                         // if it doesn't exist then don't update the list. No better way of doing this according to stackoverflow
                         // https://github.com/apollographql/apollo-client/issues/1701
                         if (cache.data.data.ROOT_QUERY.students) {
-                            const cachedStudents = cache.readQuery({
-                                query: GET_ALL_STUDENTS
-                            }).students || [];
+                            const cachedStudents =
+                                cache.readQuery({
+                                    query: GET_ALL_STUDENTS,
+                                }).students || [];
 
-                            const matchingIndex = cachedStudents.findIndex(({user: {id}}) =>
-                                id === newStudent.student.user.id);
+                            const matchingIndex = cachedStudents.findIndex(
+                                ({ user: { id } }) =>
+                                    id === newStudent.student.user.id
+                            );
 
                             let updatedStudents = cachedStudents;
 
                             if (matchingIndex === -1) {
-                                updatedStudents = [...cachedStudents, newStudent];
+                                updatedStudents = [
+                                    ...cachedStudents,
+                                    newStudent,
+                                ];
                             } else {
                                 updatedStudents[matchingIndex] = newStudent;
                             }
                             cache.writeQuery({
                                 data: {
-                                    "students": updatedStudents
+                                    students: updatedStudents,
                                 },
-                                query: GET_ALL_STUDENTS
+                                query: GET_ALL_STUDENTS,
                             });
                         }
-                    }
+                    },
                 });
             } catch (error) {
                 return {
@@ -907,7 +969,6 @@ export default {
                     $firstName: String!
                     $lastName: String!
                     $email: String!
-                    $password: String
                     $phoneNumber: String
                     $address: String
                     $birthDate: Date
@@ -924,7 +985,7 @@ export default {
                             lastName: $lastName
                             id: $id
                             email: $email
-                            password: $password
+                            password: "abcdefgh"
                         }
                         city: $city
                         address: $address
@@ -946,7 +1007,7 @@ export default {
                         ...parent,
                         birthDate: parseDate(parent.birthDate),
                         id,
-                        password: '',
+                        // password: '',
                     },
                 });
             } catch (error) {
@@ -967,7 +1028,7 @@ export default {
                     {
                         name: 'password',
                         label: 'Password',
-                        component: <Fields.TextField type="password" />,
+                        component: <Fields.TextField type='password' />,
                         validator: Yup.mixed(),
                         required: true,
                     },
@@ -1007,8 +1068,7 @@ export default {
                 ],
             },
         ],
-        "load": async (id) => {
-
+        load: async (id) => {
             try {
                 const {
                     data: { admin },
@@ -1028,72 +1088,75 @@ export default {
         },
         submit: async (formData, id) => {
             const CREATE_ADMIN = gql`
-            mutation CreateAdmin(
-                $address: String,
-                $adminType: AdminTypeEnum!,
-                $birthDate: Date,
-                $city: String,
-                $gender: GenderEnum,
-                $phoneNumber: String,
-                $id: ID,
-                $state: String,
-                $email: String,
-                $firstName: String!,
-                $lastName: String!,
-                $password: String,
-                $zipcode: String
-            ) {
-                createAdmin(
-                    user: {
-                        firstName: $firstName, lastName: $lastName,
-                        password: $password, email: $email,
-                        id: $id,
-                    },
-                    address: $address,
-                    adminType: $adminType,
-                    birthDate: $birthDate,
-                    city: $city,
-                    gender: $gender,
-                    phoneNumber: $phoneNumber,
-                    state: $state,
-                    zipcode: $zipcode
+                mutation CreateAdmin(
+                    $address: String
+                    $adminType: AdminTypeEnum!
+                    $birthDate: Date
+                    $city: String
+                    $gender: GenderEnum
+                    $phoneNumber: String
+                    $id: ID
+                    $state: String
+                    $email: String
+                    $firstName: String!
+                    $lastName: String!
+                    $password: String
+                    $zipcode: String
                 ) {
-                    admin {
+                    createAdmin(
+                        user: {
+                            firstName: $firstName
+                            lastName: $lastName
+                            password: $password
+                            email: $email
+                            id: $id
+                        }
+                        address: $address
+                        adminType: $adminType
+                        birthDate: $birthDate
+                        city: $city
+                        gender: $gender
+                        phoneNumber: $phoneNumber
+                        state: $state
+                        zipcode: $zipcode
+                    ) {
+                        admin {
+                            accountType
+                            adminType
+                            userUuid
+                            birthDate
+                            address
+                            city
+                            phoneNumber
+                            state
+                            zipcode
+                            user {
+                                email
+                                firstName
+                                id
+                                lastName
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const GET_ALL_ADMINS = gql`
+                query GetAllAdmins {
+                    admins {
                         accountType
                         adminType
-                        userUuid
-                        birthDate
-                        address
-                        city
                         phoneNumber
-                        state
-                        zipcode
                         user {
                             email
                             firstName
                             id
                             lastName
                         }
+                        userUuid
                     }
                 }
-            }
             `;
-
-            const GET_ALL_ADMINS = gql`
-                query GetAllAdmins {
-                    admins {
-                      accountType
-                      adminType
-                      phoneNumber
-                      user {
-                        email
-                        firstName
-                        id
-                        lastName
-                      }
-                      userUuid
-                    }
-                  }`;
 
             const modifiedData = {
                 ...formData,
@@ -1121,42 +1184,52 @@ export default {
                     variables: {
                         ...adminMutationVariable,
                         id,
-                        userUuid
+                        userUuid,
                     },
-                    "update": (cache, { data: { createAdmin: { admin } } }) => {
+                    update: (
+                        cache,
+                        {
+                            data: {
+                                createAdmin: { admin },
+                            },
+                        }
+                    ) => {
                         const newAdmin = {
                             accountType: admin.accountType,
                             adminType: admin.adminType,
                             phoneNumber: admin.phoneNumber,
                             user: admin.user,
-                            userUuid: admin.userUuid
+                            userUuid: admin.userUuid,
                         };
 
                         const cachedAdmin = cache.readQuery({
                             query: USER_QUERIES.admin,
                             variables: {
-                                ownerID: admin.user.id
-                            }
-                        })
+                                ownerID: admin.user.id,
+                            },
+                        });
                         cache.writeQuery({
                             data: {
                                 admin: {
                                     ...cachedAdmin,
-                                    ...newAdmin
+                                    ...newAdmin,
                                 },
                             },
                             query: GET_ADMIN,
                             variables: {
                                 ownerID: admin.user.id,
-                            }
+                            },
                         });
 
                         if (cache.data.data.ROOT_QUERY.admins) {
-                            const cachedAdmins = cache.readQuery({
-                                query: GET_ALL_ADMINS
-                            })["admins"] || [];
+                            const cachedAdmins =
+                                cache.readQuery({
+                                    query: GET_ALL_ADMINS,
+                                })['admins'] || [];
 
-                            const matchingIndex = cachedAdmins.findIndex(({user: {id}}) => newAdmin.user.id === id)
+                            const matchingIndex = cachedAdmins.findIndex(
+                                ({ user: { id } }) => newAdmin.user.id === id
+                            );
 
                             let updatedAdmins = cachedAdmins;
 
@@ -1168,12 +1241,12 @@ export default {
 
                             cache.writeQuery({
                                 data: {
-                                    "admins": updatedAdmins
+                                    admins: updatedAdmins,
                                 },
-                                query: GET_ALL_ADMINS
+                                query: GET_ALL_ADMINS,
                             });
                         }
-                    }
+                    },
                 });
             } catch (error) {
                 return {
@@ -1271,11 +1344,29 @@ export default {
                     {
                         name: 'title',
                         required: true,
-                        ...stringField('Course Name'),
+                        ...stringField(
+                            'Course Name',
+                            new_course_form.textFields
+                        ),
                     },
                     {
                         name: 'description',
-                        ...stringField('Course Description'),
+                        required: true,
+                        ...stringField(
+                            'Course Description',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'maxCapacity',
+                        label: 'Enrollment Capacity',
+                        required: true,
+                        component: (
+                            <Fields.TextField
+                                style={new_course_form.textFields_short}
+                            />
+                        ),
+                        validator: Yup.number().min(1).integer(),
                     },
                     {
                         ...ACADEMIC_LVL_FIELD,
@@ -1283,25 +1374,25 @@ export default {
                     },
                     {
                         name: 'courseCategory',
-                        label: 'Subject',
-                        required: 'true',
-                        component: categorySelect('courseCategory'),
+                        label: 'Select Subject',
+                        required: true,
+                        component: categorySelect(
+                            'courseCategory',
+                            new_course_form.dropdowns
+                        ),
                         validator: Yup.mixed(),
                     },
                     {
                         name: 'instructor',
                         label: 'Select Instructor',
-                        component: instructorSelect('instructor'),
+                        component: instructorSelect(
+                            'instructor',
+                            new_course_form.dropdowns
+                        ),
                         validator: Yup.mixed(),
                     },
                     INSTRUCTOR_CONFIRM_FIELD,
                     //!TODO FIX TO DISPLAY N NUMBER OF OTPIONS
-                    {
-                        name: 'maxCapacity',
-                        label: 'Capacity',
-                        component: <Fields.TextField />,
-                        validator: Yup.number().min(1).integer(),
-                    },
                 ],
                 next: 'dayAndTime',
             },
@@ -1311,81 +1402,46 @@ export default {
                 fields: [
                     START_DATE_FIELD,
                     END_DATE_FIELD,
-                    {
-                        name: 'weekday1',
-                        label: 'Day of Week',
-                        required: 'true',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime1',
-                        label: 'Start Time',
-                        required: 'true',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime1',
-                        label: 'End Time',
-                        required: 'true',
-                        component: (
-                            <Fields.TimePicker width={50} format="hh:mm a" />
-                        ),
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'weekday2',
-                        label: 'Day of Week',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime2',
-                        label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime2',
-                        label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'weekday3',
-                        label: 'Day of Week',
-                        ...selectField(DAY_OF_WEEK_OPTIONS),
-                    },
-                    {
-                        name: 'startTime3',
-                        label: 'Start Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
-                    {
-                        name: 'endTime3',
-                        label: 'End Time',
-                        component: <Fields.TimePicker format="hh:mm a" />,
-                        validator: Yup.date(),
-                    },
+                    COURSE_AVAILABILITY_FIELD(1),
+                    COURSE_AVAILABILITY_FIELD(2),
+                    COURSE_AVAILABILITY_FIELD(3),
                 ],
                 next: 'tuition',
             },
             {
                 name: 'tuition',
-                label: 'Tuition',
+                label: 'Location & Tuition',
                 fields: [
                     {
-                        name: 'room',
-                        label: 'Room',
-                        required: true,
-                        component: <Fields.TextField />,
-                        validator: Yup.string(),
+                        name: 'classroomLocation',
+                        ...stringField(
+                            'Classroom Location',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'courseLink',
+                        ...stringField(
+                            'Meeting Link',
+                            new_course_form.textFields
+                        ),
+                    },
+                    {
+                        name: 'googleClassCode',
+                        ...stringField(
+                            'GClassroom Enrollment Code',
+                            new_course_form.textFields
+                        ),
                     },
                     {
                         name: 'totalTuition',
                         label: 'Total Tuition',
                         required: true,
-                        component: <Fields.TextField />,
+                        component: (
+                            <Fields.TextField
+                                style={new_course_form.textFields}
+                            />
+                        ),
                         validator: Yup.number().min(0),
                     },
                 ],
@@ -1412,10 +1468,17 @@ export default {
                             name
                         }
                         academicLevel
+                        academicLevelPretty
                         endDate
                         totalTuition
                         hourlyTuition
                         isConfirmed
+                        activeAvailabilityList {
+                            dayOfWeek
+                            endTime
+                            id
+                            startTime
+                        }
                     }
                 }
             `;
@@ -1433,6 +1496,34 @@ export default {
                 const {
                     instructor: { user },
                 } = course;
+
+                const isValidCourseAvailability = (length, maxLength) =>
+                    maxLength >= length;
+                const maxCourseAvailabilities =
+                    course.activeAvailabilityList.length;
+                const loadedCourseAvailabilityFieldValues = course.activeAvailabilityList.reduce(
+                    (acc, courseAvailability, index) => ({
+                        ...acc,
+                        ...(isValidCourseAvailability(
+                            index + 1,
+                            maxCourseAvailabilities
+                        ) && {
+                            [`dayOfWeek-${
+                                index + 1
+                            }`]: courseAvailability.dayOfWeek,
+                            [`endTime-${index + 1}`]: moment(
+                                courseAvailability.endTime,
+                                'HH:mm'
+                            ),
+                            [`startTime-${index + 1}`]: moment(
+                                courseAvailability.startTime,
+                                'HH:mm'
+                            ),
+                        }),
+                    }),
+                    {}
+                );
+
                 return {
                     courseDescription: {
                         title: course.title,
@@ -1443,8 +1534,16 @@ export default {
                             label: `${user.firstName} ${user.lastName}`,
                             value: user.id,
                         },
+                        academicLevel: course.academicLevel,
+                        courseCategory: {
+                            label: course.courseCategory.name,
+                            value: course.courseCategory.id,
+                        },
+                    },
+                    dayAndTime: {
                         startDate: moment(course.startDate, 'YYYY-MM-DD'),
-                        startTime: moment(course.startTime, 'HH:mm:ss'),
+                        endDate: moment(course.endDate, 'YYYY-MM-DD'),
+                        ...loadedCourseAvailabilityFieldValues,
                     },
                     tuition: {
                         academicLevel: course.academicLevel,
@@ -1486,6 +1585,9 @@ export default {
                     $maxCapacity: Int
                     $totalTuition: Decimal
                     $title: String!
+                    $courseLink: String
+                    $classroomLocation: String
+                    $googleClassCode: String
                 ) {
                     createCourse(
                         id: $id
@@ -1496,27 +1598,39 @@ export default {
                         instructor: $instructor
                         startDate: $startDate
                         endDate: $endDate
-                        room: "Stanford Room"
+                        room: $classroomLocation
                         maxCapacity: $maxCapacity
                         courseCategory: $courseCategory
                         totalTuition: $totalTuition
                         isConfirmed: $isConfirmed
                         availabilities: $availabilities
+                        courseLink: $courseLink
+                        googleClassCode: $googleClassCode
                     ) {
                         created
                         course {
-                            academicLevelPretty
                             id
-                            title
-                            description
-                            courseType
                             academicLevel
+                            title
                             startDate
                             endDate
+                            description
+                            maxCapacity
+                            courseCategory {
+                                name
+                                id
+                            }
+                            activeAvailabilityList {
+                                dayOfWeek
+                                endTime
+                                startTime
+                                id
+                            }
                             instructor {
                                 user {
                                     firstName
                                     lastName
+                                    id
                                 }
                             }
                         }
@@ -1525,60 +1639,52 @@ export default {
             `;
 
             const { courseDescription, dayAndTime, tuition } = formData;
+            const formatTime = (time) => time && time.format('HH:mm');
             const availabilities = (() => {
-                const availabilityList = [
-                    {
-                        dayOfWeek: dayAndTime.weekday1,
-                        startTime: dayAndTime.startTime1.format('HH:mm'),
-                        endTime: dayAndTime.endTime1.format('HH:mm'),
-                    },
-                ];
-                if (
-                    dayAndTime.weekday2 &&
-                    dayAndTime.startTime2 &&
-                    dayAndTime.EndTime2
-                ) {
-                    availabilities.push({
-                        dayOfWeek: dayAndTime.weekday2,
-                        startTime: dayAndTime.startTime2
-                            ? dayAndTime.startTime2.format('HH:mm')
-                            : null,
-                        endTime: dayAndTime.endTime2
-                            ? dayAndTime.endTime2.format('HH:mm')
-                            : null,
-                    });
-                }
-                if (
-                    dayAndTime.weekday3 &&
-                    dayAndTime.startTime3 &&
-                    dayAndTime.EndTime3
-                ) {
-                    availabilities.push({
-                        dayOfWeek: dayAndTime.weekday3,
-                        startTime: dayAndTime.startTime3
-                            ? dayAndTime.startTime3.format('HH:mm')
-                            : null,
-                        endTime: dayAndTime.endTime3
-                            ? dayAndTime.endTime3.format('HH:mm')
-                            : null,
-                    });
-                }
-                return availabilityList;
+                const setDayOfWeek = (count) =>
+                    formData[`dayOfWeek-${count}`] ||
+                    dayAndTime[`dayOfWeek-${count}`];
+                const setTime = (time) =>
+                    formatTime(formData[time]) || formatTime(dayAndTime[time]);
+
+                const createCourseAvailability = (count) => ({
+                    dayOfWeek: setDayOfWeek(count),
+                    startTime: setTime(`startTime-${count}`),
+                    endTime: setTime(`endTime-${count}`),
+                });
+
+                const insertIf = (condition, ...elements) =>
+                    condition ? elements : [];
+                const ifUserFilledDayOfWeek = (dayOfWeek) =>
+                    dayAndTime[dayOfWeek] || formData[dayOfWeek];
+
+                return ['dayOfWeek-1', 'dayOfWeek-2', 'dayOfWeek-3'].reduce(
+                    (acc, dayOfWeek, index) => [
+                        ...acc,
+                        ...insertIf(
+                            ifUserFilledDayOfWeek(dayOfWeek),
+                            createCourseAvailability(index + 1)
+                        ),
+                    ],
+                    []
+                );
             })();
             const modifiedData = {
                 courseDescription: {
                     ...courseDescription,
                     instructor: courseDescription.instructor.value,
-                    courseCategory: courseDescription.courseCategory.value,
                 },
                 dayAndTime: {
-                    startDate: dayAndTime.startDate,
-                    endDate: dayAndTime.endDate,
+                    startDate: dayAndTime.startDate.format(
+                        'YYYY-MM-DDTHH:mm:ss'
+                    ),
+                    endDate: dayAndTime.endDate.format('YYYY-MM-DDTHH:mm:ss'),
                     availabilities,
                 },
                 tuition: {
                     ...tuition,
                     courseCategory: courseDescription.courseCategory.value,
+                    academicLevel: courseDescription.academicLevel,
                 },
             };
             const courseFormFields = Object.values(modifiedData).reduce(
@@ -1596,6 +1702,73 @@ export default {
                 await client.mutate({
                     mutation: CREATE_COURSE,
                     variables: id ? editedCourseFormFields : courseFormFields,
+                    update: (cache, { data }) => {
+                        const newCourse = data.createCourse.course;
+                        const created = data.createCourse.created;
+
+                        if (created) {
+                            // Update cache for Registration Courses
+                            const cachedRegistrationCourses = cache.readQuery({
+                                query: GET_ALL_COURSES,
+                            });
+
+                            if (cachedRegistrationCourses !== null) {
+                                cache.writeQuery({
+                                    data: {
+                                        courses: [
+                                            ...cachedRegistrationCourses.courses,
+                                            newCourse,
+                                        ],
+                                    },
+                                    query: GET_ALL_COURSES,
+                                });
+                            }
+
+                            // Update cache for Course Management Courses
+                            const cachedCourseManagementCourses = cache.readQuery(
+                                {
+                                    query: GET_COURSES_BY_ACCOUNT_ID,
+                                    variables: {
+                                        accountId: '',
+                                    },
+                                }
+                            );
+
+                            if (cachedCourseManagementCourses !== null) {
+                                cache.writeQuery({
+                                    data: {
+                                        courses: [
+                                            ...cachedCourseManagementCourses.courses,
+                                            newCourse,
+                                        ],
+                                    },
+                                    query: GET_COURSES_BY_ACCOUNT_ID,
+                                    variables: {
+                                        accountId: '',
+                                    },
+                                });
+                            }
+                        } else {
+                            const cachedCourse = cache.readQuery({
+                                query: GET_CLASS,
+                                variables: {
+                                    id: id,
+                                },
+                            });
+                            cache.writeQuery({
+                                data: {
+                                    course: {
+                                        ...cachedCourse.course,
+                                        ...newCourse,
+                                    },
+                                },
+                                query: GET_CLASS,
+                                variables: {
+                                    id: id,
+                                },
+                            });
+                        }
+                    },
                 });
             } catch (error) {
                 return {
@@ -1869,10 +2042,10 @@ export default {
                         label: 'Class',
                         component: (
                             <Fields.DataSelect
-                                name="Classes"
+                                name='Classes'
                                 optionsMap={openCourseMap}
                                 request={GET_COURSES}
-                                noOptionsText="No classes available"
+                                noOptionsText='No classes available'
                             />
                         ),
                         validator: Yup.mixed(),

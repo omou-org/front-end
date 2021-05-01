@@ -16,13 +16,13 @@ const UserProfileInfo = ({ user }) => {
     const classes = useStyles();
 
     return (
-        <Grid className={classes.profileInfo} container layout="row">
+        <Grid className={classes.profileInfo} container layout='row'>
             <Grid item md={2} style={{ maxWidth: '195px' }}>
                 <Hidden smDown>
                     <UserAvatar
-                        margin="0"
+                        margin='0'
                         name={fullName(user.user)}
-                        size="136px"
+                        size='136px'
                         style={{ ...h2, color: white }}
                     />
                 </Hidden>
