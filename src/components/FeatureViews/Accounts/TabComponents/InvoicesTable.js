@@ -28,7 +28,7 @@ const courseLabel = (enrollments) =>
     enrollments &&
     `${enrollments.length} Course${enrollments.length !== 1 ? 's' : ''}`;
 
-const PaymentTable = ({
+const InvoicesTable = ({
     paymentList,
     type,
     enrollmentID,
@@ -113,11 +113,11 @@ const PaymentTable = ({
     );
 };
 
-PaymentTable.propTypes = {
+InvoicesTable.propTypes = {
     courseID: PropTypes.number.isRequired,
     enrollmentID: PropTypes.number.isRequired,
     paymentList: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['enrollment', 'parent']).isRequired,
 };
 
-export default PaymentTable;
+export default InvoicesTable;

@@ -5,7 +5,6 @@ import CalendarIcon from '@material-ui/icons/CalendarTodayRounded';
 import Chip from '@material-ui/core/Chip';
 import ClassIcon from '@material-ui/icons/Class';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
-import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
@@ -124,7 +123,6 @@ const RegistrationCourse = () => {
                 <Grid item sm={3}></Grid>
                 <Grid item sm={2} />
             </Grid>
-            <Divider className='top-divider' />
             <Grid item lg={12}>
                 <RegistrationActions courseTitle={title} />
             </Grid>

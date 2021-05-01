@@ -1,7 +1,9 @@
 import { instance } from 'actions/apiActions';
 import { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import moment from 'moment';
+import { client } from 'index';
+import { useSelector } from 'react-redux';
 
 export const USER_TYPES = {
     admin: 'ADMIN',
@@ -65,8 +67,8 @@ export const DayAbbreviation = {
 // vs.
 // M 10:00 AM - 11:00 AM and W 2:00 PM - 3:00 PM -> false
 export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let firstAvailabilityStartTime = availabilityList[0].startTime;
-    let firstAvailabilityEndTime = availabilityList[0].endTime;
+    let firstAvailabilityStartTime = availabilityList[0]?.startTime;
+    let firstAvailabilityEndTime = availabilityList[0]?.endTime;
 
     for (let availability of availabilityList) {
         if (
@@ -77,6 +79,58 @@ export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
         }
     }
     return true;
+};
+
+/**
+ * @param {*} availabilityList
+ * @returns a string with the days from an availiability list
+ *          formatted as "Monday / Wednesday"
+ */
+export const formatAvailabilityListDays = (availabilityList) => {
+    let dayStr = '';
+
+    availabilityList.forEach((availability, index) => {
+        dayStr += capitalizeString(availability.dayOfWeek);
+        dayStr += index !== availabilityList.length - 1 ? ' / ' : '';
+    });
+    return dayStr;
+};
+
+/**
+ * @param {*} availabilityList
+ * @returns a string with the hours from an availiability list
+ *          formatted as "1:00 PM - 2:00 PM / 3:00 PM - 4:00 PM"
+ */
+export const formatAvailabilityListHours = (availabilityList) => {
+    let startTime;
+    let endTime;
+
+    if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
+        startTime = moment(availabilityList[0]?.startTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
+        endTime = moment(availabilityList[0]?.endTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
+
+        return `${startTime} - ${endTime}`;
+    } else {
+        return availabilityList.reduce((allAvailabilites, availability, i) => {
+            const startTime = moment(availability.startTime, [
+                'HH:mm:ss',
+            ]).format('h:mm A');
+            const endTime = moment(availability.endTime, ['HH:mm:ss']).format(
+                'h:mm A'
+            );
+
+            return (
+                allAvailabilites +
+                `${startTime} - ${endTime}${
+                    i !== availabilityList.length - 1 ? ' / ' : ''
+                }`
+            );
+        }, '');
+    }
 };
 
 /**
@@ -167,7 +221,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date === last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(
-        enrollment.sessions_left
+        enrollment.sessionsLeft
     );
     const classSessionNotBeforeFirstPayment = session_date >= first_payment;
 
@@ -664,4 +718,111 @@ export function useSessionStorage(key, initialValue) {
     };
 
     return [storedValue, setValue];
+}
+
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+export function useURLQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
+// Hooks for templates 
+/**
+ * @description - Hook to upload template 
+ * @param {xlsx} - excel file
+ * @param {string} - templateType
+ 
+ * @returns {obj} - 
+ *  {
+ *     successUploads : int
+ *     failedUploads   : int
+ *     errorFile  : base64 
+ *  }
+ * 
+ */
+
+export function useUploadOmouTemplate() {
+    const { token } = useSelector(({ auth }) => auth);
+
+    const uploadTemplate = async (inputHTMLID, templateName) => {
+        let bodyFormData = new FormData();
+
+        let file = document.getElementById(inputHTMLID).files[0]
+        let lowerCaseTemplateName = templateName.toLowerCase();
+        let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`
+        let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`
+
+        if (file) {
+            bodyFormData.append('operations', opsString);
+            bodyFormData.append('map', mapsString);
+            bodyFormData.append(`${lowerCaseTemplateName}_excel`, file);
+        };
+
+        const response = await fetch(process.env.REACT_APP_DOMAIN + '/graphql', {
+            method: "POST",
+            body: bodyFormData,
+            headers: {
+                'Authorization': `JWT ${token}`
+            }
+        })
+
+        let resp = await response.json();
+        let { data } = resp;
+        return data[`upload${templateName}`]
+
+
+    };
+
+
+    return { uploadTemplate }
+
+
+}
+
+/**
+ *  @description 
+ *  @param {Object} - gql query of 
+ *  @param {String} - 
+ * Input : graphql query
+ * Input: template name
+ * Output : downloaded file
+ *
+ */
+export async function downloadOmouTemplate(query, name) {
+
+    let { data } = await client.query({ query })
+    let queryResponse = Object.values(data)[0]
+
+    function b64toBlob(base64Data, contentType) {
+        contentType = contentType || '';
+        let sliceSize = 1024;
+        let byteCharacters = atob(base64Data);
+        let bytesLength = byteCharacters.length;
+        let slicesCount = Math.ceil(bytesLength / sliceSize);
+        let byteArrays = new Array(slicesCount);
+
+        for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+            let begin = sliceIndex * sliceSize;
+            let end = Math.min(begin + sliceSize, bytesLength);
+
+            let bytes = new Array(end - begin);
+            for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+                bytes[i] = byteCharacters[offset].charCodeAt(0);
+            }
+            byteArrays[sliceIndex] = new Uint8Array(bytes);
+        }
+        return new Blob(byteArrays, { type: contentType });
+    }
+
+
+    let contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    let blob1 = b64toBlob(queryResponse, contentType);
+    let blobUrl1 = URL.createObjectURL(blob1);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = blobUrl1
+    document.body.appendChild(downloadLink);
+    downloadLink.setAttribute('download', `${capitalizeString(name)}_Omou_Template.xlsx`);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
 }

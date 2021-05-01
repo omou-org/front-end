@@ -1,24 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { RegistrationContext } from './RegistrationContext';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
-import Checkbox from '@material-ui/core/Checkbox/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
-import { useHistory } from 'react-router-dom';
 import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
-import { GET_ALL_COURSES } from '../RegistrationLanding';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
 import { GET_REGISTRATION_CART } from '../SelectParentDialog';
 import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import { GET_ENROLLMENT_DETAILS } from '../RegistrationCourseEnrollments';
+import { GET_ALL_COURSES } from '../RegistrationLanding';
+import TableBody from '@material-ui/core/TableBody';
 
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote(
@@ -69,12 +74,6 @@ const CREATE_ENROLLMENTS = gql`
     }
 `;
 
-// enum paymentStatusType {
-//     PAID = "PAID",
-//     UNPAID = "UNPAID",
-//     CANCELED = "CANCELED"
-// }
-
 const CREATE_PAYMENT = gql`
     mutation CreateInvoice(
         $method: String!
@@ -83,7 +82,7 @@ const CREATE_PAYMENT = gql`
         $disabledDiscounts: [ID]
         $priceAdjustment: Float
         $registrations: [EnrollmentQuote]!
-        $paymentStatus: paymentStatus!
+        $paymentStatus: PaymentChoiceEnum!
     ) {
         __typename
         createInvoice(
@@ -95,6 +94,8 @@ const CREATE_PAYMENT = gql`
             registrations: $registrations
             paymentStatus: $paymentStatus
         ) {
+            stripeCheckoutId
+            stripeConnectedAccount
             invoice {
                 id
                 accountBalance
@@ -110,6 +111,7 @@ const CREATE_PAYMENT = gql`
                         startDate
                         instructor {
                             user {
+                                id
                                 lastName
                                 firstName
                             }
@@ -119,10 +121,23 @@ const CREATE_PAYMENT = gql`
                         hourlyTuition
                     }
                     student {
+                        primaryParent {
+                            user {
+                                firstName
+                                lastName
+                                email
+                                id
+                            }
+                            phoneNumber
+                        }
                         user {
-                            id
                             firstName
                             lastName
+                            email
+                            id
+                        }
+                        school {
+                            name
                         }
                     }
                 }
@@ -133,15 +148,30 @@ const CREATE_PAYMENT = gql`
 
 const GET_PARENT_ENROLLMENTS = gql`
     query GetParentEnrollments($studentIds: [ID]!) {
-        __typename
         enrollments(studentIds: $studentIds) {
             id
             course {
                 id
+                title
             }
             student {
+                primaryParent {
+                    user {
+                        firstName
+                        lastName
+                        email
+                        id
+                    }
+                    phoneNumber
+                }
                 user {
+                    firstName
+                    lastName
+                    email
                     id
+                }
+                school {
+                    name
                 }
             }
         }
@@ -156,33 +186,32 @@ const useRowStyles = makeStyles({
     },
 });
 
-export default function PaymentBoard() {
+const paymentOptions = [
+    {
+        label: 'Credit Card',
+        value: 'credit_card',
+    },
+    {
+        label: 'Cash',
+        value: 'cash',
+    },
+    {
+        label: 'Check',
+        value: 'check',
+    },
+    {
+        label: 'International Credit Card',
+        value: 'intl_credit_card',
+    },
+];
+
+const STRIPE_API_KEY = process.env.REACT_APP_STRIPE_KEY;
+
+const PaymentBoard = () => {
     const { registrationCart, currentParent } = useContext(RegistrationContext);
-    const [getPriceQuote, { data, error }] = useLazyQuery(GET_PRICE_QUOTE);
-    const [paymentMethodState, setPaymentMethodState] = useState([
-        {
-            label: 'Cash',
-            value: 'cash',
-            checked: false,
-        },
-        {
-            label: 'Credit Card',
-            value: 'credit_card',
-            checked: false,
-        },
-        {
-            label: 'Check',
-            value: 'check',
-            checked: false,
-        },
-        {
-            label: 'International Credit Card',
-            value: 'intl_credit_card',
-            checked: false,
-        },
-    ]);
-    const [priceAdjustmentValue, setPriceAdjustmentValue] = useState('');
-    const classes = useRowStyles();
+    const [paymentMethod, setPaymentMethod] = useState(null);
+    const history = useHistory();
+
     const classRegistrations = []
         .concat(Object.values(registrationCart).flat())
         .filter(
@@ -194,99 +223,200 @@ export default function PaymentBoard() {
             student,
         }));
 
+    const [priceAdjustment, setPriceAdjustment] = useState(0);
+    const { data, error } = useQuery(GET_PRICE_QUOTE, {
+        variables: {
+            method: paymentMethod,
+            classes: classRegistrations,
+            parent: currentParent.user.id,
+            disabledDiscounts: [],
+            priceAdjustment,
+        },
+        skip: paymentMethod === null,
+    });
+    const classes = useRowStyles();
+
     const enrollmentResponse = useQuery(GET_PARENT_ENROLLMENTS, {
         variables: { studentIds: currentParent.studentIdList },
     });
-    const [createEnrollments, createEnrollmentResults] = useMutation(
-        CREATE_ENROLLMENTS,
-        {
-            update: (cache, { data }) => {
-                // const existingEnrollmentsFromGetParent = cache.readQuery({
-                //     query: GET_PARENT_ENROLLMENTS,
-                //     variables: { studentIds: currentParent.studentIdList },
-                // }).enrollments;
-                // cache.writeQuery({
-                //     query: GET_PARENT_ENROLLMENTS,
-                //     data: {
-                //         enrollments: [
-                //             ...existingEnrollmentsFromGetParent,
-                //             ...data['createEnrollments'].enrollments,
-                //         ],
-                //     },
-                //     variables: { studentIds: currentParent.studentIdList },
-                // });
-                // let cachedCourses = cache.readQuery({
-                //     query: GET_ALL_COURSES,
-                // }).courses;
-                // const newEnrollments = data.createEnrollments.enrollments.map(
-                //     (enrollment) => {
-                //         return {
-                //             course: enrollment.course.id,
-                //             student: enrollment.student.user.id,
-                //         };
-                //     }
-                // );
-                // newEnrollments.forEach((newEnrollment) => {
-                //     const matchingIndex = cachedCourses.findIndex(
-                //         (course) => course.id === newEnrollment.course
-                //     );
-                //     cachedCourses[matchingIndex] = {
-                //         ...cachedCourses[matchingIndex],
-                //         enrollmentSet: [
-                //             ...cachedCourses[matchingIndex].enrollmentSet,
-                //             {
-                //                 student: newEnrollment.student,
-                //                 course: newEnrollment.course,
-                //             },
-                //         ],
-                //     };
-                // });
-                // cache.writeQuery({
-                //     query: GET_ALL_COURSES,
-                //     data: {
-                //         courses: cachedCourses,
-                //     },
-                // });
-                // const { userInfos, enrollments } = cache.readQuery({
-                //     query: GET_STUDENTS_AND_ENROLLMENTS,
-                //     variables: {
-                //         userIds: currentParent.studentIdList,
-                //     },
-                // });
-                // const newQueryEnrollments = data.createEnrollments.enrollments.map(
-                //     (enrollment) => ({
-                //         id: enrollment.id,
-                //         course: {
-                //             id: enrollment.course.id,
-                //         },
-                //     })
-                // );
-                // cache.writeQuery({
-                //     query: GET_STUDENTS_AND_ENROLLMENTS,
-                //     data: {
-                //         userInfos,
-                //         enrollments: [...enrollments, ...newQueryEnrollments],
-                //     },
-                // });
-            },
-        }
-    );
-    const [createPayment, createPaymentResults] = useMutation(CREATE_PAYMENT, {
+    const [createEnrollments] = useMutation(CREATE_ENROLLMENTS, {
+        update: (cache, { data }) => {
+            const existingEnrollmentsFromGetParent = cache.readQuery({
+                query: GET_PARENT_ENROLLMENTS,
+                variables: { studentIds: currentParent.studentIdList },
+            }).enrollments;
+
+            cache.writeQuery({
+                query: GET_PARENT_ENROLLMENTS,
+                data: {
+                    __typename: 'EnrollmentType',
+                    enrollments: [
+                        ...existingEnrollmentsFromGetParent,
+                        ...data.createEnrollments.enrollments,
+                    ],
+                },
+                variables: { studentIds: currentParent.studentIdList },
+            });
+            const cachedCourses = cache.readQuery({
+                query: GET_ALL_COURSES,
+            }).courses;
+            var updatedCourses = JSON.parse(JSON.stringify(cachedCourses));
+
+            const newEnrollments = data.createEnrollments.enrollments.map(
+                (enrollment) => ({
+                    __typename: 'EnrollmentType',
+                    id: enrollment.id,
+                    course: enrollment.course,
+                    student: enrollment.student,
+                })
+            );
+
+            newEnrollments.forEach((newEnrollment) => {
+                let matchingIndex = cachedCourses.findIndex(
+                    (course) => course.id === newEnrollment.course.id
+                );
+
+                updatedCourses[matchingIndex] = {
+                    ...cachedCourses[matchingIndex],
+                    enrollmentSet: [
+                        ...cachedCourses[matchingIndex].enrollmentSet,
+                        { ...newEnrollment },
+                    ],
+                };
+            });
+
+            cache.writeQuery({
+                query: GET_ALL_COURSES,
+                data: {
+                    courses: cachedCourses,
+                },
+            });
+
+            const { userInfos, enrollments } = cache.readQuery({
+                query: GET_STUDENTS_AND_ENROLLMENTS,
+                variables: {
+                    userIds: currentParent.studentIdList,
+                },
+            });
+
+            const newQueryEnrollments = data.createEnrollments.enrollments.map(
+                (enrollment) => ({
+                    id: enrollment.id,
+                    course: {
+                        id: enrollment.course.id,
+                    },
+                })
+            );
+
+            cache.writeQuery({
+                query: GET_STUDENTS_AND_ENROLLMENTS,
+                data: {
+                    userInfos,
+                    enrollments: [...enrollments, ...newQueryEnrollments],
+                },
+            });
+
+            // get unique list of course ids from enrollments
+            const enrolledCourseIds = [
+                ...new Set(
+                    data.createEnrollments.enrollments.map(
+                        (enrollment) => enrollment.course.id
+                    )
+                ),
+            ];
+            // read enrollment details for all cached enrolled courses
+            const existingCourseEnrollmentsMatrix = enrolledCourseIds.reduce(
+                (courseEnrollmentMatrix, courseId) => {
+                    try {
+                        courseEnrollmentMatrix[courseId] = cache.readQuery({
+                            query: GET_ENROLLMENT_DETAILS,
+                            variables: { courseId },
+                        }).enrollments;
+                    } catch {
+                        courseEnrollmentMatrix[courseId] = [];
+                    }
+                    return courseEnrollmentMatrix;
+                },
+                {}
+            );
+            // organize enrollments by courses
+            const newCourseEnrollmentsMatrix = data.createEnrollments.enrollments.reduce(
+                (courseEnrollmentMatrix, enrollment) => {
+                    if (
+                        Object.keys(courseEnrollmentMatrix).includes(
+                            enrollment.course.id
+                        )
+                    ) {
+                        const prevNewCourseEnrollments =
+                            courseEnrollmentMatrix[enrollment.course.id];
+                        courseEnrollmentMatrix[enrollment.course.id] = [
+                            ...prevNewCourseEnrollments,
+                            enrollment,
+                        ];
+                    } else {
+                        courseEnrollmentMatrix[enrollment.course.id] = [
+                            enrollment,
+                        ];
+                    }
+                    return courseEnrollmentMatrix;
+                },
+                {}
+            );
+            // write query for each course
+            const createEnrollmentList = (enrollmentMatrix, courseId) => {
+                const anyCourseEnrollments = Object.keys(
+                    enrollmentMatrix
+                ).includes(courseId);
+                return anyCourseEnrollments ? enrollmentMatrix[courseId] : [];
+            };
+            enrolledCourseIds.forEach((courseId) => {
+                cache.writeQuery({
+                    query: GET_ENROLLMENT_DETAILS,
+                    variables: { courseId },
+                    data: {
+                        enrollments: [
+                            ...createEnrollmentList(
+                                existingCourseEnrollmentsMatrix,
+                                courseId
+                            ),
+                            ...createEnrollmentList(
+                                newCourseEnrollmentsMatrix,
+                                courseId
+                            ),
+                        ],
+                    },
+                });
+            });
+        },
+        onError: (error) => {
+            console.log(error);
+        },
+    });
+    const [createPayment] = useMutation(CREATE_PAYMENT, {
+        onCompleted: ({ createInvoice }) => {
+            console.log(STRIPE_API_KEY, process.env['REACT_APP_STRIPE_KEY ']);
+
+            // eslint-disable-next-line no-undef
+            const stripe = Stripe(STRIPE_API_KEY, {
+                stripeAccount: createInvoice.stripeConnectedAccount,
+            });
+            stripe.redirectToCheckout({
+                sessionId: createInvoice.stripeCheckoutId,
+            });
+        },
         update: (cache, { data }) => {
             cache.writeQuery({
-                query: GET_PAYMENT,
                 data: {
-                    payment: data['payment'],
+                    __typename: 'InvoiceType',
+                    invoice: data.createInvoice.invoice,
                 },
-                variables: { paymentId: data['payment'].id },
+                query: GET_PAYMENT,
+                variables: { paymentId: data.createInvoice.invoice.id },
             });
         },
     });
-    const [
-        createRegistrationCart,
-        createRegistrationCartResponse,
-    ] = useMutation(CREATE_REGISTRATION_CART, {
-        variables: { parent: currentParent?.user.id },
+    const [createRegistrationCart] = useMutation(CREATE_REGISTRATION_CART, {
+        onError: ({ message }) => console.error(message),
         update: (cache, { data }) => {
             cache.writeQuery({
                 query: GET_REGISTRATION_CART,
@@ -297,68 +427,21 @@ export default function PaymentBoard() {
                 },
             });
         },
-        onError: (error) => console.error(error.message),
+        variables: { parent: currentParent?.user.id },
     });
-    const history = useHistory();
 
-    useEffect(() => {
-        const paymentMethod = paymentMethodState.find(({ checked }) => checked)
-            ?.value;
-        if (paymentMethod) {
-            getPriceQuote({
-                variables: {
-                    method: paymentMethod,
-                    classes: classRegistrations,
-                    parent: currentParent.user.id,
-                    disabledDiscounts: [],
-                },
-            });
-        }
-    }, [registrationCart]);
+    const handleMethodChange = useCallback((_, value) => {
+        setPaymentMethod(value);
+    }, []);
 
-    const handlePaymentMethodStateChange = (index) => {
-        getPriceQuote({
-            variables: {
-                method: paymentMethodState[index].value,
-                classes: classRegistrations,
-                parent: currentParent.user.id,
-                disabledDiscounts: [],
-            },
-        });
-        setPaymentMethodState((prevState) =>
-            prevState.map((method, methodIndex) => {
-                if (methodIndex === index) {
-                    return {
-                        ...method,
-                        checked: !method.checked,
-                    };
-                }
-                return {
-                    ...method,
-                    checked: false,
-                };
-            })
-        );
-    };
-
-    const handlePriceAdjustmentValueChange = (e) => {
-        getPriceQuote({
-            variables: {
-                method: paymentMethodState.find(({ checked }) => checked).value,
-                classes: classRegistrations,
-                parent: currentParent.user.id,
-                disabledDiscounts: [],
-                priceAdjustment: Number(e.target.value),
-            },
-        });
-        if (setPriceAdjustmentValue) {
-            setPriceAdjustmentValue(e.target.value);
-        }
-    };
+    const handlePriceAdjustmentValueChange = useCallback(
+        ({ target: { value } }) => {
+            setPriceAdjustment(value);
+        },
+        []
+    );
 
     const handlePayment = async () => {
-        const paymentMethod = paymentMethodState.find(({ checked }) => checked)
-            ?.value;
         const {
             data: { enrollments },
         } = enrollmentResponse;
@@ -370,14 +453,25 @@ export default function PaymentBoard() {
             .filter(
                 ({ course, student }) =>
                     !enrollments.some((enrollment) =>
-                        isSameEnrollment({ enrollment, course, student })
+                        isSameEnrollment({
+                            course,
+                            enrollment,
+                            student,
+                        })
                     )
             )
-            .map(({ course, student }) => ({ course, student }));
+            .map(({ course, student }) => ({
+                course,
+                student,
+            }));
         const existingEnrollments = classRegistrations
             .filter(({ course, student }) =>
                 enrollments.some((enrollment) =>
-                    isSameEnrollment({ enrollment, course, student })
+                    isSameEnrollment({
+                        course,
+                        enrollment,
+                        student,
+                    })
                 )
             )
             .map((registration) => ({
@@ -389,22 +483,29 @@ export default function PaymentBoard() {
                 ).id,
             }));
 
-        const newEnrollmentIDs = await createEnrollments({
-            variables: {
-                enrollments: enrollmentsToCreate,
-            },
-        });
+        const areThereNewEnrollments = enrollmentsToCreate.length > 0;
+        const newEnrollments = areThereNewEnrollments
+            ? await createEnrollments({
+                  variables: {
+                      enrollments: enrollmentsToCreate,
+                  },
+              })
+            : [];
+
+        const actualNewEnrollments =
+            newEnrollments.data.createEnrollments.enrollments;
 
         const registrations = [
-            ...newEnrollmentIDs.data.createEnrollments.enrollments.map(
-                (enrollment) => ({
-                    enrollment: enrollment.id,
-                    numSessions: classRegistrations.find(
-                        ({ course, student }) =>
-                            isSameEnrollment({ enrollment, course, student })
-                    ).sessions,
-                })
-            ),
+            ...actualNewEnrollments.map((enrollment) => ({
+                enrollment: enrollment.id,
+                numSessions: classRegistrations.find(({ course, student }) =>
+                    isSameEnrollment({
+                        course,
+                        enrollment,
+                        student,
+                    })
+                ).sessions,
+            })),
             ...existingEnrollments.map((enrollment) => ({
                 enrollment: enrollment.id,
                 numSessions: enrollment.sessions,
@@ -417,13 +518,13 @@ export default function PaymentBoard() {
                 method: paymentMethod,
                 classes: classRegistrations,
                 disabledDiscounts: [],
-                priceAdjustment: Number(priceAdjustmentValue),
-                registrations: registrations,
+                priceAdjustment: Number(priceAdjustment),
+                registrations,
                 paymentStatus: 'PAID',
             },
         });
 
-        //clean out parent registration cart
+        // clean out parent registration cart
         await createRegistrationCart({
             variables: {
                 parent: currentParent.user.id,
@@ -436,11 +537,11 @@ export default function PaymentBoard() {
     };
 
     if (error || enrollmentResponse.error) {
-        console.error(error?.message, enrollmentResponse.error.message);
+        console.error(error?.message, enrollmentResponse.error?.message);
         return (
             <div>
                 There has been an error! : {error?.message}{' '}
-                {enrollmentResponse.error.message}
+                {enrollmentResponse.error?.message}
             </div>
         );
     }
@@ -457,81 +558,103 @@ export default function PaymentBoard() {
 
     return (
         <>
-            <Grid item container justify='space-between'>
+            <Grid container item justify='space-between'>
                 <Grid item>
-                    <Typography align='left' style={{ fontWeight: '600' }}>
-                        Payment Method
-                    </Typography>
-                    {paymentMethodState.map((method, index) => (
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={method.checked}
-                                    onChange={() =>
-                                        handlePaymentMethodStateChange(index)
-                                    }
-                                    name={method.label}
+                    <FormControl component='fieldset'>
+                        <FormLabel component='legend'>
+                            <Typography
+                                align='left'
+                                style={{ fontWeight: '600' }}
+                            >
+                                Payment Method
+                            </Typography>
+                        </FormLabel>
+                        <RadioGroup
+                            aria-label='gender'
+                            name='gender1'
+                            onChange={handleMethodChange}
+                            value={paymentMethod}
+                        >
+                            {paymentOptions.map(({ label, value }) => (
+                                <FormControlLabel
                                     color='primary'
-                                    data-cy={`${method.label}-checkbox`}
+                                    control={<Radio />}
+                                    data-cy={`${label}-checkbox`}
+                                    key={value}
+                                    label={label}
+                                    value={value}
                                 />
-                            }
-                            label={method.label}
-                        />
-                    ))}
+                            ))}
+                        </RadioGroup>
+                    </FormControl>
                 </Grid>
                 <Grid item>
                     <Table>
-                        <TableRow className={classes.root}>
-                            <TableCell>Sub-Total</TableCell>
-                            <TableCell>$ {priceQuote.subTotal}</TableCell>
-                        </TableRow>
-                        <TableRow className={classes.root}>
-                            <TableCell>Account Balance</TableCell>
-                            <TableCell>$ {priceQuote.accountBalance}</TableCell>
-                        </TableRow>
-                        <TableRow className={classes.root}>
-                            <TableCell>Discounts</TableCell>
-                            <TableCell> </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>Price Adjustment</TableCell>
-                            <TableCell style={{ width: '55%' }}>
-                                $ -{' '}
-                                <TextField
-                                    value={priceAdjustmentValue}
-                                    onChange={handlePriceAdjustmentValueChange}
-                                    variant='outlined'
-                                    style={{ width: '30%' }}
-                                    inputProps={{
-                                        style: {
-                                            padding: 8,
-                                            textAlign: 'center',
-                                        },
-                                    }}
-                                    type='number'
-                                />
-                            </TableCell>
-                        </TableRow>
-                        <TableRow className={classes.root}>
-                            <TableCell>Total</TableCell>
-                            <TableCell>$ {priceQuote.total}</TableCell>
-                        </TableRow>
+                        <TableBody>
+                            <TableRow className={classes.root}>
+                                <TableCell>Sub-Total</TableCell>
+                                <TableCell>$ {priceQuote.subTotal}</TableCell>
+                            </TableRow>
+                            <TableRow className={classes.root}>
+                                <TableCell>Account Balance</TableCell>
+                                <TableCell>
+                                    $ {priceQuote.accountBalance}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow className={classes.root}>
+                                <TableCell>Discounts</TableCell>
+                                <TableCell> </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell>Price Adjustment</TableCell>
+                                <TableCell style={{ width: '55%' }}>
+                                    $ -{' '}
+                                    <TextField
+                                        inputProps={{
+                                            style: {
+                                                padding: 8,
+                                                textAlign: 'center',
+                                            },
+                                        }}
+                                        onChange={
+                                            handlePriceAdjustmentValueChange
+                                        }
+                                        style={{ width: '30%' }}
+                                        type='number'
+                                        value={priceAdjustment}
+                                        variant='outlined'
+                                    />
+                                </TableCell>
+                            </TableRow>
+                            <TableRow className={classes.root}>
+                                <TableCell>Total</TableCell>
+                                <TableCell>$ {priceQuote.total}</TableCell>
+                            </TableRow>
+                        </TableBody>
                     </Table>
                 </Grid>
             </Grid>
-            <Grid item container justify='flex-end'>
+            <Grid container item justify='flex-end'>
                 <Grid item>
                     <ResponsiveButton
-                        variant='contained'
                         color='primary'
-                        disabled={priceQuote.total === '-' || priceQuote < 0}
-                        onClick={handlePayment}
                         data-cy='pay-action'
+                        disabled={
+                            paymentMethod === null ||
+                            priceQuote.total === '-' ||
+                            priceQuote < 0
+                        }
+                        onClick={handlePayment}
+                        variant='contained'
                     >
-                        Pay
+                        {paymentMethod === 'credit_card'
+                            ? 'Pay Now'
+                            : 'Pay Later'}
                     </ResponsiveButton>
                 </Grid>
             </Grid>
         </>
     );
-}
+};
+
+export default PaymentBoard;
