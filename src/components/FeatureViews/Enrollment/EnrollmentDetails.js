@@ -1,52 +1,83 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import AddSessions from '../../OmouComponents/AddSessions';
-import UnenrollButton from './UnenrollButton';
+import Moment from 'react-moment';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { fullName } from '../../../utils';
+import {
+    fullName,
+    formatAvailabilityListHours,
+    formatAvailabilityListDays,
+} from '../../../utils';
 
 export default function EnrollmentDetails({ enrollment }) {
-    const { course, student, enrollmentBalance } = enrollment;
+    const { course, student } = enrollment;
+
+    const detailData = [
+        {
+            title: 'Instructor',
+            info: fullName(course.instructor.user),
+            link: `/accounts/instructor/${course.instructor.user.id}`,
+        },
+        {
+            title: 'Grade',
+            info: student.grade,
+        },
+        {
+            title: 'Subject',
+            info: course.courseCategory.name,
+        },
+        {
+            title: 'Date',
+            info: (
+                <>
+                    <Moment date={course.startDate} format='M/D/YYYY' />
+                    {' - '}
+                    <Moment date={course.endDate} format='M/D/YYYY' />
+                </>
+            ),
+        },
+        {
+            title: 'Days',
+            info: formatAvailabilityListDays(course.availabilityList),
+        },
+        {
+            title: 'Time',
+            info: formatAvailabilityListHours(course.availabilityList),
+        },
+    ];
+
+    const Detail = ({ title, info, link }) => {
+        const infoDisplay =
+            link === undefined ? info : <Link to={link}>{info}</Link>;
+
+        return (
+            <Grid item xs={4}>
+                <Grid
+                    container
+                    direction='column'
+                    alignItems='flex-start'
+                    spacing={1}
+                >
+                    <Grid item>
+                        <Typography variant='h5'>{title}</Typography>
+                    </Grid>
+                    <Grid item>
+                        <Typography variant='body1'>{infoDisplay}</Typography>
+                    </Grid>
+                </Grid>
+            </Grid>
+        );
+    };
 
     return (
-        <Grid item md={12}>
-            <Grid
-                alignItems='center'
-                className='session-actions'
-                container
-                direction='row'
-                justify='flex-start'
-                spacing={2}
-            >
-                <Grid item>
-                    <AddSessions
-                        componentOption='button'
-                        enrollment={enrollment}
-                        parentOfCurrentStudent={student.parent}
-                    />
-                </Grid>
-                <Grid item>
-                    <UnenrollButton enrollment={enrollment} />
-                </Grid>
-            </Grid>
-            <Grid className='participants' item xs={12}>
-                <Typography align='left'>
-                    Student:{' '}
-                    <Link to={`/accounts/student/${student.user.id}`}>
-                        {fullName(student.user)}
-                    </Link>
-                </Typography>
-                <Typography align='left'>
-                    Instructor:{' '}
-                    <Link to={`/accounts/instructor/${course.instructor_id}`}>
-                        {fullName(course.instructor.user)}
-                    </Link>
-                </Typography>
-                <Typography align='left'>
-                    Enrollment Balance Left: ${enrollmentBalance}
-                </Typography>
-            </Grid>
+        <Grid container xs={6} direction='row' spacing={5}>
+            {detailData.map((detail) => (
+                <Detail
+                    title={detail.title}
+                    info={detail.info}
+                    link={detail.link}
+                />
+            ))}
         </Grid>
     );
 }
