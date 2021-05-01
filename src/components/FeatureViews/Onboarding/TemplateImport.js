@@ -5,8 +5,8 @@ import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/Responsiv
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import useOnboardingActions from "./ImportStepperActions";
-import Box from "@material-ui/core/Box";
 import {makeStyles} from "@material-ui/core/styles";
+import DragAndDropUploadBtn from "./DragAndDropUploadBtn";
 
 const useStyles = makeStyles((theme) => ({
     uploadField: {
@@ -56,18 +56,7 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                 />
             </Grid>
             <Grid item>
-                <Box
-                    className={classes.uploadField}
-                    display='flex'
-                    width={200}
-                    height={144}
-                    alignItems='center'
-                    justifyContent='center'
-                >
-                    <Typography className={classes.uploadFieldText}>
-                        Drag & Drop files here
-                    </Typography>
-                </Box>
+                <DragAndDropUploadBtn/>
             </Grid>
             <Grid item
                   container
