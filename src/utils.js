@@ -1,7 +1,9 @@
-import {instance} from 'actions/apiActions';
-import {useCallback, useState} from 'react';
-import {useHistory, useLocation} from 'react-router-dom';
+import { instance } from 'actions/apiActions';
+import { useCallback, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import moment from 'moment';
+import { client } from 'index';
+import { useSelector } from 'react-redux';
 
 export const USER_TYPES = {
     admin: 'ADMIN',
@@ -722,4 +724,105 @@ export function useSessionStorage(key, initialValue) {
 // the query string for you.
 export function useURLQuery() {
     return new URLSearchParams(useLocation().search);
+}
+
+// Hooks for templates 
+/**
+ * @description - Hook to upload template 
+ * @param {xlsx} - excel file
+ * @param {string} - templateType
+ 
+ * @returns {obj} - 
+ *  {
+ *     successUploads : int
+ *     failedUploads   : int
+ *     errorFile  : base64 
+ *  }
+ * 
+ */
+
+export function useUploadOmouTemplate() {
+    const { token } = useSelector(({ auth }) => auth);
+
+    const uploadTemplate = async (inputHTMLID, templateName) => {
+        let bodyFormData = new FormData();
+
+        let file = document.getElementById(inputHTMLID).files[0]
+        let lowerCaseTemplateName = templateName.toLowerCase();
+        let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`
+        let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`
+
+        if (file) {
+            bodyFormData.append('operations', opsString);
+            bodyFormData.append('map', mapsString);
+            bodyFormData.append(`${lowerCaseTemplateName}_excel`, file);
+        };
+
+        const response = await fetch(process.env.REACT_APP_DOMAIN + '/graphql', {
+            method: "POST",
+            body: bodyFormData,
+            headers: {
+                'Authorization': `JWT ${token}`
+            }
+        })
+
+        let resp = await response.json();
+        let { data } = resp;
+        return data[`upload${templateName}`]
+
+
+    };
+
+
+    return { uploadTemplate }
+
+
+}
+
+/**
+ *  @description 
+ *  @param {Object} - gql query of 
+ *  @param {String} - 
+ * Input : graphql query
+ * Input: template name
+ * Output : downloaded file
+ *
+ */
+export async function downloadOmouTemplate(query, name) {
+
+    let { data } = await client.query({ query })
+    let queryResponse = Object.values(data)[0]
+
+    function b64toBlob(base64Data, contentType) {
+        contentType = contentType || '';
+        let sliceSize = 1024;
+        let byteCharacters = atob(base64Data);
+        let bytesLength = byteCharacters.length;
+        let slicesCount = Math.ceil(bytesLength / sliceSize);
+        let byteArrays = new Array(slicesCount);
+
+        for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+            let begin = sliceIndex * sliceSize;
+            let end = Math.min(begin + sliceSize, bytesLength);
+
+            let bytes = new Array(end - begin);
+            for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+                bytes[i] = byteCharacters[offset].charCodeAt(0);
+            }
+            byteArrays[sliceIndex] = new Uint8Array(bytes);
+        }
+        return new Blob(byteArrays, { type: contentType });
+    }
+
+
+    let contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    let blob1 = b64toBlob(queryResponse, contentType);
+    let blobUrl1 = URL.createObjectURL(blob1);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = blobUrl1
+    document.body.appendChild(downloadLink);
+    downloadLink.setAttribute('download', `${capitalizeString(name)}_Omou_Template.xlsx`);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
 }
