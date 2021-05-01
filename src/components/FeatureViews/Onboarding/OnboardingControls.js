@@ -59,7 +59,6 @@ export default function OnboardingControls(props) {
 		{isStepOptional(activeStep) && (
 			<ResponsiveButton
 				variant='contained'
-				color='primary'
 				onClick={handleSkipButton}
 			>
 				Skip
@@ -67,7 +66,6 @@ export default function OnboardingControls(props) {
 		)}
 		<ResponsiveButton
 			variant='contained'
-			color='primary'
 			onClick={handleNextButton}
 		>
 			{activeStep === steps.length - 1

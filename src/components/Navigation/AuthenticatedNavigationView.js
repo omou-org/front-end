@@ -47,7 +47,7 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
 
     if (loading) return <Loading/>;
     if (error) return <div>There's been an error! {error.message}</div>;
-    console.log(data);
+
     const isBusinessDataValid = true;
 
     return (

@@ -7,12 +7,12 @@ import BusinessHoursForm from "../../Form/BusinessHoursForm";
 
 const useStyles = makeStyles((theme) => ({
     Text: {
-        marginTop: '65px',
+        marginTop: '24px',
     },
     Subtitle: {
         fontFamily: 'Arial, Helvetica Neue, Helvetica, sans-serif',
         textAlign: 'center',
-        marginTop: '45px',
+        marginTop: '24px',
         marginBottom: '40px',
     },
 }));
@@ -31,7 +31,7 @@ const BusinessHours = () => {
         >
             <Grid item>
                 <Box className={classes.Text}>
-                    <Typography variant='h3'>Business Hours</Typography>
+                    <Typography variant='h1'>Business Hours</Typography>
                     <Box fontSize='h5.fontSize' className={classes.Subtitle}>
                         <Typography variant='p'>
                             Please input your business hours. These hours will show up in invoices and instructor

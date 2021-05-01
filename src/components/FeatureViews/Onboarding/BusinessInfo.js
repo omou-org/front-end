@@ -97,7 +97,7 @@ const BusinessInfo = ({step}) => {
         >
             <Grid item>
                 <Box className={classes.Text}>
-                    <Typography variant='h3'>Business Information</Typography>
+                    <Typography variant='h1'>Business Information</Typography>
                     <Box fontSize='h5.fontSize' className={classes.Subtitle}>
                         <Typography variant='p'>
                             Please input the following business info, these would
