@@ -22,18 +22,25 @@ const useStyles = makeStyles({
     },
 });
 
-const bizHours = [
-    { day: 'Mon', hours: '9:00 - 5:00 pm' },
-    { day: 'Tue', hours: '9:00 - 5:00 pm' },
-    { day: 'Wed', hours: '9:00 - 5:00 pm' },
-    { day: 'Thu', hours: '9:00 - 5:00 pm' },
-    { day: 'Fri', hours: '9:00 - 5:00 pm' },
-    { day: 'Sat', hours: '9:00 - 5:00 pm' },
-    { day: 'Sun', hours: 'Closed' },
-];
+const businessInfo = {
+    name: 'Bright Stars Academy',
+    phone: '456-456-3577',
+    email: 'ask@brightstars.com',
+    address: '123 North Ln San Francisco, CA 94578',
+    businessHours: [
+        { day: 'Mon', hours: '9:00 - 5:00 pm' },
+        { day: 'Tue', hours: '9:00 - 5:00 pm' },
+        { day: 'Wed', hours: '9:00 - 5:00 pm' },
+        { day: 'Thu', hours: '9:00 - 5:00 pm' },
+        { day: 'Fri', hours: '9:00 - 5:00 pm' },
+        { day: 'Sat', hours: '9:00 - 5:00 pm' },
+        { day: 'Sun', hours: 'Closed' },
+    ],
+};
 
 const BusinessDetails = () => {
     const classes = useStyles();
+    const { name, phone, email, address, businessHours} = businessInfo
 
     return (
         <Grid
@@ -70,7 +77,7 @@ const BusinessDetails = () => {
                     Business Name
                 </Typography>
                 <Typography align='left' variant='body1'>
-                    Bright Stars Academy
+                    {name}
                 </Typography>
             </Grid>
 
@@ -88,7 +95,7 @@ const BusinessDetails = () => {
                     Business Phone
                 </Typography>
                 <Typography align='left' variant='body1'>
-                    456-456-3577
+                    {phone}
                 </Typography>
             </Grid>
 
@@ -106,7 +113,7 @@ const BusinessDetails = () => {
                     Business Email
                 </Typography>
                 <Typography align='left' variant='body1'>
-                    ask@brightstars.com
+                    {email}
                 </Typography>
             </Grid>
 
@@ -124,7 +131,7 @@ const BusinessDetails = () => {
                     Business Address
                 </Typography>
                 <Typography align='left' variant='body1'>
-                    123 North Ln San Francisco, CA 94578
+                    {address}
                 </Typography>
             </Grid>
 
@@ -141,7 +148,7 @@ const BusinessDetails = () => {
                 >
                     Business Hours
                 </Typography>
-                {bizHours.map(({ day, hours }) => (
+                {businessHours.map(({ day, hours }) => (
                     <Typography align='left' variant='body1'>
                         {day}: {hours}
                     </Typography>
