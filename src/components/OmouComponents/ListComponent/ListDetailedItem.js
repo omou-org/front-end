@@ -81,7 +81,7 @@ export const ListTitle = ({ children }) => {
 export const ListDetails = ({ children }) => {
     return (
         <Grid item>
-            <Grid container spacing='{3}' justify='space-between'>
+            <Grid container spacing={3} justify='space-between'>
                 {children}
             </Grid>
         </Grid>

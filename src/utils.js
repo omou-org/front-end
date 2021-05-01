@@ -65,8 +65,8 @@ export const DayAbbreviation = {
 // vs.
 // M 10:00 AM - 11:00 AM and W 2:00 PM - 3:00 PM -> false
 export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
-    let firstAvailabilityStartTime = availabilityList[0].startTime;
-    let firstAvailabilityEndTime = availabilityList[0].endTime;
+    let firstAvailabilityStartTime = availabilityList[0]?.startTime;
+    let firstAvailabilityEndTime = availabilityList[0]?.endTime;
 
     for (let availability of availabilityList) {
         if (
@@ -77,6 +77,58 @@ export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
         }
     }
     return true;
+};
+
+/**
+ * @param {*} availabilityList
+ * @returns a string with the days from an availiability list
+ *          formatted as "Monday / Wednesday"
+ */
+export const formatAvailabilityListDays = (availabilityList) => {
+    let dayStr = '';
+
+    availabilityList.forEach((availability, index) => {
+        dayStr += capitalizeString(availability.dayOfWeek);
+        dayStr += index !== availabilityList.length - 1 ? ' / ' : '';
+    });
+    return dayStr;
+};
+
+/**
+ * @param {*} availabilityList
+ * @returns a string with the hours from an availiability list
+ *          formatted as "1:00 PM - 2:00 PM / 3:00 PM - 4:00 PM"
+ */
+export const formatAvailabilityListHours = (availabilityList) => {
+    let startTime;
+    let endTime;
+
+    if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
+        startTime = moment(availabilityList[0]?.startTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
+        endTime = moment(availabilityList[0]?.endTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
+
+        return `${startTime} - ${endTime}`;
+    } else {
+        return availabilityList.reduce((allAvailabilites, availability, i) => {
+            const startTime = moment(availability.startTime, [
+                'HH:mm:ss',
+            ]).format('h:mm A');
+            const endTime = moment(availability.endTime, ['HH:mm:ss']).format(
+                'h:mm A'
+            );
+
+            return (
+                allAvailabilites +
+                `${startTime} - ${endTime}${
+                    i !== availabilityList.length - 1 ? ' / ' : ''
+                }`
+            );
+        }, '');
+    }
 };
 
 /**
@@ -167,7 +219,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date === last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(
-        enrollment.sessions_left
+        enrollment.sessionsLeft
     );
     const classSessionNotBeforeFirstPayment = session_date >= first_payment;
 

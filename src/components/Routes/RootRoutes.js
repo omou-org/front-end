@@ -7,7 +7,7 @@ import Accounts from '../FeatureViews/Accounts/Accounts';
 import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
 import AuthenticatedRoute from './AuthenticatedRoute';
 import CatsPage from '../CatsPage/CatsPage';
-import EnrollmentView from '../FeatureViews/Accounts/TabComponents/EnrollmentView';
+import EnrollmentView from '../FeatureViews/Enrollment/EnrollmentView';
 import EditSessionView from '../FeatureViews/Scheduler/EditSessionView';
 import ErrorNotFoundPage from '../ErrorNotFoundPage/ErrorNotFoundPage';
 import ForgotPassword from '../Authentication/ForgotPassword';
@@ -209,7 +209,7 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/form/:type/:action/:id?'
+                path='/form/:type/:action/:id?/'
                 users={[USER_TYPES.admin, USER_TYPES.parent]}
             >
                 <FormPage />

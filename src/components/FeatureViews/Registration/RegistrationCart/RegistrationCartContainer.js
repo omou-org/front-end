@@ -82,7 +82,7 @@ export const CREATE_REGISTRATION_CART = gql`
     }
 `;
 
-export default function RegistrationCartContainer() {
+const RegistrationCartContainer = () => {
     const { currentParent, ...registrationCartState } = useSelector(
         (state) => state.Registration
     );
@@ -98,10 +98,13 @@ export default function RegistrationCartContainer() {
     );
     const { parentIsLoggedIn } = useValidateRegisteringParent();
     // create list of students to fetch
+    // delete registrationCartState["submitStatus"];
+    console.log(registrationCartState);
+    const registrationCartKeys = Object.keys(registrationCartState);
+    const studentIdsFromRegistrationCart =
+        registrationCartKeys.length > 0 && registrationCartKeys;
     const studentIds =
-        (Object.keys(registrationCartState).length > 0 &&
-            Object.keys(registrationCartState)) ||
-        currentParent.studentIdList;
+        studentIdsFromRegistrationCart || currentParent.studentIdList;
     // create list of courses to fetch
     const courseIds =
         Object.values(registrationCartState).filter((reg) => reg).length > 0 &&
@@ -113,7 +116,10 @@ export default function RegistrationCartContainer() {
     const { data, loading, error } = useQuery(
         GET_COURSES_AND_STUDENTS_TO_REGISTER,
         {
-            variables: { userIds: studentIds, courseIds: courseIds },
+            variables: {
+                userIds: studentIds,
+                courseIds,
+            },
             skip: !courseIds,
         }
     );
@@ -151,12 +157,14 @@ export default function RegistrationCartContainer() {
         ).length;
         if (
             !loading &&
+            data &&
             numOfRegistrations > 0 &&
             Object.keys(registrationCart).length === 0
         ) {
+            console.log(data);
             const courseData = data.courses;
             setRegistrationCart(() => {
-                let registrationCart = {};
+                const registrationCart = {};
                 studentIds.forEach((studentId) => {
                     registrationCart[studentId] = registrationCartState[
                         studentId
@@ -179,7 +187,7 @@ export default function RegistrationCartContainer() {
                 .map((registration) => Number(registration.course.id))
                 .indexOf(Number(courseId));
 
-            let updatedRegistrationList = prevRegistrationCart[studentId];
+            const updatedRegistrationList = prevRegistrationCart[studentId];
 
             if (!checked) {
                 updatedRegistrationList.splice(registrationToEditIndex, 1);
@@ -217,13 +225,21 @@ export default function RegistrationCartContainer() {
         }
     };
 
-    if (loading || !data) return <Loading small />;
-    if (error) return <div>There's been an error: {error.message}</div>;
+    if (loading || !data) {
+        return <Loading small />;
+    }
+    if (error) {
+        return <div>There's been an error: {error.message}</div>;
+    }
     const studentData = data.userInfos;
 
     return (
         <RegistrationContext.Provider
-            value={{ registrationCart, currentParent, updateSession }}
+            value={{
+                registrationCart,
+                currentParent,
+                updateSession,
+            }}
         >
             <Grid container>
                 <RegistrationActions />
@@ -241,10 +257,10 @@ export default function RegistrationCartContainer() {
                         ([studentId, registration]) => (
                             <StudentRegistrationEntry
                                 key={studentId}
+                                registrationList={registration}
                                 student={studentData.find(
                                     (student) => student.user.id === studentId
                                 )}
-                                registrationList={registration}
                             />
                         )
                     )}
@@ -261,7 +277,7 @@ export default function RegistrationCartContainer() {
                     {parentIsLoggedIn ? (
                         <>
                             <Grid item xs={5}>
-                                <FormControl required error={reviewError}>
+                                <FormControl error={reviewError} required>
                                     <FormLabel style={{ textAlign: 'left' }}>
                                         Acknowledge
                                     </FormLabel>
@@ -272,12 +288,12 @@ export default function RegistrationCartContainer() {
                                                     reviewConfirmationCheck
                                                 }
                                                 color='primary'
-                                                onChange={handleAcknowledgement}
                                                 name='checkedA'
+                                                onChange={handleAcknowledgement}
                                             />
                                         }
                                         label='By checking this box, you confirmed that you have reviewed
-                                        the registrations above.'
+											the registrations above.'
                                         style={{
                                             color: omouBlue,
                                             textAlign: 'left',
@@ -289,9 +305,9 @@ export default function RegistrationCartContainer() {
                             </Grid>
                             <Grid item>
                                 <ResponsiveButton
+                                    color='primary'
                                     onClick={handleParentRegistrationSubmit}
                                     variant='contained'
-                                    color='primary'
                                 >
                                     save registration cart
                                 </ResponsiveButton>
@@ -303,15 +319,15 @@ export default function RegistrationCartContainer() {
                 </Grid>
             </Grid>
             <Dialog
-                open={parentRegistrationConfirmation}
                 onClose={() => setParentConfirmation(false)}
+                open={parentRegistrationConfirmation}
             >
-                <DialogTitle disableTypography>
+                <DialogTitle>
                     <Grid
+                        alignItems='center'
                         container
                         direction='row'
                         justify='center'
-                        alignItems='center'
                     >
                         <Grid item>
                             <CheckCircleIcon
@@ -321,8 +337,8 @@ export default function RegistrationCartContainer() {
                         </Grid>
                         <Grid item>
                             <Typography
-                                color='primary'
                                 align='center'
+                                color='primary'
                                 style={{
                                     fontSize: '1.2em',
                                     fontWeight: 500,
@@ -360,17 +376,17 @@ export default function RegistrationCartContainer() {
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton
-                        variant='outlined'
                         component={Link}
                         to='/registration'
+                        variant='outlined'
                     >
                         done
                     </ResponsiveButton>
                     <ResponsiveButton
-                        variant='contained'
                         color='primary'
                         component={Link}
                         to='/my-payments'
+                        variant='contained'
                     >
                         view invoice
                     </ResponsiveButton>
@@ -378,4 +394,6 @@ export default function RegistrationCartContainer() {
             </Dialog>
         </RegistrationContext.Provider>
     );
-}
+};
+
+export default RegistrationCartContainer;
