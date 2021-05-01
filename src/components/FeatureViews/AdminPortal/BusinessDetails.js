@@ -31,7 +31,7 @@ const useStyles = makeStyles({
         borderRadius: '5px',
         width: '16.5rem',
         height: '2rem',
-        ...body1
+        ...body1,
     },
 });
 
