@@ -46,13 +46,11 @@ const NavigationContainer = () => {
     }
 
     const classes = useStyles();
-    // const { token } = useSelector(({ auth }) => auth);
 
     const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
     const NavigationList = NavList[ACCOUNT_TYPE];
-    console.log(NavigationList, ACCOUNT_TYPE, (!NavigationList || !ACCOUNT_TYPE), token);
+
     if ((!NavigationList || !ACCOUNT_TYPE) && token) {
-        console.log("loading")
         return <Loading/>;
     }
 

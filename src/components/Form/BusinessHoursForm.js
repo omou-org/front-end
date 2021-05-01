@@ -1,5 +1,5 @@
 import React from "react";
-import {Form as ReactForm, useFormState} from 'react-final-form';
+import {Form as ReactForm} from 'react-final-form';
 import {Checkboxes} from 'mui-rff';
 import {TimePicker} from "./FieldComponents/Fields";
 import Grid from "@material-ui/core/Grid";
@@ -7,10 +7,6 @@ import OnboardingControls from "../FeatureViews/Onboarding/OnboardingControls";
 import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveButton";
 
 const BusinessDayHoursField = ({day}) => {
-	const {values} = useFormState();
-
-	console.log(values);
-
 	return (<Grid
 		item container
 		align="center"

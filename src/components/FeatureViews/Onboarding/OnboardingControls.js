@@ -18,11 +18,11 @@ export default function OnboardingControls(props) {
 	} = props;
 
 	const {activeStep} = useContext(OnboardingContext);
-	const [
+	const {
 		handleBack,
 		handleSkip,
 		handleNext,
-	] = useOnboardingActions();
+	} = useOnboardingActions();
 	const steps = onboardingSteps;
 
 	const handleBackButton = () => {

@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 
-import DownloadTemplate from './DownloadTemplates';
-import CourseUpload from './CourseUpload';
 import BusinessInfo from './BusinessInfo';
 import BusinessHours from './BusinessHours';
-import AccountsUpload from './AccountsUpload';
-import { OnboardingContext } from "./OnboardingContext";
-import { useURLQuery } from "../../../utils";
-import EnrollmentUpload from "./EnrollmentUpload";
+import {OnboardingContext} from "./OnboardingContext";
+import {useURLQuery} from "../../../utils";
 import BulkImportStep from './BulkImportStep';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',

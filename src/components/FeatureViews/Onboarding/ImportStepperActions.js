@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {OnboardingContext} from "./OnboardingContext";
 import {useURLQuery} from "../../../utils";
 import {useHistory, useLocation} from "react-router-dom";
@@ -11,6 +11,13 @@ export default function useOnboardingActions() {
 	const location = useLocation();
 	const history = useHistory();
 	const urlQuery = useURLQuery();
+	const currentStep = Number(urlQuery.get('step'));
+
+	useEffect(() => {
+		if (currentStep - 1 !== activeStep) {
+			setActiveStep(currentStep);
+		}
+	}, [currentStep, activeStep])
 
 	const isStepOptional = (step) => {
 		return false;
@@ -26,15 +33,13 @@ export default function useOnboardingActions() {
 			newSkipped = new Set(newSkipped.values());
 			newSkipped.delete(activeStep);
 		}
-
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
 		setSkipped(newSkipped);
 
 		//Set new URL
-		const currentStep = Number(urlQuery.get("step"));
 		history.push({
 			path: location.pathname,
-			search: `?step=${currentStep + 1}`
+			search: `?step=${Number(urlQuery.get("step")) + 1}`
 		});
 	};
 
@@ -70,9 +75,9 @@ export default function useOnboardingActions() {
 		});
 	};
 
-	return [
+	return {
 		handleBack,
 		handleSkip,
 		handleNext,
-	]
+	};
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import TemplateImport from './TemplateImport';
 import ImportResults from './ImportResults';
 
@@ -9,9 +9,8 @@ const BulkImportStep = ({ templateType }) => {
         switch (step) {
             case 0:
                 return <TemplateImport templateType={templateType} setActiveStep={setActiveStep} />
-
             case 1:
-                return <ImportResults setActiveStep={setActiveStep} />
+                return <ImportResults templateType={templateType} setActiveStep={setActiveStep}/>
 
         }
     }
@@ -21,8 +20,6 @@ const BulkImportStep = ({ templateType }) => {
     return (
         <div>
             {getStepContent(activeStep)}
-
-
         </div>
     )
 }
