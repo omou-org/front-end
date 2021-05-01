@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { makeStyles } from '@material-ui/core/styles';
+import BusinessDetails from './BusinessDetails';
 
 const useStyles = makeStyles({
     adminPortalTabsStyle: {
@@ -34,7 +35,7 @@ const AdminPortalTabs = () => {
         2: { content: 'tuition content' },
         3: { content: 'access control content' },
         4: { content: 'admin log content' },
-        5: { content: 'business details content' },
+        5: { content: <BusinessDetails /> },
     };
 
     return (
