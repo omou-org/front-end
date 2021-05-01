@@ -123,18 +123,9 @@ const BulkUploadModal = ({ closeModal }) => {
         downloadOmouTemplate(GET_TEMPLATE[template], template.split(' ').join('_').toLowerCase());
     }
 
-    // Hook 
-    // Upload 
-    // Args: accountType, excel ?
-
-    // useOmouTemplates
-    // output: downloaded template
-
     const uploadFile = async () => {
-
         let response = await uploadTemplate('xml-upload', template)
         setUploadResponse(response)
-
         handleStepChange()
     }
 
