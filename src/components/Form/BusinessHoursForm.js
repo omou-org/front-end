@@ -1,15 +1,23 @@
 import React from "react";
 import {Form as ReactForm, useFormState} from 'react-final-form';
-import {Checkboxes, makeValidate} from 'mui-rff';
+import {Checkboxes} from 'mui-rff';
 import {TimePicker} from "./FieldComponents/Fields";
 import Grid from "@material-ui/core/Grid";
+import OnboardingControls from "../FeatureViews/Onboarding/OnboardingControls";
+import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveButton";
 
 const BusinessDayHoursField = ({day}) => {
 	const {values} = useFormState();
 
 	console.log(values);
 
-	return (<Grid item container align="center" justify="center" alignItems="center">
+	return (<Grid
+		item container
+		align="center"
+		justify="center"
+		alignItems="center"
+		spacing={3}
+	>
 		<Grid item xs={2}>{day}</Grid>
 		<Grid item xs={4}>
 			<TimePicker
@@ -31,13 +39,10 @@ const BusinessDayHoursField = ({day}) => {
 	</Grid>)
 }
 
-export default function BusinessHoursForm({isLongDay}) {
-
-	const validate = makeValidate();
+export default function BusinessHoursForm({isOnboarding}) {
 	const onSubmit = async ({bizHours}) => {
 
 	}
-
 
 	const daysOfWeekLong = [
 		'Monday',
@@ -60,17 +65,33 @@ export default function BusinessHoursForm({isLongDay}) {
 
 	return (<ReactForm
 		onSubmit={onSubmit}
-		validate={validate}
 		render={({handleSubmit}) => (
-			<form onSubmit={handleSubmit}>
-				<Grid container>
+			<Grid item
+				  container
+				  spacing={3}
+				  direction='column'
+				  alignItems='center'
+				  justify='center'
+			>
+				<Grid item xs={12}
+					  container
+				>
 					{
 						daysOfWeekShort.map((day) => (
 							<BusinessDayHoursField day={day}/>
 						))
 					}
 				</Grid>
-			</form>)
+				<Grid item>
+					{
+						isOnboarding ? <OnboardingControls
+							preNextHandler={handleSubmit}
+						/> : <ResponsiveButton onClick={handleSubmit}>
+							Submit
+						</ResponsiveButton>
+					}
+				</Grid>
+			</Grid>)
 		}
 	/>)
 }

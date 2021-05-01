@@ -3,6 +3,7 @@ import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/Responsiv
 import {OnboardingContext} from "./OnboardingContext";
 import useOnboardingActions from "./ImportStepperActions";
 import {onboardingSteps} from "./ImportFlow";
+import Grid from "@material-ui/core/Grid";
 
 export default function OnboardingControls(props) {
 	const doNothing = () => {
@@ -46,7 +47,7 @@ export default function OnboardingControls(props) {
 		return false;
 	};
 
-	return (<div style={{margin: "16px"}}>
+	return (<Grid item container>
 		{activeStep !== 0 && (
 			<ResponsiveButton
 				disabled={activeStep === 0}
@@ -64,7 +65,6 @@ export default function OnboardingControls(props) {
 				Skip
 			</ResponsiveButton>
 		)}
-
 		<ResponsiveButton
 			variant='contained'
 			color='primary'
@@ -74,5 +74,5 @@ export default function OnboardingControls(props) {
 				? 'Finish'
 				: 'Submit & Continue'}
 		</ResponsiveButton>
-	</div>)
+	</Grid>)
 }

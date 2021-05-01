@@ -3,7 +3,6 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
-import OnboardingControls from "./OnboardingControls";
 import BusinessHoursForm from "../../Form/BusinessHoursForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -23,21 +22,28 @@ const BusinessHours = () => {
     const handleChange = (newValue, actionMeta) => {
     };
     return (
-        <>
-            <Box className={classes.Text}>
-                <Typography variant='h3'>Business Hours</Typography>
-                <Box fontSize='h5.fontSize' className={classes.Subtitle}>
-                    <Typography variant='p'>
-                        Please input your business hours. These hours will show up in invoices and instructor
-                        timesheets.
-                    </Typography>
+        <Grid
+            container
+            spacing={3}
+            direction='column'
+            alignItems='center'
+            justify='center'
+        >
+            <Grid item>
+                <Box className={classes.Text}>
+                    <Typography variant='h3'>Business Hours</Typography>
+                    <Box fontSize='h5.fontSize' className={classes.Subtitle}>
+                        <Typography variant='p'>
+                            Please input your business hours. These hours will show up in invoices and instructor
+                            timesheets.
+                        </Typography>
+                    </Box>
                 </Box>
-            </Box>
-            <Grid container layout='row' alignItems='center' justify='center'>
-                <BusinessHoursForm/>
             </Grid>
-            <OnboardingControls/>
-        </>
+            <Grid item container layout='row' alignItems='center' justify='center'>
+                <BusinessHoursForm isOnboarding/>
+            </Grid>
+        </Grid>
     );
 };
 
