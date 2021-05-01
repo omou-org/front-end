@@ -1,18 +1,18 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import NavLinkNoDup from '../Routes/NavLinkNoDup';
-import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import {makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import './Navigation.scss';
 import OmouTheme from '../../theme/muiTheme';
-import { NavList } from './NavigationAccessList';
+import {NavList} from './NavigationAccessList';
 import Loading from '../OmouComponents/Loading';
 import AuthenticatedNavigationView from './AuthenticatedNavigationView';
 import LoginPage from '../Authentication/LoginPage';
-import { setToken } from '../../actions/authActions';
+import {setToken} from '../../actions/authActions';
 
 const { useEffect } = require('react');
 
@@ -48,8 +48,13 @@ const NavigationContainer = () => {
     const classes = useStyles();
     // const { token } = useSelector(({ auth }) => auth);
 
-    const ACCOUNT_TYPE = useSelector(({ auth }) => auth.accountType);
+    const ACCOUNT_TYPE = useSelector(({auth}) => auth.accountType);
     const NavigationList = NavList[ACCOUNT_TYPE];
+    console.log(NavigationList, ACCOUNT_TYPE, (!NavigationList || !ACCOUNT_TYPE), token);
+    if ((!NavigationList || !ACCOUNT_TYPE) && token) {
+        console.log("loading")
+        return <Loading/>;
+    }
 
     const isAccountFormActive = (location, NavItem) => {
         let active = false;

@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import {TableHeadSecondary} from 'theme/ThemedComponents/Table/TableHeadSecondary';
+import { TableHeadSecondary } from 'theme/ThemedComponents/Table/TableHeadSecondary';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Grid from '@material-ui/core/Grid';
-import {fullName} from '../../../utils';
-import {highlightColor} from '../../../theme/muiTheme';
+import { fullName } from '../../../utils';
+import { highlightColor } from '../../../theme/muiTheme';
 import SessionEmailOrNotesModal from './ModalTextEditor';
 import ClassEnrollmentRow from './ClassEnrollmentRow';
 

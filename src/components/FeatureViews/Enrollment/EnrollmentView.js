@@ -16,6 +16,10 @@ import InvoiceTable from '../Invoices/InvoiceTable';
 import EnrollmentSummaryTab from './EnrollmentSummaryTab';
 import EnrollmentDetails from './EnrollmentDetails';
 import EnrollmentProgress from './EnrollmentProgress';
+import enrollment from 'reducers/enrollmentReducer';
+import { fullName } from '../../../utils';
+import { slateGrey } from '../../../theme/muiTheme';
+import EnrollmentActions from './EnrollmentActions';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -31,12 +35,22 @@ const GET_ENROLLMENT = gql`
                 id
                 title
                 courseType
+                startDate
+                endDate
                 instructor {
                     user {
                         firstName
                         id
                         lastName
                     }
+                }
+                courseCategory {
+                    name
+                }
+                availabilityList {
+                    dayOfWeek
+                    endTime
+                    startTime
                 }
             }
             paymentList {
@@ -65,6 +79,7 @@ const GET_ENROLLMENT = gql`
                         }
                     }
                 }
+                grade
             }
         }
     }
@@ -124,6 +139,17 @@ const CourseSessionStatus = () => {
         },
         wrapper: {
             flexDirection: 'row',
+        },
+        enrollmentViewRoot: {
+            marginTop: '10px',
+        },
+        StudentNameHeading: {
+            color: slateGrey,
+            textAlign: 'left',
+        },
+        enrollmentDetails: {
+            marginTop: '39px',
+            marginBottom: '40px',
         },
     });
     const classes = useStyles();
@@ -197,31 +223,50 @@ const CourseSessionStatus = () => {
     const { course, enrollmentnoteSet } = enrollmentData.enrollment;
 
     return (
-        <Grid container>
-            <Grid item xs={12}>
-                <Typography
-                    align='left'
-                    className='course-session-title'
-                    variant='h1'
-                >
-                    {course.title}
-                </Typography>
+        <Grid
+            container
+            direction='column'
+            className={classes.enrollmentViewRoot}
+        >
+            <Grid container justify='space-between' alignItems='flex-start'>
+                <Grid item xs={8}>
+                    <Typography
+                        className={classes.StudentNameHeading}
+                        variant='h4'
+                    >
+                        {fullName(enrollmentData.enrollment.student.user)}
+                    </Typography>
+                    <Typography
+                        align='left'
+                        className='course-session-title'
+                        variant='h1'
+                    >
+                        {course.title}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <EnrollmentActions enrollment={enrollmentData.enrollment} />
+                </Grid>
             </Grid>
-            <EnrollmentDetails enrollment={enrollmentData.enrollment} />
-            <Tabs
-                classes={{ indicator: classes.MuiIndicator }}
-                className='enrollment-tabs'
-                onChange={handleTabChange}
-                value={activeTab}
-            >
-                {isTutoring && <Tab label='Summary' />}
-                <Tab label='Progress' />
-                <Tab label='Invoices' />
-                <Tab
-                    classes={{ wrapper: classes.wrapper }}
-                    label={enrollmentNoteTabLabel(enrollmentnoteSet)}
-                />
-            </Tabs>
+            <Grid item className={classes.enrollmentDetails}>
+                <EnrollmentDetails enrollment={enrollmentData.enrollment} />
+            </Grid>
+            <Grid item>
+                <Tabs
+                    classes={{ indicator: classes.MuiIndicator }}
+                    className='enrollment-tabs'
+                    onChange={handleTabChange}
+                    value={activeTab}
+                >
+                    {isTutoring && <Tab label='Summary' />}
+                    <Tab label='Progress' />
+                    <Tab label='Invoices' />
+                    <Tab
+                        classes={{ wrapper: classes.wrapper }}
+                        label={enrollmentNoteTabLabel(enrollmentnoteSet)}
+                    />
+                </Tabs>
+            </Grid>
             <br />
             <ActiveTabView ActiveTab={activeTab} />
         </Grid>

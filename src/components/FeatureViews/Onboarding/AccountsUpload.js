@@ -2,9 +2,10 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { useMutation } from '@apollo/client';
+import {makeStyles} from '@material-ui/core/styles';
+import {useMutation} from '@apollo/client';
 import gql from 'graphql-tag';
+import OnboardingControls from "./OnboardingControls";
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -71,6 +72,7 @@ const AccountsUpload = () => {
                 type='file'
                 accept='.csv'
             ></input>
+            <OnboardingControls/>
         </Container>
     );
 };
