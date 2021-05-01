@@ -10,7 +10,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
 import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';

@@ -726,7 +726,7 @@ export function useURLQuery() {
     return new URLSearchParams(useLocation().search);
 }
 
-// Hooks for templates 
+// Hooks for templates
 /**
  * @description - Hook to upload template 
  * @param {xlsx} - excel file
@@ -747,51 +747,48 @@ export function useUploadOmouTemplate() {
     const uploadTemplate = async (inputHTMLID, templateName) => {
         let bodyFormData = new FormData();
 
-        let file = document.getElementById(inputHTMLID).files[0]
+        let file = document.getElementById(inputHTMLID).files[0];
         let lowerCaseTemplateName = templateName.toLowerCase();
-        let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`
-        let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`
+        let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`;
+        let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`;
 
         if (file) {
             bodyFormData.append('operations', opsString);
             bodyFormData.append('map', mapsString);
             bodyFormData.append(`${lowerCaseTemplateName}_excel`, file);
-        };
+        }
 
-        const response = await fetch(process.env.REACT_APP_DOMAIN + '/graphql', {
-            method: "POST",
-            body: bodyFormData,
-            headers: {
-                'Authorization': `JWT ${token}`
+        const response = await fetch(
+            process.env.REACT_APP_DOMAIN + '/graphql',
+            {
+                method: 'POST',
+                body: bodyFormData,
+                headers: {
+                    Authorization: `JWT ${token}`,
+                },
             }
-        })
+        );
 
         let resp = await response.json();
         let { data } = resp;
-        return data[`upload${templateName}`]
-
-
+        return data[`upload${templateName}`];
     };
 
-
-    return { uploadTemplate }
-
-
+    return { uploadTemplate };
 }
 
 /**
- *  @description 
- *  @param {Object} - gql query of 
- *  @param {String} - 
+ *  @description
+ *  @param {Object} - gql query of
+ *  @param {String} -
  * Input : graphql query
  * Input: template name
  * Output : downloaded file
  *
  */
 export async function downloadOmouTemplate(query, name) {
-
-    let { data } = await client.query({ query })
-    let queryResponse = Object.values(data)[0]
+    let { data } = await client.query({ query });
+    let queryResponse = Object.values(data)[0];
 
     function b64toBlob(base64Data, contentType) {
         contentType = contentType || '';
@@ -814,15 +811,17 @@ export async function downloadOmouTemplate(query, name) {
         return new Blob(byteArrays, { type: contentType });
     }
 
-
-    let contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    let contentType =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     let blob1 = b64toBlob(queryResponse, contentType);
     let blobUrl1 = URL.createObjectURL(blob1);
     const downloadLink = document.createElement('a');
-    downloadLink.href = blobUrl1
+    downloadLink.href = blobUrl1;
     document.body.appendChild(downloadLink);
-    downloadLink.setAttribute('download', `${capitalizeString(name)}_Omou_Template.xlsx`);
+    downloadLink.setAttribute(
+        'download',
+        `${capitalizeString(name)}_Omou_Template.xlsx`
+    );
     downloadLink.click();
     document.body.removeChild(downloadLink);
-
 }

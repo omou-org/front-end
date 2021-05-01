@@ -1,14 +1,14 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import {OnboardingContext} from "./OnboardingContext";
-import {useSessionStorage} from "../../../utils";
-import OnboardingControls from "./OnboardingControls";
+import { makeStyles } from '@material-ui/core/styles';
+import { OnboardingContext } from './OnboardingContext';
+import { useSessionStorage } from '../../../utils';
+import OnboardingControls from './OnboardingControls';
 import gql from 'graphql-tag';
-import {useMutation} from "@apollo/client";
-import Grid from "@material-ui/core/Grid";
+import { useMutation } from '@apollo/client';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -22,38 +22,48 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CREAT_BIZ_INFO = gql`
-mutation CreateBusiness($name: String, $phone: String, $email: String, $address: String) {
-  createBusiness(name: $name, phone: $phone, email: $email, address: $address) {
-    business {
-      id
-      name
-      phone
-      email
-      address
-    }
-  }
-}
-`
-
-const BusinessInfo = ({step}) => {
-    const classes = useStyles();
-    const {setImportState} = useContext(OnboardingContext);
-    // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
-    const [
-        createBusinessInfo,
-        createBusinessInfoResponse,
-    ] = useMutation(CREAT_BIZ_INFO, {
-        onCompleted: (data) => {
-            console.log(data);
+    mutation CreateBusiness(
+        $name: String
+        $phone: String
+        $email: String
+        $address: String
+    ) {
+        createBusiness(
+            name: $name
+            phone: $phone
+            email: $email
+            address: $address
+        ) {
+            business {
+                id
+                name
+                phone
+                email
+                address
+            }
         }
-    });
+    }
+`;
+
+const BusinessInfo = ({ step }) => {
+    const classes = useStyles();
+    const { setImportState } = useContext(OnboardingContext);
+    // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
+    const [createBusinessInfo, createBusinessInfoResponse] = useMutation(
+        CREAT_BIZ_INFO,
+        {
+            onCompleted: (data) => {
+                console.log(data);
+            },
+        }
+    );
 
     const [bizName, setBizName] = useSessionStorage('bizName', '');
     const [bizPhone, setBizPhone] = useSessionStorage('bizPhone', '');
     const [bizEmail, setBizEmail] = useSessionStorage('bizEmail', '');
     const [bizAddress, setBizAddress] = useSessionStorage('bizAddress', '');
 
-    const handleFieldChange = (setValue, key) => e => {
+    const handleFieldChange = (setValue, key) => (e) => {
         const newValue = e.target.value;
         if (newValue) {
             setImportState((prevState) => ({
@@ -61,20 +71,21 @@ const BusinessInfo = ({step}) => {
                 [step]: {
                     ...prevState[step],
                     [key]: newValue,
-                }
+                },
             }));
             setValue(e.target.value);
         }
-    }
+    };
 
     const handleError = (value, key) => {
         if (typeof value !== 'string') return true;
-        if (key === 'name' || key === 'address' || key === 'email') return false;
-        const isValid = ({
-            phone: val => val.match(/[a-zA-Z][^#&<>"~;$^%{}?]+$/u),
-        }[key]);
+        if (key === 'name' || key === 'address' || key === 'email')
+            return false;
+        const isValid = {
+            phone: (val) => val.match(/[a-zA-Z][^#&<>"~;$^%{}?]+$/u),
+        }[key];
         return isValid(value);
-    }
+    };
 
     const handleSubmit = () => {
         createBusinessInfo({
@@ -83,9 +94,9 @@ const BusinessInfo = ({step}) => {
                 phone: bizPhone,
                 email: bizEmail,
                 address: bizAddress,
-            }
+            },
         });
-    }
+    };
 
     return (
         <Grid
@@ -100,63 +111,61 @@ const BusinessInfo = ({step}) => {
                     <Typography variant='h1'>Business Information</Typography>
                     <Box fontSize='h5.fontSize' className={classes.Subtitle}>
                         <Typography variant='p'>
-                            Please input the following business info, these would
-                            show up in payment receipt printouts:
+                            Please input the following business info, these
+                            would show up in payment receipt printouts:
                         </Typography>
                     </Box>
                 </Box>
             </Grid>
             <Grid item>
-                <form style={{width: 500, margin: 'auto'}} autoComplete='off'>
+                <form style={{ width: 500, margin: 'auto' }} autoComplete='off'>
                     <TextField
-                        style={{marginTop: 25}}
+                        style={{ marginTop: 25 }}
                         fullWidth
                         id='name'
                         label='Business Name'
                         value={bizName}
-                        onChange={handleFieldChange(setBizName, "name")}
-                        error={handleError(bizName, "name")}
+                        onChange={handleFieldChange(setBizName, 'name')}
+                        error={handleError(bizName, 'name')}
                         required
                     />{' '}
-                    <br/>
+                    <br />
                     <TextField
-                        style={{marginTop: 25}}
+                        style={{ marginTop: 25 }}
                         fullWidth
                         id='phone'
                         label='Business Phone'
                         value={bizPhone}
-                        onChange={handleFieldChange(setBizPhone, "phone")}
-                        error={handleError(bizPhone, "phone")}
+                        onChange={handleFieldChange(setBizPhone, 'phone')}
+                        error={handleError(bizPhone, 'phone')}
                         required
                     />
-                    <br/>
+                    <br />
                     <TextField
-                        style={{marginTop: 25}}
+                        style={{ marginTop: 25 }}
                         fullWidth
                         id='email'
                         label='Business Email'
                         value={bizEmail}
-                        onChange={handleFieldChange(setBizEmail, "email")}
-                        error={handleError(bizEmail, "email")}
+                        onChange={handleFieldChange(setBizEmail, 'email')}
+                        error={handleError(bizEmail, 'email')}
                         required
                     />
-                    <br/>
+                    <br />
                     <TextField
-                        style={{marginTop: 25}}
+                        style={{ marginTop: 25 }}
                         fullWidth
                         id='address'
                         label='Business Address'
                         value={bizAddress}
-                        onChange={handleFieldChange(setBizAddress, "address")}
-                        error={handleError(bizAddress, "address")}
+                        onChange={handleFieldChange(setBizAddress, 'address')}
+                        error={handleError(bizAddress, 'address')}
                         required
                     />
                 </form>
             </Grid>
             <Grid item>
-                <OnboardingControls
-                    preNextHandler={handleSubmit}
-                />
+                <OnboardingControls preNextHandler={handleSubmit} />
             </Grid>
         </Grid>
     );
