@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -10,9 +10,9 @@ import CourseUpload from './CourseUpload';
 import BusinessInfo from './BusinessInfo';
 import BusinessHours from './BusinessHours';
 import AccountsUpload from './AccountsUpload';
-import {OnboardingContext} from "./OnboardingContext";
-import {useURLQuery} from "../../../utils";
-import EnrollmentUpload from "./EnrollmentUpload";
+import { OnboardingContext } from './OnboardingContext';
+import { useURLQuery } from '../../../utils';
+import EnrollmentUpload from './EnrollmentUpload';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -45,31 +45,30 @@ const ImportFlow = () => {
     const steps = onboardingSteps;
 
     useEffect(() => {
-        const currentStep = Number(urlQuery.get("step")) - 1;
+        const currentStep = Number(urlQuery.get('step')) - 1;
         if (currentStep !== activeStep) {
             setActiveStep(currentStep);
         }
-    }, [urlQuery])
+    }, [urlQuery]);
 
     const getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <BusinessInfo step={0}/>;
+                return <BusinessInfo step={0} />;
             case 1:
-                return <BusinessHours step={1}/>;
+                return <BusinessHours step={1} />;
             case 2:
-                return <DownloadTemplate step={2}/>;
+                return <DownloadTemplate step={2} />;
             case 3:
-                return <AccountsUpload step={3}/>;
+                return <AccountsUpload step={3} />;
             case 4:
-                return <CourseUpload step={4}/>;
+                return <CourseUpload step={4} />;
             case 5:
-                return <EnrollmentUpload step={5}/>
+                return <EnrollmentUpload step={5} />;
             default:
                 return 'Error: Invalid step. No content to display';
         }
-
-    }
+    };
 
     const isStepOptional = (step) => {
         return false;
@@ -80,7 +79,9 @@ const ImportFlow = () => {
     };
 
     return (
-        <OnboardingContext.Provider value={{importState, setImportState, activeStep, setActiveStep}}>
+        <OnboardingContext.Provider
+            value={{ importState, setImportState, activeStep, setActiveStep }}
+        >
             <div className={classes.root}>
                 <Stepper alternativeLabel activeStep={activeStep}>
                     {steps.map((label, index) => {
@@ -88,7 +89,9 @@ const ImportFlow = () => {
                         const labelProps = {};
                         if (isStepOptional(index)) {
                             labelProps.optional = (
-                                <Typography variant='caption'>Optional</Typography>
+                                <Typography variant='caption'>
+                                    Optional
+                                </Typography>
                             );
                         }
                         if (isStepSkipped(index)) {

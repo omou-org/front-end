@@ -2,8 +2,8 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import OnboardingControls from "./OnboardingControls";
+import { makeStyles } from '@material-ui/core/styles';
+import OnboardingControls from './OnboardingControls';
 
 const useStyles = makeStyles((theme) => ({
     Text: {
@@ -50,7 +50,7 @@ const CourseUpload = () => {
                 type='file'
                 accept='.csv'
             ></input>
-            <OnboardingControls/>
+            <OnboardingControls />
         </Container>
     );
 };
