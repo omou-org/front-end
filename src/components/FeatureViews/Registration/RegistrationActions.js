@@ -84,7 +84,6 @@ const RegistrationActions = () => {
     const registeringParent = data?.parent || currentParent;
 
     const parentName = registeringParent && fullName(registeringParent.user);
-    const { submitStatus = {}, ...registrationCartState } = registrationState;
     const numberOfRegistrationsInCart = Object.values(registrationState).reduce(
         (accumulator, currentStudent) => accumulator + currentStudent?.length,
         0

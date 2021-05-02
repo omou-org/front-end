@@ -16,7 +16,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import './scheduler.scss';
-import GET_SESSIONS from '../Accounts/TabComponents/EnrollmentView';
+import GET_SESSIONS from '../Enrollment/EnrollmentView';
 
 import { fullName } from '../../../utils';
 

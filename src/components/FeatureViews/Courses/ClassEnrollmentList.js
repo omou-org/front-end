@@ -87,6 +87,7 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                 <Table className={classes.table}>
                     <TableBody>
                         {enrollmentList
+                            .slice()
                             .sort((firstStudent, secondStudent) =>
                                 firstStudent.student.user.lastName <
                                 secondStudent.student.user.lastName

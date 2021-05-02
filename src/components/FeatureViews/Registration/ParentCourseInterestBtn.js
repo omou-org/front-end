@@ -9,8 +9,6 @@ const ParentCourseInterestBtn = ({
     isCourseOnParentInterestList,
     handleInterestRegister,
 }) => {
-    console.log(isCourseOnParentInterestList);
-
     return isCourseOnParentInterestList(courseID) ? (
         <ResponsiveButton
             disabled={true}

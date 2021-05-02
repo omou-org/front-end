@@ -10,6 +10,14 @@ const GET_EMAIL = gql`
     }
 `;
 
+const GET_STUDENT_ID_LIST = gql`
+    query GetParentStudents($id: ID!) {
+        parent(userId: $id) {
+            studentIdList
+        }
+    }
+`;
+
 const GET_ACCOUNT_TYPE = gql`
     query GetAccountType($username: String!) {
         userInfo(userName: $username) {
@@ -80,17 +88,38 @@ export const setToken = async (token, shouldSave, usernameEmail = '') => {
             variables: { username: email },
         });
         const { accountType, user, phoneNumber } = userInfo;
+
+        sessionStorage.setItem('token', token);
+
         if (shouldSave) {
             localStorage.setItem('token', token);
+        }
+        let finalUser = user;
+        if (accountType === 'PARENT') {
+            const {
+                data: { parent },
+            } = await client.query({
+                context: {
+                    headers: {
+                        Authorization: `JWT ${token}`,
+                    },
+                },
+                query: GET_STUDENT_ID_LIST,
+                variables: { id: user.id },
+            });
+            finalUser = {
+                ...user,
+                studentList: parent.studentIdList,
+            };
         }
         return {
             payload: {
                 accountType,
-                email,
-                token,
-                user,
-                phoneNumber,
                 attemptedLogin: true,
+                email,
+                phoneNumber,
+                token,
+                user: finalUser,
             },
             type: types.SET_CREDENTIALS,
         };
@@ -105,6 +134,7 @@ export const setToken = async (token, shouldSave, usernameEmail = '') => {
 
 export const logout = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     client.clearStore();
     return {
         type: types.LOGOUT,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -12,6 +12,9 @@ import { NavList } from './NavigationAccessList';
 import Loading from '../OmouComponents/Loading';
 import AuthenticatedNavigationView from './AuthenticatedNavigationView';
 import LoginPage from '../Authentication/LoginPage';
+import { setToken } from '../../actions/authActions';
+
+const { useEffect } = require('react');
 
 const useStyles = makeStyles({
     navigationIconStyle: {
@@ -32,8 +35,18 @@ export const AuthenticatedComponent = ({ children }) => {
 };
 
 const NavigationContainer = () => {
+    const dispatch = useDispatch();
+    const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+
+    if (token) {
+        (async () => {
+            dispatch(await setToken(token));
+        })();
+    }
+
     const classes = useStyles();
-    const { token } = useSelector(({ auth }) => auth);
+    // const { token } = useSelector(({ auth }) => auth);
 
     const ACCOUNT_TYPE = useSelector(({ auth }) => auth.accountType);
     const NavigationList = NavList[ACCOUNT_TYPE];

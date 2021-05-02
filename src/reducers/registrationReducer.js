@@ -68,6 +68,7 @@ export default function registration(
         case actions.SET_PARENT:
             setParentRegistrationCart(payload);
             return {
+                ...state,
                 currentParent: payload,
             };
         case actions.RESET_REGISTRATION:
@@ -117,6 +118,20 @@ export default function registration(
                 complete: true,
             };
             return { ...newState };
+
+        case actions.SET_CREDENTIALS:
+            if (payload.accountType === 'PARENT') {
+                setParentRegistrationCart({
+                    user: payload.user,
+                });
+                return {
+                    ...state,
+                    currentParent: {
+                        user: payload.user,
+                    },
+                };
+            }
+            return state;
         default:
             return state;
     }
@@ -240,17 +255,14 @@ function setSectionFieldList(path, formList, form) {
 
 const onSubmit = (state) => ({
     ...state,
-    submitStatus: null,
 });
 
 const successSubmit = (state) => ({
     ...state,
-    submitStatus: 'success',
 });
 
 const failedSubmit = (state) => ({
     ...state,
-    submitStatus: 'fail',
 });
 
 const saveRegistration = (student, course, registrationState) => {
@@ -408,7 +420,6 @@ const addTutoringRegistration = (prevState, form) => {
         'tutoring',
         enrollmentObject
     );
-    prevState.submitStatus = 'success';
 
     return { ...prevState };
 };
@@ -461,7 +472,7 @@ const addSmallGroupRegistration = (prevState, { formMain, new_course }) => {
         'small group',
         enrollmentObject
     );
-    prevState.submitStatus = 'success';
+
     return { ...prevState };
 };
 
