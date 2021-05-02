@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 
@@ -28,6 +28,8 @@ import AddSessions from 'components/OmouComponents/AddSessions';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
 import { fullName } from '../../../../utils';
+import axios from 'axios';
+import { CodeSharp } from '@material-ui/icons';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -61,6 +63,7 @@ const GET_ENROLLMENT = gql`
                     id
                     firstName
                     lastName
+                    email
                     parent {
                         user {
                             id
@@ -78,6 +81,10 @@ export const GET_SESSIONS = gql`
     query GetSessions($courseId: ID!) {
         sessions(courseId: $courseId) {
             course {
+                availabilityList {
+                    startTime
+                    endTime
+                }
                 id
                 hourlyTuition
             }
@@ -131,6 +138,7 @@ const CourseSessionStatus = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [highlightSession, setHighlightSession] = useState(false);
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
+    const { courses, google_courses } = useSelector(({ auth }) => auth);
 
     const handleTabChange = useCallback((_, newTab) => {
         setActiveTab(newTab);
@@ -140,6 +148,61 @@ const CourseSessionStatus = () => {
         setHighlightSession((prevHighlight) => !prevHighlight);
     }, []);
 
+    const studentEmail = enrollmentData?.enrollment.student.user.email;
+    const courseID = enrollmentData?.enrollment.course.id;
+    const getGoogleClassCode = (courses, courseID) => {
+        let googleClassCode;
+        if (courses) {
+            courses.forEach(function (course) {
+                if (courseID == course.id) {
+                    googleClassCode = course.googleClassCode;
+                }
+            });
+            return googleClassCode;
+        }
+    };
+
+    const getGoogleCourseID = (google_courses, courses, courseID) => {
+        let googleCourseID;
+        let googleClassCode = getGoogleClassCode(courses, courseID);
+        if (google_courses && googleClassCode) {
+            google_courses.forEach(function (course) {
+                if (course.enrollmentCode == googleClassCode) {
+                    googleCourseID = course.id;
+                }
+            });
+            return googleCourseID;
+        }
+    };
+
+    async function googleClassroomUnenroll() {
+        let googleCourseID = getGoogleCourseID(
+            google_courses,
+            courses,
+            courseID
+        );
+        console.log(googleCourseID);
+        try {
+            const response = await axios.delete(
+                'https://classroom.googleapis.com/v1/courses',
+                {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem(
+                            'google_access_token'
+                        )}`,
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    data: {
+                        userId: studentEmail,
+                        courseId: googleCourseID,
+                    },
+                }
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const openUnenrollDialog = useCallback(() => {
         setUnenrollWarningOpen(true);
     }, []);
@@ -147,6 +210,7 @@ const CourseSessionStatus = () => {
     const closeUnenrollDialog = useCallback(
         (toUnenroll) => () => {
             setUnenrollWarningOpen(false);
+            googleClassroomUnenroll();
             //TODO: migrate unenroll to graph ql
             // if (toUnenroll) {
             //     deleteEnrollment(enrollment)(dispatch);
@@ -171,13 +235,17 @@ const CourseSessionStatus = () => {
             </Typography>
         );
     }
-    sessionsData.sessions.sort((a, b) =>
-        a.startDatetime > b.startDatetime
-            ? 1
-            : b.startDatetime > a.startDatetime
-            ? -1
-            : 0
-    );
+
+    // console.log(sessionsData)
+
+    // sessionsData.sessions.slice().sort((a, b) =>
+    //     a.startDatetime > b.startDatetime
+    //         ? 1
+    //         : b.startDatetime > a.startDatetime
+    //         ? -1
+    //         : 0
+    // );
+
     const {
         course,
         enrollmentnoteSet,

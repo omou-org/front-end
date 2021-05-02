@@ -15,7 +15,7 @@ import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
 
-const StyledTableRow = withStyles((theme) => ({
+export const StyledTableRow = withStyles((theme) => ({
     root: {
         '& > *': {
             borderBottom: 'unset',
@@ -41,6 +41,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
         $scheduleUpdatesSms: Boolean
         $sessionReminderEmail: Boolean
         $sessionReminderSms: Boolean
+        $missedSessionReminderEmail: Boolean
+        $missedSessionReminderSms: Boolean
     ) {
         __typename
         createParentNotificationSetting(
@@ -50,6 +52,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
             scheduleUpdatesSms: $scheduleUpdatesSms
             sessionReminderEmail: $sessionReminderEmail
             sessionReminderSms: $sessionReminderSms
+            missedSessionReminderEmail: $missedSessionReminderEmail
+            missedSessionReminderSms: $missedSessionReminderSms
         ) {
             settings {
                 paymentReminderEmail
@@ -57,6 +61,8 @@ const CREATE_PARENT_NOTIFICATION_SETTINGS = gql`
                 scheduleUpdatesSms
                 sessionReminderEmail
                 sessionReminderSms
+                missedSessionReminderEmail
+                missedSessionReminderSms
             }
         }
     }
@@ -107,6 +113,8 @@ const GET_PARENT_NOTIFICATION_SETTINGS = gql`
             scheduleUpdatesSms
             sessionReminderEmail
             sessionReminderSms
+            missedSessionReminderEmail
+            missedSessionReminderSms
         }
     }
 `;
@@ -197,20 +205,70 @@ export default function NotificationSettings({ user }) {
                 userSettings = instructorNotificationSettings;
             }
         }
-        setNotificationRows([
-            createNotificationSetting(
-                'Session Reminder',
-                'Get notified when a session is coming up.',
+        const SMSCourseAndScheduleUpdateSettings = [
+            createOptInSetting(
+                'SMS Schedule Updates',
+                'Get notified for schedule changes by SMS',
                 {
-                    settingName: 'sessionReminderEmail',
-                    checked: userSettings?.sessionReminderEmail || false,
-                },
-                {
-                    settingName: 'sessionReminderSms',
-                    checked: userSettings?.sessionReminderSms || false,
+                    settingName: 'scheduleUpdatesSms',
+                    checked: userSettings?.scheduleUpdatesSms || false,
                 }
             ),
-            ...(userInfo.accountType === 'PARENT'
+            createOptInSetting(
+                'SMS Course Requests',
+                'Get notified for cancellations by SMS',
+                {
+                    settingName: 'courseRequestsSms',
+                    checked: userSettings?.courseRequestsSms || false,
+                }
+            ),
+        ];
+        const setUserSettings = (accountType) =>
+            ({
+                PARENT: SMSCourseAndScheduleUpdateSettings,
+                INSTRUCTOR: SMSCourseAndScheduleUpdateSettings,
+                ADMIN: [
+                    createOptInSetting(
+                        'Google Classroom Integration',
+                        'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
+                        {
+                            settingName: 'gClassIntegrationSetting',
+                            checked: false,
+                        }
+                    ),
+                ],
+                RECEPTIONIST: [
+                    createOptInSetting(
+                        'Google Classroom Integration',
+                        'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
+                        {
+                            settingName: 'gClassIntegrationSetting',
+                            checked: false,
+                        }
+                    ),
+                ],
+                INSTRUCTOR: [],
+            }[accountType]);
+
+        const notReceptionOrAdmin =
+            userInfo.accountType !== 'RECEPTION' &&
+            userInfo.accountType !== 'ADMIN';
+        setNotificationRows([
+            ...(notReceptionOrAdmin
+                ? createNotificationSetting(
+                      'Session Reminder',
+                      'Get notified when a session is coming up.',
+                      {
+                          settingName: 'sessionReminderEmail',
+                          checked: userSettings?.sessionReminderEmail || false,
+                      },
+                      {
+                          settingName: 'sessionReminderSms',
+                          checked: userSettings?.sessionReminderSms || false,
+                      }
+                  )
+                : []),
+            ...(notReceptionOrAdmin && userInfo.accountType === 'PARENT'
                 ? [
                       createNotificationSetting(
                           'Payment Reminder',
@@ -229,24 +287,7 @@ export default function NotificationSettings({ user }) {
                   ]
                 : []),
         ]);
-        setOptInNotifRows([
-            createOptInSetting(
-                'SMS Schedule Updates',
-                'Get notified for schedule changes by SMS',
-                {
-                    settingName: 'scheduleUpdatesSms',
-                    checked: userSettings?.scheduleUpdatesSms || false,
-                }
-            ),
-            createOptInSetting(
-                'SMS Course Requests',
-                'Get notified for cancellations by SMS',
-                {
-                    settingName: 'courseRequestsSms',
-                    checked: userSettings?.courseRequestsSms || false,
-                }
-            ),
-        ]);
+        setOptInNotifRows(setUserSettings(userInfo.accountType));
     }, [
         setNotificationRows,
         setOptInNotifRows,
@@ -280,7 +321,6 @@ export default function NotificationSettings({ user }) {
             ].checked;
             return newState;
         });
-
         if (userInfo.accountType === 'PARENT') {
             notificationSettings.parent = userInfo.user.id;
             createParentNotification({ variables: notificationSettings });
@@ -298,12 +338,18 @@ export default function NotificationSettings({ user }) {
             <Grid
                 container
                 style={{
-                    backgroundColor: '#F5F5F5',
                     padding: '1%',
                     marginTop: '30px',
+                    borderBottom: '1px solid #C4C4C4',
                 }}
             >
-                <Typography style={{ color: omouBlue, fontWeight: 600 }}>
+                <Typography
+                    style={{
+                        color: omouBlue,
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                    }}
+                >
                     Notification Settings
                 </Typography>
             </Grid>
@@ -327,6 +373,7 @@ export default function NotificationSettings({ user }) {
                                         style={{
                                             fontSize: '14px',
                                             fontWeight: 'bold',
+                                            lineHeight: '1.375rem',
                                         }}
                                         display='block'
                                     >
@@ -371,12 +418,18 @@ export default function NotificationSettings({ user }) {
             <Grid
                 container
                 style={{
-                    backgroundColor: '#F5F5F5',
                     padding: '1%',
-                    marginTop: '2%',
+                    marginTop: '30px',
+                    borderBottom: '1px solid #C4C4C4',
                 }}
             >
-                <Typography style={{ color: omouBlue, fontWeight: 600 }}>
+                <Typography
+                    style={{
+                        color: omouBlue,
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                    }}
+                >
                     Opt-in SMS Notifications
                 </Typography>
             </Grid>
@@ -394,6 +447,7 @@ export default function NotificationSettings({ user }) {
                                         style={{
                                             fontSize: '14px',
                                             fontWeight: 'bold',
+                                            lineHeight: '1.375rem',
                                         }}
                                         display='block'
                                     >

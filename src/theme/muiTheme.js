@@ -88,7 +88,7 @@ export const h2 = {
     fontWeight: 'bold',
     fontFamily: 'Roboto',
     lineHeight: '40px',
-    color: slateGrey,
+    color: goth,
 };
 export const h3 = {
     fontSize: '24px',
@@ -145,6 +145,53 @@ export const subtitle1 = {
 const defaultFontProps = {
     fontFamily: 'Roboto Slab',
     fontWeight: 700,
+};
+
+export const GoogleLoginButtonStyles = {
+    root: {
+        width: '213px',
+        height: '36px',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: gloom,
+        borderRadius: '5px',
+        border: `1px solid ${darkGrey}`,
+        cursor: 'pointer',
+    },
+    logoBackground: {
+        borderTopLeftRadius: '5px',
+        borderBottomLeftRadius: '5px',
+        backgroundColor: '#EEEEEE',
+        width: '40px',
+        height: '35px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        textAlign: 'center',
+        marginLeft: '30px',
+        color: white,
+        ...h5,
+    },
+};
+export const new_course_form = {
+    dropdowns: {
+        width: '216px',
+        display: 'block',
+        margin: '2px 0 14px 0',
+    },
+    textFields: {
+        width: '432px',
+        display: 'block',
+        margin: '14px 0 10px 0',
+    },
+    textFields_short: {
+        width: '180px',
+        display: 'block',
+        margin: '14px 0 10px 0',
+    },
 };
 
 const theme = createMuiTheme({

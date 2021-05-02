@@ -122,9 +122,7 @@ const ClassEnrollmentRow = ({
         googleClassroomStatusMessage,
         setGoogleClassroomStatusMessage,
     ] = useState('Send Invite');
-    const { courses, google_courses, google_access_token } = useSelector(
-        ({ auth }) => auth
-    );
+    const { courses, google_courses } = useSelector(({ auth }) => auth);
 
     const getGoogleClassCode = (courses, courseID) => {
         let googleClassCode;
@@ -151,62 +149,45 @@ const ClassEnrollmentRow = ({
         }
     };
 
+    async function sendGoogleClassroomInvite(googleCourseID) {
+        try {
+            if (googleCourseID && studentEmail) {
+                const invitationResponse = await axios.post(
+                    `https://classroom.googleapis.com/v1/invitations`,
+                    {
+                        userId: studentEmail,
+                        courseId: googleCourseID,
+                        role: 'STUDENT',
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem(
+                                'google_access_token'
+                            )}`,
+                        },
+                    }
+                );
+                setInviteStatus('Sent');
+            }
+        } catch {
+            setInviteStatus(<Typography color='error'>Unsent</Typography>);
+            alert('Error creating invite');
+        }
+    }
+
     const handleInvite = async () => {
-        let googleCourseID = getGoogleCourseID(
+        let omouGoogleIntegratedCourseID = getGoogleCourseID(
             google_courses,
             courses,
             courseID
         );
-        if (
+        const isInviteUnsent =
             googleClassroomStatusMessage == 'Resend Invite' ||
-            inviteStatus == 'Unsent'
-        ) {
+            inviteStatus == 'Unsent';
+
+        if (isInviteUnsent) {
             setGoogleClassroomStatusMessage('Resend Invite');
-            try {
-                if (googleCourseID && studentEmail) {
-                    const resp = await axios.post(
-                        `https://classroom.googleapis.com/v1/invitations`,
-                        {
-                            userId: studentEmail,
-                            courseId: googleCourseID,
-                            role: 'STUDENT',
-                        },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${google_access_token}`,
-                            },
-                        }
-                    );
-                    setInviteStatus('Sent');
-                    setGoogleClassroomStatusMessage('Refresh');
-                }
-            } catch {
-                console.log('Error');
-                setInviteStatus(<Typography color='error'>Unsent</Typography>);
-                alert('Error creating invite');
-            }
-        } else if (googleClassroomStatusMessage == 'Refresh') {
-            console.log('Refreshing');
-            if (googleCourseID && studentEmail) {
-                try {
-                    console.log(googleCourseID);
-                    console.log(studentEmail);
-                    const resp = await axios.get(
-                        `https://classroom.googleapis.com/v1/courses/${googleCourseID}/students/${studentEmail}`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${google_access_token}`,
-                            },
-                        }
-                    );
-                    console.log({ resp });
-                    setInviteStatus('Accepted');
-                    setGoogleClassroomStatusMessage('Invite Accepted');
-                } catch (error) {
-                    setInviteStatus('Not Accepted');
-                    setGoogleClassroomStatusMessage('Resend Invite');
-                }
-            }
+            sendGoogleClassroomInvite(omouGoogleIntegratedCourseID);
         } else if (googleClassroomStatusMessage == 'Invite Accepted') {
             return;
         }

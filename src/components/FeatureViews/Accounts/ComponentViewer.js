@@ -14,6 +14,7 @@ import ActionLog from './TabComponents/ActionLog';
 import StudentCourseViewer from './TabComponents/StudentCourseViewer';
 import StudentInfo from './TabComponents/StudentInfo';
 import NotificationSettings from './TabComponents/NotificationSettings';
+import AdminProfileSettings from './TabComponents/AdminProfileSettings';
 import UserAccessControl from './UserAccessControl';
 import { useSelector } from 'react-redux';
 import { USER_TYPES } from '../../../utils';
@@ -139,17 +140,27 @@ const ComponentViewer = ({ inView, user, id }) => {
                     id: 10,
                 },
                 {
-                    component: (
-                        <UserAccessControl key={11} userID={id}>
-                            <NotificationSettings user={user} />
-                        </UserAccessControl>
-                    ),
+                    component: <NotificationSettings user={user} />,
                     access_permissions: [
                         USER_TYPES.student,
                         USER_TYPES.parent,
                         USER_TYPES.instructor,
+                        USER_TYPES.admin,
+                        USER_TYPES.receptionist,
                     ],
                     id: 11,
+                },
+                {
+                    component: (
+                        <UserAccessControl key={12} userID={id}>
+                            <AdminProfileSettings user={user} />
+                        </UserAccessControl>
+                    ),
+                    access_permissions: [
+                        USER_TYPES.admin,
+                        USER_TYPES.receptionist,
+                    ],
+                    id: 12,
                 },
             ].filter((tab) =>
                 tab.access_permissions.includes(AuthUser.accountType)

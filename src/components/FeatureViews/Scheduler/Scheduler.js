@@ -13,6 +13,7 @@ import { instructorPalette } from '../../../theme/muiTheme';
 import { findCommonElement } from '../../Form/FormUtils';
 import { SessionPopover } from './SessionPopover';
 import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     sessionPopover: {
@@ -41,8 +42,7 @@ const EventPopoverWrapper = ({ children, popover }) => {
     };
 
     const handlePopoverOpen = (event) => {
-        console.log(event.currentTarget);
-        setAnchorEl(event.currentTarget);
+        setAnchorEl(event.target);
     };
 
     const handlePopoverClose = () => {
@@ -131,8 +131,12 @@ const BigCalendar = (props) => {
 };
 
 const GET_SESSIONS = gql`
-    query GetSessionsQuery($timeFrame: String, $timeShift: Int) {
-        sessions(timeFrame: $timeFrame, timeShift: $timeShift) {
+    query GetSessionsQuery($timeFrame: String, $timeShift: Int, $userId: ID) {
+        sessions(
+            timeFrame: $timeFrame
+            timeShift: $timeShift
+            userId: $userId
+        ) {
             id
             endDatetime
             startDatetime
@@ -173,6 +177,7 @@ export default function Scheduler() {
         studentOptions: [],
         selectedStudents: [],
     };
+    const AuthUser = useSelector(({ auth }) => auth);
     const [schedulerState, setSchedulerState] = useState(defaultSchedulerState);
     const [sessionsInView, setSessionsInView] = useState([]);
     const [filteredSessionsInView, setFilteredSessionsInView] = useState([]);
@@ -270,10 +275,15 @@ export default function Scheduler() {
             label: labelFunc(object),
         }));
 
+    const isParentOrInstructorLoggedIn =
+        AuthUser.accountType === 'PARENT' ||
+        AuthUser.accountType === 'INSTRUCTOR';
+
     const { data, loading, error } = useQuery(GET_SESSIONS, {
         variables: {
             timeFrame: schedulerState.timeFrame,
             timeShift: schedulerState.timeShift,
+            ...(isParentOrInstructorLoggedIn && { userId: AuthUser.user.id }),
         },
         onCompleted: (data) => {
             const { sessions } = data;
