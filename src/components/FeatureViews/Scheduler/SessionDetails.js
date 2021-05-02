@@ -16,9 +16,9 @@ import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
 import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
-import ConfirmIcon from '@material-ui/icons/CheckCircle';
-import UnconfirmIcon from '@material-ui/icons/Cancel';
 import moment from 'moment';
+import Box from '@material-ui/core/Box';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 
 import { fullName } from 'utils';
 
@@ -258,6 +258,39 @@ const SessionDetails = () => {
         }
     };
 
+
+    const EditBadge = {
+        'single-session-edit':
+            (<Grid
+                item
+                xl={1}
+                xs={5}
+                sm={3}
+                md={2}
+                lg={2}
+                className={classes.type_of_edit}
+            >
+                <Typography align='center' style={{ color: 'white' }}>
+                    Editing This Session
+                </Typography>
+            </Grid>),
+        'edit-all-sessions':
+            (<Grid
+                item
+                xl={1}
+                xs={5}
+                sm={3}
+                md={2}
+                lg={2}
+                className={classes.type_of_edit}
+            >
+            <Typography align='center' style={{ color: 'white' }}>
+                Editing All Sessions
+            </Typography>
+        </Grid>),
+        'undefined': null
+    }
+
     return (
         <>
             <Grid
@@ -267,24 +300,38 @@ const SessionDetails = () => {
                 spacing={1}
                 style={{ marginBottom: '2em' }}
             >
-                <Grid item xs={12} style={{ padding: 0 }}>
-                    <Typography align='left' variant='h1'>
-                        {title}
-                    </Typography>
-                </Grid>
                 <Grid
                     item
-                    xl={1}
-                    xs={5}
-                    sm={3}
-                    md={2}
-                    lg={2}
-                    className={classes.type_of_edit}
+                    container
+                    xs={12}
+                    style={{ padding: 0 }}
+                    justify='space-between'
                 >
-                    <Typography align='center' style={{ color: 'white' }}>
-                        Edit This Session
-                    </Typography>
+                    <Grid item>
+                        <Typography align='left' variant='h1'>
+                            {title}
+                        </Typography>
+                    </Grid>
+                    <Grid
+                        container
+                        item
+                        direction='row'
+                        sm={4}
+                        alignItems='center'
+                    >
+                        <Grid item xs={2}>
+                            <AutorenewIcon />
+                        </Grid>
+                        <Grid>
+                            <Typography variant='body1' fontWeight=''>
+                                Weekly recurrence
+                            </Typography>
+                        </Grid>
+                    </Grid>
                 </Grid>
+
+                {EditBadge[editType]}
+
                 {/* TODO: for tutoring */}
                 {/* <Grid item sm={12}>
           <Grid container>
@@ -303,12 +350,14 @@ const SessionDetails = () => {
         </Grid> */}
                 <Grid container>
                     <Grid align='left' item xs={12}>
-                        <Typography
-                            variant='h4'
-                            className={classes.current_session}
-                        >
-                            Current Sessions:
-                        </Typography>
+                        <Box paddingBottom='25px'>
+                            <Typography
+                                variant='h4'
+                                className={classes.current_session}
+                            >
+                                Current Sessions:
+                            </Typography>
+                        </Box>
                     </Grid>
                 </Grid>
                 <Grid
@@ -332,17 +381,19 @@ const SessionDetails = () => {
                         </Typography>
                     </Grid>
                     <Grid item md={6} lg={6} xl={6}>
-                        <Typography
-                            variant='h5'
-                            className={classes.mini_titles_format}
-                        >
-                            DAY & TIME
-                        </Typography>
-                        <Typography>
-                            {`${dayOfWeek} at ${
-                                startSessionTime + ' - ' + endSessionTime
-                            }`}
-                        </Typography>
+                        <Box paddingBottom='25px'>
+                            <Typography
+                                variant='h5'
+                                className={classes.mini_titles_format}
+                            >
+                                DAY & TIME
+                            </Typography>
+                            <Typography>
+                                {`${dayOfWeek} at ${
+                                    startSessionTime + ' - ' + endSessionTime
+                                }`}
+                            </Typography>
+                        </Box>
                     </Grid>
                     <Grid item xs={3}>
                         <Typography
@@ -359,15 +410,6 @@ const SessionDetails = () => {
                             className={classes.mini_titles_format}
                         >
                             INSTRUCTOR
-                            {confirmed ? (
-                                <ConfirmIcon
-                                    className={`confirmed course-icon ${classes.course_icon}`}
-                                />
-                            ) : (
-                                <UnconfirmIcon
-                                    className={`unconfirmed course-icon ${classes.course_icon}`}
-                                />
-                            )}
                         </Typography>
                         {course && (
                             // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
