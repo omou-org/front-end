@@ -1,7 +1,7 @@
 // React Imports
-import { Redirect, Route, Switch } from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 // Local Component Imports
 import Accounts from '../FeatureViews/Accounts/Accounts';
 import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
@@ -14,7 +14,6 @@ import ForgotPassword from '../Authentication/ForgotPassword';
 import LoginPage from '../Authentication/LoginPage.js';
 import NewAccount from '../Authentication/NewAccount';
 import NoResultsPage from '../FeatureViews/Search/NoResults/NoResultsPage';
-import NotEnrolledStudentsDialog from '../FeatureViews/Scheduler/NotEnrolledStudentDialog';
 import InvoiceReceipt from '../FeatureViews/Invoices/InvoiceReceipt';
 import Registration from '../FeatureViews/Registration/Registration';
 import FormPage from '../Form/FormPage';
@@ -27,8 +26,8 @@ import CourseManagementContainer from '../FeatureViews/Courses/CourseManagementC
 import CourseClass from '../FeatureViews/Courses/CourseClass';
 import DemoRoutes from './DemoRoutes';
 
-import { resetSubmitStatus } from 'actions/registrationActions';
-import { USER_TYPES } from 'utils';
+import {resetSubmitStatus} from 'actions/registrationActions';
+import {USER_TYPES} from 'utils';
 import RegistrationForm from '../FeatureViews/Registration/RegistrationForm';
 import RegistrationCartContainer from '../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer';
 import DashboardSwitch from '../FeatureViews/Dashboard/DashboardSwitch';
@@ -172,9 +171,6 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/registration/receipt/:paymentID?'>
                 <InvoiceReceipt />
-            </AuthenticatedRoute>
-            <AuthenticatedRoute path='/NotEnrolledStudent'>
-                <NotEnrolledStudentsDialog />
             </AuthenticatedRoute>
 
             {/* Instructor Routes */}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -7,17 +7,18 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Create, ExpandMore } from '@material-ui/icons';
+import {Create, ExpandMore} from '@material-ui/icons';
 import ModalTextEditor from './ModalTextEditor';
 import moment from 'moment';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { fullName, sortTime, USER_TYPES } from '../../../utils';
+import {fullName, sortTime, USER_TYPES} from '../../../utils';
 import theme from '../../../theme/muiTheme';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddIcon from '@material-ui/icons/Add';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -176,8 +177,6 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
                                         poster,
                                         subject,
                                     } = note;
-                                    const hideString =
-                                        body.substring(0, 60) + '...';
                                     const date = moment(updatedAt).format(
                                         'MM/DD'
                                     );
@@ -341,6 +340,11 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
             </Grid>
         </Grid>
     );
+};
+
+ClassSessionView.propTypes = {
+    sessionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    loggedInUser: PropTypes.object
 };
 
 export default ClassSessionView;

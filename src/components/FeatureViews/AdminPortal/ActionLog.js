@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -13,19 +13,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Pagination from '@material-ui/lab/Pagination';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import SwapVertIcon from '@material-ui/icons/SwapVert';
 import gql from 'graphql-tag';
 import moment from 'moment';
 import Loading from '../../OmouComponents/Loading';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { useQuery } from '@apollo/client';
-import { DateRange } from 'react-date-range';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {useQuery} from '@apollo/client';
+import {DateRange} from 'react-date-range';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import ErrorIcon from '@material-ui/icons/Error';
-import { fullName } from '../../../utils';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import {fullName} from '../../../utils';
+import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
 
 const GET_LOGS = gql`
     query GetLogs(
@@ -94,7 +94,7 @@ const ActionLog = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize] = useState(10);
     const [openCalendar, setOpenCalendar] = useState(false);
     const [state, setState] = useState([
         {
@@ -107,7 +107,7 @@ const ActionLog = () => {
         sort: '',
         clicked: false,
     });
-    const { data, loading, error } = useQuery(GET_LOGS, {
+    const {data, loading} = useQuery(GET_LOGS, {
         variables: {
             action: actionType.toLowerCase(),
             adminType: adminType.toLowerCase(),
@@ -473,13 +473,13 @@ const ActionLog = () => {
                             </Grid>
                         </TableCell>
                         <TableCell>
-                            <Grid style={{ paddingBottom: 35 }}>Details</Grid>
+                            <Grid style={{paddingBottom: 35}}>Details</Grid>
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.logs.results.map((actionItem) => (
-                        <TableRow>
+                    {data.logs.results.map((actionItem, index) => (
+                        <TableRow key={index}>
                             <TableCell>
                                 <Moment
                                     date={actionItem.date}

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import Avatar from '@material-ui/core/Avatar';
 import Card from '@material-ui/core/Card';
@@ -11,9 +11,9 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import * as adminUtils from './AdminUtils';
-import { fullName, initials } from 'utils';
-import { stringToColor } from '../Accounts/accountUtils';
-import { makeStyles } from '@material-ui/styles';
+import {fullName, initials} from 'utils';
+import {stringToColor} from '../Accounts/accountUtils';
+import {makeStyles} from '@material-ui/styles';
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -60,7 +60,7 @@ const UnpaidSessionCard = ({ unpaidStudent }) => {
 
     const studentObj = unpaidStudent.student.user;
     const studentName = fullName(studentObj);
-    const { firstName, lastName, id: studentId } = unpaidStudent.student.user;
+    const {firstName, lastName} = unpaidStudent.student.user;
     const {
         id: courseId,
         courseTitle,
@@ -147,6 +147,7 @@ UnpaidSessionCard.propTypes = {
         course: PropTypes.number.isRequired,
         sessions_left: PropTypes.number.isRequired,
         student: PropTypes.number.isRequired,
+        sessionsLeft: PropTypes.number
     }).isRequired,
 };
 

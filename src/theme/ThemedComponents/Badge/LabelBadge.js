@@ -1,7 +1,7 @@
 import React from 'react';
 import Chip from '@material-ui/core/Chip';
 import theme from '../../muiTheme';
-import { Typography } from '@material-ui/core';
+import {Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 export const LabelBadge = ({
@@ -148,4 +148,6 @@ LabelBadge.propTypes = {
         'round-negative',
         'round-count',
     ]).isRequired,
+    children: PropTypes.any,
+    style: PropTypes.any,
 };

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch, useEffect } from 'react-redux';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -9,22 +9,18 @@ import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
-import * as actions from 'actions/actionTypes';
 import GoogleClassroomIntegrationIcon from '../../OmouComponents/GoogleClassroomIntegrationIcon';
 
-import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
-import { fullName, gradeOptions } from 'utils';
+import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
+import {fullName, gradeOptions} from 'utils';
 import moment from 'moment';
-import {
-    activeColor,
-    highlightColor,
-    pastColor,
-} from '../../../theme/muiTheme';
+import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import PropTypes from "prop-types";
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -173,10 +169,7 @@ const ClassListItem = ({
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
-    const [courses, setCourses] = useState();
-    const dispatch = useDispatch();
-
-    const handleClick = (e) => history.push(`/courses/class/${id}`);
+    const handleClick = () => history.push(`/courses/class/${id}`);
 
     return (
         <>
@@ -275,24 +268,35 @@ const ClassListItem = ({
                             .filter((student) =>
                                 JSON.parse(student.value).includes(id)
                             )
-                            .map(({ label }) => (
-                                <StudentCourseLabel label={label} />
+                            .map(({label, user}) => (
+                                <StudentCourseLabel label={label} key={user.id}/>
                             ))}
                     </Grid>
                 )}
             </Grid>
-            <Divder />
+            <Divder/>
         </>
     );
 };
 
+ClassListItem.propTypes = {
+    title: PropTypes.string,
+    endDate: PropTypes.any,
+    activeAvailabilityList: PropTypes.array,
+    startDate: PropTypes.any,
+    instructor: PropTypes.any,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    googleClassCode: PropTypes.string,
+    studentList: PropTypes.array,
+};
+
 const CourseFilterDropdown = ({
-    initialValue,
-    filterList,
-    setState,
-    filter,
-    filterKey,
-}) => {
+                                  initialValue,
+                                  filterList,
+                                  setState,
+                                  filter,
+                                  filterKey,
+                              }) => {
     const classes = useStyles();
     const handleChange = (event) => setState(event.target.value);
     const filterOptionsMapper = {
@@ -367,6 +371,14 @@ const CourseFilterDropdown = ({
     );
 };
 
+CourseFilterDropdown.propTypes = {
+    initialValue: PropTypes.any,
+    filterList: PropTypes.array,
+    setState: PropTypes.func,
+    filter: PropTypes.any,
+    filterKey: PropTypes.any,
+};
+
 export const GET_COURSES_BY_ACCOUNT_ID = gql`
     query getCourses($accountId: ID) {
         courses(userId: $accountId) {
@@ -403,46 +415,11 @@ const CourseManagementContainer = () => {
     const [instructorsFilterValue, setInstructorFilterValue] = useState('');
     const [studentFilterValue, setStudentFilterValue] = useState('');
     const accountInfo = useSelector(({ auth }) => auth);
-    const dispatch = useDispatch();
 
     const handleChange = (event) => setSortByDate(event.target.value);
 
-    const checkAccountForQuery =
-        accountInfo.accountType === 'ADMIN' ||
-        accountInfo.accountType === 'INSTRUCTOR'
-            ? 'instructorId'
-            : 'parentId';
-
     const accountId =
         accountInfo.accountType === 'ADMIN' ? '' : accountInfo.user.id;
-
-    const GET_COURSES = gql`
-    query getCourses($accountId:ID!) {
-      courses(${checkAccountForQuery}: $accountId) {
-        endDate
-        title
-        academicLevel
-        startDate
-        courseId
-        id
-        activeAvailabilityList {
-          dayOfWeek
-        }
-        instructor {
-          user {
-            firstName
-            lastName
-            id
-          }
-        }
-        googleClassCode
-        courseCategory {
-          id
-          name
-        }
-      }
-    }
-  `;
 
     const {
         data: courseData,
@@ -450,16 +427,6 @@ const CourseManagementContainer = () => {
         error: courseError,
     } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
         variables: { accountId },
-    });
-
-    const { data, loading, error } = useQuery(GET_COURSES_BY_ACCOUNT_ID, {
-        variables: { accountId },
-        onCompleted: (data) => {
-            dispatch({
-                type: actions.STORE_COURSES,
-                payload: { courses: data.courses },
-            });
-        },
     });
 
     const {

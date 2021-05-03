@@ -1,16 +1,17 @@
-import React, { useCallback, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useCallback, useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Input from '@material-ui/core/Input';
-import { omouBlue } from '../../../theme/muiTheme';
+import {omouBlue} from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
-import { GET_SESSION_NOTES } from './ClassSessionView';
-import { useSelector } from 'react-redux';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {useMutation} from '@apollo/client';
+import {GET_SESSION_NOTES} from './ClassSessionView';
+import {useSelector} from 'react-redux';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     rootContainer: {
@@ -74,7 +75,6 @@ const ModalTextEditor = ({
     handleCloseForm,
     userId,
     origin,
-    posterId,
     sessionId,
     noteId,
     noteSubject,
@@ -139,21 +139,21 @@ const ModalTextEditor = ({
         }
     `;
 
-    const [sendEmail, sendEmailResult] = useMutation(SEND_EMAIL, {
+    const [sendEmail] = useMutation(SEND_EMAIL, {
         onCompleted: () => handleClose(false),
         error: (err) => console.error(err),
     });
 
-    const [createSessionNote, createSessionNoteResult] = useMutation(
+    const [createSessionNote] = useMutation(
         CREATE_SESSION_NOTE,
         {
             onCompleted: () => handleClose(false),
             error: (err) => console.error(err),
-            update: (cache, { data }) => {
+            update: (cache, {data}) => {
                 const [newSessionNote] = Object.values(data.createSessionNote);
                 const cachedSessionNote = cache.readQuery({
                     query: GET_SESSION_NOTES,
-                    variables: { sessionId: sessionId },
+                    variables: {sessionId: sessionId},
                 })['sessionNotes'];
                 let updatedSessionNotes = [...cachedSessionNote];
                 const matchingIndex = updatedSessionNotes.findIndex(
@@ -183,7 +183,7 @@ const ModalTextEditor = ({
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (origin === 'STUDENT_ENROLLMENT') {
-            const sentEmail = await sendEmail({
+            await sendEmail({
                 variables: {
                     subject: subject,
                     body: body,
@@ -192,7 +192,7 @@ const ModalTextEditor = ({
                 },
             });
         } else {
-            const createdSessionNote = await createSessionNote({
+            await createSessionNote({
                 variables: {
                     subject: subject,
                     body: body,
@@ -257,12 +257,24 @@ const ModalTextEditor = ({
                     {origin === 'STUDENT_ENROLLMENT'
                         ? 'Send Email'
                         : buttonState === 'edit'
-                        ? 'EDIT NOTE'
-                        : 'ADD NOTE'}
+                            ? 'EDIT NOTE'
+                            : 'ADD NOTE'}
                 </ResponsiveButton>
             </DialogActions>
         </Dialog>
     );
+};
+
+ModalTextEditor.propTypes = {
+    open: PropTypes.any,
+    handleCloseForm: PropTypes.func,
+    userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    origin: PropTypes.any,
+    sessionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    noteId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    noteSubject: PropTypes.string,
+    noteBody: PropTypes.string,
+    buttonState: PropTypes.any,
 };
 
 export default ModalTextEditor;

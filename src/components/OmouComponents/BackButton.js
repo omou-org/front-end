@@ -1,13 +1,12 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BackArrow from '@material-ui/icons/ArrowBackIos';
 import Modal from '@material-ui/core/Modal';
 import Hidden from '@material-ui/core/Hidden/Hidden';
-import { Typography } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
+import {Typography} from '@material-ui/core';
 
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const BackButton = (props) => {
     const [alert, setAlert] = React.useState(false);
@@ -56,10 +55,7 @@ const BackButton = (props) => {
         goBack();
     };
 
-    const denyAction = (actionName) => {
-        // switch(actionName){
-        //future switch statement for denyAction functions
-        // }
+    const denyAction = () => {
         goBack();
     };
 
@@ -134,6 +130,8 @@ BackButton.propTypes = {
     alertDenyText: PropTypes.string,
     alertConfirmAction: PropTypes.string,
     alertDenyAction: PropTypes.string,
+    label: PropTypes.string,
+    icon: PropTypes.any,
 };
 
 export default withRouter(BackButton);

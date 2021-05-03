@@ -1,10 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import { Typography } from '@material-ui/core';
+import {Typography} from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Link from '@material-ui/core/Link';
+import PropTypes from "prop-types";
 
 export const useStyles = makeStyles({
     root: {
@@ -47,6 +48,9 @@ export const ListContent = ({ children }) => {
         </Grid>
     );
 };
+ListContent.propTypes = {
+    children: PropTypes.any,
+};
 
 export const ListActions = ({ children }) => {
     return (
@@ -56,6 +60,9 @@ export const ListActions = ({ children }) => {
             </Grid>
         </Grid>
     );
+};
+ListActions.propTypes = {
+    children: PropTypes.any,
 };
 
 export const ListHeading = ({ children }) => {
@@ -68,6 +75,9 @@ export const ListHeading = ({ children }) => {
         </Grid>
     );
 };
+ListHeading.propTypes = {
+    children: PropTypes.any,
+};
 
 export const ListTitle = ({ children }) => {
     const classes = useStyles();
@@ -76,6 +86,9 @@ export const ListTitle = ({ children }) => {
             <Typography variant='h3'>{children}</Typography>
         </Grid>
     );
+};
+ListTitle.propTypes = {
+    children: PropTypes.any,
 };
 
 export const ListDetails = ({ children }) => {
@@ -87,6 +100,9 @@ export const ListDetails = ({ children }) => {
         </Grid>
     );
 };
+ListDetails.propTypes = {
+    children: PropTypes.any,
+};
 
 export const ListDetail = ({ children }) => {
     return (
@@ -94,6 +110,9 @@ export const ListDetail = ({ children }) => {
             <Typography variant='body1'>{children}</Typography>
         </Grid>
     );
+};
+ListDetail.propTypes = {
+    children: PropTypes.any,
 };
 
 export const ListDetailLink = ({ children }) => {
@@ -105,9 +124,15 @@ export const ListDetailLink = ({ children }) => {
         </Link>
     );
 };
+ListDetailLink.propTypes = {
+    children: PropTypes.any,
+};
 
 export const ListButton = ({ children }) => {
     return <Grid item>{children}</Grid>;
+};
+ListButton.propTypes = {
+    children: PropTypes.any,
 };
 
 export const ListBadge = ({ children }) => {
@@ -118,6 +143,9 @@ export const ListBadge = ({ children }) => {
         </Grid>
     );
 };
+ListBadge.propTypes = {
+    children: PropTypes.any,
+};
 
 export const ListStatus = ({ children }) => {
     const classes = useStyles();
@@ -126,6 +154,9 @@ export const ListStatus = ({ children }) => {
             <Typography variant='h4'>{children}</Typography>
         </Grid>
     );
+};
+ListStatus.propTypes = {
+    children: PropTypes.any,
 };
 
 export const ListDivider = () => {
@@ -152,6 +183,10 @@ const ListDetailedItem = ({ children }) => {
             </Grid>
         </Box>
     );
+};
+
+ListDetailedItem.propTypes = {
+    children: PropTypes.any,
 };
 
 export default ListDetailedItem;

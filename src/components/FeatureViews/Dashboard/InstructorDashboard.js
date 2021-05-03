@@ -3,24 +3,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Moment from 'react-moment';
 import Paper from '@material-ui/core/Paper';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import PropTypes from "prop-types";
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        '& > *': {
-            margin: theme.spacing(1),
-            width: theme.spacing(32),
-            height: theme.spacing(32),
-        },
-    },
-}));
-
-export default function InstructorDashboard({ user }) {
-    const classes = useStyles();
+function InstructorDashboard({user}) {
     return (
-        <div>
+        <>
             <Grid container spacing={5}>
                 <Grid
                     item
@@ -82,6 +69,16 @@ export default function InstructorDashboard({ user }) {
                     </Paper>
                 </Grid>
             </Grid>
-        </div>
+        </>
     );
 }
+
+InstructorDashboard.propTypes = {
+    user: PropTypes.shape({
+        user: PropTypes.shape({
+            firstName: PropTypes.string,
+        })
+    }).isRequired
+};
+
+export default InstructorDashboard;

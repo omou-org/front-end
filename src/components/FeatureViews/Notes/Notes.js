@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import React, {useCallback, useMemo, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 import Avatar from '@material-ui/core/Avatar';
 import Delete from '@material-ui/icons/Delete';
@@ -24,10 +23,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ReadMoreText from 'components/OmouComponents/ReadMoreText';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './Notes.scss';
-import { AddItemButton } from 'components/OmouComponents/AddItemButton';
+import {AddItemButton} from 'components/OmouComponents/AddItemButton';
 
 const useStyles = makeStyles((theme) => ({
     icons: {
@@ -265,8 +264,6 @@ const MUTATION_KEY = {
 // eslint-disable-next-line max-statements
 // Jan 29, 2021 - Plan to refactor Dashboard notes
 const Notes = ({ ownerType, ownerID, isDashboard }) => {
-    const dispatch = useDispatch();
-
     const [alert, setAlert] = useState(false);
     const [noteBody, setNoteBody] = useState('');
     const [noteTitle, setNoteTitle] = useState('');
@@ -309,20 +306,20 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
         },
     });
 
-    const [deleteNote, isNoteDeleted] = useMutation(
+    const [deleteNote] = useMutation(
         DELETE_MUTATIONS[ownerType],
         {
             onCompleted: () => {
                 hideWarning();
             },
-            update: (cache, { data }) => {
+            update: (cache) => {
                 const cachedNotes = cache.readQuery({
                     query: QUERIES[ownerType],
-                    variables: { ownerID },
+                    variables: {ownerID},
                 })[QUERY_KEY[ownerType]];
                 let updatedNotes = [...cachedNotes];
                 let indexToBeDeleted = updatedNotes.findIndex(
-                    ({ id }) => id === deleteID
+                    ({id}) => id === deleteID
                 );
                 if (indexToBeDeleted !== -1) {
                     updatedNotes.splice(indexToBeDeleted, 1);
@@ -333,19 +330,20 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         [QUERY_KEY[ownerType]]: updatedNotes,
                     },
                     query: QUERIES[ownerType],
-                    variables: { ownerID },
+                    variables: {ownerID},
                 });
             },
         }
     );
 
     const query = useQuery(QUERIES[ownerType], {
-        variables: { ownerID },
+        variables: {ownerID},
     });
 
-    const notes = query.data?.[QUERY_KEY[ownerType]] || [];
+    const notes = useMemo(() => query.data?.[QUERY_KEY[ownerType]] || [],
+        [ownerType, query.data]);
     const getNoteByID = useCallback(
-        (noteID) => notes.find(({ id }) => noteID == id),
+        (noteID) => notes.find(({id}) => noteID == id),
         [notes]
     );
 
@@ -826,6 +824,7 @@ Notes.propTypes = {
     ownerID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
     ownerType: PropTypes.oneOf(['account', 'course', 'enrollment']).isRequired,
+    isDashboard: PropTypes.bool,
 };
 
 export default Notes;

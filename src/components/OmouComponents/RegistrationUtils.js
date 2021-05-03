@@ -1,6 +1,6 @@
 import * as moment from 'moment';
-import { arraysMatch, USER_TYPES } from '../../utils';
-import { useSelector } from 'react-redux';
+import {arraysMatch, USER_TYPES} from '../../utils';
+import {useSelector} from 'react-redux';
 
 export const createTutoringDetails = (courseType, formData) => ({
     title: formData.tutoring_details.course,
@@ -122,7 +122,7 @@ export const closeRegistrationCart = (AuthParent) => {
         let registrationState = JSON.parse(
             sessionStorage.getItem('registrations')
         );
-        Object.entries(registrationState).forEach(([key, _]) => {
+        Object.entries(registrationState).forEach(([key]) => {
             if (key !== 'currentParent') {
                 delete registrationState[key];
             }

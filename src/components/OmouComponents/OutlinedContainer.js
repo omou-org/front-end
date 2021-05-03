@@ -1,7 +1,8 @@
 import React from 'react';
-import { outlineGrey } from '../../theme/muiTheme';
+import {outlineGrey} from '../../theme/muiTheme';
+import PropTypes from "prop-types";
 
-export default function OutlinedContainer({ children, ...rest }) {
+function OutlinedContainer({children, ...rest}) {
     return (
         <div
             style={{
@@ -16,3 +17,9 @@ export default function OutlinedContainer({ children, ...rest }) {
         </div>
     );
 }
+
+OutlinedContainer.propTypes = {
+    children: PropTypes.any,
+};
+
+export default OutlinedContainer;

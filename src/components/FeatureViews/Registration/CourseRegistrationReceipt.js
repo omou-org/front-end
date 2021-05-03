@@ -2,19 +2,20 @@ import React from 'react';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import AccountCard from '../Search/cards/AccountCard';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import {useParams} from 'react-router-dom';
+import {useQuery} from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import Typography from '@material-ui/core/Typography';
-import { fullName } from '../../../utils';
+import {fullName} from '../../../utils';
 import Moment from 'react-moment';
 import Avatar from '@material-ui/core/Avatar';
-import { stringToColor } from '../Accounts/accountUtils';
+import {stringToColor} from '../Accounts/accountUtils';
 import Divider from '@material-ui/core/Divider';
 import NavLinkNoDup from '../../Routes/NavLinkNoDup';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from "prop-types";
 
 const GET_COURSE = gql`
     query GetCourse($courseId: ID!) {
@@ -37,10 +38,51 @@ const GET_COURSE = gql`
     }
 `;
 
-export default function CourseRegistrationReceipt({ formData, format }) {
-    const { type } = useParams();
-    const { data, loading, error } = useQuery(GET_COURSE, {
-        variables: { courseId: formData.course?.class.value },
+const CourseReceipt = ({
+                           startDate,
+                           endDate,
+                           availabilityList,
+                           instructor,
+                           title,
+                       }) => (
+    <>
+        <Typography align='left' variant='h4'>
+            {title}
+        </Typography>{' '}
+        <br/>
+        <Typography align='left' variant='subtitle2'>
+            Dates
+        </Typography>
+        <Typography align='left'>
+            <Moment format='MM/D/YYYY' date={startDate}/> -{' '}
+            <Moment format='MM/D/YYYY' date={endDate}/> <br/>
+            <CourseAvailabilites availabilityList={availabilityList}/>
+        </Typography>{' '}
+        <br/>
+        <Typography align='left' variant='subtitle2'>
+            Instructor
+        </Typography>
+        <Typography align='left'>
+            <Avatar styles={{backgroundColor: stringToColor(instructor)}}>
+                {instructor.match(/\b(\w)/gu).join('')}
+            </Avatar>
+            {instructor}
+        </Typography>
+    </>
+);
+
+CourseReceipt.propTypes = {
+    startDate: PropTypes.any,
+    endDate: PropTypes.any,
+    availabilityList: PropTypes.array,
+    instructor: PropTypes.any,
+    title: PropTypes.string,
+};
+
+function CourseRegistrationReceipt({formData}) {
+    const {type} = useParams();
+    const {data, loading, error} = useQuery(GET_COURSE, {
+        variables: {courseId: formData.course?.class.value},
         skip:
             type === 'tutoring-registration' ||
             type === 'small-group-registration',
@@ -94,38 +136,6 @@ export default function CourseRegistrationReceipt({ formData, format }) {
             availabilityList: data.course.availabilityList,
         },
     }[type];
-    const CourseReceipt = ({
-        startDate,
-        endDate,
-        availabilityList,
-        instructor,
-        title,
-    }) => (
-        <>
-            <Typography align='left' variant='h4'>
-                {title}
-            </Typography>{' '}
-            <br />
-            <Typography align='left' variant='subtitle2'>
-                Dates
-            </Typography>
-            <Typography align='left'>
-                <Moment format='MM/D/YYYY' date={startDate} /> -{' '}
-                <Moment format='MM/D/YYYY' date={endDate} /> <br />
-                <CourseAvailabilites availabilityList={availabilityList} />
-            </Typography>{' '}
-            <br />
-            <Typography align='left' variant='subtitle2'>
-                Instructor
-            </Typography>
-            <Typography align='left'>
-                <Avatar styles={{ backgroundColor: stringToColor(instructor) }}>
-                    {instructor.match(/\b(\w)/gu).join('')}
-                </Avatar>
-                {instructor}
-            </Typography>
-        </>
-    );
 
     return (
         <Grid container>
@@ -173,3 +183,15 @@ export default function CourseRegistrationReceipt({ formData, format }) {
         </Grid>
     );
 }
+
+CourseRegistrationReceipt.propTypes = {
+    formData: PropTypes.shape({
+        course: PropTypes.any,
+        tutoring_details: PropTypes.any,
+        sessions: PropTypes.any,
+        duration: PropTypes.duration,
+        student: PropTypes.any,
+    })
+};
+
+export default CourseRegistrationReceipt;

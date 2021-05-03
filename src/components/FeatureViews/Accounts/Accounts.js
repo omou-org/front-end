@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import gql from 'graphql-tag';
-import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { useSelector } from 'react-redux';
+import {Link} from 'react-router-dom';
+import {useQuery} from '@apollo/client';
+import {useSelector} from 'react-redux';
 
 import CardView from '@material-ui/icons/ViewModule';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import ViewListOutlinedIcon from '@material-ui/icons/ViewListOutlined';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,15 +23,15 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import './Accounts.scss';
-import { addDashes } from './accountUtils';
-import { capitalizeString, USER_TYPES } from 'utils';
+import {addDashes} from './accountUtils';
+import {capitalizeString, USER_TYPES} from 'utils';
 import IconButton from '@material-ui/core/IconButton';
 import LoadingHandler from 'components/OmouComponents/LoadingHandler';
 import ProfileCard from './ProfileCard';
-import { simpleUser } from 'queryFragments';
+import {simpleUser} from 'queryFragments';
 import UserAvatar from './UserAvatar';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { buttonBlue } from '../../../theme/muiTheme';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {buttonBlue} from '../../../theme/muiTheme';
 
 const QUERY_USERS = gql`
     query UserQuery {
@@ -271,7 +271,7 @@ const Accounts = () => {
                 </TableBody>
             </Table>
         ),
-        [displayUsers]
+        [displayUsers, classes.tableRowStyle, classes.tableCellStyle, userID]
     );
 
     const cardView = useMemo(

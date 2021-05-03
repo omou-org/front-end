@@ -1,30 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { StyledTableRow } from './NotificationSettings';
+import React, {useEffect, useState} from 'react';
+import {StyledTableRow} from './NotificationSettings';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
-import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Checkbox from '@material-ui/core/Checkbox';
-import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
-import { omouBlue } from '../../../../theme/muiTheme';
+import {omouBlue} from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
-import { useDispatch, useSelector } from 'react-redux';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {useDispatch, useSelector} from 'react-redux';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import {GoogleLogin} from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
+import {AdminPropTypes} from "../../../../utils";
 
 const useStyles = makeStyles({
     table: {
@@ -88,42 +86,41 @@ const SET_GOOGLE_AUTH_EMAIL = gql`
     }
 `;
 
-export default function AdminProfileSettings({ user }) {
-    const { userInfo } = user;
+function AdminProfileSettings({user}) {
+    const {userInfo} = user;
     const classes = useStyles();
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
     const [gClassSetting, setGClassSetting] = useState(false);
-    var triggerState = false;
     const dispatch = useDispatch();
     const adminGCEnabledResponse = useQuery(ADMIN_GC_ENABLED, {
-        variables: { userID: userInfo.user.id },
+        variables: {userID: userInfo.user.id},
     });
 
-    const [setAdminGCEnabled, setAdminGCEnabledResults] = useMutation(
+    const [setAdminGCEnabled] = useMutation(
         SET_ADMIN_GC_ENABLED,
         {
-            update: (cache, { data }) => {
+            update: (cache, {data}) => {
                 cache.writeQuery({
                     data: {
                         admin: data.createAdmin.admin.googleAuthEnabled,
                     },
                     query: ADMIN_GC_ENABLED,
-                    variables: { userID: userInfo.user.id },
+                    variables: {userID: userInfo.user.id},
                 });
             },
         }
     );
 
-    const [setGoogleAuthEmail, setGoogleAuthEmailResults] = useMutation(
+    const [setGoogleAuthEmail] = useMutation(
         SET_GOOGLE_AUTH_EMAIL,
         {
-            update: (cache, { data }) => {
+            update: (cache, {data}) => {
                 cache.writeQuery({
                     data: {
                         admin: data.createAdmin.admin.googleAuthEmail,
                     },
                     query: GOOGLE_AUTH_EMAIL,
-                    variables: { userID: userInfo.user.id },
+                    variables: {userID: userInfo.user.id},
                 });
                 // check if courses exist in cache
                 // update courses
@@ -132,8 +129,8 @@ export default function AdminProfileSettings({ user }) {
         }
     );
 
-    const { accountType, email, google_courses } =
-        useSelector(({ auth }) => auth) || [];
+    const {google_courses} =
+    useSelector(({auth}) => auth) || [];
 
     useEffect(() => {
         if (adminGCEnabledResponse.loading === false) {
@@ -141,11 +138,10 @@ export default function AdminProfileSettings({ user }) {
                 adminGCEnabledResponse.data.admin.googleAuthEnabled
             );
         }
-    }, [adminGCEnabledResponse.loading]);
+    }, [adminGCEnabledResponse.loading, adminGCEnabledResponse.data.admin.googleAuthEnabled]);
 
     function refreshTokenSetup(res) {
-        return new Promise((resolve, reject) => {
-            let refreshTiming = 10000;
+        return new Promise((resolve) => {
 
             const refreshToken = async () => {
                 const newAuthRes = await res.reloadAuthResponse();
@@ -191,7 +187,8 @@ export default function AdminProfileSettings({ user }) {
         setGoogleLoginPromptOpen(false);
     }
 
-    const onFailure = (response) => {};
+    const onFailure = () => {
+    };
 
     const onSuccess = (response) => {
         setGoogleLoginPromptOpen(false);
@@ -323,3 +320,7 @@ export default function AdminProfileSettings({ user }) {
         </>
     );
 }
+
+AdminProfileSettings.propTypes = AdminPropTypes;
+
+export default AdminProfileSettings;

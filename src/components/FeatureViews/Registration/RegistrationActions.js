@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import {Link, useHistory, useLocation} from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './registration.scss';
 import SelectParentDialog from './SelectParentDialog';
-import { fullName, USER_TYPES } from '../../../utils';
-import { useValidateRegisteringParent } from '../../OmouComponents/RegistrationUtils';
-import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from '@apollo/client';
+import {fullName, USER_TYPES} from '../../../utils';
+import {useValidateRegisteringParent} from '../../OmouComponents/RegistrationUtils';
+import {useDispatch, useSelector} from 'react-redux';
+import {useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
 import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';
@@ -55,7 +55,7 @@ const RegistrationActions = () => {
             type: types.INIT_COURSE_REGISTRATION,
             payload: {},
         });
-    }, [types.INIT_COURSE_REGISTRATION, dispatch]);
+    }, [dispatch]);
 
     const openDialog = useCallback(() => {
         setDialog(true);
@@ -76,7 +76,7 @@ const RegistrationActions = () => {
                 payload: data.parent,
             });
         }
-    }, [AuthUser.accountType, loading]);
+    }, [AuthUser.accountType, loading, parentIsLoggedIn, registrationState, data.parent, dispatch]);
 
     if (loading) return <Loading />;
     if (error) return <div>There has been an error: {error.message}</div>;

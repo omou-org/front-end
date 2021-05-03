@@ -1,9 +1,7 @@
-import { createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 const breakpoints = createBreakpoints({});
-
-const tabBorderRadius = '10px';
 
 // Font Colors
 export const lightPrimaryFontColor = '#767474';
@@ -140,11 +138,6 @@ export const subtitle1 = {
     fontSize: '20px',
     fontWeight: '300',
     fontFamily: 'Roboto',
-};
-
-const defaultFontProps = {
-    fontFamily: 'Roboto Slab',
-    fontWeight: 700,
 };
 
 export const GoogleLoginButtonStyles = {

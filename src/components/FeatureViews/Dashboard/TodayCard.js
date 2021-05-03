@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -8,9 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 import moment from 'moment';
-import { makeStyles } from '@material-ui/styles';
-import { Link } from 'react-router-dom';
-import { fullName } from 'utils';
+import {makeStyles} from '@material-ui/styles';
+import {Link} from 'react-router-dom';
+import {fullName} from 'utils';
 
 const useStyles = makeStyles((theme) => ({
     icons: {
@@ -20,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TodayCard = ({ session }) => {
+const TodayCard = ({session}) => {
     const classes = useStyles();
     const countStudents = session.course.enrollmentSet.length;
     const instructorObj = session.course.instructor.user;
@@ -75,6 +74,7 @@ TodayCard.propTypes = {
     session: PropTypes.shape({
         course: PropTypes.number.isRequired,
         instructor: PropTypes.number.isRequired,
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     }).isRequired,
 };
 

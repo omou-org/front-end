@@ -1,54 +1,52 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { OOOContext } from './OOOContext';
-import { SubmitNotice } from './SubmitNotice';
-import ConflictsDisplay from './ConflictsDisplay';
+import {OOOContext} from './OOOContext';
+import {SubmitNotice} from './SubmitNotice';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
-import { useSelector } from 'react-redux';
+import {useMutation} from '@apollo/client';
+import {useSelector} from 'react-redux';
 import OOOConfirmation from './OOOConfirmation';
 import Typography from '@material-ui/core/Typography';
-import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {GET_UPCOMING_INSTRUCTOR_OOO} from './UpcomingLogOOO';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
-    button: {
-        marginRight: theme.spacing(1),
-    },
-    instructions: {
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
-    },
-    messageSent: {
-        fontSize: '30px',
-        color: '#43B5D9',
-        fontWeight: 'bold',
-    },
-    messageSubText: {
-        fontSize: '16px',
-    },
-}));
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         width: '100%',
+//     },
+//     button: {
+//         marginRight: theme.spacing(1),
+//     },
+//     instructions: {
+//         marginTop: theme.spacing(1),
+//         marginBottom: theme.spacing(1),
+//     },
+//     messageSent: {
+//         fontSize: '30px',
+//         color: '#43B5D9',
+//         fontWeight: 'bold',
+//     },
+//     messageSubText: {
+//         fontSize: '16px',
+//     },
+// }));
 
-function getSteps() {
-    return ['Submit Notice', 'Conflicts', 'Confirmation'];
-}
+// function getSteps() {
+//     return ['Submit Notice', 'Conflicts', 'Confirmation'];
+// }
 
-function getStepContent(step) {
-    switch (step) {
-        case 0:
-            return <SubmitNotice />;
-        case 1:
-            return <ConflictsDisplay />;
-        case 2:
-            return 'Confirmation';
-        default:
-            return 'Unknown step';
-    }
-}
+// function getStepContent(step) {
+//     switch (step) {
+//         case 0:
+//             return <SubmitNotice />;
+//         case 1:
+//             return <ConflictsDisplay />;
+//         case 2:
+//             return 'Confirmation';
+//         default:
+//             return 'Unknown step';
+//     }
+// }
 
 const CREATE_INSTRUCTOR_OOO = gql`
     mutation CreateInstructorOOO(
@@ -82,20 +80,20 @@ const CREATE_INSTRUCTOR_OOO = gql`
 `;
 
 export default function CreateOOOForm() {
-    const [activeStep, setActiveStep] = useState(0);
+    // const [ activeStep, setActiveStep] = useState(0);
     const [OOOFormState, setOOOFormState] = useState(null);
     const [submitted, setSubmitted] = useState(false);
-    const steps = getSteps();
-    const AuthUser = useSelector(({ auth }) => auth);
-    const [createOOO, createOOOResults] = useMutation(CREATE_INSTRUCTOR_OOO, {
+    // const steps = getSteps();
+    const AuthUser = useSelector(({auth}) => auth);
+    const [createOOO] = useMutation(CREATE_INSTRUCTOR_OOO, {
         onCompleted: () => {
             setSubmitted(true);
         },
-        update: (cache, { data }) => {
+        update: (cache, {data}) => {
             const newOOO = data.createInstructorOoo.instructorOoo;
             const cachedOOO = cache.readQuery({
                 query: GET_UPCOMING_INSTRUCTOR_OOO,
-                variables: { instructorID: AuthUser.user.id },
+                variables: {instructorID: AuthUser.user.id},
             }).instructorOoo;
 
             const updatedCache = [...cachedOOO, newOOO];
@@ -105,7 +103,7 @@ export default function CreateOOOForm() {
                     instructorOoo: updatedCache,
                 },
                 query: GET_UPCOMING_INSTRUCTOR_OOO,
-                variables: { instructorID: AuthUser.user.id },
+                variables: {instructorID: AuthUser.user.id},
             });
         },
     });
@@ -113,11 +111,11 @@ export default function CreateOOOForm() {
     const SubmitNoticeChild = useRef();
     const updateOOOFormState = (newState) => setOOOFormState(newState);
 
-    const handleNext = () =>
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-
-    const handleBack = () =>
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    // const handleNext = () =>
+    //     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    //
+    // const handleBack = () =>
+    //     setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
     const handleClose = (event) => {
         event.preventDefault();

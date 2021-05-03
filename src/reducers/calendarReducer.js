@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from '../actions/actionTypes';
-import { REQUEST_ALL } from '../actions/apiActions';
+import {REQUEST_ALL} from '../actions/apiActions';
 
 export default function Calendar(
     state = initialState.CalendarData,
@@ -9,11 +9,11 @@ export default function Calendar(
     let newState = state;
 
     switch (type) {
-        case actions.ADD_EVENT:
+        case actions.ADD_EVENT: {
             newState.events_in_view.push(payload);
             return newState;
-
-        case actions.DELETE_EVENT:
+        }
+        case actions.DELETE_EVENT: {
             const removeIndex = newState.events_in_view
                 .map((item) => {
                     return item.id;
@@ -21,11 +21,10 @@ export default function Calendar(
                 .indexOf(payload.id);
             newState.events_in_view.splice(removeIndex, 1);
             return newState;
-
+        }
         case actions.DELETE_ALL_EVENTS:
             return state;
-
-        case actions.FILTER_EVENT:
+        case actions.FILTER_EVENT: {
             const filter_key = payload.key;
             const filter_value = payload.value;
 
@@ -39,6 +38,7 @@ export default function Calendar(
                 });
 
             return newState;
+        }
         case actions.GET_SESSIONS_STARTED:
             return {
                 ...state,

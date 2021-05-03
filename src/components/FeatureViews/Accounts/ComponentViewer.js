@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, {useMemo} from 'react';
 import PropTypes from 'prop-types';
 
 import Grid from '@material-ui/core/Grid';
@@ -16,11 +16,11 @@ import StudentInfo from './TabComponents/StudentInfo';
 import NotificationSettings from './TabComponents/NotificationSettings';
 import AdminProfileSettings from './TabComponents/AdminProfileSettings';
 import UserAccessControl from './UserAccessControl';
-import { useSelector } from 'react-redux';
-import { USER_TYPES } from '../../../utils';
+import {useSelector} from 'react-redux';
+import {USER_TYPES} from '../../../utils';
 
-const ComponentViewer = ({ inView, user, id }) => {
-    const AuthUser = useSelector(({ auth }) => auth);
+const ComponentViewer = ({inView, user, id}) => {
+    const AuthUser = useSelector(({auth}) => auth);
 
     // All components should take an user id. Components will do all the gql calls
     /**
@@ -165,7 +165,7 @@ const ComponentViewer = ({ inView, user, id }) => {
             ].filter((tab) =>
                 tab.access_permissions.includes(AuthUser.accountType)
             ),
-        [id]
+        [id, AuthUser.accountType, user]
     );
 
     return (
@@ -185,6 +185,7 @@ ComponentViewer.propTypes = {
         user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
             .isRequired,
     }).isRequired,
+    id: PropTypes.number.isRequired,
 };
 
 export default ComponentViewer;

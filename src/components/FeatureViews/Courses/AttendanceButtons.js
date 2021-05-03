@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,19 +7,20 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
-import { ExpandLess, ExpandMore, Search } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
-import { BootstrapInput } from './CourseManagementContainer';
-import { highlightColor, omouBlue } from '../../../theme/muiTheme';
+import {ExpandLess, ExpandMore, Search} from '@material-ui/icons';
+import {makeStyles} from '@material-ui/core/styles';
+import {BootstrapInput} from './CourseManagementContainer';
+import {highlightColor, omouBlue} from '../../../theme/muiTheme';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     buttonDropDown: {
         marginLeft: '.5em',
         borderRadius: 5,
-        '&:hover': { backgroundColor: 'white' },
+        '&:hover': {backgroundColor: 'white'},
     },
     arrowHover: {
-        '&:hover': { color: omouBlue },
+        '&:hover': {color: omouBlue},
     },
     arrowMenu: {
         border: `1px solid ${omouBlue}`,
@@ -58,7 +59,7 @@ export const StudentFilterOrSortDropdown = ({
     const [open, setOpen] = useState(false);
     const [filterName, setFilterName] = useState('');
 
-    useEffect(() => setStudent(students), [sortByAlphabet]);
+    useEffect(() => setStudent(students), [sortByAlphabet, students]);
 
     const handleChange = (event) => setSortByAlphabet(event.target.value);
     const handleOpen = () => {
@@ -177,15 +178,21 @@ export const StudentFilterOrSortDropdown = ({
     );
 };
 
+StudentFilterOrSortDropdown.propTypes = {
+    students: PropTypes.array,
+    sortByAlphabet: PropTypes.any,
+    setSortByAlphabet: PropTypes.any,
+};
+
 export const SessionDropdownButton = ({
-    id,
-    attendanceEditStates,
-    setAttendanceEditStates,
-    setCourseAttendanceMatrix,
-    index,
-    setSortByAlphabet,
-    studentAttendanceDataToDisplay,
-}) => {
+                                          id,
+                                          attendanceEditStates,
+                                          setAttendanceEditStates,
+                                          setCourseAttendanceMatrix,
+                                          index,
+                                          setSortByAlphabet,
+                                          studentAttendanceDataToDisplay,
+                                      }) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [buttonPosition, setButtonPosition] = useState();
@@ -285,11 +292,21 @@ export const SessionDropdownButton = ({
                     onClick={handleClose}
                     value='beginEdit'
                     data-session-id={id}
-                    ListItemClasses={{ button: classes.menuSelect }}
+                    ListItemClasses={{button: classes.menuSelect}}
                 >
                     Edit
                 </MenuItem>
             </Menu>
         </>
     );
+};
+
+SessionDropdownButton.propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    attendanceEditStates: PropTypes.any,
+    setAttendanceEditStates: PropTypes.func,
+    setCourseAttendanceMatrix: PropTypes.func,
+    index: PropTypes.any,
+    setSortByAlphabet: PropTypes.func,
+    studentAttendanceDataToDisplay: PropTypes.any,
 };

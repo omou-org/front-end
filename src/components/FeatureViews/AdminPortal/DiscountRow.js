@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { bindActionCreators } from 'redux';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {bindActionCreators} from 'redux';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 import blue from '@material-ui/core/colors/blue';
-import Button from '@material-ui/core/Button/Button';
 import Delete from '@material-ui/icons/Delete';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -22,13 +21,13 @@ import Select from '@material-ui/core/Select';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import * as adminActions from 'actions/adminActions';
-import { dateParser } from '../../Form/FormUtils';
-import { DatePicker } from '@material-ui/pickers';
+import {dateParser} from '../../Form/FormUtils';
+import {DatePicker} from '@material-ui/pickers';
 
 const styles = () => ({
     colorBar: {},
@@ -449,6 +448,9 @@ DiscountRow.propTypes = {
         bar: PropTypes.any,
         checked: PropTypes.any,
         switchBase: PropTypes.any,
+        colorBar: PropTypes.any,
+        colorChecked: PropTypes.any,
+        colorSwitchBase: PropTypes.any,
     }),
     discount: PropTypes.object.isRequired,
     type: PropTypes.oneOf(['DateRange', 'MultiCourse', 'PaymentMethod'])

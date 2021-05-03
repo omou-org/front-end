@@ -1,11 +1,12 @@
 import React from 'react';
 import checkMarkIcon from 'components/FeatureViews/Scheduler/icons/bluecheckmark.svg';
-import { Typography, Grid, Button } from '@material-ui/core/';
-import { omouBlue } from '../../../theme/muiTheme';
-import { makeStyles } from '@material-ui/core/styles';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {Grid, Typography} from '@material-ui/core/';
+import {omouBlue} from '../../../theme/muiTheme';
+import {makeStyles} from '@material-ui/core/styles';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from "prop-types";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     messageSent: {
         fontSize: '30px',
         color: omouBlue,
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function OOOConfirmation(props) {
+function OOOConfirmation(props) {
     const classes = useStyles();
 
     return (
@@ -54,3 +55,9 @@ export default function OOOConfirmation(props) {
         </Grid>
     );
 }
+
+OOOConfirmation.propTypes = {
+    handleClose: PropTypes.func
+};
+
+export default OOOConfirmation;

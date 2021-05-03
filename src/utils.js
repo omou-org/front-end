@@ -1,7 +1,8 @@
-import { instance } from 'actions/apiActions';
-import { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import {instance} from 'actions/apiActions';
+import {useCallback, useState} from 'react';
+import {useHistory} from 'react-router-dom';
 import moment from 'moment';
+import PropTypes from "prop-types";
 
 export const USER_TYPES = {
     admin: 'ADMIN',
@@ -717,3 +718,28 @@ export function useSessionStorage(key, initialValue) {
 
     return [storedValue, setValue];
 }
+
+export const AdminPropTypes = {
+    user: PropTypes.shape({
+        accountType: PropTypes.oneOf([
+            'instructor',
+            'parent',
+            'receptionist',
+            'student',
+        ]).isRequired,
+        adminType: PropTypes.oneOf([
+            'owner',
+            'receptionist',
+            'teaching assistant',
+        ]).isRequired,
+        email: PropTypes.string,
+        name: PropTypes.string,
+        phoneNumber: PropTypes.string,
+        user: PropTypes.shape({
+            email: PropTypes.string,
+            name: PropTypes.string,
+            phoneNumber: PropTypes.string,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        })
+    }).isRequired,
+};

@@ -1,18 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useMemo, useState} from 'react';
+import {NavLink, useLocation} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
 
 import Grid from '@material-ui/core/Grid';
 import ListItemText from '@material-ui/core/ListItemText';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import NewInstructor from '@material-ui/icons/PersonAdd';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './AdminPortal.scss';
-import { initializeRegistration } from 'actions/registrationActions';
+import {initializeRegistration} from 'actions/registrationActions';
 
-import { withStyles } from '@material-ui/core';
+import {withStyles} from '@material-ui/core';
 
 const StyledMenu = withStyles({
     paper: {
@@ -48,8 +47,6 @@ const AdminActionCenter = () => {
 
     const [userAnchor, setUserAnchor] = useState(null);
     const [courseAnchor, setCourseAnchor] = useState(null);
-    const [tuitionAnchor, setTuitionAnchor] = useState(null);
-    const [discountAnchor, setDiscountAnchor] = useState(null);
     const tabState = useMemo(
         () => ({
             course: pathname.includes('course'),
@@ -63,7 +60,6 @@ const AdminActionCenter = () => {
 
     useEffect(() => {
         setCourseAnchor(null);
-        setTuitionAnchor(null);
     }, [pathname]);
 
     useEffect(() => {

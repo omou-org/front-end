@@ -1,7 +1,8 @@
-import { Grid } from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 import AddSessions from 'components/OmouComponents/AddSessions';
 import React from 'react';
 import UnenrollButton from './UnenrollButton';
+import PropTypes from "prop-types";
 
 const EnrollmentActions = ({ enrollment }) => {
     const { student } = enrollment;
@@ -16,10 +17,18 @@ const EnrollmentActions = ({ enrollment }) => {
                 />
             </Grid>
             <Grid item>
-                <UnenrollButton enrollment={enrollment} />
+                <UnenrollButton enrollment={enrollment}/>
             </Grid>
         </Grid>
     );
+};
+
+EnrollmentActions.propTypes = {
+    enrollment: PropTypes.shape({
+        student: PropTypes.shape({
+            parent: PropTypes.object,
+        })
+    }).isRequired,
 };
 
 export default EnrollmentActions;

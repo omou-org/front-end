@@ -1,22 +1,23 @@
-import React, { useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useRef, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { Cancel, Create } from '@material-ui/icons';
+import {Cancel, Create} from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
-import theme, { highlightColor, omouBlue } from '../../../theme/muiTheme';
+import theme, {highlightColor, omouBlue} from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
+import {useMutation} from '@apollo/client';
 import moment from 'moment';
 import NewAnnouncementModal from './NewAnnoucementsModal';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 
 import AddIcon from '@material-ui/icons/Add';
-import { GET_ANNOUNCEMENTS } from './CourseClass';
-import { fullName, sortTime, USER_TYPES } from '../../../utils';
+import {GET_ANNOUNCEMENTS} from './CourseClass';
+import {fullName, sortTime, USER_TYPES} from '../../../utils';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
     announcementContainer: {
@@ -120,7 +121,7 @@ const AnnouncementCard = ({
                     <span style={{ padding: theme.spacing(1) }}>• </span>
                     <span style={{ padding: theme.spacing(1) }}>
                         {date}{' '}
-                        <span style={{ padding: theme.spacing(1) }}>•</span>{' '}
+                        <span style={{padding: theme.spacing(1)}}>•</span>{' '}
                         {time}
                     </span>
                 </Typography>
@@ -129,7 +130,17 @@ const AnnouncementCard = ({
     );
 };
 
-const Announcements = ({ announcementsData }) => {
+AnnouncementCard.propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    fullName: PropTypes.string.isRequired,
+    subject: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    updatedAt: PropTypes.string.isRequired,
+    handleEdit: PropTypes.func.isRequired,
+    handleDelete: PropTypes.func.isRequired,
+};
+
+const Announcements = ({announcementsData}) => {
     const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
     const [announcementId, setAnnouncementId] = useState();
     const [announcementSubject, setAnnouncementSubject] = useState('');
@@ -148,7 +159,7 @@ const Announcements = ({ announcementsData }) => {
         }
     `;
 
-    const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
+    const [deleteAnnouncement] = useMutation(
         DELETE_ANNOUNCEMENT,
         {
             error: (err) => console.error(err),
@@ -156,7 +167,7 @@ const Announcements = ({ announcementsData }) => {
                 cache,
                 {
                     data: {
-                        deleteAnnouncement: { id },
+                        deleteAnnouncement: {id},
                     },
                 }
             ) => {
@@ -191,8 +202,8 @@ const Announcements = ({ announcementsData }) => {
     const handleClose = (boolean) => setNewAnnouncementForm(boolean);
 
     const handleDeleteAnnouncement = async (id) => {
-        const deletedAnnouncement = await deleteAnnouncement({
-            variables: { id: id },
+        await deleteAnnouncement({
+            variables: {id: id},
         });
     };
 
@@ -249,6 +260,10 @@ const Announcements = ({ announcementsData }) => {
             />
         </Grid>
     );
+};
+
+Announcements.propTypes = {
+    announcementsData: PropTypes.any,
 };
 
 export default Announcements;

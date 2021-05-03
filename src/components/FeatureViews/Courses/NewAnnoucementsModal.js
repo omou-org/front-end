@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useCallback, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -11,13 +11,14 @@ import CheckBoxOutlineBlankOutlinedIcon from '@material-ui/icons/CheckBoxOutline
 import Input from '@material-ui/core/Input';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { makeStyles } from '@material-ui/core/styles';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {makeStyles} from '@material-ui/core/styles';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
-import { omouBlue } from '../../../theme/muiTheme';
-import { GET_ANNOUNCEMENTS } from './CourseClass';
-import { useSelector } from 'react-redux';
+import {useMutation} from '@apollo/client';
+import {omouBlue} from '../../../theme/muiTheme';
+import {GET_ANNOUNCEMENTS} from './CourseClass';
+import {useSelector} from 'react-redux';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     rootContainer: {
@@ -146,12 +147,12 @@ const NewAnnouncementsModal = ({
 
     // Move announcemenet query variable out of this component outside of this component
 
-    const [createAnnouncement, createAnnouncementResult] = useMutation(
+    const [createAnnouncement] = useMutation(
         CREATE_ANNOUNCEMENTS,
         {
             onCompleted: () => handleClose(false),
             error: (err) => console.error(err),
-            update: (cache, { data }) => {
+            update: (cache, {data}) => {
                 const [newAnnouncement] = Object.values(
                     data.createAnnouncement
                 );
@@ -197,7 +198,7 @@ const NewAnnouncementsModal = ({
 
     const handlePostForm = async (event) => {
         event.preventDefault();
-        const createdCurrentAnnouncement = await createAnnouncement({
+        await createAnnouncement({
             variables: {
                 subject: announcementSubject,
                 body: announcementBody,
@@ -302,6 +303,15 @@ const NewAnnouncementsModal = ({
             </DialogActions>
         </Dialog>
     );
+};
+
+NewAnnouncementsModal.propTypes = {
+    handleClose: PropTypes.func,
+    open: PropTypes.any,
+    subject: PropTypes.any,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    body: PropTypes.string,
+    buttonState: PropTypes.any,
 };
 
 export default NewAnnouncementsModal;

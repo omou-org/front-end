@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -7,11 +7,12 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
+import {useMutation} from '@apollo/client';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { fullName } from 'utils';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {fullName} from 'utils';
 import generatePassword from 'password-generator';
+import PropTypes from "prop-types";
 
 const RESET_PASSWORD = gql`
     mutation ResetPassword($password: String!, $userId: ID!) {
@@ -26,7 +27,7 @@ const ResetPasswordDialogs = ({ userInfo, isStudentProfile }) => {
     const [openReset, setResetOpen] = useState(false);
     const [password, setPassword] = useState();
 
-    const [resetPassword, resetStatus] = useMutation(RESET_PASSWORD);
+    const [resetPassword] = useMutation(RESET_PASSWORD);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -43,7 +44,7 @@ const ResetPasswordDialogs = ({ userInfo, isStudentProfile }) => {
     const handleClosePasswordReset = () => {
         setOpen(false);
         setResetOpen(true);
-        const newPassword = generatePassword(8, false, /[\w\?\-]/);
+        const newPassword = generatePassword(8, false, /[\w]/);
         setPassword(newPassword);
 
         resetPassword({
@@ -75,19 +76,19 @@ const ResetPasswordDialogs = ({ userInfo, isStudentProfile }) => {
                     id='alert-dialog-title'
                     className='center dialog-padding'
                 >
-                    Do you want to reset this user's password?
+                    {`Do you want to reset this user's password?`}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText
                         id='alert-dialog-description'
                         className='center'
                     >
-                        When you reset the password, a randomly generated
+                        {`When you reset the password, a randomly generated
                         password will become the user's new password. This
                         action cannot be reverted. An automatic email will be
                         sent out notifying the user that their password has been
                         reset. The user can also reset their own password
-                        through the portal login page.
+                        through the portal login page.`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions className='dialog-actions'>
@@ -147,6 +148,16 @@ const ResetPasswordDialogs = ({ userInfo, isStudentProfile }) => {
             </Dialog>
         </>
     );
+};
+
+ResetPasswordDialogs.propTypes = {
+    isStudentProfile: PropTypes.bool.isRequired,
+    userInfo: PropTypes.shape({
+        user: PropTypes.shape({
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+                .isRequired,
+        }),
+    }).isRequired,
 };
 
 export default ResetPasswordDialogs;

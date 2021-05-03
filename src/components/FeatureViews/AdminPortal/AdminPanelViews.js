@@ -10,6 +10,7 @@ import {
     List,
     NumberField,
     NumberInput,
+    ReferenceInput,
     SelectField,
     SelectInput,
     Show,
@@ -17,8 +18,6 @@ import {
     SimpleShowLayout,
     TextField,
     TextInput,
-    ReferenceInput,
-    CardActions,
 } from 'react-admin';
 
 export const CategoryList = (props) => (

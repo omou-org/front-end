@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 const AccessControlComponent = ({ permittedAccountTypes, children }) => {
     const { accountType } = useSelector(({ auth }) => auth) || [];
@@ -10,6 +10,7 @@ const AccessControlComponent = ({ permittedAccountTypes, children }) => {
 
 AccessControlComponent.propTypes = {
     permittedAccountTypes: PropTypes.arrayOf(PropTypes.string),
+    children: PropTypes.any,
 };
 
 export default AccessControlComponent;

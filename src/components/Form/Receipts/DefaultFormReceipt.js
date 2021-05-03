@@ -1,4 +1,4 @@
-import { capitalizeString } from 'utils';
+import {capitalizeString} from 'utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -17,7 +17,7 @@ const toDisplayValue = (value) => {
         return value.format('MM/DD/YYYY');
     }
 
-    if (value.hasOwnProperty('label')) {
+    if (Object.prototype.hasOwnProperty.call(value, 'label')) {
         return value.label;
     }
 
@@ -54,7 +54,7 @@ const DefaultFormReceipt = ({ formData, format }) => (
         }}
     >
         <Typography align='left' style={{ fontSize: '24px' }}>
-            You've successfully submitted!
+            {`You've successfully submitted!`}
         </Typography>
         <div className='confirmation-copy'>
             <Typography align='left' className='title'>

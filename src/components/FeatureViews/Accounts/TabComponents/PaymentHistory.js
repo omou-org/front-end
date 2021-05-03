@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Loading from 'components/OmouComponents/Loading';
 import InvoicesTable from './InvoicesTable';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
 
@@ -21,24 +21,21 @@ export const GET_PARENT_PAYMENTS = gql`
 `;
 
 const PaymentHistory = ({ user_id }) => {
-    const { data, loading, error } = useQuery(GET_PARENT_PAYMENTS, {
-        variables: { parentId: user_id },
+    const {data, loading, error} = useQuery(GET_PARENT_PAYMENTS, {
+        variables: {parentId: user_id},
     });
 
     if (loading) {
-        return <Loading />;
+        return <Loading/>;
     }
-    if (error) {
-        return (
-            <Typography>
-                There's been an error! Error: {error.message}
-            </Typography>
-        );
-    }
+    if (error)
+        return (<Typography>
+            {`There's been an error! Error: ${error.message}`}
+        </Typography>);
 
-    const { invoices } = data;
+    const {invoices} = data;
 
-    return <InvoicesTable paymentList={invoices} type='parent' />;
+    return <InvoicesTable paymentList={invoices} type='parent'/>;
 };
 
 PaymentHistory.propTypes = {

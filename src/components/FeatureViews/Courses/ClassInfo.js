@@ -1,22 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
-import {
-    Button,
-    fade,
-    Grid,
-    IconButton,
-    InputBase,
-    Link,
-    Typography,
-    withStyles,
-} from '@material-ui/core/';
+import React, {useEffect, useState} from 'react';
+import {useMutation} from '@apollo/client';
+import {Button, fade, Grid, IconButton, InputBase, Link, Typography, withStyles,} from '@material-ui/core/';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
 import moment from 'moment';
 import gql from 'graphql-tag';
-import { fullName, USER_TYPES } from '../../../utils';
-import { GET_CLASS } from './CourseClass';
+import {fullName, USER_TYPES} from '../../../utils';
+import {GET_CLASS} from './CourseClass';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
     courseLink: {
@@ -124,18 +116,18 @@ const ClassInfo = ({
 }) => {
     const [courseURL, setCourseURL] = useState('');
     const [linkDescription, setLinkDescription] = useState('');
-    const [updatedAt, setUpdatedAt] = useState('');
+    const [setUpdatedAt] = useState('');
     const [isEditActive, setEditActive] = useState(false);
 
-    const [updateCourseLink, { data }] = useMutation(UPDATE_COURSE_LINK, {
+    const [updateCourseLink] = useMutation(UPDATE_COURSE_LINK, {
         onCompleted: () => {
             setEditActive(false);
         },
-        update: (cache, { data }) => {
+        update: (cache, {data}) => {
             const newCourseLink = data.createCourse.course;
             const cachedCourseLink = cache.readQuery({
                 query: GET_CLASS,
-                variables: { id: id },
+                variables: {id: id},
             }).course;
 
             cache.writeQuery({
@@ -156,7 +148,7 @@ const ClassInfo = ({
         setCourseURL(courseLink);
         setLinkDescription(courseLinkDescription);
         setUpdatedAt(courseLinkUpdatedAt);
-    }, [courseLink, courseLinkDescription]);
+    }, [courseLink, courseLinkDescription, courseLinkUpdatedAt, setUpdatedAt]);
 
     const editLinkAndDescription = () => {
         setEditActive(true);
@@ -292,6 +284,15 @@ const ClassInfo = ({
             </Grid>
         </Grid>
     );
+};
+
+ClassInfo.propTypes = {
+    description: PropTypes.string,
+    courseLink: PropTypes.string,
+    courseLinkDescription: PropTypes.string,
+    courseLinkUpdatedAt: PropTypes.string,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    courseLinkUser: PropTypes.any,
 };
 
 export default ClassInfo;

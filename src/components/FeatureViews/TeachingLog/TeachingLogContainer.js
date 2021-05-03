@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
 import gql from 'graphql-tag';
-import { useLazyQuery } from '@apollo/client';
+import {useLazyQuery} from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
-import { fullName, getDuration } from '../../../utils';
+import {fullName, getDuration} from '../../../utils';
 import Typography from '@material-ui/core/Typography';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,20 +14,20 @@ import TableHead from '@material-ui/core/TableHead';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TeachingLogEntry from './TeachingLogEntry';
-import { ReactComponent as IDIcon } from '../../identifier.svg';
+import {ReactComponent as IDIcon} from '../../identifier.svg';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lightPrimaryFontColor, omouBlue } from '../../../theme/muiTheme';
+import {lightPrimaryFontColor, omouBlue} from '../../../theme/muiTheme';
 import SummaryEntry from './SummaryEntry';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import CalendarIcon from '@material-ui/icons/CalendarToday';
 import Button from '@material-ui/core/Button';
 import Moment from 'react-moment';
-import { DateRange } from 'react-date-range';
+import {DateRange} from 'react-date-range';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import { CSVLink } from 'react-csv';
+import {CSVLink} from 'react-csv';
 import moment from 'moment';
 import NoListAlert from '../../OmouComponents/NoListAlert';
 
@@ -139,7 +139,7 @@ export default function TeachingLogContainer() {
                 endDate: moment().toISOString(),
             },
         });
-    }, []);
+    }, [AuthUser.user.id, getSessions]);
 
     const handleDateRangeCalendarChange = (item) => {
         const newDateRange = item.selection;

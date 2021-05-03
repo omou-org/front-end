@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useValidateRegisteringParent } from '../../../OmouComponents/RegistrationUtils';
+import React, {useEffect, useState} from 'react';
+import {useValidateRegisteringParent} from '../../../OmouComponents/RegistrationUtils';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { RegistrationContext } from './RegistrationContext';
+import {RegistrationContext} from './RegistrationContext';
 import StudentRegistrationEntry from './StudentRegistrationsEntry';
 import PaymentBoard from './PaymentBoard';
 import RegistrationActions from '../RegistrationActions';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { omouBlue, skyBlue } from '../../../../theme/muiTheme';
+import {omouBlue, skyBlue} from '../../../../theme/muiTheme';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -21,10 +21,10 @@ import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import {Link} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
-import { GET_REGISTRATION_CART } from '../SelectParentDialog';
+import {GET_REGISTRATION_CART} from '../SelectParentDialog';
 
 const GET_COURSES_AND_STUDENTS_TO_REGISTER = gql`
     query GetCoursesToRegister($courseIds: [ID]!, $userIds: [ID]!) {
@@ -125,7 +125,6 @@ const RegistrationCartContainer = () => {
     );
     const [
         createRegistrationCart,
-        createRegistrationCartResponse,
     ] = useMutation(CREATE_REGISTRATION_CART, {
         variables: { parent: currentParent?.user.id },
         onCompleted: () => {
@@ -149,7 +148,7 @@ const RegistrationCartContainer = () => {
             type: types.INIT_COURSE_REGISTRATION,
             payload: {},
         });
-    }, [types.INIT_COURSE_REGISTRATION, dispatch]);
+    }, [dispatch]);
 
     useEffect(() => {
         const numOfRegistrations = Object.values(registrationCartState).filter(
@@ -161,7 +160,6 @@ const RegistrationCartContainer = () => {
             numOfRegistrations > 0 &&
             Object.keys(registrationCart).length === 0
         ) {
-            console.log(data);
             const courseData = data.courses;
             setRegistrationCart(() => {
                 const registrationCart = {};
@@ -179,7 +177,7 @@ const RegistrationCartContainer = () => {
                 return registrationCart;
             });
         }
-    }, [setRegistrationCart, loading, registrationCartState]);
+    }, [setRegistrationCart, loading, registrationCartState, data, registrationCart, studentIds]);
 
     const updateSession = (newSessionNum, checked, studentId, courseId) => {
         setRegistrationCart((prevRegistrationCart) => {
@@ -229,7 +227,7 @@ const RegistrationCartContainer = () => {
         return <Loading small />;
     }
     if (error) {
-        return <div>There's been an error: {error.message}</div>;
+        return <div>{`There's been an error: ${error.message}`}</div>;
     }
     const studentData = data.userInfos;
 
@@ -355,7 +353,7 @@ const RegistrationCartContainer = () => {
                         Your request has been submitted!
                     </Typography>
                     <Typography align='center'>
-                        Here’s the next step to complete the enrollment process:
+                        {`Here’s the next step to complete the enrollment process:`}
                     </Typography>
 
                     <Box

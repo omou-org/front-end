@@ -1,15 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import EnrollmentSessionRow from './EnrollmentSessionRow';
 import NoListAlert from '../../OmouComponents/NoListAlert';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { TableCell } from '@material-ui/core';
+import {TableCell} from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
+import PropTypes from "prop-types";
 
-export default function EnrollmentSummaryTab({ sessions, enrollment }) {
+function EnrollmentSummaryTab({sessions, enrollment}) {
     const [highlightSession, setHighlightSession] = useState(false);
 
     const handleHighlightSwitch = useCallback(() => {
@@ -46,6 +47,7 @@ export default function EnrollmentSummaryTab({ sessions, enrollment }) {
                             sessions.map((session) => {
                                 return (
                                     <EnrollmentSessionRow
+                                        key={session.id}
                                         session={session}
                                         enrollmentData={enrollment}
                                         highlightSession={highlightSession}
@@ -53,9 +55,16 @@ export default function EnrollmentSummaryTab({ sessions, enrollment }) {
                                 );
                             })}
                     </TableBody>
-                    {sessions.length === 0 && <NoListAlert list='Course' />}
+                    {sessions.length === 0 && <NoListAlert list='Course'/>}
                 </Table>
             </Grid>
         </Grid>
     );
 }
+
+EnrollmentSummaryTab.propTypes = {
+    sessions: PropTypes.array,
+    enrollment: PropTypes.object,
+};
+
+export default EnrollmentSummaryTab;

@@ -7,7 +7,7 @@ import Loading from 'components/OmouComponents/Loading';
 import './Dashboard.scss';
 import Grid from '@material-ui/core/Grid';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 
 const Today = (filter) => {
     const TODAY_SESSION_QUERY = gql`
@@ -69,8 +69,8 @@ const Today = (filter) => {
         return (
             <>
                 {sessionArray.map((session) => (
-                    <Grid item md={6} lg={3}>
-                        <TodayCard key={session} session={session} />
+                    <Grid item md={6} lg={3} key={session.id}>
+                        <TodayCard key={session} session={session}/>
                     </Grid>
                 ))}
             </>

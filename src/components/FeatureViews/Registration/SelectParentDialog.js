@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useCallback, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,12 +10,12 @@ import Grid from '@material-ui/core/Grid';
 import * as types from 'actions/actionTypes';
 import AccountCard from '../Search/cards/AccountCard';
 import gql from 'graphql-tag';
-import { useLazyQuery } from '@apollo/client';
+import {useLazyQuery} from '@apollo/client';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { fullName } from '../../../utils';
+import {fullName} from '../../../utils';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const GET_PARENTS_QUERY = gql`
     query GetParents($query: String!) {
@@ -48,7 +48,7 @@ const SelectParentDialog = ({ onClose, open }) => {
     const [parent, setParent] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [searching, setSearching] = useState(false);
-    const { currentParent, ...registrationCartState } = useSelector(
+    const {currentParent} = useSelector(
         (state) => state.Registration
     );
     const [getSavedParentCart, getSavedParentCartResult] = useLazyQuery(
@@ -91,7 +91,7 @@ const SelectParentDialog = ({ onClose, open }) => {
         }
         // close the dialogue
         onClose(!!parent);
-    }, [parent, dispatch, onClose]);
+    }, [parent, dispatch, onClose, getSavedParentCart]);
 
     const handleExitParent = useCallback(
         (event) => {
@@ -103,7 +103,7 @@ const SelectParentDialog = ({ onClose, open }) => {
             });
             onClose();
         },
-        [dispatch, handleClose]
+        [dispatch, onClose]
     );
 
     const handleOnChange = useCallback(
@@ -143,8 +143,6 @@ const SelectParentDialog = ({ onClose, open }) => {
             }}
         />
     );
-
-    const numToCheckout = Object.values(registrationCartState).flat().length;
 
     const options = data
         ? data.accountSearch.results.map((parent) => ({

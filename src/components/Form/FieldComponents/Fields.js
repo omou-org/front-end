@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 
 import IconButton from '@material-ui/core/IconButton';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
@@ -9,15 +9,16 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import * as Fields from 'mui-rff';
-import { makeStyles } from '@material-ui/core/styles';
-import { useQuery } from '@apollo/client';
+import {makeStyles} from '@material-ui/core/styles';
+import {useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
-import { fullName } from '../../../utils';
+import {fullName} from '../../../utils';
 import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
-import { Schedule } from '@material-ui/icons';
+import {Schedule} from '@material-ui/icons';
+import PropTypes from "prop-types";
 
-const getLabel = ({ label }) => label || '';
+const getLabel = ({label}) => label || '';
 
 const useSelectStyles = makeStyles({
     select: {
@@ -120,13 +121,17 @@ export const Autocomplete = ({ name, options, ...props }) => {
     );
 };
 
+Autocomplete.propTypes = {
+    name: PropTypes.string,
+    options: PropTypes.array,
+};
+
 export const DataSelect = ({
-    request,
-    optionsMap,
-    name,
-    variant,
-    ...props
-}) => {
+                               request,
+                               optionsMap,
+                               name,
+                               ...props
+                           }) => {
     const [query, setQuery] = useState();
 
     const handleQueryChange = useCallback((_, newQuery) => {
@@ -157,10 +162,16 @@ export const DataSelect = ({
             getOptionSelected={defaultSelectedHandler}
             options={options}
             renderOption={renderOption}
-            classes={{ inputRoot: { fontSize: '70px' } }}
+            classes={{inputRoot: {fontSize: '70px'}}}
             {...props}
         />
     );
+};
+
+DataSelect.propTypes = {
+    request: PropTypes.any,
+    optionsMap: PropTypes.any,
+    name: PropTypes.string,
 };
 
 const GET_STUDENTS = gql`
@@ -200,7 +211,6 @@ export const StudentSelect = (props) => {
 };
 
 export const PasswordInput = ({
-    label = 'Password',
     isField = true,
     ...props
 }) => {
@@ -234,4 +244,8 @@ export const PasswordInput = ({
         type: showPassword ? 'text' : 'password',
         ...props,
     });
+};
+
+PasswordInput.propTypes = {
+    isField: PropTypes.bool,
 };

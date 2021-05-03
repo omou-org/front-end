@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
@@ -10,12 +10,13 @@ import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
-import { omouBlue } from '../../../../theme/muiTheme';
+import {omouBlue} from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useMutation, useQuery } from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
+import {AdminPropTypes} from "../../../../utils";
 
-export const StyledTableRow = withStyles((theme) => ({
+export const StyledTableRow = withStyles(() => ({
     root: {
         '& > *': {
             borderBottom: 'unset',
@@ -134,8 +135,8 @@ const createOptInSetting = (name, description, optIn) => ({
     optional: true,
 });
 
-export default function NotificationSettings({ user }) {
-    const { userInfo } = user;
+function NotificationSettings({user}) {
+    const {userInfo} = user;
     const classes = useStyles();
     const [notificationRows, setNotificationRows] = useState([]);
     const [optInNotifRows, setOptInNotifRows] = useState([]);
@@ -144,7 +145,7 @@ export default function NotificationSettings({ user }) {
     const instructorSettingResponse = useQuery(
         GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
         {
-            variables: { instructorId: userInfo.user.id },
+            variables: {instructorId: userInfo.user.id},
             skip: !isInstructor,
         }
     );
@@ -153,33 +154,27 @@ export default function NotificationSettings({ user }) {
         skip: !isParent,
     });
 
-    const [
-        createParentNotification,
-        createParentNotificationResults,
-    ] = useMutation(CREATE_PARENT_NOTIFICATION_SETTINGS, {
-        update: (cache, { data }) => {
+    const [createParentNotification,] = useMutation(CREATE_PARENT_NOTIFICATION_SETTINGS, {
+        update: (cache, {data}) => {
             cache.writeQuery({
                 data: {
                     parentNotificationSettings:
-                        data.createParentNotificationSetting.settings,
+                    data.createParentNotificationSetting.settings,
                 },
                 query: GET_PARENT_NOTIFICATION_SETTINGS,
-                variables: { parentId: userInfo.user.id },
+                variables: {parentId: userInfo.user.id},
             });
         },
     });
-    const [
-        createInstructorNotification,
-        createInstructorNotificationResults,
-    ] = useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
-        update: (cache, { data }) => {
+    const [createInstructorNotification,] = useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
+        update: (cache, {data}) => {
             cache.writeQuery({
                 data: {
                     instructorNotificationSettings:
-                        data.createInstructorNotificationSetting.settings,
+                    data.createInstructorNotificationSetting.settings,
                 },
                 query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
-                variables: { instructorId: userInfo.user.id },
+                variables: {instructorId: userInfo.user.id},
             });
         },
     });
@@ -247,7 +242,7 @@ export default function NotificationSettings({ user }) {
                         }
                     ),
                 ],
-                INSTRUCTOR: [],
+                // INSTRUCTOR: [],
             }[accountType]);
 
         const notReceptionOrAdmin =
@@ -291,13 +286,16 @@ export default function NotificationSettings({ user }) {
     }, [
         setNotificationRows,
         setOptInNotifRows,
-        createNotificationSetting,
-        createOptInSetting,
         instructorSettingResponse.loading,
         parentSettingResponse.loading,
+        instructorSettingResponse,
+        isInstructor,
+        isParent,
+        parentSettingResponse,
+        userInfo.accountType,
     ]);
 
-    const handleSettingChange = (setting, setFunction, index) => (_) => {
+    const handleSettingChange = (setting, setFunction, index) => () => {
         let notificationSettings = {};
         setFunction((prevState) => {
             let newState = JSON.parse(JSON.stringify(prevState));
@@ -472,7 +470,7 @@ export default function NotificationSettings({ user }) {
                                         )}
                                     />
                                 </TableCell>
-                                <TableCell />
+                                <TableCell/>
                             </StyledTableRow>
                         ))}
                     </TableBody>
@@ -481,3 +479,7 @@ export default function NotificationSettings({ user }) {
         </>
     );
 }
+
+NotificationSettings.propTypes = AdminPropTypes;
+
+export default NotificationSettings;

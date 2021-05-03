@@ -1,11 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import { PropTypes } from 'prop-types';
-import { defaultBoxShadow } from '../../theme/muiTheme';
+import {PropTypes} from 'prop-types';
+import {defaultBoxShadow} from '../../theme/muiTheme';
 
 const useStyles = makeStyles({
-    addNewItemStyles: ({ height, width }) => ({
+    addNewItemStyles: ({height, width}) => ({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
@@ -37,4 +37,5 @@ AddItemButton.propTypes = {
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    children: PropTypes.any,
 };

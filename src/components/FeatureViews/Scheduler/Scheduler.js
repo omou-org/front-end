@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import { SchedulerContext } from './SchedulerContext';
+import {useQuery} from '@apollo/client';
+import {SchedulerContext} from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { fullName } from '../../../utils';
-import { useHistory } from 'react-router-dom';
-import { instructorPalette } from '../../../theme/muiTheme';
-import { findCommonElement } from '../../Form/FormUtils';
-import { SessionPopover } from './SessionPopover';
-import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
-import { useSelector } from 'react-redux';
+import {fullName} from '../../../utils';
+import {useHistory} from 'react-router-dom';
+import {instructorPalette} from '../../../theme/muiTheme';
+import {findCommonElement} from '../../Form/FormUtils';
+import {SessionPopover} from './SessionPopover';
+import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
+import {useSelector} from 'react-redux';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     sessionPopover: {
@@ -84,10 +85,15 @@ const EventPopoverWrapper = ({ children, popover }) => {
     );
 };
 
+EventPopoverWrapper.propTypes = {
+    children: PropTypes.any,
+    popover: PropTypes.any,
+};
+
 const localizer = momentLocalizer(moment);
 
 const BigCalendar = (props) => {
-    const eventStyleGetter = ({ instructor }) => {
+    const eventStyleGetter = ({instructor}) => {
         const hashCode = (string) => {
             let hash = 0;
             for (let i = 0; i < string.length; i += 1) {
@@ -114,6 +120,7 @@ const BigCalendar = (props) => {
             timeslots={4}
             components={{
                 toolbar: OmouSchedulerToolbar,
+                // eslint-disable-next-line react/display-name
                 eventWrapper: (props) => (
                     <EventPopoverWrapper
                         {...props}
@@ -124,10 +131,16 @@ const BigCalendar = (props) => {
             startAccessor='start'
             endAccessor='end'
             onSelectEvent={props.onSelectEvent}
-            style={{ height: 700 }}
+            style={{height: 700}}
             eventPropGetter={eventStyleGetter}
         />
     );
+};
+
+BigCalendar.propTypes = {
+    eventList: PropTypes.array,
+    event: PropTypes.any,
+    onSelectEvent: PropTypes.func
 };
 
 const GET_SESSIONS = gql`
@@ -166,8 +179,8 @@ const GET_SESSIONS = gql`
     }
 `;
 
-export default function Scheduler() {
-    const defaultSchedulerState = {
+function Scheduler() {
+    const defaultSchedulerState = useMemo(() => ({
         timeFrame: 'month',
         timeShift: 0,
         instructorOptions: [],
@@ -176,8 +189,8 @@ export default function Scheduler() {
         selectedCourses: [],
         studentOptions: [],
         selectedStudents: [],
-    };
-    const AuthUser = useSelector(({ auth }) => auth);
+    }), []);
+    const AuthUser = useSelector(({auth}) => auth);
     const [schedulerState, setSchedulerState] = useState(defaultSchedulerState);
     const [sessionsInView, setSessionsInView] = useState([]);
     const [filteredSessionsInView, setFilteredSessionsInView] = useState([]);
@@ -236,10 +249,10 @@ export default function Scheduler() {
 
     useEffect(() => {
         setSchedulerState(defaultSchedulerState);
-    }, []);
+    }, [setSchedulerState, defaultSchedulerState]);
 
     useEffect(() => {
-        const { timeFrame, timeShift, ...rest } = schedulerState;
+        const {timeFrame, timeShift, ...rest} = schedulerState;
         if (timeFrame && timeShift) {
             setSchedulerState({
                 ...rest,
@@ -247,7 +260,7 @@ export default function Scheduler() {
                 timeShift,
             });
         }
-    }, [schedulerState.timeFrame, schedulerState.timeShift]);
+    }, [schedulerState.timeFrame, schedulerState.timeShift, schedulerState]);
 
     useEffect(() => {
         setFilteredSessions(schedulerState, sessionsInView);
@@ -255,6 +268,8 @@ export default function Scheduler() {
         schedulerState.selectedInstructors.length,
         schedulerState.selectedCourses.length,
         schedulerState.selectedStudents.length,
+        schedulerState,
+        sessionsInView,
     ]);
 
     const uniqueValuesById = (objectList) => {
@@ -279,17 +294,17 @@ export default function Scheduler() {
         AuthUser.accountType === 'PARENT' ||
         AuthUser.accountType === 'INSTRUCTOR';
 
-    const { data, loading, error } = useQuery(GET_SESSIONS, {
+    useQuery(GET_SESSIONS, {
         variables: {
             timeFrame: schedulerState.timeFrame,
             timeShift: schedulerState.timeShift,
-            ...(isParentOrInstructorLoggedIn && { userId: AuthUser.user.id }),
+            ...(isParentOrInstructorLoggedIn && {userId: AuthUser.user.id}),
         },
         onCompleted: (data) => {
-            const { sessions } = data;
+            const {sessions} = data;
             const parsedBigCalendarSessions = sessions.map(
                 ({
-                    id,
+                     id,
                     endDatetime,
                     startDatetime,
                     title,
@@ -355,11 +370,17 @@ export default function Scheduler() {
             <Typography
                 variant='h1'
                 align='left'
-                style={{ marginBottom: '24px' }}
+                style={{marginBottom: '24px'}}
             >
                 Scheduler
             </Typography>
-            <BigCalendar eventList={filteredSessionsInView} />
+            <BigCalendar eventList={filteredSessionsInView}/>
         </SchedulerContext.Provider>
     );
 }
+
+Scheduler.propTypes = {
+    eventList: PropTypes.array,
+};
+
+export default Scheduler;

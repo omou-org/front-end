@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import React, { useCallback } from 'react';
+import {useSelector} from 'react-redux';
+import React, {useCallback} from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -9,20 +9,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import { paymentToString, tuitionAmount } from 'utils';
+import {paymentToString, tuitionAmount} from 'utils';
 import Loading from 'components/OmouComponents/Loading';
 import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
 import Moment from 'react-moment';
-
-const numericDateString = (date) => {
-    const DateObject = new Date(date);
-    return DateObject.toLocaleDateString('en-US', {
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric',
-    });
-};
 
 const courseLabel = (enrollments) =>
     enrollments &&
@@ -118,6 +109,7 @@ InvoicesTable.propTypes = {
     enrollmentID: PropTypes.number.isRequired,
     paymentList: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['enrollment', 'parent']).isRequired,
+    rootRoute: PropTypes.string,
 };
 
 export default InvoicesTable;

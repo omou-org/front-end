@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import {Link, useParams} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import Grid from '@material-ui/core/Grid';
@@ -13,21 +13,22 @@ import Hidden from '@material-ui/core/Hidden';
 import MoneyIcon from '@material-ui/icons/LocalAtmOutlined';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
-import { darkGrey } from 'theme/muiTheme';
+import {makeStyles} from '@material-ui/core';
+import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
+import {darkGrey} from 'theme/muiTheme';
 import CakeOutlinedIcon from '@material-ui/icons/CakeOutlined';
 
 import ResetPasswordDialogs from './ResetPasswordDialogs';
 import Loading from 'components/OmouComponents/Loading';
 import './Accounts.scss';
-import { addDashes } from './accountUtils';
-import { ReactComponent as GradeIcon } from '../../grade.svg';
-import { ReactComponent as IDIcon } from '../../identifier.svg';
-import { ReactComponent as SchoolIcon } from '../../school.svg';
+import {addDashes} from './accountUtils';
+import {ReactComponent as GradeIcon} from '../../grade.svg';
+import {ReactComponent as IDIcon} from '../../identifier.svg';
+import {ReactComponent as SchoolIcon} from '../../school.svg';
 
-import { capitalizeString, fullName, USER_TYPES } from 'utils';
+import {capitalizeString, fullName, USER_TYPES} from 'utils';
 import moment from 'moment';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
     icon: {
@@ -125,8 +126,6 @@ const GET_PROFILE_HEADING_QUERY = {
 
 const ProfileHeading = ({ ownerID }) => {
     const classes = useStyles();
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [editButtonActive, setEditButtonActive] = useState(false);
     const { accountType } = useParams();
 
     const loggedInUserID = useSelector(({ auth }) => auth.user.id);
@@ -143,20 +142,10 @@ const ProfileHeading = ({ ownerID }) => {
     if (error) return `Error: ${error}`;
     const { userInfo } = data;
 
-    const handleOpen = ({ currentTarget }) => {
-        setAnchorEl(currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     // Validation
-    const isInstructor = loggedInAuth.accountType === USER_TYPES.instructor;
     const isAdmin = loggedInAuth.accountType === USER_TYPES.admin;
     const isAuthUser = userInfo.user.id === loggedInUserID;
     const isStudentProfile = userInfo.accountType === 'STUDENT';
-    const canViewScheduleOptions = isAdmin || isInstructor;
     const isStudentOrParent =
         accountType === 'student' || accountType === 'parent';
 
@@ -380,18 +369,7 @@ const ProfileHeading = ({ ownerID }) => {
 };
 
 ProfileHeading.propTypes = {
-    // user: PropTypes.shape({
-    // 	balance: PropTypes.string,
-    // 	birthday: PropTypes.string,
-    // 	email: PropTypes.string,
-    // 	grade: PropTypes.number,
-    // 	name: PropTypes.string,
-    // 	phone_number: PropTypes.string,
-    // 	// role: PropTypes.oneOf(["instructor", "parent", "receptionist", "student"]),
-    // 	school: PropTypes.string,
-    // 	summit_id: PropTypes.string,
-    // 	user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    // }).isRequired,
+    ownerID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default ProfileHeading;

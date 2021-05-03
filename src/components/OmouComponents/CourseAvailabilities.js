@@ -1,13 +1,14 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
-import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from 'utils';
+import {Typography} from '@material-ui/core';
+import {DayAbbreviation, sessionsAtSameTimeInMultiDayCourse} from 'utils';
 import moment from 'moment';
+import PropTypes from "prop-types";
 
-const CourseAvailabilites = ({ availabilityList, variant, style, rest }) => {
+const CourseAvailabilites = ({availabilityList, variant, style, rest}) => {
     const renderCourseAvailabilitiesString = (availabilityList) => {
         if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
             const days = availabilityList.reduce(
-                (allDays, { dayOfWeek }, index) => {
+                (allDays, {dayOfWeek}, index) => {
                     return (
                         allDays +
                         DayAbbreviation[dayOfWeek.toLowerCase()] +
@@ -53,12 +54,19 @@ const CourseAvailabilites = ({ availabilityList, variant, style, rest }) => {
         <Typography
             align='left'
             {...rest}
-            style={{ ...style }}
+            style={{...style}}
             variant={variant}
         >
             {renderCourseAvailabilitiesString(availabilityList)}
         </Typography>
     );
+};
+
+CourseAvailabilites.propTypes = {
+    availabilityList: PropTypes.array,
+    variant: PropTypes.string,
+    style: PropTypes.any,
+    rest: PropTypes.any,
 };
 
 export default CourseAvailabilites;

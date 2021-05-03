@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import React, { useState } from 'react';
+import {useSelector} from 'react-redux';
+import React, {useState} from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -8,9 +8,9 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { InvoiceTablePagination } from './InvoiceTablePagination';
+import {InvoiceTablePagination} from './InvoiceTablePagination';
 
-import { fullName } from 'utils';
+import {fullName} from 'utils';
 import Loading from 'components/OmouComponents/Loading';
 import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
@@ -21,7 +21,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import StatusBadge from '../../OmouComponents/StatusBadge';
 
 import './invoice.scss';
@@ -49,7 +49,6 @@ const useStyles = makeStyles({
 
 const InvoiceTable = ({
     invoiceList,
-    courseID,
     handleStatusChange,
     handlePageChange,
     page,
@@ -204,6 +203,10 @@ const InvoiceTable = ({
 
 InvoiceTable.propTypes = {
     invoiceList: PropTypes.array.isRequired,
+    handleStatusChange: PropTypes.func,
+    handlePageChange: PropTypes.func,
+    page: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    totalPages: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default InvoiceTable;

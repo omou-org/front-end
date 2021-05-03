@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import SearchSelect from 'react-select';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { distinctObjectArray, fullName, gradeOptions } from 'utils';
+import {distinctObjectArray, fullName, gradeOptions} from 'utils';
 import CourseList from './CourseList';
 import Loading from 'components/OmouComponents/Loading';
 import RegistrationActions from './RegistrationActions';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import { SIMPLE_COURSE_DATA } from 'queryFragments';
-import { getRegistrationCart } from '../../OmouComponents/RegistrationUtils';
+import {useQuery} from '@apollo/client';
+import {SIMPLE_COURSE_DATA} from 'queryFragments';
+import {getRegistrationCart} from '../../OmouComponents/RegistrationUtils';
 
 const customStyles = {
     clearIndicator: (base, state) => ({
@@ -84,7 +84,7 @@ const RegistrationLanding = () => {
     const { data, loading, error } = useQuery(GET_ALL_COURSES);
     const { currentParent } = getRegistrationCart();
 
-    const [view, setView] = useState(0);
+    const [view] = useState(0);
     const [updatedParent, setUpdatedParent] = useState(false);
     const [courseFilters, setCourseFilters] = useState({
         grade: [],
@@ -97,25 +97,17 @@ const RegistrationLanding = () => {
         if (currentParent) {
             setUpdatedParent(true);
         }
-    }, []);
-
-    const updateView = useCallback(
-        (newView) => () => {
-            setView(newView);
-        },
-        []
-    );
+    }, [currentParent]);
 
     if (loading) {
-        return <Loading />;
+        return <Loading/>;
     }
-    if (error) {
+    if (error)
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                {`There's been an error! Error: ${error.message}`}
             </Typography>
         );
-    }
 
     const { courses } = data;
 

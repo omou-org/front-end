@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {makeStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import { BootstrapInput } from './CourseManagementContainer';
+import {BootstrapInput} from './CourseManagementContainer';
 import ClassSessionView from './ClassSessionView';
 import moment from 'moment';
-import { highlightColor } from '../../../theme/muiTheme';
+import {highlightColor} from '../../../theme/muiTheme';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -110,6 +111,11 @@ const ClassSessionContainer = ({ sessionList, loggedInUser }) => {
             </Grid>
         </>
     );
+};
+
+ClassSessionContainer.propTypes = {
+    sessionList: PropTypes.array,
+    loggedInUser: PropTypes.object,
 };
 
 export default ClassSessionContainer;

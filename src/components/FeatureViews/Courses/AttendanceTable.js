@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useMutation, useQuery } from '@apollo/client';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
+import {useMutation, useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
 import moment from 'moment';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,16 +14,14 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Add, Check } from '@material-ui/icons';
+import {Add, Check} from '@material-ui/icons';
 import Loading from '../../OmouComponents/Loading';
-import {
-    SessionDropdownButton,
-    StudentFilterOrSortDropdown,
-} from './AttendanceButtons';
-import { buttonThemeBlue } from '../../../theme/muiTheme';
-import { fullName } from '../../../utils';
+import {SessionDropdownButton, StudentFilterOrSortDropdown,} from './AttendanceButtons';
+import {buttonThemeBlue} from '../../../theme/muiTheme';
+import {fullName} from '../../../utils';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     table: {
         maxWidth: '100vw',
         overflowY: 'auto',
@@ -140,7 +138,6 @@ const AttendanceTable = ({ setIsEditing }) => {
     const [isCheckBoxEditing, setIsCheckBoxEditing] = useState();
     const [courseAttendanceMatrix, setCourseAttendanceMatrix] = useState([]);
     const [sortByAlphabet, setSortByAlphabet] = useState('');
-    const [attendanceBySession, setAttendanceBySession] = useState({});
 
     // This is used to check each session for any status that is not unset, and set the attendancEditingState to done
     // Once it is set to done, the check mark turns into a the dropdown
@@ -163,7 +160,7 @@ const AttendanceTable = ({ setIsEditing }) => {
                 ...sessionsDoneEditing,
             });
         }
-    }, [courseAttendanceMatrix]);
+    }, [courseAttendanceMatrix, attendanceEditStates]);
 
     const sortByFirstName = (firstStudent, secondStudent) => {
         if (firstStudent.studentName < secondStudent.studentName) {
@@ -578,6 +575,10 @@ const AttendanceTable = ({ setIsEditing }) => {
             </Table>
         </TableContainer>
     );
+};
+
+AttendanceTable.propTypes = {
+    setIsEditing: PropTypes.func,
 };
 
 export default AttendanceTable;

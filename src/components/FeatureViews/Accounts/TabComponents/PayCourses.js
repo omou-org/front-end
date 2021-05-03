@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,9 +9,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { NavLink } from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 
-import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const msPerWeek = 1000 * 60 * 60 * 24 * 7;
 
@@ -27,12 +27,12 @@ const calcSessionCost = ({
 };
 
 const PayCourses = (props) => {
-    const rows = props.user.student_ids.map((studentID) => {
+    const rows = props.user.studentIds.map((studentID) => {
         const student = props.students[studentID];
 
         const unpaidEnrollments = Object.entries(
             props.enrollments[studentID]
-        ).map(([courseID, { session_payment_status }]) => {
+        ).map(([courseID, {session_payment_status}]) => {
             const unpaidCount = Object.values(session_payment_status).reduce(
                 (total, paymentStatus) => total + (paymentStatus === 0),
                 0
@@ -114,6 +114,9 @@ const PayCourses = (props) => {
 
 PayCourses.propTypes = {
     user: PropTypes.object.isRequired,
+    students: PropTypes.array,
+    enrollments: PropTypes.array,
+    courses: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({

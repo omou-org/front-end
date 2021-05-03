@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Loading from '../../../OmouComponents/Loading';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 
 const GET_USER_BIO = gql`
     query getUserBio($ownerID: ID!) {
@@ -29,8 +29,8 @@ const Bio = ({ ownerID }) => {
         variables: { ownerID },
     });
 
-    if (loading) return <Loading />;
-    if (error) return <div>There's been an error! - {error.message}</div>;
+    if (loading) return <Loading/>;
+    if (error) return <div>{`There's been an error! - ${error.message}`}</div>;
 
     const {
         userInfo: { biography, experience, language, subjects },
@@ -98,6 +98,7 @@ Bio.propTypes = {
         languages: PropTypes.any,
         subjects: PropTypes.any,
     }).isRequired,
+    ownerID: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default Bio;

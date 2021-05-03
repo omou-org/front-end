@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -10,7 +10,7 @@ import CourseUpload from './CourseUpload';
 import BusinessInfo from './BusinessInfo';
 import CategorySelect from './CategorySelect';
 import AccountsUpload from './AccountsUpload';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,7 +58,7 @@ const ImportFlow = () => {
     const [skipped, setSkipped] = React.useState(new Set());
     const steps = getSteps();
 
-    const isStepOptional = (step) => {
+    const isStepOptional = () => {
         return false;
     };
 
@@ -125,7 +125,7 @@ const ImportFlow = () => {
                 {activeStep === steps.length ? (
                     <div>
                         <Typography className={classes.instructions}>
-                            All steps completed - you're finished
+                            {`All steps completed - you're finished`}
                         </Typography>
                         <ResponsiveButton
                             onClick={handleReset}

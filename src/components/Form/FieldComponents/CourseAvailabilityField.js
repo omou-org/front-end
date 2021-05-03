@@ -1,15 +1,16 @@
 import Grid from '@material-ui/core/Grid';
 import * as Fields from 'mui-rff';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useFormState } from 'react-final-form';
+import {useFormState} from 'react-final-form';
 import React from 'react';
-import { TimePicker } from './Fields';
+import {TimePicker} from './Fields';
+import PropTypes from "prop-types";
 
-const CourseAvailabilityField = ({ count }) => {
-    const { values } = useFormState();
+const CourseAvailabilityField = ({count}) => {
+    const {values} = useFormState();
 
     return (
-        <Grid container item spacing={2} style={{ marginTop: '16px' }}>
+        <Grid container item spacing={2} style={{marginTop: '16px'}}>
             <Grid item xs={4}>
                 <Fields.Select
                     name={`dayOfWeek-${count}`}
@@ -55,6 +56,10 @@ const CourseAvailabilityField = ({ count }) => {
             </Grid>
         </Grid>
     );
+};
+
+CourseAvailabilityField.propTypes = {
+    count: PropTypes.any,
 };
 
 export default CourseAvailabilityField;

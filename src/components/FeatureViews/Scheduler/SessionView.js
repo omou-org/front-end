@@ -1,41 +1,20 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams } from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import { Tooltip, Typography, withStyles } from '@material-ui/core';
+import {useQuery} from '@apollo/client';
+import {Tooltip, Typography} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
-import { stringToColor } from '../Accounts/accountUtils';
+import {stringToColor} from '../Accounts/accountUtils';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
-import Menu from '@material-ui/core/Menu';
-import { fullName, USER_TYPES } from '../../../utils';
+import {fullName, USER_TYPES} from '../../../utils';
 import moment from 'moment';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { RescheduleBtn } from './RescheduleBtn';
-
-const StyledMenu = withStyles({
-    paper: {
-        border: '1px solid #d3d4d5',
-    },
-})((props) => (
-    <Menu
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'center',
-        }}
-        elevation={0}
-        getContentAnchorEl={null}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-        }}
-        {...props}
-    />
-));
+import {RescheduleBtn} from './RescheduleBtn';
 
 const styles = (username) => ({
     backgroundColor: stringToColor(username),
@@ -112,19 +91,18 @@ const SessionView = () => {
     }
 
     if (error) {
-        return <Typography>There's been an error!</Typography>;
+        return <Typography>{`There's been an error!`}</Typography>;
     }
 
     const {
         course,
         endDatetime,
-        id,
         title,
         instructor,
         startDatetime,
     } = data.session;
 
-    var { courseCategory, enrollmentSet, courseId, room } = course;
+    var {courseCategory, enrollmentSet, room} = course;
 
     const confirmed = course.isConfirmed;
     const course_id = course.id;

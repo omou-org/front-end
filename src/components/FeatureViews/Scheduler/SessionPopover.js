@@ -1,9 +1,10 @@
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
-import { Face, Schedule } from '@material-ui/icons';
-import { fullName } from '../../../utils';
+import {Face, Schedule} from '@material-ui/icons';
+import {fullName} from '../../../utils';
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     sessionPopover: {
@@ -43,4 +44,8 @@ export const SessionPopover = ({
             </div>
         </div>
     );
+};
+
+SessionPopover.propTypes = {
+    session: PropTypes.any,
 };

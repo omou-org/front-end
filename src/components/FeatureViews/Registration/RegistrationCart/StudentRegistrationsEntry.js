@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { fullName, getTuitionAmount } from '../../../../utils';
+import {fullName, getTuitionAmount} from '../../../../utils';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -9,21 +9,22 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import Moment from 'react-moment';
 import moment from 'moment';
-import { RegistrationContext } from './RegistrationContext';
+import {RegistrationContext} from './RegistrationContext';
 import TextField from '@material-ui/core/TextField';
 import CloseIcon from '@material-ui/icons/Close';
 import './RegistrationCart.scss';
 import IconButton from '@material-ui/core/IconButton';
-import { useValidateRegisteringParent } from '../../../OmouComponents/RegistrationUtils';
-import { useDispatch } from 'react-redux';
+import {useValidateRegisteringParent} from '../../../OmouComponents/RegistrationUtils';
+import {useDispatch} from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
 import NoListAlert from '../../../OmouComponents/NoListAlert';
-import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from 'utils';
+import {DayAbbreviation, sessionsAtSameTimeInMultiDayCourse} from 'utils';
+import PropTypes from "prop-types";
 
 const separator = () => {
     return (
         <Typography
-            style={{ display: 'inline', paddingLeft: 30, paddingRight: 30 }}
+            style={{display: 'inline', paddingLeft: 30, paddingRight: 30}}
         >
             |
         </Typography>
@@ -43,7 +44,7 @@ function RegistrationEntry({
         updateSession(Number(e.target.value), checked, studentId, course.id);
     };
 
-    const handleSessionCheckChange = (_) => {
+    const handleSessionCheckChange = () => {
         updateSession(numSessions, !checked, studentId, course.id);
         dispatch({
             type: types.DELETE_COURSE_REGISTRATION,
@@ -163,13 +164,19 @@ function RegistrationEntry({
     );
 }
 
-export default function StudentRegistrationEntry({
-    student,
-    registrationList,
-}) {
+RegistrationEntry.propTypes = {
+    registration: PropTypes.any,
+    studentId: PropTypes.any,
+    index: PropTypes.any,
+};
+
+function StudentRegistrationEntry({
+                                      student,
+                                      registrationList,
+                                  }) {
     return (
         <Grid item xs={12} container>
-            <Typography style={{ fontWeight: 600 }}>
+            <Typography style={{fontWeight: 600}}>
                 {fullName(student.user)}
             </Typography>
             <Table>
@@ -195,10 +202,17 @@ export default function StudentRegistrationEntry({
                                 />
                             ))
                     ) : (
-                        <NoListAlert list='registrations' />
+                        <NoListAlert list='registrations'/>
                     )}
                 </TableBody>
             </Table>
         </Grid>
     );
 }
+
+StudentRegistrationEntry.propTypes = {
+    student: PropTypes.any,
+    registrationList: PropTypes.array,
+};
+
+export default StudentRegistrationEntry;
