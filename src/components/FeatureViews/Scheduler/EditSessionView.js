@@ -1,44 +1,29 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams } from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import {
-    Tooltip,
-    Typography,
-    withStyles,
-    makeStyles,
-    Button,
-    Divider,
-} from '@material-ui/core';
+import {useLazyQuery, useQuery} from '@apollo/client';
+import {Button, Divider, makeStyles, Tooltip, Typography,} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
-import { stringToColor } from '../Accounts/accountUtils';
-import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
+import {stringToColor} from '../Accounts/accountUtils';
+import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
-import { QueryBuilder } from '@material-ui/icons'
+import {QueryBuilder} from '@material-ui/icons'
 import UnconfirmIcon from '@material-ui/icons/Cancel';
-import { USER_TYPES } from '../../../utils';
+import {USER_TYPES} from '../../../utils';
 import moment from 'moment';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { EditSessionDropDown } from './EditSessionUtilComponents';
-import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
-import { RescheduleBtn } from './RescheduleBtn';
-
-import { StudentCourseLabel, UserAvatarCircle } from '../Courses/StudentBadge';
-import { fullName } from 'utils';
-import InputBase from '@material-ui/core/InputBase';
+import {EditSessionDropDown} from './EditSessionUtilComponents';
+import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
+import {fullName} from 'utils';
 
 import 'date-fns';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
+import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     current_session: {
         fontFamily: 'Roboto',
         fontStyle: 'normal',
@@ -255,7 +240,7 @@ const SessionViewEdit = () => {
                         date: moment(sessionDate).format('YYYY-MM-DD')
                     },
                 });
-            };
+            }
     }; 
 
     const snackBarData = {
