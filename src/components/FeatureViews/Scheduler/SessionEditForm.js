@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import SingleSessionEdit from './SingleSessionEdit'
+import AllSessionsEdit from './AllSessionsEdit'
 
 import 'date-fns';
 
@@ -11,7 +12,7 @@ const SessionEditForm = () => {
         <>
         {editType === 'single-session-edit'
             ? <SingleSessionEdit />
-            : <SingleSessionEdit />
+            : <AllSessionsEdit />
         }
         </>
     )
