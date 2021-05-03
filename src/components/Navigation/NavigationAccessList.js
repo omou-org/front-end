@@ -7,7 +7,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
-import {ReactComponent as NewAdminIcon} from './newadminicon.svg';
+import { ReactComponent as NewAdminIcon } from './newadminicon.svg';
 
 /**
  * @description Various pages accessible by different users

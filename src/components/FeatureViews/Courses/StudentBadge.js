@@ -1,7 +1,7 @@
 import React from 'react';
-import {Box, makeStyles, Typography} from '@material-ui/core';
-import {stringToColor} from '../Accounts/accountUtils';
-import PropTypes from "prop-types";
+import { Box, makeStyles, Typography } from '@material-ui/core';
+import { stringToColor } from '../Accounts/accountUtils';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
     colorIcon: {
@@ -19,21 +19,21 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-export const UserAvatarCircle = ({label}) => {
+export const UserAvatarCircle = ({ label }) => {
     const classes = useStyles();
     const backgroundColor = stringToColor(label);
-    return (<div className={classes.colorIcon} style={{backgroundColor}}/>);
+    return <div className={classes.colorIcon} style={{ backgroundColor }} />;
 };
 
 UserAvatarCircle.propTypes = {
     label: PropTypes.string,
 };
 
-export const StudentCourseLabel = ({label}) => {
+export const StudentCourseLabel = ({ label }) => {
     const classes = useStyles();
     return (
         <Box className={classes.courseLabel}>
-            <UserAvatarCircle label={label}/>
+            <UserAvatarCircle label={label} />
             <Typography className={classes.labelText} variant='body'>
                 {label}
             </Typography>

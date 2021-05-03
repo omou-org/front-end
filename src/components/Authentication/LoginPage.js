@@ -1,31 +1,31 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Link, useHistory, useLocation} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import gql from 'graphql-tag';
-import {useLazyQuery, useMutation} from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import {PasswordInput} from '../Form/FieldComponents/Fields';
+import { PasswordInput } from '../Form/FieldComponents/Fields';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import GoogleLoginButton from '../OmouComponents/GoogleLoginButton.js';
-import {GoogleLogin} from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
 
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
-import {setToken} from 'actions/authActions.js';
-import {ReactComponent as Ellipse1} from './loginImages/ellipse1.svg';
-import {ReactComponent as Ellipse2} from './loginImages/ellipse2.svg';
-import {ReactComponent as Picture1} from './loginImages/picture1.svg';
-import {ReactComponent as Ellipse3} from './loginImages/ellipse3.svg';
-import {ReactComponent as Ellipse4} from './loginImages/ellipse4.svg';
-import {ReactComponent as Picture2} from './loginImages/picture2.svg';
-import {ReactComponent as Picture3} from './loginImages/picture3.svg';
-import {ReactComponent as Picture4} from './loginImages/picture4.svg';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { setToken } from 'actions/authActions.js';
+import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
+import { ReactComponent as Ellipse2 } from './loginImages/ellipse2.svg';
+import { ReactComponent as Picture1 } from './loginImages/picture1.svg';
+import { ReactComponent as Ellipse3 } from './loginImages/ellipse3.svg';
+import { ReactComponent as Ellipse4 } from './loginImages/ellipse4.svg';
+import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
+import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
+import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
 import './LoginPage.scss';
 
 const LOGIN = gql`
@@ -47,7 +47,7 @@ const GET_USER_TYPE = gql`
 `;
 
 const VERIFY_GOOGLE_OAUTH = gql`
-    query verifyGoogleOauth($loginEmail: String! $oauthEmail: String!) {
+    query verifyGoogleOauth($loginEmail: String!, $oauthEmail: String!) {
         verifyGoogleOauth(loginEmail: $loginEmail, oauthEmail: $oauthEmail) {
             token
             verified
@@ -59,10 +59,7 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const {
-        token,
-        google_courses,
-    } = useSelector(({ auth }) => auth);
+    const { token, google_courses } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
     const [
@@ -90,13 +87,18 @@ const LoginPage = () => {
         {
             variables: { loginEmail: email, oauthEmail: googleAuthEmail },
             onCompleted: async (data) => {
-                
                 setVerifyGoogleOauthTokenStatus(
                     data?.verifyGoogleOauth?.verified
                 );
 
                 if (data?.verifyGoogleOauth?.verified) {
-                    dispatch(await setToken(data.verifyGoogleOauth.token, true, email));
+                    dispatch(
+                        await setToken(
+                            data.verifyGoogleOauth.token,
+                            true,
+                            email
+                        )
+                    );
                     history.push('/');
                 }
                 if (verifyGoogleOauthTokenStatus === null) {
@@ -166,7 +168,6 @@ const LoginPage = () => {
 
     function refreshTokenSetup(res) {
         return new Promise((resolve) => {
-
             const refreshToken = async () => {
                 const newAuthRes = await res.reloadAuthResponse();
                 sessionStorage.setItem(
@@ -214,8 +215,7 @@ const LoginPage = () => {
         });
     };
 
-    const onFailure = () => {
-    };
+    const onFailure = () => {};
 
     const renderEmailLogin = () => (
         <>

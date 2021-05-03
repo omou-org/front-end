@@ -3,11 +3,11 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import {spacing} from '@material-ui/system';
-import {makeStyles, styled} from '@material-ui/core/styles';
+import { spacing } from '@material-ui/system';
+import { makeStyles, styled } from '@material-ui/core/styles';
 // import Button from '@material-ui/core/Button';
 import MuiButton from '@material-ui/core/Button';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import NavLinkNoDup from '../../Routes/NavLinkNoDup';
 
 const Button = styled(MuiButton)(spacing);

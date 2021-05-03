@@ -1,23 +1,23 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {useDispatch} from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import {LabelBadge} from '../../../theme/ThemedComponents/Badge/LabelBadge';
-import {initializeRegistration} from 'actions/registrationActions';
+import { makeStyles } from '@material-ui/core/styles';
+import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
+import { initializeRegistration } from 'actions/registrationActions';
 import Loading from 'components/OmouComponents/Loading';
 import Notes from 'components/FeatureViews/Notes/Notes';
 import InvoiceTable from '../Invoices/InvoiceTable';
 import EnrollmentSummaryTab from './EnrollmentSummaryTab';
 import EnrollmentDetails from './EnrollmentDetails';
 import EnrollmentProgress from './EnrollmentProgress';
-import {fullName} from '../../../utils';
-import {slateGrey} from '../../../theme/muiTheme';
+import { fullName } from '../../../utils';
+import { slateGrey } from '../../../theme/muiTheme';
 import EnrollmentActions from './EnrollmentActions';
 
 const GET_ENROLLMENT = gql`
@@ -154,34 +154,38 @@ const CourseSessionStatus = () => {
     }, [dispatch]);
 
     if (enrollmentLoading || sessionsLoading) {
-        return <Loading/>;
+        return <Loading />;
     }
     if (enrollmentError || sessionsError)
-        return (<Typography>
-            {`There's been an error! Error: ${enrollmentError.message || sessionsError.message}`}
-        </Typography>);
+        return (
+            <Typography>
+                {`There's been an error! Error: ${
+                    enrollmentError.message || sessionsError.message
+                }`}
+            </Typography>
+        );
 
     const isTutoring = true;
 
-    const ActiveTabView = ({ActiveTab}) => {
+    const ActiveTabView = ({ ActiveTab }) => {
         const TutoringSummaryTabView = isTutoring
             ? [
-                <EnrollmentSummaryTab
-                    key={1}
-                    sessions={sessionsData.sessions}
-                    enrollment={enrollmentData}
+                  <EnrollmentSummaryTab
+                      key={1}
+                      sessions={sessionsData.sessions}
+                      enrollment={enrollmentData}
                   />,
               ]
             : [];
 
         return [
             ...TutoringSummaryTabView,
-            <EnrollmentProgress key={2}/>,
+            <EnrollmentProgress key={2} />,
             <InvoiceTable
                 key={3}
                 invoiceList={enrollmentData.enrollment.paymentList}
             />,
-            <Notes ownerID={enrollmentId} ownerType='enrollment' key={4}/>,
+            <Notes ownerID={enrollmentId} ownerType='enrollment' key={4} />,
         ][ActiveTab];
     };
 

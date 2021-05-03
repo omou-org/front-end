@@ -1,20 +1,20 @@
-import React, {useCallback, useState} from 'react';
-import {Link, useHistory, useParams} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
-import {deleteEnrollment} from 'actions/registrationActions';
+import React, { useCallback, useState } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteEnrollment } from 'actions/registrationActions';
 
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {fullName, USER_TYPES} from '../../../utils';
-import {highlightColor, omouBlue} from '../../../theme/muiTheme';
+import { fullName, USER_TYPES } from '../../../utils';
+import { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import IconButton from '@material-ui/core/IconButton';
 import MobileMenu from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
@@ -32,7 +32,7 @@ import AccessControlComponent from '../../OmouComponents/AccessControlComponent'
 import StudentEnrollmentBackground from './ClassEnrollmentBackground';
 
 import axios from 'axios';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -428,12 +428,14 @@ const ClassEnrollmentRow = ({
                     <DialogContentText>
                         {`You are about to unenroll in <b>${courseTitle}</b> for ${' '}
                             <b>
-                            ${unenroll.enrollment &&
-                        fullName(
-                            enrollmentList.find(
-                                ({id}) => id == unenroll.enrollment
-                            ).student.user
-                        )}
+                            ${
+                                unenroll.enrollment &&
+                                fullName(
+                                    enrollmentList.find(
+                                        ({ id }) => id == unenroll.enrollment
+                                    ).student.user
+                                )
+                            }
                             </b>
                             . Performing this action will credit the remaining
                             enrollment balance back to the parent's account balance.

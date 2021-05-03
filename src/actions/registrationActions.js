@@ -1,7 +1,13 @@
 import * as types from './actionTypes';
-import {patchData, postData, submitParentAndStudent} from './rootActions';
-import {formatCourse, instance, wrapGet, wrapPatch, wrapPost,} from './apiActions';
-import {wrapUseEndpoint} from './hooks';
+import { patchData, postData, submitParentAndStudent } from './rootActions';
+import {
+    formatCourse,
+    instance,
+    wrapGet,
+    wrapPatch,
+    wrapPost,
+} from './apiActions';
+import { wrapUseEndpoint } from './hooks';
 
 const parseGender = {
     Male: 'male',
@@ -156,7 +162,10 @@ export const submitForm = (state, id) => {
             const course = formatCourse(state, 'class');
 
             for (const key in course) {
-                if (Object.prototype.hasOwnProperty.call(course, key) && !course[key]) {
+                if (
+                    Object.prototype.hasOwnProperty.call(course, key) &&
+                    !course[key]
+                ) {
                     delete course[key];
                 }
             }

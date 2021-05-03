@@ -7,9 +7,9 @@ import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
 import moment from 'moment';
-import {makeStyles} from '@material-ui/styles';
-import {Link} from 'react-router-dom';
-import {fullName} from 'utils';
+import { makeStyles } from '@material-ui/styles';
+import { Link } from 'react-router-dom';
+import { fullName } from 'utils';
 
 const useStyles = makeStyles((theme) => ({
     icons: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const TodayCard = ({session}) => {
+const TodayCard = ({ session }) => {
     const classes = useStyles();
     const countStudents = session.course.enrollmentSet.length;
     const instructorObj = session.course.instructor.user;

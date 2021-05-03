@@ -1,8 +1,8 @@
-import {instance} from 'actions/apiActions';
-import {useCallback, useState} from 'react';
-import {useHistory} from 'react-router-dom';
+import { instance } from 'actions/apiActions';
+import { useCallback, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 export const USER_TYPES = {
     admin: 'ADMIN',
@@ -740,6 +740,6 @@ export const AdminPropTypes = {
             name: PropTypes.string,
             phoneNumber: PropTypes.string,
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        })
+        }),
     }).isRequired,
 };

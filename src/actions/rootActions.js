@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-import {instance} from './apiActions';
+import { instance } from './apiActions';
 
 const typeToEndpoint = {
     student: '/account/student/',
@@ -41,7 +41,7 @@ export const fetchData = (type) => {
         return (dispatch) =>
             instance
                 .get(endpoint)
-                .then(({data}) => {
+                .then(({ data }) => {
                     dispatch({
                         type: successAction,
                         payload: data,

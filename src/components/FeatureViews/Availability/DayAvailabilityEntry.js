@@ -1,26 +1,26 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
-import {KeyboardTimePicker} from '@material-ui/pickers/TimePicker';
+import { KeyboardTimePicker } from '@material-ui/pickers/TimePicker';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabel';
-import {TimeAvailabilityContext} from './TimeAvailabilityContext';
+import { TimeAvailabilityContext } from './TimeAvailabilityContext';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import moment from 'moment';
-import {checkTimeSegmentOverlap, setCurrentDate} from '../../../utils';
+import { checkTimeSegmentOverlap, setCurrentDate } from '../../../utils';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {errorRed} from '../../../theme/muiTheme';
+import { errorRed } from '../../../theme/muiTheme';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import DeleteIcon from '@material-ui/icons/Clear';
 import IconButton from '@material-ui/core/IconButton';
 import TimeIcon from '@material-ui/icons/Schedule';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import PropTypes from "prop-types";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
     availabilityRow: {
@@ -119,7 +119,7 @@ const AvailabilityRow = ({
                         )
                     }
                 >
-                    <DeleteIcon/>
+                    <DeleteIcon />
                 </IconButton>
             )}
         </div>
@@ -137,10 +137,10 @@ AvailabilityRow.propTypes = {
 };
 
 export default function DayAvailabilityEntry({
-                                                 dayOfWeek,
-                                                 availabilities,
-                                                 dayIndex,
-                                             }) {
+    dayOfWeek,
+    availabilities,
+    dayIndex,
+}) {
     const [displayNewAvailability, setDisplayNewAvailability] = useState(false);
     const [conflictErrorMessage, setConflictErrorMessage] = useState(false);
     const [conflictErrorDialogOpen, setConflictErrorDialogOpen] = useState(

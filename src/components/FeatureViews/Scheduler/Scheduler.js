@@ -1,20 +1,20 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {Calendar, momentLocalizer} from 'react-big-calendar';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
-import {SchedulerContext} from './SchedulerContext';
+import { useQuery } from '@apollo/client';
+import { SchedulerContext } from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {fullName} from '../../../utils';
-import {useHistory} from 'react-router-dom';
-import {instructorPalette} from '../../../theme/muiTheme';
-import {findCommonElement} from '../../Form/FormUtils';
-import {SessionPopover} from './SessionPopover';
-import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
-import {useSelector} from 'react-redux';
-import PropTypes from "prop-types";
+import { fullName } from '../../../utils';
+import { useHistory } from 'react-router-dom';
+import { instructorPalette } from '../../../theme/muiTheme';
+import { findCommonElement } from '../../Form/FormUtils';
+import { SessionPopover } from './SessionPopover';
+import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     sessionPopover: {
@@ -93,7 +93,7 @@ EventPopoverWrapper.propTypes = {
 const localizer = momentLocalizer(moment);
 
 const BigCalendar = (props) => {
-    const eventStyleGetter = ({instructor}) => {
+    const eventStyleGetter = ({ instructor }) => {
         const hashCode = (string) => {
             let hash = 0;
             for (let i = 0; i < string.length; i += 1) {
@@ -131,7 +131,7 @@ const BigCalendar = (props) => {
             startAccessor='start'
             endAccessor='end'
             onSelectEvent={props.onSelectEvent}
-            style={{height: 700}}
+            style={{ height: 700 }}
             eventPropGetter={eventStyleGetter}
         />
     );
@@ -140,7 +140,7 @@ const BigCalendar = (props) => {
 BigCalendar.propTypes = {
     eventList: PropTypes.array,
     event: PropTypes.any,
-    onSelectEvent: PropTypes.func
+    onSelectEvent: PropTypes.func,
 };
 
 const GET_SESSIONS = gql`
@@ -180,17 +180,20 @@ const GET_SESSIONS = gql`
 `;
 
 function Scheduler() {
-    const defaultSchedulerState = useMemo(() => ({
-        timeFrame: 'month',
-        timeShift: 0,
-        instructorOptions: [],
-        selectedInstructors: [],
-        courseOptions: [],
-        selectedCourses: [],
-        studentOptions: [],
-        selectedStudents: [],
-    }), []);
-    const AuthUser = useSelector(({auth}) => auth);
+    const defaultSchedulerState = useMemo(
+        () => ({
+            timeFrame: 'month',
+            timeShift: 0,
+            instructorOptions: [],
+            selectedInstructors: [],
+            courseOptions: [],
+            selectedCourses: [],
+            studentOptions: [],
+            selectedStudents: [],
+        }),
+        []
+    );
+    const AuthUser = useSelector(({ auth }) => auth);
     const [schedulerState, setSchedulerState] = useState(defaultSchedulerState);
     const [sessionsInView, setSessionsInView] = useState([]);
     const [filteredSessionsInView, setFilteredSessionsInView] = useState([]);
@@ -252,7 +255,7 @@ function Scheduler() {
     }, [setSchedulerState, defaultSchedulerState]);
 
     useEffect(() => {
-        const {timeFrame, timeShift, ...rest} = schedulerState;
+        const { timeFrame, timeShift, ...rest } = schedulerState;
         if (timeFrame && timeShift) {
             setSchedulerState({
                 ...rest,
@@ -298,13 +301,13 @@ function Scheduler() {
         variables: {
             timeFrame: schedulerState.timeFrame,
             timeShift: schedulerState.timeShift,
-            ...(isParentOrInstructorLoggedIn && {userId: AuthUser.user.id}),
+            ...(isParentOrInstructorLoggedIn && { userId: AuthUser.user.id }),
         },
         onCompleted: (data) => {
-            const {sessions} = data;
+            const { sessions } = data;
             const parsedBigCalendarSessions = sessions.map(
                 ({
-                     id,
+                    id,
                     endDatetime,
                     startDatetime,
                     title,
@@ -370,11 +373,11 @@ function Scheduler() {
             <Typography
                 variant='h1'
                 align='left'
-                style={{marginBottom: '24px'}}
+                style={{ marginBottom: '24px' }}
             >
                 Scheduler
             </Typography>
-            <BigCalendar eventList={filteredSessionsInView}/>
+            <BigCalendar eventList={filteredSessionsInView} />
         </SchedulerContext.Provider>
     );
 }

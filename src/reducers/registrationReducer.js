@@ -1,12 +1,15 @@
 import initialState from './initialState';
 import * as actions from './../actions/actionTypes';
-import {dateParser, weeklySessionsParser} from 'components/Form/FormUtils';
-import {mapRegistrationInfo, setParentRegistrationCart,} from '../components/OmouComponents/RegistrationUtils';
-import {arraysMatch} from '../utils';
+import { dateParser, weeklySessionsParser } from 'components/Form/FormUtils';
+import {
+    mapRegistrationInfo,
+    setParentRegistrationCart,
+} from '../components/OmouComponents/RegistrationUtils';
+import { arraysMatch } from '../utils';
 
 export default function registration(
     state = initialState.RegistrationForms,
-    {payload, type}
+    { payload, type }
 ) {
     let newState = JSON.parse(JSON.stringify(state));
     switch (type) {
@@ -81,12 +84,12 @@ export default function registration(
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState, payload);
         case actions.DELETE_COURSE_REGISTRATION: {
-            const {studentId, courseId} = payload;
+            const { studentId, courseId } = payload;
             const registrationState = JSON.parse(
                 sessionStorage.getItem('registrations')
             );
             const indexOfRegistration = registrationState[studentId]
-                .map(({course}) => course)
+                .map(({ course }) => course)
                 .indexOf(courseId);
 
             registrationState[studentId].splice(indexOfRegistration, 1);

@@ -2,7 +2,7 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CreatableSelect from 'react-select/creatable';
 
 const useStyles = makeStyles(() => ({
@@ -26,8 +26,7 @@ const options = [
 
 const CategorySelect = () => {
     const classes = useStyles();
-    const handleChange = () => {
-    };
+    const handleChange = () => {};
     return (
         <>
             <Box className={classes.Text}>

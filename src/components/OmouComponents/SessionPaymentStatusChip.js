@@ -1,9 +1,9 @@
 import React from 'react';
-import {sessionPaymentStatus} from 'utils';
-import {LabelBadge} from '../../theme/ThemedComponents/Badge/LabelBadge';
-import PropTypes from "prop-types";
+import { sessionPaymentStatus } from 'utils';
+import { LabelBadge } from '../../theme/ThemedComponents/Badge/LabelBadge';
+import PropTypes from 'prop-types';
 
-const SessionPaymentStatusChip = ({session, enrollment}) => {
+const SessionPaymentStatusChip = ({ session, enrollment }) => {
     if (!session || !enrollment) {
         return <LabelBadge variant='outline-gray'>Loading...</LabelBadge>;
     }

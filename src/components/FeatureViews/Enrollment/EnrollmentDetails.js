@@ -2,11 +2,15 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Moment from 'react-moment';
 import Typography from '@material-ui/core/Typography';
-import {Link} from 'react-router-dom';
-import {formatAvailabilityListDays, formatAvailabilityListHours, fullName,} from '../../../utils';
-import PropTypes from "prop-types";
+import { Link } from 'react-router-dom';
+import {
+    formatAvailabilityListDays,
+    formatAvailabilityListHours,
+    fullName,
+} from '../../../utils';
+import PropTypes from 'prop-types';
 
-const Detail = ({title, info, link}) => {
+const Detail = ({ title, info, link }) => {
     const infoDisplay =
         link === undefined ? info : <Link to={link}>{info}</Link>;
 
@@ -35,8 +39,8 @@ Detail.propTypes = {
     link: PropTypes.string,
 };
 
-function EnrollmentDetails({enrollment}) {
-    const {course, student} = enrollment;
+function EnrollmentDetails({ enrollment }) {
+    const { course, student } = enrollment;
 
     const detailData = [
         {
@@ -56,9 +60,9 @@ function EnrollmentDetails({enrollment}) {
             title: 'Date',
             info: (
                 <>
-                    <Moment date={course.startDate} format='M/D/YYYY'/>
+                    <Moment date={course.startDate} format='M/D/YYYY' />
                     {' - '}
-                    <Moment date={course.endDate} format='M/D/YYYY'/>
+                    <Moment date={course.endDate} format='M/D/YYYY' />
                 </>
             ),
         },
@@ -91,8 +95,11 @@ EnrollmentDetails.propTypes = {
         course: PropTypes.shape({
             instructor: PropTypes.shape({
                 user: PropTypes.shape({
-                    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-                })
+                    id: PropTypes.oneOfType([
+                        PropTypes.string,
+                        PropTypes.number,
+                    ]),
+                }),
             }),
             courseCategory: PropTypes.shape({
                 name: PropTypes.string,

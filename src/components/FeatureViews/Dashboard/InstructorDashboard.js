@@ -3,9 +3,9 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Moment from 'react-moment';
 import Paper from '@material-ui/core/Paper';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-function InstructorDashboard({user}) {
+function InstructorDashboard({ user }) {
     return (
         <>
             <Grid container spacing={5}>
@@ -77,8 +77,8 @@ InstructorDashboard.propTypes = {
     user: PropTypes.shape({
         user: PropTypes.shape({
             firstName: PropTypes.string,
-        })
-    }).isRequired
+        }),
+    }).isRequired,
 };
 
 export default InstructorDashboard;

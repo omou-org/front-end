@@ -1,10 +1,10 @@
-import {Grid, Hidden, makeStyles} from '@material-ui/core';
+import { Grid, Hidden, makeStyles } from '@material-ui/core';
 import React from 'react';
-import {h2, white} from 'theme/muiTheme';
+import { h2, white } from 'theme/muiTheme';
 import ProfileHeading from './ProfileHeading';
 import UserAvatar from './UserAvatar';
-import {fullName} from 'utils';
-import PropTypes from "prop-types";
+import { fullName } from 'utils';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     profileInfo: {
@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     },
 });
 
-const UserProfileInfo = ({user}) => {
+const UserProfileInfo = ({ user }) => {
     const classes = useStyles();
 
     return (
@@ -29,7 +29,7 @@ const UserProfileInfo = ({user}) => {
                 </Hidden>
             </Grid>
             <Grid item md={10} xs={12}>
-                <ProfileHeading ownerID={user.user.id}/>
+                <ProfileHeading ownerID={user.user.id} />
             </Grid>
         </Grid>
     );
@@ -42,7 +42,7 @@ UserProfileInfo.propTypes = {
             name: PropTypes.string,
             phoneNumber: PropTypes.string,
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        })
+        }),
     }).isRequired,
 };
 

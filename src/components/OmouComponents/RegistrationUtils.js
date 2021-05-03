@@ -1,6 +1,6 @@
 import * as moment from 'moment';
-import {arraysMatch, USER_TYPES} from '../../utils';
-import {useSelector} from 'react-redux';
+import { arraysMatch, USER_TYPES } from '../../utils';
+import { useSelector } from 'react-redux';
 
 export const createTutoringDetails = (courseType, formData) => ({
     title: formData.tutoring_details.course,

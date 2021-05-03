@@ -1,12 +1,12 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import SessionPaymentStatusChip from 'components/OmouComponents/SessionPaymentStatusChip';
 import moment from 'moment';
 import Moment from 'react-moment';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import TableRow from '@material-ui/core/TableRow';
-import {TableCell} from '@material-ui/core';
+import { TableCell } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
@@ -15,9 +15,9 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-function EnrollmentSessionRow({session, enrollmentData, highlightSession}) {
+function EnrollmentSessionRow({ session, enrollmentData, highlightSession }) {
     const classes = useStyles();
-    const {id} = enrollmentData.enrollment;
+    const { id } = enrollmentData.enrollment;
     const tuitionStartTime = moment(session.startDatetime).format('hh');
     const tuitionEndTime = moment(session.endDatetime).format('hh');
     const tuition =

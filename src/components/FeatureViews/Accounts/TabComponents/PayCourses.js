@@ -1,4 +1,4 @@
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -9,9 +9,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const msPerWeek = 1000 * 60 * 60 * 24 * 7;
 
@@ -32,7 +32,7 @@ const PayCourses = (props) => {
 
         const unpaidEnrollments = Object.entries(
             props.enrollments[studentID]
-        ).map(([courseID, {session_payment_status}]) => {
+        ).map(([courseID, { session_payment_status }]) => {
             const unpaidCount = Object.values(session_payment_status).reduce(
                 (total, paymentStatus) => total + (paymentStatus === 0),
                 0

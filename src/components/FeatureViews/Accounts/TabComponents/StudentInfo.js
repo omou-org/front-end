@@ -1,14 +1,14 @@
 /* eslint-disable indent */
-import React, {useMemo} from 'react';
-import {Link, useParams} from 'react-router-dom';
+import React, { useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Loading from 'components/OmouComponents/Loading';
 import LoadingError from './LoadingCourseError';
 import ProfileCard from '../ProfileCard';
-import {useQuery} from '@apollo/client';
-import {useSelector} from 'react-redux';
-import {AddItemButton} from '../../../OmouComponents/AddItemButton';
+import { useQuery } from '@apollo/client';
+import { useSelector } from 'react-redux';
+import { AddItemButton } from '../../../OmouComponents/AddItemButton';
 
 const GET_STUDENTS = gql`
     query GetStudents($id: ID) {

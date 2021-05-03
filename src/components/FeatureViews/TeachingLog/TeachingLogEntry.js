@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TableCell from '@material-ui/core/TableCell/TableCell';
 import Moment from 'react-moment';
 import moment from 'moment';
@@ -21,8 +21,8 @@ const useRowStyles = makeStyles({
 });
 
 function TeachingLogEntry({
-                              session: {title, endDatetime, startDatetime, id},
-                          }) {
+    session: { title, endDatetime, startDatetime, id },
+}) {
     const [open, setOpen] = useState(false);
     const classes = useRowStyles();
 

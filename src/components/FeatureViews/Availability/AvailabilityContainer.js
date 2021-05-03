@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -7,17 +7,17 @@ import Tab from '@material-ui/core/Tab';
 import TimeAvailabilityContainer from './TimeAvailabilityContainer';
 import RequestOutOfOfficeContainer from './RequestOutOfOfficeContainer';
 import Box from '@material-ui/core/Box';
-import {makeStyles} from '@material-ui/core/styles';
-import PropTypes from "prop-types";
+import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
-function TabPanel({children, value, index, ...other}) {
+function TabPanel({ children, value, index, ...other }) {
     return (
         <div
             role='tabpanel'
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
             aria-labelledby={`simple-tab-${index}`}
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             {...other}
         >
             {value === index && <Box p={2}>{children}</Box>}
