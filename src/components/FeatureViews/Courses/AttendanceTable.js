@@ -463,6 +463,7 @@ const AttendanceTable = ({ setIsEditing }) => {
                             />
                         </TableCell>
                         {sessions
+                            .slice()
                             .sort(sortByRecentSession)
                             .map(({ startDatetime, id: sessionId }, index) => (
                                 <TableCell

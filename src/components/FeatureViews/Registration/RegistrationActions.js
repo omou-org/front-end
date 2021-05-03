@@ -76,7 +76,7 @@ const RegistrationActions = () => {
                 payload: data.parent,
             });
         }
-    }, [AuthUser.accountType, loading, parentIsLoggedIn, registrationState, data.parent, dispatch]);
+    }, [AuthUser.accountType, loading, parentIsLoggedIn, registrationState, data?.parent, dispatch]);
 
     if (loading) return <Loading />;
     if (error) return <div>There has been an error: {error.message}</div>;
