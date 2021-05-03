@@ -1,17 +1,17 @@
-import React, {useCallback, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useCallback, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import Input from '@material-ui/core/Input';
-import {omouBlue} from '../../../theme/muiTheme';
+import { omouBlue } from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
-import {GET_SESSION_NOTES} from './ClassSessionView';
-import {useSelector} from 'react-redux';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import PropTypes from "prop-types";
+import { useMutation } from '@apollo/client';
+import { GET_SESSION_NOTES } from './ClassSessionView';
+import { useSelector } from 'react-redux';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     rootContainer: {
@@ -144,39 +144,33 @@ const ModalTextEditor = ({
         error: (err) => console.error(err),
     });
 
-    const [createSessionNote] = useMutation(
-        CREATE_SESSION_NOTE,
-        {
-            onCompleted: () => handleClose(false),
-            error: (err) => console.error(err),
-            update: (cache, {data}) => {
-                const [newSessionNote] = Object.values(data.createSessionNote);
-                const cachedSessionNote = cache.readQuery({
-                    query: GET_SESSION_NOTES,
-                    variables: {sessionId: sessionId},
-                })['sessionNotes'];
-                let updatedSessionNotes = [...cachedSessionNote];
-                const matchingIndex = updatedSessionNotes.findIndex(
-                    ({ id }) => id === newSessionNote.id
-                );
-                if (matchingIndex === -1) {
-                    updatedSessionNotes = [
-                        ...cachedSessionNote,
-                        newSessionNote,
-                    ];
-                } else {
-                    updatedSessionNotes[matchingIndex] = newSessionNote;
-                }
-                cache.writeQuery({
-                    data: {
-                        ['sessionNotes']: updatedSessionNotes,
-                    },
-                    query: GET_SESSION_NOTES,
-                    variables: { sessionId: sessionId },
-                });
-            },
-        }
-    );
+    const [createSessionNote] = useMutation(CREATE_SESSION_NOTE, {
+        onCompleted: () => handleClose(false),
+        error: (err) => console.error(err),
+        update: (cache, { data }) => {
+            const [newSessionNote] = Object.values(data.createSessionNote);
+            const cachedSessionNote = cache.readQuery({
+                query: GET_SESSION_NOTES,
+                variables: { sessionId: sessionId },
+            })['sessionNotes'];
+            let updatedSessionNotes = [...cachedSessionNote];
+            const matchingIndex = updatedSessionNotes.findIndex(
+                ({ id }) => id === newSessionNote.id
+            );
+            if (matchingIndex === -1) {
+                updatedSessionNotes = [...cachedSessionNote, newSessionNote];
+            } else {
+                updatedSessionNotes[matchingIndex] = newSessionNote;
+            }
+            cache.writeQuery({
+                data: {
+                    ['sessionNotes']: updatedSessionNotes,
+                },
+                query: GET_SESSION_NOTES,
+                variables: { sessionId: sessionId },
+            });
+        },
+    });
 
     const handleClose = () => handleCloseForm(false);
 
@@ -257,8 +251,8 @@ const ModalTextEditor = ({
                     {origin === 'STUDENT_ENROLLMENT'
                         ? 'Send Email'
                         : buttonState === 'edit'
-                            ? 'EDIT NOTE'
-                            : 'ADD NOTE'}
+                        ? 'EDIT NOTE'
+                        : 'ADD NOTE'}
                 </ResponsiveButton>
             </DialogActions>
         </Dialog>

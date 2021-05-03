@@ -1,6 +1,6 @@
-import {useDispatch, useSelector} from 'react-redux';
-import React, {useMemo, useState} from 'react';
-import {bindActionCreators} from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { bindActionCreators } from 'redux';
 import * as registrationActions from '../../actions/registrationActions';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -10,8 +10,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
-import {courseToRegister, useGoToRoute} from 'utils';
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { courseToRegister, useGoToRoute } from 'utils';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 /**
  * @description button/menu item to start registering for more sessions for a course.

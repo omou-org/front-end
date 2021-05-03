@@ -1,7 +1,7 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {bindActionCreators} from 'redux';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import blue from '@material-ui/core/colors/blue';
 import Delete from '@material-ui/icons/Delete';
@@ -21,13 +21,13 @@ import Select from '@material-ui/core/Select';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import * as adminActions from 'actions/adminActions';
-import {dateParser} from '../../Form/FormUtils';
-import {DatePicker} from '@material-ui/pickers';
+import { dateParser } from '../../Form/FormUtils';
+import { DatePicker } from '@material-ui/pickers';
 
 const styles = () => ({
     colorBar: {},

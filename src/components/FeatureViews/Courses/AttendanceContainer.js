@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -8,7 +8,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import AttendanceTable from './AttendanceTable';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -82,7 +82,7 @@ const AttendanceIcon = ({ letter }) => {
             <Typography
                 variant='body1'
                 align='center'
-                style={{fontWeight: 500, color: 'black', marginTop: '.3em'}}
+                style={{ fontWeight: 500, color: 'black', marginTop: '.3em' }}
             >
                 {letter}
             </Typography>
@@ -158,7 +158,7 @@ const AttendanceContainer = () => {
                     disabled
                 >
                     <AccordionSummary
-                        expandIcon={<ExpandMoreIcon/>}
+                        expandIcon={<ExpandMoreIcon />}
                         aria-controls='panel1a-content'
                         id='panel1a-header'
                     >
@@ -166,7 +166,7 @@ const AttendanceContainer = () => {
                             Attendance Overview
                         </Typography>
                     </AccordionSummary>
-                    <AccordionDetails/>
+                    <AccordionDetails />
                 </Accordion>
                 <Accordion
                     elevation={0}

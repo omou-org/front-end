@@ -1,9 +1,9 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import {logout} from 'actions/authActions';
-import {useDispatch, useSelector} from 'react-redux';
-import {useHistory} from 'react-router-dom';
+import { logout } from 'actions/authActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,15 +16,15 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 // Local Component Imports
 import Avatar from '@material-ui/core/Avatar';
-import {stringToColor} from '../FeatureViews/Accounts/accountUtils';
+import { stringToColor } from '../FeatureViews/Accounts/accountUtils';
 import Tooltip from '@material-ui/core/Tooltip';
-import {fullName} from '../../utils';
-import {closeRegistrationCart} from '../OmouComponents/RegistrationUtils';
+import { fullName } from '../../utils';
+import { closeRegistrationCart } from '../OmouComponents/RegistrationUtils';
 
-const AuthenticatedNavBar = ({toggleDrawer}) => {
+const AuthenticatedNavBar = ({ toggleDrawer }) => {
     const dispatch = useDispatch();
     const history = useHistory();
-    const authUser = useSelector(({auth}) => auth);
+    const authUser = useSelector(({ auth }) => auth);
 
     const [mobileOpen, setMobileOpen] = useState(false);
     const [isMobileSearching, setMobileSearching] = useState(false);

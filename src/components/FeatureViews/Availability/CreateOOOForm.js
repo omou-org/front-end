@@ -1,14 +1,14 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {OOOContext} from './OOOContext';
-import {SubmitNotice} from './SubmitNotice';
+import { OOOContext } from './OOOContext';
+import { SubmitNotice } from './SubmitNotice';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
-import {useSelector} from 'react-redux';
+import { useMutation } from '@apollo/client';
+import { useSelector } from 'react-redux';
 import OOOConfirmation from './OOOConfirmation';
 import Typography from '@material-ui/core/Typography';
-import {GET_UPCOMING_INSTRUCTOR_OOO} from './UpcomingLogOOO';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { GET_UPCOMING_INSTRUCTOR_OOO } from './UpcomingLogOOO';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 // const useStyles = makeStyles((theme) => ({
 //     root: {
@@ -84,16 +84,16 @@ export default function CreateOOOForm() {
     const [OOOFormState, setOOOFormState] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     // const steps = getSteps();
-    const AuthUser = useSelector(({auth}) => auth);
+    const AuthUser = useSelector(({ auth }) => auth);
     const [createOOO] = useMutation(CREATE_INSTRUCTOR_OOO, {
         onCompleted: () => {
             setSubmitted(true);
         },
-        update: (cache, {data}) => {
+        update: (cache, { data }) => {
             const newOOO = data.createInstructorOoo.instructorOoo;
             const cachedOOO = cache.readQuery({
                 query: GET_UPCOMING_INSTRUCTOR_OOO,
-                variables: {instructorID: AuthUser.user.id},
+                variables: { instructorID: AuthUser.user.id },
             }).instructorOoo;
 
             const updatedCache = [...cachedOOO, newOOO];
@@ -103,7 +103,7 @@ export default function CreateOOOForm() {
                     instructorOoo: updatedCache,
                 },
                 query: GET_UPCOMING_INSTRUCTOR_OOO,
-                variables: {instructorID: AuthUser.user.id},
+                variables: { instructorID: AuthUser.user.id },
             });
         },
     });

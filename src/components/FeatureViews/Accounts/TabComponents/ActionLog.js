@@ -1,7 +1,7 @@
 import React from 'react';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -11,9 +11,9 @@ import TableRow from '@material-ui/core/TableRow';
 import TableContainer from '@material-ui/core/TableContainer';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
-import {makeStyles} from '@material-ui/core/styles';
-import {Redirect} from 'react-router-dom';
-import PropTypes from "prop-types";
+import { makeStyles } from '@material-ui/core/styles';
+import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const GET_ADMIN_LOG = gql`
     query AdminLogQuery($ownerID: ID!) {
@@ -105,9 +105,12 @@ const ActionLog = ({ ownerID }) => {
 
                     <TableBody>
                         {logs.results.map(
-                            ({date, action, objectRepr, objectType}, index) => (
+                            (
+                                { date, action, objectRepr, objectType },
+                                index
+                            ) => (
                                 <TableRow key={`${date}_${action}_${index}`}>
-                                    <TableCell style={{width: '30%'}}>
+                                    <TableCell style={{ width: '30%' }}>
                                         {moment(date).format('LLLL')}
                                     </TableCell>
                                     <TableCell>{ActionLabel(action)}</TableCell>
@@ -131,7 +134,7 @@ const ActionLog = ({ ownerID }) => {
 };
 
 ActionLog.propTypes = {
-    ownerID: PropTypes.oneOf([PropTypes.string, PropTypes.number])
+    ownerID: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
 };
 
 export default ActionLog;

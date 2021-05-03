@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {useSelector} from 'react-redux';
-import {makeStyles, withStyles} from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -9,18 +9,22 @@ import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import GoogleClassroomIntegrationIcon from '../../OmouComponents/GoogleClassroomIntegrationIcon';
 
-import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
-import {fullName, gradeOptions} from 'utils';
+import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
+import { fullName, gradeOptions } from 'utils';
 import moment from 'moment';
-import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
+import {
+    activeColor,
+    highlightColor,
+    pastColor,
+} from '../../../theme/muiTheme';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -268,13 +272,16 @@ const ClassListItem = ({
                             .filter((student) =>
                                 JSON.parse(student.value).includes(id)
                             )
-                            .map(({label, user}) => (
-                                <StudentCourseLabel label={label} key={user.id}/>
+                            .map(({ label, user }) => (
+                                <StudentCourseLabel
+                                    label={label}
+                                    key={user.id}
+                                />
                             ))}
                     </Grid>
                 )}
             </Grid>
-            <Divder/>
+            <Divder />
         </>
     );
 };
@@ -291,12 +298,12 @@ ClassListItem.propTypes = {
 };
 
 const CourseFilterDropdown = ({
-                                  initialValue,
-                                  filterList,
-                                  setState,
-                                  filter,
-                                  filterKey,
-                              }) => {
+    initialValue,
+    filterList,
+    setState,
+    filter,
+    filterKey,
+}) => {
     const classes = useStyles();
     const handleChange = (event) => setState(event.target.value);
     const filterOptionsMapper = {

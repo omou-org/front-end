@@ -1,4 +1,4 @@
-import {capitalizeString} from 'utils';
+import { capitalizeString } from 'utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';

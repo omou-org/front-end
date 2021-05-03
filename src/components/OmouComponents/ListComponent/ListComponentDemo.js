@@ -1,19 +1,19 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
-import {LabelBadge} from '../../../theme/ThemedComponents/Badge/LabelBadge';
+import { useQuery } from '@apollo/client';
+import { LabelBadge } from '../../../theme/ThemedComponents/Badge/LabelBadge';
 import ListDetailedItem, {
-	ListActions,
-	ListBadge,
-	ListButton,
-	ListContent,
-	ListDetail,
-	ListDetailLink,
-	ListDetails,
-	ListDivider,
-	ListHeading,
-	ListStatus,
-	ListTitle,
+    ListActions,
+    ListBadge,
+    ListButton,
+    ListContent,
+    ListDetail,
+    ListDetailLink,
+    ListDetails,
+    ListDivider,
+    ListHeading,
+    ListStatus,
+    ListTitle,
 } from './ListDetailedItem';
 
 const GET_COURSES = gql`
@@ -44,9 +44,9 @@ const GET_COURSES = gql`
 `;
 
 const ListComponentDemo = () => {
-	const {loading, error} = useQuery(GET_COURSES, {
-		variables: {},
-	});
+    const { loading, error } = useQuery(GET_COURSES, {
+        variables: {},
+    });
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error :(</p>;

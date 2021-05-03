@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
@@ -10,11 +10,11 @@ import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
-import {omouBlue} from '../../../../theme/muiTheme';
+import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import {useMutation, useQuery} from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
-import {AdminPropTypes} from "../../../../utils";
+import { AdminPropTypes } from '../../../../utils';
 
 export const StyledTableRow = withStyles(() => ({
     root: {
@@ -135,8 +135,8 @@ const createOptInSetting = (name, description, optIn) => ({
     optional: true,
 });
 
-function NotificationSettings({user}) {
-    const {userInfo} = user;
+function NotificationSettings({ user }) {
+    const { userInfo } = user;
     const classes = useStyles();
     const [notificationRows, setNotificationRows] = useState([]);
     const [optInNotifRows, setOptInNotifRows] = useState([]);
@@ -145,7 +145,7 @@ function NotificationSettings({user}) {
     const instructorSettingResponse = useQuery(
         GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
         {
-            variables: {instructorId: userInfo.user.id},
+            variables: { instructorId: userInfo.user.id },
             skip: !isInstructor,
         }
     );
@@ -154,30 +154,36 @@ function NotificationSettings({user}) {
         skip: !isParent,
     });
 
-    const [createParentNotification,] = useMutation(CREATE_PARENT_NOTIFICATION_SETTINGS, {
-        update: (cache, {data}) => {
-            cache.writeQuery({
-                data: {
-                    parentNotificationSettings:
-                    data.createParentNotificationSetting.settings,
-                },
-                query: GET_PARENT_NOTIFICATION_SETTINGS,
-                variables: {parentId: userInfo.user.id},
-            });
-        },
-    });
-    const [createInstructorNotification,] = useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
-        update: (cache, {data}) => {
-            cache.writeQuery({
-                data: {
-                    instructorNotificationSettings:
-                    data.createInstructorNotificationSetting.settings,
-                },
-                query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
-                variables: {instructorId: userInfo.user.id},
-            });
-        },
-    });
+    const [createParentNotification] = useMutation(
+        CREATE_PARENT_NOTIFICATION_SETTINGS,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        parentNotificationSettings:
+                            data.createParentNotificationSetting.settings,
+                    },
+                    query: GET_PARENT_NOTIFICATION_SETTINGS,
+                    variables: { parentId: userInfo.user.id },
+                });
+            },
+        }
+    );
+    const [createInstructorNotification] = useMutation(
+        CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        instructorNotificationSettings:
+                            data.createInstructorNotificationSetting.settings,
+                    },
+                    query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
+                    variables: { instructorId: userInfo.user.id },
+                });
+            },
+        }
+    );
 
     // initialize settings
     useEffect(() => {
@@ -470,7 +476,7 @@ function NotificationSettings({user}) {
                                         )}
                                     />
                                 </TableCell>
-                                <TableCell/>
+                                <TableCell />
                             </StyledTableRow>
                         ))}
                     </TableBody>

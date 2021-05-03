@@ -1,14 +1,14 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Table from '@material-ui/core/Table';
 import DayAvailabilityEntry from './DayAvailabilityEntry';
-import {TimeAvailabilityContext} from './TimeAvailabilityContext';
+import { TimeAvailabilityContext } from './TimeAvailabilityContext';
 import gql from 'graphql-tag';
-import {useMutation, useQuery} from '@apollo/client';
-import {useSelector} from 'react-redux';
+import { useMutation, useQuery } from '@apollo/client';
+import { useSelector } from 'react-redux';
 import Loading from '../../OmouComponents/Loading';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,7 +17,7 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const CREATE_INSTRUCTOR_AVAILABILITIES = gql`
     mutation CreateInstructorAvailabilities(
@@ -88,29 +88,21 @@ export default function TimeAvailabilityContainer() {
     const [openSaveAvailability, setOpenSaveAvailability] = useState(false);
     const [updatedAvailability, setUpdatedAvailability] = useState([]);
     const AuthUser = useSelector(({ auth }) => auth);
-    const {data, loading} = useQuery(GET_INSTRUCTOR_AVAILABILITY, {
-        variables: {instructorId: AuthUser.user.id},
+    const { data, loading } = useQuery(GET_INSTRUCTOR_AVAILABILITY, {
+        variables: { instructorId: AuthUser.user.id },
     });
-    const [deleteAvailabilities] = useMutation(
-        DELETE_INSTRUCTOR_AVAILABILITY,
-        {
-            onCompleted: () => setOpenSaveAvailability(true),
-        }
-    );
-    const [addAvailabilities] = useMutation(
-        CREATE_INSTRUCTOR_AVAILABILITIES,
-        {
-            onCompleted: () => setOpenSaveAvailability(true),
-            update: (cache, {data}) => {
-                const {
-                    createInstructorAvailabilities: {
-                        instructorAvailabilities,
-                    },
-                } = data;
-                setUpdatedAvailability(instructorAvailabilities);
-            },
-        }
-    );
+    const [deleteAvailabilities] = useMutation(DELETE_INSTRUCTOR_AVAILABILITY, {
+        onCompleted: () => setOpenSaveAvailability(true),
+    });
+    const [addAvailabilities] = useMutation(CREATE_INSTRUCTOR_AVAILABILITIES, {
+        onCompleted: () => setOpenSaveAvailability(true),
+        update: (cache, { data }) => {
+            const {
+                createInstructorAvailabilities: { instructorAvailabilities },
+            } = data;
+            setUpdatedAvailability(instructorAvailabilities);
+        },
+    });
 
     useEffect(() => {
         if (!loading) {

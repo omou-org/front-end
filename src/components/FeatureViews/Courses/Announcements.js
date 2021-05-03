@@ -1,23 +1,23 @@
-import React, {useRef, useState} from 'react';
-import {useParams} from 'react-router-dom';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import {Cancel, Create} from '@material-ui/icons';
+import { Cancel, Create } from '@material-ui/icons';
 import Button from '@material-ui/core/Button';
-import theme, {highlightColor, omouBlue} from '../../../theme/muiTheme';
+import theme, { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import moment from 'moment';
 import NewAnnouncementModal from './NewAnnoucementsModal';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 
 import AddIcon from '@material-ui/icons/Add';
-import {GET_ANNOUNCEMENTS} from './CourseClass';
-import {fullName, sortTime, USER_TYPES} from '../../../utils';
+import { GET_ANNOUNCEMENTS } from './CourseClass';
+import { fullName, sortTime, USER_TYPES } from '../../../utils';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import PropTypes from "prop-types";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     announcementContainer: {
@@ -121,7 +121,7 @@ const AnnouncementCard = ({
                     <span style={{ padding: theme.spacing(1) }}>• </span>
                     <span style={{ padding: theme.spacing(1) }}>
                         {date}{' '}
-                        <span style={{padding: theme.spacing(1)}}>•</span>{' '}
+                        <span style={{ padding: theme.spacing(1) }}>•</span>{' '}
                         {time}
                     </span>
                 </Typography>
@@ -140,7 +140,7 @@ AnnouncementCard.propTypes = {
     handleDelete: PropTypes.func.isRequired,
 };
 
-const Announcements = ({announcementsData}) => {
+const Announcements = ({ announcementsData }) => {
     const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
     const [announcementId, setAnnouncementId] = useState();
     const [announcementSubject, setAnnouncementSubject] = useState('');
@@ -159,37 +159,34 @@ const Announcements = ({announcementsData}) => {
         }
     `;
 
-    const [deleteAnnouncement] = useMutation(
-        DELETE_ANNOUNCEMENT,
-        {
-            error: (err) => console.error(err),
-            update: (
-                cache,
-                {
-                    data: {
-                        deleteAnnouncement: {id},
-                    },
-                }
-            ) => {
-                const cachedAnnouncement = cache.readQuery({
-                    query: GET_ANNOUNCEMENTS,
-                    variables: { id: courseId.id },
-                })['announcements'];
-                let updatedAnnouncements = [...cachedAnnouncement];
-                const removedIndex = updatedAnnouncements.findIndex(
-                    (announcement) => announcement.id === id
-                );
-                updatedAnnouncements.splice(removedIndex, 1);
-                cache.writeQuery({
-                    data: {
-                        ['announcements']: updatedAnnouncements,
-                    },
-                    query: GET_ANNOUNCEMENTS,
-                    variables: { id: courseId.id },
-                });
-            },
-        }
-    );
+    const [deleteAnnouncement] = useMutation(DELETE_ANNOUNCEMENT, {
+        error: (err) => console.error(err),
+        update: (
+            cache,
+            {
+                data: {
+                    deleteAnnouncement: { id },
+                },
+            }
+        ) => {
+            const cachedAnnouncement = cache.readQuery({
+                query: GET_ANNOUNCEMENTS,
+                variables: { id: courseId.id },
+            })['announcements'];
+            let updatedAnnouncements = [...cachedAnnouncement];
+            const removedIndex = updatedAnnouncements.findIndex(
+                (announcement) => announcement.id === id
+            );
+            updatedAnnouncements.splice(removedIndex, 1);
+            cache.writeQuery({
+                data: {
+                    ['announcements']: updatedAnnouncements,
+                },
+                query: GET_ANNOUNCEMENTS,
+                variables: { id: courseId.id },
+            });
+        },
+    });
 
     const handleEdit = (boolean, id, subject, body) => {
         setEditOrPost('edit');
@@ -203,7 +200,7 @@ const Announcements = ({announcementsData}) => {
 
     const handleDeleteAnnouncement = async (id) => {
         await deleteAnnouncement({
-            variables: {id: id},
+            variables: { id: id },
         });
     };
 

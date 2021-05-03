@@ -1,24 +1,24 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 // Material UI Imports
 import Grid from '@material-ui/core/Grid';
-import {useHistory, useLocation, useParams} from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import Loading from 'components/OmouComponents/Loading';
 
 import gql from 'graphql-tag';
-import {useMutation, useQuery} from '@apollo/client';
-import {FormControl, Typography} from '@material-ui/core';
+import { useMutation, useQuery } from '@apollo/client';
+import { FormControl, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import {DatePicker} from '@material-ui/pickers/DatePicker/DatePicker';
-import {TimePicker} from '@material-ui/pickers/TimePicker/TimePicker';
+import { DatePicker } from '@material-ui/pickers/DatePicker/DatePicker';
+import { TimePicker } from '@material-ui/pickers/TimePicker/TimePicker';
 import SearchSelect from 'react-select';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import {ResponsiveButton} from 'theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import './scheduler.scss';
 import GET_SESSIONS from '../Enrollment/EnrollmentView';
 
-import {fullName} from '../../../utils';
+import { fullName } from '../../../utils';
 
 import moment from 'moment';
 
@@ -181,8 +181,8 @@ const EditSessionView = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const {loading, error} = useQuery(GET_SESSION, {
-        variables: {sessionId: session_id},
+    const { loading, error } = useQuery(GET_SESSION, {
+        variables: { sessionId: session_id },
         onCompleted: (data) => {
             setFromMigration(data);
         },
@@ -205,7 +205,7 @@ const EditSessionView = () => {
     });
 
     const [updateSession] = useMutation(UPDATE_SESSION, {
-        update: (cache, {data}) => {
+        update: (cache, { data }) => {
             const newSession = data.createSession.session;
             const existingSession = cache.readQuery({
                 query: GET_SESSION,
@@ -246,7 +246,7 @@ const EditSessionView = () => {
     });
 
     const [updateCourse] = useMutation(UPDATE_COURSE, {
-        update: (cache, {data}) => {
+        update: (cache, { data }) => {
             const newCourse = data.createCourse.course;
 
             cache.writeQuery({
@@ -330,7 +330,7 @@ const EditSessionView = () => {
                 newEndTime = moment(addTime).utc().format();
                 break;
             case 1.5:
-                addTime = moment(startTime).add({hours: 1, minutes: 30});
+                addTime = moment(startTime).add({ hours: 1, minutes: 30 });
                 newEndTime = moment(addTime).utc().format();
                 break;
             case 2:

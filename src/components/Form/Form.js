@@ -1,24 +1,24 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useCallback, useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
-import {Form as ReactForm} from 'react-final-form';
+import { Form as ReactForm } from 'react-final-form';
 import Step from '@material-ui/core/Step';
 import StepContent from '@material-ui/core/StepContent';
 import StepLabel from '@material-ui/core/StepLabel';
 import Stepper from '@material-ui/core/Stepper';
 import Typography from '@material-ui/core/Typography';
 import DefaultFormReceipt from './Receipts/DefaultFormReceipt';
-import {Prompt} from 'react-router-dom';
+import { Prompt } from 'react-router-dom';
 import BackButton from '../OmouComponents/BackButton';
 
-import {makeValidate} from 'mui-rff';
+import { makeValidate } from 'mui-rff';
 import * as Yup from 'yup';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
-import PropTypes from "prop-types";
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     buttons: {
@@ -250,7 +250,7 @@ const Form = ({
                 className='heading'
                 data-cy='formTitle'
                 variant='h1'
-                style={{marginLeft: '24px'}}
+                style={{ marginLeft: '24px' }}
             >
                 {title}
             </Typography>

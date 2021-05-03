@@ -1,14 +1,23 @@
-import React, {useEffect, useState} from 'react';
-import {useMutation} from '@apollo/client';
-import {Button, fade, Grid, IconButton, InputBase, Link, Typography, withStyles,} from '@material-ui/core/';
+import React, { useEffect, useState } from 'react';
+import { useMutation } from '@apollo/client';
+import {
+    Button,
+    fade,
+    Grid,
+    IconButton,
+    InputBase,
+    Link,
+    Typography,
+    withStyles,
+} from '@material-ui/core/';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CreateIcon from '@material-ui/icons/Create';
 import moment from 'moment';
 import gql from 'graphql-tag';
-import {fullName, USER_TYPES} from '../../../utils';
-import {GET_CLASS} from './CourseClass';
-import PropTypes from "prop-types";
+import { fullName, USER_TYPES } from '../../../utils';
+import { GET_CLASS } from './CourseClass';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     courseLink: {
@@ -123,11 +132,11 @@ const ClassInfo = ({
         onCompleted: () => {
             setEditActive(false);
         },
-        update: (cache, {data}) => {
+        update: (cache, { data }) => {
             const newCourseLink = data.createCourse.course;
             const cachedCourseLink = cache.readQuery({
                 query: GET_CLASS,
-                variables: {id: id},
+                variables: { id: id },
             }).course;
 
             cache.writeQuery({

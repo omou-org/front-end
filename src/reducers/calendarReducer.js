@@ -1,6 +1,6 @@
 import initialState from './initialState';
 import * as actions from '../actions/actionTypes';
-import {REQUEST_ALL} from '../actions/apiActions';
+import { REQUEST_ALL } from '../actions/apiActions';
 
 export default function Calendar(
     state = initialState.CalendarData,

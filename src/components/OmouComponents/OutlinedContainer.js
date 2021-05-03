@@ -1,8 +1,8 @@
 import React from 'react';
-import {outlineGrey} from '../../theme/muiTheme';
-import PropTypes from "prop-types";
+import { outlineGrey } from '../../theme/muiTheme';
+import PropTypes from 'prop-types';
 
-function OutlinedContainer({children, ...rest}) {
+function OutlinedContainer({ children, ...rest }) {
     return (
         <div
             style={{

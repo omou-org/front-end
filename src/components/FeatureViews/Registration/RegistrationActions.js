@@ -1,16 +1,16 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {Link, useHistory, useLocation} from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './registration.scss';
 import SelectParentDialog from './SelectParentDialog';
-import {fullName, USER_TYPES} from '../../../utils';
-import {useValidateRegisteringParent} from '../../OmouComponents/RegistrationUtils';
-import {useDispatch, useSelector} from 'react-redux';
-import {useQuery} from '@apollo/client';
+import { fullName, USER_TYPES } from '../../../utils';
+import { useValidateRegisteringParent } from '../../OmouComponents/RegistrationUtils';
+import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Loading from '../../OmouComponents/Loading';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCartOutlined';
@@ -41,7 +41,7 @@ const RegistrationActions = () => {
     );
     const { parentIsLoggedIn } = useValidateRegisteringParent();
     const dispatch = useDispatch();
-    
+
     const [dialogOpen, setDialog] = useState(false);
     const { data, error, loading } = useQuery(GET_PARENT_QUERY, {
         variables: { userId: AuthUser.user.id },
@@ -76,7 +76,14 @@ const RegistrationActions = () => {
                 payload: data.parent,
             });
         }
-    }, [AuthUser.accountType, loading, parentIsLoggedIn, registrationState, data.parent, dispatch]);
+    }, [
+        AuthUser.accountType,
+        loading,
+        parentIsLoggedIn,
+        registrationState,
+        data.parent,
+        dispatch,
+    ]);
 
     if (loading) return <Loading />;
     if (error) return <div>There has been an error: {error.message}</div>;

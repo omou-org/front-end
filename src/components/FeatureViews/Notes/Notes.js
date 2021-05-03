@@ -1,7 +1,7 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 import Avatar from '@material-ui/core/Avatar';
@@ -23,10 +23,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ReadMoreText from 'components/OmouComponents/ReadMoreText';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './Notes.scss';
-import {AddItemButton} from 'components/OmouComponents/AddItemButton';
+import { AddItemButton } from 'components/OmouComponents/AddItemButton';
 
 const useStyles = makeStyles((theme) => ({
     icons: {
@@ -306,44 +306,43 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
         },
     });
 
-    const [deleteNote] = useMutation(
-        DELETE_MUTATIONS[ownerType],
-        {
-            onCompleted: () => {
-                hideWarning();
-            },
-            update: (cache) => {
-                const cachedNotes = cache.readQuery({
-                    query: QUERIES[ownerType],
-                    variables: {ownerID},
-                })[QUERY_KEY[ownerType]];
-                let updatedNotes = [...cachedNotes];
-                let indexToBeDeleted = updatedNotes.findIndex(
-                    ({id}) => id === deleteID
-                );
-                if (indexToBeDeleted !== -1) {
-                    updatedNotes.splice(indexToBeDeleted, 1);
-                }
+    const [deleteNote] = useMutation(DELETE_MUTATIONS[ownerType], {
+        onCompleted: () => {
+            hideWarning();
+        },
+        update: (cache) => {
+            const cachedNotes = cache.readQuery({
+                query: QUERIES[ownerType],
+                variables: { ownerID },
+            })[QUERY_KEY[ownerType]];
+            let updatedNotes = [...cachedNotes];
+            let indexToBeDeleted = updatedNotes.findIndex(
+                ({ id }) => id === deleteID
+            );
+            if (indexToBeDeleted !== -1) {
+                updatedNotes.splice(indexToBeDeleted, 1);
+            }
 
-                cache.writeQuery({
-                    data: {
-                        [QUERY_KEY[ownerType]]: updatedNotes,
-                    },
-                    query: QUERIES[ownerType],
-                    variables: {ownerID},
-                });
-            },
-        }
-    );
-
-    const query = useQuery(QUERIES[ownerType], {
-        variables: {ownerID},
+            cache.writeQuery({
+                data: {
+                    [QUERY_KEY[ownerType]]: updatedNotes,
+                },
+                query: QUERIES[ownerType],
+                variables: { ownerID },
+            });
+        },
     });
 
-    const notes = useMemo(() => query.data?.[QUERY_KEY[ownerType]] || [],
-        [ownerType, query.data]);
+    const query = useQuery(QUERIES[ownerType], {
+        variables: { ownerID },
+    });
+
+    const notes = useMemo(() => query.data?.[QUERY_KEY[ownerType]] || [], [
+        ownerType,
+        query.data,
+    ]);
     const getNoteByID = useCallback(
-        (noteID) => notes.find(({id}) => noteID == id),
+        (noteID) => notes.find(({ id }) => noteID == id),
         [notes]
     );
 

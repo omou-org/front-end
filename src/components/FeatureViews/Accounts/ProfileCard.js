@@ -4,16 +4,16 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import EmailIcon from '@material-ui/icons/EmailOutlined';
 import Grid from '@material-ui/core/Grid';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import PhoneIcon from '@material-ui/icons/PhoneOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import {addDashes, stringToColor} from './accountUtils';
+import { makeStyles } from '@material-ui/core/styles';
+import { addDashes, stringToColor } from './accountUtils';
 import theme from '../../../theme/muiTheme';
 
 import './Accounts.scss';
-import {capitalizeString} from 'utils';
-import {ReactComponent as IDIcon} from 'components/identifier.svg';
+import { capitalizeString } from 'utils';
+import { ReactComponent as IDIcon } from 'components/identifier.svg';
 
 const useStyles = makeStyles({
     linkUnderline: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     ...theme.accountCardStyle,
 });
 
-const ProfileCard = ({user, route}) => {
+const ProfileCard = ({ user, route }) => {
     const classes = useStyles();
 
     return (
@@ -37,7 +37,7 @@ const ProfileCard = ({user, route}) => {
                 <Card className={classes.cardContainer}>
                     <Grid className={classes.gridContainer} container>
                         <Grid
-                            style={{background: stringToColor(user.name)}}
+                            style={{ background: stringToColor(user.name) }}
                             className={classes.leftStripe}
                             item
                             xs={2}
@@ -147,7 +147,7 @@ ProfileCard.propTypes = {
             name: PropTypes.string,
             phoneNumber: PropTypes.string,
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        })
+        }),
     }).isRequired,
 };
 

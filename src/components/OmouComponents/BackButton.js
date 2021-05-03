@@ -1,12 +1,12 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BackArrow from '@material-ui/icons/ArrowBackIos';
 import Modal from '@material-ui/core/Modal';
 import Hidden from '@material-ui/core/Hidden/Hidden';
-import {Typography} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const BackButton = (props) => {
     const [alert, setAlert] = React.useState(false);

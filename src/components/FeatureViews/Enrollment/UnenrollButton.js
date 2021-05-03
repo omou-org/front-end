@@ -1,15 +1,15 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import {fullName} from '../../../utils';
+import { fullName } from '../../../utils';
 import DialogActions from '@material-ui/core/DialogActions';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Dialog from '@material-ui/core/Dialog';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-function UnenrollButton({enrollment}) {
-    const {course, student, enrollmentBalance} = enrollment;
+function UnenrollButton({ enrollment }) {
+    const { course, student, enrollmentBalance } = enrollment;
 
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
 
@@ -81,7 +81,7 @@ UnenrollButton.propTypes = {
             user: PropTypes.object,
         }),
         enrollmentBalance: PropTypes.any,
-    }).isRequired
+    }).isRequired,
 };
 
 export default UnenrollButton;

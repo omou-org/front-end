@@ -5,12 +5,12 @@
  *
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import InvoiceTable from './InvoiceTable';
 import gql from 'graphql-tag';
-import {useSelector} from 'react-redux';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import {useApolloClient} from '@apollo/client';
+import { useSelector } from 'react-redux';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { useApolloClient } from '@apollo/client';
 import {
     Box,
     Button,
@@ -23,12 +23,12 @@ import {
     Typography,
 } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {omouBlue} from '../../../theme/muiTheme';
+import { omouBlue } from '../../../theme/muiTheme';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
 import Moment from 'react-moment';
 import SearchIcon from '@material-ui/icons/Search';
-import {DateRange} from 'react-date-range';
+import { DateRange } from 'react-date-range';
 
 export const GET_INVOICES_FILTERED = gql`
     query GetInvoices(
