@@ -10,6 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from "prop-types";
+import { Typography } from '@material-ui/core';
 
 const UPDATE_SESSION_MUTATION = gql`
 mutation updateSessionMutation($courseId: ID!, $endDateTime: DateTime!, $sessionId: ID!, $instructorId: ID!, $isConfirmed: Boolean, $startDateTime: DateTime!) 
@@ -82,11 +83,13 @@ const ConfirmationModal = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Are you sure?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+            <Typography variant="h3" align='left'>Are you sure?</Typography>
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <Typography align='left'>
             {`Summary of our updated session for ${student}:`}
-          </DialogContentText>
+          </Typography>
         </DialogContent>
         <DialogTitle>
             {"Schedule update:"}

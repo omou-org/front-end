@@ -122,7 +122,7 @@ const BigCalendar = (props) => {
     );
 };
 
-export const GET_SESSIONS = gql`
+const GET_SESSIONS = gql`
     query GetSessionsQuery($timeFrame: String, $timeShift: Int, $userId: ID) {
         sessions(
             timeFrame: $timeFrame
