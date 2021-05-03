@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { Grid, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -9,16 +9,6 @@ export const SnackBarComponent = ({
     snackBarState,
     setSnackBarState,
 }) => {
-    let timer = snackBarData.duration;
-    useEffect(() => {
-        const snackBarCloseInterval = setInterval(() => {
-            timer -= 1;
-            if (timer < 1) {
-                setSnackBarState(false);
-                return clearInterval(snackBarCloseInterval);
-            }
-        }, 1000);
-    }, [snackBarState]);
 
     return (
         <CSSTransition

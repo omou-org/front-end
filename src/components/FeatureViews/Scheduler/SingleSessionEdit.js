@@ -292,7 +292,6 @@ const SingleSessionEdit = () => {
         date: `${dayOfWeek}, ${monthAndDate} at ${startSessionTime} - ${endSessionTime}`,
         message: conflictData?.validateSessionSchedule.reason,
         messageColor: statusRed,
-        duration: 6000,
         vertical: 'bottom',
         horizontal: 'left',
     };
