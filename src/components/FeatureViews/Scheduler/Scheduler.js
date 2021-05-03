@@ -6,36 +6,16 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import { SchedulerContext } from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { fullName } from '../../../utils';
-import { useHistory } from 'react-router-dom';
 import { instructorPalette } from '../../../theme/muiTheme';
 import { findCommonElement } from '../../Form/FormUtils';
 import { SessionPopover } from './SessionPopover';
 import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
 import { useSelector } from 'react-redux';
-
-const useStyles = makeStyles((theme) => ({
-    sessionPopover: {
-        padding: theme.spacing(3),
-        height: '100%',
-        cursor: 'pointer',
-    },
-    popover: {
-        pointerEvents: 'none',
-    },
-    sessionInfo: {
-        display: 'flex',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        marginTop: theme.spacing(1),
-    },
-}));
+import PropTypes from 'prop-types';
 
 const EventPopoverWrapper = ({ children, popover }) => {
-    const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
-    const history = useHistory();
 
     const handlePopoverOpen = (event) => {
         setAnchorEl(event.target);
@@ -271,7 +251,7 @@ export default function Scheduler() {
         AuthUser.accountType === 'PARENT' ||
         AuthUser.accountType === 'INSTRUCTOR';
 
-    const { data, loading, error } = useQuery(GET_SESSIONS, {
+     useQuery(GET_SESSIONS, {
         variables: {
             timeFrame: schedulerState.timeFrame,
             timeShift: schedulerState.timeShift,
@@ -354,4 +334,15 @@ export default function Scheduler() {
             <BigCalendar eventList={filteredSessionsInView} />
         </SchedulerContext.Provider>
     );
-}
+};
+
+EventPopoverWrapper.propTypes = {
+    children: PropTypes.node.isRequired,
+    popover: PropTypes.elementType,
+};
+
+BigCalendar.propTypes = {
+    eventList: PropTypes.object,
+    onSelectEvent: PropTypes.object,
+    event: PropTypes.object,
+};
