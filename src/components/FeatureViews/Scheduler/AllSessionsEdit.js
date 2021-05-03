@@ -1,44 +1,28 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams } from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import {
-    Tooltip,
-    Typography,
-    withStyles,
-    makeStyles,
-    Button,
-    Divider,
-} from '@material-ui/core';
+import {useLazyQuery, useQuery} from '@apollo/client';
+import {Button, Divider, makeStyles, Typography,} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import Avatar from '@material-ui/core/Avatar';
-import { stringToColor } from '../Accounts/accountUtils';
-import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
-import ConfirmIcon from '@material-ui/icons/CheckCircle';
-import { QueryBuilder } from '@material-ui/icons';
-import UnconfirmIcon from '@material-ui/icons/Cancel';
-import { USER_TYPES } from '../../../utils';
+import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
+import {QueryBuilder} from '@material-ui/icons';
+import {USER_TYPES} from '../../../utils';
 import moment from 'moment';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { EditSessionDropDown } from './EditSessionUtilComponents';
-import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
+import {EditSessionDropDown} from './EditSessionUtilComponents';
+import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 
 import 'date-fns';
-import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
+import {KeyboardTimePicker,} from '@material-ui/pickers';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     current_session: {
         fontFamily: 'Roboto',
         fontStyle: 'normal',
@@ -184,15 +168,6 @@ const CHECK_SCHEDULE_CONFLICTS = gql`
     }
 `;
 
-const styles = (username) => ({
-    backgroundColor: stringToColor(username),
-    color: 'white',
-    width: '3vw',
-    height: '3vw',
-    fontSize: 15,
-    marginRight: 10,
-});
-
 const SingleSessionEdit = () => {
     const { session_id } = useParams();
     const classes = useStyles();
@@ -217,51 +192,36 @@ const SingleSessionEdit = () => {
         { loading: conflictLoading, data: conflictData },
     ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
         onCompleted: ({ validateSessionSchedule }) => {
-            const { status, reason } = validateSessionSchedule;
-            if (status) {
-                console.log('true');
-            } else {
+            const {status} = validateSessionSchedule;
+            if (!status) {
                 setSnackBarState(true);
             }
         },
     });
 
-    if (loading || conflictLoading) {
-        return <Loading />;
-    }
+    if (loading || conflictLoading)
+        return <Loading/>;
+
 
     if (error) {
-        return <Typography>There's been an error!</Typography>;
+        return <Typography>{`There's been an error!`}</Typography>;
     }
 
     const {
         course,
         endDatetime,
         id,
-        title,
-        instructor,
         startDatetime,
     } = data.session;
 
-    var {
-        courseCategory,
-        enrollmentSet,
-        courseId,
-        room,
-        endDate,
-        startDate,
-    } = course;
     const { courseCategories: subjects, instructors } = data;
 
-    const confirmed = course.isConfirmed;
     const course_id = course.id;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const monthAndDate = moment(startDatetime).format('MMMM DD');
     const startSessionTime = moment(startDatetime).format('h:mm A');
     const endSessionTime = moment(endDatetime).format('h:mm A');
-    const endDateFormat = moment(endDate).format('MMMM DD');
-    const startDateFormat = moment(startDate).format('MMMM DD');
 
     const handleTimeDateChange = (setState) => async (date) => {
         setState(date._d);
