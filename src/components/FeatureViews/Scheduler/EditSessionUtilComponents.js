@@ -1,9 +1,10 @@
 import React from 'react';
-import { makeStyles, Grid, FormControl, Select, MenuItem } from '@material-ui/core';
-import { omouBlue, highlightColor } from '../../../theme/muiTheme';
-import { BootstrapInput } from '../Courses/CourseManagementContainer';
-import { fullName } from 'utils';
+import {FormControl, Grid, makeStyles, MenuItem, Select} from '@material-ui/core';
+import {highlightColor, omouBlue} from '../../../theme/muiTheme';
+import {BootstrapInput} from '../Courses/CourseManagementContainer';
+import {fullName} from 'utils';
 import Loading from '../../OmouComponents/Loading';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     margin: {
@@ -35,8 +36,7 @@ export const EditSessionDropDown = ({
     const classes = useStyles();
     const handleChange = (event) => setState(event.target.value);
 
-    
-    if(!queryList) return <Loading />
+    if (!queryList) return <Loading/>;
 
     return (
         <Grid container>
@@ -88,4 +88,11 @@ export const EditSessionDropDown = ({
             </Grid>
         </Grid>
     );
+};
+
+EditSessionDropDown.propTypes = {
+    initialValue: PropTypes.any,
+    queryList: PropTypes.any,
+    setState: PropTypes.func,
+    value: PropTypes.any,
 };
