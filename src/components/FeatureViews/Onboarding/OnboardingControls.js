@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { OnboardingContext } from './OnboardingContext';
+import React, {useContext} from 'react';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {OnboardingContext} from './OnboardingContext';
 import useOnboardingActions from './ImportStepperActions';
-import { onboardingSteps } from './ImportFlow';
+import {onboardingSteps} from './ImportFlow';
 import Grid from '@material-ui/core/Grid';
+import PropTypes from "prop-types";
 
 export default function OnboardingControls(props) {
-    const doNothing = () => {};
+    const doNothing = () => {
+    };
     const {
         preBackHandler = doNothing,
         postBackHandler = doNothing,
@@ -42,7 +44,7 @@ export default function OnboardingControls(props) {
         postNextHandler();
     };
 
-    const isStepOptional = (step) => {
+    const isStepOptional = () => {
         return false;
     };
 
@@ -72,3 +74,12 @@ export default function OnboardingControls(props) {
         </Grid>
     );
 }
+
+OnboardingControls.propTypes = {
+    preBackHandler: PropTypes.func,
+    postBackHandler: PropTypes.func,
+    preSkipHandler: PropTypes.func,
+    postSkipHandler: PropTypes.func,
+    preNextHandler: PropTypes.func,
+    postNextHandler: PropTypes.func,
+};

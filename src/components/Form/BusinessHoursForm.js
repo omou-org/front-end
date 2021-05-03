@@ -5,6 +5,7 @@ import {TimePicker} from "./FieldComponents/Fields";
 import Grid from "@material-ui/core/Grid";
 import OnboardingControls from "../FeatureViews/Onboarding/OnboardingControls";
 import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveButton";
+import PropTypes  from 'prop-types';
 
 const BusinessDayHoursField = ({day}) => {
 	return (<Grid
@@ -32,21 +33,25 @@ const BusinessDayHoursField = ({day}) => {
 		<Grid item xs={2}>
 			<Checkboxes name={`Closed-${day}`} data={[{label: 'Closed'}]}/>
 		</Grid>
-	</Grid>)
-}
+	</Grid>);
+};
 
+
+BusinessDayHoursField.propTypes = {
+    day: PropTypes.string
+};
 export default function BusinessHoursForm({ isOnboarding }) {
-    const onSubmit = async ({ bizHours }) => {};
+    const onSubmit = async () => {};
 
-    const daysOfWeekLong = [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-    ];
+    // const daysOfWeekLong = [
+    //     'Monday',
+    //     'Tuesday',
+    //     'Wednesday',
+    //     'Thursday',
+    //     'Friday',
+    //     'Saturday',
+    //     'Sunday',
+    // ];
     const daysOfWeekShort = [
         'Mon',
         'Tues',
@@ -70,8 +75,8 @@ export default function BusinessHoursForm({ isOnboarding }) {
                     justify='center'
                 >
                     <Grid item xs={12} container>
-                        {daysOfWeekShort.map((day) => (
-                            <BusinessDayHoursField day={day} />
+                        {daysOfWeekShort.map((day, i) => (
+                            <BusinessDayHoursField key={i} day={day} />
                         ))}
                     </Grid>
                     <Grid item>
@@ -88,3 +93,9 @@ export default function BusinessHoursForm({ isOnboarding }) {
         />
     );
 }
+
+BusinessHoursForm.propTypes = {
+    isOnboarding : PropTypes.bool
+  };
+
+  

@@ -9,9 +9,6 @@ import { RootRoutes } from '../Routes/RootRoutes';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import OnboardingRoutes from '../Routes/OnboardingRoutes';
 import IdleTimerPrompt from '../OmouComponents/IdleTimerPrompt';
-import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/client';
-import Loading from '../OmouComponents/Loading';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({

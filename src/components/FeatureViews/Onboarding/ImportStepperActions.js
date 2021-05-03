@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {OnboardingContext} from "./OnboardingContext";
 import {useURLQuery} from "../../../utils";
 import {useHistory, useLocation} from "react-router-dom";
@@ -17,11 +17,11 @@ export default function useOnboardingActions() {
 		if (currentStep - 1 !== activeStep) {
 			setActiveStep(currentStep);
 		}
-	}, [currentStep, activeStep])
+	}, [currentStep, activeStep, setActiveStep]);
 
-    const isStepOptional = (step) => {
-        return false;
-    };
+	const isStepOptional = () => {
+		return false;
+	};
 
     const isStepSkipped = (step) => {
         return skipped.has(step);

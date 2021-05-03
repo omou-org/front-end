@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -230,8 +230,8 @@ const DataUseCaseTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {accountsTable.map((row) => (
-                            <TableRow className={classes.rightCell}>
+                        {accountsTable.map((row, i) => (
+                            <TableRow  key={i} className={classes.rightCell}>
                                 <TableCell className={classes.leftCell}>
                                     <Typography noWrap>
                                         {row.dataField}
@@ -258,8 +258,8 @@ const DataUseCaseTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {coursesTable.map((row) => (
-                            <TableRow>
+                        {coursesTable.map((row, i) => (
+                            <TableRow key={i}>
                                 <TableCell className={classes.leftCell}>
                                     <Typography noWrap>
                                         {row.dataField}

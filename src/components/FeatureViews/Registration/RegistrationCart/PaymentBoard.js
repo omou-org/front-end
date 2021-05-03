@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext,  useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { RegistrationContext } from './RegistrationContext';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import {  useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
