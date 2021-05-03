@@ -231,7 +231,7 @@ const DataUseCaseTable = () => {
                     </TableHead>
                     <TableBody>
                         {accountsTable.map((row, i) => (
-                            <TableRow  key={i} className={classes.rightCell}>
+                            <TableRow key={i} className={classes.rightCell}>
                                 <TableCell className={classes.leftCell}>
                                     <Typography noWrap>
                                         {row.dataField}

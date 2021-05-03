@@ -50,14 +50,11 @@ const BusinessInfo = ({ step }) => {
     const classes = useStyles();
     const { setImportState } = useContext(OnboardingContext);
     // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
-    const [createBusinessInfo] = useMutation(
-        CREAT_BIZ_INFO,
-        {
-            onCompleted: (data) => {
-                console.log(data);
-            },
-        }
-    );
+    const [createBusinessInfo] = useMutation(CREAT_BIZ_INFO, {
+        onCompleted: (data) => {
+            console.log(data);
+        },
+    });
 
     const [bizName, setBizName] = useSessionStorage('bizName', '');
     const [bizPhone, setBizPhone] = useSessionStorage('bizPhone', '');
@@ -173,7 +170,7 @@ const BusinessInfo = ({ step }) => {
 };
 
 BusinessInfo.propTypes = {
-    step: PropTypes.number
+    step: PropTypes.number,
 };
 
 export default BusinessInfo;

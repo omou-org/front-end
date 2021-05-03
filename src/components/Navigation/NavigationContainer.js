@@ -49,7 +49,7 @@ const NavigationContainer = () => {
     const NavigationList = NavList[ACCOUNT_TYPE];
 
     if ((!NavigationList || !ACCOUNT_TYPE) && token) {
-        return <Loading/>;
+        return <Loading />;
     }
 
     const isAccountFormActive = (location, NavItem) => {
