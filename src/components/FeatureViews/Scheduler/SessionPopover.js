@@ -62,7 +62,10 @@ export const SessionPopover = ({
     };
 
     const handleClick = () => {
-        history.push(`/scheduler/session/${id}/singlesession`);
+        history.push(`/scheduler/session/${id}/single-session-edit`);
+    };
+    const handleClickAll = () => {
+        history.push(`/scheduler/session/${id}/all-sessions-edit`);
     };
 
     const timeText = (time) => moment(time).format('h:mma');
@@ -83,7 +86,7 @@ export const SessionPopover = ({
         onClose={handlePopoverClose}
       >
         <MenuItem ListItemClasses={{ button: classes.menuSelected }} onClick={handleClick}>Edit This Session</MenuItem>
-        <MenuItem ListItemClasses={{ button: classes.menuSelected }} onClick={handlePopoverClose}>Edit All Sessions</MenuItem>
+        <MenuItem ListItemClasses={{ button: classes.menuSelected }} onClick={handleClickAll}>Edit All Sessions</MenuItem>
       </Menu>
     {/* </Grid>
     <Grid item xs={5}> */}

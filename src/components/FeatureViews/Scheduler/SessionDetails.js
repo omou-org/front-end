@@ -274,7 +274,7 @@ const SessionDetails = () => {
                     Editing This Session
                 </Typography>
             </Grid>),
-        'edit-all-sessions':
+        'all-sessions-edit':
             (<Grid
                 item
                 xl={1}

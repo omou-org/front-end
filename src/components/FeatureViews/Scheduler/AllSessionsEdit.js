@@ -96,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
         margin: '0px',
         padding: '0px',
         width: '11em',
+        float: 'left',
     },
 }));
 
@@ -325,22 +326,17 @@ const SingleSessionEdit = () => {
                 </Grid>
                 <Grid container style={{ marginBottom: '10px' }}>
                     <Grid item xs={2} lg={3} xl={2}>
-                        <KeyboardDatePicker
-                            style={{ float: 'left', width: '11em' }}
-                            value={sessionDate}
-                            onChange={handleTimeDateChange(setSessionsDate)}
-                        />
-                        {/*
                         <FormControl className={classes.dayPicker}>
-                            <InputLabel>Day</InputLabel>
                             <Select
                                 native
                                 inputProps={{
                                     name: 'age',
                                     id: 'age-native-simple',
                                 }}
+                                displayEmpty='true'
+                                defaultValue='Day'
                             >
-                                <option aria-label='None' value='' />
+                                <option value='none'>Day</option>
                                 <option value='sunday'>Sunday</option>
                                 <option value='monday'>Monday</option>
                                 <option value='tuesday'>Wednesday</option>
@@ -350,7 +346,7 @@ const SingleSessionEdit = () => {
                                 <option value='saturday'>Sunday</option>
                             </Select>
                         </FormControl>
-                            */}
+
                         <span>at</span>
                     </Grid>
                     <Grid item xs={2} lg={3} xl={2}>
@@ -375,11 +371,26 @@ const SingleSessionEdit = () => {
                 </Grid>
                 <Grid container style={{ marginBottom: '10px' }}>
                     <Grid item xs={2} lg={3} xl={2}>
-                        <KeyboardDatePicker
-                            style={{ float: 'left', width: '11em' }}
-                            value={sessionDate}
-                            onChange={handleTimeDateChange(setSessionsDate)}
-                        />
+                        <FormControl className={classes.dayPicker}>
+                            <Select
+                                native
+                                inputProps={{
+                                    name: 'age',
+                                    id: 'age-native-simple',
+                                }}
+                                displayEmpty='true'
+                                defaultValue='Day'
+                            >
+                                <option value='none'>Day</option>
+                                <option value='sunday'>Sunday</option>
+                                <option value='monday'>Monday</option>
+                                <option value='tuesday'>Wednesday</option>
+                                <option value='wednesday'>Thursday</option>
+                                <option value='thursday'>Friday</option>
+                                <option value='friday'>Saturday</option>
+                                <option value='saturday'>Sunday</option>
+                            </Select>
+                        </FormControl>
                         <span>at</span>
                     </Grid>
                     <Grid item xs={2} lg={3} xl={2}>
@@ -404,11 +415,26 @@ const SingleSessionEdit = () => {
                 </Grid>
                 <Grid container style={{ marginBottom: '10px' }}>
                     <Grid item xs={2} lg={3} xl={2}>
-                        <KeyboardDatePicker
-                            style={{ float: 'left', width: '11em' }}
-                            value={sessionDate}
-                            onChange={handleTimeDateChange(setSessionsDate)}
-                        />
+                        <FormControl className={classes.dayPicker}>
+                            <Select
+                                native
+                                inputProps={{
+                                    name: 'age',
+                                    id: 'age-native-simple',
+                                }}
+                                displayEmpty='true'
+                                defaultValue='Day'
+                            >
+                                <option value='none'>Day</option>
+                                <option value='sunday'>Sunday</option>
+                                <option value='monday'>Monday</option>
+                                <option value='tuesday'>Wednesday</option>
+                                <option value='wednesday'>Thursday</option>
+                                <option value='thursday'>Friday</option>
+                                <option value='friday'>Saturday</option>
+                                <option value='saturday'>Sunday</option>
+                            </Select>
+                        </FormControl>
                         <span>at</span>
                     </Grid>
                     <Grid item xs={2} lg={3} xl={2}>
