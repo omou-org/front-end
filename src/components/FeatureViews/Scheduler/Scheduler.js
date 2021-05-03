@@ -6,12 +6,12 @@ import gql from 'graphql-tag';
 import {useQuery} from '@apollo/client';
 import {SchedulerContext} from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
-import { fullName } from '../../../utils';
-import { instructorPalette } from '../../../theme/muiTheme';
-import { findCommonElement } from '../../Form/FormUtils';
-import { SessionPopover } from './SessionPopover';
-import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
-import { useSelector } from 'react-redux';
+import {fullName} from '../../../utils';
+import {instructorPalette} from '../../../theme/muiTheme';
+import {findCommonElement} from '../../Form/FormUtils';
+import {SessionPopover} from './SessionPopover';
+import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
+import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 
 const EventPopoverWrapper = ({children, popover}) => {
@@ -347,15 +347,4 @@ export default function Scheduler() {
             <BigCalendar eventList={filteredSessionsInView} />
         </SchedulerContext.Provider>
     );
-};
-
-EventPopoverWrapper.propTypes = {
-    children: PropTypes.node.isRequired,
-    popover: PropTypes.elementType,
-};
-
-BigCalendar.propTypes = {
-    eventList: PropTypes.object,
-    onSelectEvent: PropTypes.object,
-    event: PropTypes.object,
 };
