@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 
-import DownloadTemplate from './DownloadTemplates';
-import CourseUpload from './CourseUpload';
 import BusinessInfo from './BusinessInfo';
 import BusinessHours from './BusinessHours';
-import AccountsUpload from './AccountsUpload';
-import { OnboardingContext } from './OnboardingContext';
-import { useURLQuery } from '../../../utils';
-import EnrollmentUpload from './EnrollmentUpload';
+import { OnboardingContext, initalState, reducer } from "./OnboardingContext";
+import { useURLQuery } from "../../../utils";
+import BulkImportStep from './BulkImportStep';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 export const onboardingSteps = [
     'Business Info',
     'Business Hours',
-    'Templates',
     'Accounts',
     'Courses',
     'Enrollments',
@@ -40,9 +36,13 @@ const ImportFlow = () => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const [skipped, setSkipped] = useState(new Set());
-    const [importState, setImportState] = useState({});
+    const [importState, setImportState] = useState({ uploadedResponse: null });
     const urlQuery = useURLQuery();
     const steps = onboardingSteps;
+    // This is where BulkImportStep lives
+
+    const [state, dispatch] = useReducer(reducer, initalState)
+
 
     useEffect(() => {
         const currentStep = Number(urlQuery.get('step')) - 1;
@@ -58,13 +58,12 @@ const ImportFlow = () => {
             case 1:
                 return <BusinessHours step={1} />;
             case 2:
-                return <DownloadTemplate step={2} />;
+                return <BulkImportStep templateType='Accounts' step={2} />;
             case 3:
-                return <AccountsUpload step={3} />;
+                return <BulkImportStep templateType='Courses' step={3} />;
             case 4:
-                return <CourseUpload step={4} />;
-            case 5:
-                return <EnrollmentUpload step={5} />;
+                return <BulkImportStep templateType='Course enrollments' step={4} />;
+
             default:
                 return 'Error: Invalid step. No content to display';
         }
@@ -79,9 +78,7 @@ const ImportFlow = () => {
     };
 
     return (
-        <OnboardingContext.Provider
-            value={{ importState, setImportState, activeStep, setActiveStep }}
-        >
+        <OnboardingContext.Provider value={{ importState, setImportState, activeStep, setActiveStep, state, dispatch }}>
             <div className={classes.root}>
                 <Stepper alternativeLabel activeStep={activeStep}>
                     {steps.map((label, index) => {

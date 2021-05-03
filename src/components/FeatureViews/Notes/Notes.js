@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import React, {useCallback, useMemo, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
 import gql from 'graphql-tag';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 import Avatar from '@material-ui/core/Avatar';
@@ -23,10 +23,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import ReadMoreText from 'components/OmouComponents/ReadMoreText';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import './Notes.scss';
-import { AddItemButton } from 'components/OmouComponents/AddItemButton';
+import {AddItemButton} from 'components/OmouComponents/AddItemButton';
 
 const useStyles = makeStyles((theme) => ({
     icons: {
@@ -575,9 +575,10 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         onChange={handleBodyUpdate}
                         placeholder='Body (required)'
                         required
-                        rows={15}
+                        rows={100}
                         value={noteBody}
                         variant='filled'
+                        fullWidth={true}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -704,18 +705,16 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                             >
                                 {note.title}
                             </Typography>
-                            <Typography align='left' className='body'>
-                                <ReadMoreText
-                                    textLimit={30}
-                                    handleDisplay={openExistingNote(note)}
-                                >
-                                    {note.body}
-                                </ReadMoreText>
-                            </Typography>
+                            <ReadMoreText
+                                textLimit={30}
+                                handleDisplay={openExistingNote(note)}
+                            >
+                                {note.body}
+                            </ReadMoreText>
                             <Grid item xs={12}>
                                 <Typography
                                     className={`date ${classes.dateDisplay}`}
-                                    style={{ fontWeight: '500' }}
+                                    style={{fontWeight: '500'}}
                                 >
                                     {numericDateString(note.timestamp)}
                                 </Typography>
@@ -777,16 +776,19 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                         'important'
                                     )}
                                     style={
-                                        note.important ? { color: 'red' } : {}
+                                        note.important ? {color: 'red'} : {}
                                     }
                                 />
                             </Typography>
-                            <Typography align='left' className='body'>
+                            <ReadMoreText
+                                textLimit={200}
+                                handleDisplay={openExistingNote(note)}
+                            >
                                 {note.body}
-                            </Typography>
+                            </ReadMoreText>
                             <Typography
                                 className='date'
-                                style={{ fontWeight: '500' }}
+                                style={{fontWeight: '500'}}
                             >
                                 {numericDateString(note.timestamp)}
                             </Typography>

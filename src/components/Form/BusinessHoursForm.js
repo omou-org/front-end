@@ -1,51 +1,42 @@
-import React from 'react';
-import { Form as ReactForm, useFormState } from 'react-final-form';
-import { Checkboxes } from 'mui-rff';
-import { TimePicker } from './FieldComponents/Fields';
-import Grid from '@material-ui/core/Grid';
-import OnboardingControls from '../FeatureViews/Onboarding/OnboardingControls';
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import React from "react";
+import {Form as ReactForm} from 'react-final-form';
+import {Checkboxes} from 'mui-rff';
+import {TimePicker} from "./FieldComponents/Fields";
+import Grid from "@material-ui/core/Grid";
+import OnboardingControls from "../FeatureViews/Onboarding/OnboardingControls";
+import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveButton";
 
-const BusinessDayHoursField = ({ day }) => {
-    const { values } = useFormState();
+const BusinessDayHoursField = ({day}) => {
+	return (<Grid
+		item container
+		align="center"
+		justify="center"
+		alignItems="center"
+		spacing={3}
+	>
+		<Grid item xs={2}>{day}</Grid>
+		<Grid item xs={4}>
+			<TimePicker
+				name={`${day}-startTime`}
+				label={'Start Time'}
+				emptyLabel='Start Time'
+			/>
+		</Grid>
+		<Grid item xs={4}>
+			<TimePicker
+				name={`${day}-endTime`}
+				label={'End Time'}
+				emptyLabel='End Time'
+			/>
+		</Grid>
+		<Grid item xs={2}>
+			<Checkboxes name={`Closed-${day}`} data={[{label: 'Closed'}]}/>
+		</Grid>
+	</Grid>)
+}
 
-    console.log(values);
-
-    return (
-        <Grid
-            item
-            container
-            align='center'
-            justify='center'
-            alignItems='center'
-            spacing={3}
-        >
-            <Grid item xs={2}>
-                {day}
-            </Grid>
-            <Grid item xs={4}>
-                <TimePicker
-                    name={`${day}-startTime`}
-                    label={'Start Time'}
-                    emptyLabel='Start Time'
-                />
-            </Grid>
-            <Grid item xs={4}>
-                <TimePicker
-                    name={`${day}-endTime`}
-                    label={'End Time'}
-                    emptyLabel='End Time'
-                />
-            </Grid>
-            <Grid item xs={2}>
-                <Checkboxes
-                    name={`Closed-${day}`}
-                    data={[{ label: 'Closed' }]}
-                />
-            </Grid>
-        </Grid>
-    );
-};
+export default function BusinessHoursForm({isOnboarding}) {
+	const onSubmit = async ({bizHours}) => {
 
 export default function BusinessHoursForm({ isOnboarding }) {
     const onSubmit = async ({ bizHours }) => {};

@@ -61,7 +61,7 @@ const useStyles = makeStyles({
         padding: '2rem',
         backgroundColor: white,
         overflowX: 'hidden',
-        overflowY: 'auto',
+        overflowY: 'auto'
     },
     selectDisplay: {
         background: white,
@@ -71,7 +71,7 @@ const useStyles = makeStyles({
         padding: '0.5em 3em 0.5em 1em',
     },
     verticalMargin: {
-        marginTop: '1rem',
+        marginTop: '1rem'
     },
     tableHead: {
         background: omouBlue,
@@ -111,7 +111,7 @@ const BulkUploadModal = ({ closeModal }) => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const [dropDown, setDropDown] = useState('rotate(0deg)');
-    const { uploadTemplate, data } = useUploadOmouTemplate();
+    const { uploadTemplate } = useUploadOmouTemplate();
     const [uploadResponse, setUploadResponse] = useState(null);
 
     const handleTemplateChange = (e) => {
@@ -138,134 +138,12 @@ const BulkUploadModal = ({ closeModal }) => {
         );
     }
 
-    // Hook
-    // Upload
-    // Args: accountType, excel ?
-
-    // useOmouTemplates
-    // output: downloaded template
-
     const uploadFile = async () => {
-        let response = await uploadTemplate('xml-upload', template);
-        setUploadResponse(response);
-
-        handleStepChange();
-    };
-
-    const accountsTable = [
-        {
-            dataField: 'Parent First Name',
-            useCase: `Shown in parent's account profile`,
-        },
-        {
-            dataField: 'Parent Last Name',
-            useCase: `Shown in parent's account profile`,
-        },
-        {
-            dataField: 'Parent Email',
-            useCase: `Shown in parent’s account profile. Used as a unique identifier for the account.  Used to contact/send automated emails to parent. Used to create parent portal account.`,
-        },
-        {
-            dataField: 'Parent Phone',
-            useCase: `Shown in parent’s account profile. Used to contact/send automated SMS to parent.`,
-        },
-        {
-            dataField: 'Parent Zip Code (Optional)',
-            useCase: `Shown in parent's account profile`,
-        },
-        {
-            dataField: 'Student First Name',
-            useCase: `Shown in parent's account profile`,
-        },
-        {
-            dataField: 'Student Last Name',
-            useCase: `Shown in parent's account profile`,
-        },
-        {
-            dataField: 'Student Email',
-            useCase: `Shown in student’s account profile. Used as a unique identifier for the account. `,
-        },
-        {
-            dataField: 'Student Birthday (Optional)',
-            useCase: `Shown in student’s account profile. Used as a unique identifier for the account. `,
-        },
-        {
-            dataField: 'Student School (Optional)',
-            useCase: `Shown in student’s account profile.`,
-        },
-        {
-            dataField: 'Student Grade Level (Optional)',
-            useCase: `Shown in student’s account profile.`,
-        },
-        {
-            dataField: 'Instructor First Name',
-            useCase: `Shown in instructor’s account profile.`,
-        },
-        {
-            dataField: 'Instructor Last Name',
-            useCase: `Shown in instructor’s account profile.`,
-        },
-        {
-            dataField: 'Instructor Email',
-            useCase: `Shown in instructor’s account profile. Used as a unique identifier for the account. Used to contact instructor.`,
-        },
-        {
-            dataField: 'Instructor Phone',
-            useCase: `Shown in instructor’s account profile. Used to contact instructor.`,
-        },
-        {
-            dataField: 'Instructor Biography (Optional)',
-            useCase: `Shown in instructor’s account profile. Used to match instructor with students.`,
-        },
-        {
-            dataField: 'Instructor Years of Experience (Optional)',
-            useCase: `Shown in instructor’s account profile. Used to match instructor with students.`,
-        },
-        {
-            dataField: 'Instructor Address (Optional)',
-            useCase: `Shown in instructor’s account profile.`,
-        },
-    ];
-
-    const coursesTable = [
-        {
-            dataField: 'Course Subject',
-            useCase: `Shown in parent's account profile`,
-        },
-        { dataField: 'Course Name', useCase: `Indicates name of the course.` },
-        {
-            dataField: 'Course Instructor',
-            useCase: `Indicates who’s teaching the course.`,
-        },
-        {
-            dataField: 'Instructor Confirmed',
-            useCase: `Indicates whether the instructor has confirmed teaching the course.`,
-        },
-        {
-            dataField: 'Course Description',
-            useCase: `A shory description of what the course is about.`,
-        },
-        {
-            dataField: 'Academic Level',
-            useCase: `Indicates what academic level the course is designed for. Academic levels are categorized as Elementary, Middle School, High School or College.`,
-        },
-        {
-            dataField: 'Room Location',
-            useCase: `Indicates location of the course. Can be a physical location or an online link.`,
-        },
-        {
-            dataField: 'Start/End Date',
-            useCase: `Time span of when the course takes place.`,
-        },
-        {
-            dataField: 'Session Days',
-            useCase: `Days of the week when the course takes place (Monday - Sunday).`,
-        },
-        {
-            dataField: 'Start Time/End Time',
-            useCase: `Time of day when the course takes place. Currently we only support a single time input per day per course.`,
-        },
-    ];
+        const file = document.getElementById('xml-upload').files[0];
+        let response = await uploadTemplate(file, template)
+        setUploadResponse(response)
+        handleStepChange()
+    }
 
     const getStepContent = (step) => {
         switch (step) {

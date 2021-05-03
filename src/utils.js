@@ -126,8 +126,7 @@ export const formatAvailabilityListHours = (availabilityList) => {
 
             return (
                 allAvailabilites +
-                `${startTime} - ${endTime}${
-                    i !== availabilityList.length - 1 ? ' / ' : ''
+                `${startTime} - ${endTime}${i !== availabilityList.length - 1 ? ' / ' : ''
                 }`
             );
         }, '');
@@ -734,30 +733,30 @@ export function useURLQuery() {
  * @param {string} - templateType
  
  * @returns {obj} - 
- *  {
+ *  data : {
  *     successUploads : int
  *     failedUploads   : int
  *     errorFile  : base64 
  *  }
+ * error: [error ]
  * 
  */
 
 export function useUploadOmouTemplate() {
     const { token } = useSelector(({ auth }) => auth);
 
-    const uploadTemplate = async (inputHTMLID, templateName) => {
+    const uploadTemplate = async (uploadedFile, templateName,) => {
         let bodyFormData = new FormData();
 
-        let file = document.getElementById(inputHTMLID).files[0];
         let lowerCaseTemplateName = templateName.toLowerCase();
         let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`;
         let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`;
 
-        if (file) {
+        if (uploadedFile) {
             bodyFormData.append('operations', opsString);
             bodyFormData.append('map', mapsString);
-            bodyFormData.append(`${lowerCaseTemplateName}_excel`, file);
-        }
+            bodyFormData.append(`${lowerCaseTemplateName}_excel`, uploadedFile);
+        };
 
         const response = await fetch(
             process.env.REACT_APP_DOMAIN + '/graphql',
@@ -771,8 +770,10 @@ export function useUploadOmouTemplate() {
         );
 
         let resp = await response.json();
-        let { data } = resp;
-        return data[`upload${templateName}`];
+
+        return resp
+
+
     };
 
     return { uploadTemplate };
@@ -787,9 +788,21 @@ export function useUploadOmouTemplate() {
  * Output : downloaded file
  *
  */
-export async function downloadOmouTemplate(query, name) {
-    let { data } = await client.query({ query });
-    let queryResponse = Object.values(data)[0];
+const queryTemplate = async (query) => {
+    if (query) {
+        let { data } = await client.query({ query })
+        return Object.values(data)[0]
+    } else {
+        return null
+    }
+
+}
+
+
+export async function downloadOmouTemplate(file, name) {
+
+    const { query, error } = file;
+    const fileString = error || await queryTemplate(query)
 
     function b64toBlob(base64Data, contentType) {
         contentType = contentType || '';
@@ -812,9 +825,9 @@ export async function downloadOmouTemplate(query, name) {
         return new Blob(byteArrays, { type: contentType });
     }
 
-    let contentType =
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    let blob1 = b64toBlob(queryResponse, contentType);
+
+    let contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    let blob1 = b64toBlob(fileString, contentType);
     let blobUrl1 = URL.createObjectURL(blob1);
     const downloadLink = document.createElement('a');
     downloadLink.href = blobUrl1;
@@ -826,3 +839,4 @@ export async function downloadOmouTemplate(query, name) {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 }
+

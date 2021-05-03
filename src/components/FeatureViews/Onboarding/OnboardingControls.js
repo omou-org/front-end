@@ -16,9 +16,13 @@ export default function OnboardingControls(props) {
         postNextHandler = doNothing,
     } = props;
 
-    const { activeStep } = useContext(OnboardingContext);
-    const [handleBack, handleSkip, handleNext] = useOnboardingActions();
-    const steps = onboardingSteps;
+	const {activeStep} = useContext(OnboardingContext);
+	const {
+		handleBack,
+		handleSkip,
+		handleNext,
+	} = useOnboardingActions();
+	const steps = onboardingSteps;
 
     const handleBackButton = () => {
         preBackHandler();
