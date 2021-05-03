@@ -1,4 +1,7 @@
 import React from 'react';
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/client';
+
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,15 +10,71 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const ConfirmationModal = ({ openState, setOpenState, subject, instructor, dateTime, room, student, courseId, sessionId }) => {
-    console.log(courseId);
-    console.log(sessionId);
+import { GET_SESSIONS } from './Scheduler';
+
+const UPDATE_SESSION_MUTATION = gql`
+mutation updateSessionMutation($courseId: ID!, $endDateTime: DateTime!, $sessionId: ID!, $instructorId: ID!, $isConfirmed: Boolean, $startDateTime: DateTime!) 
+{
+    createSession(
+      course: $courseId
+      endDatetime: $endDateTime
+      id: $sessionId
+      instructor: $instructorId
+      isConfirmed: $isConfirmed
+      startDatetime: $startDateTime
+    ) {
+      created
+      session {
+        endDatetime
+        id
+        instructor {
+          user {
+            lastName
+            id
+            firstName
+          }
+        }
+        isConfirmed
+        startDatetime
+        title
+        details
+      }
+    }
+  }
+`;
+
+const ConfirmationModal = ({ openState, setOpenState, subject, instructor, dateTime, room, student, courseId, sessionId, startDateTime, endDateTime }) => {
+
+  const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION_MUTATION, {
+    onError: (err) => console.error(err),
+    update: ((cache, { data }) => {
+        console.log(cache)
+        console.log(data)
+        // const { session } = data.createSession
+        // const cachedSessions = cache.readQuery()
+    }),
+  });
+
+  const handleUpdateSession = () => {
+      updateSession({
+        variables: {
+            courseId,
+            endDateTime,
+            sessionId,
+            instructorId: instructor.user.id,
+            isConfirmed: true,
+            startDateTime,
+        },
+      });
+  };
+
+  console.log(instructor)
 
   const handleClose = () => {
     setOpenState({ ...openState, confirmationState: false });
   };
 
-  console.log({ subject, instructor, dateTime, room, student });
+  console.log({ subject, instructor, dateTime, room, student, startDateTime, endDateTime });
 
   return (
       <Dialog
@@ -45,10 +104,10 @@ const ConfirmationModal = ({ openState, setOpenState, subject, instructor, dateT
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Disagree
+            {'CANCEL'}
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
+          <Button onClick={handleUpdateSession} color="primary" autoFocus>
+            {'CONTINUE'}
           </Button>
         </DialogActions>
       </Dialog>
