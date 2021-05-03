@@ -6,7 +6,6 @@ import {
     darkGrey,
     highlightColor,
     h6,
-    h5,
     goth,
     gloom,
 } from '../../../theme/muiTheme';
@@ -20,7 +19,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import gql from 'graphql-tag';
-import { downloadOmouTemplate, useUploadOmouTemplate } from '../../../utils';
+import { downloadOmouTemplate } from '../../../utils';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     modalStyle: {
@@ -111,14 +111,13 @@ const BulkUploadModal = ({ closeModal }) => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const [dropDown, setDropDown] = useState('rotate(0deg)');
-    const { uploadTemplate } = useUploadOmouTemplate();
-    const [uploadResponse, setUploadResponse] = useState(null);
+    // const { uploadTemplate } = useUploadOmouTemplate();
 
     const handleTemplateChange = (e) => {
         setTemplate(e.target.value);
     };
 
-    const handleStepChange = (e) => {
+    const handleStepChange = () => {
         setActiveStep((prevState) => prevState + 1);
     };
 
@@ -139,11 +138,10 @@ const BulkUploadModal = ({ closeModal }) => {
     }
 
     const uploadFile = async () => {
-        const file = document.getElementById('xml-upload').files[0];
-        let response = await uploadTemplate(file, template)
-        setUploadResponse(response)
-        handleStepChange()
-    }
+        // const file = document.getElementById('xml-upload').files[0];
+        // let response = await uploadTemplate(file, template);
+        handleStepChange();
+    };
 
     const getStepContent = (step) => {
         switch (step) {
@@ -222,7 +220,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                         }}
                                         className={classes.menuSelect}
                                         disabled
-                                        style={{ display: 'none' }}
+                                        
                                     >
                                         Select Template
                                     </MenuItem>
@@ -409,4 +407,9 @@ const BulkUploadModal = ({ closeModal }) => {
     return <>{getStepContent(activeStep)}</>;
 };
 
+BulkUploadModal.propTypes = {
+    closeModal: PropTypes.func
+};
+
 export default BulkUploadModal;
+

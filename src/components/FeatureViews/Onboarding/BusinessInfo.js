@@ -9,6 +9,7 @@ import OnboardingControls from './OnboardingControls';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
     Text: {
@@ -49,7 +50,7 @@ const BusinessInfo = ({ step }) => {
     const classes = useStyles();
     const { setImportState } = useContext(OnboardingContext);
     // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
-    const [createBusinessInfo, createBusinessInfoResponse] = useMutation(
+    const [createBusinessInfo] = useMutation(
         CREAT_BIZ_INFO,
         {
             onCompleted: (data) => {
@@ -169,6 +170,10 @@ const BusinessInfo = ({ step }) => {
             </Grid>
         </Grid>
     );
+};
+
+BusinessInfo.propTypes = {
+    step: PropTypes.number
 };
 
 export default BusinessInfo;

@@ -108,7 +108,7 @@ const BusinessDetails = () => {
                     data: {
                         business: updatedBusiness
                     }
-                })
+                });
         }
     });
 
@@ -135,7 +135,7 @@ const BusinessDetails = () => {
     };
 
     const { loading, error, data } = useQuery(GET_BUSINESS, {
-        onCompleted: (data) => {
+        onCompleted: () => {
             setUpdateData({
                 businessName: business.name,
                 businessPhone: business.phoneNumber,
@@ -151,7 +151,7 @@ const BusinessDetails = () => {
     if (error) {
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                There has been an error! Error: {error.message}
             </Typography>
         );
     }
@@ -267,8 +267,8 @@ const BusinessDetails = () => {
                             >
                                 Business Hours
                             </Typography>
-                            {business.availabilityList.map((avail) => (
-                                <Typography align='left' variant='body1'>
+                            {business.availabilityList.map((avail, i) => (
+                                <Typography key={i} align='left' variant='body1'>
                                     {capitalizeString(avail.dayOfWeek)}:{' '}
                                     {moment(avail.startTime, [
                                         'HH:mm:ss',

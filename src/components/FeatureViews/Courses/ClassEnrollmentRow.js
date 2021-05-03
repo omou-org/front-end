@@ -190,6 +190,7 @@ const ClassEnrollmentRow = ({
             setGoogleClassroomStatusMessage('Resend Invite');
             sendGoogleClassroomInvite(omouGoogleIntegratedCourseID);
         } else if (googleClassroomStatusMessage == 'Invite Accepted') {
+            console.log('Invite accepted');
         }
     };
 

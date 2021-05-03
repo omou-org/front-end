@@ -35,9 +35,6 @@ const BusinessDayHoursField = ({day}) => {
 	</Grid>)
 }
 
-export default function BusinessHoursForm({isOnboarding}) {
-	const onSubmit = async ({bizHours}) => {
-
 export default function BusinessHoursForm({ isOnboarding }) {
     const onSubmit = async ({ bizHours }) => {};
 

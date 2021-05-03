@@ -8,7 +8,7 @@ import { omouBlue } from '../../../theme/muiTheme';
 import { OnboardingContext } from './OnboardingContext';
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Icon: {
         border: '2px solid #28ABD5',
         borderRadius: '8px',

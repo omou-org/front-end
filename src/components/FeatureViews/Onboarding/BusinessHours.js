@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import BusinessHoursForm from '../../Form/BusinessHoursForm';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Text: {
         marginTop: '24px',
     },
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const BusinessHours = () => {
     const classes = useStyles();
-    const handleChange = (newValue, actionMeta) => {};
+    // const handleChange = (newValue, actionMeta) => {};
     return (
         <Grid
             container

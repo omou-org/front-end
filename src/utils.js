@@ -840,3 +840,27 @@ export async function downloadOmouTemplate(file, name) {
     document.body.removeChild(downloadLink);
 }
 
+export const AdminPropTypes = {
+    user: PropTypes.shape({
+        accountType: PropTypes.oneOf([
+            'instructor',
+            'parent',
+            'receptionist',
+            'student',
+        ]).isRequired,
+        adminType: PropTypes.oneOf([
+            'owner',
+            'receptionist',
+            'teaching assistant',
+        ]).isRequired,
+        email: PropTypes.string,
+        name: PropTypes.string,
+        phoneNumber: PropTypes.string,
+        user: PropTypes.shape({
+            email: PropTypes.string,
+            name: PropTypes.string,
+            phoneNumber: PropTypes.string,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        })
+    }).isRequired,
+};

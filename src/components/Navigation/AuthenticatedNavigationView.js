@@ -45,8 +45,8 @@ function AuthenticatedNavigationView({ UserNavigationOptions }) {
         setMobileOpen((open) => !open);
     }, []);
 
-    if (loading) return <Loading />;
-    if (error) return <div>There's been an error! {error.message}</div>;
+    // if (loading) return <Loading />;
+    // if (error) return <div>There's been an error! {error.message}</div>;
 
     const isBusinessDataValid = true;
 
