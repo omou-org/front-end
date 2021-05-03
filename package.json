@@ -48,6 +48,7 @@
         "react-csv": "^2.0.3",
         "react-date-range": "^1.0.3",
         "react-dom": "^16.13.1",
+        "react-dropzone": "^11.3.2",
         "react-final-form": "^6.5.1",
         "react-final-form-listeners": "^1.0.2",
         "react-idle-timer": "^4.5.0",

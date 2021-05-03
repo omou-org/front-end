@@ -1,35 +1,100 @@
-import React from "react";
-import Typography from "@material-ui/core/Typography";
-import Box from "@material-ui/core/Box";
-import {makeStyles} from "@material-ui/core/styles";
-import Link from "@material-ui/core/Link";
+import React, { useMemo, useState, useContext } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { omouBlue } from '../../../theme/muiTheme';
+import { useUploadOmouTemplate } from '../../../utils';
+import { OnboardingContext } from './OnboardingContext';
 
-const useStyles = makeStyles((theme) => ({
-	uploadField: {
-		border: '2px dashed #28ABD5',
-		borderRadius: '10px',
-	},
-	uploadFieldText: {
-		color: '#28ABD5',
-	},
-}));
-export default function DragAndDropUploadBtn(props) {
-	const classes = useStyles();
-	return (<Box
-		className={classes.uploadField}
-		display='flex'
-		width={200}
-		height={144}
-		alignItems='center'
-		justifyContent='center'
-		{...props}
-	>
-		<Typography className={classes.uploadFieldText}>
-			Drag & Drop Files Here <br/>
-			<Link>
-				Or Click to Browse.
-			</Link>
-		</Typography>
+const baseStyle = {
+	flex: 1,
+	display: 'flex',
+	flexDirection: 'column',
+	alignItems: 'center',
+	padding: '30px 10px ',
+	width: '200px',
+	height: '144px',
+	borderWidth: 2,
+	borderRadius: 2,
+	borderColor: '#289FC3',
+	borderStyle: 'dashed',
+	backgroundColor: '#fafafa',
+	color: `${omouBlue}`,
+	outline: 'none',
+	transition: 'border .24s ease-in-out'
+};
 
-	</Box>)
+const activeStyle = {
+	borderColor: '#2196f3'
+};
+
+const acceptStyle = {
+	borderColor: '#00e676'
+};
+
+const rejectStyle = {
+	borderColor: '#ff1744'
+};
+const DragAndDropUploadBtn = (props) => {
+	const { uploadTemplate } = useUploadOmouTemplate();
+	const [uploadResponse, setUploadResponse] = useState(null)
+	const { state, dispatch } = useContext(OnboardingContext)
+	const uploadFile = async (file) => {
+		let response = await uploadTemplate(file, props.templateType);
+
+		dispatch({ type: 'UPLOAD_RESPONSE', payload: response })
+		if (Object.prototype.hasOwnProperty.call(response, 'errors')) {
+			setUploadResponse(response.errors[0].message)
+		} else {
+			setUploadResponse(file.name);
+		}
+	}
+
+
+
+
+	const {
+		getRootProps,
+		getInputProps,
+		isDragActive,
+		isDragAccept,
+		isDragReject
+	} = useDropzone({
+		accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		maxFiles: 1,
+		onDrop: file => uploadFile(file[0])
+
+
+	});
+
+
+
+
+	const style = useMemo(() => ({
+		...baseStyle,
+		...(isDragActive ? activeStyle : {}),
+		...(isDragAccept ? acceptStyle : {}),
+		...(isDragReject ? rejectStyle : {})
+	}), [
+		isDragActive,
+		isDragReject,
+		isDragAccept
+	]);
+
+
+
+	return (
+		<section className="container">
+			<div {...getRootProps({ style })}>
+				<input  {...getInputProps()} />
+				{uploadResponse === null ?
+					<p>Drag 'n' drop some files here, or click to select files</p> :
+					uploadResponse}
+			</div>
+
+		</section>
+	);
 }
+
+
+
+export default DragAndDropUploadBtn;
+

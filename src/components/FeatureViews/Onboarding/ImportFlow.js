@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useEffect, useState, useReducer } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -7,8 +7,8 @@ import Typography from '@material-ui/core/Typography';
 
 import BusinessInfo from './BusinessInfo';
 import BusinessHours from './BusinessHours';
-import {OnboardingContext} from "./OnboardingContext";
-import {useURLQuery} from "../../../utils";
+import { OnboardingContext, initalState, reducer } from "./OnboardingContext";
+import { useURLQuery } from "../../../utils";
 import BulkImportStep from './BulkImportStep';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,10 +36,13 @@ const ImportFlow = () => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const [skipped, setSkipped] = useState(new Set());
-    const [importState, setImportState] = useState({});
+    const [importState, setImportState] = useState({ uploadedResponse: null });
     const urlQuery = useURLQuery();
     const steps = onboardingSteps;
     // This is where BulkImportStep lives
+
+    const [state, dispatch] = useReducer(reducer, initalState)
+
 
     useEffect(() => {
         const currentStep = Number(urlQuery.get("step")) - 1;
@@ -67,6 +70,8 @@ const ImportFlow = () => {
 
     }
 
+
+
     const isStepOptional = (step) => {
         return false;
     };
@@ -76,7 +81,7 @@ const ImportFlow = () => {
     };
 
     return (
-        <OnboardingContext.Provider value={{ importState, setImportState, activeStep, setActiveStep }}>
+        <OnboardingContext.Provider value={{ importState, setImportState, activeStep, setActiveStep, state, dispatch }}>
             <div className={classes.root}>
                 <Stepper alternativeLabel activeStep={activeStep}>
                     {steps.map((label, index) => {

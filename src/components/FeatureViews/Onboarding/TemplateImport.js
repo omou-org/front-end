@@ -1,31 +1,45 @@
-import React from 'react';
-import {Grid} from '@material-ui/core';
+import React, { useState, useContext, useEffect } from 'react';
+import { Grid } from '@material-ui/core';
 import DownloadTemplateButton from './DownloadTemplateButton';
-import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
+import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import useOnboardingActions from "./ImportStepperActions";
-import {makeStyles} from "@material-ui/core/styles";
+
 import DragAndDropUploadBtn from "./DragAndDropUploadBtn";
+import { useUploadOmouTemplate } from '../../../utils';
+import { OnboardingContext } from './OnboardingContext';
 
-const useStyles = makeStyles((theme) => ({
-    uploadField: {
-        border: '2px dashed #28ABD5',
-        borderRadius: '10px',
-    },
-    uploadFieldText: {
-        color: '#28ABD5',
-    },
-}));
+const TemplateImport = ({ templateType, setActiveStep }) => {
+    const [disabled, setDisabled] = useState(true)
+    const { state } = useContext(OnboardingContext);
 
-const TemplateImport = ({templateType, setActiveStep}) => {
-    const classes = useStyles();
+    const { handleBack } = useOnboardingActions();
 
-    const {handleBack} = useOnboardingActions();
-    const handleNext = () => setActiveStep(1);
+    useEffect(() => {
+
+        if (state.UPLOAD_RESPONSE != null) {
+            if (Object.prototype.hasOwnProperty.call(state.UPLOAD_RESPONSE, 'errors')) {
+
+                setDisabled(true)
+            }
+
+            if (state.UPLOAD_RESPONSE.data[`upload${templateType}`] != null) {
+                setDisabled(false)
+            }
+
+        }
+
+    }, [state.UPLOAD_RESPONSE])
+
+
     let lowerCaseType = templateType.toLowerCase();
 
-    // Dropzone for uploading 
+    // Dropzone for uploading   
+
+
+    const handleNext = () => { setActiveStep(1); }
+
 
     return (
         <Grid
@@ -56,14 +70,15 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                 />
             </Grid>
             <Grid item>
-                <DragAndDropUploadBtn/>
+
+                <DragAndDropUploadBtn templateType={templateType} />
             </Grid>
             <Grid item
-                  container
-                  direction='row'
-                  justify='center'
-                  alignItems='center'
-                  spacing={3}
+                container
+                direction='row'
+                justify='center'
+                alignItems='center'
+                spacing={3}
             >
                 <Grid item>
                     <ResponsiveButton
@@ -77,6 +92,7 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                     <ResponsiveButton
                         variant='contained'
                         onClick={handleNext}
+                        disabled={disabled}
                     >
                         Next
                     </ResponsiveButton>

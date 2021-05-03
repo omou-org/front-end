@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { downloadOmouTemplate } from '../../../utils';
 import gql from 'graphql-tag';
 import { omouBlue } from '../../../theme/muiTheme';
+import { OnboardingContext } from './OnboardingContext';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const DownloadTemplateButton = ({ templateType }) => {
+const DownloadTemplateButton = ({ templateType, resultsError }) => {
+    const { state } = useContext(OnboardingContext)
     const classes = useStyles();
     let lowerCaseType = templateType === 'Course enrollments' ? 'Course_Enrollments' : templateType.toLowerCase();
 
@@ -54,7 +56,19 @@ const DownloadTemplateButton = ({ templateType }) => {
                 }`,
         "Course enrollments": gql`query {
                 courseTemplates
-        }`
+        }`,
+
+    }
+
+
+    const handleOnChange = () => {
+
+        if (resultsError) {
+            downloadOmouTemplate({ error: state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel }, lowerCaseType)
+        } else {
+            downloadOmouTemplate({ query: GET_TEMPLATE[templateType] }, lowerCaseType)
+        }
+
     }
 
 
@@ -63,7 +77,7 @@ const DownloadTemplateButton = ({ templateType }) => {
             variant='outlined'
             endIcon={<GetAppIcon />}
             className={classes.rootNegativeMargin}
-            onClick={() => downloadOmouTemplate(GET_TEMPLATE[templateType], lowerCaseType)}
+            onClick={handleOnChange}
 
         >
             {`${templateType} Template`}
