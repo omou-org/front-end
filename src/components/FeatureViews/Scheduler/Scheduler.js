@@ -13,6 +13,7 @@ import {SessionPopover} from './SessionPopover';
 import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
 import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
+import './scheduler.scss';
 
 const EventPopoverWrapper = ({children, popover}) => {
     const [anchorEl, setAnchorEl] = useState(null);
