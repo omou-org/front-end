@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams, Prompt } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery } from '@apollo/client';
@@ -19,12 +19,13 @@ import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
 import { QueryBuilder } from '@material-ui/icons'
 import UnconfirmIcon from '@material-ui/icons/Cancel';
-import { USER_TYPES } from '../../../utils';
+import { USER_TYPES, fullName } from '../../../utils';
 import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { EditSessionDropDown } from './EditSessionUtilComponents';
 import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
+import LeavePageModal from '../../OmouComponents/LeavePageModal';
 
 
 import 'date-fns';
@@ -33,6 +34,7 @@ import {
     KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import ConfirmationModal from './ConfirmationModal';
 
 const useStyles = makeStyles((theme) => ({
     current_session: {
@@ -166,8 +168,8 @@ query checkScheduleConflicts(
       reason
       status
     }
-  }
-`
+  }                  
+`;
 
 const styles = (username) => ({
     backgroundColor: stringToColor(username),
@@ -187,6 +189,10 @@ const SingleSessionEdit = () => {
     const [sessionEndTime, setSessionsEndTime] = useState('');
     const [sessionDate, setSessionsDate] = useState('');
     const [snackBarState, setSnackBarState] = useState(false);
+    const [modalState, setModalState] = useState({
+        leaveState: false,
+        confirmationState: false,
+    });
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
@@ -232,9 +238,9 @@ const SingleSessionEdit = () => {
     const course_id = course.id;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
-    const monthAndDate = moment(startDatetime).format('MMMM DD')
-    const startSessionTime = moment(startDatetime).format('h:mm A');
-    const endSessionTime = moment(endDatetime).format('h:mm A');
+    const monthAndDate = moment(sessionDate).format('MMMM DD');
+    const startSessionTime = moment(sessionStartTime).format('h:mm A');
+    const endSessionTime = moment(sessionEndTime).format('h:mm A');
     const endDateFormat = moment(endDate).format('MMMM DD');
     const startDateFormat = moment(startDate).format('MMMM DD');
 
@@ -246,13 +252,35 @@ const SingleSessionEdit = () => {
                 await checkScheduleConflicts({
                     variables: {
                         instructorId: id,
-                        startTime: moment(sessionStartTime).format('HH:mm'),
-                        endTime: moment(sessionEndTime).format('HH:mm'),
-                        date: moment(sessionDate).format('YYYY-MM-DD')
+                        startTime: moment(date._d).format('HH:mm'),
+                        endTime: moment(date._d).format('HH:mm'),
+                        date: moment(date._d).format('YYYY-MM-DD')
                     },
                 });
             };
-    }; 
+            
+    };
+    
+    const handleOpenModal = (e) => {
+        const { value } = e.currentTarget;
+        if(value === 'confirm') {
+            setModalState({ ...modalState, confirmationState: true});
+        };
+
+        if(value === 'cancel') {
+            setModalState({ ...modalState, leaveState: true});
+        };
+    };
+
+    const doesFullNameExist = () => {
+        if(enrollmentSet.length < 1) {
+            return 'no students'
+        } else {
+            fullName(enrollmentSet[0].user)
+        }
+    };
+
+    doesFullNameExist()
 
     const snackBarData = {
         title: 'SESSION CONFLICTS',
@@ -263,13 +291,18 @@ const SingleSessionEdit = () => {
         date: `${dayOfWeek}, ${monthAndDate} at ${startSessionTime} - ${endSessionTime}`,
         message: conflictData?.validateSessionSchedule.reason,
         messageColor: statusRed,
-        duration: 6,
+        duration: 6000,
         vertical: 'bottom',
-        horizontal: 'left'
-    }
+        horizontal: 'left',
+    };
 
+    
     return (
         <>
+            <Prompt message={(location, action) => {
+                console.log(location)
+                console.log(action) 
+            }}/> 
             <Divider className={classes.divider} />
             <Grid container direction='row' style={{ marginTop: '2em' }}>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
@@ -337,14 +370,14 @@ const SingleSessionEdit = () => {
 
             <Grid container direction='row' justify='flex-end' spacing={1}>
                 <Grid item>
-                    <ResponsiveButton
-                        component={NavLink}
-                        to={`/courses/class/${course_id}`}
+                    <Button
                         variant='outlined'
                         style={{width: '6.875em', height: '2.5em', border: '2px solid #C4C4C4'}}
+                        onClick={handleOpenModal}
+                        value='cancel'
                     >
                         Cancel
-                    </ResponsiveButton>
+                    </Button>
                 </Grid>
                 <Grid item>
                     <AccessControlComponent
@@ -354,10 +387,12 @@ const SingleSessionEdit = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <Button className={classes.save_button}>Save</Button>
+                        <Button className={classes.save_button} onClick={handleOpenModal} value='confirm'>Save</Button>
                     </AccessControlComponent>
                 </Grid>
-            </Grid>
+            </Grid>           
+            <LeavePageModal openState={modalState} setOpenState={setModalState} />
+            <ConfirmationModal openState={modalState} setOpenState={setModalState} subject={subjectValue} instructor={instructorValue} dateTime={snackBarData.date} room={room} student={doesFullNameExist()} courseId={course_id} sessionId={id}/>
         </>
     );
 };

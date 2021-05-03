@@ -74,7 +74,7 @@ export const EditSessionDropDown = ({
                                 <MenuItem
                                     key={i}
                                     className={classes.menuSelect}
-                                    value={values.id || values.user.id}
+                                    value={values || values.user}
                                     ListItemClasses={{
                                         selected: classes.menuSelected,
                                     }}
