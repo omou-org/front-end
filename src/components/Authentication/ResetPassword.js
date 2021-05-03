@@ -17,6 +17,7 @@ import Loading from 'components/OmouComponents/Loading';
 import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
 import { ReactComponent as Ellipse2 } from './loginImages/ellipse2.svg';
 import { ReactComponent as Picture1 } from './loginImages/picture1.svg';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     email: {},
@@ -213,6 +214,10 @@ const ResetPassword = ({ isSet }) => {
             </div>
         </div>
     );
+};
+
+ResetPassword.propTypes = {
+    isSet: PropTypes.bool.isRequired,
 };
 
 export default ResetPassword;

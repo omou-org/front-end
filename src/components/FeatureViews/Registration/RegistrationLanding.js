@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import SearchSelect from 'react-select';
@@ -84,7 +84,7 @@ const RegistrationLanding = () => {
     const { data, loading, error } = useQuery(GET_ALL_COURSES);
     const { currentParent } = getRegistrationCart();
 
-    const [view, setView] = useState(0);
+    const [view] = useState(0);
     const [updatedParent, setUpdatedParent] = useState(false);
     const [courseFilters, setCourseFilters] = useState({
         grade: [],
@@ -97,25 +97,17 @@ const RegistrationLanding = () => {
         if (currentParent) {
             setUpdatedParent(true);
         }
-    }, []);
-
-    const updateView = useCallback(
-        (newView) => () => {
-            setView(newView);
-        },
-        []
-    );
+    }, [currentParent]);
 
     if (loading) {
         return <Loading />;
     }
-    if (error) {
+    if (error)
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                {`There's been an error! Error: ${error.message}`}
             </Typography>
         );
-    }
 
     const { courses } = data;
 

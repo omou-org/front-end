@@ -1,28 +1,14 @@
 /* eslint-disable indent */
-import { Link, useParams } from 'react-router-dom';
 import React, { useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Loading from 'components/OmouComponents/Loading';
 import LoadingError from './LoadingCourseError';
-import { makeStyles } from '@material-ui/core/styles';
 import ProfileCard from '../ProfileCard';
 import { useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { AddItemButton } from '../../../OmouComponents/AddItemButton';
-
-const useStyles = makeStyles({
-    center: {
-        margin: 'auto',
-    },
-    new: {
-        backgroundColor: '#f5f5f5',
-        border: '1.5px dashed #999999',
-        cursor: 'pointer',
-        height: '150px',
-        position: 'relative',
-    },
-});
 
 const GET_STUDENTS = gql`
     query GetStudents($id: ID) {
@@ -53,8 +39,6 @@ const StudentInfo = () => {
     const { data, loading, error } = useQuery(GET_STUDENTS, {
         variables: { id: accountID },
     });
-
-    const classes = useStyles();
 
     const studentList = useMemo(
         () =>

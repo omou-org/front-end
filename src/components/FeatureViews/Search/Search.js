@@ -49,7 +49,7 @@ const styles = {
         border: 0,
         boxShadow: 'none',
     }),
-    option: (provided, { isFocused }) => ({
+    option: (provided) => ({
         ...provided,
     }),
 };

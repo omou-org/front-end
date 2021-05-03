@@ -1,7 +1,8 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Typography, Box } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import theme from '../../muiTheme';
+import PropTypes from 'prop-types';
 
 const ColorBox = ({ bgcolor }) => {
     return (
@@ -18,6 +19,10 @@ const ColorBox = ({ bgcolor }) => {
             mr={2}
         />
     );
+};
+
+ColorBox.propTypes = {
+    bgcolor: PropTypes.any,
 };
 
 const ColorsDemo = () => {

@@ -13,6 +13,7 @@ import { useHistory } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
+import GoogleClassroomIntegrationIcon from '../../OmouComponents/GoogleClassroomIntegrationIcon';
 
 import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
 import { fullName, gradeOptions } from 'utils';
@@ -23,6 +24,7 @@ import {
     pastColor,
 } from '../../../theme/muiTheme';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import PropTypes from 'prop-types';
 
 export const BootstrapInput = withStyles((theme) => ({
     root: {
@@ -140,6 +142,7 @@ export const GET_STUDENTS = gql`
                     firstName
                     id
                     lastName
+                    email
                 }
                 enrollmentSet {
                     id
@@ -160,6 +163,7 @@ const ClassListItem = ({
     startDate,
     instructor,
     id,
+    googleClassCode,
     studentList,
 }) => {
     const classes = useStyles();
@@ -169,7 +173,7 @@ const ClassListItem = ({
     const endingDate = moment(endDate).format('MMM D YYYY');
     const isActive = moment(startDate).isSameOrBefore(endDate);
 
-    const handleClick = (e) => history.push(`/courses/class/${id}`);
+    const handleClick = () => history.push(`/courses/class/${id}`);
 
     return (
         <>
@@ -198,7 +202,7 @@ const ClassListItem = ({
                             }}
                         />
                     </Grid>
-                    <Grid item xs={10} sm={9} md={10}>
+                    <Grid item xs={9} sm={8} md={9}>
                         <Typography
                             variant='h3'
                             align='left'
@@ -207,7 +211,11 @@ const ClassListItem = ({
                             {title}
                         </Typography>
                     </Grid>
-
+                    <Grid item xs={1} sm={1} md={1}>
+                        <GoogleClassroomIntegrationIcon
+                            googleCode={googleClassCode}
+                        />
+                    </Grid>
                     <Grid
                         item
                         xs={3}
@@ -264,8 +272,11 @@ const ClassListItem = ({
                             .filter((student) =>
                                 JSON.parse(student.value).includes(id)
                             )
-                            .map(({ label }) => (
-                                <StudentCourseLabel label={label} />
+                            .map(({ label, user }) => (
+                                <StudentCourseLabel
+                                    label={label}
+                                    key={user.id}
+                                />
                             ))}
                     </Grid>
                 )}
@@ -273,6 +284,17 @@ const ClassListItem = ({
             <Divder />
         </>
     );
+};
+
+ClassListItem.propTypes = {
+    title: PropTypes.string,
+    endDate: PropTypes.any,
+    activeAvailabilityList: PropTypes.array,
+    startDate: PropTypes.any,
+    instructor: PropTypes.any,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    googleClassCode: PropTypes.string,
+    studentList: PropTypes.array,
 };
 
 const CourseFilterDropdown = ({
@@ -356,6 +378,14 @@ const CourseFilterDropdown = ({
     );
 };
 
+CourseFilterDropdown.propTypes = {
+    initialValue: PropTypes.any,
+    filterList: PropTypes.array,
+    setState: PropTypes.func,
+    filter: PropTypes.any,
+    filterKey: PropTypes.any,
+};
+
 export const GET_COURSES_BY_ACCOUNT_ID = gql`
     query getCourses($accountId: ID) {
         courses(userId: $accountId) {
@@ -367,8 +397,6 @@ export const GET_COURSES_BY_ACCOUNT_ID = gql`
             id
             activeAvailabilityList {
                 dayOfWeek
-                endTime
-                startTime
             }
             instructor {
                 user {
@@ -377,6 +405,7 @@ export const GET_COURSES_BY_ACCOUNT_ID = gql`
                     id
                 }
             }
+            googleClassCode
             courseCategory {
                 id
                 name
@@ -593,6 +622,7 @@ const CourseManagementContainer = () => {
                     startDate,
                     instructor,
                     id,
+                    googleClassCode,
                 }) => (
                     <ClassListItem
                         title={title}
@@ -603,6 +633,7 @@ const CourseManagementContainer = () => {
                         id={id}
                         key={title}
                         studentList={studentOptionList}
+                        googleClassCode={googleClassCode}
                     />
                 )
             )}

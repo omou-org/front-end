@@ -13,6 +13,7 @@ import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const GET_ADMIN_LOG = gql`
     query AdminLogQuery($ownerID: ID!) {
@@ -104,8 +105,11 @@ const ActionLog = ({ ownerID }) => {
 
                     <TableBody>
                         {logs.results.map(
-                            ({ date, action, objectRepr, objectType }) => (
-                                <TableRow>
+                            (
+                                { date, action, objectRepr, objectType },
+                                index
+                            ) => (
+                                <TableRow key={`${date}_${action}_${index}`}>
                                     <TableCell style={{ width: '30%' }}>
                                         {moment(date).format('LLLL')}
                                     </TableCell>
@@ -129,6 +133,8 @@ const ActionLog = ({ ownerID }) => {
     );
 };
 
-ActionLog.propTypes = {};
+ActionLog.propTypes = {
+    ownerID: PropTypes.oneOf([PropTypes.string, PropTypes.number]),
+};
 
 export default ActionLog;

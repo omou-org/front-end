@@ -37,4 +37,5 @@ AddItemButton.propTypes = {
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
         .isRequired,
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    children: PropTypes.any,
 };

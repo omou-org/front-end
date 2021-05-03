@@ -5,7 +5,6 @@ import { KeyboardTimePicker } from '@material-ui/pickers/TimePicker';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabel';
 import { TimeAvailabilityContext } from './TimeAvailabilityContext';
-import Button from '@material-ui/core/Button';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import moment from 'moment';
 import { checkTimeSegmentOverlap, setCurrentDate } from '../../../utils';
@@ -21,6 +20,7 @@ import IconButton from '@material-ui/core/IconButton';
 import TimeIcon from '@material-ui/icons/Schedule';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
     availabilityRow: {
@@ -124,6 +124,16 @@ const AvailabilityRow = ({
             )}
         </div>
     );
+};
+
+AvailabilityRow.propTypes = {
+    startTime: PropTypes.any,
+    endTime: PropTypes.any,
+    dayIndex: PropTypes.number,
+    availabilityId: PropTypes.number,
+    setDisplayNewAvailability: PropTypes.func,
+    conflictError: PropTypes.any,
+    toDisable: PropTypes.bool,
 };
 
 export default function DayAvailabilityEntry({
@@ -253,7 +263,7 @@ export default function DayAvailabilityEntry({
             </TableRow>
             <Dialog open={conflictErrorDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle disableTypography style={{ color: errorRed }}>
-                    Sorry, the times don't quite make sense. Please check again!
+                    {`Sorry, the times don't quite make sense. Please check again!`}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -262,10 +272,16 @@ export default function DayAvailabilityEntry({
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton onClick={handleDialogClose}>
-                        Ok, I'll change it
+                        {`Ok, I'll change it`}
                     </ResponsiveButton>
                 </DialogActions>
             </Dialog>
         </>
     );
 }
+
+DayAvailabilityEntry.propTypes = {
+    dayOfWeek: PropTypes.string,
+    availabilities: PropTypes.array,
+    dayIndex: PropTypes.number,
+};

@@ -2,6 +2,7 @@ import { instance } from 'actions/apiActions';
 import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 
 export const USER_TYPES = {
     admin: 'ADMIN',
@@ -77,6 +78,58 @@ export const sessionsAtSameTimeInMultiDayCourse = (availabilityList) => {
         }
     }
     return true;
+};
+
+/**
+ * @param {*} availabilityList
+ * @returns a string with the days from an availiability list
+ *          formatted as "Monday / Wednesday"
+ */
+export const formatAvailabilityListDays = (availabilityList) => {
+    let dayStr = '';
+
+    availabilityList.forEach((availability, index) => {
+        dayStr += capitalizeString(availability.dayOfWeek);
+        dayStr += index !== availabilityList.length - 1 ? ' / ' : '';
+    });
+    return dayStr;
+};
+
+/**
+ * @param {*} availabilityList
+ * @returns a string with the hours from an availiability list
+ *          formatted as "1:00 PM - 2:00 PM / 3:00 PM - 4:00 PM"
+ */
+export const formatAvailabilityListHours = (availabilityList) => {
+    let startTime;
+    let endTime;
+
+    if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
+        startTime = moment(availabilityList[0]?.startTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
+        endTime = moment(availabilityList[0]?.endTime, ['HH:mm:ss']).format(
+            'h:mm A'
+        );
+
+        return `${startTime} - ${endTime}`;
+    } else {
+        return availabilityList.reduce((allAvailabilites, availability, i) => {
+            const startTime = moment(availability.startTime, [
+                'HH:mm:ss',
+            ]).format('h:mm A');
+            const endTime = moment(availability.endTime, ['HH:mm:ss']).format(
+                'h:mm A'
+            );
+
+            return (
+                allAvailabilites +
+                `${startTime} - ${endTime}${
+                    i !== availabilityList.length - 1 ? ' / ' : ''
+                }`
+            );
+        }, '');
+    }
 };
 
 /**
@@ -167,7 +220,7 @@ export const sessionPaymentStatus = (session, enrollment) => {
     const sessionIsBeforeLastPaidSession = session_date <= last_session;
     const sessionIsLastPaidSession = session_date === last_session;
     const thereIsPartiallyPaidSession = !Number.isInteger(
-        enrollment.sessions_left
+        enrollment.sessionsLeft
     );
     const classSessionNotBeforeFirstPayment = session_date >= first_payment;
 
@@ -665,3 +718,28 @@ export function useSessionStorage(key, initialValue) {
 
     return [storedValue, setValue];
 }
+
+export const AdminPropTypes = {
+    user: PropTypes.shape({
+        accountType: PropTypes.oneOf([
+            'instructor',
+            'parent',
+            'receptionist',
+            'student',
+        ]).isRequired,
+        adminType: PropTypes.oneOf([
+            'owner',
+            'receptionist',
+            'teaching assistant',
+        ]).isRequired,
+        email: PropTypes.string,
+        name: PropTypes.string,
+        phoneNumber: PropTypes.string,
+        user: PropTypes.shape({
+            email: PropTypes.string,
+            name: PropTypes.string,
+            phoneNumber: PropTypes.string,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        }),
+    }).isRequired,
+};

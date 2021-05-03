@@ -4,6 +4,7 @@ import { h2, white } from 'theme/muiTheme';
 import ProfileHeading from './ProfileHeading';
 import UserAvatar from './UserAvatar';
 import { fullName } from 'utils';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     profileInfo: {
@@ -32,6 +33,17 @@ const UserProfileInfo = ({ user }) => {
             </Grid>
         </Grid>
     );
+};
+
+UserProfileInfo.propTypes = {
+    user: PropTypes.shape({
+        user: PropTypes.shape({
+            email: PropTypes.string,
+            name: PropTypes.string,
+            phoneNumber: PropTypes.string,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        }),
+    }).isRequired,
 };
 
 export default UserProfileInfo;

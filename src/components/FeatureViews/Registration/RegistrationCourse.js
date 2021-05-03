@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react';
-import {useSelector} from 'react-redux';
+import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import CalendarIcon from '@material-ui/icons/CalendarTodayRounded';
 import Chip from '@material-ui/core/Chip';
@@ -11,21 +11,21 @@ import Tabs from '@material-ui/core/Tabs';
 import Typography from '@material-ui/core/Typography';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
 import Moment from 'react-moment';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import './registration.scss';
-import {Link, useRouteMatch} from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 import Loading from 'components/OmouComponents/Loading';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import RegistrationActions from './RegistrationActions';
 import RegistrationCourseEnrollments from './RegistrationCourseEnrollments';
 import UserAvatar from '../Accounts/UserAvatar';
-import {weeklySessionsParser} from 'components/Form/FormUtils';
-import {useQuery} from '@apollo/client';
+import { weeklySessionsParser } from 'components/Form/FormUtils';
+import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
-import {SIMPLE_COURSE_DATA} from 'queryFragments';
+import { SIMPLE_COURSE_DATA } from 'queryFragments';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent.js';
-import {fullName, gradeLvl, USER_TYPES} from 'utils';
+import { fullName, gradeLvl, USER_TYPES } from 'utils';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 
 export const GET_COURSE_DETAILS = gql`
@@ -93,13 +93,13 @@ const RegistrationCourse = () => {
     if (loading) {
         return <Loading />;
     }
-    if (error) {
+    if (error)
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                {`There's been an error! Error: ${error.message}`}
             </Typography>
         );
-    }
+
     const {
         course: {
             title,
@@ -112,7 +112,6 @@ const RegistrationCourse = () => {
             instructor,
             isConfirmed,
         },
-        courseNotes,
     } = data;
 
     const instructorName = fullName(instructor.user);

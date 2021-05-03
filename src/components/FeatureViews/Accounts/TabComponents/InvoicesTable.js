@@ -15,15 +15,6 @@ import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
 import Moment from 'react-moment';
 
-const numericDateString = (date) => {
-    const DateObject = new Date(date);
-    return DateObject.toLocaleDateString('en-US', {
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric',
-    });
-};
-
 const courseLabel = (enrollments) =>
     enrollments &&
     `${enrollments.length} Course${enrollments.length !== 1 ? 's' : ''}`;
@@ -118,6 +109,7 @@ InvoicesTable.propTypes = {
     enrollmentID: PropTypes.number.isRequired,
     paymentList: PropTypes.array.isRequired,
     type: PropTypes.oneOf(['enrollment', 'parent']).isRequired,
+    rootRoute: PropTypes.string,
 };
 
 export default InvoicesTable;

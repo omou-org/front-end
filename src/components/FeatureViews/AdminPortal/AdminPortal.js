@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import './AdminPortal.scss';
 import AdminActionCenter from './AdminActionCenter';
 import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
-import BackButton from 'components/OmouComponents/BackButton';
 import Box from '@material-ui/core/Box';
 
 const AdminPortal = () => (

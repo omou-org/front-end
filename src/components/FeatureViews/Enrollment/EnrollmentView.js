@@ -16,6 +16,9 @@ import InvoiceTable from '../Invoices/InvoiceTable';
 import EnrollmentSummaryTab from './EnrollmentSummaryTab';
 import EnrollmentDetails from './EnrollmentDetails';
 import EnrollmentProgress from './EnrollmentProgress';
+import { fullName } from '../../../utils';
+import { slateGrey } from '../../../theme/muiTheme';
+import EnrollmentActions from './EnrollmentActions';
 
 const GET_ENROLLMENT = gql`
     query EnrollmentViewQuery($enrollmentId: ID!) {
@@ -31,12 +34,22 @@ const GET_ENROLLMENT = gql`
                 id
                 title
                 courseType
+                startDate
+                endDate
                 instructor {
                     user {
                         firstName
                         id
                         lastName
                     }
+                }
+                courseCategory {
+                    name
+                }
+                availabilityList {
+                    dayOfWeek
+                    endTime
+                    startTime
                 }
             }
             paymentList {
@@ -65,6 +78,7 @@ const GET_ENROLLMENT = gql`
                         }
                     }
                 }
+                grade
             }
         }
     }
@@ -87,16 +101,6 @@ export const GET_SESSIONS = gql`
         }
     }
 `;
-
-const timeOptions = {
-    hour: '2-digit',
-    minute: '2-digit',
-};
-const dateOptions = {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-};
 
 const CourseSessionStatus = () => {
     const dispatch = useDispatch();
@@ -125,6 +129,17 @@ const CourseSessionStatus = () => {
         wrapper: {
             flexDirection: 'row',
         },
+        enrollmentViewRoot: {
+            marginTop: '10px',
+        },
+        StudentNameHeading: {
+            color: slateGrey,
+            textAlign: 'left',
+        },
+        enrollmentDetails: {
+            marginTop: '39px',
+            marginBottom: '40px',
+        },
     });
     const classes = useStyles();
 
@@ -141,20 +156,22 @@ const CourseSessionStatus = () => {
     if (enrollmentLoading || sessionsLoading) {
         return <Loading />;
     }
-    if (enrollmentError || sessionsError) {
+    if (enrollmentError || sessionsError)
         return (
             <Typography>
-                There's been an error! Error:{' '}
-                {enrollmentError.message || sessionsError.message}
+                {`There's been an error! Error: ${
+                    enrollmentError.message || sessionsError.message
+                }`}
             </Typography>
         );
-    }
+
     const isTutoring = true;
 
     const ActiveTabView = ({ ActiveTab }) => {
         const TutoringSummaryTabView = isTutoring
             ? [
                   <EnrollmentSummaryTab
+                      key={1}
                       sessions={sessionsData.sessions}
                       enrollment={enrollmentData}
                   />,
@@ -163,11 +180,12 @@ const CourseSessionStatus = () => {
 
         return [
             ...TutoringSummaryTabView,
-            <EnrollmentProgress />,
+            <EnrollmentProgress key={2} />,
             <InvoiceTable
+                key={3}
                 invoiceList={enrollmentData.enrollment.paymentList}
             />,
-            <Notes ownerID={enrollmentId} ownerType='enrollment' />,
+            <Notes ownerID={enrollmentId} ownerType='enrollment' key={4} />,
         ][ActiveTab];
     };
 
@@ -197,31 +215,50 @@ const CourseSessionStatus = () => {
     const { course, enrollmentnoteSet } = enrollmentData.enrollment;
 
     return (
-        <Grid container>
-            <Grid item xs={12}>
-                <Typography
-                    align='left'
-                    className='course-session-title'
-                    variant='h1'
-                >
-                    {course.title}
-                </Typography>
+        <Grid
+            container
+            direction='column'
+            className={classes.enrollmentViewRoot}
+        >
+            <Grid container justify='space-between' alignItems='flex-start'>
+                <Grid item xs={8}>
+                    <Typography
+                        className={classes.StudentNameHeading}
+                        variant='h4'
+                    >
+                        {fullName(enrollmentData.enrollment.student.user)}
+                    </Typography>
+                    <Typography
+                        align='left'
+                        className='course-session-title'
+                        variant='h1'
+                    >
+                        {course.title}
+                    </Typography>
+                </Grid>
+                <Grid item>
+                    <EnrollmentActions enrollment={enrollmentData.enrollment} />
+                </Grid>
             </Grid>
-            <EnrollmentDetails enrollment={enrollmentData.enrollment} />
-            <Tabs
-                classes={{ indicator: classes.MuiIndicator }}
-                className='enrollment-tabs'
-                onChange={handleTabChange}
-                value={activeTab}
-            >
-                {isTutoring && <Tab label='Summary' />}
-                <Tab label='Progress' />
-                <Tab label='Invoices' />
-                <Tab
-                    classes={{ wrapper: classes.wrapper }}
-                    label={enrollmentNoteTabLabel(enrollmentnoteSet)}
-                />
-            </Tabs>
+            <Grid item className={classes.enrollmentDetails}>
+                <EnrollmentDetails enrollment={enrollmentData.enrollment} />
+            </Grid>
+            <Grid item>
+                <Tabs
+                    classes={{ indicator: classes.MuiIndicator }}
+                    className='enrollment-tabs'
+                    onChange={handleTabChange}
+                    value={activeTab}
+                >
+                    {isTutoring && <Tab label='Summary' />}
+                    <Tab label='Progress' />
+                    <Tab label='Invoices' />
+                    <Tab
+                        classes={{ wrapper: classes.wrapper }}
+                        label={enrollmentNoteTabLabel(enrollmentnoteSet)}
+                    />
+                </Tabs>
+            </Grid>
             <br />
             <ActiveTabView ActiveTab={activeTab} />
         </Grid>

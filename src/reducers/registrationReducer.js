@@ -22,7 +22,7 @@ export default function registration(
         case actions.ADD_FIELD:
             newState = addField(state, payload);
             return newState;
-        case actions.REMOVE_FIELD:
+        case actions.REMOVE_FIELD: {
             const path = payload[0];
             const removeFieldIndex = payload[1];
             const conditional = payload[2];
@@ -31,6 +31,7 @@ export default function registration(
             }
             newState = removeField(state, path, removeFieldIndex, conditional);
             return newState;
+        }
         case actions.POST_STUDENT_SUCCESSFUL:
             return successSubmit(state);
         case actions.POST_STUDENT_FAILED:
@@ -82,7 +83,7 @@ export default function registration(
             return addSmallGroupRegistration(newState, payload);
         case actions.INIT_COURSE_REGISTRATION:
             return initializeRegistration(newState, payload);
-        case actions.DELETE_COURSE_REGISTRATION:
+        case actions.DELETE_COURSE_REGISTRATION: {
             const { studentId, courseId } = payload;
             const registrationState = JSON.parse(
                 sessionStorage.getItem('registrations')
@@ -105,6 +106,7 @@ export default function registration(
                 ...registrationState,
                 [studentId]: registrationState[studentId],
             };
+        }
         case actions.CLOSE_COURSE_REGISTRATION:
             return closeRegistration(newState);
         case actions.EDIT_COURSE_REGISTRATION:
@@ -205,8 +207,8 @@ function removeField(prevState, path, fieldIndex, conditional) {
 
     const fieldCounts = {};
 
-    SectionFieldList = SectionFieldList.map((field, i) => {
-        if (!fieldCounts.hasOwnProperty(field.field)) {
+    SectionFieldList = SectionFieldList.map((field) => {
+        if (!Object.prototype.hasOwnProperty.call(fieldCounts, field.field)) {
             fieldCounts[field.field] = 1;
             return {
                 ...field,

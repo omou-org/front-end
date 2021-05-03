@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 
 import * as registrationActions from 'actions/registrationActions';
 import Loading from 'components/OmouComponents/Loading';
-import { paymentToString, uniques, capitalizeString } from 'utils';
+import { capitalizeString, paymentToString, uniques } from 'utils';
 import Moment from 'react-moment';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
@@ -19,15 +19,15 @@ import { closeRegistrationCart } from '../../OmouComponents/RegistrationUtils';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import {
-    skyBlue,
-    darkBlue,
-    darkGrey,
     buttonThemeBlue,
     cloudy,
-    charcoal,
+    darkBlue,
+    darkGrey,
+    skyBlue,
 } from 'theme/muiTheme';
 import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 export const GET_PAYMENT = gql`
     query Invoice($invoiceId: ID!) {
@@ -133,13 +133,12 @@ const InvoiceReceipt = ({ invoiceId }) => {
     if (loading) {
         return <Loading />;
     }
-    if (error) {
+    if (error)
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                {`There's been an error! Error: ${error.message}`}
             </Typography>
         );
-    }
 
     const { invoice } = data;
     const { parent, registrationSet, paymentStatus } = invoice;
@@ -647,6 +646,10 @@ const InvoiceReceipt = ({ invoiceId }) => {
             </Grid>
         </div>
     );
+};
+
+InvoiceReceipt.propTypes = {
+    invoiceId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default InvoiceReceipt;

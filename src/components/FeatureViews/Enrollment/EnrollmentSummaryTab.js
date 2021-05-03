@@ -1,14 +1,16 @@
 import React, { useCallback, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import EnrollmentSessionRow from './EnrollmentSessionRow';
 import NoListAlert from '../../OmouComponents/NoListAlert';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import { TableCell } from '@material-ui/core';
+import TableBody from '@material-ui/core/TableBody';
+import PropTypes from 'prop-types';
 
-export default function EnrollmentSummaryTab({ sessions, enrollment }) {
+function EnrollmentSummaryTab({ sessions, enrollment }) {
     const [highlightSession, setHighlightSession] = useState(false);
 
     const handleHighlightSwitch = useCallback(() => {
@@ -16,71 +18,53 @@ export default function EnrollmentSummaryTab({ sessions, enrollment }) {
     }, []);
 
     return (
-        <Grid container direction='column'>
-            <Grid item container alignItems='flex-start'>
-                <Grid item xs={3}>
-                    <Grid item>
-                        <FormControl component='fieldset'>
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={highlightSession}
-                                            color='primary'
-                                            onChange={handleHighlightSwitch}
-                                            value='upcoming-session'
-                                        />
-                                    }
-                                    label='Highlight Upcoming Session'
-                                />
-                            </FormGroup>
-                        </FormControl>
-                    </Grid>
+        <Grid container direction='column' spacing={3}>
+            <Grid item container direction='row' justify='space-between'>
+                <Grid item>Tuition Rate: $$</Grid>
+                <Grid item>
+                    <ResponsiveButton
+                        onClick={handleHighlightSwitch}
+                        variant={highlightSession ? 'contained' : 'outlined'}
+                        color={highlightSession ? 'primary' : ''}
+                    >
+                        Upcoming
+                    </ResponsiveButton>
                 </Grid>
             </Grid>
-            <Grid className='accounts-table-heading' container item xs={12}>
-                <Grid item xs={1} />
-                <Grid item xs={2}>
-                    <Typography align='left' className='table-text'>
-                        Session Date
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Typography align='left' className='table-text'>
-                        Day
-                    </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                    <Typography align='left' className='table-text'>
-                        Time
-                    </Typography>
-                </Grid>
-                <Grid item xs={1}>
-                    <Typography align='left' className='table-text'>
-                        Tuition
-                    </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Typography align='center' className='table-text'>
-                        Status
-                    </Typography>
-                </Grid>
-            </Grid>
-            <Grid container spacing={1} data-cy='enrollment-sessions'>
-                {sessions.length !== 0 ? (
-                    sessions.map((session) => {
-                        return (
-                            <EnrollmentSessionRow
-                                session={session}
-                                enrollmentData={enrollment}
-                                highlightSession={highlightSession}
-                            />
-                        );
-                    })
-                ) : (
-                    <NoListAlert list='Course' />
-                )}
+            <Grid item>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Session Date</TableCell>
+                            <TableCell>Class Day</TableCell>
+                            <TableCell>Time</TableCell>
+                            <TableCell>Tuition</TableCell>
+                            <TableCell>Status</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {sessions.length !== 0 &&
+                            sessions.map((session) => {
+                                return (
+                                    <EnrollmentSessionRow
+                                        key={session.id}
+                                        session={session}
+                                        enrollmentData={enrollment}
+                                        highlightSession={highlightSession}
+                                    />
+                                );
+                            })}
+                    </TableBody>
+                    {sessions.length === 0 && <NoListAlert list='Course' />}
+                </Table>
             </Grid>
         </Grid>
     );
 }
+
+EnrollmentSummaryTab.propTypes = {
+    sessions: PropTypes.array,
+    enrollment: PropTypes.object,
+};
+
+export default EnrollmentSummaryTab;

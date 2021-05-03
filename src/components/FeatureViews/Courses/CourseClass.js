@@ -24,6 +24,7 @@ import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import GoolgeClassroomIntegrationicon from '../../OmouComponents/GoogleClassroomIntegrationIcon';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,6 +81,7 @@ export const GET_CLASS = gql`
             startDate
             endDate
             description
+            googleClassCode
             courseLink
             courseLinkDescription
             courseLinkUpdatedAt
@@ -112,6 +114,7 @@ export const GET_CLASS = gql`
                         firstName
                         lastName
                         id
+                        email
                     }
                     primaryParent {
                         user {
@@ -186,7 +189,7 @@ const CourseClass = () => {
     const classes = useStyles();
     const [index, setIndex] = useState(0);
 
-    const { email, accountType, user } = useSelector(({ auth }) => auth) || [];
+    const { accountType, user } = useSelector(({ auth }) => auth) || [];
     const [studentInCourse, setStudentInCourse] = useState([]);
 
     const adminTabs = [
@@ -258,6 +261,7 @@ const CourseClass = () => {
         activeAvailabilityList,
         sessionSet,
         courseLinkUser,
+        googleClassCode,
     } = data.course;
 
     const { name: courseCategory } = data.course.courseCategory;
@@ -328,6 +332,12 @@ const CourseClass = () => {
                         style={{ marginTop: '.65em' }}
                     >
                         {title}
+                        {accountType === 'ADMIN' && (
+                            <GoolgeClassroomIntegrationicon
+                                googleCode={googleClassCode}
+                                style={{ marginLeft: '24px' }}
+                            />
+                        )}
                     </Typography>
                 </Grid>
                 <Grid item xs={6}>

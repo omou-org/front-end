@@ -17,6 +17,7 @@ import moment from 'moment';
 import gql from 'graphql-tag';
 import { fullName, USER_TYPES } from '../../../utils';
 import { GET_CLASS } from './CourseClass';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     courseLink: {
@@ -124,10 +125,9 @@ const ClassInfo = ({
 }) => {
     const [courseURL, setCourseURL] = useState('');
     const [linkDescription, setLinkDescription] = useState('');
-    const [updatedAt, setUpdatedAt] = useState('');
     const [isEditActive, setEditActive] = useState(false);
 
-    const [updateCourseLink, { data }] = useMutation(UPDATE_COURSE_LINK, {
+    const [updateCourseLink] = useMutation(UPDATE_COURSE_LINK, {
         onCompleted: () => {
             setEditActive(false);
         },
@@ -155,8 +155,7 @@ const ClassInfo = ({
     useEffect(() => {
         setCourseURL(courseLink);
         setLinkDescription(courseLinkDescription);
-        setUpdatedAt(courseLinkUpdatedAt);
-    }, [courseLink, courseLinkDescription]);
+    }, [courseLink, courseLinkDescription, courseLinkUpdatedAt]);
 
     const editLinkAndDescription = () => {
         setEditActive(true);
@@ -292,6 +291,15 @@ const ClassInfo = ({
             </Grid>
         </Grid>
     );
+};
+
+ClassInfo.propTypes = {
+    description: PropTypes.string,
+    courseLink: PropTypes.string,
+    courseLinkDescription: PropTypes.string,
+    courseLinkUpdatedAt: PropTypes.string,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    courseLinkUser: PropTypes.any,
 };
 
 export default ClassInfo;

@@ -22,8 +22,9 @@ import {
 } from './AttendanceButtons';
 import { buttonThemeBlue } from '../../../theme/muiTheme';
 import { fullName } from '../../../utils';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     table: {
         maxWidth: '100vw',
         overflowY: 'auto',
@@ -140,7 +141,6 @@ const AttendanceTable = ({ setIsEditing }) => {
     const [isCheckBoxEditing, setIsCheckBoxEditing] = useState();
     const [courseAttendanceMatrix, setCourseAttendanceMatrix] = useState([]);
     const [sortByAlphabet, setSortByAlphabet] = useState('');
-    const [attendanceBySession, setAttendanceBySession] = useState({});
 
     // This is used to check each session for any status that is not unset, and set the attendancEditingState to done
     // Once it is set to done, the check mark turns into a the dropdown
@@ -163,7 +163,7 @@ const AttendanceTable = ({ setIsEditing }) => {
                 ...sessionsDoneEditing,
             });
         }
-    }, [courseAttendanceMatrix]);
+    }, [courseAttendanceMatrix, attendanceEditStates]);
 
     const sortByFirstName = (firstStudent, secondStudent) => {
         if (firstStudent.studentName < secondStudent.studentName) {
@@ -466,6 +466,7 @@ const AttendanceTable = ({ setIsEditing }) => {
                             />
                         </TableCell>
                         {sessions
+                            .slice()
                             .sort(sortByRecentSession)
                             .map(({ startDatetime, id: sessionId }, index) => (
                                 <TableCell
@@ -578,6 +579,10 @@ const AttendanceTable = ({ setIsEditing }) => {
             </Table>
         </TableContainer>
     );
+};
+
+AttendanceTable.propTypes = {
+    setIsEditing: PropTypes.func,
 };
 
 export default AttendanceTable;

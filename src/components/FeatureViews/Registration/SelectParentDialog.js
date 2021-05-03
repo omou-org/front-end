@@ -48,9 +48,7 @@ const SelectParentDialog = ({ onClose, open }) => {
     const [parent, setParent] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [searching, setSearching] = useState(false);
-    const { currentParent, ...registrationCartState } = useSelector(
-        (state) => state.Registration
-    );
+    const { currentParent } = useSelector((state) => state.Registration);
     const [getSavedParentCart, getSavedParentCartResult] = useLazyQuery(
         GET_REGISTRATION_CART,
         {
@@ -91,7 +89,7 @@ const SelectParentDialog = ({ onClose, open }) => {
         }
         // close the dialogue
         onClose(!!parent);
-    }, [parent, dispatch, onClose]);
+    }, [parent, dispatch, onClose, getSavedParentCart]);
 
     const handleExitParent = useCallback(
         (event) => {
@@ -103,7 +101,7 @@ const SelectParentDialog = ({ onClose, open }) => {
             });
             onClose();
         },
-        [dispatch, handleClose]
+        [dispatch, onClose]
     );
 
     const handleOnChange = useCallback(
@@ -143,8 +141,6 @@ const SelectParentDialog = ({ onClose, open }) => {
             }}
         />
     );
-
-    const numToCheckout = Object.values(registrationCartState).flat().length;
 
     const options = data
         ? data.accountSearch.results.map((parent) => ({

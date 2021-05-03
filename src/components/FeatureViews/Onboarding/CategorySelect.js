@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import CreatableSelect from 'react-select/creatable';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Text: {
         marginTop: '65px',
     },
@@ -26,7 +26,7 @@ const options = [
 
 const CategorySelect = () => {
     const classes = useStyles();
-    const handleChange = (newValue, actionMeta) => {};
+    const handleChange = () => {};
     return (
         <>
             <Box className={classes.Text}>

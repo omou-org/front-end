@@ -3,8 +3,8 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 import { USER_TYPES } from '../../utils';
 import { Switch } from 'react-router-dom';
 import InvoiceReceipt from '../FeatureViews/Invoices/InvoiceReceipt';
-import MyPaymentHistory from '../FeatureViews/ManagePayments/MyPaymentHistory';
 import ActiveInvoices from '../FeatureViews/ManagePayments/ActiveInvoices';
+import Invoices from '../FeatureViews/Invoices/Invoices';
 
 /**
  * @description Old payment routes for only parents
@@ -26,7 +26,7 @@ export default function MyPaymentsRoutes() {
                 path='/my-payments/history'
                 users={[USER_TYPES.parent]}
             >
-                <MyPaymentHistory />
+                <Invoices />
             </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact

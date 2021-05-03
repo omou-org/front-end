@@ -30,7 +30,7 @@ const Bio = ({ ownerID }) => {
     });
 
     if (loading) return <Loading />;
-    if (error) return <div>There's been an error! - {error.message}</div>;
+    if (error) return <div>{`There's been an error! - ${error.message}`}</div>;
 
     const {
         userInfo: { biography, experience, language, subjects },
@@ -98,6 +98,7 @@ Bio.propTypes = {
         languages: PropTypes.any,
         subjects: PropTypes.any,
     }).isRequired,
+    ownerID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Bio;

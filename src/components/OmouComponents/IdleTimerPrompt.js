@@ -33,11 +33,11 @@ export default function IdleTimerPrompt() {
         },
     });
 
-    const handleOnIdle = (event) => {
+    const handleOnIdle = () => {
         setIdlePrompt(true);
     };
 
-    const handleOnActive = (event) => {
+    const handleOnActive = () => {
         const refreshTokenTime = 1000 * 60 * 5;
         const remainingTimeBeforeLogout = getRemainingTime();
         if (remainingTimeBeforeLogout <= refreshTokenTime && !openIdlePrompt) {
@@ -64,7 +64,7 @@ export default function IdleTimerPrompt() {
             dispatch(logout());
             history.push('/login');
         }
-    }, [dispatch, history]);
+    }, [dispatch, history, openIdlePrompt]);
 
     useEffect(() => {
         if (openIdlePrompt) {
@@ -73,7 +73,7 @@ export default function IdleTimerPrompt() {
                 handleLogout();
             }, 1000 * 60 * 2);
         }
-    }, [openIdlePrompt]);
+    }, [openIdlePrompt, handleLogout]);
 
     const { getRemainingTime } = useIdleTimer({
         timeout: 1000 * 60 * 18,
@@ -88,9 +88,9 @@ export default function IdleTimerPrompt() {
                 <Typography variant='h4'>Are you still there?</Typography>
             </DialogTitle>
             <DialogContent>
-                Looks like you've been idle for a while. To make sure no one
-                will use your account behind your back, you will be logged out
-                automatically within 2 minutes.
+                {`Looks like you've been idle for a while. To make sure no one
+                    will use your account behind your back, you will be logged out
+                    automatically within 2 minutes.`}
             </DialogContent>
             <DialogActions>
                 <ResponsiveButton

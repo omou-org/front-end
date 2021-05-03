@@ -12,6 +12,21 @@ export default (state = Authentication, { payload, type }) => {
             };
         case actions.LOGOUT:
             return Authentication;
+        case actions.SET_GOOGLE_COURSES:
+            return {
+                ...state,
+                ...payload,
+            };
+        case actions.STORE_COURSES:
+            return {
+                ...state,
+                ...payload,
+            };
+        case actions.STORE_TOKEN:
+            return {
+                ...state,
+                ...payload,
+            };
         default:
             return state;
     }

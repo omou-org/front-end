@@ -123,10 +123,7 @@ const RegistrationCartContainer = () => {
             skip: !courseIds,
         }
     );
-    const [
-        createRegistrationCart,
-        createRegistrationCartResponse,
-    ] = useMutation(CREATE_REGISTRATION_CART, {
+    const [createRegistrationCart] = useMutation(CREATE_REGISTRATION_CART, {
         variables: { parent: currentParent?.user.id },
         onCompleted: () => {
             setParentConfirmation(true);
@@ -149,7 +146,7 @@ const RegistrationCartContainer = () => {
             type: types.INIT_COURSE_REGISTRATION,
             payload: {},
         });
-    }, [types.INIT_COURSE_REGISTRATION, dispatch]);
+    }, [dispatch]);
 
     useEffect(() => {
         const numOfRegistrations = Object.values(registrationCartState).filter(
@@ -161,7 +158,6 @@ const RegistrationCartContainer = () => {
             numOfRegistrations > 0 &&
             Object.keys(registrationCart).length === 0
         ) {
-            console.log(data);
             const courseData = data.courses;
             setRegistrationCart(() => {
                 const registrationCart = {};
@@ -179,7 +175,14 @@ const RegistrationCartContainer = () => {
                 return registrationCart;
             });
         }
-    }, [setRegistrationCart, loading, registrationCartState]);
+    }, [
+        setRegistrationCart,
+        loading,
+        registrationCartState,
+        data,
+        registrationCart,
+        studentIds,
+    ]);
 
     const updateSession = (newSessionNum, checked, studentId, courseId) => {
         setRegistrationCart((prevRegistrationCart) => {
@@ -229,7 +232,7 @@ const RegistrationCartContainer = () => {
         return <Loading small />;
     }
     if (error) {
-        return <div>There's been an error: {error.message}</div>;
+        return <div>{`There's been an error: ${error.message}`}</div>;
     }
     const studentData = data.userInfos;
 
@@ -355,7 +358,7 @@ const RegistrationCartContainer = () => {
                         Your request has been submitted!
                     </Typography>
                     <Typography align='center'>
-                        Here’s the next step to complete the enrollment process:
+                        {`Here’s the next step to complete the enrollment process:`}
                     </Typography>
 
                     <Box

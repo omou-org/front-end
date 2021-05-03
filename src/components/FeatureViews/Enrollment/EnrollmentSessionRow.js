@@ -1,78 +1,83 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
-import Moment from 'react-moment';
 import SessionPaymentStatusChip from 'components/OmouComponents/SessionPaymentStatusChip';
 import moment from 'moment';
+import Moment from 'react-moment';
+import { makeStyles } from '@material-ui/core/styles';
+import TableRow from '@material-ui/core/TableRow';
+import { TableCell } from '@material-ui/core';
+import PropTypes from 'prop-types';
+
+const useStyles = makeStyles(() => ({
+    darkRow: {
+        backgroundColor: '#EEEEEE',
+    },
+}));
 
 function EnrollmentSessionRow({ session, enrollmentData, highlightSession }) {
-    const { course, id } = enrollmentData.enrollment;
+    const classes = useStyles();
+    const { id } = enrollmentData.enrollment;
     const tuitionStartTime = moment(session.startDatetime).format('hh');
     const tuitionEndTime = moment(session.endDatetime).format('hh');
     const tuition =
         session.course.hourlyTuition * (tuitionEndTime - tuitionStartTime);
+    const today = moment(new Date());
+    const sessionDate = moment(session.startDatetime);
+    const sessionDaysFromToday = sessionDate.diff(today, 'days');
+    const isUpcomingSession =
+        7 >= sessionDaysFromToday && sessionDaysFromToday > 0;
+    const isHighlightSession = highlightSession && isUpcomingSession;
 
     return (
-        <Grid
-            className='accounts-table-row'
+        <TableRow
             component={Link}
-            item
             data-cy='view-session-link'
             key={id}
             to={`/scheduler/session/${session.id}`}
-            xs={12}
-        >
-            <Paper
-                className={`session-info
-                    ${highlightSession && ' active'}
+            className={`session-info
+                    ${isHighlightSession && classes.darkRow}
                     ${session.id == session.id && 'upcoming-session'}
                  `}
-                component={Grid}
-                container
-                square
-            >
-                <Grid item xs={1} />
-                <Grid item xs={2}>
+        >
+            <TableCell>
+                <Typography align='left'>
+                    <Moment date={session.startDatetime} format='M/D/YYYY' />
+                </Typography>
+            </TableCell>
+            <TableCell>
+                <Typography align='left'>
                     <Typography align='left'>
-                        <Moment
-                            date={session.startDatetime}
-                            format='M/D/YYYY'
-                        />
+                        <Moment date={session.startDatetime} format='dddd' />
                     </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <Typography align='left'>
-                        <Typography align='left'>
-                            <Moment
-                                date={session.startDatetime}
-                                format='dddd'
-                            />
-                        </Typography>
-                    </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                    <Typography align='left'>
-                        <Moment date={session.startDatetime} format='h:mm A' />
-                        {' - '}
-                        <Moment date={session.endDatetime} format='h:mm A' />
-                    </Typography>
-                </Grid>
-                <Grid item xs={1}>
-                    {/* hourly rate * endtime-starttime */}
-                    <Typography align='left'>${tuition}</Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <SessionPaymentStatusChip
-                        enrollment={enrollmentData.enrollment}
-                        session={session}
-                        setPos
-                    />
-                </Grid>
-            </Paper>
-        </Grid>
+                </Typography>
+            </TableCell>
+            <TableCell>
+                <Typography align='left'>
+                    <Moment date={session.startDatetime} format='h:mm A' />
+                    {' - '}
+                    <Moment date={session.endDatetime} format='h:mm A' />
+                </Typography>
+            </TableCell>
+            <TableCell>
+                {/* hourly rate * endtime-starttime */}
+                <Typography align='left'>${tuition}</Typography>
+            </TableCell>
+            <TableCell>
+                <SessionPaymentStatusChip
+                    enrollment={enrollmentData.enrollment}
+                    session={session}
+                    setPos
+                />
+            </TableCell>
+        </TableRow>
     );
 }
+
+EnrollmentSessionRow.propTypes = {
+    session: PropTypes.object,
+    enrollmentData: PropTypes.object,
+    highlightSession: PropTypes.bool,
+};
 
 export default EnrollmentSessionRow;
