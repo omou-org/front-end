@@ -219,7 +219,7 @@ const SearchResults = () => {
                         variant='h1'
                     >
                         {numResults} Search Result{numResults !== 1 && 's'} for{' '}
-                        {filter && capitalizeString(filter)} "{query}"
+                        {filter && capitalizeString(filter)} {`"${query}"`}
                     </Typography>
                 </Grid>
                 {filter !== 'course' && (

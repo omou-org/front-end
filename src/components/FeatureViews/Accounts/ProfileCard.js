@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -14,8 +14,6 @@ import theme from '../../../theme/muiTheme';
 import './Accounts.scss';
 import { capitalizeString } from 'utils';
 import { ReactComponent as IDIcon } from 'components/identifier.svg';
-import { useMutation } from '@apollo/client';
-import gql from 'graphql-tag';
 
 const useStyles = makeStyles({
     linkUnderline: {
@@ -30,31 +28,7 @@ const useStyles = makeStyles({
     ...theme.accountCardStyle,
 });
 
-const INVITE_STUDENT = gql`
-    mutation InviteStudent($email: String!) {
-        inviteStudent(email: $email) {
-            errorMessage
-            status
-        }
-    }
-`;
-
-const ProfileCard = ({ user, route, studentInvite = false }) => {
-    const [invite] = useMutation(INVITE_STUDENT, {
-        ignoreResults: true,
-    });
-    const inviteStudent = useCallback(
-        (event) => {
-            event.stopPropagation();
-            invite({
-                variables: {
-                    email: user?.email,
-                },
-            });
-        },
-        [invite, user]
-    );
-
+const ProfileCard = ({ user, route }) => {
     const classes = useStyles();
 
     return (
@@ -86,11 +60,6 @@ const ProfileCard = ({ user, route, studentInvite = false }) => {
                                         )}
                                     />
                                 </NavLink>
-                                {/* {studentInvite && 
-                                    <Button className={classes.inviteButton} onClick={inviteStudent}>
-                                        Invite
-                                    </Button>
-                                } */}
                             </Grid>
 
                             <Grid container style={{ marginLeft: '2px' }}>
@@ -164,16 +133,21 @@ ProfileCard.propTypes = {
     route: PropTypes.string,
     studentInvite: PropTypes.bool,
     user: PropTypes.shape({
-        email: PropTypes.string,
-        name: PropTypes.string,
-        phone_number: PropTypes.string,
-        role: PropTypes.oneOf([
+        accountType: PropTypes.oneOf([
             'instructor',
             'parent',
             'receptionist',
             'student',
         ]).isRequired,
-        user_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        email: PropTypes.string,
+        name: PropTypes.string,
+        phoneNumber: PropTypes.string,
+        user: PropTypes.shape({
+            email: PropTypes.string,
+            name: PropTypes.string,
+            phoneNumber: PropTypes.string,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        }),
     }).isRequired,
 };
 

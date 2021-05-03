@@ -65,4 +65,7 @@ ResponsiveButton.propTypes = {
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     value: PropTypes.string,
     name: PropTypes.string,
+    label: PropTypes.string,
+    children: PropTypes.any,
+    disabled: PropTypes.bool,
 };

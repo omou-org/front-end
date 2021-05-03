@@ -122,7 +122,7 @@ export const closeRegistrationCart = (AuthParent) => {
         let registrationState = JSON.parse(
             sessionStorage.getItem('registrations')
         );
-        Object.entries(registrationState).forEach(([key, _]) => {
+        Object.entries(registrationState).forEach(([key]) => {
             if (key !== 'currentParent') {
                 delete registrationState[key];
             }

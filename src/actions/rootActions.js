@@ -35,7 +35,7 @@ export const typeToPostActions = {
 };
 
 export const fetchData = (type) => {
-    if (typeToEndpoint.hasOwnProperty(type)) {
+    if (Object.prototype.hasOwnProperty.call(typeToEndpoint, type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToFetchActions[type];
         return (dispatch) =>
@@ -60,7 +60,7 @@ export const fetchData = (type) => {
 };
 
 export const postData = (type, body) => {
-    if (typeToEndpoint.hasOwnProperty(type)) {
+    if (Object.prototype.hasOwnProperty.call(typeToEndpoint, type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
         return (dispatch) =>
@@ -94,7 +94,7 @@ export const postData = (type, body) => {
 };
 
 export const patchData = (type, body, id) => {
-    if (typeToEndpoint.hasOwnProperty(type)) {
+    if (Object.prototype.hasOwnProperty.call(typeToEndpoint, type)) {
         const endpoint = typeToEndpoint[type];
         const [successAction, failAction] = typeToPostActions[type];
         return (dispatch) =>

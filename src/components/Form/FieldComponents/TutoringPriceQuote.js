@@ -32,7 +32,7 @@ const GET_TUITION_RULES = gql`
     }
 `;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         marginTop: '5%',
     },
@@ -66,7 +66,9 @@ const TutoringPriceQuote = ({ courseType, mutators }) => {
         return <Loading small />;
     }
     if (error) {
-        return <Typography>There's been an error: {error.message}</Typography>;
+        return (
+            <Typography>{`There's been an error: {error.message}`}</Typography>
+        );
     }
 
     const { priceRules } = data;
@@ -186,6 +188,7 @@ const TutoringPriceQuote = ({ courseType, mutators }) => {
 
 TutoringPriceQuote.propTypes = {
     courseType: PropTypes.string.isRequired,
+    mutators: PropTypes.any,
 };
 
 export default TutoringPriceQuote;

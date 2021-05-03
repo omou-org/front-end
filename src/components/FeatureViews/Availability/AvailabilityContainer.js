@@ -8,6 +8,7 @@ import TimeAvailabilityContainer from './TimeAvailabilityContainer';
 import RequestOutOfOfficeContainer from './RequestOutOfOfficeContainer';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -23,6 +24,12 @@ function TabPanel({ children, value, index, ...other }) {
         </div>
     );
 }
+
+TabPanel.propTypes = {
+    children: PropTypes.any,
+    value: PropTypes.any,
+    index: PropTypes.any,
+};
 
 export default function AvailabilityContainer() {
     const [tab, setTab] = useState(0);

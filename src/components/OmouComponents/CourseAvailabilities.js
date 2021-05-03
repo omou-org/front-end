@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from 'utils';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 
 const CourseAvailabilites = ({ availabilityList, variant, style, rest }) => {
     const renderCourseAvailabilitiesString = (availabilityList) => {
@@ -59,6 +60,13 @@ const CourseAvailabilites = ({ availabilityList, variant, style, rest }) => {
             {renderCourseAvailabilitiesString(availabilityList)}
         </Typography>
     );
+};
+
+CourseAvailabilites.propTypes = {
+    availabilityList: PropTypes.array,
+    variant: PropTypes.string,
+    style: PropTypes.any,
+    rest: PropTypes.any,
 };
 
 export default CourseAvailabilites;

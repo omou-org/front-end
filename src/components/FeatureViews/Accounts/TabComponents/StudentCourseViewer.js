@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Loading from 'components/OmouComponents/Loading';
 import Paper from '@material-ui/core/Paper';
@@ -52,8 +52,6 @@ export const GET_STUDENT_ENROLLMENTS = gql`
 `;
 
 const StudentCourseViewer = ({ studentID, current }) => {
-    const { pathname } = useLocation();
-
     const { data, loading, error } = useQuery(GET_STUDENT_ENROLLMENTS, {
         variables: { studentId: studentID },
     });
@@ -61,13 +59,12 @@ const StudentCourseViewer = ({ studentID, current }) => {
     if (loading) {
         return <Loading />;
     }
-    if (error) {
+    if (error)
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                {`There's been an error! Error: ${error.message}`}
             </Typography>
         );
-    }
 
     const { enrollments } = data;
 

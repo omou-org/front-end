@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Text: {
         marginTop: '65px',
         marginBottom: '30px;',

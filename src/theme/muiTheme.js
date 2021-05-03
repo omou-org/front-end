@@ -3,8 +3,6 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 const breakpoints = createBreakpoints({});
 
-const tabBorderRadius = '10px';
-
 // Font Colors
 export const lightPrimaryFontColor = '#767474';
 export const secondaryFontColor = '#228eb2';
@@ -142,11 +140,35 @@ export const subtitle1 = {
     fontFamily: 'Roboto',
 };
 
-const defaultFontProps = {
-    fontFamily: 'Roboto Slab',
-    fontWeight: 700,
+export const GoogleLoginButtonStyles = {
+    root: {
+        width: '213px',
+        height: '36px',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: gloom,
+        borderRadius: '5px',
+        border: `1px solid ${darkGrey}`,
+        cursor: 'pointer',
+    },
+    logoBackground: {
+        borderTopLeftRadius: '5px',
+        borderBottomLeftRadius: '5px',
+        backgroundColor: '#EEEEEE',
+        width: '40px',
+        height: '35px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        textAlign: 'center',
+        marginLeft: '30px',
+        color: white,
+        ...h5,
+    },
 };
-
 export const new_course_form = {
     dropdowns: {
         width: '216px',

@@ -1,4 +1,9 @@
-import React, { useContext, useState, forwardRef } from 'react';
+import React, {
+    forwardRef,
+    useContext,
+    useImperativeHandle,
+    useState,
+} from 'react';
 import { OOOContext } from './OOOContext';
 import moment from 'moment';
 import Grid from '@material-ui/core/Grid';
@@ -13,13 +18,12 @@ import { KeyboardTimePicker } from '@material-ui/pickers/TimePicker';
 import TimeIcon from '@material-ui/icons/Schedule';
 import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox/Checkbox';
-import { TextField, Container } from '@material-ui/core';
+import { Container, TextField } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog/Dialog';
 import { DateRange } from 'react-date-range';
 import { useSelector } from 'react-redux';
 import DialogActions from '@material-ui/core/DialogActions/DialogActions';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useImperativeHandle } from 'react';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const useStyles = makeStyles({
@@ -43,6 +47,7 @@ const useStyles = makeStyles({
     },
 });
 
+// eslint-disable-next-line react/display-name
 export const SubmitNotice = forwardRef((props, ref) => {
     const [openCalendar, setOpenCalendar] = useState(false);
     const [state, setState] = useState([

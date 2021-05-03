@@ -60,7 +60,7 @@ const UnpaidSessionCard = ({ unpaidStudent }) => {
 
     const studentObj = unpaidStudent.student.user;
     const studentName = fullName(studentObj);
-    const { firstName, lastName, id: studentId } = unpaidStudent.student.user;
+    const { firstName, lastName } = unpaidStudent.student.user;
     const {
         id: courseId,
         courseTitle,
@@ -147,6 +147,7 @@ UnpaidSessionCard.propTypes = {
         course: PropTypes.number.isRequired,
         sessions_left: PropTypes.number.isRequired,
         student: PropTypes.number.isRequired,
+        sessionsLeft: PropTypes.number,
     }).isRequired,
 };
 

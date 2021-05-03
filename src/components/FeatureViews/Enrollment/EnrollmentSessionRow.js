@@ -7,8 +7,9 @@ import Moment from 'react-moment';
 import { makeStyles } from '@material-ui/core/styles';
 import TableRow from '@material-ui/core/TableRow';
 import { TableCell } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     darkRow: {
         backgroundColor: '#EEEEEE',
     },
@@ -72,5 +73,11 @@ function EnrollmentSessionRow({ session, enrollmentData, highlightSession }) {
         </TableRow>
     );
 }
+
+EnrollmentSessionRow.propTypes = {
+    session: PropTypes.object,
+    enrollmentData: PropTypes.object,
+    highlightSession: PropTypes.bool,
+};
 
 export default EnrollmentSessionRow;

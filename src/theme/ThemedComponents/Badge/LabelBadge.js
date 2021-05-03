@@ -148,4 +148,6 @@ LabelBadge.propTypes = {
         'round-negative',
         'round-count',
     ]).isRequired,
+    children: PropTypes.any,
+    style: PropTypes.any,
 };

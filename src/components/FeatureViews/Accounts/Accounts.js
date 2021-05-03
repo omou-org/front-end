@@ -271,7 +271,7 @@ const Accounts = () => {
                 </TableBody>
             </Table>
         ),
-        [displayUsers]
+        [displayUsers, classes.tableRowStyle, classes.tableCellStyle, userID]
     );
 
     const cardView = useMemo(

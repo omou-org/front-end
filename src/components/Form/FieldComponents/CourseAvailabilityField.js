@@ -4,6 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useFormState } from 'react-final-form';
 import React from 'react';
 import { TimePicker } from './Fields';
+import PropTypes from 'prop-types';
 
 const CourseAvailabilityField = ({ count }) => {
     const { values } = useFormState();
@@ -55,6 +56,10 @@ const CourseAvailabilityField = ({ count }) => {
             </Grid>
         </Grid>
     );
+};
+
+CourseAvailabilityField.propTypes = {
+    count: PropTypes.any,
 };
 
 export default CourseAvailabilityField;

@@ -14,8 +14,6 @@ import AuthenticatedNavigationView from './AuthenticatedNavigationView';
 import LoginPage from '../Authentication/LoginPage';
 import { setToken } from '../../actions/authActions';
 
-const { useEffect } = require('react');
-
 const useStyles = makeStyles({
     navigationIconStyle: {
         height: '50px',

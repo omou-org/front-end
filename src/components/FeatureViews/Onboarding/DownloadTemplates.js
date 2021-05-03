@@ -4,7 +4,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Icon: {
         border: '2px solid #28ABD5',
         borderRadius: '8px',

@@ -16,7 +16,7 @@ const ErrorNotFoundPage = () => {
                 page not found.
                 <div className='space' />
                 <Button className='backButton' onClick={goBack}>
-                    <span className='buttonText'>Let's go back.</span>
+                    <span className='buttonText'>{"Let's go back."}</span>
                 </Button>
             </Typography>
         </div>

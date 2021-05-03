@@ -50,8 +50,6 @@
     "sessions": [
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -63,8 +61,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -76,8 +72,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -89,8 +83,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -102,8 +94,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -115,8 +105,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -128,8 +116,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -141,8 +127,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -154,8 +138,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -167,8 +149,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -180,8 +160,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -193,8 +171,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -206,8 +182,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -219,8 +193,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -232,8 +204,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -245,8 +215,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -258,8 +226,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -271,8 +237,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -284,8 +248,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -297,8 +259,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -310,8 +270,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -323,8 +281,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -336,8 +292,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -349,8 +303,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"
@@ -362,8 +314,6 @@
         },
         {
             "course": {
-                "startTime": "15:00:00",
-                "endTime": "16:00:00",
                 "id": "1",
                 "hourlyTuition": 10,
                 "__typename": "CourseType"

@@ -12,6 +12,7 @@ import Box from '@material-ui/core/Box';
 import { useHistory } from 'react-router-dom';
 import ActiveInvoices from './ActiveInvoices';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -33,6 +34,12 @@ function TabPanel(props) {
     );
 }
 
+TabPanel.propTypes = {
+    children: PropTypes.any,
+    value: PropTypes.any,
+    index: PropTypes.any,
+};
+
 export default function ManagePayments() {
     const [value, setValue] = useState(0);
     const history = useHistory();
@@ -43,7 +50,7 @@ export default function ManagePayments() {
             if (newTab === 0) history.push('/my-payments');
             if (newTab === 1) history.push('/my-payments/history');
         },
-        [setValue]
+        [setValue, history]
     );
 
     const useStyles = makeStyles({

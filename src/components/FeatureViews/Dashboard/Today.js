@@ -69,7 +69,7 @@ const Today = (filter) => {
         return (
             <>
                 {sessionArray.map((session) => (
-                    <Grid item md={6} lg={3}>
+                    <Grid item md={6} lg={3} key={session.id}>
                         <TodayCard key={session} session={session} />
                     </Grid>
                 ))}

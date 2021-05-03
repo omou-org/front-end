@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
 import blue from '@material-ui/core/colors/blue';
-import Button from '@material-ui/core/Button/Button';
 import Delete from '@material-ui/icons/Delete';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -449,6 +448,9 @@ DiscountRow.propTypes = {
         bar: PropTypes.any,
         checked: PropTypes.any,
         switchBase: PropTypes.any,
+        colorBar: PropTypes.any,
+        colorChecked: PropTypes.any,
+        colorSwitchBase: PropTypes.any,
     }),
     discount: PropTypes.object.isRequired,
     type: PropTypes.oneOf(['DateRange', 'MultiCourse', 'PaymentMethod'])

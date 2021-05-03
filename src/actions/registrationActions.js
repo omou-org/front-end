@@ -162,7 +162,10 @@ export const submitForm = (state, id) => {
             const course = formatCourse(state, 'class');
 
             for (const key in course) {
-                if (course.hasOwnProperty(key) && !course[key]) {
+                if (
+                    Object.prototype.hasOwnProperty.call(course, key) &&
+                    !course[key]
+                ) {
                     delete course[key];
                 }
             }

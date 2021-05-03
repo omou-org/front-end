@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import { TableHeadSecondary } from 'theme/ThemedComponents/Table/TableHeadSecondary';
@@ -12,6 +11,7 @@ import { fullName } from '../../../utils';
 import { highlightColor } from '../../../theme/muiTheme';
 import SessionEmailOrNotesModal from './ModalTextEditor';
 import ClassEnrollmentRow from './ClassEnrollmentRow';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -95,13 +95,13 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                     ? -1
                                     : 0
                             )
-                            .map((students) => {
+                            .map((enrollment) => {
                                 const {
                                     accountType,
                                     primaryParent,
                                     user,
                                     studentschoolinfoSet,
-                                } = students.student;
+                                } = enrollment.student;
                                 const fullStudentName = fullName(user);
                                 const studentId = user.id;
                                 const concatFullParentName = primaryParent
@@ -111,8 +111,8 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                     primaryParent?.accountType;
                                 const phoneNumber = primaryParent?.phoneNumber;
                                 const parentId = primaryParent?.user.id;
-                                const parentEmail = primaryParent?.user.email;
                                 const studentInfo = studentschoolinfoSet;
+                                const studentEmail = user.email;
                                 return (
                                     <ClassEnrollmentRow
                                         fullStudentName={fullStudentName}
@@ -126,6 +126,8 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
                                         phoneNumber={phoneNumber}
                                         handleOpenModal={handleOpenModal}
                                         studentInfo={studentInfo}
+                                        studentEmail={studentEmail}
+                                        key={enrollment.id}
                                     />
                                 );
                             })}
@@ -142,6 +144,11 @@ const ClassEnrollmentList = ({ enrollmentList, loggedInUser }) => {
             />
         </Grid>
     );
+};
+
+ClassEnrollmentList.propTypes = {
+    enrollmentList: PropTypes.array,
+    loggedInUser: PropTypes.any,
 };
 
 export default ClassEnrollmentList;

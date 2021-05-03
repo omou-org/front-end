@@ -58,7 +58,7 @@ const ImportFlow = () => {
     const [skipped, setSkipped] = React.useState(new Set());
     const steps = getSteps();
 
-    const isStepOptional = (step) => {
+    const isStepOptional = () => {
         return false;
     };
 
@@ -125,7 +125,7 @@ const ImportFlow = () => {
                 {activeStep === steps.length ? (
                     <div>
                         <Typography className={classes.instructions}>
-                            All steps completed - you're finished
+                            {`All steps completed - you're finished`}
                         </Typography>
                         <ResponsiveButton
                             onClick={handleReset}

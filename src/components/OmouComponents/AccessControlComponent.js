@@ -10,6 +10,7 @@ const AccessControlComponent = ({ permittedAccountTypes, children }) => {
 
 AccessControlComponent.propTypes = {
     permittedAccountTypes: PropTypes.arrayOf(PropTypes.string),
+    children: PropTypes.any,
 };
 
 export default AccessControlComponent;

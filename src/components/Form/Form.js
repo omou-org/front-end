@@ -18,6 +18,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     buttons: {
@@ -233,6 +234,15 @@ const Form = ({
             </form>
         );
     };
+
+    Render.propTypes = {
+        handleSubmit: PropTypes.func,
+        errors: PropTypes.any,
+        submitError: PropTypes.any,
+        submitting: PropTypes.any,
+        form: PropTypes.any,
+    };
+
     return (
         <div className={classes.root}>
             <Typography
@@ -265,6 +275,14 @@ const Form = ({
             )}
         </div>
     );
+};
+
+Form.propTypes = {
+    base: PropTypes.any,
+    initialData: PropTypes.any,
+    title: PropTypes.string,
+    onSubmit: PropTypes.func,
+    receipt: PropTypes.any,
 };
 
 export default Form;
