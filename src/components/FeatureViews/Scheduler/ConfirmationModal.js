@@ -47,12 +47,7 @@ const ConfirmationModal = ({ openState, setOpenState, subject, instructor, dateT
 
   const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION_MUTATION, {
     onError: (err) => console.error(err),
-    update: ((cache, { data }) => {
-        console.log(cache)
-        console.log(data)
-        // const { session } = data.createSession
-        // const cachedSessions = cache.readQuery()
-    }),
+    onCompleted: () => setOpenState({ ...openState, confirmationState: false })
   });
 
   const handleUpdateSession = () => {
