@@ -4,8 +4,12 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import BusinessHoursForm from '../../Form/BusinessHoursForm';
+import Loading from '../../OmouComponents/Loading';
+import { capitalizeString } from '../../../utils';
+import moment from 'moment';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { white, omouBlue, darkGrey, body1 } from '../../../theme/muiTheme';
+import { useQuery, useMutation, gql } from '@apollo/client';
 
 const useStyles = makeStyles({
     containerStyles: {
@@ -31,38 +35,128 @@ const useStyles = makeStyles({
         borderRadius: '5px',
         width: '16.5rem',
         height: '2rem',
-        ...body1
+        ...body1,
     },
 });
 
-const businessInfo = {
-    name: 'Bright Stars Academy',
-    phone: '456-456-3577',
-    email: 'ask@brightstars.com',
-    address: '123 North Ln San Francisco, CA 94578',
-    businessHours: [
-        { day: 'Mon', hours: '9:00 - 5:00 pm' },
-        { day: 'Tue', hours: '9:00 - 5:00 pm' },
-        { day: 'Wed', hours: '9:00 - 5:00 pm' },
-        { day: 'Thu', hours: '9:00 - 5:00 pm' },
-        { day: 'Fri', hours: '9:00 - 5:00 pm' },
-        { day: 'Sat', hours: '9:00 - 5:00 pm' },
-        { day: 'Sun', hours: 'Closed' },
-    ],
-};
+const GET_BUSINESS = gql`
+    query {
+        business {
+            id
+            name
+            phoneNumber
+            email
+            address
+            availabilityList {
+                dayOfWeek
+                startTime
+                endTime
+            }
+        }
+    }
+`;
+
+const UPDATE_BUSINESS = gql`
+    mutation MyMutation(
+        $address: String
+        $email: String
+        $name: String
+        $phoneNumber: String
+    ) {
+        updateBusiness(
+            address: $address
+            email: $email
+            name: $name
+            phoneNumber: $phoneNumber
+            availabilities: {
+                dayOfWeek: MONDAY
+                startTime: "11:00"
+                endTime: "3:00"
+            }
+        ) {
+            business {
+                id
+                name
+                address
+                email
+                phoneNumber
+            }
+            updated
+        }
+    }
+`;
 
 const BusinessDetails = () => {
     const classes = useStyles();
-    const { name, phone, email, address, businessHours } = businessInfo;
     const [activeStep, setActiveStep] = useState(0);
+    const [updateData, setUpdateData] = useState({
+        businessName: '',
+        businessPhone: '',
+        businessEmail: '',
+        businessAddress: '',
+    });
 
-    const handleStepChange = (e) => {
-        setActiveStep((prevState) => prevState + 1);
+    const [submitData] = useMutation(UPDATE_BUSINESS, {
+        onCompleted: () => {
+            handleBackStep();
+        },
+        update: (cache, data) => {
+            const updatedBusiness = data.data.updateBusiness.business;
+            cache.writeQuery(
+                { 
+                    query: GET_BUSINESS, 
+                    data: {
+                        business: updatedBusiness
+                    }
+                })
+        }
+    });
+
+    const handleStepChange = () => setActiveStep((prevState) => prevState + 1);
+    const handleBackStep = () => setActiveStep((prevState) => prevState - 1);
+
+    const handleOnChange = (e) => {
+        const { name, value } = e.target;
+        setUpdateData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
-    const handleBackStep = () => {
-        setActiveStep((prevState) => prevState - 1);
+    const onSubmit = () => {
+        submitData({
+            variables: {
+                name: updateData.businessName,
+                phone: updateData.businessPhone,
+                email: updateData.email,
+                address: updateData.businessAddress,
+            },
+        });
     };
+
+    const { loading, error, data } = useQuery(GET_BUSINESS, {
+        onCompleted: (data) => {
+            setUpdateData({
+                businessName: business.name,
+                businessPhone: business.phoneNumber,
+                businessEmail: business.email,
+                businessAddress: business.address
+            });
+        },
+    });
+
+    if (loading) {
+        return <Loading />;
+    }
+    if (error) {
+        return (
+            <Typography>
+                There's been an error! Error: {error.message}
+            </Typography>
+        );
+    }
+
+    const { business } = data;
 
     const getBusinessDetailsContent = (step) => {
         switch (step) {
@@ -102,7 +196,7 @@ const BusinessDetails = () => {
                                 Business Name
                             </Typography>
                             <Typography align='left' variant='body1'>
-                                {name}
+                                {business.name}
                             </Typography>
                         </Grid>
 
@@ -120,7 +214,7 @@ const BusinessDetails = () => {
                                 Business Phone
                             </Typography>
                             <Typography align='left' variant='body1'>
-                                {phone}
+                                {business.phoneNumber}
                             </Typography>
                         </Grid>
 
@@ -138,7 +232,7 @@ const BusinessDetails = () => {
                                 Business Email
                             </Typography>
                             <Typography align='left' variant='body1'>
-                                {email}
+                                {business.email}
                             </Typography>
                         </Grid>
 
@@ -156,7 +250,7 @@ const BusinessDetails = () => {
                                 Business Address
                             </Typography>
                             <Typography align='left' variant='body1'>
-                                {address}
+                                {business.address}
                             </Typography>
                         </Grid>
 
@@ -173,9 +267,16 @@ const BusinessDetails = () => {
                             >
                                 Business Hours
                             </Typography>
-                            {businessHours.map(({ day, hours }) => (
+                            {business.availabilityList.map((avail) => (
                                 <Typography align='left' variant='body1'>
-                                    {day}: {hours}
+                                    {capitalizeString(avail.dayOfWeek)}:{' '}
+                                    {moment(avail.startTime, [
+                                        'HH:mm:ss',
+                                    ]).format('h:mm')}{' '}
+                                    -{' '}
+                                    {moment(avail.endTime, ['HH:mm:ss']).format(
+                                        'h:mm '
+                                    )}
                                 </Typography>
                             ))}
                         </Grid>
@@ -206,7 +307,7 @@ const BusinessDetails = () => {
                             <Grid item>
                                 <ResponsiveButton
                                     variant='contained'
-                                    // onClick={}
+                                    onClick={onSubmit}
                                 >
                                     update
                                 </ResponsiveButton>
@@ -228,9 +329,10 @@ const BusinessDetails = () => {
                             </Typography>
                             <TextField
                                 variant='outlined'
-                                defaultValue={name}
-                                // value={}
-                                // onChange={}
+                                defaultValue={business.name}
+                                value={updateData.businessName}
+                                name='businessName'
+                                onChange={handleOnChange}
                                 fullWidth
                                 InputProps={{
                                     classes: {
@@ -255,9 +357,10 @@ const BusinessDetails = () => {
                             </Typography>
                             <TextField
                                 variant='outlined'
-                                defaultValue={phone}
-                                // value={}
-                                // onChange={}
+                                defaultValue={business.phoneNumber}
+                                value={updateData.businessPhone}
+                                name='businessPhone'
+                                onChange={handleOnChange}
                                 fullWidth
                                 InputProps={{
                                     classes: {
@@ -282,9 +385,10 @@ const BusinessDetails = () => {
                             </Typography>
                             <TextField
                                 variant='outlined'
-                                defaultValue={email}
-                                // value={}
-                                // onChange={}
+                                defaultValue={business.email}
+                                value={updateData.businessEmail}
+                                name='businessEmail'
+                                onChange={handleOnChange}
                                 fullWidth
                                 InputProps={{
                                     classes: {
@@ -309,9 +413,10 @@ const BusinessDetails = () => {
                             </Typography>
                             <TextField
                                 variant='outlined'
-                                defaultValue={address}
-                                // value={}
-                                // onChange={}
+                                defaultValue={business.address}
+                                value={updateData.businessAddress}
+                                name='businessAddress'
+                                onChange={handleOnChange}
                                 fullWidth
                                 InputProps={{
                                     classes: {
