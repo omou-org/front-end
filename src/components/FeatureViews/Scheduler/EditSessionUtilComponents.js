@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles, Grid, FormControl, Select, MenuItem } from '@material-ui/core';
-import { cloudy, omouBlue, highlightColor } from '../../../theme/muiTheme';
+import { omouBlue, highlightColor } from '../../../theme/muiTheme';
 import { BootstrapInput } from '../Courses/CourseManagementContainer';
 import { fullName } from 'utils';
 import Loading from '../../OmouComponents/Loading';

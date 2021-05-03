@@ -13,15 +13,11 @@ import {
     Divider,
 } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
 import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
-import ConfirmIcon from '@material-ui/icons/CheckCircle';
-import { LocalConvenienceStoreOutlined, QueryBuilder } from '@material-ui/icons';
-import UnconfirmIcon from '@material-ui/icons/Cancel';
+import { QueryBuilder } from '@material-ui/icons';
 import { USER_TYPES, fullName } from '../../../utils';
 import moment from 'moment';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import { EditSessionDropDown } from './EditSessionUtilComponents';
 import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
@@ -29,7 +25,6 @@ import LeavePageModal from '../../OmouComponents/LeavePageModal';
 
 import 'date-fns';
 import {
-    MuiPickersUtilsProvider,
     KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
@@ -175,14 +170,6 @@ const CHECK_SCHEDULE_CONFLICTS = gql`
     }
 `;
 
-const styles = (username) => ({
-    backgroundColor: stringToColor(username),
-    color: 'white',
-    width: '3vw',
-    height: '3vw',
-    fontSize: 15,
-    marginRight: 10,
-});
 
 const SingleSessionEdit = () => {
     const { session_id } = useParams();
@@ -212,12 +199,10 @@ const SingleSessionEdit = () => {
         { loading: conflictLoading, data: conflictData },
     ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
         onCompleted: ({ validateSessionSchedule }) => {
-            const { status, reason } = validateSessionSchedule;
-            if (status) {
-                console.log('true');
-            } else {
+            const { status } = validateSessionSchedule;
+            if (!status) {
                 setSnackBarState(true);
-            }
+            }; 
         },
     });
 
@@ -231,37 +216,27 @@ const SingleSessionEdit = () => {
 
     const {
         course,
-        endDatetime,
         id,
-        title,
-        instructor,
         startDatetime,
     } = data.session;
 
     var {
-        courseCategory,
         enrollmentSet,
-        courseId,
         room,
-        endDate,
-        startDate,
     } = course;
     const { courseCategories: subjects, instructors } = data;
 
-    const confirmed = course.isConfirmed;
     const course_id = course.id;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const monthAndDate = moment(sessionDate).format('MMMM DD');
     const startSessionTime = moment(sessionStartTime).format('h:mm A');
     const endSessionTime = moment(sessionEndTime).format('h:mm A');
-    const endDateFormat = moment(endDate).format('MMMM DD');
-    const startDateFormat = moment(startDate).format('MMMM DD');
 
     const handleTimeDateChange = (setState) => async (date) => {
-        console.log(date)
         setState(date._d);
         if (!sessionStartTime || !sessionDate || !sessionEndTime) {
+            // Place holder for other validation
             console.log('blocked');
         } else {
             await checkScheduleConflicts({
@@ -324,10 +299,11 @@ const SingleSessionEdit = () => {
         vertical: 'bottom',
         horizontal: 'left',
     };
+
+    const checkAllFields = subjectValue !== '' && instructorValue !== '';
     const startSessionTimeInISOFormat = moment(`${moment(sessionDate).format('MMMM DD YYYY')} ${startSessionTime}`).format();
     const endSessionTimeInISOFormat = moment(`${moment(sessionDate).format('MMMM DD YYYY')} ${endSessionTime}`).format();  // console.log(moment(sessionDate).format())
 
-    // console.log(moment(`${dayOfWeek} ${monthAndDate} ${startSessionTime}-${endSessionTime}`))
     return (
         <>
             <Prompt
@@ -452,6 +428,7 @@ const SingleSessionEdit = () => {
                             className={classes.save_button}
                             onClick={handleOpenModal}
                             value='confirm'
+                            disabled={!checkAllFields}
                         >
                             Save
                         </Button>
