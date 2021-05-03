@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { white, omouBlue, darkGrey, highlightColor, h6, h5, goth, gloom } from '../../../theme/muiTheme';
+import {
+    white,
+    omouBlue,
+    darkGrey,
+    highlightColor,
+    h6,
+    goth,
+    gloom,
+} from '../../../theme/muiTheme';
 
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -11,8 +19,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import gql from 'graphql-tag';
-import { downloadOmouTemplate, useUploadOmouTemplate } from '../../../utils';
-
+import { downloadOmouTemplate } from '../../../utils';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     modalStyle: {
@@ -77,37 +85,39 @@ const useStyles = makeStyles({
     },
     rightCell: {
         borderRight: '1px solid gray',
-    }
+    },
 });
 
 const GET_TEMPLATE = {
-    "Accounts": gql`query {
-                 accountTemplates
-            }`,
-    "Courses": gql`query {
-                courseTemplates
-            }`,
-    "Course Enrollments": gql`query {
+    Accounts: gql`
+        query {
+            accountTemplates
+        }
+    `,
+    Courses: gql`
+        query {
             courseTemplates
-    }`
-}
-
-
+        }
+    `,
+    'Course Enrollments': gql`
+        query {
+            courseTemplates
+        }
+    `,
+};
 
 const BulkUploadModal = ({ closeModal }) => {
-
     const [template, setTemplate] = useState('');
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const [dropDown, setDropDown] = useState('rotate(0deg)');
-    const { uploadTemplate } = useUploadOmouTemplate();
-    const [uploadResponse, setUploadResponse] = useState(null);
+    // const { uploadTemplate } = useUploadOmouTemplate();
 
     const handleTemplateChange = (e) => {
         setTemplate(e.target.value);
     };
 
-    const handleStepChange = (e) => {
+    const handleStepChange = () => {
         setActiveStep((prevState) => prevState + 1);
     };
 
@@ -115,55 +125,23 @@ const BulkUploadModal = ({ closeModal }) => {
         setActiveStep((prevState) => prevState - 1);
     };
 
-    const handleDropDown = () => dropDown === 'rotate(0deg)' ? setDropDown('rotate(180deg)') : setDropDown('rotate(0deg)')
-
-
+    const handleDropDown = () =>
+        dropDown === 'rotate(0deg)'
+            ? setDropDown('rotate(180deg)')
+            : setDropDown('rotate(0deg)');
 
     function handleDownloadTemplate() {
-        downloadOmouTemplate(GET_TEMPLATE[template], template.split(' ').join('_').toLowerCase());
+        downloadOmouTemplate(
+            GET_TEMPLATE[template],
+            template.split(' ').join('_').toLowerCase()
+        );
     }
 
     const uploadFile = async () => {
-        const file = document.getElementById('xml-upload').files[0];
-        let response = await uploadTemplate(file, template)
-        setUploadResponse(response)
-        handleStepChange()
-    }
-
-
-    const accountsTable = [
-        { dataField: 'Parent First Name', useCase: `Shown in parent's account profile` },
-        { dataField: 'Parent Last Name', useCase: `Shown in parent's account profile` },
-        { dataField: 'Parent Email', useCase: `Shown in parent’s account profile. Used as a unique identifier for the account.  Used to contact/send automated emails to parent. Used to create parent portal account.` },
-        { dataField: 'Parent Phone', useCase: `Shown in parent’s account profile. Used to contact/send automated SMS to parent.` },
-        { dataField: 'Parent Zip Code (Optional)', useCase: `Shown in parent's account profile` },
-        { dataField: 'Student First Name', useCase: `Shown in parent's account profile` },
-        { dataField: 'Student Last Name', useCase: `Shown in parent's account profile` },
-        { dataField: 'Student Email', useCase: `Shown in student’s account profile. Used as a unique identifier for the account. ` },
-        { dataField: 'Student Birthday (Optional)', useCase: `Shown in student’s account profile. Used as a unique identifier for the account. ` },
-        { dataField: 'Student School (Optional)', useCase: `Shown in student’s account profile.` },
-        { dataField: 'Student Grade Level (Optional)', useCase: `Shown in student’s account profile.` },
-        { dataField: 'Instructor First Name', useCase: `Shown in instructor’s account profile.` },
-        { dataField: 'Instructor Last Name', useCase: `Shown in instructor’s account profile.` },
-        { dataField: 'Instructor Email', useCase: `Shown in instructor’s account profile. Used as a unique identifier for the account. Used to contact instructor.` },
-        { dataField: 'Instructor Phone', useCase: `Shown in instructor’s account profile. Used to contact instructor.` },
-        { dataField: 'Instructor Biography (Optional)', useCase: `Shown in instructor’s account profile. Used to match instructor with students.` },
-        { dataField: 'Instructor Years of Experience (Optional)', useCase: `Shown in instructor’s account profile. Used to match instructor with students.` },
-        { dataField: 'Instructor Address (Optional)', useCase: `Shown in instructor’s account profile.` }
-    ]
-
-    const coursesTable = [
-        { dataField: 'Course Subject', useCase: `Shown in parent's account profile` },
-        { dataField: 'Course Name', useCase: `Indicates name of the course.` },
-        { dataField: 'Course Instructor', useCase: `Indicates who’s teaching the course.` },
-        { dataField: 'Instructor Confirmed', useCase: `Indicates whether the instructor has confirmed teaching the course.` },
-        { dataField: 'Course Description', useCase: `A shory description of what the course is about.` },
-        { dataField: 'Academic Level', useCase: `Indicates what academic level the course is designed for. Academic levels are categorized as Elementary, Middle School, High School or College.` },
-        { dataField: 'Room Location', useCase: `Indicates location of the course. Can be a physical location or an online link.` },
-        { dataField: 'Start/End Date', useCase: `Time span of when the course takes place.` },
-        { dataField: 'Session Days', useCase: `Days of the week when the course takes place (Monday - Sunday).` },
-        { dataField: 'Start Time/End Time', useCase: `Time of day when the course takes place. Currently we only support a single time input per day per course.` },
-    ]
+        // const file = document.getElementById('xml-upload').files[0];
+        // let response = await uploadTemplate(file, template);
+        handleStepChange();
+    };
 
     const getStepContent = (step) => {
         switch (step) {
@@ -188,63 +166,87 @@ const BulkUploadModal = ({ closeModal }) => {
                                 data you want to upload, fill out the template
                                 and upload it back Omou.
                             </Typography>
-                            <a className={`${classes.modalTypography} ${classes.useCaseLink}`} href="/business-use-cases" target="_blank" rel="noopener noreferrer" type="button">
+                            <a
+                                className={`${classes.modalTypography} ${classes.useCaseLink}`}
+                                href='/business-use-cases'
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                type='button'
+                            >
                                 Why am I entering this data?
-                                </a>
+                            </a>
                             <div style={{ margin: '1em 0px' }}>
                                 <Select
                                     onOpen={handleDropDown}
                                     onClose={handleDropDown}
                                     SelectDisplayProps={{
-                                        className: classes.selectDisplay
+                                        className: classes.selectDisplay,
                                     }}
-
                                     disableUnderline
-                                    MenuProps={
-                                        {
-                                            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-                                            getContentAnchorEl: null,
-                                        }
-                                    }
+                                    MenuProps={{
+                                        anchorOrigin: {
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        },
+                                        getContentAnchorEl: null,
+                                    }}
                                     IconComponent={() => (
                                         <SvgIcon
-                                            style={{ position: 'absolute', top: '24%', left: '84.25%', pointerEvents: 'none', transform: dropDown }}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '24%',
+                                                left: '84.25%',
+                                                pointerEvents: 'none',
+                                                transform: dropDown,
+                                            }}
                                             fontSize='small'
-                                            viewBox="0 0 16 10"
+                                            viewBox='0 0 16 10'
                                         >
-                                            <path d="M1.90255 0.623718L0.57505 1.95122L8.00005 9.37622L15.425 1.95122L14.0975 0.623718L8.00005 6.72122L1.90255 0.623718V0.623718Z" fill="#43B5D9" />
+                                            <path
+                                                d='M1.90255 0.623718L0.57505 1.95122L8.00005 9.37622L15.425 1.95122L14.0975 0.623718L8.00005 6.72122L1.90255 0.623718V0.623718Z'
+                                                fill='#43B5D9'
+                                            />
                                         </SvgIcon>
                                     )}
                                     value={template}
                                     displayEmpty
                                     onChange={handleTemplateChange}
                                 >
-
                                     <MenuItem
                                         style={{ display: 'none' }}
                                         value=''
-                                        ListItemClasses={{ selected: classes.menuSelected }}
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
                                         className={classes.menuSelect}
                                         disabled
-                                        style={{ display: 'none' }}
+                                        
                                     >
                                         Select Template
                                     </MenuItem>
                                     <MenuItem
                                         value='Accounts'
-                                        ListItemClasses={{ selected: classes.menuSelected }}
-                                        className={classes.menuSelect}>
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
+                                        className={classes.menuSelect}
+                                    >
                                         Accounts
                                     </MenuItem>
                                     <MenuItem
                                         value='Courses'
-                                        ListItemClasses={{ selected: classes.menuSelected }}
-                                        className={classes.menuSelect}>
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
+                                        className={classes.menuSelect}
+                                    >
                                         Courses
                                     </MenuItem>
                                     <MenuItem
                                         value='Course Enrollments'
-                                        ListItemClasses={{ selected: classes.menuSelected }}
+                                        ListItemClasses={{
+                                            selected: classes.menuSelected,
+                                        }}
                                         className={classes.menuSelect}
                                     >
                                         Course Enrollments
@@ -272,9 +274,14 @@ const BulkUploadModal = ({ closeModal }) => {
                                     cancel
                                 </ResponsiveButton>
                                 <ResponsiveButton
-                                    style={{ border: 'none', background: white }}
+                                    style={{
+                                        border: 'none',
+                                        background: white,
+                                    }}
                                     disabled={!template && true}
-                                    variant={template ? 'outlined' : 'contained'}
+                                    variant={
+                                        template ? 'outlined' : 'contained'
+                                    }
                                     template={template}
                                     onClick={handleStepChange}
                                 >
@@ -286,7 +293,11 @@ const BulkUploadModal = ({ closeModal }) => {
                 );
             case 1:
                 return (
-                    <Grid container style={{ height: '19em' }} className={classes.modalStyle}>
+                    <Grid
+                        container
+                        style={{ height: '19em' }}
+                        className={classes.modalStyle}
+                    >
                         <Grid item style={{ padding: '2em' }} xs={12}>
                             <Typography
                                 className={classes.modalTypography}
@@ -332,7 +343,11 @@ const BulkUploadModal = ({ closeModal }) => {
                 );
             case 2:
                 return (
-                    <Grid container style={{ height: '17em' }} className={classes.modalStyle}>
+                    <Grid
+                        container
+                        style={{ height: '17em' }}
+                        className={classes.modalStyle}
+                    >
                         <Grid item style={{ padding: '2em' }} xs={12}>
                             <Typography
                                 className={classes.modalTypography}
@@ -355,7 +370,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                     className={`${classes.modalTypography} ${classes.errorLink}`}
                                 >
                                     Download Error File
-                            </Link>
+                                </Link>
 
                                 <IconButton>
                                     <SvgIcon>
@@ -367,7 +382,11 @@ const BulkUploadModal = ({ closeModal }) => {
                                 </IconButton>
                             </div>
 
-                            <Grid style={{ textAlign: 'right', marginTop: '2em' }} item xs={12}>
+                            <Grid
+                                style={{ textAlign: 'right', marginTop: '2em' }}
+                                item
+                                xs={12}
+                            >
                                 <ResponsiveButton
                                     style={{ border: 'none' }}
                                     variant='outlined'
@@ -388,4 +407,9 @@ const BulkUploadModal = ({ closeModal }) => {
     return <>{getStepContent(activeStep)}</>;
 };
 
+BulkUploadModal.propTypes = {
+    closeModal: PropTypes.func
+};
+
 export default BulkUploadModal;
+

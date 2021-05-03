@@ -23,12 +23,13 @@ export default (state = initialState.Course, { payload, type }) => {
             return handleNotesPost(state, payload);
         case actions.DELETE_COURSE_NOTE_SUCCESSFUL:
             return handleNoteDelete(state, payload);
-        case actions.ADD_SMALL_GROUP_REGISTRATION:
+        case actions.ADD_SMALL_GROUP_REGISTRATION: {
             const { new_course } = payload;
             return handleCoursePost(state, new_course);
+        }
         case actions.GET_COURSE_SEARCH_QUERY_SUCCESS:
             return handleCourseSearchResults(state, payload);
-        case actions.DELETE_ENROLLMENT_SUCCESS:
+        case actions.DELETE_ENROLLMENT_SUCCESS: {
             const newState = { ...state };
             const courseRoster =
                 newState.NewCourseList[payload.courseID].roster;
@@ -37,6 +38,7 @@ export default (state = initialState.Course, { payload, type }) => {
                 1
             );
             return JSON.parse(JSON.stringify(newState));
+        }
         default:
             return state;
     }

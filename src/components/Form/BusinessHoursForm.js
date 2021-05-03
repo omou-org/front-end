@@ -5,6 +5,7 @@ import {TimePicker} from "./FieldComponents/Fields";
 import Grid from "@material-ui/core/Grid";
 import OnboardingControls from "../FeatureViews/Onboarding/OnboardingControls";
 import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveButton";
+import PropTypes  from 'prop-types';
 
 const BusinessDayHoursField = ({day}) => {
 	return (<Grid
@@ -32,62 +33,69 @@ const BusinessDayHoursField = ({day}) => {
 		<Grid item xs={2}>
 			<Checkboxes name={`Closed-${day}`} data={[{label: 'Closed'}]}/>
 		</Grid>
-	</Grid>)
+	</Grid>);
+};
+
+
+BusinessDayHoursField.propTypes = {
+    day: PropTypes.string
+};
+export default function BusinessHoursForm({ isOnboarding }) {
+    const onSubmit = async () => {};
+
+    // const daysOfWeekLong = [
+    //     'Monday',
+    //     'Tuesday',
+    //     'Wednesday',
+    //     'Thursday',
+    //     'Friday',
+    //     'Saturday',
+    //     'Sunday',
+    // ];
+    const daysOfWeekShort = [
+        'Mon',
+        'Tues',
+        'Wed',
+        'Thurs',
+        'Fri',
+        'Sat',
+        'Sun',
+    ];
+
+    return (
+        <ReactForm
+            onSubmit={onSubmit}
+            render={({ handleSubmit }) => (
+                <Grid
+                    item
+                    container
+                    spacing={3}
+                    direction='column'
+                    alignItems='center'
+                    justify='center'
+                >
+                    <Grid item xs={12} container>
+                        {daysOfWeekShort.map((day, i) => (
+                            <BusinessDayHoursField key={i} day={day} />
+                        ))}
+                    </Grid>
+                    <Grid item>
+                        {isOnboarding ? (
+                            <OnboardingControls preNextHandler={handleSubmit} />
+                        ) : (
+                            <ResponsiveButton onClick={handleSubmit}>
+                                Submit
+                            </ResponsiveButton>
+                        )}
+                    </Grid>
+                </Grid>
+            )}
+        />
+    );
 }
 
-export default function BusinessHoursForm({isOnboarding}) {
-	const onSubmit = async ({bizHours}) => {
+BusinessHoursForm.propTypes = {
+    isOnboarding : PropTypes.bool
+  };
 
-	}
-
-	const daysOfWeekLong = [
-		'Monday',
-		'Tuesday',
-		'Wednesday',
-		'Thursday',
-		'Friday',
-		'Saturday',
-		'Sunday',
-	];
-	const daysOfWeekShort = [
-		'Mon',
-		'Tues',
-		'Wed',
-		'Thurs',
-		'Fri',
-		'Sat',
-		'Sun',
-	];
-
-	return (<ReactForm
-		onSubmit={onSubmit}
-		render={({handleSubmit}) => (
-			<Grid item
-				  container
-				  spacing={3}
-				  direction='column'
-				  alignItems='center'
-				  justify='center'
-			>
-				<Grid item xs={12}
-					  container
-				>
-					{
-						daysOfWeekShort.map((day) => (
-							<BusinessDayHoursField day={day}/>
-						))
-					}
-				</Grid>
-				<Grid item>
-					{
-						isOnboarding ? <OnboardingControls
-							preNextHandler={handleSubmit}
-						/> : <ResponsiveButton onClick={handleSubmit}>
-							Submit
-						</ResponsiveButton>
-					}
-				</Grid>
-			</Grid>)
-		}
-	/>)
-}
+  

@@ -16,6 +16,7 @@ import { fullName } from '../../../utils';
 import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
 import { Schedule } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 
 const getLabel = ({ label }) => label || '';
 
@@ -120,13 +121,12 @@ export const Autocomplete = ({ name, options, ...props }) => {
     );
 };
 
-export const DataSelect = ({
-    request,
-    optionsMap,
-    name,
-    variant,
-    ...props
-}) => {
+Autocomplete.propTypes = {
+    name: PropTypes.string,
+    options: PropTypes.array,
+};
+
+export const DataSelect = ({ request, optionsMap, name, ...props }) => {
     const [query, setQuery] = useState();
 
     const handleQueryChange = useCallback((_, newQuery) => {
@@ -161,6 +161,12 @@ export const DataSelect = ({
             {...props}
         />
     );
+};
+
+DataSelect.propTypes = {
+    request: PropTypes.any,
+    optionsMap: PropTypes.any,
+    name: PropTypes.string,
 };
 
 const GET_STUDENTS = gql`
@@ -199,11 +205,7 @@ export const StudentSelect = (props) => {
     );
 };
 
-export const PasswordInput = ({
-    label = 'Password',
-    isField = true,
-    ...props
-}) => {
+export const PasswordInput = ({ isField = true, ...props }) => {
     const [showPassword, setShowPassword] = useState(false);
 
     const toggleVisibility = useCallback(() => {
@@ -234,4 +236,8 @@ export const PasswordInput = ({
         type: showPassword ? 'text' : 'password',
         ...props,
     });
+};
+
+PasswordInput.propTypes = {
+    isField: PropTypes.bool,
 };

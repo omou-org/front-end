@@ -8,8 +8,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { TableCell } from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
+import PropTypes from 'prop-types';
 
-export default function EnrollmentSummaryTab({ sessions, enrollment }) {
+function EnrollmentSummaryTab({ sessions, enrollment }) {
     const [highlightSession, setHighlightSession] = useState(false);
 
     const handleHighlightSwitch = useCallback(() => {
@@ -46,6 +47,7 @@ export default function EnrollmentSummaryTab({ sessions, enrollment }) {
                             sessions.map((session) => {
                                 return (
                                     <EnrollmentSessionRow
+                                        key={session.id}
                                         session={session}
                                         enrollmentData={enrollment}
                                         highlightSession={highlightSession}
@@ -59,3 +61,10 @@ export default function EnrollmentSummaryTab({ sessions, enrollment }) {
         </Grid>
     );
 }
+
+EnrollmentSummaryTab.propTypes = {
+    sessions: PropTypes.array,
+    enrollment: PropTypes.object,
+};
+
+export default EnrollmentSummaryTab;

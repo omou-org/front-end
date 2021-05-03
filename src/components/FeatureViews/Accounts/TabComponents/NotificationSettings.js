@@ -14,8 +14,9 @@ import { omouBlue } from '../../../../theme/muiTheme';
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../../OmouComponents/Loading';
+import { AdminPropTypes } from '../../../../utils';
 
-const StyledTableRow = withStyles((theme) => ({
+export const StyledTableRow = withStyles(() => ({
     root: {
         '& > *': {
             borderBottom: 'unset',
@@ -134,7 +135,7 @@ const createOptInSetting = (name, description, optIn) => ({
     optional: true,
 });
 
-export default function NotificationSettings({ user }) {
+function NotificationSettings({ user }) {
     const { userInfo } = user;
     const classes = useStyles();
     const [notificationRows, setNotificationRows] = useState([]);
@@ -153,36 +154,36 @@ export default function NotificationSettings({ user }) {
         skip: !isParent,
     });
 
-    const [
-        createParentNotification,
-        createParentNotificationResults,
-    ] = useMutation(CREATE_PARENT_NOTIFICATION_SETTINGS, {
-        update: (cache, { data }) => {
-            cache.writeQuery({
-                data: {
-                    parentNotificationSettings:
-                        data.createParentNotificationSetting.settings,
-                },
-                query: GET_PARENT_NOTIFICATION_SETTINGS,
-                variables: { parentId: userInfo.user.id },
-            });
-        },
-    });
-    const [
-        createInstructorNotification,
-        createInstructorNotificationResults,
-    ] = useMutation(CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS, {
-        update: (cache, { data }) => {
-            cache.writeQuery({
-                data: {
-                    instructorNotificationSettings:
-                        data.createInstructorNotificationSetting.settings,
-                },
-                query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
-                variables: { instructorId: userInfo.user.id },
-            });
-        },
-    });
+    const [createParentNotification] = useMutation(
+        CREATE_PARENT_NOTIFICATION_SETTINGS,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        parentNotificationSettings:
+                            data.createParentNotificationSetting.settings,
+                    },
+                    query: GET_PARENT_NOTIFICATION_SETTINGS,
+                    variables: { parentId: userInfo.user.id },
+                });
+            },
+        }
+    );
+    const [createInstructorNotification] = useMutation(
+        CREATE_INSTRUCTOR_NOTIFICATION_SETTINGS,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        instructorNotificationSettings:
+                            data.createInstructorNotificationSetting.settings,
+                    },
+                    query: GET_INSTRUCTOR_NOTIFICATION_SETTINGS,
+                    variables: { instructorId: userInfo.user.id },
+                });
+            },
+        }
+    );
 
     // initialize settings
     useEffect(() => {
@@ -205,32 +206,70 @@ export default function NotificationSettings({ user }) {
                 userSettings = instructorNotificationSettings;
             }
         }
+        const SMSCourseAndScheduleUpdateSettings = [
+            createOptInSetting(
+                'SMS Schedule Updates',
+                'Get notified for schedule changes by SMS',
+                {
+                    settingName: 'scheduleUpdatesSms',
+                    checked: userSettings?.scheduleUpdatesSms || false,
+                }
+            ),
+            createOptInSetting(
+                'SMS Course Requests',
+                'Get notified for cancellations by SMS',
+                {
+                    settingName: 'courseRequestsSms',
+                    checked: userSettings?.courseRequestsSms || false,
+                }
+            ),
+        ];
+        const setUserSettings = (accountType) =>
+            ({
+                PARENT: SMSCourseAndScheduleUpdateSettings,
+                INSTRUCTOR: SMSCourseAndScheduleUpdateSettings,
+                ADMIN: [
+                    createOptInSetting(
+                        'Google Classroom Integration',
+                        'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
+                        {
+                            settingName: 'gClassIntegrationSetting',
+                            checked: false,
+                        }
+                    ),
+                ],
+                RECEPTIONIST: [
+                    createOptInSetting(
+                        'Google Classroom Integration',
+                        'Enable admins to check the students Google Classroom enrollment invite and status. \n Enable admins to invite students to a Google Classroom. \n Enable admins to unenroll a student from a Google Classroom',
+                        {
+                            settingName: 'gClassIntegrationSetting',
+                            checked: false,
+                        }
+                    ),
+                ],
+                // INSTRUCTOR: [],
+            }[accountType]);
+
+        const notReceptionOrAdmin =
+            userInfo.accountType !== 'RECEPTION' &&
+            userInfo.accountType !== 'ADMIN';
         setNotificationRows([
-            createNotificationSetting(
-                'Session Reminder',
-                'Get notified when a session is coming up.',
-                {
-                    settingName: 'sessionReminderEmail',
-                    checked: userSettings?.sessionReminderEmail || false,
-                },
-                {
-                    settingName: 'sessionReminderSms',
-                    checked: userSettings?.sessionReminderSms || false,
-                }
-            ),
-            createNotificationSetting(
-                'Missed Session Notification',
-                'Get notified when your student did not attend a session',
-                {
-                    settingName: 'missedSessionReminderEmail',
-                    checked: userSettings?.missedSessionReminderEmail || false,
-                },
-                {
-                    settingName: 'missedSessionReminderSms',
-                    checked: userSettings?.missedSessionReminderSms || false,
-                }
-            ),
-            ...(userInfo.accountType === 'PARENT'
+            ...(notReceptionOrAdmin
+                ? createNotificationSetting(
+                      'Session Reminder',
+                      'Get notified when a session is coming up.',
+                      {
+                          settingName: 'sessionReminderEmail',
+                          checked: userSettings?.sessionReminderEmail || false,
+                      },
+                      {
+                          settingName: 'sessionReminderSms',
+                          checked: userSettings?.sessionReminderSms || false,
+                      }
+                  )
+                : []),
+            ...(notReceptionOrAdmin && userInfo.accountType === 'PARENT'
                 ? [
                       createNotificationSetting(
                           'Payment Reminder',
@@ -249,34 +288,20 @@ export default function NotificationSettings({ user }) {
                   ]
                 : []),
         ]);
-        setOptInNotifRows([
-            createOptInSetting(
-                'SMS Schedule Updates',
-                'Get notified for schedule changes by SMS',
-                {
-                    settingName: 'scheduleUpdatesSms',
-                    checked: userSettings?.scheduleUpdatesSms || false,
-                }
-            ),
-            createOptInSetting(
-                'SMS Course Requests',
-                'Get notified for cancellations by SMS',
-                {
-                    settingName: 'courseRequestsSms',
-                    checked: userSettings?.courseRequestsSms || false,
-                }
-            ),
-        ]);
+        setOptInNotifRows(setUserSettings(userInfo.accountType));
     }, [
         setNotificationRows,
         setOptInNotifRows,
-        createNotificationSetting,
-        createOptInSetting,
         instructorSettingResponse.loading,
         parentSettingResponse.loading,
+        instructorSettingResponse,
+        isInstructor,
+        isParent,
+        parentSettingResponse,
+        userInfo.accountType,
     ]);
 
-    const handleSettingChange = (setting, setFunction, index) => (_) => {
+    const handleSettingChange = (setting, setFunction, index) => () => {
         let notificationSettings = {};
         setFunction((prevState) => {
             let newState = JSON.parse(JSON.stringify(prevState));
@@ -460,3 +485,7 @@ export default function NotificationSettings({ user }) {
         </>
     );
 }
+
+NotificationSettings.propTypes = AdminPropTypes;
+
+export default NotificationSettings;

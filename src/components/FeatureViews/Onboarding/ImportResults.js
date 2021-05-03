@@ -4,18 +4,17 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import DragAndDropUploadBtn from "./DragAndDropUploadBtn";
-import { useUploadOmouTemplate } from '../../../utils';
+// import { useUploadOmouTemplate } from '../../../utils';
 import { OnboardingContext } from './OnboardingContext';
 import DownloadTemplateButton from './DownloadTemplateButton';
+import PropTypes from 'prop-types';
 
 const ImportResults = ({ templateType, setActiveStep }) => {
     const { state } = useContext(OnboardingContext);
-
-
-    const [uploadedFile, setUploadedFile] = useState(null);
+    const [setUploadedFile] = useState(null);
     const { handleNext } = useOnboardingActions();
     const handleBack = () => setActiveStep(0);
-    const { uploadTemplate } = useUploadOmouTemplate();
+    // const { uploadTemplate } = useUploadOmouTemplate();
 
     // TODO:
     // Figure out re-upload logic to stay on the same screen if user uploads 
@@ -23,17 +22,17 @@ const ImportResults = ({ templateType, setActiveStep }) => {
 
     const uploadFile = async () => {
 
-        let response = await uploadTemplate(uploadedFile, templateType)
+        // let response = await uploadTemplate(uploadedFile, templateType)
 
-    }
+    };
 
     const handleNextImportFlowStep = () => {
         setActiveStep(0);
         handleNext();
         uploadFile();
-    }
+    };
 
-    const isError = state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != ''
+    const isError = state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
 
     return (
         <Grid container
@@ -111,8 +110,12 @@ const ImportResults = ({ templateType, setActiveStep }) => {
                 </Grid>
             </Grid>
         </Grid>
-    )
-}
+    );
+};
 
+ImportResults.propTypes = {
+    templateType: PropTypes.string,
+    setActiveStep: PropTypes.func
+};
 
 export default ImportResults;

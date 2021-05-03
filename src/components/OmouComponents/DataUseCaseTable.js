@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,10 +7,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    white,
-    omouBlue,
-} from '../../theme/muiTheme';
+import { white, omouBlue } from '../../theme/muiTheme';
 
 const useStyles = makeStyles({
     dataPopup: {
@@ -155,190 +152,157 @@ const DataUseCaseTable = () => {
 
     return (
         <div className={classes.dataPopup}>
-        <Typography variant='h2'>
-            {' '}
-            Why am I Entering this Data?
-        </Typography>
-        <Typography variant='h6' style={{ marginTop: '2rem' }}>
-            We need your data to give you the most personalized
-            experience. We will require you to enter some data
-            that are essential to your onboarding onto the Omou
-            platform, while keeping others as optional to best
-            fit your needs. The table below will help you
-            understand how the data you put in is being used.
-        </Typography>
+            <Typography variant='h2'> Why am I Entering this Data?</Typography>
+            <Typography variant='h6' style={{ marginTop: '2rem' }}>
+                We need your data to give you the most personalized experience.
+                We will require you to enter some data that are essential to
+                your onboarding onto the Omou platform, while keeping others as
+                optional to best fit your needs. The table below will help you
+                understand how the data you put in is being used.
+            </Typography>
 
-        <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
-            Business Information
-        </Typography>
+            <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
+                Business Information
+            </Typography>
 
-        <TableContainer className={classes.verticalMargin}>
-            <Table size='small'>
-                <TableHead className={classes.tableHead}>
-                    <TableRow>
-                        <TableCell>Data Field</TableCell>
-                        <TableCell>Use Case</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell className={classes.leftCell}>
-                            Business Name
-                        </TableCell>
-                        <TableCell
-                            className={classes.rightCell}
-                        >
-                            Shown in payment receipt
-                            pdf/printouts.
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className={classes.leftCell}>
-                            Business Phone
-                        </TableCell>
-                        <TableCell
-                            className={classes.rightCell}
-                        >
-                            Shown in payment receipt
-                            pdf/printouts.
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className={classes.leftCell}>
-                            Business Email
-                        </TableCell>
-                        <TableCell
-                            className={classes.rightCell}
-                        >
-                            Shown in payment receipt
-                            pdf/printouts.
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className={classes.leftCell}>
-                            Business Address
-                        </TableCell>
-                        <TableCell
-                            className={classes.rightCell}
-                        >
-                            Shown in payment receipt
-                            pdf/printouts.
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className={classes.leftCell}>
-                            Business Hours
-                        </TableCell>
-                        <TableCell
-                            className={classes.rightCell}
-                        >
-                            Shown in payment receipt
-                            pdf/printouts.
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </TableContainer>
-
-        <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
-            Accounts
-        </Typography>
-        <TableContainer className={classes.verticalMargin}>
-            <Table size='small'>
-                <TableHead className={classes.tableHead}>
-                    <TableRow>
-                        <TableCell>Data Field</TableCell>
-                        <TableCell>Use Case</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {accountsTable.map((row) => (
-                        <TableRow className={classes.rightCell}>
-                            <TableCell
-                                className={classes.leftCell}
-                            >
-                                <Typography noWrap>
-                                    {row.dataField}
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography 
-                                >{row.useCase}</Typography>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-
-        <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
-            Courses
-        </Typography>
-        <TableContainer className={classes.verticalMargin}>
-            <Table size='small'>
-                <TableHead className={classes.tableHead}>
-                    <TableRow>
-                        <TableCell>Data Field</TableCell>
-                        <TableCell>Use Case</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {coursesTable.map((row) => (
+            <TableContainer className={classes.verticalMargin}>
+                <Table size='small'>
+                    <TableHead className={classes.tableHead}>
                         <TableRow>
-                            <TableCell
-                                className={classes.leftCell}
-                            >
-                                <Typography noWrap>
-                                    {row.dataField}
-                                </Typography>
+                            <TableCell>Data Field</TableCell>
+                            <TableCell>Use Case</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell className={classes.leftCell}>
+                                Business Name
                             </TableCell>
-                            <TableCell
-                                className={classes.rightCell}
-                            >
+                            <TableCell className={classes.rightCell}>
+                                Shown in payment receipt pdf/printouts.
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className={classes.leftCell}>
+                                Business Phone
+                            </TableCell>
+                            <TableCell className={classes.rightCell}>
+                                Shown in payment receipt pdf/printouts.
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className={classes.leftCell}>
+                                Business Email
+                            </TableCell>
+                            <TableCell className={classes.rightCell}>
+                                Shown in payment receipt pdf/printouts.
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className={classes.leftCell}>
+                                Business Address
+                            </TableCell>
+                            <TableCell className={classes.rightCell}>
+                                Shown in payment receipt pdf/printouts.
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className={classes.leftCell}>
+                                Business Hours
+                            </TableCell>
+                            <TableCell className={classes.rightCell}>
+                                Shown in payment receipt pdf/printouts.
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
+                Accounts
+            </Typography>
+            <TableContainer className={classes.verticalMargin}>
+                <Table size='small'>
+                    <TableHead className={classes.tableHead}>
+                        <TableRow>
+                            <TableCell>Data Field</TableCell>
+                            <TableCell>Use Case</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {accountsTable.map((row, i) => (
+                            <TableRow  key={i} className={classes.rightCell}>
+                                <TableCell className={classes.leftCell}>
+                                    <Typography noWrap>
+                                        {row.dataField}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography>{row.useCase}</Typography>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
+                Courses
+            </Typography>
+            <TableContainer className={classes.verticalMargin}>
+                <Table size='small'>
+                    <TableHead className={classes.tableHead}>
+                        <TableRow>
+                            <TableCell>Data Field</TableCell>
+                            <TableCell>Use Case</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {coursesTable.map((row, i) => (
+                            <TableRow key={i}>
+                                <TableCell className={classes.leftCell}>
+                                    <Typography noWrap>
+                                        {row.dataField}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell className={classes.rightCell}>
+                                    <Typography>{row.useCase}</Typography>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
+                Course Enrollment
+            </Typography>
+            <TableContainer className={classes.verticalMargin}>
+                <Table size='small'>
+                    <TableHead className={classes.tableHead}>
+                        <TableRow>
+                            <TableCell>Data Field</TableCell>
+                            <TableCell>Use Case</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell className={classes.leftCell}>
+                                <Typography noWrap>Student Enrolled</Typography>
+                            </TableCell>
+                            <TableCell className={classes.rightCell}>
                                 <Typography>
-                                    {row.useCase}
+                                    Student who is enrolled in the course. The
+                                    student must be as up under Accounts before
+                                    you can enroll them to a course
                                 </Typography>
                             </TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
+    );
+};
 
-        <Typography align='left' variant='h3' style={{ marginTop: '2rem' }}>
-            Course Enrollment
-        </Typography>
-        <TableContainer className={classes.verticalMargin}>
-            <Table size='small'>
-                <TableHead className={classes.tableHead}>
-                    <TableRow>
-                        <TableCell>Data Field</TableCell>
-                        <TableCell>Use Case</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell className={classes.leftCell}>
-                            <Typography noWrap>
-                                Student Enrolled
-                            </Typography>
-                        </TableCell>
-                        <TableCell
-                            className={classes.rightCell}
-                        >
-                            <Typography>
-                                Student who is enrolled in the
-                                course. The student must be as
-                                up under Accounts before you can
-                                enroll them to a course
-                            </Typography>
-                        </TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
-        </TableContainer>
-    </div>
-    )
-}
-
-export default DataUseCaseTable
+export default DataUseCaseTable;

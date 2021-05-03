@@ -49,7 +49,6 @@ const useStyles = makeStyles({
 
 const InvoiceTable = ({
     invoiceList,
-    courseID,
     handleStatusChange,
     handlePageChange,
     page,
@@ -204,6 +203,10 @@ const InvoiceTable = ({
 
 InvoiceTable.propTypes = {
     invoiceList: PropTypes.array.isRequired,
+    handleStatusChange: PropTypes.func,
+    handlePageChange: PropTypes.func,
+    page: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    totalPages: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default InvoiceTable;

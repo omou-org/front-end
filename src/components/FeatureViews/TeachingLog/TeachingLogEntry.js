@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import PropTypes from 'prop-types';
 
 const useRowStyles = makeStyles({
     root: {
@@ -19,7 +20,7 @@ const useRowStyles = makeStyles({
     },
 });
 
-export default function TeachingLogEntry({
+function TeachingLogEntry({
     session: { title, endDatetime, startDatetime, id },
 }) {
     const [open, setOpen] = useState(false);
@@ -74,3 +75,9 @@ export default function TeachingLogEntry({
         </>
     );
 }
+
+TeachingLogEntry.propTypes = {
+    session: PropTypes.object,
+};
+
+export default TeachingLogEntry;

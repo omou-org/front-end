@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext,  useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { RegistrationContext } from './RegistrationContext';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import {  useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -10,7 +10,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
 import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
 import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';

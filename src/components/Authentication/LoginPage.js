@@ -11,6 +11,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
+import GoogleLoginButton from '../OmouComponents/GoogleLoginButton.js';
+import { GoogleLogin } from 'react-google-login';
+import axios from 'axios';
+import * as actions from 'actions/actionTypes';
 
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { setToken } from 'actions/authActions.js';
@@ -35,9 +39,18 @@ const LOGIN = gql`
 
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
-        userType(userName: $username){
+        userType(userName: $username) {
             userType
             googleAuthEnabled
+        }
+    }
+`;
+
+const VERIFY_GOOGLE_OAUTH = gql`
+    query verifyGoogleOauth($loginEmail: String!, $oauthEmail: String!) {
+        verifyGoogleOauth(loginEmail: $loginEmail, oauthEmail: $oauthEmail) {
+            token
+            verified
         }
     }
 `;
@@ -46,8 +59,14 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const { token, attemptedLogin } = useSelector(({ auth }) => auth);
+    const { token, google_courses } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
+    const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
+    const [
+        verifyGoogleOauthTokenStatus,
+        setVerifyGoogleOauthTokenStatus,
+    ] = useState(false);
+    const [googleAuthEmail, setGoogleAuthEmail] = useState(null);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
@@ -56,22 +75,44 @@ const LoginPage = () => {
     const [getUserType] = useLazyQuery(GET_USER_TYPE, {
         variables: { username: email },
         onCompleted: (data) => {
-            setUserType(data.userType);
+            setUserType(data?.userType?.userType);
+            setGoogleAuthEnabled(data?.userType?.googleAuthEnabled);
             if (userType === null) {
                 setHasError(true);
             }
         },
     });
+    const [getVerifyGoogleOauthTokenStatus] = useLazyQuery(
+        VERIFY_GOOGLE_OAUTH,
+        {
+            variables: { loginEmail: email, oauthEmail: googleAuthEmail },
+            onCompleted: async (data) => {
+                setVerifyGoogleOauthTokenStatus(
+                    data?.verifyGoogleOauth?.verified
+                );
+
+                if (data?.verifyGoogleOauth?.verified) {
+                    dispatch(
+                        await setToken(
+                            data.verifyGoogleOauth.token,
+                            true,
+                            email
+                        )
+                    );
+                    history.push('/');
+                }
+                if (verifyGoogleOauthTokenStatus === null) {
+                    setHasError(true);
+                }
+            },
+        }
+    );
 
     const [login] = useMutation(LOGIN, {
         errorPolicy: 'ignore',
         ignoreResults: true,
         onCompleted: async ({ tokenAuth }) => {
-            try {
-                dispatch(await setToken(tokenAuth.token, shouldSave));
-            } catch {
-                setHasError(true);
-            }
+            dispatch(await setToken(tokenAuth.token, shouldSave, email));
         },
         // for whatever reason, this function prevents an unhandled rejection
         onError: () => {
@@ -112,7 +153,7 @@ const LoginPage = () => {
                 history.push('/');
             }
         },
-        [login, email, password]
+        [login, email, password, history]
     );
 
     const toggleSavePassword = useCallback(({ target }) => {
@@ -124,6 +165,57 @@ const LoginPage = () => {
             getUserType();
         }
     };
+
+    function refreshTokenSetup(res) {
+        return new Promise((resolve) => {
+            const refreshToken = async () => {
+                const newAuthRes = await res.reloadAuthResponse();
+                sessionStorage.setItem(
+                    'google_access_token',
+                    newAuthRes.access_token
+                );
+                resolve();
+            };
+            refreshToken();
+        });
+    }
+    const noGoogleCoursesFoundOnInitialGoogleLogin =
+        (google_courses === null || google_courses === undefined) &&
+        sessionStorage.getItem('google_access_token');
+    async function getCourses() {
+        if (noGoogleCoursesFoundOnInitialGoogleLogin) {
+            try {
+                const response = await axios.get(
+                    'https://classroom.googleapis.com/v1/courses',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem(
+                                'google_access_token'
+                            )}`,
+                        },
+                    }
+                );
+                dispatch({
+                    type: actions.SET_GOOGLE_COURSES,
+                    payload: { google_courses: response?.data.courses },
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+    const onSuccess = (response) => {
+        setGoogleAuthEmail(response.profileObj.email);
+
+        getVerifyGoogleOauthTokenStatus();
+
+        refreshTokenSetup(response).then(() => {
+            getCourses();
+        });
+    };
+
+    const onFailure = () => {};
 
     const renderEmailLogin = () => (
         <>
@@ -279,58 +371,96 @@ const LoginPage = () => {
                             value={email}
                             variant='outlined'
                         />
-                        <PasswordInput
-                            autoComplete='current-password'
-                            error={hasError || password === ''}
-                            inputProps={{ 'data-cy': 'passwordField' }}
-                            isField={false}
-                            label='Password'
-                            className='TextField'
-                            variant='outlined'
-                            onChange={handleTextInput(setPassword)}
-                            value={password}
-                        />
-                        <Grid className='optionsContainer' container item>
-                            <Grid item md={2} />
-                            <Grid item md={4}>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={shouldSave}
-                                            inputProps={{
-                                                'data-cy': 'rememberMe',
-                                            }}
-                                            onChange={toggleSavePassword}
-                                        />
-                                    }
-                                    label='Remember Me'
+                        {googleAuthEnabled ? (
+                            <Grid
+                                className='optionsContainer'
+                                justify='center'
+                                container
+                                item
+                            >
+                                <Grid className='buttonSpacing' item md={4}>
+                                    <GoogleLogin
+                                        render={(renderProps) => (
+                                            <GoogleLoginButton
+                                                onClick={renderProps.onClick}
+                                                disabled={renderProps.disabled}
+                                            />
+                                        )}
+                                        buttonText='Login'
+                                        clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
+                                        onSuccess={onSuccess}
+                                        onFailure={onFailure}
+                                        cookiePolicy={'single_host_origin'}
+                                        scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
+                                    />
+                                </Grid>
+                            </Grid>
+                        ) : (
+                            <>
+                                <PasswordInput
+                                    autoComplete='current-password'
+                                    error={hasError || password === ''}
+                                    inputProps={{ 'data-cy': 'passwordField' }}
+                                    isField={false}
+                                    label='Password'
+                                    className='TextField'
+                                    variant='outlined'
+                                    onChange={handleTextInput(setPassword)}
+                                    value={password}
                                 />
-                            </Grid>
-                            <Grid item md={4} style={{ paddingTop: 10 }}>
-                                <Link
-                                    className='forgotPassword'
-                                    data-cy='forgotPassword'
-                                    to={{
-                                        pathname: '/forgotpassword',
-                                        state: { email },
-                                    }}
+                                <Grid
+                                    className='optionsContainer'
+                                    container
+                                    item
                                 >
-                                    Forgot Password?
-                                </Link>
-                            </Grid>
-                            <Grid item md={2} />
-                            <Grid item md={4} />
-                            <Grid className='buttonSpacing' item md={4}>
-                                <ResponsiveButton
-                                    data-cy='signInButton'
-                                    type='submit'
-                                    variant='contained'
-                                >
-                                    SIGN IN
-                                </ResponsiveButton>
-                            </Grid>
-                            <Grid item md={4} />
-                        </Grid>
+                                    <Grid item md={2} />
+                                    <Grid item md={4}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={shouldSave}
+                                                    inputProps={{
+                                                        'data-cy': 'rememberMe',
+                                                    }}
+                                                    onChange={
+                                                        toggleSavePassword
+                                                    }
+                                                />
+                                            }
+                                            label='Remember Me'
+                                        />
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        md={4}
+                                        style={{ paddingTop: 10 }}
+                                    >
+                                        <Link
+                                            className='forgotPassword'
+                                            data-cy='forgotPassword'
+                                            to={{
+                                                pathname: '/forgotpassword',
+                                                state: { email },
+                                            }}
+                                        >
+                                            Forgot Password?
+                                        </Link>
+                                    </Grid>
+                                    <Grid item md={2} />
+                                    <Grid item md={4} />
+                                    <Grid className='buttonSpacing' item md={4}>
+                                        <ResponsiveButton
+                                            data-cy='signInButton'
+                                            type='submit'
+                                            variant='contained'
+                                        >
+                                            SIGN IN
+                                        </ResponsiveButton>
+                                    </Grid>
+                                    <Grid item md={4} />
+                                </Grid>
+                            </>
+                        )}
                     </Grid>
                 </Grid>
             </form>

@@ -5,7 +5,6 @@ export default function search(
     state = initialState.SearchResults,
     { payload, type }
 ) {
-    const newState = state;
     if (payload && payload.noChangeSearch) {
         return state;
     }

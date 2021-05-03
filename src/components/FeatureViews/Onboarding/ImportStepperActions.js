@@ -1,12 +1,12 @@
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {OnboardingContext} from "./OnboardingContext";
 import {useURLQuery} from "../../../utils";
 import {useHistory, useLocation} from "react-router-dom";
 
 
 export default function useOnboardingActions() {
-	const {activeStep, setActiveStep} = useContext(OnboardingContext);
-	const [skipped, setSkipped] = useState(new Set());
+    const { activeStep, setActiveStep } = useContext(OnboardingContext);
+    const [skipped, setSkipped] = useState(new Set());
 
 	const location = useLocation();
 	const history = useHistory();
@@ -17,15 +17,15 @@ export default function useOnboardingActions() {
 		if (currentStep - 1 !== activeStep) {
 			setActiveStep(currentStep);
 		}
-	}, [currentStep, activeStep])
+	}, [currentStep, activeStep, setActiveStep]);
 
-	const isStepOptional = (step) => {
+	const isStepOptional = () => {
 		return false;
 	};
 
-	const isStepSkipped = (step) => {
-		return skipped.has(step);
-	};
+    const isStepSkipped = (step) => {
+        return skipped.has(step);
+    };
 
 	const handleNext = () => {
 		let newSkipped = skipped;
@@ -43,37 +43,37 @@ export default function useOnboardingActions() {
 		});
 	};
 
-	const handleBack = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const handleBack = () => {
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
-		//Set new URL
-		const currentStep = Number(urlQuery.get("step"));
-		history.push({
-			path: location.pathname,
-			search: `?step=${currentStep - 1}`
-		});
-	};
+        //Set new URL
+        const currentStep = Number(urlQuery.get('step'));
+        history.push({
+            path: location.pathname,
+            search: `?step=${currentStep - 1}`,
+        });
+    };
 
-	const handleSkip = () => {
-		if (!isStepOptional(activeStep)) {
-			// You probably want to guard against something like this,
-			// it should never occur unless someone's actively trying to break something.
-			throw new Error("You can't skip a step that isn't optional.");
-		}
+    const handleSkip = () => {
+        if (!isStepOptional(activeStep)) {
+            // You probably want to guard against something like this,
+            // it should never occur unless someone's actively trying to break something.
+            throw new Error("You can't skip a step that isn't optional.");
+        }
 
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		setSkipped((prevSkipped) => {
-			const newSkipped = new Set(prevSkipped.values());
-			newSkipped.add(activeStep);
-			return newSkipped;
-		});
-		//Set new URL
-		const currentStep = Number(urlQuery.get("step"));
-		history.push({
-			path: location.pathname,
-			search: `?step=${currentStep + 1}`
-		});
-	};
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setSkipped((prevSkipped) => {
+            const newSkipped = new Set(prevSkipped.values());
+            newSkipped.add(activeStep);
+            return newSkipped;
+        });
+        //Set new URL
+        const currentStep = Number(urlQuery.get('step'));
+        history.push({
+            path: location.pathname,
+            search: `?step=${currentStep + 1}`,
+        });
+    };
 
 	return {
 		handleBack,

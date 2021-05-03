@@ -18,6 +18,7 @@ import { useMutation } from '@apollo/client';
 import { omouBlue } from '../../../theme/muiTheme';
 import { GET_ANNOUNCEMENTS } from './CourseClass';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     rootContainer: {
@@ -146,41 +147,33 @@ const NewAnnouncementsModal = ({
 
     // Move announcemenet query variable out of this component outside of this component
 
-    const [createAnnouncement, createAnnouncementResult] = useMutation(
-        CREATE_ANNOUNCEMENTS,
-        {
-            onCompleted: () => handleClose(false),
-            error: (err) => console.error(err),
-            update: (cache, { data }) => {
-                const [newAnnouncement] = Object.values(
-                    data.createAnnouncement
-                );
-                const cachedAnnouncement = cache.readQuery({
-                    query: GET_ANNOUNCEMENTS,
-                    variables: { id: courseId.id },
-                })['announcements'];
-                let updatedAnnouncements = [...cachedAnnouncement];
-                const matchingIndex = updatedAnnouncements.findIndex(
-                    ({ id }) => id === newAnnouncement.id
-                );
-                if (matchingIndex === -1) {
-                    updatedAnnouncements = [
-                        ...cachedAnnouncement,
-                        newAnnouncement,
-                    ];
-                } else {
-                    updatedAnnouncements[matchingIndex] = newAnnouncement;
-                }
-                cache.writeQuery({
-                    data: {
-                        ['announcements']: updatedAnnouncements,
-                    },
-                    query: GET_ANNOUNCEMENTS,
-                    variables: { id: courseId.id },
-                });
-            },
-        }
-    );
+    const [createAnnouncement] = useMutation(CREATE_ANNOUNCEMENTS, {
+        onCompleted: () => handleClose(false),
+        error: (err) => console.error(err),
+        update: (cache, { data }) => {
+            const [newAnnouncement] = Object.values(data.createAnnouncement);
+            const cachedAnnouncement = cache.readQuery({
+                query: GET_ANNOUNCEMENTS,
+                variables: { id: courseId.id },
+            })['announcements'];
+            let updatedAnnouncements = [...cachedAnnouncement];
+            const matchingIndex = updatedAnnouncements.findIndex(
+                ({ id }) => id === newAnnouncement.id
+            );
+            if (matchingIndex === -1) {
+                updatedAnnouncements = [...cachedAnnouncement, newAnnouncement];
+            } else {
+                updatedAnnouncements[matchingIndex] = newAnnouncement;
+            }
+            cache.writeQuery({
+                data: {
+                    ['announcements']: updatedAnnouncements,
+                },
+                query: GET_ANNOUNCEMENTS,
+                variables: { id: courseId.id },
+            });
+        },
+    });
 
     const handleCloseForm = () => handleClose(false);
 
@@ -197,7 +190,7 @@ const NewAnnouncementsModal = ({
 
     const handlePostForm = async (event) => {
         event.preventDefault();
-        const createdCurrentAnnouncement = await createAnnouncement({
+        await createAnnouncement({
             variables: {
                 subject: announcementSubject,
                 body: announcementBody,
@@ -302,6 +295,15 @@ const NewAnnouncementsModal = ({
             </DialogActions>
         </Dialog>
     );
+};
+
+NewAnnouncementsModal.propTypes = {
+    handleClose: PropTypes.func,
+    open: PropTypes.any,
+    subject: PropTypes.any,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    body: PropTypes.string,
+    buttonState: PropTypes.any,
 };
 
 export default NewAnnouncementsModal;

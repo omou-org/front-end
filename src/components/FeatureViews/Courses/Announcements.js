@@ -17,6 +17,7 @@ import { GET_ANNOUNCEMENTS } from './CourseClass';
 import { fullName, sortTime, USER_TYPES } from '../../../utils';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     announcementContainer: {
@@ -129,6 +130,16 @@ const AnnouncementCard = ({
     );
 };
 
+AnnouncementCard.propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    fullName: PropTypes.string.isRequired,
+    subject: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    updatedAt: PropTypes.string.isRequired,
+    handleEdit: PropTypes.func.isRequired,
+    handleDelete: PropTypes.func.isRequired,
+};
+
 const Announcements = ({ announcementsData }) => {
     const [openNewAnnouncementForm, setNewAnnouncementForm] = useState(false);
     const [announcementId, setAnnouncementId] = useState();
@@ -148,37 +159,34 @@ const Announcements = ({ announcementsData }) => {
         }
     `;
 
-    const [deleteAnnouncement, deleteAnnouncementResult] = useMutation(
-        DELETE_ANNOUNCEMENT,
-        {
-            error: (err) => console.error(err),
-            update: (
-                cache,
-                {
-                    data: {
-                        deleteAnnouncement: { id },
-                    },
-                }
-            ) => {
-                const cachedAnnouncement = cache.readQuery({
-                    query: GET_ANNOUNCEMENTS,
-                    variables: { id: courseId.id },
-                })['announcements'];
-                let updatedAnnouncements = [...cachedAnnouncement];
-                const removedIndex = updatedAnnouncements.findIndex(
-                    (announcement) => announcement.id === id
-                );
-                updatedAnnouncements.splice(removedIndex, 1);
-                cache.writeQuery({
-                    data: {
-                        ['announcements']: updatedAnnouncements,
-                    },
-                    query: GET_ANNOUNCEMENTS,
-                    variables: { id: courseId.id },
-                });
-            },
-        }
-    );
+    const [deleteAnnouncement] = useMutation(DELETE_ANNOUNCEMENT, {
+        error: (err) => console.error(err),
+        update: (
+            cache,
+            {
+                data: {
+                    deleteAnnouncement: { id },
+                },
+            }
+        ) => {
+            const cachedAnnouncement = cache.readQuery({
+                query: GET_ANNOUNCEMENTS,
+                variables: { id: courseId.id },
+            })['announcements'];
+            let updatedAnnouncements = [...cachedAnnouncement];
+            const removedIndex = updatedAnnouncements.findIndex(
+                (announcement) => announcement.id === id
+            );
+            updatedAnnouncements.splice(removedIndex, 1);
+            cache.writeQuery({
+                data: {
+                    ['announcements']: updatedAnnouncements,
+                },
+                query: GET_ANNOUNCEMENTS,
+                variables: { id: courseId.id },
+            });
+        },
+    });
 
     const handleEdit = (boolean, id, subject, body) => {
         setEditOrPost('edit');
@@ -191,7 +199,7 @@ const Announcements = ({ announcementsData }) => {
     const handleClose = (boolean) => setNewAnnouncementForm(boolean);
 
     const handleDeleteAnnouncement = async (id) => {
-        const deletedAnnouncement = await deleteAnnouncement({
+        await deleteAnnouncement({
             variables: { id: id },
         });
     };
@@ -249,6 +257,10 @@ const Announcements = ({ announcementsData }) => {
             />
         </Grid>
     );
+};
+
+Announcements.propTypes = {
+    announcementsData: PropTypes.any,
 };
 
 export default Announcements;

@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import moment from 'moment';
 import { client } from 'index';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 export const USER_TYPES = {
     admin: 'ADMIN',
@@ -725,7 +726,7 @@ export function useURLQuery() {
     return new URLSearchParams(useLocation().search);
 }
 
-// Hooks for templates 
+// Hooks for templates
 /**
  * @description - Hook to upload template 
  * @param {xlsx} - excel file
@@ -748,8 +749,8 @@ export function useUploadOmouTemplate() {
         let bodyFormData = new FormData();
 
         let lowerCaseTemplateName = templateName.toLowerCase();
-        let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`
-        let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`
+        let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`;
+        let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`;
 
         if (uploadedFile) {
             bodyFormData.append('operations', opsString);
@@ -757,31 +758,31 @@ export function useUploadOmouTemplate() {
             bodyFormData.append(`${lowerCaseTemplateName}_excel`, uploadedFile);
         };
 
-        const response = await fetch(process.env.REACT_APP_DOMAIN + '/graphql', {
-            method: "POST",
-            body: bodyFormData,
-            headers: {
-                'Authorization': `JWT ${token}`
+        const response = await fetch(
+            process.env.REACT_APP_DOMAIN + '/graphql',
+            {
+                method: 'POST',
+                body: bodyFormData,
+                headers: {
+                    Authorization: `JWT ${token}`,
+                },
             }
-        })
+        );
 
         let resp = await response.json();
 
-        return resp
+        return resp;
 
 
     };
 
-
-    return { uploadTemplate }
-
-
+    return { uploadTemplate };
 }
 
 /**
- *  @description 
- *  @param {Object} - gql query of 
- *  @param {String} - 
+ *  @description
+ *  @param {Object} - gql query of
+ *  @param {String} -
  * Input : graphql query
  * Input: template name
  * Output : downloaded file
@@ -789,19 +790,19 @@ export function useUploadOmouTemplate() {
  */
 const queryTemplate = async (query) => {
     if (query) {
-        let { data } = await client.query({ query })
-        return Object.values(data)[0]
+        let { data } = await client.query({ query });
+        return Object.values(data)[0];
     } else {
-        return null
+        return null;
     }
 
-}
+};
 
 
 export async function downloadOmouTemplate(file, name) {
 
     const { query, error } = file;
-    const fileString = error || await queryTemplate(query)
+    const fileString = error || await queryTemplate(query);
 
     function b64toBlob(base64Data, contentType) {
         contentType = contentType || '';
@@ -829,11 +830,37 @@ export async function downloadOmouTemplate(file, name) {
     let blob1 = b64toBlob(fileString, contentType);
     let blobUrl1 = URL.createObjectURL(blob1);
     const downloadLink = document.createElement('a');
-    downloadLink.href = blobUrl1
+    downloadLink.href = blobUrl1;
     document.body.appendChild(downloadLink);
-    downloadLink.setAttribute('download', `${capitalizeString(name)}_Omou_Template.xlsx`);
+    downloadLink.setAttribute(
+        'download',
+        `${capitalizeString(name)}_Omou_Template.xlsx`
+    );
     downloadLink.click();
     document.body.removeChild(downloadLink);
-
 }
 
+export const AdminPropTypes = {
+    user: PropTypes.shape({
+        accountType: PropTypes.oneOf([
+            'instructor',
+            'parent',
+            'receptionist',
+            'student',
+        ]).isRequired,
+        adminType: PropTypes.oneOf([
+            'owner',
+            'receptionist',
+            'teaching assistant',
+        ]).isRequired,
+        email: PropTypes.string,
+        name: PropTypes.string,
+        phoneNumber: PropTypes.string,
+        user: PropTypes.shape({
+            email: PropTypes.string,
+            name: PropTypes.string,
+            phoneNumber: PropTypes.string,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        })
+    }).isRequired,
+};

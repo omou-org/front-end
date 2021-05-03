@@ -18,7 +18,13 @@ const Loading = ({ small = false, loadingText = '' }) => {
         );
     }
     return (
-        <div style={{height: '100vh', color: '43B5D', backgroundColor: 'white'}}>
+        <div
+            style={{
+                height: '100vh',
+                color: '43B5D',
+                backgroundColor: 'white',
+            }}
+        >
             <h1>
                 <span>o</span>
                 <span>m</span>

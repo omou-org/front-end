@@ -139,7 +139,7 @@ export default function TeachingLogContainer() {
                 endDate: moment().toISOString(),
             },
         });
-    }, []);
+    }, [AuthUser.user.id, getSessions]);
 
     const handleDateRangeCalendarChange = (item) => {
         const newDateRange = item.selection;

@@ -93,13 +93,13 @@ const RegistrationCourse = () => {
     if (loading) {
         return <Loading />;
     }
-    if (error) {
+    if (error)
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                {`There's been an error! Error: ${error.message}`}
             </Typography>
         );
-    }
+
     const {
         course: {
             title,
@@ -112,7 +112,6 @@ const RegistrationCourse = () => {
             instructor,
             isConfirmed,
         },
-        courseNotes,
     } = data;
 
     const instructorName = fullName(instructor.user);

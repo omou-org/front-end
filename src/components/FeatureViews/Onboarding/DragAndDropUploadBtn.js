@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { omouBlue } from '../../../theme/muiTheme';
 import { useUploadOmouTemplate } from '../../../utils';
 import { OnboardingContext } from './OnboardingContext';
+import PropTypes from 'prop-types';
 
 const baseStyle = {
 	flex: 1,
@@ -35,21 +36,18 @@ const rejectStyle = {
 };
 const DragAndDropUploadBtn = (props) => {
 	const { uploadTemplate } = useUploadOmouTemplate();
-	const [uploadResponse, setUploadResponse] = useState(null)
-	const { state, dispatch } = useContext(OnboardingContext)
+	const [uploadResponse, setUploadResponse] = useState(null);
+	const { dispatch } = useContext(OnboardingContext);
 	const uploadFile = async (file) => {
 		let response = await uploadTemplate(file, props.templateType);
 
-		dispatch({ type: 'UPLOAD_RESPONSE', payload: response })
+		dispatch({ type: 'UPLOAD_RESPONSE', payload: response });
 		if (Object.prototype.hasOwnProperty.call(response, 'errors')) {
-			setUploadResponse(response.errors[0].message)
+			setUploadResponse(response.errors[0].message);
 		} else {
 			setUploadResponse(file.name);
 		}
-	}
-
-
-
+	};
 
 	const {
 		getRootProps,
@@ -86,15 +84,17 @@ const DragAndDropUploadBtn = (props) => {
 			<div {...getRootProps({ style })}>
 				<input  {...getInputProps()} />
 				{uploadResponse === null ?
-					<p>Drag 'n' drop some files here, or click to select files</p> :
+					<p>Drag and drop some files here, or click to select files</p> :
 					uploadResponse}
 			</div>
 
 		</section>
 	);
-}
+};
 
-
+DragAndDropUploadBtn.propTypes = {
+	templateType: PropTypes.string
+};
 
 export default DragAndDropUploadBtn;
 

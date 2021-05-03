@@ -35,21 +35,21 @@ export const onboardingSteps = [
 const ImportFlow = () => {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
-    const [skipped, setSkipped] = useState(new Set());
+    const [skipped] = useState(new Set());
     const [importState, setImportState] = useState({ uploadedResponse: null });
     const urlQuery = useURLQuery();
     const steps = onboardingSteps;
     // This is where BulkImportStep lives
 
-    const [state, dispatch] = useReducer(reducer, initalState)
+    const [state, dispatch] = useReducer(reducer, initalState);
 
 
     useEffect(() => {
-        const currentStep = Number(urlQuery.get("step")) - 1;
+        const currentStep = Number(urlQuery.get('step')) - 1;
         if (currentStep !== activeStep) {
             setActiveStep(currentStep);
         }
-    }, [urlQuery])
+    }, [urlQuery, activeStep]);
 
     const getStepContent = (step) => {
         switch (step) {
@@ -67,12 +67,9 @@ const ImportFlow = () => {
             default:
                 return 'Error: Invalid step. No content to display';
         }
+    };
 
-    }
-
-
-
-    const isStepOptional = (step) => {
+    const isStepOptional = () => {
         return false;
     };
 
@@ -89,7 +86,9 @@ const ImportFlow = () => {
                         const labelProps = {};
                         if (isStepOptional(index)) {
                             labelProps.optional = (
-                                <Typography variant='caption'>Optional</Typography>
+                                <Typography variant='caption'>
+                                    Optional
+                                </Typography>
                             );
                         }
                         if (isStepSkipped(index)) {

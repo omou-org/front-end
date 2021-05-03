@@ -16,7 +16,7 @@
     },
     "plugins": ["react", "react-hooks", "cypress"],
     "rules": {
-        "indent": ["error", 4],
+        "indent": "off",
         "semi": "error",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "error"

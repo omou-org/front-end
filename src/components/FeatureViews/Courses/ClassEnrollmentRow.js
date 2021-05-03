@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteEnrollment } from 'actions/registrationActions';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,6 +17,7 @@ import { fullName, USER_TYPES } from '../../../utils';
 import { highlightColor, omouBlue } from '../../../theme/muiTheme';
 import IconButton from '@material-ui/core/IconButton';
 import MobileMenu from '@material-ui/icons/MoreVert';
+import Typography from '@material-ui/core/Typography';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -29,6 +30,9 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import StudentEnrollmentBackground from './ClassEnrollmentBackground';
+
+import axios from 'axios';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -97,6 +101,7 @@ const ClassEnrollmentRow = ({
     enrollmentList,
     enrollmentID,
     courseTitle,
+    studentEmail,
 }) => {
     const { location } = useHistory();
     const paramsID = useParams();
@@ -112,6 +117,82 @@ const ClassEnrollmentRow = ({
         enrollment: null,
         open: false,
     });
+
+    const [inviteStatus, setInviteStatus] = useState('Unsent');
+    const [
+        googleClassroomStatusMessage,
+        setGoogleClassroomStatusMessage,
+    ] = useState('Send Invite');
+    const { courses, google_courses } = useSelector(({ auth }) => auth);
+
+    const getGoogleClassCode = (courses, courseID) => {
+        let googleClassCode;
+        if (courses) {
+            courses.forEach(function (course) {
+                if (courseID == course.id) {
+                    googleClassCode = course.googleClassCode;
+                }
+            });
+            return googleClassCode;
+        }
+    };
+
+    const getGoogleCourseID = (google_courses, courses, courseID) => {
+        let googleCourseID;
+        let googleClassCode = getGoogleClassCode(courses, courseID);
+        if (google_courses && googleClassCode) {
+            google_courses.forEach(function (course) {
+                if (course.enrollmentCode == googleClassCode) {
+                    googleCourseID = course.id;
+                }
+            });
+            return googleCourseID;
+        }
+    };
+
+    async function sendGoogleClassroomInvite(googleCourseID) {
+        try {
+            if (googleCourseID && studentEmail) {
+                await axios.post(
+                    `https://classroom.googleapis.com/v1/invitations`,
+                    {
+                        userId: studentEmail,
+                        courseId: googleCourseID,
+                        role: 'STUDENT',
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem(
+                                'google_access_token'
+                            )}`,
+                        },
+                    }
+                );
+                setInviteStatus('Sent');
+            }
+        } catch {
+            setInviteStatus(<Typography color='error'>Unsent</Typography>);
+            alert('Error creating invite');
+        }
+    }
+
+    const handleInvite = async () => {
+        let omouGoogleIntegratedCourseID = getGoogleCourseID(
+            google_courses,
+            courses,
+            courseID
+        );
+        const isInviteUnsent =
+            googleClassroomStatusMessage == 'Resend Invite' ||
+            inviteStatus == 'Unsent';
+
+        if (isInviteUnsent) {
+            setGoogleClassroomStatusMessage('Resend Invite');
+            sendGoogleClassroomInvite(omouGoogleIntegratedCourseID);
+        } else if (googleClassroomStatusMessage == 'Invite Accepted') {
+            console.log('Invite accepted');
+        }
+    };
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
 
@@ -189,7 +270,6 @@ const ClassEnrollmentRow = ({
                         style={{ wordBreak: 'break-word' }}
                     >
                         <TableCell
-                            component='th'
                             scope='row'
                             component={Link}
                             to={`/accounts/${accountType.toLowerCase()}/${studentId}`}
@@ -213,6 +293,12 @@ const ClassEnrollmentRow = ({
                             className={`${classes.actionsRenderAccordionSpacing} ${classes.noBorderBottom}`}
                         >
                             {phoneNumber}
+                        </TableCell>
+                        <TableCell>{inviteStatus}</TableCell>
+                        <TableCell>
+                            <ResponsiveButton onClick={handleInvite}>
+                                {googleClassroomStatusMessage}
+                            </ResponsiveButton>
                         </TableCell>
                         <TableCell
                             align='right'
@@ -339,18 +425,20 @@ const ClassEnrollmentRow = ({
                 <Divider />
                 <DialogContent>
                     <DialogContentText>
-                        You are about to unenroll in <b>{courseTitle}</b> for{' '}
-                        <b>
-                            {unenroll.enrollment &&
+                        {`You are about to unenroll in <b>${courseTitle}</b> for ${' '}
+                            <b>
+                            ${
+                                unenroll.enrollment &&
                                 fullName(
                                     enrollmentList.find(
                                         ({ id }) => id == unenroll.enrollment
                                     ).student.user
-                                )}
-                        </b>
-                        . Performing this action will credit the remaining
-                        enrollment balance back to the parent's account balance.
-                        Are you sure you want to unenroll?
+                                )
+                            }
+                            </b>
+                            . Performing this action will credit the remaining
+                            enrollment balance back to the parent's account balance.
+                            Are you sure you want to unenroll?`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -372,6 +460,22 @@ const ClassEnrollmentRow = ({
             </Dialog>
         </>
     );
+};
+
+ClassEnrollmentRow.propTypes = {
+    fullStudentName: PropTypes.string,
+    accountType: PropTypes.string,
+    studentId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    studentInfo: PropTypes.any,
+    parentAccountType: PropTypes.string,
+    parentId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    concatFullParentName: PropTypes.string,
+    phoneNumber: PropTypes.string,
+    handleOpenModal: PropTypes.func,
+    enrollmentList: PropTypes.array,
+    enrollmentID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    courseTitle: PropTypes.string,
+    studentEmail: PropTypes.string,
 };
 
 export default ClassEnrollmentRow;
