@@ -131,7 +131,8 @@ export default function Invoices() {
             } catch (err) {
                 console.error(err);
             }
-        }
+        },
+        [client]
     );
 
     const [openCalendar, setOpenCalendar] = useState(false);
@@ -145,7 +146,7 @@ export default function Invoices() {
 
     useEffect(() => {
         searchInvoices('', '', '');
-    }, []);
+    }, [searchInvoices]);
 
     const handleInputChange = (query) => {
         searchInvoices(

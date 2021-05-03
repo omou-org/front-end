@@ -7,7 +7,7 @@ import { useMutation } from '@apollo/client';
 import gql from 'graphql-tag';
 import OnboardingControls from './OnboardingControls';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Text: {
         marginTop: '65px',
         marginBottom: '30px;',

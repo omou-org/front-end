@@ -8,6 +8,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import AttendanceTable from './AttendanceTable';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -89,6 +90,10 @@ const AttendanceIcon = ({ letter }) => {
     );
 };
 
+AttendanceIcon.propTypes = {
+    letter: PropTypes.string,
+};
+
 const AttendanceLegend = () => {
     const classes = useStyles();
 
@@ -161,7 +166,7 @@ const AttendanceContainer = () => {
                             Attendance Overview
                         </Typography>
                     </AccordionSummary>
-                    <AccordionDetails></AccordionDetails>
+                    <AccordionDetails />
                 </Accordion>
                 <Accordion
                     elevation={0}

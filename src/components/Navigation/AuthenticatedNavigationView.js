@@ -7,12 +7,12 @@ import { AuthenticatedComponent } from './NavigationContainer';
 import MomentUtils from '@date-io/moment';
 import { RootRoutes } from '../Routes/RootRoutes';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import gql from 'graphql-tag';
 import OnboardingRoutes from '../Routes/OnboardingRoutes';
 import IdleTimerPrompt from '../OmouComponents/IdleTimerPrompt';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@apollo/client';
 import Loading from '../OmouComponents/Loading';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     navigationIconStyle: {
@@ -23,23 +23,23 @@ const useStyles = makeStyles({
     },
 });
 
-const CHECK_BUSINESS_EXISTS = gql`
-    query CheckBusiness {
-        __typename
-        business {
-            id
-        }
-    }
-`;
+// const CHECK_BUSINESS_EXISTS = gql`
+//     query CheckBusiness {
+//         __typename
+//         business {
+//             id
+//         }
+//     }
+// `;
 
-export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
+function AuthenticatedNavigationView({ UserNavigationOptions }) {
     const classes = useStyles();
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    const { accountType } = useSelector(({ auth }) => auth) || [];
-    const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
-        skip: accountType !== 'ADMIN',
-    });
+    // const { accountType, email } = useSelector(({ auth }) => auth) || [];
+    // const { data, loading, error } = useQuery(CHECK_BUSINESS_EXISTS, {
+    //     skip: accountType !== 'ADMIN',
+    // });
 
     const handleDrawerToggle = useCallback(() => {
         setMobileOpen((open) => !open);
@@ -85,3 +85,9 @@ export default function AuthenticatedNavigationView({ UserNavigationOptions }) {
         </AuthenticatedComponent>
     );
 }
+
+AuthenticatedNavigationView.propTypes = {
+    UserNavigationOptions: PropTypes.any,
+};
+
+export default AuthenticatedNavigationView;

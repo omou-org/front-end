@@ -19,7 +19,6 @@
             "isConfirmed": true,
             "maxCapacity": 6,
             "startDate": "2020-10-30",
-            "startTime": "15:00:00",
             "title": "Physics",
             "__typename": "CourseType"
         },

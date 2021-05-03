@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import OnboardingControls from './OnboardingControls';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Text: {
         marginTop: '65px',
         marginBottom: '30px;',

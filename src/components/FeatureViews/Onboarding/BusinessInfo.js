@@ -10,7 +10,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Text: {
         marginTop: '24px',
     },

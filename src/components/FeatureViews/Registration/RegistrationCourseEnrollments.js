@@ -73,13 +73,12 @@ const RegistrationCourseEnrollments = ({
     if (loading) {
         return <Loading />;
     }
-    if (error) {
+    if (error)
         return (
             <Typography>
-                There's been an error! Error: {error.message}
+                {`There's been an error! Error: ${error.message}`}
             </Typography>
         );
-    }
 
     const { enrollments } = data;
 
@@ -111,6 +110,8 @@ const RegistrationCourseEnrollments = ({
 RegistrationCourseEnrollments.propTypes = {
     courseID: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
+    maxCapacity: PropTypes.any,
+    courseTitle: PropTypes.string,
 };
 
 export default RegistrationCourseEnrollments;

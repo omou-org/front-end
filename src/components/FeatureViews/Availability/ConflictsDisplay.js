@@ -28,9 +28,9 @@ const GET_INSTRUCTOR_SESSIONS = gql`
 `;
 
 export default function ConflictsDisplay() {
-    const { updateOOOFormState, OOOFormState } = useContext(OOOContext);
+    const { OOOFormState } = useContext(OOOContext);
     const AuthUser = useSelector(({ auth }) => auth);
-    const { loading, data, error } = useQuery(GET_INSTRUCTOR_SESSIONS, {
+    const { loading } = useQuery(GET_INSTRUCTOR_SESSIONS, {
         variables: {
             instructorId: AuthUser.user.id,
             startDate: OOOFormState.startDate.toDate().toISOString(),
@@ -39,8 +39,6 @@ export default function ConflictsDisplay() {
     });
 
     if (loading) return <Loading small />;
-
-    const { sessions } = data;
 
     return (
         <Grid container direction='column'>

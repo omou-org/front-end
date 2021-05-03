@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import moment from 'moment';
 import { client } from 'index';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 export const USER_TYPES = {
     admin: 'ADMIN',

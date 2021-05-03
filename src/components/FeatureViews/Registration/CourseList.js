@@ -114,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const CourseList = ({ filteredCourses, updatedParent }) => {
+const CourseList = ({ filteredCourses }) => {
     const history = useHistory();
 
     const [openCourseQuickRegistration, setOpenQuickRegister] = useState(false);
@@ -126,10 +126,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
     const { currentParent, ...registrationCartState } = useSelector(
         (state) => state.Registration
     );
-    const [
-        addParentToInterestList,
-        addParentToInterestListStatus,
-    ] = useMutation(ADD_PARENT_TO_INTEREST_LIST, {
+    const [addParentToInterestList] = useMutation(ADD_PARENT_TO_INTEREST_LIST, {
         onCompleted: () => {
             setOpenInterestDialog(false);
         },
@@ -311,7 +308,7 @@ const CourseList = ({ filteredCourses, updatedParent }) => {
             <Box width='100%' data-cy='classes-table'>
                 {filteredCourses
                     .filter(
-                        ({ courseType, endDate, id }) =>
+                        ({ courseType, endDate }) =>
                             courseType === 'CLASS' &&
                             moment().diff(moment(endDate), 'days') < 0
                     )

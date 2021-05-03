@@ -181,7 +181,7 @@ const EditSessionView = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const { data, loading, error } = useQuery(GET_SESSION, {
+    const { loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
         onCompleted: (data) => {
             setFromMigration(data);
@@ -204,7 +204,7 @@ const EditSessionView = () => {
         skip: loading || error || categoriesLoading || categoriesError,
     });
 
-    const [updateSession, updateSessionResults] = useMutation(UPDATE_SESSION, {
+    const [updateSession] = useMutation(UPDATE_SESSION, {
         update: (cache, { data }) => {
             const newSession = data.createSession.session;
             const existingSession = cache.readQuery({
@@ -245,15 +245,9 @@ const EditSessionView = () => {
         },
     });
 
-    const [updateCourse, updateCourseResults] = useMutation(UPDATE_COURSE, {
+    const [updateCourse] = useMutation(UPDATE_COURSE, {
         update: (cache, { data }) => {
             const newCourse = data.createCourse.course;
-            const existingCourse = cache.readQuery({
-                query: GET_SESSION,
-                variables: {
-                    courseId: course_id,
-                },
-            }).course;
 
             cache.writeQuery({
                 query: GET_SESSION,
@@ -328,23 +322,23 @@ const EditSessionView = () => {
     };
 
     const calculateEndTime = (duration, startTime) => {
-        let newEndTime;
+        let newEndTime, addTime;
 
         switch (duration) {
             case 1:
-                var addTime = moment(startTime).add(1, 'hours');
+                addTime = moment(startTime).add(1, 'hours');
                 newEndTime = moment(addTime).utc().format();
                 break;
             case 1.5:
-                var addTime = moment(startTime).add({ hours: 1, minutes: 30 });
+                addTime = moment(startTime).add({ hours: 1, minutes: 30 });
                 newEndTime = moment(addTime).utc().format();
                 break;
             case 2:
-                var addTime = moment(startTime).add(2, 'hours');
+                addTime = moment(startTime).add(2, 'hours');
                 newEndTime = moment(addTime).utc().format();
                 break;
             case 0.5:
-                var addTime = moment(startTime).add(30, 'minutes');
+                addTime = moment(startTime).add(30, 'minutes');
                 newEndTime = moment(addTime).utc().format();
                 break;
             default:
@@ -426,7 +420,6 @@ const EditSessionView = () => {
             room,
             is_confirmed,
             instructor,
-            category,
             duration,
             title,
         } = sessionFields;
@@ -466,7 +459,7 @@ const EditSessionView = () => {
     }
 
     if (error || categoriesError || instructorsError) {
-        return <Typography>There's been an error!</Typography>;
+        return <Typography>{`There's been an error!`}</Typography>;
     }
 
     const categoriesList = categoriesData.courseCategories.map(
@@ -482,10 +475,6 @@ const EditSessionView = () => {
     }));
 
     const courseDurationOptions = [1, 1.5, 2, 0.5];
-
-    const course = data.session.course;
-
-    const session = data.session;
 
     return (
         <Grid container className='main-session-view'>

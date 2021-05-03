@@ -91,26 +91,18 @@ export default function TimeAvailabilityContainer() {
     const { data, loading } = useQuery(GET_INSTRUCTOR_AVAILABILITY, {
         variables: { instructorId: AuthUser.user.id },
     });
-    const [deleteAvailabilities, deleteResults] = useMutation(
-        DELETE_INSTRUCTOR_AVAILABILITY,
-        {
-            onCompleted: () => setOpenSaveAvailability(true),
-        }
-    );
-    const [addAvailabilities, createResults] = useMutation(
-        CREATE_INSTRUCTOR_AVAILABILITIES,
-        {
-            onCompleted: () => setOpenSaveAvailability(true),
-            update: (cache, { data }) => {
-                const {
-                    createInstructorAvailabilities: {
-                        instructorAvailabilities,
-                    },
-                } = data;
-                setUpdatedAvailability(instructorAvailabilities);
-            },
-        }
-    );
+    const [deleteAvailabilities] = useMutation(DELETE_INSTRUCTOR_AVAILABILITY, {
+        onCompleted: () => setOpenSaveAvailability(true),
+    });
+    const [addAvailabilities] = useMutation(CREATE_INSTRUCTOR_AVAILABILITIES, {
+        onCompleted: () => setOpenSaveAvailability(true),
+        update: (cache, { data }) => {
+            const {
+                createInstructorAvailabilities: { instructorAvailabilities },
+            } = data;
+            setUpdatedAvailability(instructorAvailabilities);
+        },
+    });
 
     useEffect(() => {
         if (!loading) {
@@ -143,7 +135,7 @@ export default function TimeAvailabilityContainer() {
                 });
             }
         }
-    }, [data]);
+    }, [data, loading]);
 
     const handleAutoApprove = useCallback(() => {
         setAutoApprove(!autoApprove);

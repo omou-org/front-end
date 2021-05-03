@@ -27,7 +27,7 @@ const calcSessionCost = ({
 };
 
 const PayCourses = (props) => {
-    const rows = props.user.student_ids.map((studentID) => {
+    const rows = props.user.studentIds.map((studentID) => {
         const student = props.students[studentID];
 
         const unpaidEnrollments = Object.entries(
@@ -114,6 +114,9 @@ const PayCourses = (props) => {
 
 PayCourses.propTypes = {
     user: PropTypes.object.isRequired,
+    students: PropTypes.array,
+    enrollments: PropTypes.array,
+    courses: PropTypes.array,
 };
 
 const mapStateToProps = (state) => ({

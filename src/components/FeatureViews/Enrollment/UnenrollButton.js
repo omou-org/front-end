@@ -6,8 +6,9 @@ import { fullName } from '../../../utils';
 import DialogActions from '@material-ui/core/DialogActions';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Dialog from '@material-ui/core/Dialog';
+import PropTypes from 'prop-types';
 
-export default function UnenrollButton({ enrollment }) {
+function UnenrollButton({ enrollment }) {
     const { course, student, enrollmentBalance } = enrollment;
 
     const [unenrollWarningOpen, setUnenrollWarningOpen] = useState(false);
@@ -17,15 +18,15 @@ export default function UnenrollButton({ enrollment }) {
     }, []);
 
     const closeUnenrollDialog = useCallback(
-        (toUnenroll) => () => {
+        () => () => {
             setUnenrollWarningOpen(false);
             //TODO: migrate unenroll to graph ql
             // if (toUnenroll) {
             //     deleteEnrollment(enrollment)(dispatch);
             //     goToRoute(`/accounts/student/${studentID}`);
             // }
-        }
-        // [dispatch, enrollment, goToRoute, studentID]
+        },
+        [setUnenrollWarningOpen]
     );
 
     return (
@@ -43,11 +44,11 @@ export default function UnenrollButton({ enrollment }) {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        You are about to unenroll in <b>{course.title}</b> for{' '}
-                        <b>{fullName(student.user)}</b>. Performing this action
-                        will credit <b>${enrollmentBalance}</b> back to the
-                        parent's account balance. Are you sure you want to
-                        unenroll?
+                        {`You are about to unenroll in ${course.title} for
+                            ${fullName(student.user)}. Performing this action
+                            will credit $${enrollmentBalance} back to the
+                            parent's account balance. Are you sure you want to
+                            unenroll?`}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -70,3 +71,17 @@ export default function UnenrollButton({ enrollment }) {
         </>
     );
 }
+
+UnenrollButton.propTypes = {
+    enrollment: PropTypes.shape({
+        course: PropTypes.shape({
+            title: PropTypes.string,
+        }),
+        student: PropTypes.shape({
+            user: PropTypes.object,
+        }),
+        enrollmentBalance: PropTypes.any,
+    }).isRequired,
+};
+
+export default UnenrollButton;

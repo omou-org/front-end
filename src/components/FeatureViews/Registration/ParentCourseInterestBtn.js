@@ -3,6 +3,7 @@ import { buttonBlue, gloom, white } from 'theme/muiTheme';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import AddIcon from '@material-ui/icons/Add';
 import CheckIcon from '@material-ui/icons/Check';
+import PropTypes from 'prop-types';
 
 const ParentCourseInterestBtn = ({
     courseID,
@@ -30,6 +31,12 @@ const ParentCourseInterestBtn = ({
             interest
         </ResponsiveButton>
     );
+};
+
+ParentCourseInterestBtn.propTypes = {
+    courseID: PropTypes.any,
+    isCourseOnParentInterestList: PropTypes.bool,
+    handleInterestRegister: PropTypes.func,
 };
 
 export default ParentCourseInterestBtn;

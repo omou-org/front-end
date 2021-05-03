@@ -32,7 +32,7 @@ const Welcome = () => {
                 <Typography variant='h3'>Welcome to Omou</Typography>
                 <Box fontSize='h5.fontSize' className={classes.Subtitle}>
                     <Typography variant='p'>
-                        Let's import your data so you can start using Omou!
+                        {`Let's import your data so you can start using Omou!`}
                     </Typography>
                 </Box>
             </Box>
@@ -55,7 +55,7 @@ const Welcome = () => {
                     component={NavLinkNoDup}
                     to='/onboarding/import'
                 >
-                    Let's do it!
+                    {`Let's do it!`}
                 </ResponsiveButton>
             </Box>
         </Container>

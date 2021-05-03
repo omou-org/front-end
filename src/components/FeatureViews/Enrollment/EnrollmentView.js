@@ -16,7 +16,6 @@ import InvoiceTable from '../Invoices/InvoiceTable';
 import EnrollmentSummaryTab from './EnrollmentSummaryTab';
 import EnrollmentDetails from './EnrollmentDetails';
 import EnrollmentProgress from './EnrollmentProgress';
-import enrollment from 'reducers/enrollmentReducer';
 import { fullName } from '../../../utils';
 import { slateGrey } from '../../../theme/muiTheme';
 import EnrollmentActions from './EnrollmentActions';
@@ -103,16 +102,6 @@ export const GET_SESSIONS = gql`
     }
 `;
 
-const timeOptions = {
-    hour: '2-digit',
-    minute: '2-digit',
-};
-const dateOptions = {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-};
-
 const CourseSessionStatus = () => {
     const dispatch = useDispatch();
     const { enrollmentId } = useParams();
@@ -167,20 +156,22 @@ const CourseSessionStatus = () => {
     if (enrollmentLoading || sessionsLoading) {
         return <Loading />;
     }
-    if (enrollmentError || sessionsError) {
+    if (enrollmentError || sessionsError)
         return (
             <Typography>
-                There's been an error! Error:{' '}
-                {enrollmentError.message || sessionsError.message}
+                {`There's been an error! Error: ${
+                    enrollmentError.message || sessionsError.message
+                }`}
             </Typography>
         );
-    }
+
     const isTutoring = true;
 
     const ActiveTabView = ({ ActiveTab }) => {
         const TutoringSummaryTabView = isTutoring
             ? [
                   <EnrollmentSummaryTab
+                      key={1}
                       sessions={sessionsData.sessions}
                       enrollment={enrollmentData}
                   />,
@@ -189,11 +180,12 @@ const CourseSessionStatus = () => {
 
         return [
             ...TutoringSummaryTabView,
-            <EnrollmentProgress />,
+            <EnrollmentProgress key={2} />,
             <InvoiceTable
+                key={3}
                 invoiceList={enrollmentData.enrollment.paymentList}
             />,
-            <Notes ownerID={enrollmentId} ownerType='enrollment' />,
+            <Notes ownerID={enrollmentId} ownerType='enrollment' key={4} />,
         ][ActiveTab];
     };
 

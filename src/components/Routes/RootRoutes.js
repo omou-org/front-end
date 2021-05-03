@@ -14,7 +14,6 @@ import ForgotPassword from '../Authentication/ForgotPassword';
 import LoginPage from '../Authentication/LoginPage.js';
 import NewAccount from '../Authentication/NewAccount';
 import NoResultsPage from '../FeatureViews/Search/NoResults/NoResultsPage';
-import NotEnrolledStudentsDialog from '../FeatureViews/Scheduler/NotEnrolledStudentDialog';
 import InvoiceReceipt from '../FeatureViews/Invoices/InvoiceReceipt';
 import Registration from '../FeatureViews/Registration/Registration';
 import FormPage from '../Form/FormPage';
@@ -177,9 +176,6 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/registration/receipt/:paymentID?'>
                 <InvoiceReceipt />
-            </AuthenticatedRoute>
-            <AuthenticatedRoute path='/NotEnrolledStudent'>
-                <NotEnrolledStudentsDialog />
             </AuthenticatedRoute>
 
             {/* Instructor Routes */}

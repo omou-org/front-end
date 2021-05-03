@@ -70,7 +70,7 @@ const ImportFlow = () => {
         }
     };
 
-    const isStepOptional = (step) => {
+    const isStepOptional = () => {
         return false;
     };
 

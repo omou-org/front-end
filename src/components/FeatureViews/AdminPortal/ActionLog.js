@@ -94,7 +94,7 @@ const ActionLog = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize] = useState(10);
     const [openCalendar, setOpenCalendar] = useState(false);
     const [state, setState] = useState([
         {
@@ -107,7 +107,7 @@ const ActionLog = () => {
         sort: '',
         clicked: false,
     });
-    const { data, loading, error } = useQuery(GET_LOGS, {
+    const { data, loading } = useQuery(GET_LOGS, {
         variables: {
             action: actionType.toLowerCase(),
             adminType: adminType.toLowerCase(),
@@ -478,8 +478,8 @@ const ActionLog = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.logs.results.map((actionItem) => (
-                        <TableRow>
+                    {data.logs.results.map((actionItem, index) => (
+                        <TableRow key={index}>
                             <TableCell>
                                 <Moment
                                     date={actionItem.date}

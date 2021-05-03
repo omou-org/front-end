@@ -18,6 +18,7 @@ import { fullName, sortTime, USER_TYPES } from '../../../utils';
 import theme from '../../../theme/muiTheme';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AddIcon from '@material-ui/icons/Add';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -176,8 +177,6 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
                                         poster,
                                         subject,
                                     } = note;
-                                    const hideString =
-                                        body.substring(0, 60) + '...';
                                     const date = moment(updatedAt).format(
                                         'MM/DD'
                                     );
@@ -341,6 +340,11 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
             </Grid>
         </Grid>
     );
+};
+
+ClassSessionView.propTypes = {
+    sessionId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    loggedInUser: PropTypes.object,
 };
 
 export default ClassSessionView;

@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import * as types from '../../../../actions/actionTypes';
 import NoListAlert from '../../../OmouComponents/NoListAlert';
 import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from 'utils';
+import PropTypes from 'prop-types';
 
 const separator = () => {
     return (
@@ -43,7 +44,7 @@ function RegistrationEntry({
         updateSession(Number(e.target.value), checked, studentId, course.id);
     };
 
-    const handleSessionCheckChange = (_) => {
+    const handleSessionCheckChange = () => {
         updateSession(numSessions, !checked, studentId, course.id);
         dispatch({
             type: types.DELETE_COURSE_REGISTRATION,
@@ -163,10 +164,13 @@ function RegistrationEntry({
     );
 }
 
-export default function StudentRegistrationEntry({
-    student,
-    registrationList,
-}) {
+RegistrationEntry.propTypes = {
+    registration: PropTypes.any,
+    studentId: PropTypes.any,
+    index: PropTypes.any,
+};
+
+function StudentRegistrationEntry({ student, registrationList }) {
     return (
         <Grid item xs={12} container>
             <Typography style={{ fontWeight: 600 }}>
@@ -202,3 +206,10 @@ export default function StudentRegistrationEntry({
         </Grid>
     );
 }
+
+StudentRegistrationEntry.propTypes = {
+    student: PropTypes.any,
+    registrationList: PropTypes.array,
+};
+
+export default StudentRegistrationEntry;

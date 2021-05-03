@@ -2,8 +2,9 @@ import React from 'react';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     accordionNotes: {
         textAlign: 'left',
         display: 'inline-block',
@@ -41,6 +42,14 @@ const StudentEnrollmentBackground = ({ studentInfo }) => {
             </Typography>
         </AccordionDetails>
     );
+};
+
+StudentEnrollmentBackground.propTypes = {
+    studentInfo: PropTypes.shape({
+        name: PropTypes.string,
+        teacher: PropTypes.string,
+        textbook: PropTypes.string,
+    }).isRequired,
 };
 
 export default StudentEnrollmentBackground;

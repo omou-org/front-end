@@ -44,7 +44,7 @@ const GET_COURSES = gql`
 `;
 
 const ListComponentDemo = () => {
-    const { loading, error, data } = useQuery(GET_COURSES, {
+    const { loading, error } = useQuery(GET_COURSES, {
         variables: {},
     });
 

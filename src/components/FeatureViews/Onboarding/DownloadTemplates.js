@@ -5,7 +5,7 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { makeStyles } from '@material-ui/core/styles';
 import OnboardingControls from './OnboardingControls';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     Icon: {
         border: '2px solid #28ABD5',
         borderRadius: '8px',
