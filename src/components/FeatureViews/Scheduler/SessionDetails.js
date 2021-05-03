@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
     Tooltip,
     Typography,
-    withStyles,
     makeStyles,
-    Button,
-    Divider,
 } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
-import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
+import { darkBlue, darkGrey } from '../../../theme/muiTheme';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
@@ -89,25 +86,7 @@ const GET_SESSION = gql`
     }
 `;
 
-const CHECK_SCHEDULE_CONFLICTS = gql`
-    query checkScheduleConflicts(
-        $date: String!
-        $startTime: String!
-        $endTime: String!
-        $instructorId: ID!
-    ) {
-        validateSessionSchedule(
-            date: $date
-            endTime: $endTime
-            instructorId: $instructorId
-            startTime: $startTime
-        ) {
-            reason
-            status
-        }
-    }
-`;
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     current_session: {
         fontFamily: 'Roboto',
         fontStyle: 'normal',
@@ -175,48 +154,23 @@ const styles = (username) => ({
 const SessionDetails = () => {
     const { session_id, editType } = useParams();
     const classes = useStyles();
-    const [subjectValue, setSubjectValue] = useState('');
-    const [instructorValue, setInstructorValue] = useState('');
-    const [sessionStartTime, setSessionsStartTime] = useState('');
-    const [sessionEndTime, setSessionsEndTime] = useState('');
-    const [sessionDate, setSessionsDate] = useState('');
-    const [snackBarState, setSnackBarState] = useState(false);
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
-        onCompleted: (data) => {
-            setSessionsDate(Date.now());
-            setSessionsStartTime(moment(data.session.startDatetime)._d);
-            setSessionsEndTime(moment(data.session.endDatetime)._d);
-        },
     });
 
-    const [
-        checkScheduleConflicts,
-        { loading: conflictLoading, data: conflictData },
-    ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
-        onCompleted: ({ validateSessionSchedule }) => {
-            const { status, reason } = validateSessionSchedule;
-            if (status) {
-                console.log('true');
-            } else {
-                setSnackBarState(true);
-            }
-        },
-    });
 
-    if (loading || conflictLoading) {
+    if (loading ) {
         return <Loading />;
     }
 
     if (error) {
-        return <Typography>There's been an error!</Typography>;
+        return <Typography>{"There's been an error!"}</Typography>;
     }
 
     const {
         course,
         endDatetime,
-        id,
         title,
         instructor,
         startDatetime,
@@ -225,38 +179,18 @@ const SessionDetails = () => {
     var {
         courseCategory,
         enrollmentSet,
-        courseId,
         room,
         endDate,
         startDate,
     } = course;
-    const { courseCategories: subjects, instructors } = data;
 
-    const confirmed = course.isConfirmed;
     const course_id = course.id;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
-    const monthAndDate = moment(startDatetime).format('MMMM DD');
     const startSessionTime = moment(startDatetime).format('h:mm A');
     const endSessionTime = moment(endDatetime).format('h:mm A');
     const endDateFormat = moment(endDate).format('MMMM DD');
     const startDateFormat = moment(startDate).format('MMMM DD');
-
-    const handleTimeDateChange = (setState) => async (date) => {
-        setState(date._d);
-        if (!sessionStartTime || !sessionDate || !sessionEndTime) {
-            console.log('blocked');
-        } else {
-            await checkScheduleConflicts({
-                variables: {
-                    instructorId: id,
-                    startTime: moment(sessionStartTime).format('HH:mm'),
-                    endTime: moment(sessionEndTime).format('HH:mm'),
-                    date: moment(sessionDate).format('YYYY-MM-DD'),
-                },
-            });
-        }
-    };
 
 
     const EditBadge = {
@@ -288,8 +222,8 @@ const SessionDetails = () => {
                 Editing All Sessions
             </Typography>
         </Grid>),
-        'undefined': null
-    }
+        'undefined': null,
+    };
 
     return (
         <>

@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import SessionEditForm from './SessionEditForm';
 import SessionOptions from './SessionOptions';
 
 import 'date-fns';
 
 const SessionControls = () => {
-    const { session_id, editType } = useParams();
+    const { editType } = useParams();
 
     return(
         <>
@@ -15,7 +15,7 @@ const SessionControls = () => {
             : <SessionOptions />
         }
         </>
-    )
-}
+    );
+};
 
 export default SessionControls;

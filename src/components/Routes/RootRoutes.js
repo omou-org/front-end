@@ -8,7 +8,6 @@ import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
 import AuthenticatedRoute from './AuthenticatedRoute';
 import CatsPage from '../CatsPage/CatsPage';
 import EnrollmentView from '../FeatureViews/Enrollment/EnrollmentView';
-import EditSessionView from '../FeatureViews/Scheduler/EditSessionView';
 import ErrorNotFoundPage from '../ErrorNotFoundPage/ErrorNotFoundPage';
 import ForgotPassword from '../Authentication/ForgotPassword';
 import LoginPage from '../Authentication/LoginPage.js';

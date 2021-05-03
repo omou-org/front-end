@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams, Prompt } from 'react-router-dom';
+import { useParams, Prompt } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import { useQuery, useLazyQuery } from '@apollo/client';
 import {
-    Tooltip,
     Typography,
-    withStyles,
     makeStyles,
     Button,
     Divider,
 } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import { stringToColor } from '../Accounts/accountUtils';
 import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
 import { QueryBuilder } from '@material-ui/icons';
 import { USER_TYPES, fullName } from '../../../utils';
@@ -30,7 +27,7 @@ import {
 } from '@material-ui/pickers';
 import ConfirmationModal from './ConfirmationModal';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     current_session: {
         fontFamily: 'Roboto',
         fontStyle: 'normal',
@@ -211,7 +208,7 @@ const SingleSessionEdit = () => {
     }
 
     if (error) {
-        return <Typography>There's been an error!</Typography>;
+        return <Typography>{"There's been an error!"}</Typography>;
     }
 
     const {
