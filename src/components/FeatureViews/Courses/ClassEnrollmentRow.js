@@ -189,8 +189,10 @@ const ClassEnrollmentRow = ({
         if (isInviteUnsent) {
             setGoogleClassroomStatusMessage('Resend Invite');
             sendGoogleClassroomInvite(omouGoogleIntegratedCourseID);
-        } else if (googleClassroomStatusMessage == 'Invite Accepted') {
         }
+        // else if (googleClassroomStatusMessage == 'Invite Accepted') {
+        //
+        // }
     };
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);

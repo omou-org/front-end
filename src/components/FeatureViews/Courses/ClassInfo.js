@@ -125,7 +125,6 @@ const ClassInfo = ({
 }) => {
     const [courseURL, setCourseURL] = useState('');
     const [linkDescription, setLinkDescription] = useState('');
-    const [setUpdatedAt] = useState('');
     const [isEditActive, setEditActive] = useState(false);
 
     const [updateCourseLink] = useMutation(UPDATE_COURSE_LINK, {
@@ -156,8 +155,7 @@ const ClassInfo = ({
     useEffect(() => {
         setCourseURL(courseLink);
         setLinkDescription(courseLinkDescription);
-        setUpdatedAt(courseLinkUpdatedAt);
-    }, [courseLink, courseLinkDescription, courseLinkUpdatedAt, setUpdatedAt]);
+    }, [courseLink, courseLinkDescription, courseLinkUpdatedAt]);
 
     const editLinkAndDescription = () => {
         setEditActive(true);
