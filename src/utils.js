@@ -771,7 +771,7 @@ export function useUploadOmouTemplate() {
 
         let resp = await response.json();
 
-        return resp
+        return resp;
 
 
     };
@@ -790,19 +790,19 @@ export function useUploadOmouTemplate() {
  */
 const queryTemplate = async (query) => {
     if (query) {
-        let { data } = await client.query({ query })
-        return Object.values(data)[0]
+        let { data } = await client.query({ query });
+        return Object.values(data)[0];
     } else {
-        return null
+        return null;
     }
 
-}
+};
 
 
 export async function downloadOmouTemplate(file, name) {
 
     const { query, error } = file;
-    const fileString = error || await queryTemplate(query)
+    const fileString = error || await queryTemplate(query);
 
     function b64toBlob(base64Data, contentType) {
         contentType = contentType || '';
