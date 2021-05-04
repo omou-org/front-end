@@ -210,6 +210,7 @@ const STRIPE_API_KEY = process.env.REACT_APP_STRIPE_KEY;
 const PaymentBoard = () => {
     const { registrationCart, currentParent } = useContext(RegistrationContext);
     const [paymentMethod, setPaymentMethod] = useState(null);
+    const [paymentLaterPromptOpen, setPaymentLaterPromptOpen] = useState(false);
     const history = useHistory();
 
     const classRegistrations = []
@@ -441,6 +442,14 @@ const PaymentBoard = () => {
         []
     );
 
+    function handleClose() {
+        setPaymentLaterPromptOpen(false);
+    }
+
+    const handlePaymentLater = () => {
+        setPaymentLaterPromptOpen(true);
+    }
+
     const handlePayment = async () => {
         const {
             data: { enrollments },
@@ -644,15 +653,52 @@ const PaymentBoard = () => {
                             priceQuote.total === '-' ||
                             priceQuote < 0
                         }
+                        onClick={handlePaymentLater}
+                        variant='outlined'
+                    >
+                        Pay Later
+                    </ResponsiveButton>
+                </Grid>
+                <Grid item>
+                    <ResponsiveButton
+                        color='primary'
+                        data-cy='pay-action'
+                        disabled={
+                            paymentMethod === null ||
+                            priceQuote.total === '-' ||
+                            priceQuote < 0
+                        }
                         onClick={handlePayment}
                         variant='contained'
                     >
-                        {paymentMethod === 'credit_card'
-                            ? 'Pay Now'
-                            : 'Pay Later'}
+                        Pay Now
                     </ResponsiveButton>
                 </Grid>
             </Grid>
+            <Dialog
+                open={paymentLaterPromptOpen}
+                onClose={handleClose}
+                aria-labelledby='dialog-title'
+                aria-describedby='dialog-description'
+            >
+                <DialogTitle disableTypography id='dialog-title'>
+                    {'Pay Later'}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id='dialog-description'>
+                        If you would like to pay later you have 5 days to pay the full amount from the date of completing your first registration <br/><br/>
+                        Payment must be made on time to confirm course enrollment status
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton onClick={handleClose} color='secondary'>
+                        Nevermind
+                    </ResponsiveButton>
+                    <ResponsiveButton onClick={handleClose} color='primary'>
+                        Confirm
+                    </ResponsiveButton>
+                </DialogActions>
+            </Dialog>
         </>
     );
 };
