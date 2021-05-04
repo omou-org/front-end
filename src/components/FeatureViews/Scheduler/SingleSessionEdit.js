@@ -1,30 +1,22 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { useParams, Prompt } from 'react-router-dom';
+import {Prompt, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import {
-    Typography,
-    makeStyles,
-    Button,
-    Divider,
-} from '@material-ui/core';
+import {useLazyQuery, useQuery} from '@apollo/client';
+import {Button, Divider, makeStyles, Typography,} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
-import { QueryBuilder } from '@material-ui/icons';
-import { USER_TYPES, fullName } from '../../../utils';
+import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
+import {QueryBuilder} from '@material-ui/icons';
+import {fullName, USER_TYPES} from '../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { EditSessionDropDown } from './EditSessionUtilComponents';
-import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
+import {EditSessionDropDown} from './EditSessionUtilComponents';
+import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
 import LeavePageModal from '../../OmouComponents/LeavePageModal';
 
 import 'date-fns';
-import {
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
+import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
 import ConfirmationModal from './ConfirmationModal';
 
 const useStyles = makeStyles(() => ({
@@ -199,7 +191,7 @@ const SingleSessionEdit = () => {
             const { status } = validateSessionSchedule;
             if (!status) {
                 setSnackBarState(true);
-            }; 
+            }
         },
     });
 
@@ -262,7 +254,7 @@ const SingleSessionEdit = () => {
         if (enrollmentSet.length < 1) {
             return 'no students';
         } else {
-            fullName(enrollmentSet[0].user);
+            fullName(enrollmentSet[0].student.user);
         }
     };
 
