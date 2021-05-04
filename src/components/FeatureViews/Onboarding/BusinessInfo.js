@@ -6,8 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { OnboardingContext } from './OnboardingContext';
 import { useSessionStorage } from '../../../utils';
 import OnboardingControls from './OnboardingControls';
+import Loading from '../../OmouComponents/Loading';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 
@@ -22,39 +23,65 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const CREAT_BIZ_INFO = gql`
-    mutation CreateBusiness(
-        $name: String
-        $phone: String
-        $email: String
-        $address: String
-    ) {
-        createBusiness(
-            name: $name
-            phone: $phone
-            email: $email
-            address: $address
-        ) {
-            business {
-                id
-                name
-                phone
-                email
-                address
+const GET_BUSINESS = gql`
+    query {
+        business {
+            id
+            name
+            phoneNumber
+            email
+            address
+            availabilityList {
+                dayOfWeek
+                startTime
+                endTime
             }
         }
     }
 `;
 
+const UPDATE_BUSINESS = gql`
+    mutation MyMutation(
+        $address: String
+        $email: String
+        $name: String
+        $phoneNumber: String
+    ) {
+        updateBusiness(
+            address: $address
+            email: $email
+            name: $name
+            phoneNumber: $phoneNumber
+            availabilities: {
+                dayOfWeek: MONDAY
+                startTime: "11:00"
+                endTime: "3:00"
+            }
+        ) {
+            business {
+                id
+                name
+                address
+                email
+                phoneNumber
+            }
+            updated
+        }
+    }
+`;
+
+
 const BusinessInfo = ({ step }) => {
     const classes = useStyles();
     const { setImportState } = useContext(OnboardingContext);
+
     // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
-    const [createBusinessInfo] = useMutation(
-        CREAT_BIZ_INFO,
+    
+    const [updateData] = useMutation(
+        UPDATE_BUSINESS,
         {
-            onCompleted: (data) => {
-                console.log(data);
+            onCompleted: () => {
+                handleSubmit();
             },
         }
     );
@@ -63,6 +90,27 @@ const BusinessInfo = ({ step }) => {
     const [bizPhone, setBizPhone] = useSessionStorage('bizPhone', '');
     const [bizEmail, setBizEmail] = useSessionStorage('bizEmail', '');
     const [bizAddress, setBizAddress] = useSessionStorage('bizAddress', '');
+
+    const { loading, error } = useQuery(GET_BUSINESS, {
+        onCompleted: (data) => {
+            const { business } = data;
+            setBizName(business.name);
+            setBizPhone(business.phoneNumber);
+            setBizEmail(business.email);
+            setBizAddress(business.address);
+        },
+    });
+
+    if (loading) {
+        return <Loading />;
+    }
+    if (error) {
+        return (
+            <Typography>
+                There has been an error! Error: {error.message}
+            </Typography>
+        );
+    };
 
     const handleFieldChange = (setValue, key) => (e) => {
         const newValue = e.target.value;
@@ -89,7 +137,7 @@ const BusinessInfo = ({ step }) => {
     };
 
     const handleSubmit = () => {
-        createBusinessInfo({
+        updateData({
             variables: {
                 name: bizName,
                 phone: bizPhone,
@@ -147,7 +195,7 @@ const BusinessInfo = ({ step }) => {
                         fullWidth
                         id='email'
                         label='Business Email'
-                        value={bizEmail}
+                        value={bizEmail}                      
                         onChange={handleFieldChange(setBizEmail, 'email')}
                         error={handleError(bizEmail, 'email')}
                         required
