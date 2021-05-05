@@ -74,15 +74,20 @@ const UPDATE_BUSINESS = gql`
 const BusinessInfo = ({ step }) => {
     const classes = useStyles();
     const { setImportState } = useContext(OnboardingContext);
-
-    // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
     
     const [updateData] = useMutation(
         UPDATE_BUSINESS,
         {
-            onCompleted: () => {
-                handleSubmit();
-            },
+            update: (cache, data) => {
+            const updatedBusiness = data.data.updateBusiness.business;
+            cache.writeQuery(
+                { 
+                    query: GET_BUSINESS, 
+                    data: {
+                        business: updatedBusiness
+                    }
+                });
+            }
         }
     );
 
