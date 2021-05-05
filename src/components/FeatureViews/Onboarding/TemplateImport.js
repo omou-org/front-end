@@ -2,7 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Grid} from '@material-ui/core';
 import DownloadTemplateButton from './DownloadTemplateButton';
 import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
-import Link from "@material-ui/core/Link";
+import { makeStyles } from '@material-ui/core/styles';
+import { h6, } from '../../../theme/muiTheme';
 import Typography from "@material-ui/core/Typography";
 import useOnboardingActions from "./ImportStepperActions";
 
@@ -10,11 +11,23 @@ import DragAndDropUploadBtn from "./DragAndDropUploadBtn";
 import {OnboardingContext} from './OnboardingContext';
 import PropTypes from "prop-types";
 
+const useStyles = makeStyles({
+    modalTypography: {
+        marginBottom: '1em',
+    },
+    useCaseLink: {
+        ...h6,
+        lineHeight: '22px',
+        textDecoration: 'underline',
+    },
+});
+
 const TemplateImport = ({templateType, setActiveStep}) => {
     const [disabled, setDisabled] = useState(true);
     const {state} = useContext(OnboardingContext);
 
     const {handleBack} = useOnboardingActions();
+    const classes = useStyles();
 
     useEffect(() => {
 
@@ -54,9 +67,15 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                 </Typography>
             </Grid>
             <Grid item>
-                <Link>
+                <a
+                    className={`${classes.modalTypography} ${classes.useCaseLink}`}
+                    href='/business-use-cases'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    type='button'
+                >
                     Why am I entering this data?
-                </Link>
+                </a>
             </Grid>
             <Grid item>
                 <DownloadTemplateButton
