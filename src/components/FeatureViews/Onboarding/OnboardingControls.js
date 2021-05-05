@@ -16,6 +16,8 @@ export default function OnboardingControls(props) {
         postSkipHandler = doNothing,
         preNextHandler = doNothing,
         postNextHandler = doNothing,
+        backProps,
+        nextProps,
     } = props;
 
 	const {activeStep} = useContext(OnboardingContext);
@@ -54,6 +56,7 @@ export default function OnboardingControls(props) {
                 <ResponsiveButton
                     disabled={activeStep === 0}
                     onClick={handleBackButton}
+                    {...backProps}
                 >
                     Back
                 </ResponsiveButton>
@@ -66,7 +69,11 @@ export default function OnboardingControls(props) {
                     Skip
                 </ResponsiveButton>
             )}
-            <ResponsiveButton variant='contained' onClick={handleNextButton}>
+            <ResponsiveButton
+                variant='contained'
+                onClick={handleNextButton}
+                {...nextProps}
+            >
                 {activeStep === steps.length - 1
                     ? 'Finish'
                     : 'Submit & Continue'}
@@ -82,4 +89,6 @@ OnboardingControls.propTypes = {
     postSkipHandler: PropTypes.func,
     preNextHandler: PropTypes.func,
     postNextHandler: PropTypes.func,
+    backProps: PropTypes.any,
+    nextProps: PropTypes.any,
 };
