@@ -54,15 +54,6 @@ const useStyles = makeStyles({
     menuSelected: {
         backgroundColor: `${highlightColor} !important`,
     },
-    dataPopup: {
-        border: '1px solid',
-        width: '44rem',
-        height: '34rem',
-        padding: '2rem',
-        backgroundColor: white,
-        overflowX: 'hidden',
-        overflowY: 'auto'
-    },
     selectDisplay: {
         background: white,
         border: `1px solid ${omouBlue}`,

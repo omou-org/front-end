@@ -52,6 +52,8 @@ export default function OnboardingControls(props) {
         <Grid item container>
             {activeStep !== 0 && (
                 <ResponsiveButton
+                    variant='outlined'
+                    style={{ marginRight: '1rem' }}
                     disabled={activeStep === 0}
                     onClick={handleBackButton}
                 >
