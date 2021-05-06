@@ -7,8 +7,8 @@ import Typography from '@material-ui/core/Typography';
 
 import BusinessInfo from './BusinessInfo';
 import BusinessHours from './BusinessHours';
-import { OnboardingContext, initalState, reducer } from "./OnboardingContext";
-import { useURLQuery } from "../../../utils";
+import { OnboardingContext, initalState, reducer } from './OnboardingContext';
+import { useURLQuery } from '../../../utils';
 import BulkImportStep from './BulkImportStep';
 
 const useStyles = makeStyles((theme) => ({
@@ -62,7 +62,12 @@ const ImportFlow = () => {
             case 3:
                 return <BulkImportStep templateType='Courses' step={3} />;
             case 4:
-                return <BulkImportStep templateType='Course enrollments' step={4} />;
+                return (
+                    <BulkImportStep
+                        templateType='Course enrollments'
+                        step={4}
+                    />
+                );
 
             default:
                 return 'Error: Invalid step. No content to display';
@@ -78,7 +83,16 @@ const ImportFlow = () => {
     };
 
     return (
-        <OnboardingContext.Provider value={{ importState, setImportState, activeStep, setActiveStep, state, dispatch }}>
+        <OnboardingContext.Provider
+            value={{
+                importState,
+                setImportState,
+                activeStep,
+                setActiveStep,
+                state,
+                dispatch,
+            }}
+        >
             <div className={classes.root}>
                 <Stepper alternativeLabel activeStep={activeStep}>
                     {steps.map((label, index) => {

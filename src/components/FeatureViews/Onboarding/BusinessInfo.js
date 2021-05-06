@@ -70,26 +70,21 @@ const UPDATE_BUSINESS = gql`
     }
 `;
 
-
 const BusinessInfo = ({ step }) => {
     const classes = useStyles();
     const { setImportState } = useContext(OnboardingContext);
-    
-    const [updateData] = useMutation(
-        UPDATE_BUSINESS,
-        {
-            update: (cache, data) => {
+
+    const [updateData] = useMutation(UPDATE_BUSINESS, {
+        update: (cache, data) => {
             const updatedBusiness = data.data.updateBusiness.business;
-            cache.writeQuery(
-                { 
-                    query: GET_BUSINESS, 
-                    data: {
-                        business: updatedBusiness
-                    }
-                });
-            }
-        }
-    );
+            cache.writeQuery({
+                query: GET_BUSINESS,
+                data: {
+                    business: updatedBusiness,
+                },
+            });
+        },
+    });
 
     const [bizName, setBizName] = useSessionStorage('bizName', '');
     const [bizPhone, setBizPhone] = useSessionStorage('bizPhone', '');
@@ -115,7 +110,7 @@ const BusinessInfo = ({ step }) => {
                 There has been an error! Error: {error.message}
             </Typography>
         );
-    };
+    }
 
     const handleFieldChange = (setValue, key) => (e) => {
         const newValue = e.target.value;
@@ -200,7 +195,7 @@ const BusinessInfo = ({ step }) => {
                         fullWidth
                         id='email'
                         label='Business Email'
-                        value={bizEmail}                      
+                        value={bizEmail}
                         onChange={handleFieldChange(setBizEmail, 'email')}
                         error={handleError(bizEmail, 'email')}
                         required
@@ -226,7 +221,7 @@ const BusinessInfo = ({ step }) => {
 };
 
 BusinessInfo.propTypes = {
-    step: PropTypes.number
+    step: PropTypes.number,
 };
 
 export default BusinessInfo;
