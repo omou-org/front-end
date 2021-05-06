@@ -10,7 +10,7 @@ import Avatar from '@material-ui/core/Avatar';
 import {stringToColor} from '../Accounts/accountUtils';
 import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
 import ConfirmIcon from '@material-ui/icons/CheckCircle';
-import {QueryBuilder} from '@material-ui/icons'
+import {QueryBuilder} from '@material-ui/icons';
 import UnconfirmIcon from '@material-ui/icons/Cancel';
 import {USER_TYPES} from '../../../utils';
 import moment from 'moment';
@@ -156,7 +156,7 @@ query checkScheduleConflicts(
       status
     }
   }
-`
+`;
 
 const styles = (username) => ({
     backgroundColor: stringToColor(username),
@@ -188,14 +188,14 @@ const SessionViewEdit = () => {
 
     const [checkScheduleConflicts, { loading: conflictLoading, data: conflictData }] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
         onCompleted: ({ validateSessionSchedule }) => {
-            const { status, reason } = validateSessionSchedule;
+            const { status } = validateSessionSchedule;
             if(status) {
-                console.log('true')
+                console.log('true');
             } else {
-                setSnackBarState(true)
+                setSnackBarState(true);
             }
         }
-    })
+    });
 
     if (loading || conflictLoading) {
         return <Loading />;
