@@ -1,41 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import { SchedulerContext } from './SchedulerContext';
+import {useQuery} from '@apollo/client';
+import {SchedulerContext} from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { fullName } from '../../../utils';
-import { useHistory } from 'react-router-dom';
-import { instructorPalette } from '../../../theme/muiTheme';
-import { findCommonElement } from '../../Form/FormUtils';
-import { SessionPopover } from './SessionPopover';
-import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
-import { useSelector } from 'react-redux';
+import {fullName} from '../../../utils';
+import {instructorPalette} from '../../../theme/muiTheme';
+import {findCommonElement} from '../../Form/FormUtils';
+import {SessionPopover} from './SessionPopover';
+import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
+import {useSelector} from 'react-redux';
+import PropTypes from 'prop-types';
+import './scheduler.scss';
 
-const useStyles = makeStyles((theme) => ({
-    sessionPopover: {
-        padding: theme.spacing(3),
-        height: '100%',
-        cursor: 'pointer',
-    },
-    popover: {
-        pointerEvents: 'none',
-    },
-    sessionInfo: {
-        display: 'flex',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        marginTop: theme.spacing(1),
-    },
-}));
-
-const EventPopoverWrapper = ({ children, popover }) => {
-    const classes = useStyles();
+const EventPopoverWrapper = ({children, popover}) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const history = useHistory();
 
     const handlePopoverOpen = (event) => {
         setAnchorEl(event.target);
@@ -57,29 +38,34 @@ const EventPopoverWrapper = ({ children, popover }) => {
                 {children}
             </div>
                   <Popover
-                id='mouse-over-popover'
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handlePopoverClose}
-                anchorOrigin={{
+                      id='mouse-over-popover'
+                      open={open}
+                      anchorEl={anchorEl}
+                      onClose={handlePopoverClose}
+                      anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'center',
                 }}
-                transformOrigin={{
-                    vertical: 'center',
-                    horizontal: 'left',
-                }}
-            >
-                {popover}
-            </Popover>
+                      transformOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left',
+                      }}
+                  >
+                      {popover}
+                  </Popover>
         </>
     );
+};
+
+EventPopoverWrapper.propTypes = {
+    children: PropTypes.any,
+    popover: PropTypes.any,
 };
 
 const localizer = momentLocalizer(moment);
 
 const BigCalendar = (props) => {
-    const eventStyleGetter = ({ instructor }) => {
+    const eventStyleGetter = ({instructor}) => {
         const hashCode = (string) => {
             let hash = 0;
             for (let i = 0; i < string.length; i += 1) {
@@ -106,6 +92,7 @@ const BigCalendar = (props) => {
             timeslots={4}
             components={{
                 toolbar: OmouSchedulerToolbar,
+                // eslint-disable-next-line react/display-name
                 eventWrapper: (props) => (
                     <EventPopoverWrapper
                         {...props}
@@ -120,6 +107,11 @@ const BigCalendar = (props) => {
             eventPropGetter={eventStyleGetter}
         />
     );
+};
+BigCalendar.propTypes = {
+    eventList: PropTypes.array,
+    event: PropTypes.any,
+    onSelectEvent: PropTypes.func,
 };
 
 const GET_SESSIONS = gql`
@@ -159,7 +151,7 @@ const GET_SESSIONS = gql`
 `;
 
 export default function Scheduler() {
-    const defaultSchedulerState = {
+    const defaultSchedulerState = useMemo(() => ({
         timeFrame: 'month',
         timeShift: 0,
         instructorOptions: [],
@@ -168,8 +160,8 @@ export default function Scheduler() {
         selectedCourses: [],
         studentOptions: [],
         selectedStudents: [],
-    };
-    const AuthUser = useSelector(({ auth }) => auth);
+    }), []);
+    const AuthUser = useSelector(({auth}) => auth);
     const [schedulerState, setSchedulerState] = useState(defaultSchedulerState);
     const [sessionsInView, setSessionsInView] = useState([]);
     const [filteredSessionsInView, setFilteredSessionsInView] = useState([]);
@@ -228,10 +220,10 @@ export default function Scheduler() {
 
     useEffect(() => {
         setSchedulerState(defaultSchedulerState);
-    }, []);
+    }, [defaultSchedulerState]);
 
     useEffect(() => {
-        const { timeFrame, timeShift, ...rest } = schedulerState;
+        const {timeFrame, timeShift, ...rest} = schedulerState;
         if (timeFrame && timeShift) {
             setSchedulerState({
                 ...rest,
@@ -239,7 +231,7 @@ export default function Scheduler() {
                 timeShift,
             });
         }
-    }, [schedulerState.timeFrame, schedulerState.timeShift]);
+    }, [schedulerState.timeFrame, schedulerState.timeShift, schedulerState]);
 
     useEffect(() => {
         setFilteredSessions(schedulerState, sessionsInView);
@@ -247,6 +239,8 @@ export default function Scheduler() {
         schedulerState.selectedInstructors.length,
         schedulerState.selectedCourses.length,
         schedulerState.selectedStudents.length,
+        sessionsInView,
+        schedulerState,
     ]);
 
     const uniqueValuesById = (objectList) => {
@@ -271,17 +265,17 @@ export default function Scheduler() {
         AuthUser.accountType === 'PARENT' ||
         AuthUser.accountType === 'INSTRUCTOR';
 
-    const { data, loading, error } = useQuery(GET_SESSIONS, {
+    useQuery(GET_SESSIONS, {
         variables: {
             timeFrame: schedulerState.timeFrame,
             timeShift: schedulerState.timeShift,
-            ...(isParentOrInstructorLoggedIn && { userId: AuthUser.user.id }),
+            ...(isParentOrInstructorLoggedIn && {userId: AuthUser.user.id}),
         },
         onCompleted: (data) => {
-            const { sessions } = data;
+            const {sessions} = data;
             const parsedBigCalendarSessions = sessions.map(
                 ({
-                    id,
+                     id,
                     endDatetime,
                     startDatetime,
                     title,
@@ -354,4 +348,4 @@ export default function Scheduler() {
             <BigCalendar eventList={filteredSessionsInView} />
         </SchedulerContext.Provider>
     );
-}
+};

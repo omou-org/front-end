@@ -1,36 +1,25 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams, Prompt } from 'react-router-dom';
+import {Prompt, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery, useLazyQuery } from '@apollo/client';
-import {
-    Tooltip,
-    Typography,
-    withStyles,
-    makeStyles,
-    Button,
-    Divider,
-} from '@material-ui/core';
+import {useLazyQuery, useQuery} from '@apollo/client';
+import {Button, Divider, makeStyles, Typography,} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import { stringToColor } from '../Accounts/accountUtils';
-import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
-import { QueryBuilder } from '@material-ui/icons';
-import { USER_TYPES, fullName } from '../../../utils';
+import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
+import {QueryBuilder} from '@material-ui/icons';
+import {fullName, USER_TYPES} from '../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import { EditSessionDropDown } from './EditSessionUtilComponents';
-import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
+import {EditSessionDropDown} from './EditSessionUtilComponents';
+import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
 import LeavePageModal from '../../OmouComponents/LeavePageModal';
 
 import 'date-fns';
-import {
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
+import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
 import ConfirmationModal from './ConfirmationModal';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     current_session: {
         fontFamily: 'Roboto',
         fontStyle: 'normal',
@@ -202,7 +191,7 @@ const SingleSessionEdit = () => {
             const { status } = validateSessionSchedule;
             if (!status) {
                 setSnackBarState(true);
-            }; 
+            }
         },
     });
 
@@ -211,7 +200,7 @@ const SingleSessionEdit = () => {
     }
 
     if (error) {
-        return <Typography>There's been an error!</Typography>;
+        return <Typography>{"There's been an error!"}</Typography>;
     }
 
     const {
@@ -265,7 +254,7 @@ const SingleSessionEdit = () => {
         if (enrollmentSet.length < 1) {
             return 'no students';
         } else {
-            fullName(enrollmentSet[0].user);
+            fullName(enrollmentSet[0].student.user);
         }
     };
 
@@ -295,7 +284,6 @@ const SingleSessionEdit = () => {
         date: `${dayOfWeek}, ${monthAndDate} at ${startSessionTime} - ${endSessionTime}`,
         message: conflictData?.validateSessionSchedule.reason,
         messageColor: statusRed,
-        duration: 6000,
         vertical: 'bottom',
         horizontal: 'left',
     };

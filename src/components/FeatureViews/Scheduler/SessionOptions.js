@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { NavLink, useParams } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ import 'date-fns';
 
 const SessionOptions = () => {
 
-    const { session_id, editType } = useParams();
+    const { session_id } = useParams();
 
     return (
         <>

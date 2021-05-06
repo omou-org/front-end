@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { CSSTransition } from 'react-transition-group';
-import { Snackbar, Grid, Typography } from '@material-ui/core';
-import { Error } from '@material-ui/icons';
+import { Grid, Typography } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import './SnackBarComponent.scss';
 
 export const SnackBarComponent = ({
@@ -9,16 +9,6 @@ export const SnackBarComponent = ({
     snackBarState,
     setSnackBarState,
 }) => {
-    let timer = snackBarData.duration;
-    useEffect(() => {
-        const snackBarCloseInterval = setInterval(() => {
-            timer -= 1;
-            if (timer < 1) {
-                setSnackBarState(false);
-                return clearInterval(snackBarCloseInterval);
-            }
-        }, 1000);
-    }, [snackBarState]);
 
     return (
         <CSSTransition
@@ -91,3 +81,9 @@ export const SnackBarComponent = ({
         </CSSTransition>
     );
 };
+
+SnackBarComponent.propTypes = {
+    snackBarData: PropTypes.object,
+    snackBarState: PropTypes.object,
+    setSnackBarState: PropTypes.func.isRequired
+  };
