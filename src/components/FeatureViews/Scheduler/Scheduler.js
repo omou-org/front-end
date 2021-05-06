@@ -218,9 +218,12 @@ export default function Scheduler() {
         setFilteredSessionsInView(sessionsFilteredByInstructorsCoursesStudents);
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        setSchedulerState(defaultSchedulerState);
-    }, [defaultSchedulerState]);
+        if (JSON.stringify(schedulerState) !== JSON.stringify(defaultSchedulerState)) {
+            setSchedulerState(defaultSchedulerState);
+        }
+    });
 
     useEffect(() => {
         const {timeFrame, timeShift, ...rest} = schedulerState;
