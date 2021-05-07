@@ -1,13 +1,14 @@
-import React, {useCallback, useState} from "react";
-import {Form as ReactForm} from 'react-final-form';
+import React, {useCallback} from "react";
+import {Form as ReactForm, useFormState} from 'react-final-form';
 import {TimePicker} from "./FieldComponents/Fields";
 import Grid from "@material-ui/core/Grid";
 import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveButton";
 import PropTypes from 'prop-types';
 import useOnboardingActions from "../FeatureViews/Onboarding/ImportStepperActions";
-import {Checkbox, FormControlLabel} from "@material-ui/core";
 import gql from 'graphql-tag';
 import {useMutation} from "@apollo/client";
+import {Checkboxes} from "mui-rff";
+// import Loading from "../OmouComponents/Loading";
 
 const CREATE_BIZ_HOURS = gql`
 	mutation CreateBusinessHours($bizHours: [BusinessAvailabilityInput]){
@@ -21,15 +22,25 @@ const CREATE_BIZ_HOURS = gql`
 						}
 					}
 			}
-	}		
+	}
 `;
 
-const BusinessDayHoursField = ({day}) => {
-	const [closeChecked, setCloseChecked] = useState(false);
+// const GET_BIZ_HOURS = gql`
+// 	query GetBusinessHours {
+// 		business{
+// 			id
+// 			businessavailabilitySet{
+// 				dayOfWeek
+// 				endTime
+// 				StartTime
+// 			}
+// 		}
+// 	}
+// `;
 
-	const handleCheck = () => {
-		setCloseChecked((pastCheckState) => (!pastCheckState));
-	};
+const BusinessDayHoursField = ({day}) => {
+	const {values} = useFormState();
+	const isDayClosed = values[`${day.substring(0, 3)}-checked`];
 
 	return (<Grid
 		item container
@@ -42,24 +53,21 @@ const BusinessDayHoursField = ({day}) => {
 		<Grid item xs={4}>
 			<TimePicker
 				name={`${day}-startTime`}
-				label={'Start Time'}
+				label='Start Time'
 				emptyLabel='Start Time'
-				disabled={closeChecked}
+				disabled={isDayClosed}
 			/>
 		</Grid>
 		<Grid item xs={4}>
 			<TimePicker
 				name={`${day}-endTime`}
-				label={'End Time'}
+				label='End Time'
 				emptyLabel='End Time'
-				disabled={closeChecked}
+				disabled={isDayClosed}
 			/>
 		</Grid>
 		<Grid item xs={2}>
-			<FormControlLabel
-				control={<Checkbox checked={closeChecked} onChange={handleCheck} name="closed"/>}
-				label="Closed"
-			/>
+			<Checkboxes name={`${day.substring(0, 3)}-checked`} data={[{label: 'Closed', value: `${day}-checked`}]}/>
 		</Grid>
 	</Grid>);
 };
@@ -70,6 +78,7 @@ BusinessDayHoursField.propTypes = {
 
 export default function BusinessHoursForm({ isOnboarding }) {
 	const [createBizHours] = useMutation(CREATE_BIZ_HOURS);
+	// const {data, loading, error} = useQuery(GET_BIZ_HOURS);
 	const {
 		handleBack,
 		handleNext,
@@ -78,10 +87,10 @@ export default function BusinessHoursForm({ isOnboarding }) {
 	const parseDayTimeTitle = (dayTimeTitle) => {
 		const separatorIndex = dayTimeTitle.indexOf("-");
 		const dayOfWeek = dayTimeTitle.substring(0, separatorIndex).toUpperCase();
-		const startOrEndTime = dayTimeTitle.substring(separatorIndex + 1);
+		const valueKey = dayTimeTitle.substring(separatorIndex + 1);
 		return {
 			dayOfWeek,
-			startOrEndTime,
+			valueKey,
 		};
 	};
 
@@ -103,16 +112,21 @@ export default function BusinessHoursForm({ isOnboarding }) {
 			const matchingTimesSet = new Set();
 			let currentDay;
 
-			timesArr.forEach((time) => {
-				currentDay = time.substring(0, time.indexOf('-'));
+			timesArr
+				.filter(time => {
+					const {dayOfWeek} = parseDayTimeTitle(time);
+					return dayOfWeek.length > 3;
+				})
+				.forEach((time) => {
+					currentDay = time.substring(0, time.indexOf('-'));
 
-				if (timeSet.has(currentDay)) {
-					timeSet.delete(currentDay);
-					matchingTimesSet.add(currentDay);
-				} else {
-					timeSet.add(currentDay);
-				}
-			});
+					if (timeSet.has(currentDay)) {
+						timeSet.delete(currentDay);
+						matchingTimesSet.add(currentDay);
+					} else {
+						timeSet.add(currentDay);
+					}
+				});
 
 			return {
 				unpairedDayTimes: [...timeSet],
@@ -135,7 +149,6 @@ export default function BusinessHoursForm({ isOnboarding }) {
 		pairedDayTimes.forEach(day => {
 			const startTime = formData[startTimeKey(day)];
 			const endTime = formData[endTimeKey(day)];
-			console.log(startTime, endTime);
 			if (endTime.isBefore(startTime)) {
 				errors[endTimeKey(day)] = 'Select a Later End Time';
 			}
@@ -149,25 +162,29 @@ export default function BusinessHoursForm({ isOnboarding }) {
 			.reduce((bizHoursValues, [dayTimeTitle, time]) => {
 				const {
 					dayOfWeek,
-					startOrEndTime,
+					valueKey,
 				} = parseDayTimeTitle(dayTimeTitle);
-				const timeString = time.format('HH:mm');
+				const isMatchingDay = (day) => (day === dayOfWeek || day.includes(dayOfWeek));
+				const indexOfDay = bizHoursValues.findIndex(item => isMatchingDay(item.dayOfWeek));
 
-				const indexOfDay = bizHoursValues.findIndex(item => item.dayOfWeek === dayOfWeek);
+				const isDayTime = dayOfWeek.length > 3 && time;
+				const value = isDayTime ? time.format('HH:mm') : time;
 
 				if (indexOfDay > -1) {
 					bizHoursValues[indexOfDay] = {
 						...bizHoursValues[indexOfDay],
-						[startOrEndTime]: timeString,
+						[valueKey]: value,
 					};
 				} else {
 					bizHoursValues.push({
 						dayOfWeek,
-						[startOrEndTime]: timeString,
+						[valueKey]: value,
 					});
 				}
+
 				return bizHoursValues;
-			}, []);
+			}, [])
+			.filter(bizDayHours => !bizDayHours.checked);
 
 		createBizHours({variables: {bizHours}});
 		handleNext();
@@ -175,7 +192,14 @@ export default function BusinessHoursForm({ isOnboarding }) {
 
 	const handleBackClick = () => handleBack();
 
-    return (
+	// if(loading)
+	// 	return <Loading/>;
+	// if(error)
+	// 	return (<div>{`There's been an error!: ${error.message}`}</div>);
+	//
+	// console.log(data);
+
+	return (
 		<ReactForm
 			onSubmit={submit}
 			validate={validate}
