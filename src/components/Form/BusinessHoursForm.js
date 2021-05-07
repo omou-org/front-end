@@ -6,25 +6,23 @@ import {ResponsiveButton} from "../../theme/ThemedComponents/Button/ResponsiveBu
 import PropTypes from 'prop-types';
 import useOnboardingActions from "../FeatureViews/Onboarding/ImportStepperActions";
 import {Checkbox, FormControlLabel} from "@material-ui/core";
-// import gql from 'graphql-tag';
-// import {useMutation} from "@apollo/client";
-//
-// const CREATE_BIZ_HOURS = gql`
-// 	mutation CreateBusinessHours(
-// 		$bizAvailabilities: [BusinessAvailabilityInput]
-// 		){
-// 			updateBusiness(
-// 				availabilities: $bizAvailabilities
-// 				){
-// 					business{
-// 						id
-// 						availabilities {
-// 							dayOfWeek
-// 							endTime
-// 							startTime
-// 						}
-// 					}
-// `;
+import gql from 'graphql-tag';
+import {useMutation} from "@apollo/client";
+
+const CREATE_BIZ_HOURS = gql`
+	mutation CreateBusinessHours($bizHours: [BusinessAvailabilityInput]){
+			updateBusiness(availabilities: $bizHours){
+					business{
+						id
+						availabilities {
+							dayOfWeek
+							endTime
+							startTime
+						}
+					}
+			}
+	}		
+`;
 
 const BusinessDayHoursField = ({day}) => {
 	const [closeChecked, setCloseChecked] = useState(false);
@@ -71,37 +69,21 @@ BusinessDayHoursField.propTypes = {
 };
 
 export default function BusinessHoursForm({ isOnboarding }) {
-	// const [createBizHours] = useMutation(CREATE_BIZ_HOURS);
+	const [createBizHours] = useMutation(CREATE_BIZ_HOURS);
 	const {
 		handleBack,
 		handleNext,
 	} = useOnboardingActions();
 
-	const submit = useCallback(async (formData) => {
-		const parseDayTimeTitle = (dayTimeTitle) => {
-			const separatorIndex = dayTimeTitle.indexOf("-");
-			const dayOfWeek = dayTimeTitle.substring(0, separatorIndex);
-			const startOrEndTime = dayTimeTitle.substring(separatorIndex);
-			return {
-				dayOfWeek,
-				startOrEndTime,
-			}
-		}
-		const bizHours = Object.entries(formData)
-			.reduce((bizHoursValues, [dayTimeTitle, time]) => {
-				const {
-					dayOfWeek,
-					startOrEndTime,
-				} = parseDayTimeTitle(dayTimeTitle);
-				const timeString = time.format('HH:mm');
-
-			}, {});
-		console.log(Object.entries(formData));
-		// createBizHours();
-		handleNext();
-	}, [handleNext]);
-
-	const handleBackClick = () => handleBack();
+	const parseDayTimeTitle = (dayTimeTitle) => {
+		const separatorIndex = dayTimeTitle.indexOf("-");
+		const dayOfWeek = dayTimeTitle.substring(0, separatorIndex).toUpperCase();
+		const startOrEndTime = dayTimeTitle.substring(separatorIndex + 1);
+		return {
+			dayOfWeek,
+			startOrEndTime,
+		};
+	};
 
 	const daysOfWeekShort = [
 		'Monday',
@@ -113,9 +95,90 @@ export default function BusinessHoursForm({ isOnboarding }) {
 		'Sunday',
 	];
 
+	const validate = useCallback((formData) => {
+		const errors = {};
+		const dayTimeKeys = Object.keys(formData);
+		const getUnpairedTimes = (timesArr) => {
+			const timeSet = new Set();
+			const matchingTimesSet = new Set();
+			let currentDay;
+
+			timesArr.forEach((time) => {
+				currentDay = time.substring(0, time.indexOf('-'));
+
+				if (timeSet.has(currentDay)) {
+					timeSet.delete(currentDay);
+					matchingTimesSet.add(currentDay);
+				} else {
+					timeSet.add(currentDay);
+				}
+			});
+
+			return {
+				unpairedDayTimes: [...timeSet],
+				pairedDayTimes: [...matchingTimesSet],
+			};
+		};
+		const {
+			unpairedDayTimes,
+			pairedDayTimes,
+		} = getUnpairedTimes(dayTimeKeys);
+		const startTimeKey = (day) => `${day}-startTime`;
+		const endTimeKey = (day) => `${day}-endTime`;
+		// Set errors for unpaired day times
+		unpairedDayTimes.forEach(day => {
+			errors[startTimeKey(day)] = 'Incomplete Business Hours';
+			errors[endTimeKey(day)] = 'Incomplete Business Hours';
+		});
+
+		// Validate end day times
+		pairedDayTimes.forEach(day => {
+			const startTime = formData[startTimeKey(day)];
+			const endTime = formData[endTimeKey(day)];
+			console.log(startTime, endTime);
+			if (endTime.isBefore(startTime)) {
+				errors[endTimeKey(day)] = 'Select a Later End Time';
+			}
+		});
+
+		return errors;
+	}, []);
+
+	const submit = useCallback(async (formData) => {
+		const bizHours = Object.entries(formData)
+			.reduce((bizHoursValues, [dayTimeTitle, time]) => {
+				const {
+					dayOfWeek,
+					startOrEndTime,
+				} = parseDayTimeTitle(dayTimeTitle);
+				const timeString = time.format('HH:mm');
+
+				const indexOfDay = bizHoursValues.findIndex(item => item.dayOfWeek === dayOfWeek);
+
+				if (indexOfDay > -1) {
+					bizHoursValues[indexOfDay] = {
+						...bizHoursValues[indexOfDay],
+						[startOrEndTime]: timeString,
+					};
+				} else {
+					bizHoursValues.push({
+						dayOfWeek,
+						[startOrEndTime]: timeString,
+					});
+				}
+				return bizHoursValues;
+			}, []);
+
+		createBizHours({variables: {bizHours}});
+		handleNext();
+	}, [handleNext, createBizHours]);
+
+	const handleBackClick = () => handleBack();
+
     return (
-        <ReactForm
+		<ReactForm
 			onSubmit={submit}
+			validate={validate}
 			render={({handleSubmit}) => (
 				<form
 					onSubmit={handleSubmit}
