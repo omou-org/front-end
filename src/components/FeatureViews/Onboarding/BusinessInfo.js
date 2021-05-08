@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { OnboardingContext } from './OnboardingContext';
-import { useSessionStorage } from '../../../utils';
+import {makeStyles} from '@material-ui/core/styles';
+import {OnboardingContext} from './OnboardingContext';
+import {useSessionStorage} from '../../../utils';
 import OnboardingControls from './OnboardingControls';
 import Loading from '../../OmouComponents/Loading';
 import gql from 'graphql-tag';

@@ -1,19 +1,19 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import React, {useEffect, useMemo, useState} from 'react';
+import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import { SchedulerContext } from './SchedulerContext';
+import {useQuery} from '@apollo/client';
+import {SchedulerContext} from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { fullName } from '../../../utils';
-import { useHistory } from 'react-router-dom';
-import { instructorPalette } from '../../../theme/muiTheme';
-import { findCommonElement } from '../../Form/FormUtils';
-import { SessionPopover } from './SessionPopover';
-import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
-import { useSelector } from 'react-redux';
+import {fullName} from '../../../utils';
+import {useHistory} from 'react-router-dom';
+import {instructorPalette} from '../../../theme/muiTheme';
+import {findCommonElement} from '../../Form/FormUtils';
+import {SessionPopover} from './SessionPopover';
+import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
+import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
@@ -251,11 +251,7 @@ function Scheduler() {
     };
 
     useEffect(() => {
-        setSchedulerState(defaultSchedulerState);
-    }, [setSchedulerState, defaultSchedulerState]);
-
-    useEffect(() => {
-        const { timeFrame, timeShift, ...rest } = schedulerState;
+        const {timeFrame, timeShift, ...rest} = schedulerState;
         if (timeFrame && timeShift) {
             setSchedulerState({
                 ...rest,
@@ -263,16 +259,16 @@ function Scheduler() {
                 timeShift,
             });
         }
-    }, [schedulerState.timeFrame, schedulerState.timeShift, schedulerState]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [schedulerState.timeFrame, schedulerState.timeShift]);
 
     useEffect(() => {
         setFilteredSessions(schedulerState, sessionsInView);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         schedulerState.selectedInstructors.length,
         schedulerState.selectedCourses.length,
         schedulerState.selectedStudents.length,
-        schedulerState,
-        sessionsInView,
     ]);
 
     const uniqueValuesById = (objectList) => {
