@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Prompt, useParams, NavLink } from 'react-router-dom';
+import { Prompt, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import {useLazyQuery, useQuery} from '@apollo/client';
