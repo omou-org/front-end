@@ -20,7 +20,6 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
-import ConfirmationModal from './ConfirmationModal';
 
 import 'date-fns';
 import { KeyboardTimePicker } from '@material-ui/pickers';
@@ -511,6 +510,8 @@ const AllSessionsEdit = () => {
                     >
                         <Button
                             className={classes.save_button}
+                            component={NavLink}
+                            to={`/scheduler/session/${session_id}`}
                             onClick={handleOpenModal}
                             value='confirm'
                             disabled={!checkAllFields}

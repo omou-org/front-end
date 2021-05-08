@@ -17,7 +17,7 @@ import LeavePageModal from '../../OmouComponents/LeavePageModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import 'date-fns';
-import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
+import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import SessionEditConfirmationModal from './SessionEditConfirmationModal';
 
 const useStyles = makeStyles(() => ({
@@ -410,6 +410,8 @@ const SingleSessionEdit = () => {
                         ]}
                     >
                         <Button
+                            component={NavLink}
+                            to={`/scheduler/session/${session_id}`}
                             className={classes.save_button}
                             onClick={handleOpenModal}
                             value='confirm'
