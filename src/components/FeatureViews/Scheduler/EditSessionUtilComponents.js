@@ -70,16 +70,16 @@ export const EditSessionDropDown = ({
                             {initialValue}
                         </MenuItem>
                         {
-                            queryList.map((values, i) => (
+                            queryList.map((value, i) => (
                                 <MenuItem
                                     key={i}
                                     className={classes.menuSelect}
-                                    value={values || values.user}
+                                    value={value.id || value.user.id}
                                     ListItemClasses={{
                                         selected: classes.menuSelected,
                                     }}
                                 >
-                                    {initialValue === 'All Instructors' ? fullName(values.user) : values.name}
+                                    {initialValue === 'All Instructors' ? fullName(value.user) : value.name}
                                 </MenuItem>
                             ))
                         }
