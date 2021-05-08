@@ -291,7 +291,7 @@ const AllSessionsEdit = () => {
                 </Grid>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.subtitle}>
-                        DAY(S) & TIME
+                        DATE & TIME
                     </Typography>
                 </Grid>
                 <Grid container style={{ marginBottom: '10px' }}>
