@@ -128,12 +128,12 @@ function AdminProfileSettings({ user }) {
     useEffect(() => {
         if (adminGCEnabledResponse.loading === false) {
             setGClassSetting(
-                adminGCEnabledResponse.data.admin.googleAuthEnabled
+                adminGCEnabledResponse.data?.admin.googleAuthEnabled
             );
         }
     }, [
         adminGCEnabledResponse.loading,
-        adminGCEnabledResponse.data.admin.googleAuthEnabled,
+        adminGCEnabledResponse.data?.admin.googleAuthEnabled,
     ]);
 
     function refreshTokenSetup(res) {
