@@ -126,7 +126,8 @@ export const formatAvailabilityListHours = (availabilityList) => {
 
             return (
                 allAvailabilites +
-                `${startTime} - ${endTime}${i !== availabilityList.length - 1 ? ' / ' : ''
+                `${startTime} - ${endTime}${
+                    i !== availabilityList.length - 1 ? ' / ' : ''
                 }`
             );
         }, '');
@@ -745,7 +746,7 @@ export function useURLQuery() {
 export function useUploadOmouTemplate() {
     const { token } = useSelector(({ auth }) => auth);
 
-    const uploadTemplate = async (uploadedFile, templateName,) => {
+    const uploadTemplate = async (uploadedFile, templateName) => {
         let bodyFormData = new FormData();
 
         let lowerCaseTemplateName = templateName.toLowerCase();
@@ -756,7 +757,7 @@ export function useUploadOmouTemplate() {
             bodyFormData.append('operations', opsString);
             bodyFormData.append('map', mapsString);
             bodyFormData.append(`${lowerCaseTemplateName}_excel`, uploadedFile);
-        };
+        }
 
         const response = await fetch(
             process.env.REACT_APP_DOMAIN + '/graphql',
@@ -772,8 +773,6 @@ export function useUploadOmouTemplate() {
         let resp = await response.json();
 
         return resp;
-
-
     };
 
     return { uploadTemplate };
@@ -795,14 +794,11 @@ const queryTemplate = async (query) => {
     } else {
         return null;
     }
-
 };
 
-
 export async function downloadOmouTemplate(file, name) {
-
     const { query, error } = file;
-    const fileString = error || await queryTemplate(query);
+    const fileString = error || (await queryTemplate(query));
 
     function b64toBlob(base64Data, contentType) {
         contentType = contentType || '';
@@ -825,8 +821,8 @@ export async function downloadOmouTemplate(file, name) {
         return new Blob(byteArrays, { type: contentType });
     }
 
-
-    let contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    let contentType =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     let blob1 = b64toBlob(fileString, contentType);
     let blobUrl1 = URL.createObjectURL(blob1);
     const downloadLink = document.createElement('a');
@@ -861,6 +857,6 @@ export const AdminPropTypes = {
             name: PropTypes.string,
             phoneNumber: PropTypes.string,
             id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        })
+        }),
     }).isRequired,
 };

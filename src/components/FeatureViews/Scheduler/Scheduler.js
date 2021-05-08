@@ -251,10 +251,6 @@ function Scheduler() {
     };
 
     useEffect(() => {
-        setSchedulerState(defaultSchedulerState);
-    }, [setSchedulerState, defaultSchedulerState]);
-
-    useEffect(() => {
         const { timeFrame, timeShift, ...rest } = schedulerState;
         if (timeFrame && timeShift) {
             setSchedulerState({
@@ -263,16 +259,16 @@ function Scheduler() {
                 timeShift,
             });
         }
-    }, [schedulerState.timeFrame, schedulerState.timeShift, schedulerState]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [schedulerState.timeFrame, schedulerState.timeShift]);
 
     useEffect(() => {
         setFilteredSessions(schedulerState, sessionsInView);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         schedulerState.selectedInstructors.length,
         schedulerState.selectedCourses.length,
         schedulerState.selectedStudents.length,
-        schedulerState,
-        sessionsInView,
     ]);
 
     const uniqueValuesById = (objectList) => {

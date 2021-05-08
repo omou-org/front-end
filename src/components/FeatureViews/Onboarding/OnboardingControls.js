@@ -1,14 +1,13 @@
-import React, {useContext} from 'react';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import {OnboardingContext} from './OnboardingContext';
+import React, { useContext } from 'react';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { OnboardingContext } from './OnboardingContext';
 import useOnboardingActions from './ImportStepperActions';
-import {onboardingSteps} from './ImportFlow';
+import { onboardingSteps } from './ImportFlow';
 import Grid from '@material-ui/core/Grid';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 export default function OnboardingControls(props) {
-    const doNothing = () => {
-    };
+    const doNothing = () => {};
     const {
         preBackHandler = doNothing,
         postBackHandler = doNothing,
@@ -16,15 +15,13 @@ export default function OnboardingControls(props) {
         postSkipHandler = doNothing,
         preNextHandler = doNothing,
         postNextHandler = doNothing,
+        backProps,
+        nextProps,
     } = props;
 
-	const {activeStep} = useContext(OnboardingContext);
-	const {
-		handleBack,
-		handleSkip,
-		handleNext,
-	} = useOnboardingActions();
-	const steps = onboardingSteps;
+    const { activeStep } = useContext(OnboardingContext);
+    const { handleBack, handleSkip, handleNext } = useOnboardingActions();
+    const steps = onboardingSteps;
 
     const handleBackButton = () => {
         preBackHandler();
@@ -56,6 +53,7 @@ export default function OnboardingControls(props) {
                     style={{ marginRight: '1rem' }}
                     disabled={activeStep === 0}
                     onClick={handleBackButton}
+                    {...backProps}
                 >
                     Back
                 </ResponsiveButton>
@@ -68,7 +66,11 @@ export default function OnboardingControls(props) {
                     Skip
                 </ResponsiveButton>
             )}
-            <ResponsiveButton variant='contained' onClick={handleNextButton}>
+            <ResponsiveButton
+                variant='contained'
+                onClick={handleNextButton}
+                {...nextProps}
+            >
                 {activeStep === steps.length - 1
                     ? 'Finish'
                     : 'Submit & Continue'}
@@ -84,4 +86,6 @@ OnboardingControls.propTypes = {
     postSkipHandler: PropTypes.func,
     preNextHandler: PropTypes.func,
     postNextHandler: PropTypes.func,
+    backProps: PropTypes.any,
+    nextProps: PropTypes.any,
 };
