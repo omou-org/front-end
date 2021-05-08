@@ -68,11 +68,6 @@ const UPDATE_BUSINESS = gql`
             email: $email
             name: $name
             phoneNumber: $phoneNumber
-            availabilities: {
-                dayOfWeek: MONDAY
-                startTime: "11:00"
-                endTime: "3:00"
-            }
         ) {
             business {
                 id

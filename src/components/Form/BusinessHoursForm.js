@@ -15,7 +15,7 @@ const CREATE_BIZ_HOURS = gql`
         updateBusiness(availabilities: $bizHours) {
             business {
                 id
-                availabilities {
+                businessavailabilitySet {
                     dayOfWeek
                     endTime
                     startTime
@@ -242,7 +242,7 @@ export default function BusinessHoursForm({ isOnboarding }) {
                                     <Grid item>
                                         <ResponsiveButton
                                             onClick={handleBackClick}
-                                            variant='contained'
+                                            variant='outlined'
                                         >
                                             Back
                                         </ResponsiveButton>

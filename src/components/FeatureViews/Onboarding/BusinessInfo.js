@@ -52,11 +52,6 @@ const UPDATE_BUSINESS = gql`
             email: $email
             name: $name
             phoneNumber: $phoneNumber
-            availabilities: {
-                dayOfWeek: MONDAY
-                startTime: "11:00"
-                endTime: "3:00"
-            }
         ) {
             business {
                 id
@@ -75,6 +70,9 @@ const BusinessInfo = ({ step }) => {
     const { setImportState } = useContext(OnboardingContext);
 
     const [updateData] = useMutation(UPDATE_BUSINESS, {
+        // onCompleted: (data) => {
+        //     console.log(data);
+        // },
         update: (cache, data) => {
             const updatedBusiness = data.data.updateBusiness.business;
             cache.writeQuery({
@@ -140,7 +138,7 @@ const BusinessInfo = ({ step }) => {
         updateData({
             variables: {
                 name: bizName,
-                phone: bizPhone,
+                phoneNumber: bizPhone,
                 email: bizEmail,
                 address: bizAddress,
             },
