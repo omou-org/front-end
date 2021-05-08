@@ -1,26 +1,29 @@
-import React, {useState} from 'react';
+/* eslint-disable no-unused-vars */
+
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {NavLink, useParams} from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import {useLazyQuery, useQuery} from '@apollo/client';
-import {Button, Divider, makeStyles, Typography,} from '@material-ui/core';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { Button, Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
-import {QueryBuilder} from '@material-ui/icons';
-import {USER_TYPES} from '../../../utils';
+import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
+import { QueryBuilder } from '@material-ui/icons';
+import { USER_TYPES } from '../../../utils';
 import moment from 'moment';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './EditSessionUtilComponents';
-import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
+import { EditSessionDropDown } from './EditSessionUtilComponents';
+import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
+import ConfirmationModal from './ConfirmationModal';
 
 import 'date-fns';
-import {KeyboardTimePicker,} from '@material-ui/pickers';
+import { KeyboardTimePicker } from '@material-ui/pickers';
 
 const useStyles = makeStyles(() => ({
     current_session: {
@@ -168,7 +171,7 @@ const CHECK_SCHEDULE_CONFLICTS = gql`
     }
 `;
 
-const SingleSessionEdit = () => {
+const AllSessionsEdit = () => {
     const { session_id } = useParams();
     const classes = useStyles();
     const [subjectValue, setSubjectValue] = useState('');
@@ -177,6 +180,10 @@ const SingleSessionEdit = () => {
     const [sessionEndTime, setSessionsEndTime] = useState('');
     const [sessionDate, setSessionsDate] = useState('');
     const [snackBarState, setSnackBarState] = useState(false);
+    const [modalState, setModalState] = useState({
+        leaveState: false,
+        confirmationState: false,
+    });
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
@@ -192,31 +199,33 @@ const SingleSessionEdit = () => {
         { loading: conflictLoading, data: conflictData },
     ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
         onCompleted: ({ validateSessionSchedule }) => {
-            const {status} = validateSessionSchedule;
+            const { status } = validateSessionSchedule;
             if (!status) {
                 setSnackBarState(true);
             }
         },
     });
 
-    if (loading || conflictLoading)
-        return <Loading/>;
-
+    if (loading || conflictLoading) return <Loading />;
 
     if (error) {
         return <Typography>{`There's been an error!`}</Typography>;
     }
 
-    const {
-        course,
-        endDatetime,
-        id,
-        startDatetime,
-    } = data.session;
+    const handleOpenModal = (e) => {
+        const { value } = e.currentTarget;
+        if (value === 'confirm') {
+            setModalState({ ...modalState, confirmationState: true });
+        }
+
+        if (value === 'cancel') {
+            setModalState({ ...modalState, leaveState: true });
+        }
+    };
+
+    const { endDatetime, id, startDatetime } = data.session;
 
     const { courseCategories: subjects, instructors } = data;
-
-    const course_id = course.id;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const monthAndDate = moment(startDatetime).format('MMMM DD');
@@ -270,13 +279,15 @@ const SingleSessionEdit = () => {
         horizontal: 'left',
     };
 
+    const checkAllFields = subjectValue !== '' && instructorValue !== '';
+
     return (
         <>
             <Divider className={classes.divider} />
             <Grid container direction='row' style={{ marginTop: '2em' }}>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.new_sessions_typography}>
-                        New Sessions:
+                        Update Sessions:
                     </Typography>
                 </Grid>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
@@ -479,7 +490,7 @@ const SingleSessionEdit = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={NavLink}
-                        to={`/courses/class/${course_id}`}
+                        to={`/scheduler/session/${session_id}`}
                         variant='outlined'
                         style={{
                             width: '6.875em',
@@ -498,7 +509,14 @@ const SingleSessionEdit = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <Button className={classes.save_button}>Save</Button>
+                        <Button
+                            className={classes.save_button}
+                            onClick={handleOpenModal}
+                            value='confirm'
+                            disabled={!checkAllFields}
+                        >
+                            Save
+                        </Button>
                     </AccessControlComponent>
                 </Grid>
             </Grid>
@@ -506,4 +524,4 @@ const SingleSessionEdit = () => {
     );
 };
 
-export default SingleSessionEdit;
+export default AllSessionsEdit;

@@ -1,22 +1,23 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {Prompt, useParams} from 'react-router-dom';
+import { Prompt, useParams, NavLink } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import {useLazyQuery, useQuery} from '@apollo/client';
-import {Button, Divider, makeStyles, Typography,} from '@material-ui/core';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { Button, Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
-import {QueryBuilder} from '@material-ui/icons';
-import {fullName, USER_TYPES} from '../../../utils';
+import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
+import { QueryBuilder } from '@material-ui/icons';
+import { fullName, USER_TYPES } from '../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './EditSessionUtilComponents';
-import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
+import { EditSessionDropDown } from './EditSessionUtilComponents';
+import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
 import LeavePageModal from '../../OmouComponents/LeavePageModal';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 import 'date-fns';
-import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
+import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import ConfirmationModal from './ConfirmationModal';
 
 const useStyles = makeStyles(() => ({
@@ -159,7 +160,6 @@ const CHECK_SCHEDULE_CONFLICTS = gql`
     }
 `;
 
-
 const SingleSessionEdit = () => {
     const { session_id } = useParams();
     const classes = useStyles();
@@ -203,16 +203,9 @@ const SingleSessionEdit = () => {
         return <Typography>{"There's been an error!"}</Typography>;
     }
 
-    const {
-        course,
-        id,
-        startDatetime,
-    } = data.session;
+    const { course, id, startDatetime } = data.session;
 
-    var {
-        enrollmentSet,
-        room,
-    } = course;
+    var { enrollmentSet, room } = course;
     const { courseCategories: subjects, instructors } = data;
 
     const course_id = course.id;
@@ -289,8 +282,12 @@ const SingleSessionEdit = () => {
     };
 
     const checkAllFields = subjectValue !== '' && instructorValue !== '';
-    const startSessionTimeInISOFormat = moment(`${moment(sessionDate).format('MMMM DD YYYY')} ${startSessionTime}`).format();
-    const endSessionTimeInISOFormat = moment(`${moment(sessionDate).format('MMMM DD YYYY')} ${endSessionTime}`).format();  // console.log(moment(sessionDate).format())
+    const startSessionTimeInISOFormat = moment(
+        `${moment(sessionDate).format('MMMM DD YYYY')} ${startSessionTime}`
+    ).format();
+    const endSessionTimeInISOFormat = moment(
+        `${moment(sessionDate).format('MMMM DD YYYY')} ${endSessionTime}`
+    ).format(); // console.log(moment(sessionDate).format())
 
     return (
         <>
@@ -304,7 +301,7 @@ const SingleSessionEdit = () => {
             <Grid container direction='row' style={{ marginTop: '2em' }}>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.new_sessions_typography}>
-                        New Sessions:
+                        Update Session:
                     </Typography>
                 </Grid>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
@@ -391,18 +388,18 @@ const SingleSessionEdit = () => {
 
             <Grid container direction='row' justify='flex-end' spacing={1}>
                 <Grid item>
-                    <Button
+                    <ResponsiveButton
+                        component={NavLink}
+                        to={`/scheduler/session/${session_id}`}
                         variant='outlined'
                         style={{
                             width: '6.875em',
                             height: '2.5em',
                             border: '2px solid #C4C4C4',
                         }}
-                        onClick={handleOpenModal}
-                        value='cancel'
                     >
                         Cancel
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
                 <Grid item>
                     <AccessControlComponent
