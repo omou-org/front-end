@@ -218,13 +218,6 @@ export default function Scheduler() {
         setFilteredSessionsInView(sessionsFilteredByInstructorsCoursesStudents);
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        if (JSON.stringify(schedulerState) !== JSON.stringify(defaultSchedulerState)) {
-            setSchedulerState(defaultSchedulerState);
-        }
-    });
-
     useEffect(() => {
         const {timeFrame, timeShift, ...rest} = schedulerState;
         if (timeFrame && timeShift) {
@@ -234,16 +227,16 @@ export default function Scheduler() {
                 timeShift,
             });
         }
-    }, [schedulerState.timeFrame, schedulerState.timeShift, schedulerState]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [schedulerState.timeFrame, schedulerState.timeShift]);
 
     useEffect(() => {
         setFilteredSessions(schedulerState, sessionsInView);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         schedulerState.selectedInstructors.length,
         schedulerState.selectedCourses.length,
         schedulerState.selectedStudents.length,
-        sessionsInView,
-        schedulerState,
     ]);
 
     const uniqueValuesById = (objectList) => {
