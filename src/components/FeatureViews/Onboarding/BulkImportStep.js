@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TemplateImport from './TemplateImport';
 import ImportResults from './ImportResults';
 import PropTypes from 'prop-types';
@@ -16,7 +16,6 @@ const BulkImportStep = ({ templateType }) => {
                     />
                 );
             case 1:
-
                 return (
                     <ImportResults
                         templateType={templateType}
