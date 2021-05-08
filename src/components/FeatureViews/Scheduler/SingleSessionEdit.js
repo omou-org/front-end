@@ -180,6 +180,7 @@ const SingleSessionEdit = () => {
             setSessionsDate(moment(data.session.startDatetime)._d);
             setSessionsStartTime(moment(data.session.startDatetime)._d);
             setSessionsEndTime(moment(data.session.endDatetime)._d);
+            setInstructorValue(data.session.course.instructor.user.id);
         },
     });
 
@@ -213,7 +214,9 @@ const SingleSessionEdit = () => {
         enrollmentSet,
         room,
     } = course;
-    const { courseCategories: subjects, instructors } = data;
+    const {courseCategories: subjects, instructors} = data;
+
+    console.log({subjects, instructors, course});
 
     const course_id = course.id;
 
