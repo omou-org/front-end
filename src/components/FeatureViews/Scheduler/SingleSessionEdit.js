@@ -4,7 +4,7 @@ import {Prompt, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import {useLazyQuery, useQuery} from '@apollo/client';
-import {Button, Divider, makeStyles, Typography,} from '@material-ui/core';
+import {Divider, makeStyles, Typography,} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
 import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
 import {QueryBuilder} from '@material-ui/icons';
@@ -13,11 +13,43 @@ import moment from 'moment';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import {EditSessionDropDown} from './EditSessionUtilComponents';
 import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
-import LeavePageModal from '../../OmouComponents/LeavePageModal';
-
+// import LeavePageModal from '../../OmouComponents/LeavePageModal';
+// import gql from 'graphql-tag';
+// import {useMutation} from '@apollo/client';
 import 'date-fns';
 import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
 import SessionEditConfirmationModal from './SessionEditConfirmationModal';
+import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
+import NavLinkNoDup from "../../Routes/NavLinkNoDup";
+//
+// const UPDATE_SESSION_MUTATION = gql`
+// mutation updateSessionMutation($courseId: ID!, $endDateTime: DateTime!, $sessionId: ID!, $instructorId: ID!, $startDateTime: DateTime!)
+// {
+//     createSession(
+//       endDatetime: $endDateTime
+//       id: $sessionId
+//       instructor: $instructorId
+//       startDatetime: $startDateTime
+//     ) {
+//       created
+//       session {
+//         endDatetime
+//         id
+//         instructor {
+//           user {
+//             lastName
+//             id
+//             firstName
+//           }
+//         }
+//         isConfirmed
+//         startDatetime
+//         title
+//         details
+//       }
+//     }
+//   }
+// `;
 
 const useStyles = makeStyles(() => ({
     current_session: {
@@ -46,17 +78,6 @@ const useStyles = makeStyles(() => ({
         color: darkGrey,
         float: 'left',
         fontWeight: 500,
-    },
-    save_button: {
-        backgroundColor: '#289FC3',
-        color: 'white',
-        borderRadius: 5,
-        fontSize: '.875rem',
-        fontWeight: 500,
-        letterSpacing: '0.02em',
-        lineHeight: '1rem',
-        height: '2.5em',
-        width: '6.875em',
     },
     type_of_edit: {
         backgroundColor: darkBlue,
@@ -92,6 +113,7 @@ const GET_SESSION = gql`
                 id
                 isConfirmed
                 room
+                courseType
                 availabilityList {
                     dayOfWeek
                     startTime
@@ -169,61 +191,88 @@ const SingleSessionEdit = () => {
     const [sessionEndTime, setSessionsEndTime] = useState('');
     const [sessionDate, setSessionsDate] = useState('');
     const [snackBarState, setSnackBarState] = useState(false);
-    const [modalState, setModalState] = useState({
-        leaveState: false,
-        confirmationState: false,
-    });
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
         onCompleted: (data) => {
-            setSessionsDate(moment(data.session.startDatetime)._d);
-            setSessionsStartTime(moment(data.session.startDatetime)._d);
-            setSessionsEndTime(moment(data.session.endDatetime)._d);
-            setInstructorValue(data.session.course.instructor.user.id);
+            console.log(data);
+            const {
+                session: {
+                    startDatetime,
+                    endDatetime,
+                    course: {
+                        instructor,
+                        courseCategory,
+                    },
+                }
+            } = data;
+            console.log(instructor.user.id, courseCategory.id);
+            setSessionsDate(moment(startDatetime)._d);
+            setSessionsStartTime(moment(startDatetime)._d);
+            setSessionsEndTime(moment(endDatetime)._d);
+            setInstructorValue(instructor.user.id);
+            setSubjectValue(courseCategory.id);
         },
     });
 
     const [
         checkScheduleConflicts,
-        { loading: conflictLoading, data: conflictData },
+        {loading: conflictLoading, data: conflictData},
     ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
-        onCompleted: ({ validateSessionSchedule }) => {
-            const { status } = validateSessionSchedule;
+        onCompleted: ({validateSessionSchedule}) => {
+            const {status} = validateSessionSchedule;
             if (!status) {
                 setSnackBarState(true);
             }
         },
     });
 
-    if (loading || conflictLoading) {
-        return <Loading />;
-    }
+    // const [updateSession] = useMutation(UPDATE_SESSION_MUTATION, {
+    //     onError: (err) => console.error(err),
+    // });
 
-    if (error) {
-        return <Typography>{"There's been an error!"}</Typography>;
-    }
+    if (loading || conflictLoading || !subjectValue || !instructorValue) return <Loading/>;
+
+    if (error) return <Typography>{"There's been an error!"}</Typography>;
 
     const {
-        course,
-        id,
-        startDatetime,
-    } = data.session;
+        session: {
+            id: sessionId,
+            startDatetime,
+            course: {
+                enrollmentSet
+            }
+        },
+        courseCategories: subjects,
+        instructors
+    } = data;
 
-    var {
-        enrollmentSet,
-        room,
-    } = course;
-    const {courseCategories: subjects, instructors} = data;
+    const subjectName = subjects.find(subject => subject.id == subjectValue).name;
 
-    console.log({subjects, instructors, course});
+    const instructorName = fullName(instructors.find(instructor => instructor.user.id == instructorValue).user);
 
-    const course_id = course.id;
+    const studentName = fullName(enrollmentSet[0].student.user);
+
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const monthAndDate = moment(sessionDate).format('MMMM DD');
     const startSessionTime = moment(sessionStartTime).format('h:mm A');
     const endSessionTime = moment(sessionEndTime).format('h:mm A');
+
+    const handleUpdateSession = () => {
+        // const startSessionTime = moment(sessionStartTime).format('h:mm A');
+        // const endSessionTime = moment(sessionEndTime).format('h:mm A');
+        // const sessionDate = moment(sessionDate).format('dd');
+        // console.log({sessionDate, sessionStartTime, sessionEndTime});
+        // updateSession({
+        //     variables: {
+        //         sessionId,
+        //         endDateTime,
+        //         startDateTime,
+        //         instructorId: instructorValue,
+        //     },
+        // });
+    };
 
     const handleTimeDateChange = (setState) => async (date) => {
         setState(date._d);
@@ -233,31 +282,12 @@ const SingleSessionEdit = () => {
         } else {
             await checkScheduleConflicts({
                 variables: {
-                    instructorId: id,
+                    instructorId: instructorValue,
                     startTime: moment(date._d).format('HH:mm'),
                     endTime: moment(date._d).format('HH:mm'),
                     date: moment(date._d).format('YYYY-MM-DD'),
                 },
             });
-        }
-    };
-
-    const handleOpenModal = (e) => {
-        const { value } = e.currentTarget;
-        if (value === 'confirm') {
-            setModalState({ ...modalState, confirmationState: true });
-        }
-
-        if (value === 'cancel') {
-            setModalState({ ...modalState, leaveState: true });
-        }
-    };
-
-    const doesFullNameExist = () => {
-        if (enrollmentSet.length < 1) {
-            return 'no students';
-        } else {
-            fullName(enrollmentSet[0].student.user);
         }
     };
 
@@ -290,35 +320,25 @@ const SingleSessionEdit = () => {
         vertical: 'bottom',
         horizontal: 'left',
     };
-
-    const checkAllFields = subjectValue !== '' && instructorValue !== '';
-    const startSessionTimeInISOFormat = moment(`${moment(sessionDate).format('MMMM DD YYYY')} ${startSessionTime}`).format();
-    const endSessionTimeInISOFormat = moment(`${moment(sessionDate).format('MMMM DD YYYY')} ${endSessionTime}`).format();  // console.log(moment(sessionDate).format())
-
     return (
         <>
-            <Prompt
-                message={(location, action) => {
-                    console.log(location);
-                    console.log(action);
-                }}
-            />
-            <Divider className={classes.divider} />
+            <Prompt message={`Are you sure you want to leave? Any unsaved changes will be lost.`}/>
+            <Divider className={classes.divider}/>
             <Grid container direction='row' style={{ marginTop: '2em' }}>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.new_sessions_typography}>
                         New Sessions:
                     </Typography>
                 </Grid>
-                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
+                <Grid item xs={12} style={{marginBottom: '1.5em'}}>
                     <Typography className={classes.subtitle}>
                         DAY(S) & TIME
                     </Typography>
                 </Grid>
-                <Grid container style={{ marginBottom: '2.8125em' }}>
+                <Grid item container style={{marginBottom: '2.8125em'}}>
                     <Grid item xs={2} lg={3} xl={2}>
                         <KeyboardDatePicker
-                            style={{ float: 'left', width: '11em' }}
+                            style={{float: 'left', width: '11em'}}
                             value={sessionDate}
                             onChange={handleTimeDateChange(setSessionsDate)}
                         />
@@ -348,12 +368,14 @@ const SingleSessionEdit = () => {
                     <Grid item xs={2} lg={3} xl={2}>
                         <Typography
                             className={classes.subtitle}
-                            style={{ marginBottom: '.5em' }}
+                            style={{marginBottom: '.5em'}}
                         >
                             SUBJECT
                         </Typography>
                         <EditSessionDropDown
-                            initialValue='All Subjects'
+                            noValueLabel='All Subjects'
+                            itemLabel={(item) => item.name}
+                            itemId={(item) => (item.id)}
                             setState={setSubjectValue}
                             queryList={subjects}
                             value={subjectValue}
@@ -362,12 +384,14 @@ const SingleSessionEdit = () => {
                     <Grid item xs={2}>
                         <Typography
                             className={classes.subtitle}
-                            style={{ marginBottom: '.5em' }}
+                            style={{marginBottom: '.5em'}}
                         >
                             INSTRUCTOR
                         </Typography>
                         <EditSessionDropDown
-                            initialValue='All Instructors'
+                            noValueLabel='All Instructors'
+                            itemLabel={(item) => fullName(item.user)}
+                            itemId={(item) => (item.user.id)}
                             setState={setInstructorValue}
                             queryList={instructors}
                             value={instructorValue}
@@ -394,18 +418,14 @@ const SingleSessionEdit = () => {
 
             <Grid container direction='row' justify='flex-end' spacing={1}>
                 <Grid item>
-                    <Button
+                    <ResponsiveButton
                         variant='outlined'
-                        style={{
-                            width: '6.875em',
-                            height: '2.5em',
-                            border: '2px solid #C4C4C4',
-                        }}
-                        onClick={handleOpenModal}
                         value='cancel'
+                        component={NavLinkNoDup}
+                        to={`/scheduler/session/${sessionId}`}
                     >
                         Cancel
-                    </Button>
+                    </ResponsiveButton>
                 </Grid>
                 <Grid item>
                     <AccessControlComponent
@@ -415,34 +435,18 @@ const SingleSessionEdit = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <Button
-                            className={classes.save_button}
-                            onClick={handleOpenModal}
-                            value='confirm'
-                            disabled={!checkAllFields}
+                        <SessionEditConfirmationModal
+                            studentName={studentName}
+                            updateSession={handleUpdateSession}
                         >
-                            Save
-                        </Button>
+                            <Grid container direction='row'>
+                                <Grid item>{subjectName}</Grid>
+                                <Grid item>{instructorName}</Grid>
+                            </Grid>
+                        </SessionEditConfirmationModal>
                     </AccessControlComponent>
                 </Grid>
             </Grid>
-            <LeavePageModal
-                openState={modalState}
-                setOpenState={setModalState}
-            />
-            <SessionEditConfirmationModal
-                openState={modalState}
-                setOpenState={setModalState}
-                subject={subjectValue}
-                instructor={instructorValue}
-                dateTime={snackBarData.date}
-                room={room}
-                student={doesFullNameExist()}
-                courseId={course_id}
-                sessionId={id}
-                startDateTime={startSessionTimeInISOFormat}
-                endDateTime={endSessionTimeInISOFormat}
-            />
         </>
     );
 };
