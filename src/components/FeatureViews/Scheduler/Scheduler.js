@@ -6,7 +6,9 @@ import gql from 'graphql-tag';
 import {useQuery} from '@apollo/client';
 import {SchedulerContext} from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import {fullName} from '../../../utils';
+import {useHistory} from 'react-router-dom';
 import {instructorPalette} from '../../../theme/muiTheme';
 import {findCommonElement} from '../../Form/FormUtils';
 import {SessionPopover} from './SessionPopover';
@@ -220,12 +222,6 @@ export default function Scheduler() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
-        if (JSON.stringify(schedulerState) !== JSON.stringify(defaultSchedulerState)) {
-            setSchedulerState(defaultSchedulerState);
-        }
-    });
-
-    useEffect(() => {
         const {timeFrame, timeShift, ...rest} = schedulerState;
         if (timeFrame && timeShift) {
             setSchedulerState({
@@ -234,16 +230,16 @@ export default function Scheduler() {
                 timeShift,
             });
         }
-    }, [schedulerState.timeFrame, schedulerState.timeShift, schedulerState]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [schedulerState.timeFrame, schedulerState.timeShift]);
 
     useEffect(() => {
         setFilteredSessions(schedulerState, sessionsInView);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         schedulerState.selectedInstructors.length,
         schedulerState.selectedCourses.length,
         schedulerState.selectedStudents.length,
-        sessionsInView,
-        schedulerState,
     ]);
 
     const uniqueValuesById = (objectList) => {
