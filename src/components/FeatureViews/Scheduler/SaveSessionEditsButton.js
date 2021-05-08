@@ -10,7 +10,7 @@ import {Typography} from '@material-ui/core';
 // import {darkBlue, darkGrey} from "../../../theme/muiTheme";
 import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 
-const SessionEditConfirmationModal = ({children, studentName, updateSession}) => {
+const SaveSessionEditsButton = ({children, studentName, updateSession}) => {
 	const [modalState, setModalState] = useState({
 		leaveState: false,
 		confirmationState: false,
@@ -23,7 +23,8 @@ const SessionEditConfirmationModal = ({children, studentName, updateSession}) =>
 	const handleSave = () => {
 		updateSession();
 		handleClose();
-	}
+	};
+
 	const handleOpenModal = (e) => {
 		const {value} = e.currentTarget;
 		if (value === 'confirm') {
@@ -77,9 +78,10 @@ const SessionEditConfirmationModal = ({children, studentName, updateSession}) =>
 	);
 };
 
-SessionEditConfirmationModal.propTypes = {
+SaveSessionEditsButton.propTypes = {
 	children: PropTypes.any,
 	studentName: PropTypes.string,
+	updateSession: PropTypes.func,
 };
 
-export default SessionEditConfirmationModal;
+export default SaveSessionEditsButton;

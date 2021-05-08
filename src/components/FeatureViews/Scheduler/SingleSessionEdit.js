@@ -17,8 +17,8 @@ import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
 // import gql from 'graphql-tag';
 // import {useMutation} from '@apollo/client';
 import 'date-fns';
-import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
-import SessionEditConfirmationModal from './SessionEditConfirmationModal';
+import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
+import SaveSessionEditsButton from './SaveSessionEditsButton';
 import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 //
@@ -205,7 +205,7 @@ const SingleSessionEdit = () => {
                     },
                 }
             } = data;
-            console.log(instructor.user.id, courseCategory.id);
+
             setSessionsDate(moment(startDatetime)._d);
             setSessionsStartTime(moment(startDatetime)._d);
             setSessionsEndTime(moment(endDatetime)._d);
@@ -434,7 +434,7 @@ const SingleSessionEdit = () => {
                             USER_TYPES.instructor,
                         ]}
                     >
-                        <SessionEditConfirmationModal
+                        <SaveSessionEditsButton
                             studentName={studentName}
                             updateSession={handleUpdateSession}
                         >
@@ -442,7 +442,7 @@ const SingleSessionEdit = () => {
                                 <Grid item>{subjectName}</Grid>
                                 <Grid item>{instructorName}</Grid>
                             </Grid>
-                        </SessionEditConfirmationModal>
+                        </SaveSessionEditsButton>
                     </AccessControlComponent>
                 </Grid>
             </Grid>
