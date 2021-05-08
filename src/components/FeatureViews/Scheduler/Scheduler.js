@@ -6,9 +6,7 @@ import gql from 'graphql-tag';
 import {useQuery} from '@apollo/client';
 import {SchedulerContext} from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
-//import makeStyles from '@material-ui/core/styles/makeStyles';
 import {fullName} from '../../../utils';
-//import {useHistory} from 'react-router-dom';
 import {instructorPalette} from '../../../theme/muiTheme';
 import {findCommonElement} from '../../Form/FormUtils';
 import {SessionPopover} from './SessionPopover';
@@ -220,7 +218,6 @@ export default function Scheduler() {
         setFilteredSessionsInView(sessionsFilteredByInstructorsCoursesStudents);
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         const {timeFrame, timeShift, ...rest} = schedulerState;
         if (timeFrame && timeShift) {
