@@ -1,55 +1,55 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {Prompt, useParams} from 'react-router-dom';
+import { Prompt, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import {useLazyQuery, useQuery} from '@apollo/client';
 import {Divider, makeStyles, Typography,} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
-import {QueryBuilder} from '@material-ui/icons';
-import {fullName, USER_TYPES} from '../../../utils';
+import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
+import { QueryBuilder } from '@material-ui/icons';
+import { fullName, USER_TYPES } from '../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
 import {EditSessionDropDown} from './EditSessionUtilComponents';
 import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
 // import LeavePageModal from '../../OmouComponents/LeavePageModal';
-// import gql from 'graphql-tag';
-// import {useMutation} from '@apollo/client';
+import {useMutation} from '@apollo/client';
 import 'date-fns';
 import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
 import SaveSessionEditsButton from './SaveSessionEditsButton';
 import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-//
-// const UPDATE_SESSION_MUTATION = gql`
-// mutation updateSessionMutation($courseId: ID!, $endDateTime: DateTime!, $sessionId: ID!, $instructorId: ID!, $startDateTime: DateTime!)
-// {
-//     createSession(
-//       endDatetime: $endDateTime
-//       id: $sessionId
-//       instructor: $instructorId
-//       startDatetime: $startDateTime
-//     ) {
-//       created
-//       session {
-//         endDatetime
-//         id
-//         instructor {
-//           user {
-//             lastName
-//             id
-//             firstName
-//           }
-//         }
-//         isConfirmed
-//         startDatetime
-//         title
-//         details
-//       }
-//     }
-//   }
-// `;
+
+
+const UPDATE_SESSION_MUTATION = gql`
+mutation updateSessionMutation($endDateTime: DateTime, $sessionId: ID!, $instructorId: ID, $startDateTime: DateTime)
+{
+    createSession(
+      endDatetime: $endDateTime
+      id: $sessionId
+      instructor: $instructorId
+      startDatetime: $startDateTime
+    ) {
+      created
+      session {
+        endDatetime
+        id
+        instructor {
+          user {
+            lastName
+            id
+            firstName
+          }
+        }
+        isConfirmed
+        startDatetime
+        title
+        details
+      }
+    }
+  }
+  `;
 
 const useStyles = makeStyles(() => ({
     current_session: {
@@ -181,7 +181,6 @@ const CHECK_SCHEDULE_CONFLICTS = gql`
     }
 `;
 
-
 const SingleSessionEdit = () => {
     const { session_id } = useParams();
     const classes = useStyles();
@@ -191,6 +190,8 @@ const SingleSessionEdit = () => {
     const [sessionEndTime, setSessionsEndTime] = useState('');
     const [sessionDate, setSessionsDate] = useState('');
     const [snackBarState, setSnackBarState] = useState(false);
+
+    const [timeValidationError, setTimeValidationError] = useState(false);
 
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
@@ -224,12 +225,13 @@ const SingleSessionEdit = () => {
             if (!status) {
                 setSnackBarState(true);
             }
+            console.log('completed validation');
         },
     });
 
-    // const [updateSession] = useMutation(UPDATE_SESSION_MUTATION, {
-    //     onError: (err) => console.error(err),
-    // });
+    const [updateSession] = useMutation(UPDATE_SESSION_MUTATION, {
+        onError: (err) => console.error(err),
+    });
 
     if (loading || conflictLoading || !subjectValue || !instructorValue) return <Loading/>;
 
@@ -239,9 +241,9 @@ const SingleSessionEdit = () => {
         session: {
             id: sessionId,
             startDatetime,
-            course: {
-                enrollmentSet
-            }
+            // course: {
+            //     enrollmentSet
+            // }
         },
         courseCategories: subjects,
         instructors
@@ -251,7 +253,8 @@ const SingleSessionEdit = () => {
 
     const instructorName = fullName(instructors.find(instructor => instructor.user.id == instructorValue).user);
 
-    const studentName = fullName(enrollmentSet[0].student.user);
+    const studentName = 'Timmeh';
+    //const studentName = fullName(enrollmentSet[0].student.user);
 
 
     const dayOfWeek = moment(startDatetime).format('dddd');
@@ -260,21 +263,30 @@ const SingleSessionEdit = () => {
     const endSessionTime = moment(sessionEndTime).format('h:mm A');
 
     const handleUpdateSession = () => {
-        // const startSessionTime = moment(sessionStartTime).format('h:mm A');
-        // const endSessionTime = moment(sessionEndTime).format('h:mm A');
-        // const sessionDate = moment(sessionDate).format('dd');
-        // console.log({sessionDate, sessionStartTime, sessionEndTime});
-        // updateSession({
-        //     variables: {
-        //         sessionId,
-        //         endDateTime,
-        //         startDateTime,
-        //         instructorId: instructorValue,
-        //     },
-        // });
+        const startSessionTime = moment(sessionStartTime).format('HH:mm');
+        const endSessionTime = moment(sessionEndTime).format('HH:mm');
+        const sessionISODate = moment(sessionDate).format('YYYY-MM-DD');
+        const startDateTime = moment(sessionISODate + ' ' + startSessionTime).format('YYYY-MM-DD[T]HH:mm');
+        const endDateTime = moment(sessionISODate + ' ' + endSessionTime).format('YYYY-MM-DD[T]HH:mm');
+        // console.log(moment(startSessionTime).isBefore(moment(endSessionTime)));
+        updateSession({
+            variables: {
+                sessionId,
+                startDateTime,
+                endDateTime,
+                instructorId: instructorValue,
+            },
+        });
     };
 
-    const handleTimeDateChange = (setState) => async (date) => {
+    const handleTimeDateChange = (setState, isEndTime) => async (date) => {
+        
+        const timeIsValid = isEndTime ? moment( sessionStartTime).isBefore(moment(date)) 
+            : moment( date).isBefore(moment(sessionEndTime));
+        
+        !timeIsValid && setTimeValidationError(true);
+        timeIsValid && setTimeValidationError(false);
+
         setState(date._d);
         if (!sessionStartTime || !sessionDate || !sessionEndTime) {
             // Place holder for other validation
@@ -327,12 +339,12 @@ const SingleSessionEdit = () => {
             <Grid container direction='row' style={{ marginTop: '2em' }}>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.new_sessions_typography}>
-                        New Sessions:
+                        Update Session:
                     </Typography>
                 </Grid>
                 <Grid item xs={12} style={{marginBottom: '1.5em'}}>
                     <Typography className={classes.subtitle}>
-                        DAY(S) & TIME
+                        DATE & TIME
                     </Typography>
                 </Grid>
                 <Grid item container style={{marginBottom: '2.8125em'}}>
@@ -350,8 +362,10 @@ const SingleSessionEdit = () => {
                             style={{ float: 'left', width: '11em' }}
                             value={sessionStartTime}
                             onChange={handleTimeDateChange(
-                                setSessionsStartTime
+                                setSessionsStartTime, false
                             )}
+                            error={timeValidationError}
+                            helperText={timeValidationError && 'Invalid Time'}
                         />
                         <span>-</span>
                     </Grid>
@@ -360,7 +374,11 @@ const SingleSessionEdit = () => {
                             keyboardIcon={<QueryBuilder />}
                             style={{ float: 'left' }}
                             value={sessionEndTime}
-                            onChange={handleTimeDateChange(setSessionsEndTime)}
+                            onChange={handleTimeDateChange(
+                                setSessionsEndTime, true
+                                )}
+                            error={timeValidationError}
+                            helperText={timeValidationError && 'Invalid Time'}
                         />
                     </Grid>
                 </Grid>

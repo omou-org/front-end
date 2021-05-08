@@ -1,17 +1,14 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import {
-    Tooltip,
     Typography,
     makeStyles,
 } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import Avatar from '@material-ui/core/Avatar';
-import { stringToColor } from '../Accounts/accountUtils';
 import { darkBlue, darkGrey } from '../../../theme/muiTheme';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
@@ -142,15 +139,6 @@ const useStyles = makeStyles(() => ({
     },
 }));
 
-const styles = (username) => ({
-    backgroundColor: stringToColor(username),
-    color: 'white',
-    width: '3vw',
-    height: '3vw',
-    fontSize: 15,
-    marginRight: 10,
-});
-
 const SessionDetails = () => {
     const { session_id, editType } = useParams();
     const classes = useStyles();
@@ -178,13 +166,10 @@ const SessionDetails = () => {
 
     var {
         courseCategory,
-        enrollmentSet,
         room,
         endDate,
         startDate,
     } = course;
-
-    const course_id = course.id;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const startSessionTime = moment(startDatetime).format('h:mm A');
@@ -350,48 +335,6 @@ const SessionDetails = () => {
                             <Typography>{fullName(instructor.user)}</Typography>
                             // </NavLink>
                         )}
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography
-                            align='left'
-                            variant='h5'
-                            className={classes.mini_titles_format}
-                        >
-                            STUDENTS
-                        </Typography>
-                        <Grid container direction='row'>
-                            {enrollmentSet.length > 0 ? (
-                                enrollmentSet.map((student) => (
-                                    <NavLink
-                                        key={student.student.user.id}
-                                        style={{ textDecoration: 'none' }}
-                                        to={`/accounts/student/${student.student.user.id}/${course_id}`}
-                                    >
-                                        <Tooltip
-                                            title={fullName(
-                                                student.student.user
-                                            )}
-                                        >
-                                            <Avatar
-                                                style={styles(
-                                                    fullName(
-                                                        student.student.user
-                                                    )
-                                                )}
-                                            >
-                                                {fullName(student.student.user)
-                                                    .match(/\b(\w)/g)
-                                                    .join('')}
-                                            </Avatar>
-                                        </Tooltip>
-                                    </NavLink>
-                                ))
-                            ) : (
-                                <Typography variant='body'>
-                                    No students enrolled yet.
-                                </Typography>
-                            )}
-                        </Grid>
                     </Grid>
                     <Grid item xs={3}>
                         <Typography
