@@ -10,7 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from "prop-types";
-import { Typography } from '@material-ui/core';
+import {Typography} from '@material-ui/core';
 
 const UPDATE_SESSION_MUTATION = gql`
 mutation updateSessionMutation($courseId: ID!, $endDateTime: DateTime!, $sessionId: ID!, $instructorId: ID!, $isConfirmed: Boolean, $startDateTime: DateTime!) 
@@ -43,16 +43,16 @@ mutation updateSessionMutation($courseId: ID!, $endDateTime: DateTime!, $session
   }
 `;
 
-const ConfirmationModal = ({
-                               openState,
-                               setOpenState,
-                               instructor,
-                               student,
-                               courseId,
-                               sessionId,
-                               startDateTime,
-                               endDateTime
-                           }) => {
+const SessionEditConfirmationModal = ({
+                                          openState,
+                                          setOpenState,
+                                          instructor,
+                                          student,
+                                          courseId,
+                                          sessionId,
+                                          startDateTime,
+                                          endDateTime
+                                      }) => {
 
     const [updateSession] = useMutation(UPDATE_SESSION_MUTATION, {
         onError: (err) => console.error(err),
@@ -116,7 +116,7 @@ const ConfirmationModal = ({
   );
 };
 
-ConfirmationModal.propTypes = {
+SessionEditConfirmationModal.propTypes = {
     openState: PropTypes.any,
     setOpenState: PropTypes.any,
     instructor: PropTypes.any,
@@ -127,4 +127,4 @@ ConfirmationModal.propTypes = {
     endDateTime: PropTypes.any,
 };
 
-export default ConfirmationModal;
+export default SessionEditConfirmationModal;

@@ -17,7 +17,7 @@ import LeavePageModal from '../../OmouComponents/LeavePageModal';
 
 import 'date-fns';
 import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
-import ConfirmationModal from './ConfirmationModal';
+import SessionEditConfirmationModal from './SessionEditConfirmationModal';
 
 const useStyles = makeStyles(() => ({
     current_session: {
@@ -427,7 +427,7 @@ const SingleSessionEdit = () => {
                 openState={modalState}
                 setOpenState={setModalState}
             />
-            <ConfirmationModal
+            <SessionEditConfirmationModal
                 openState={modalState}
                 setOpenState={setModalState}
                 subject={subjectValue}
