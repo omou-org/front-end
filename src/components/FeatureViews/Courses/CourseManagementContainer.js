@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React, {useState} from 'react';
+import {useSelector} from 'react-redux';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -9,21 +9,17 @@ import FormControl from '@material-ui/core/FormControl';
 import Divder from '@material-ui/core/Divider';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
+import {useQuery} from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';
 import GoogleClassroomIntegrationIcon from '../../OmouComponents/GoogleClassroomIntegrationIcon';
 
-import { StudentCourseLabel, UserAvatarCircle } from './StudentBadge';
-import { fullName, gradeOptions } from 'utils';
+import {StudentCourseLabel, UserAvatarCircle} from './StudentBadge';
+import {fullName, gradeOptions} from 'utils';
 import moment from 'moment';
-import {
-    activeColor,
-    highlightColor,
-    pastColor,
-} from '../../../theme/muiTheme';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import {activeColor, highlightColor, pastColor,} from '../../../theme/muiTheme';
+import {CourseAvailabilites} from '../../OmouComponents/CourseAvailabilities';
 import PropTypes from 'prop-types';
 
 export const BootstrapInput = withStyles((theme) => ({

@@ -16,7 +16,7 @@ import {USER_TYPES} from '../../../utils';
 import moment from 'moment';
 import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './EditSessionUtilComponents';
+import {EditSessionDropDown} from './SessionView/EditSessionUtilComponents';
 import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
 import {fullName} from 'utils';
 

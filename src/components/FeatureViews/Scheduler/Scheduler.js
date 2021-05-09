@@ -9,7 +9,7 @@ import Popover from '@material-ui/core/Popover';
 import {fullName} from '../../../utils';
 import {instructorPalette} from '../../../theme/muiTheme';
 import {findCommonElement} from '../../Form/FormUtils';
-import {SessionPopover} from './SessionPopover';
+import {SessionPopover} from './SessionView/SessionPopover';
 import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
 import {useSelector} from 'react-redux';
 import PropTypes from 'prop-types';

@@ -1,7 +1,7 @@
 // React Imports
-import { Redirect, Route, Switch } from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 // Local Component Imports
 import Accounts from '../FeatureViews/Accounts/Accounts';
 import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
@@ -19,14 +19,14 @@ import FormPage from '../Form/FormPage';
 import RegistrationCourse from '../FeatureViews/Registration/RegistrationCourse';
 import ResetPassword from '../Authentication/ResetPassword';
 import SearchResults from '../FeatureViews/Search/SearchResults';
-import SessionContainer from '../FeatureViews/Scheduler/SessionContainer';
+import SessionContainer from '../FeatureViews/Scheduler/SessionView/SessionContainer';
 import UserProfile from '../FeatureViews/Accounts/UserProfile';
 import CourseManagementContainer from '../FeatureViews/Courses/CourseManagementContainer';
 import CourseClass from '../FeatureViews/Courses/CourseClass';
 import DemoRoutes from './DemoRoutes';
 
-import { resetSubmitStatus } from 'actions/registrationActions';
-import { USER_TYPES } from 'utils';
+import {resetSubmitStatus} from 'actions/registrationActions';
+import {USER_TYPES} from 'utils';
 import RegistrationForm from '../FeatureViews/Registration/RegistrationForm';
 import RegistrationCartContainer from '../FeatureViews/Registration/RegistrationCart/RegistrationCartContainer';
 import DashboardSwitch from '../FeatureViews/Dashboard/DashboardSwitch';

@@ -7,14 +7,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from "prop-types";
 import {Typography} from '@material-ui/core';
-import { useHistory, useParams } from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 // import {darkBlue, darkGrey} from "../../../theme/muiTheme";
-import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
+import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
 
-const SaveSessionEditsButton = ({children, studentName, updateSession}) => {
-
+const SaveSessionEditsButton = ({children, studentName, updateSession, isAll}) => {
 	let history = useHistory();
-	const { session_id } = useParams();
+	const {session_id} = useParams();
 
 	const [modalState, setModalState] = useState({
 		leaveState: false,
@@ -23,7 +22,12 @@ const SaveSessionEditsButton = ({children, studentName, updateSession}) => {
 
 	const handleClose = () => {
 		setModalState({...modalState, confirmationState: false});
-		history.push(`/scheduler/session/${session_id}`);
+		if (isAll) {
+			history.push(`/scheduler`);
+		} else {
+			history.push(`/scheduler/session/${session_id}`);
+		}
+
 	};
 
 	const handleSave = () => {
@@ -88,6 +92,7 @@ SaveSessionEditsButton.propTypes = {
 	children: PropTypes.any,
 	studentName: PropTypes.string,
 	updateSession: PropTypes.func,
+	isAll: PropTypes.bool,
 };
 
 export default SaveSessionEditsButton;

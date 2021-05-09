@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { Face, Schedule, CreateOutlined } from '@material-ui/icons';
-import { fullName } from '../../../utils';
-import React, { useState } from 'react';
+import {CreateOutlined, Face, Schedule} from '@material-ui/icons';
+import {fullName} from '../../../../utils';
+import React, {useState} from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { skyBlue, darkBlue, highlightColor } from '../../../theme/muiTheme';
+import {darkBlue, highlightColor, skyBlue} from '../../../../theme/muiTheme';
 
 const useStyles = makeStyles((theme) => ({
     sessionPopover: {

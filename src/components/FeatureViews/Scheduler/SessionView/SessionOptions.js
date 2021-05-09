@@ -1,11 +1,11 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { NavLink, useParams } from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 
-import { USER_TYPES } from '../../../utils';
+import {USER_TYPES} from '../../../../utils';
 
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
 
 
 import 'date-fns';
@@ -13,7 +13,7 @@ import 'date-fns';
 
 const SessionOptions = () => {
 
-    const { session_id } = useParams();
+    const {session_id} = useParams();
 
     return (
         <>

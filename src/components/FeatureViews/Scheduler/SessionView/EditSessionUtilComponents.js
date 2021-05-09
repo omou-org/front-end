@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {FormControl, makeStyles, MenuItem, Select} from '@material-ui/core';
-import {highlightColor, omouBlue} from '../../../theme/muiTheme';
-import {BootstrapInput} from '../Courses/CourseManagementContainer';
-import Loading from '../../OmouComponents/Loading';
+import {highlightColor, omouBlue} from '../../../../theme/muiTheme';
+import {BootstrapInput} from '../../Courses/CourseManagementContainer';
+import Loading from '../../../OmouComponents/Loading';
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import {KeyboardTimePicker} from "@material-ui/pickers";
@@ -117,25 +117,25 @@ export const EditMultiSessionFields = ({getCourseAvailability, availability}) =>
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const setCourseAvailability = () => {
+    const setCourseAvailability = (updatedState) => {
+        console.log(updatedState);
         getCourseAvailability({
             day,
             startTime,
             endTime,
             id: availability.id,
+            ...updatedState,
         });
     };
 
-    const handleTimeChange = (setValue) => (e) => {
-        console.log(e);
+    const handleTimeChange = (setValue, startOrEndTime) => (e) => {
         setValue(e);
-        setCourseAvailability();
+        setCourseAvailability({[startOrEndTime]: e.format("YYYY-MM-DD[T]HH:mm")});
     };
 
     const handleDayChange = (e) => {
         setDay(e.target.value);
-        console.log(e.target.value);
-        setCourseAvailability();
+        setCourseAvailability({day: e.target.value});
     };
 
     console.log({day, startTime, endTime});
@@ -171,7 +171,7 @@ export const EditMultiSessionFields = ({getCourseAvailability, availability}) =>
                 keyboardIcon={<QueryBuilder/>}
                 style={{float: 'left', width: '11em'}}
                 value={startTime}
-                onChange={handleTimeChange(setStartTime)}
+                onChange={handleTimeChange(setStartTime, "startTime")}
             />
             <span>-</span>
         </Grid>
@@ -180,7 +180,7 @@ export const EditMultiSessionFields = ({getCourseAvailability, availability}) =>
                 keyboardIcon={<QueryBuilder/>}
                 style={{float: 'left'}}
                 value={endTime}
-                onChange={handleTimeChange(setEndTime)}
+                onChange={handleTimeChange(setEndTime, "endTime")}
             />
         </Grid>
     </Grid>);

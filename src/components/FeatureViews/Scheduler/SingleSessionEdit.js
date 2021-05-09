@@ -1,23 +1,22 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
-import { Prompt, useParams} from 'react-router-dom';
+import {Prompt, useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import {useLazyQuery, useQuery} from '@apollo/client';
+// import LeavePageModal from '../../OmouComponents/LeavePageModal';
+import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
 import {Divider, makeStyles, Typography,} from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
-import { QueryBuilder } from '@material-ui/icons';
-import { fullName, USER_TYPES } from '../../../utils';
+import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
+import {QueryBuilder} from '@material-ui/icons';
+import {fullName, USER_TYPES} from '../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './EditSessionUtilComponents';
+import {EditSessionDropDown} from './SessionView/EditSessionUtilComponents';
 import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
-// import LeavePageModal from '../../OmouComponents/LeavePageModal';
-import {useMutation} from '@apollo/client';
 import 'date-fns';
 import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
-import SaveSessionEditsButton from './SaveSessionEditsButton';
+import SaveSessionEditsButton from './SessionView/SaveSessionEditsButton';
 import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
 import NavLinkNoDup from "../../Routes/NavLinkNoDup";
 

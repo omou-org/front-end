@@ -1,22 +1,24 @@
 /*eslint no-unused-vars: "warn"*/
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NavLink, useParams} from 'react-router-dom';
-
 import gql from 'graphql-tag';
-import {useLazyQuery, useQuery} from '@apollo/client';
-import {Button, Divider, makeStyles, Typography,} from '@material-ui/core';
-import Loading from '../../OmouComponents/Loading';
-import {darkBlue, darkGrey} from '../../../theme/muiTheme';
-import {ResponsiveButton} from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
+import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
+import {Button, Divider, makeStyles, Typography} from '@material-ui/core';
+import Loading from '../../../OmouComponents/Loading';
+import {darkBlue, darkGrey} from '../../../../theme/muiTheme';
+import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
 import {EditMultiSessionFields, EditSessionDropDown} from './EditSessionUtilComponents';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import Box from '@material-ui/core/Box';
-
-import 'date-fns';
+// import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
 import Grid from "@material-ui/core/Grid";
-import {fullName, USER_TYPES} from "../../../utils";
+import {fullName, USER_TYPES} from "../../../../utils";
 import SaveSessionEditsButton from "./SaveSessionEditsButton";
+import Box from "@material-ui/core/Box";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import {KeyboardDatePicker} from "@material-ui/pickers";
+import moment from "moment";
+import SessionEditReceipt from "./SessionEditReceipt";
+import {renderCourseAvailabilitiesString} from "../../../OmouComponents/CourseAvailabilities";
 
 const useStyles = makeStyles(() => ({
     current_session: {
@@ -86,7 +88,7 @@ const GET_SESSION = gql`
             id
             course {
                 id
-                availabilityList {
+                activeAvailabilityList {
                     dayOfWeek
                     startTime
                     endTime
@@ -143,15 +145,53 @@ const CHECK_SCHEDULE_CONFLICTS = gql`
     }
 `;
 
-const SingleSessionEdit = () => {
+const UPDATE_ALL_SESSIONS_MUTATION = gql`
+mutation updateAllSessionsMutation(
+   $courseId: ID!, 
+   $instructorId: ID, 
+   $startDate: DateTime, 
+   $endDate: DateTime,
+   $availabilities: [CourseAvailabilityInput]
+   ){
+      createCourse(
+        id: $courseId
+        instructor: $instructorId
+        startDate: $startDate
+        endDate: $endDate
+        availabilities: $availabilities
+      ) {
+        course {
+          id
+          startDate
+          endDate
+          instructor {
+            user {
+                id
+                firstName
+                lastName
+            }
+          }
+          availabilityList {
+            endTime
+            dayOfWeek
+            startTime
+            id
+          }
+        }
+      }
+   }
+`;
+
+const AllSessionsEdit = () => {
     const {session_id} = useParams();
     const classes = useStyles();
-    const [subjectValue, setSubjectValue] = useState('');
-    const [instructorValue, setInstructorValue] = useState('');
-    const [courseStartDate, setCourseStartDate] = useState('');
-    const [courseEndDate, setCourseEndDate] = useState('');
+    const [subjectValue, setSubjectValue] = useState(null);
+    const [instructorValue, setInstructorValue] = useState(null);
+    const [courseStartDate, setCourseStartDate] = useState(null);
+    const [courseEndDate, setCourseEndDate] = useState(null);
     const [snackBarState, setSnackBarState] = useState(false);
     const [courseAvailabilities, setCourseAvailabilities] = useState([]);
+    const [newState, setNewState] = useState({});
 
     const {data, loading, error} = useQuery(GET_SESSION, {
         variables: {sessionId: session_id},
@@ -161,13 +201,21 @@ const SingleSessionEdit = () => {
                     course: {
                         instructor,
                         courseCategory,
-                        availabilityList,
+                        activeAvailabilityList,
+                        startDate,
+                        endDate,
                     },
-                }
+                },
+                instructors,
+                courseCategories: subjects,
             } = data;
-            setCourseAvailabilities(availabilityList);
+
+            setCourseAvailabilities(activeAvailabilityList);
             setInstructorValue(instructor.user.id);
             setSubjectValue(courseCategory.id);
+            setCourseStartDate(moment(startDate));
+            setCourseEndDate(moment(endDate));
+            setNewState(true);
         },
     });
 
@@ -175,7 +223,7 @@ const SingleSessionEdit = () => {
         checkScheduleConflicts,
         { loading: conflictLoading, data: conflictData },
     ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
-        onCompleted: ({ validateSessionSchedule }) => {
+        onCompleted: ({validateSessionSchedule}) => {
             const {status} = validateSessionSchedule;
             if (!status) {
                 setSnackBarState(true);
@@ -183,14 +231,48 @@ const SingleSessionEdit = () => {
         },
     });
 
-    if (loading || conflictLoading)
-        return <Loading/>;
+    const [updateAllSessions] = useMutation(UPDATE_ALL_SESSIONS_MUTATION);
 
+    useEffect(() => {
+        if (
+            // courseAvailabilities.length > 0 &&
+            subjectValue &&
+            courseStartDate &&
+            courseEndDate &&
+            instructorValue
+        ) {
+            console.log("setting new state", courseAvailabilities);
+            const deepCopyCourseAvailabilities = JSON.parse(JSON.stringify(courseAvailabilities));
+            // /*eslint no-debugger: "warn"*/
+            // debugger;
+            const availabilitiesStateString = renderCourseAvailabilitiesString(deepCopyCourseAvailabilities);
+            const instructorStateName = fullName(
+                instructors.find(instructor => (instructor.user.id === instructorValue))?.user
+            );
+            const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
+            console.log({
+                availabilities: availabilitiesStateString,
+                startDate: courseStartDate.format("YYYY-MM-DD[T]HH:mm"),
+                endDate: courseEndDate.format("YYYY-MM-DD[T]HH:mm"),
+                instructor: instructorStateName,
+                courseCategory: courseCategoryStateName,
+            });
+            setNewState({
+                availabilities: availabilitiesStateString,
+                startDate: courseStartDate.format("YYYY-MM-DD[T]HH:mm"),
+                endDate: courseEndDate.format("YYYY-MM-DD[T]HH:mm"),
+                instructor: instructorStateName,
+                courseCategory: courseCategoryStateName,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [courseAvailabilities.length, subjectValue, courseStartDate, courseEndDate, instructorValue]);
+
+    if (loading || conflictLoading) return <Loading/>;
 
     if (error) {
         return <Typography>{`There's been an error!`}</Typography>;
     }
-
     const {
         courseCategories: subjects,
         instructors,
@@ -198,7 +280,6 @@ const SingleSessionEdit = () => {
             course
         }
     } = data;
-    console.log(data);
     //
     // const { courseCategories: subjects, instructors } = data;
 
@@ -217,15 +298,19 @@ const SingleSessionEdit = () => {
     const handleCourseAvailabilities = (courseAvailability) => {
         setCourseAvailabilities(prevState => {
             const courseAvailabilityIndex = prevState
-                .findIndex(availability => (availability.id == courseAvailability));
-            prevState[courseAvailabilityIndex] = JSON.parse(JSON.stringify(courseAvailability));
-            return prevState;
+                .findIndex(availability => (availability.id == courseAvailability.id));
+            let newAvailabilities = JSON.parse(JSON.stringify(prevState));
+            if (courseAvailabilityIndex > -1) {
+                newAvailabilities[courseAvailabilityIndex] = JSON.parse(JSON.stringify(courseAvailability));
+            } else {
+                newAvailabilities.push(courseAvailability);
+            }
+            return newAvailabilities;
         });
     };
 
     const handleAddCourseAvailability = () => {
         setCourseAvailabilities(prevState => {
-            console.log(prevState, prevState.length);
             const newAvailability = {
                 id: `new-${prevState.length}`,
                 dayOfWeek: '',
@@ -239,8 +324,28 @@ const SingleSessionEdit = () => {
         });
     };
 
-    const handleSubmitEdits = () => {
+    const handleDateChange = (setDate) => e => {
+        setDate(e);
+    };
 
+    const formatAvailabilities = (courseAvailabilities) => courseAvailabilities
+        .map(({day, startTime, endTime}) => ({
+            dayOfWeek: day,
+            startTime: moment(startTime).format("HH:mm"),
+            endTime: moment(endTime).format("HH:mm"),
+        }));
+
+    const handleSubmitEdits = () => {
+        const availabilities = formatAvailabilities(courseAvailabilities);
+
+        updateAllSessions({
+            variables: {
+                courseId: course.id,
+                startDate: courseStartDate.format("YYYY-MM-DD[T]HH:mm"),
+                endDate: courseEndDate.format("YYYY-MM-DD[T]HH:mm"),
+                availabilities,
+            }
+        });
     };
 
     // const snackBarData = {
@@ -274,18 +379,58 @@ const SingleSessionEdit = () => {
     //     horizontal: 'left',
     // };
 
+    const formatStates = () => {
+        // console.log({data, courseAvailabilities, instructorValue, instructors});
+        const {session: {course}} = data;
+        return {
+            availabilities: renderCourseAvailabilitiesString(course.activeAvailabilityList),
+            startDate: moment(course.startDate).format("YYYY-MM-DD[T]HH:mm"),
+            endDate: moment(course.endDate).format("YYYY-MM-DD[T]HH:mm"),
+            instructor: fullName(course.instructor.user),
+            courseCategory: course.courseCategory.name,
+        };
+    };
+    console.log(courseAvailabilities[0]?.dayOfWeek);
     return (<>
             <Divider className={classes.divider}/>
-            <Grid container direction='row' style={{marginTop: '2em'}}>
+            <Grid container direction='column' style={{marginTop: '2em'}} alignItems='flex-start' spacing={2}>
                 <Grid item xs={12} style={{marginBottom: '1.5em'}}>
                     <Typography className={classes.new_sessions_typography}>
-                        New Sessions:
+                        Update Sessions:
                     </Typography>
                 </Grid>
-                <Grid item xs={12} style={{marginBottom: '1.5em'}}>
+                <Grid item xs={12}>
                     <Typography className={classes.subtitle}>
-                        DAY(S) & TIME
+                        DATE & TIME
                     </Typography>
+                </Grid>
+                <Grid item container direction='row' spacing={3}>
+                    <Grid item>
+                        <KeyboardDatePicker
+                            format="M/D/YYYY"
+                            id='course-start-date'
+                            value={courseStartDate}
+                            onChange={handleDateChange(setCourseStartDate)}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            label="Start Date"
+                        />
+                    </Grid>
+                    <Grid item>
+                        <KeyboardDatePicker
+                            format="M/D/YYYY"
+                            id='course-end-date'
+                            value={courseEndDate}
+                            onChange={handleDateChange(setCourseEndDate)}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                            label="End Date"
+                        />
+                    </Grid>
+                </Grid>
+                <Grid item container>
                     {
                         courseAvailabilities.map(availability => (
                             <EditMultiSessionFields
@@ -295,9 +440,7 @@ const SingleSessionEdit = () => {
                             />
                         ))
                     }
-
                 </Grid>
-
                 <Box paddingBottom='25px'>
                     <Grid item container direction='row' alignItems='center'>
                         <Button
@@ -368,7 +511,7 @@ const SingleSessionEdit = () => {
                 <Grid item>
                     <ResponsiveButton
                         component={NavLink}
-                        to={`/courses/class/${course.id}`}
+                        to={`/scheduler/session/${session_id}`}
                         variant='outlined'
                     >
                         Cancel
@@ -384,9 +527,13 @@ const SingleSessionEdit = () => {
                     >
                         <SaveSessionEditsButton
                             studentName="Jimmy"
-
+                            updateSession={handleSubmitEdits}
+                            isAll
                         >
-                            testing
+                            <SessionEditReceipt
+                                databaseState={formatStates()}
+                                newState={newState}
+                            />
                         </SaveSessionEditsButton>
                     </AccessControlComponent>
                 </Grid>
@@ -394,8 +541,5 @@ const SingleSessionEdit = () => {
         </>
     );
 };
-
-export default SingleSessionEdit;
-
-
 /*eslint no-unused-vars: "warn"*/
+export default AllSessionsEdit;

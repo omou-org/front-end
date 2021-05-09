@@ -1,20 +1,17 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import {
-    Typography,
-    makeStyles,
-} from '@material-ui/core';
-import Loading from '../../OmouComponents/Loading';
-import { darkBlue, darkGrey } from '../../../theme/muiTheme';
+import {useQuery} from '@apollo/client';
+import {makeStyles, Typography,} from '@material-ui/core';
+import Loading from '../../../OmouComponents/Loading';
+import {darkBlue, darkGrey} from '../../../../theme/muiTheme';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 
-import { fullName } from 'utils';
+import {fullName} from 'utils';
 
 import 'date-fns';
 
