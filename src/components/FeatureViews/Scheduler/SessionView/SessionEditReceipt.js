@@ -45,9 +45,6 @@ function SessionEditReceipt({
 
 		return true;
 	}
-
-	console.log(newState);
-	console.log(Object.keys(databaseState), Object.keys(newState));
 	const statesDoNotHaveSameKeys = !arrayCompare(Object.keys(databaseState), Object.keys(newState));
 
 	if (statesDoNotHaveSameKeys) return `The developer messed up! Check the Database and New States!`;
@@ -61,7 +58,7 @@ function SessionEditReceipt({
 				};
 			}
 		);
-	console.log(receiptFieldData);
+
 	return (<Grid container direction='row' spacing={1}>
 		{
 			receiptFieldData.map(({key, value, isUpdated}) =>

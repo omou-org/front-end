@@ -234,39 +234,55 @@ const AllSessionsEdit = () => {
     const [updateAllSessions] = useMutation(UPDATE_ALL_SESSIONS_MUTATION);
 
     useEffect(() => {
+        console.log("trying to update new state", {
+            courseAvailabilities,
+            instructorValue,
+            subjectValue,
+            courseStartDate,
+            courseEndDate,
+        });
         if (
-            // courseAvailabilities.length > 0 &&
+            courseAvailabilities.length > 0 &&
+            instructorValue &&
             subjectValue &&
             courseStartDate &&
-            courseEndDate &&
-            instructorValue
+            courseEndDate
         ) {
-            console.log("setting new state", courseAvailabilities);
-            const deepCopyCourseAvailabilities = JSON.parse(JSON.stringify(courseAvailabilities));
-            // /*eslint no-debugger: "warn"*/
-            // debugger;
-            const availabilitiesStateString = renderCourseAvailabilitiesString(deepCopyCourseAvailabilities);
+            const newCourseAvailabilities = renderCourseAvailabilitiesString(JSON.parse(JSON.stringify(courseAvailabilities)));
             const instructorStateName = fullName(
                 instructors.find(instructor => (instructor.user.id === instructorValue))?.user
             );
             const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
-            console.log({
-                availabilities: availabilitiesStateString,
-                startDate: courseStartDate.format("YYYY-MM-DD[T]HH:mm"),
-                endDate: courseEndDate.format("YYYY-MM-DD[T]HH:mm"),
-                instructor: instructorStateName,
-                courseCategory: courseCategoryStateName,
-            });
-            setNewState({
-                availabilities: availabilitiesStateString,
-                startDate: courseStartDate.format("YYYY-MM-DD[T]HH:mm"),
-                endDate: courseEndDate.format("YYYY-MM-DD[T]HH:mm"),
-                instructor: instructorStateName,
-                courseCategory: courseCategoryStateName,
-            });
+            const courseStartDateState = courseStartDate.format("YYYY-MM-DD[T]HH:mm");
+            const courseEndDateState = courseEndDate.format("YYYY-MM-DD[T]HH:mm");
+            if (
+                newCourseAvailabilities !== newState.availabilities ||
+                courseStartDateState !== newState.startDate ||
+                courseEndDateState !== newState.endDate ||
+                instructorStateName !== newState.instructor ||
+                courseCategoryStateName !== newState.courseCategory
+            ) {
+                console.log("setting new state");
+
+                console.log({
+                    availabilities: newCourseAvailabilities,
+                    startDate: courseStartDateState,
+                    endDate: courseEndDateState,
+                    instructor: instructorStateName,
+                    courseCategory: courseCategoryStateName,
+                });
+                setNewState({
+                    availabilities: newCourseAvailabilities,
+                    startDate: courseStartDateState,
+                    endDate: courseEndDateState,
+                    instructor: instructorStateName,
+                    courseCategory: courseCategoryStateName,
+                });
+            }
+
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [courseAvailabilities.length, subjectValue, courseStartDate, courseEndDate, instructorValue]);
+    }, [JSON.stringify(courseAvailabilities), subjectValue, courseStartDate, courseEndDate, instructorValue]);
 
     if (loading || conflictLoading) return <Loading/>;
 
@@ -380,7 +396,6 @@ const AllSessionsEdit = () => {
     // };
 
     const formatStates = () => {
-        // console.log({data, courseAvailabilities, instructorValue, instructors});
         const {session: {course}} = data;
         return {
             availabilities: renderCourseAvailabilitiesString(course.activeAvailabilityList),
@@ -390,7 +405,7 @@ const AllSessionsEdit = () => {
             courseCategory: course.courseCategory.name,
         };
     };
-    console.log(courseAvailabilities[0]?.dayOfWeek);
+
     return (<>
             <Divider className={classes.divider}/>
             <Grid container direction='column' style={{marginTop: '2em'}} alignItems='flex-start' spacing={2}>

@@ -5,7 +5,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 
 export const renderCourseAvailabilitiesString = (availabilityList) => {
-    console.log({availabilityList});
+
     if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
         const days = availabilityList.reduce(
             (allDays, {dayOfWeek}, index) => {
