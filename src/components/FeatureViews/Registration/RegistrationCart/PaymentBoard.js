@@ -24,6 +24,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 import { GET_ENROLLMENT_DETAILS } from '../RegistrationCourseEnrollments';
 import { GET_ALL_COURSES } from '../RegistrationLanding';
 import TableBody from '@material-ui/core/TableBody';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote(
@@ -446,11 +451,7 @@ const PaymentBoard = () => {
         setPaymentLaterPromptOpen(false);
     }
 
-    const handlePaymentLater = () => {
-        setPaymentLaterPromptOpen(true);
-    }
-
-    const handlePayment = async () => {
+    const handlePayment = async (paymentStatus) => {
         const {
             data: { enrollments },
         } = enrollmentResponse;
@@ -473,6 +474,9 @@ const PaymentBoard = () => {
                 course,
                 student,
             }));
+        
+        console.log(enrollmentsToCreate)
+
         const existingEnrollments = classRegistrations
             .filter(({ course, student }) =>
                 enrollments.some((enrollment) =>
@@ -493,6 +497,7 @@ const PaymentBoard = () => {
             }));
 
         const areThereNewEnrollments = enrollmentsToCreate.length > 0;
+
         const newEnrollments = areThereNewEnrollments
             ? await createEnrollments({
                   variables: {
@@ -529,9 +534,11 @@ const PaymentBoard = () => {
                 disabledDiscounts: [],
                 priceAdjustment: Number(priceAdjustment),
                 registrations,
-                paymentStatus: 'PAID',
+                paymentStatus: paymentStatus,
             },
         });
+
+        
 
         // clean out parent registration cart
         await createRegistrationCart({
@@ -644,7 +651,7 @@ const PaymentBoard = () => {
                 </Grid>
             </Grid>
             <Grid container item justify='flex-end'>
-                <Grid item>
+                <Grid item md={2}>
                     <ResponsiveButton
                         color='primary'
                         data-cy='pay-action'
@@ -653,22 +660,22 @@ const PaymentBoard = () => {
                             priceQuote.total === '-' ||
                             priceQuote < 0
                         }
-                        onClick={handlePaymentLater}
+                        onClick={()=>handlePayment('UNPAID')}
                         variant='outlined'
                     >
                         Pay Later
                     </ResponsiveButton>
                 </Grid>
-                <Grid item>
+                <Grid item md={2}>
                     <ResponsiveButton
                         color='primary'
                         data-cy='pay-action'
                         disabled={
-                            paymentMethod === null ||
+                            paymentMethod !== 'credit_card' ||
                             priceQuote.total === '-' ||
                             priceQuote < 0
                         }
-                        onClick={handlePayment}
+                        onClick={()=>handlePayment('PAID')}
                         variant='contained'
                     >
                         Pay Now
@@ -692,7 +699,7 @@ const PaymentBoard = () => {
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton onClick={handleClose} color='secondary'>
-                        Nevermind
+                        Cancel
                     </ResponsiveButton>
                     <ResponsiveButton onClick={handleClose} color='primary'>
                         Confirm

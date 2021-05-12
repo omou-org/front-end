@@ -189,7 +189,7 @@ CourseRegistrationReceipt.propTypes = {
         course: PropTypes.any,
         tutoring_details: PropTypes.any,
         sessions: PropTypes.any,
-        duration: PropTypes.duration,
+        duration: PropTypes.any,
         student: PropTypes.any,
     }),
 };

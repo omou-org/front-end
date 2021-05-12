@@ -198,13 +198,15 @@ function AdminProfileSettings({ user }) {
         refreshTokenSetup(response).then(() => {
             getCourses();
         });
-        setGoogleAuthEmail({
-            variables: {
-                userID: userInfo.user.id,
-                adminType: userInfo.adminType,
-                googleAuthEmail: response.profileObj.email,
-            },
-        });
+        if (response !== undefined){
+            setGoogleAuthEmail({
+                variables: {
+                    userID: userInfo.user.id,
+                    adminType: userInfo.adminType,
+                    googleAuthEmail: response.profileObj.email,
+                },
+            });
+        }
     };
 
     const handleGClassSettingChange = () => {
