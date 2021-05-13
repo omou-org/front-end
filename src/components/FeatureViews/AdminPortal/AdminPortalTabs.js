@@ -3,6 +3,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { makeStyles } from '@material-ui/core/styles';
 import BusinessDetails from './BusinessDetails';
+import ManageCourseTags from './ManageCourseTags';
 
 const useStyles = makeStyles({
     adminPortalTabsStyle: {
@@ -31,7 +32,7 @@ const AdminPortalTabs = () => {
 
     const tabContent = {
         0: { content: 'overview content' },
-        1: { content: 'course tags content' },
+        1: { content: <ManageCourseTags /> },
         2: { content: 'tuition content' },
         3: { content: 'access control content' },
         4: { content: 'admin log content' },
