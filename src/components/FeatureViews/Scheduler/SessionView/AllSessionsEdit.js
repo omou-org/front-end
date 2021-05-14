@@ -255,13 +255,13 @@ const AllSessionsEdit = () => {
                 instructorStateName !== newState.instructor ||
                 courseCategoryStateName !== newState.courseCategory
             ) {
-                setNewState({
+                setNewState(JSON.stringify({
                     availabilities: newCourseAvailabilities,
                     startDate: courseStartDateState,
                     endDate: courseEndDateState,
                     instructor: instructorStateName,
                     courseCategory: courseCategoryStateName,
-                });
+                }));
             }
 
         }
