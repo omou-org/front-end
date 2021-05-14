@@ -9,7 +9,6 @@ export const renderCourseAvailabilitiesString = (availabilityList) => {
     if (sessionsAtSameTimeInMultiDayCourse(availabilityList)) {
         const days = availabilityList.reduce(
             (allDays, {dayOfWeek}, index) => {
-                console.log({dayOfWeek});
                 return (
                     allDays +
                     DayAbbreviation[dayOfWeek.toLowerCase()] +
