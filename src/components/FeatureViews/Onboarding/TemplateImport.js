@@ -13,17 +13,15 @@ import PropTypes from "prop-types";
 const TemplateImport = ({templateType, setActiveStep}) => {
     const [disabled, setDisabled] = useState(true);
     const {state} = useContext(OnboardingContext);
-
+    const [uploadResponse, setUploadResponse] = useState(null);
     const {handleBack} = useOnboardingActions();
 
     useEffect(() => {
 
         if (state.UPLOAD_RESPONSE != null) {
-            if (Object.prototype.hasOwnProperty.call(state.UPLOAD_RESPONSE, 'errors')) {
+            if (Object.prototype.hasOwnProperty.call(state.UPLOAD_RESPONSE, 'errors')   ) {
                 setDisabled(true);
-            }
-
-            if (state.UPLOAD_RESPONSE.data[`upload${templateType}`] != null) {
+            }else {
                 setDisabled(false);
             }
         }
@@ -35,6 +33,10 @@ const TemplateImport = ({templateType, setActiveStep}) => {
         setActiveStep(1);
     };
 
+    const handleLocalBack = () => (
+        handleBack(),
+        setUploadResponse(null)
+    );
     return (
         <Grid
             container
@@ -64,8 +66,11 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                 />
             </Grid>
             <Grid item>
+                <DragAndDropUploadBtn 
+                templateType={templateType}
+                uploadResponse={uploadResponse} 
+                setUploadResponse={setUploadResponse}/>
 
-                <DragAndDropUploadBtn templateType={templateType} />
             </Grid>
             <Grid item
                 container
@@ -76,8 +81,8 @@ const TemplateImport = ({templateType, setActiveStep}) => {
             >
                 <Grid item>
                     <ResponsiveButton
-                        variant='contained'
-                        onClick={handleBack}
+                        variant='outlined'
+                        onClick={handleLocalBack}
                     >
                         Back
                     </ResponsiveButton>

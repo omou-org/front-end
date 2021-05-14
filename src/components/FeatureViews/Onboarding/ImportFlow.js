@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     },
+    stepper: {
+        margin: '0 2em',
+    },
 }));
 
 export const onboardingSteps = [
@@ -62,7 +65,7 @@ const ImportFlow = () => {
             case 3:
                 return <BulkImportStep templateType='Courses' step={3} />;
             case 4:
-                return <BulkImportStep templateType='Course enrollments' step={4} />;
+                return <BulkImportStep templateType='Enrollments' step={4} />;
 
             default:
                 return 'Error: Invalid step. No content to display';
@@ -80,6 +83,7 @@ const ImportFlow = () => {
     return (
         <OnboardingContext.Provider value={{ importState, setImportState, activeStep, setActiveStep, state, dispatch }}>
             <div className={classes.root}>
+                <div className={classes.stepper}>
                 <Stepper alternativeLabel activeStep={activeStep}>
                     {steps.map((label, index) => {
                         const stepProps = {};
@@ -101,6 +105,7 @@ const ImportFlow = () => {
                         );
                     })}
                 </Stepper>
+                </div>
                 <div className={classes.instructions}>
                     {getStepContent(activeStep)}
                 </div>

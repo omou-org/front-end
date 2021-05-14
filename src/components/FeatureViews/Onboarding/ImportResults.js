@@ -16,20 +16,13 @@ const ImportResults = ({ templateType, setActiveStep }) => {
     const handleBack = () => setActiveStep(0);
     // const { uploadTemplate } = useUploadOmouTemplate();
 
-    // TODO:
-    // Figure out re-upload logic to stay on the same screen if user uploads 
-    // needs to update number of error files 
 
-    const uploadFile = async () => {
-
-        // let response = await uploadTemplate(uploadedFile, templateType)
-
-    };
+  
 
     const handleNextImportFlowStep = () => {
         setActiveStep(0);
         handleNext();
-        uploadFile();
+        
     };
 
     const isError = state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
@@ -95,6 +88,7 @@ const ImportResults = ({ templateType, setActiveStep }) => {
                 <Grid item>
                     <ResponsiveButton
                         variant='contained'
+                        color='secondary'
                         onClick={handleBack}
                     >
                         Back

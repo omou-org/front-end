@@ -439,7 +439,7 @@ const BusinessDetails = () => {
                             >
                                 Business Hours
                             </Typography>
-                            <BusinessHoursForm />
+                            <BusinessHoursForm isOnboarding={false} />
                         </Grid>
                     </Grid>
                 );
