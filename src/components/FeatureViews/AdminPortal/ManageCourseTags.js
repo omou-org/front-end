@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
+import { gql, useQuery } from '@apollo/client';
 import SearchIcon from '@material-ui/icons/Search';
+import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Modal from '@material-ui/core/Modal';
 import Table from '@material-ui/core/Table';
@@ -15,6 +17,7 @@ import CreateSubjectModal from './CreateSubjectModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { h4, omouBlue, white, body1, body2 } from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
+import Loading from 'components/OmouComponents/Loading';
 
 const useStyles = makeStyles({
     verticalMargin: {
@@ -30,8 +33,6 @@ const useStyles = makeStyles({
     },
     tableHead: {
         color: omouBlue,
-        // borderLeft: `1px solid ${omouBlue}`,
-        // borderRight: `1px solid ${omouBlue}`,
     },
     headCells: {
         ...h4,
@@ -42,12 +43,35 @@ const useStyles = makeStyles({
     },
 });
 
+const GET_COURSE_TAGS = gql`
+    query MyQuery {
+        courseCategories {
+            name
+            description
+        }
+    }
+`;
+
 const ManageCourseTags = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
-
     const classes = useStyles();
+
+    const { loading, error, data } = useQuery(GET_COURSE_TAGS);
+    const { courseCategories } = data;
+    const courseTags = courseCategories;
+
+    if (loading) {
+        return <Loading />;
+    }
+    if (error) {
+        return (
+            <Typography>
+                There has been an error! Error: {error.message}
+            </Typography>
+        );
+    }
 
     return (
         <>
@@ -76,7 +100,7 @@ const ManageCourseTags = () => {
                     <CreateSubjectModal closeModal={handleModalClose} />
                 </Modal>
 
-                <Grid item>
+                <Grid item style={{ marginRight: '3rem' }}>
                     <TextField
                         // className={classes.searchBar}
                         // size='small'
@@ -113,7 +137,19 @@ const ManageCourseTags = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
+                            {courseTags.map(({ name, description }) => {
+                                return (
+                                    <TableRow key={name}>
+                                        <TableCell className={classes.tagName}>
+                                            {name}
+                                        </TableCell>
+                                        <TableCell>
+                                            {description}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                            {/* <TableRow>
                                 <TableCell className={classes.tagName}>
                                     Geometry
                                 </TableCell>
@@ -121,7 +157,7 @@ const ManageCourseTags = () => {
                                     tag description Lorem ipsum dolor sit amet,
                                     consectetur adipiscing elit, sed do
                                 </TableCell>
-                            </TableRow>
+                            </TableRow> */}
                         </TableBody>
                     </Table>
                 </TableContainer>
