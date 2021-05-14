@@ -190,6 +190,7 @@ const ClassEnrollmentRow = ({
 
         } else if (googleClassroomStatusMessage == 'Invite Accepted') {
             console.log('Invite accepted');
+        }  
     };
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
