@@ -8,7 +8,6 @@ import { omouBlue } from '../../../theme/muiTheme';
 import { OnboardingContext } from './OnboardingContext';
 import PropTypes from 'prop-types';
 
-
 const useStyles = makeStyles(() => ({
     Icon: {
         border: '2px solid #28ABD5',
@@ -24,7 +23,6 @@ const useStyles = makeStyles(() => ({
         fontSize: '16px',
         border: ` 2px solid ${omouBlue}`,
         padding: ' 8px, 16px, 8px, 16px',
-
     },
     rootNegativeMargin: {
         paddingLeft: 56,
@@ -34,44 +32,55 @@ const useStyles = makeStyles(() => ({
         border: ` 2px solid ${omouBlue}`,
         padding: ' 8px, 16px, 8px, 16px',
 
-        "& .MuiButton-endIcon": {
+        '& .MuiButton-endIcon': {
             marginRight: -46,
-            marginLeft: 36
-        }
-    }
-
+            marginLeft: 36,
+        },
+    },
 }));
-
 
 const DownloadTemplateButton = ({ templateType, resultsError }) => {
     const { state } = useContext(OnboardingContext);
     const classes = useStyles();
-    let lowerCaseType = templateType === 'Course enrollments' ? 'Course_Enrollments' : templateType.toLowerCase();
+    let lowerCaseType =
+        templateType === 'Course enrollments'
+            ? 'Course_Enrollments'
+            : templateType.toLowerCase();
 
     const GET_TEMPLATE = {
-        "Accounts": gql`query {
-                     accountTemplates
-                }`,
-        "Courses": gql`query {
-                    courseTemplates
-                }`,
-        "Course enrollments": gql`query {
+        Accounts: gql`
+            query {
+                accountTemplates
+            }
+        `,
+        Courses: gql`
+            query {
                 courseTemplates
-        }`,
-
+            }
+        `,
+        'Course enrollments': gql`
+            query {
+                courseTemplates
+            }
+        `,
     };
-
 
     const handleOnChange = () => {
-
         if (resultsError) {
-            downloadOmouTemplate({ error: state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel }, lowerCaseType);
+            downloadOmouTemplate(
+                {
+                    error: state.UPLOAD_RESPONSE.data[`upload${templateType}`]
+                        .errorExcel,
+                },
+                lowerCaseType
+            );
         } else {
-            downloadOmouTemplate({ query: GET_TEMPLATE[templateType] }, lowerCaseType);
+            downloadOmouTemplate(
+                { query: GET_TEMPLATE[templateType] },
+                lowerCaseType
+            );
         }
-
     };
-
 
     return (
         <Button
@@ -79,7 +88,6 @@ const DownloadTemplateButton = ({ templateType, resultsError }) => {
             endIcon={<GetAppIcon />}
             className={classes.rootNegativeMargin}
             onClick={handleOnChange}
-
         >
             {`${templateType} Template`}
         </Button>
@@ -88,7 +96,7 @@ const DownloadTemplateButton = ({ templateType, resultsError }) => {
 
 DownloadTemplateButton.propTypes = {
     templateType: PropTypes.string,
-    resultsError: PropTypes.bool
+    resultsError: PropTypes.bool,
 };
 
 export default DownloadTemplateButton;

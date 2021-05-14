@@ -148,9 +148,8 @@ const addAStudentField = (prevState) => {
         required: false,
     };
     SmallGroupList.push(NewStudentField);
-    prevState.registration_form.tutoring['Student(s)'][
-        'Small Group'
-    ] = SmallGroupList;
+    prevState.registration_form.tutoring['Student(s)']['Small Group'] =
+        SmallGroupList;
     return prevState;
 };
 
@@ -224,9 +223,8 @@ function removeField(prevState, path, fieldIndex, conditional) {
     });
 
     if (conditional) {
-        NewState.registration_form[path[0]][path[1]][
-            conditional
-        ] = SectionFieldList;
+        NewState.registration_form[path[0]][path[1]][conditional] =
+            SectionFieldList;
     } else {
         NewState.registration_form[path[0]][path[1]] = SectionFieldList;
     }
@@ -285,15 +283,14 @@ const addClassRegistration = ({ courseId, studentId }) => {
     const registrationState = JSON.parse(
         sessionStorage.getItem('registrations')
     );
-    const existingEnrollmentsByStudents = Object.entries(
-        registrationState
-    ).map(([studentID, studentRegistrations]) =>
-        Array.isArray(studentRegistrations)
-            ? studentRegistrations.map((registration) => [
-                  studentID,
-                  registration.course.id,
-              ])
-            : []
+    const existingEnrollmentsByStudents = Object.entries(registrationState).map(
+        ([studentID, studentRegistrations]) =>
+            Array.isArray(studentRegistrations)
+                ? studentRegistrations.map((registration) => [
+                      studentID,
+                      registration.course.id,
+                  ])
+                : []
     );
     const isEnrolled = existingEnrollmentsByStudents
         .map((studentEnrollments) =>

@@ -270,11 +270,8 @@ Cypress.Commands.add('login', (username, password) => {
                 .its('data')
                 .then((userInfo) => {
                     localStorage.setItem('token', token);
-                    const {
-                        accountType,
-                        user,
-                        phoneNumber,
-                    } = userInfo.userInfo;
+                    const { accountType, user, phoneNumber } =
+                        userInfo.userInfo;
                     // dispatch to redux/local storage
                     cy.window()
                         .its('store')

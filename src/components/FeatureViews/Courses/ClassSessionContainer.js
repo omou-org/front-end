@@ -81,9 +81,8 @@ const ClassSessionContainer = ({ sessionList, loggedInUser }) => {
                                 </MenuItem>
                             )}
                             {sessionList.map(({ startDatetime, id }, index) => {
-                                const startingDate = moment(
-                                    startDatetime
-                                ).calendar();
+                                const startingDate =
+                                    moment(startDatetime).calendar();
                                 return (
                                     <MenuItem
                                         key={id}
