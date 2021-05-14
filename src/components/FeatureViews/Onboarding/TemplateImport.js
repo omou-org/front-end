@@ -24,15 +24,20 @@ const useStyles = makeStyles({
 
 const TemplateImport = ({ templateType, setActiveStep }) => {
     const [disabled, setDisabled] = useState(true);
-    const {state} = useContext(OnboardingContext);
+    const { state } = useContext(OnboardingContext);
     const [uploadResponse, setUploadResponse] = useState(null);
-    const {handleBack} = useOnboardingActions();
+    const { handleBack } = useOnboardingActions();
     const classes = useStyles();
     useEffect(() => {
         if (state.UPLOAD_RESPONSE != null) {
-            if (Object.prototype.hasOwnProperty.call(state.UPLOAD_RESPONSE, 'errors')   ) {
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    state.UPLOAD_RESPONSE,
+                    'errors'
+                )
+            ) {
                 setDisabled(true);
-            }else {
+            } else {
                 setDisabled(false);
             }
         }
@@ -43,10 +48,7 @@ const TemplateImport = ({ templateType, setActiveStep }) => {
         setActiveStep(1);
     };
 
-    const handleLocalBack = () => (
-        handleBack(),
-        setUploadResponse(null)
-    );
+    const handleLocalBack = () => (handleBack(), setUploadResponse(null));
     return (
         <Grid
             container
@@ -78,11 +80,11 @@ const TemplateImport = ({ templateType, setActiveStep }) => {
                 <DownloadTemplateButton templateType={templateType} />
             </Grid>
             <Grid item>
-                <DragAndDropUploadBtn 
-                templateType={templateType}
-                uploadResponse={uploadResponse} 
-                setUploadResponse={setUploadResponse}/>
-
+                <DragAndDropUploadBtn
+                    templateType={templateType}
+                    uploadResponse={uploadResponse}
+                    setUploadResponse={setUploadResponse}
+                />
             </Grid>
             <Grid
                 item

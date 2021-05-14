@@ -19,10 +19,9 @@ import IconButton from '@material-ui/core/IconButton';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import gql from 'graphql-tag';
-import { downloadOmouTemplate, useUploadOmouTemplate  } from '../../../utils';
+import { downloadOmouTemplate, useUploadOmouTemplate } from '../../../utils';
 import PropTypes from 'prop-types';
 import Loading from '../../../components/OmouComponents/Loading';
-
 
 const useStyles = makeStyles({
     modalStyle: {
@@ -84,11 +83,8 @@ const useStyles = makeStyles({
         position: 'fixed',
         bottom: '19px',
         right: '30px',
-
     },
-    doneBtn: {
-
-    }
+    doneBtn: {},
 });
 
 const GET_TEMPLATE = {
@@ -117,12 +113,13 @@ const BulkUploadModal = ({ closeModal }) => {
     const { uploadTemplate } = useUploadOmouTemplate();
     const [fileName, setFileName] = useState(null);
     const [disableUploadBtn, setDisableUploadBtn] = useState(false);
-    const [uploadResponse , setUploadResponse ]= useState(null);
+    const [uploadResponse, setUploadResponse] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [loading, setLoading ] = useState(false);
-    const [responseError, setResponseError] = useState({error: false, responseMessage: null});
-
-    
+    const [loading, setLoading] = useState(false);
+    const [responseError, setResponseError] = useState({
+        error: false,
+        responseMessage: null,
+    });
 
     const handleTemplateChange = (e) => {
         setTemplate(e.target.value);
@@ -134,74 +131,72 @@ const BulkUploadModal = ({ closeModal }) => {
 
     const handleBackStep = () => {
         setActiveStep((prevState) => prevState - 1);
-        setResponseError({error: false, responseMessage: null});
+        setResponseError({ error: false, responseMessage: null });
     };
-    
+
     const handleDropDown = () =>
         dropDown === 'rotate(0deg)'
             ? setDropDown('rotate(180deg)')
             : setDropDown('rotate(0deg)');
 
-    
-
-    const handleDownloadTemplate = () =>  {
+    const handleDownloadTemplate = () => {
         downloadOmouTemplate(
-            {query :GET_TEMPLATE[template]},
+            { query: GET_TEMPLATE[template] },
             template.toLowerCase()
         );
     };
 
     const upload = () => {
-        document.getElementById("xml-upload").click();
-        setResponseError({...responseError, error: false, responseMessage: null});
+        document.getElementById('xml-upload').click();
+        setResponseError({
+            ...responseError,
+            error: false,
+            responseMessage: null,
+        });
     };
 
-    
-    
-    // Show loading screen when user clicks upload 
+    // Show loading screen when user clicks upload
     const uploadFile = async () => {
         setLoading(true);
         let response = await uploadTemplate(selectedFile, template);
-        
+
         setTimeout(() => {
-            if(Object.prototype.hasOwnProperty.call(response, 'errors')){
-                setResponseError({...responseError, 
+            if (Object.prototype.hasOwnProperty.call(response, 'errors')) {
+                setResponseError({
+                    ...responseError,
                     error: true,
-                    responseMessage: response.errors[0].message
+                    responseMessage: response.errors[0].message,
                 });
-                setLoading(false);    
+                setLoading(false);
                 setDisableUploadBtn(false);
                 setFileName(null);
-            }else {
+            } else {
                 setLoading(false);
                 handleStepChange();
                 setUploadResponse(response);
             }
-        },300);
+        }, 300);
     };
 
-
-    const handleSelectFile = ( ) => {
+    const handleSelectFile = () => {
         const file = document.getElementById('xml-upload').files[0];
         setFileName(file.name);
         setDisableUploadBtn(true);
         setSelectedFile(file);
     };
-    let lowerCaseType =  template.toLowerCase();
-  
+    let lowerCaseType = template.toLowerCase();
+
     const handleDownloadErrorFile = () => {
-        
-        downloadOmouTemplate({error: uploadResponse?.data[`upload${template}`].errorExcel}, lowerCaseType);
+        downloadOmouTemplate(
+            { error: uploadResponse?.data[`upload${template}`].errorExcel },
+            lowerCaseType
+        );
     };
-
-
 
     const removeUpload = () => {
         setDisableUploadBtn(false);
         setFileName(null);
-        
     };
-    
 
     const getStepContent = (step) => {
         switch (step) {
@@ -312,17 +307,16 @@ const BulkUploadModal = ({ closeModal }) => {
                                     </MenuItem>
                                 </Select>
                                 <IconButton
-                                disabled={!template && true}
-                                onClick={handleDownloadTemplate}
-                            >
-                                <SvgIcon>
-                                    <path
-                                        d='M17.5 13.75V17.5H2.5V13.75H0V17.5C0 18.875 1.125 20 2.5 20H17.5C18.875 20 20 18.875 20 17.5V13.75H17.5ZM16.25 8.75L14.4875 6.9875L11.25 10.2125V0H8.75V10.2125L5.5125 6.9875L3.75 8.75L10 15L16.25 8.75Z'
-                                        fill={template ? omouBlue : gloom}
-                                    />
-                                </SvgIcon>
-                            </IconButton>
-                                
+                                    disabled={!template && true}
+                                    onClick={handleDownloadTemplate}
+                                >
+                                    <SvgIcon>
+                                        <path
+                                            d='M17.5 13.75V17.5H2.5V13.75H0V17.5C0 18.875 1.125 20 2.5 20H17.5C18.875 20 20 18.875 20 17.5V13.75H17.5ZM16.25 8.75L14.4875 6.9875L11.25 10.2125V0H8.75V10.2125L5.5125 6.9875L3.75 8.75L10 15L16.25 8.75Z'
+                                            fill={template ? omouBlue : gloom}
+                                        />
+                                    </SvgIcon>
+                                </IconButton>
                             </div>
 
                             <Grid style={{ textAlign: 'right' }} item xs={12}>
@@ -354,82 +348,98 @@ const BulkUploadModal = ({ closeModal }) => {
             case 1:
                 return (
                     <>
-                    { loading ? 
-
-                    <Grid conatiner 
-              
-                    className={classes.modalStyle}>
-                        <Loading small={true} /> 
-                    </Grid>
-
-                    :
-
-                    <Grid
-                        container
-                  
-                        className={classes.modalStyle}
-                    >
-                        <Grid item style={{ padding: '2em' }} xs={12}>
-                            <Typography
-                                className={classes.modalTypography}
-                                variant='h3'
-                            >
-                                Upload {template}
-                            </Typography>
-
-                            <Typography
-                                align='left'
-                                className={classes.modalTypography}
-                                variant='h6'
-                            >
-                                After you fill out the template, please upload
-                                your file here. You can only upload one file at
-                                a time.
-                            </Typography>
-
-                            
-                            <div >
-                                <ResponsiveButton onClick={upload} disabled={disableUploadBtn} variant='contained'>Select File</ResponsiveButton>
-                                <input id='xml-upload' hidden type="file" multiple={false} accept='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' onChange={handleSelectFile} /> 
-                                {fileName ? 
-                                    <>
-                                        <p>{fileName} <button onClick={removeUpload}>X</button></p>
-                                        </>
-                                        :
-                                        <p style={{color: 'red'}}>{responseError.responseMessage}</p> 
-                                }
-                            </div>
-                            <Grid className={classes.bottomNav} style={{ textAlign: 'right' }} item xs={12}>
-                                <ResponsiveButton
-                                    style={{ border: 'none', color: darkGrey }}
-                                    variant='outlined'
-                                    onClick={handleBackStep}
-                                >
-                                    Back
-                                </ResponsiveButton>
-                                <ResponsiveButton
-                                    style={{ border: 'none' }}
-                                    variant='outlined'
-                                    template={template}
-                                    onClick={uploadFile}
-                                    disabled={!disableUploadBtn}
-                                >
-                                    Upload
-                                </ResponsiveButton>
+                        {loading ? (
+                            <Grid conatiner className={classes.modalStyle}>
+                                <Loading small={true} />
                             </Grid>
-                        </Grid>
-                    </Grid>
-                }
+                        ) : (
+                            <Grid container className={classes.modalStyle}>
+                                <Grid item style={{ padding: '2em' }} xs={12}>
+                                    <Typography
+                                        className={classes.modalTypography}
+                                        variant='h3'
+                                    >
+                                        Upload {template}
+                                    </Typography>
+
+                                    <Typography
+                                        align='left'
+                                        className={classes.modalTypography}
+                                        variant='h6'
+                                    >
+                                        After you fill out the template, please
+                                        upload your file here. You can only
+                                        upload one file at a time.
+                                    </Typography>
+
+                                    <div>
+                                        <ResponsiveButton
+                                            onClick={upload}
+                                            disabled={disableUploadBtn}
+                                            variant='contained'
+                                        >
+                                            Select File
+                                        </ResponsiveButton>
+                                        <input
+                                            id='xml-upload'
+                                            hidden
+                                            type='file'
+                                            multiple={false}
+                                            accept='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                                            onChange={handleSelectFile}
+                                        />
+                                        {fileName ? (
+                                            <>
+                                                <p>
+                                                    {fileName}{' '}
+                                                    <button
+                                                        onClick={removeUpload}
+                                                    >
+                                                        X
+                                                    </button>
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <p style={{ color: 'red' }}>
+                                                {responseError.responseMessage}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <Grid
+                                        className={classes.bottomNav}
+                                        style={{ textAlign: 'right' }}
+                                        item
+                                        xs={12}
+                                    >
+                                        <ResponsiveButton
+                                            style={{
+                                                border: 'none',
+                                                color: darkGrey,
+                                            }}
+                                            variant='outlined'
+                                            onClick={handleBackStep}
+                                        >
+                                            Back
+                                        </ResponsiveButton>
+                                        <ResponsiveButton
+                                            style={{ border: 'none' }}
+                                            variant='outlined'
+                                            template={template}
+                                            onClick={uploadFile}
+                                            disabled={!disableUploadBtn}
+                                        >
+                                            Upload
+                                        </ResponsiveButton>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        )}
                     </>
                 );
             case 2:
                 return (
-                    <Grid
-                        container
-                        
-                        className={classes.modalStyle}
-                    >
-                        <Grid item style={{ padding: '2em',  }} xs={12}>
+                    <Grid container className={classes.modalStyle}>
+                        <Grid item style={{ padding: '2em' }} xs={12}>
                             <Typography
                                 className={classes.modalTypography}
                                 variant='h3'
@@ -443,7 +453,10 @@ const BulkUploadModal = ({ closeModal }) => {
                                 className={classes.modalTypography}
                                 variant='body1'
                             >
-                                {`${uploadResponse?.data[`upload${template}`].totalSuccess} rows uploaded successfully.`}
+                                {`${
+                                    uploadResponse?.data[`upload${template}`]
+                                        .totalSuccess
+                                } rows uploaded successfully.`}
                             </Typography>
 
                             <Typography
@@ -451,29 +464,33 @@ const BulkUploadModal = ({ closeModal }) => {
                                 className={classes.modalTypography}
                                 variant='body1'
                             >
-                                {`${uploadResponse?.data[`upload${template}`].totalFailure} rows failed.`}
+                                {`${
+                                    uploadResponse?.data[`upload${template}`]
+                                        .totalFailure
+                                } rows failed.`}
                             </Typography>
-                            {uploadResponse?.data[`upload${template}`].errorExcel !== "" && 
-                            <div style={{ margin: '1em 0px' }}>
-                                <Link
-                                    className={`${classes.modalTypography} ${classes.errorLink}`}
-                                    onClick={handleDownloadErrorFile}
-                                >
-                                    Download Error File
-                                </Link>
-
-                                <IconButton
-                                    onClick={handleDownloadErrorFile}
+                            {uploadResponse?.data[`upload${template}`]
+                                .errorExcel !== '' && (
+                                <div style={{ margin: '1em 0px' }}>
+                                    <Link
+                                        className={`${classes.modalTypography} ${classes.errorLink}`}
+                                        onClick={handleDownloadErrorFile}
                                     >
-                                    <SvgIcon>
-                                        <path
-                                            d='M17.5 13.75V17.5H2.5V13.75H0V17.5C0 18.875 1.125 20 2.5 20H17.5C18.875 20 20 18.875 20 17.5V13.75H17.5ZM16.25 8.75L14.4875 6.9875L11.25 10.2125V0H8.75V10.2125L5.5125 6.9875L3.75 8.75L10 15L16.25 8.75Z'
-                                            fill={omouBlue}
-                                        />
-                                    </SvgIcon>
-                                </IconButton>
-                            </div>
-                                }
+                                        Download Error File
+                                    </Link>
+
+                                    <IconButton
+                                        onClick={handleDownloadErrorFile}
+                                    >
+                                        <SvgIcon>
+                                            <path
+                                                d='M17.5 13.75V17.5H2.5V13.75H0V17.5C0 18.875 1.125 20 2.5 20H17.5C18.875 20 20 18.875 20 17.5V13.75H17.5ZM16.25 8.75L14.4875 6.9875L11.25 10.2125V0H8.75V10.2125L5.5125 6.9875L3.75 8.75L10 15L16.25 8.75Z'
+                                                fill={omouBlue}
+                                            />
+                                        </SvgIcon>
+                                    </IconButton>
+                                </div>
+                            )}
                             <Grid
                                 className={classes.bottomNav}
                                 style={{ textAlign: 'right', marginTop: '2em' }}
@@ -482,9 +499,7 @@ const BulkUploadModal = ({ closeModal }) => {
                             >
                                 <ResponsiveButton
                                     style={{ border: 'none' }}
-                                    
                                     variant='outlined'
-                                    
                                     onClick={closeModal}
                                 >
                                     done

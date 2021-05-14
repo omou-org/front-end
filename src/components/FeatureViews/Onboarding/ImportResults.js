@@ -16,13 +16,9 @@ const ImportResults = ({ templateType, setActiveStep }) => {
     const handleBack = () => setActiveStep(0);
     // const { uploadTemplate } = useUploadOmouTemplate();
 
-
-  
-
     const handleNextImportFlowStep = () => {
         setActiveStep(0);
         handleNext();
-        
     };
 
     const isError =

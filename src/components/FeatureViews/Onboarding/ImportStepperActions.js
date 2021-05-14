@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useContext, useEffect, useState} from "react";
-import {OnboardingContext} from "./OnboardingContext";
-import {useURLQuery} from "../../../utils";
-import {useHistory, useLocation} from "react-router-dom";
-
+import { useContext, useEffect, useState } from 'react';
+import { OnboardingContext } from './OnboardingContext';
+import { useURLQuery } from '../../../utils';
+import { useHistory, useLocation } from 'react-router-dom';
 
 export default function useOnboardingActions() {
     const { activeStep, setActiveStep } = useContext(OnboardingContext);
@@ -14,11 +13,11 @@ export default function useOnboardingActions() {
     const urlQuery = useURLQuery();
     const currentStep = Number(urlQuery.get('step'));
 
-	useEffect(() => {
-		if (currentStep - 1 !== activeStep && setActiveStep) {
-			setActiveStep(currentStep);
-		}
-	}, []);
+    useEffect(() => {
+        if (currentStep - 1 !== activeStep && setActiveStep) {
+            setActiveStep(currentStep);
+        }
+    }, []);
 
     const isStepOptional = () => {
         return false;
@@ -76,10 +75,10 @@ export default function useOnboardingActions() {
         });
     };
 
-	return {
-		handleBack,
-		handleSkip,
-		handleNext,
+    return {
+        handleBack,
+        handleSkip,
+        handleNext,
         activeStep,
-	};
+    };
 }

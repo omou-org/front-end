@@ -65,7 +65,6 @@ const ImportFlow = () => {
                 return <BulkImportStep templateType='Courses' step={4} />;
             case 5:
                 return <BulkImportStep templateType='Enrollments' step={5} />;
-              
 
             default:
                 return 'Error: Invalid step. No content to display';
@@ -93,27 +92,29 @@ const ImportFlow = () => {
         >
             <div className={classes.root}>
                 <div className={classes.stepper}>
-                <Stepper alternativeLabel activeStep={activeStep}>
-                    {steps.map((label, index) => {
-                        const stepProps = {};
-                        const labelProps = {};
-                        if (isStepOptional(index)) {
-                            labelProps.optional = (
-                                <Typography variant='caption'>
-                                    Optional
-                                </Typography>
+                    <Stepper alternativeLabel activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const stepProps = {};
+                            const labelProps = {};
+                            if (isStepOptional(index)) {
+                                labelProps.optional = (
+                                    <Typography variant='caption'>
+                                        Optional
+                                    </Typography>
+                                );
+                            }
+                            if (isStepSkipped(index)) {
+                                stepProps.completed = false;
+                            }
+                            return (
+                                <Step key={label} {...stepProps}>
+                                    <StepLabel {...labelProps}>
+                                        {label}
+                                    </StepLabel>
+                                </Step>
                             );
-                        }
-                        if (isStepSkipped(index)) {
-                            stepProps.completed = false;
-                        }
-                        return (
-                            <Step key={label} {...stepProps}>
-                                <StepLabel {...labelProps}>{label}</StepLabel>
-                            </Step>
-                        );
-                    })}
-                </Stepper>
+                        })}
+                    </Stepper>
                 </div>
                 <div className={classes.instructions}>
                     {getStepContent(activeStep)}
