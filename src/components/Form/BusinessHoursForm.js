@@ -6,37 +6,39 @@ import { ResponsiveButton } from '../../theme/ThemedComponents/Button/Responsive
 import PropTypes from 'prop-types';
 import useOnboardingActions from '../FeatureViews/Onboarding/ImportStepperActions';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
-import { Checkboxes } from 'mui-rff';
-// import Loading from "../OmouComponents/Loading";
+import {useMutation, useQuery} from "@apollo/client";
+import {Checkboxes} from "mui-rff";
+import Loading from "../OmouComponents/Loading";
+import {capitalizeString} from "../../utils";
+import moment from "moment";
 
 const CREATE_BIZ_HOURS = gql`
-    mutation CreateBusinessHours($bizHours: [BusinessAvailabilityInput]) {
-        updateBusiness(availabilities: $bizHours) {
-            business {
-                id
-                businessavailabilitySet {
-                    dayOfWeek
-                    endTime
-                    startTime
-                }
-            }
-        }
-    }
+	mutation CreateBusinessHours($bizHours: [BusinessAvailabilityInput]){
+			updateBusiness(availabilities: $bizHours){
+					business{
+						id
+						businessavailabilitySet {
+							dayOfWeek
+							endTime
+							startTime
+						}
+					}
+			}
+	}
 `;
 
-// const GET_BIZ_HOURS = gql`
-// 	query GetBusinessHours {
-// 		business{
-// 			id
-// 			businessavailabilitySet{
-// 				dayOfWeek
-// 				endTime
-// 				StartTime
-// 			}
-// 		}
-// 	}
-// `;
+const GET_BIZ_HOURS = gql`
+	query GetBusinessHours {
+		business{
+			id
+			businessavailabilitySet{
+				dayOfWeek
+				endTime
+				startTime
+			}
+		}
+	}
+`;
 
 const BusinessDayHoursField = ({ day }) => {
     const { values } = useFormState();
@@ -85,9 +87,12 @@ BusinessDayHoursField.propTypes = {
 };
 
 export default function BusinessHoursForm({ isOnboarding }) {
-    const [createBizHours] = useMutation(CREATE_BIZ_HOURS);
-    // const {data, loading, error} = useQuery(GET_BIZ_HOURS);
-    const { handleBack, handleNext } = useOnboardingActions();
+	const [createBizHours] = useMutation(CREATE_BIZ_HOURS);
+	const {data, loading, error} = useQuery(GET_BIZ_HOURS);
+	const {
+		handleBack,
+		handleNext,
+	} = useOnboardingActions();
 
     const parseDayTimeTitle = (dayTimeTitle) => {
         const separatorIndex = dayTimeTitle.indexOf('-');
@@ -111,13 +116,14 @@ export default function BusinessHoursForm({ isOnboarding }) {
         'Sunday',
     ];
 
-    const validate = useCallback((formData) => {
-        const errors = {};
-        const dayTimeKeys = Object.keys(formData);
-        const getUnpairedTimes = (timesArr) => {
-            const timeSet = new Set();
-            const matchingTimesSet = new Set();
-            let currentDay;
+	const validate = useCallback((formData) => {
+		console.log(formData);
+		const errors = {};
+		const dayTimeKeys = Object.keys(formData);
+		const getUnpairedTimes = (timesArr) => {
+			const timeSet = new Set();
+			const matchingTimesSet = new Set();
+			let currentDay;
 
             timesArr
                 .filter((time) => {
@@ -151,15 +157,14 @@ export default function BusinessHoursForm({ isOnboarding }) {
             errors[endTimeKey(day)] = 'Incomplete Business Hours';
         });
 
-        // Validate end day times
-        pairedDayTimes.forEach((day) => {
-            const startTime = formData[startTimeKey(day)];
-            const endTime = formData[endTimeKey(day)];
-            if (endTime.isBefore(startTime)) {
-                errors[endTimeKey(day)] = 'Select a Later End Time';
-            }
-        });
-
+		// Validate end day times
+		pairedDayTimes.forEach(day => {
+			const startTime = formData[startTimeKey(day)];
+			const endTime = formData[endTimeKey(day)];
+			if (endTime && startTime && endTime.isBefore(startTime)) {
+				errors[endTimeKey(day)] = 'Select a Later End Time';
+			}
+		});
         return errors;
     }, []);
 
@@ -203,68 +208,81 @@ export default function BusinessHoursForm({ isOnboarding }) {
 
     const handleBackClick = () => handleBack();
 
-    // if(loading)
-    // 	return <Loading/>;
-    // if(error)
-    // 	return (<div>{`There's been an error!: ${error.message}`}</div>);
-    //
-    // console.log(data);
 
-    return (
-        <ReactForm
-            onSubmit={submit}
-            validate={validate}
-            render={({ handleSubmit }) => (
-                <form onSubmit={handleSubmit}>
-                    <Grid
-                        item
-                        container
-                        spacing={3}
-                        direction='column'
-                        alignItems='center'
-                        justify='center'
-                    >
-                        <Grid item xs={12} container>
-                            {daysOfWeekShort.map((day, i) => (
-                                <BusinessDayHoursField key={i} day={day} />
-                            ))}
-                        </Grid>
-                        <Grid
-                            item
-                            container
-                            spacing={3}
-                            direction='row'
-                            alignItems='center'
-                            justify='center'
-                        >
-                            {isOnboarding ? (
-                                <>
-                                    <Grid item>
-                                        <ResponsiveButton
-                                            onClick={handleBackClick}
-                                            variant='outlined'
-                                        >
-                                            Back
-                                        </ResponsiveButton>
-                                    </Grid>
-                                    <Grid item>
-                                        <ResponsiveButton
-                                            type='submit'
-                                            variant='contained'
-                                        >
-                                            Submit & Next
-                                        </ResponsiveButton>
-                                    </Grid>
-                                </>
-                            ) : (
-                                <ResponsiveButton type='submit'>
-                                    Submit
-                                </ResponsiveButton>
-                            )}
-                        </Grid>
-                    </Grid>
-                </form>
-            )}
+	if (loading)
+		return <Loading/>;
+	if (error)
+		return (<div>{`There's been an error!: ${error.message}`}</div>);
+
+	const {
+		business: {businessavailabilitySet}
+	} = data;
+
+	const initialBizHours = businessavailabilitySet.reduce((initialBizHoursData, bizHour) => {
+		const dayOfWeek = capitalizeString(bizHour.dayOfWeek);
+		return {
+			...initialBizHoursData,
+			[`${dayOfWeek}-startTime`]: moment("2021-01-01T" + bizHour.startTime),
+			[`${dayOfWeek}-endTime`]: moment("2021-01-01T" + bizHour.endTime),
+		};
+	}, {});
+
+	return (
+		<ReactForm
+			initialValues={initialBizHours}
+			onSubmit={submit}
+			validate={validate}
+			render={({handleSubmit}) => (
+				<form
+					onSubmit={handleSubmit}
+				>
+					<Grid
+						item
+						container
+						spacing={3}
+						direction='column'
+						alignItems='center'
+						justify='center'
+					>
+						<Grid item xs={12} container>
+							{daysOfWeekShort.map((day, i) => (
+								<BusinessDayHoursField key={i} day={day}/>
+							))}
+						</Grid>
+						<Grid item
+							  container
+							  spacing={3}
+							  direction='row'
+							  alignItems='center'
+							  justify='center'
+						>
+							{isOnboarding ? (<>
+									<Grid item>
+										<ResponsiveButton
+											onClick={handleBackClick}
+											variant='contained'
+										>
+											Back
+										</ResponsiveButton>
+									</Grid>
+									<Grid item>
+										<ResponsiveButton
+											type='submit'
+											variant='contained'
+										>
+											Submit & Next
+										</ResponsiveButton>
+									</Grid>
+								</>
+							) : (
+								<ResponsiveButton type='submit'>
+									Submit
+								</ResponsiveButton>
+							)}
+						</Grid>
+					</Grid>
+				</form>
+			)}
         />
     );
 }
