@@ -9,10 +9,10 @@ export default function useOnboardingActions() {
     const { activeStep, setActiveStep } = useContext(OnboardingContext);
     const [skipped, setSkipped] = useState(new Set());
 
-	const location = useLocation();
-	const history = useHistory();
-	const urlQuery = useURLQuery();
-	const currentStep = Number(urlQuery.get('step'));
+    const location = useLocation();
+    const history = useHistory();
+    const urlQuery = useURLQuery();
+    const currentStep = Number(urlQuery.get('step'));
 
 	useEffect(() => {
 		if (currentStep - 1 !== activeStep && setActiveStep) {
@@ -20,29 +20,29 @@ export default function useOnboardingActions() {
 		}
 	}, []);
 
-	const isStepOptional = () => {
-		return false;
-	};
+    const isStepOptional = () => {
+        return false;
+    };
 
     const isStepSkipped = (step) => {
         return skipped.has(step);
     };
 
-	const handleNext = () => {
-		let newSkipped = skipped;
-		if (isStepSkipped(activeStep)) {
-			newSkipped = new Set(newSkipped.values());
-			newSkipped.delete(activeStep);
-		}
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		setSkipped(newSkipped);
+    const handleNext = () => {
+        let newSkipped = skipped;
+        if (isStepSkipped(activeStep)) {
+            newSkipped = new Set(newSkipped.values());
+            newSkipped.delete(activeStep);
+        }
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setSkipped(newSkipped);
 
-		//Set new URL
-		history.push({
-			path: location.pathname,
-			search: `?step=${Number(urlQuery.get("step")) + 1}`
-		});
-	};
+        //Set new URL
+        history.push({
+            path: location.pathname,
+            search: `?step=${Number(urlQuery.get('step')) + 1}`,
+        });
+    };
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);

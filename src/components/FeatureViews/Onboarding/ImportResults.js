@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
-import useOnboardingActions from "./ImportStepperActions";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import { ResponsiveButton } from "../../../theme/ThemedComponents/Button/ResponsiveButton";
-import DragAndDropUploadBtn from "./DragAndDropUploadBtn";
+import useOnboardingActions from './ImportStepperActions';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import DragAndDropUploadBtn from './DragAndDropUploadBtn';
 // import { useUploadOmouTemplate } from '../../../utils';
 import { OnboardingContext } from './OnboardingContext';
 import DownloadTemplateButton from './DownloadTemplateButton';
@@ -25,10 +25,12 @@ const ImportResults = ({ templateType, setActiveStep }) => {
         
     };
 
-    const isError = state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
+    const isError =
+        state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
 
     return (
-        <Grid container
+        <Grid
+            container
             direction='column'
             justify='center'
             alignItems='center'
@@ -40,45 +42,54 @@ const ImportResults = ({ templateType, setActiveStep }) => {
                 </Typography>
             </Grid>
             <Grid item>
-                <Grid container
-                    direction='row'
-                    spacing={4}
-                >
+                <Grid container direction='row' spacing={4}>
                     <Grid item xs={!isError ? 12 : 6}>
                         <Typography align='left'>
                             {`Below is a summary of the uploaded ${templateType}.`}
                         </Typography>
                         <Typography align='left'>
-                            Please correct and re-upload the failed rows found in the error file.
+                            Please correct and re-upload the failed rows found
+                            in the error file.
                         </Typography>
-                        <br /><br />
+                        <br />
+                        <br />
                         <Typography align='left'>
-                            {`${state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalSuccess} rows uploaded successfully.`}
+                            {`${
+                                state.UPLOAD_RESPONSE.data[
+                                    `upload${templateType}`
+                                ].totalSuccess
+                            } rows uploaded successfully.`}
                         </Typography>
                         <br />
                         <Typography align='left'>
-                            {`${state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalFailure} rows failed to upload.`}
+                            {`${
+                                state.UPLOAD_RESPONSE.data[
+                                    `upload${templateType}`
+                                ].totalFailure
+                            } rows failed to upload.`}
                         </Typography>
                         <br />
                         <Typography align='left'>
-                            {isError &&
+                            {isError && (
                                 <DownloadTemplateButton
                                     templateType={templateType}
                                     resultsError={true}
                                 />
-                            }
-
+                            )}
                         </Typography>
                     </Grid>
                     <Grid item>
-                        {isError &&
-                            <DragAndDropUploadBtn templateType={templateType} setUploadedFile={setUploadedFile} />
-                        }
+                        {isError && (
+                            <DragAndDropUploadBtn
+                                templateType={templateType}
+                                setUploadedFile={setUploadedFile}
+                            />
+                        )}
                     </Grid>
                 </Grid>
-
             </Grid>
-            <Grid item
+            <Grid
+                item
                 container
                 direction='row'
                 justify='center'
@@ -109,7 +120,7 @@ const ImportResults = ({ templateType, setActiveStep }) => {
 
 ImportResults.propTypes = {
     templateType: PropTypes.string,
-    setActiveStep: PropTypes.func
+    setActiveStep: PropTypes.func,
 };
 
 export default ImportResults;

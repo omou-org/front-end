@@ -1,23 +1,34 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Grid} from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
+import { Grid } from '@material-ui/core';
 import DownloadTemplateButton from './DownloadTemplateButton';
-import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
-import Link from "@material-ui/core/Link";
-import Typography from "@material-ui/core/Typography";
-import useOnboardingActions from "./ImportStepperActions";
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { makeStyles } from '@material-ui/core/styles';
+import { h6 } from '../../../theme/muiTheme';
+import Typography from '@material-ui/core/Typography';
+import useOnboardingActions from './ImportStepperActions';
 
-import DragAndDropUploadBtn from "./DragAndDropUploadBtn";
-import {OnboardingContext} from './OnboardingContext';
-import PropTypes from "prop-types";
+import DragAndDropUploadBtn from './DragAndDropUploadBtn';
+import { OnboardingContext } from './OnboardingContext';
+import PropTypes from 'prop-types';
 
-const TemplateImport = ({templateType, setActiveStep}) => {
+const useStyles = makeStyles({
+    modalTypography: {
+        marginBottom: '1em',
+    },
+    useCaseLink: {
+        ...h6,
+        lineHeight: '22px',
+        textDecoration: 'underline',
+    },
+});
+
+const TemplateImport = ({ templateType, setActiveStep }) => {
     const [disabled, setDisabled] = useState(true);
     const {state} = useContext(OnboardingContext);
     const [uploadResponse, setUploadResponse] = useState(null);
     const {handleBack} = useOnboardingActions();
-
+    const classes = useStyles();
     useEffect(() => {
-
         if (state.UPLOAD_RESPONSE != null) {
             if (Object.prototype.hasOwnProperty.call(state.UPLOAD_RESPONSE, 'errors')   ) {
                 setDisabled(true);
@@ -25,7 +36,6 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                 setDisabled(false);
             }
         }
-
     }, [state.UPLOAD_RESPONSE, templateType]);
 
     let lowerCaseType = templateType.toLowerCase();
@@ -46,9 +56,7 @@ const TemplateImport = ({templateType, setActiveStep}) => {
             spacing={4}
         >
             <Grid item>
-                <Typography variant='h1'>
-                    {templateType}
-                </Typography>
+                <Typography variant='h1'>{templateType}</Typography>
             </Grid>
             <Grid item>
                 <Typography variant='h3'>
@@ -56,14 +64,18 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                 </Typography>
             </Grid>
             <Grid item>
-                <Link>
+                <a
+                    className={`${classes.modalTypography} ${classes.useCaseLink}`}
+                    href='/business-use-cases'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    type='button'
+                >
                     Why am I entering this data?
-                </Link>
+                </a>
             </Grid>
             <Grid item>
-                <DownloadTemplateButton
-                    templateType={templateType}
-                />
+                <DownloadTemplateButton templateType={templateType} />
             </Grid>
             <Grid item>
                 <DragAndDropUploadBtn 
@@ -72,7 +84,8 @@ const TemplateImport = ({templateType, setActiveStep}) => {
                 setUploadResponse={setUploadResponse}/>
 
             </Grid>
-            <Grid item
+            <Grid
+                item
                 container
                 direction='row'
                 justify='center'

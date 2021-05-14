@@ -102,4 +102,3 @@ DragAndDropUploadBtn.propTypes = {
 };
 
 export default DragAndDropUploadBtn;
-
