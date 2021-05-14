@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {NavLink, useParams} from 'react-router-dom';
 import gql from 'graphql-tag';
 import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
-import {Button, Divider, makeStyles, Typography} from '@material-ui/core';
+import {Divider, makeStyles, Typography} from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
 import {darkBlue, darkGrey} from '../../../../theme/muiTheme';
 import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
@@ -234,13 +234,6 @@ const AllSessionsEdit = () => {
     const [updateAllSessions] = useMutation(UPDATE_ALL_SESSIONS_MUTATION);
 
     useEffect(() => {
-        console.log("trying to update new state", {
-            courseAvailabilities,
-            instructorValue,
-            subjectValue,
-            courseStartDate,
-            courseEndDate,
-        });
         if (
             courseAvailabilities.length > 0 &&
             instructorValue &&
@@ -262,15 +255,6 @@ const AllSessionsEdit = () => {
                 instructorStateName !== newState.instructor ||
                 courseCategoryStateName !== newState.courseCategory
             ) {
-                console.log("setting new state");
-
-                console.log({
-                    availabilities: newCourseAvailabilities,
-                    startDate: courseStartDateState,
-                    endDate: courseEndDateState,
-                    instructor: instructorStateName,
-                    courseCategory: courseCategoryStateName,
-                });
                 setNewState({
                     availabilities: newCourseAvailabilities,
                     startDate: courseStartDateState,
@@ -286,9 +270,8 @@ const AllSessionsEdit = () => {
 
     if (loading || conflictLoading) return <Loading/>;
 
-    if (error) {
-        return <Typography>{`There's been an error!`}</Typography>;
-    }
+    if (error) return <Typography>{`There's been an error!`}</Typography>;
+
     const {
         courseCategories: subjects,
         instructors,
@@ -340,15 +323,25 @@ const AllSessionsEdit = () => {
         });
     };
 
+    const removeCourseAvailability = (availabilityId) => {
+        setCourseAvailabilities(prevState => {
+            const newCourseAvailabilities = prevState.filter((availability) =>
+                (availability.id !== availabilityId));
+            return newCourseAvailabilities;
+        });
+    };
+
     const handleDateChange = (setDate) => e => {
         setDate(e);
     };
 
+    const formatTime = (time) => time.length < 11 ? `2021-01-01T${time}` : time;
+
     const formatAvailabilities = (courseAvailabilities) => courseAvailabilities
-        .map(({day, startTime, endTime}) => ({
-            dayOfWeek: day,
-            startTime: moment(startTime).format("HH:mm"),
-            endTime: moment(endTime).format("HH:mm"),
+        .map(({dayOfWeek, startTime, endTime}) => ({
+            dayOfWeek,
+            startTime: moment(formatTime(startTime)).format("HH:mm"),
+            endTime: moment(formatTime(endTime)).format("HH:mm"),
         }));
 
     const handleSubmitEdits = () => {
@@ -450,6 +443,7 @@ const AllSessionsEdit = () => {
                         courseAvailabilities.map(availability => (
                             <EditMultiSessionFields
                                 getCourseAvailability={handleCourseAvailabilities}
+                                removeCourseAvailability={removeCourseAvailability}
                                 availability={availability}
                                 key={availability.id}
                             />
@@ -458,16 +452,12 @@ const AllSessionsEdit = () => {
                 </Grid>
                 <Box paddingBottom='25px'>
                     <Grid item container direction='row' alignItems='center'>
-                        <Button
+                        <ResponsiveButton
                             onClick={handleAddCourseAvailability}
+                            startIcon={<AddCircleIcon/>}
                         >
-                            <Grid item>
-                                <AddCircleIcon/>
-                            </Grid>
-                            <Grid>
-                                <Typography>Add Additional Day & Time</Typography>
-                            </Grid>
-                        </Button>
+                            Add Day & Time
+                        </ResponsiveButton>
                     </Grid>
                 </Box>
                 <Grid container>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FormControl, makeStyles, MenuItem, Select} from '@material-ui/core';
 import {highlightColor, omouBlue} from '../../../../theme/muiTheme';
 import {BootstrapInput} from '../../Courses/CourseManagementContainer';
@@ -6,8 +6,9 @@ import Loading from '../../../OmouComponents/Loading';
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import {KeyboardTimePicker} from "@material-ui/pickers";
-import {QueryBuilder} from "@material-ui/icons";
+import {CancelOutlined, QueryBuilder} from "@material-ui/icons";
 import moment from "moment";
+import IconButton from "@material-ui/core/IconButton";
 
 const useStyles = makeStyles((theme) => ({
     margin: {
@@ -104,7 +105,11 @@ EditSessionDropDown.propTypes = {
     value: PropTypes.any,
 };
 
-export const EditMultiSessionFields = ({getCourseAvailability, availability}) => {
+export const EditMultiSessionFields = ({
+                                           getCourseAvailability,
+                                           availability,
+                                           removeCourseAvailability,
+                                       }) => {
     const classes = useStyles();
     const [day, setDay] = useState("");
     const [startTime, setStartTime] = useState("");
@@ -118,11 +123,17 @@ export const EditMultiSessionFields = ({getCourseAvailability, availability}) =>
     }, []);
 
     const setCourseAvailability = (updatedState) => {
-        console.log(updatedState);
+        console.log({
+            dayOfWeek: day || availability.dayOfWeek,
+            startTime: startTime || availability.startTime,
+            endTime: endTime || availability.endTime,
+            id: availability.id,
+            ...updatedState,
+        });
         getCourseAvailability({
-            day,
-            startTime,
-            endTime,
+            dayOfWeek: day || availability.dayOfWeek,
+            startTime: startTime || availability.startTime,
+            endTime: endTime || availability.endTime,
             id: availability.id,
             ...updatedState,
         });
@@ -138,7 +149,9 @@ export const EditMultiSessionFields = ({getCourseAvailability, availability}) =>
         setCourseAvailability({day: e.target.value});
     };
 
-    console.log({day, startTime, endTime});
+    const handleRemoveCourseAvailability = useCallback((availabilityId) => {
+        removeCourseAvailability(availabilityId);
+    }, [removeCourseAvailability]);
 
     return (<Grid container style={{marginBottom: '10px'}}>
         <Grid item xs={2} lg={3} xl={2}>
@@ -183,10 +196,19 @@ export const EditMultiSessionFields = ({getCourseAvailability, availability}) =>
                 onChange={handleTimeChange(setEndTime, "endTime")}
             />
         </Grid>
+        <Grid item xs={2}>
+            <IconButton onClick={(e) => {
+                e.preventDefault();
+                handleRemoveCourseAvailability(availability.id);
+            }}>
+                <CancelOutlined/>
+            </IconButton>
+        </Grid>
     </Grid>);
 };
 
 EditMultiSessionFields.propTypes = {
     getCourseAvailability: PropTypes.func,
     availability: PropTypes.any,
+    removeCourseAvailability: PropTypes.func,
 };
