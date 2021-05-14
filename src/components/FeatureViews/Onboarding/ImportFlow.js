@@ -44,7 +44,7 @@ const ImportFlow = () => {
     const [state, dispatch] = useReducer(reducer, initalState);
 
     useEffect(() => {
-        const currentStep = Number(urlQuery.get('step'));       
+        const currentStep = Number(urlQuery.get('step'));
         if (currentStep !== activeStep) {
             setActiveStep(currentStep);
         }

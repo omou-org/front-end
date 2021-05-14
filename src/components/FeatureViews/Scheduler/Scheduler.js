@@ -233,19 +233,21 @@ function Scheduler() {
         );
 
         const getCourseId = (session) => session.course.id;
-        const sessionsFilteredByInstructorsAndCourses = filterSessionsBySelectedOptions(
-            schedulerState.selectedCourses,
-            sessionsFilteredByInstructors,
-            getCourseId
-        );
+        const sessionsFilteredByInstructorsAndCourses =
+            filterSessionsBySelectedOptions(
+                schedulerState.selectedCourses,
+                sessionsFilteredByInstructors,
+                getCourseId
+            );
 
         const getStudentId = (session) =>
             session.students.map((student) => student.id);
-        const sessionsFilteredByInstructorsCoursesStudents = filterSessionsBySelectedOptions(
-            schedulerState.selectedStudents,
-            sessionsFilteredByInstructorsAndCourses,
-            getStudentId
-        );
+        const sessionsFilteredByInstructorsCoursesStudents =
+            filterSessionsBySelectedOptions(
+                schedulerState.selectedStudents,
+                sessionsFilteredByInstructorsAndCourses,
+                getStudentId
+            );
 
         setFilteredSessionsInView(sessionsFilteredByInstructorsCoursesStudents);
     };

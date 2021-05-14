@@ -69,9 +69,8 @@ const DownloadTemplateButton = ({ templateType, resultsError }) => {
         if (resultsError) {
             downloadOmouTemplate(
                 {
-                    error:
-                        state.UPLOAD_RESPONSE.data[`upload${templateType}`]
-                            .errorExcel,
+                    error: state.UPLOAD_RESPONSE.data[`upload${templateType}`]
+                        .errorExcel,
                 },
                 lowerCaseType
             );

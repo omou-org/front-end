@@ -32,9 +32,10 @@ const classSize = ['Tutoring', 'Small Group'];
 
 const TuitionRules = () => {
     const dispatch = useDispatch();
-    const api = useMemo(() => bindActionCreators(adminActions, dispatch), [
-        dispatch,
-    ]);
+    const api = useMemo(
+        () => bindActionCreators(adminActions, dispatch),
+        [dispatch]
+    );
     const [tuitionRules, setTuitionRules] = useState([]);
     const priceRules = useSelector(({ Admin: { PriceRules } }) => PriceRules);
     const categories = useSelector(

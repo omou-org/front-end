@@ -56,8 +56,7 @@ const DragAndDropUploadBtn = (props) => {
         isDragAccept,
         isDragReject,
     } = useDropzone({
-        accept:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         maxFiles: 1,
         onDrop: (file) => uploadFile(file[0]),
     });
