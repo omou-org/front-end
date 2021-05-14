@@ -70,9 +70,6 @@ const BusinessInfo = ({ step }) => {
     const { setImportState } = useContext(OnboardingContext);
 
     const [updateData] = useMutation(UPDATE_BUSINESS, {
-        // onCompleted: (data) => {
-        //     console.log(data);
-        // },
         update: (cache, data) => {
             const updatedBusiness = data.data.updateBusiness.business;
             cache.writeQuery({

@@ -34,7 +34,7 @@ export const onboardingSteps = [
 
 const ImportFlow = () => {
     const classes = useStyles();
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(1);
     const [skipped] = useState(new Set());
     const [importState, setImportState] = useState({ uploadedResponse: null });
     const urlQuery = useURLQuery();
@@ -44,8 +44,7 @@ const ImportFlow = () => {
     const [state, dispatch] = useReducer(reducer, initalState);
 
     useEffect(() => {
-        // const currentStep = Number(urlQuery.get('step')) - 1;
-        const currentStep = Number(urlQuery.get('step'));
+        const currentStep = Number(urlQuery.get('step'));       
         if (currentStep !== activeStep) {
             setActiveStep(currentStep);
         }
@@ -53,19 +52,19 @@ const ImportFlow = () => {
 
     const getStepContent = (step) => {
         switch (step) {
-            case 0:
-                return <BusinessInfo step={0} />;
             case 1:
-                return <BusinessHours step={1} />;
+                return <BusinessInfo step={1} />;
             case 2:
-                return <BulkImportStep templateType='Accounts' step={2} />;
+                return <BusinessHours step={2} />;
             case 3:
-                return <BulkImportStep templateType='Courses' step={3} />;
+                return <BulkImportStep templateType='Accounts' step={3} />;
             case 4:
+                return <BulkImportStep templateType='Courses' step={4} />;
+            case 5:
                 return (
                     <BulkImportStep
                         templateType='Course enrollments'
-                        step={4}
+                        step={5}
                     />
                 );
 
