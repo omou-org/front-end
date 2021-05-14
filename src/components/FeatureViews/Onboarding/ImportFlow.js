@@ -93,7 +93,7 @@ const ImportFlow = () => {
             }}
         >
             <div className={classes.root}>
-                <Stepper alternativeLabel activeStep={activeStep}>
+                <Stepper alternativeLabel activeStep={activeStep - 1}>
                     {steps.map((label, index) => {
                         const stepProps = {};
                         const labelProps = {};
