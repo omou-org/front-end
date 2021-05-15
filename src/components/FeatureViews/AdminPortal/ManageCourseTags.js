@@ -3,6 +3,8 @@ import AddIcon from '@material-ui/icons/Add';
 import { gql, useQuery } from '@apollo/client';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
+import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Modal from '@material-ui/core/Modal';
 import Table from '@material-ui/core/Table';
@@ -13,7 +15,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import CreateSubjectModal from './CreateSubjectModal';
+import CreateTagModal from './CreateTagModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { h4, omouBlue, white, body1, body2 } from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
@@ -48,6 +50,7 @@ const GET_COURSE_TAGS = gql`
         courseCategories {
             name
             description
+            id
         }
     }
 `;
@@ -59,8 +62,6 @@ const ManageCourseTags = () => {
     const classes = useStyles();
 
     const { loading, error, data } = useQuery(GET_COURSE_TAGS);
-    const { courseCategories } = data;
-    const courseTags = courseCategories;
 
     if (loading) {
         return <Loading />;
@@ -72,6 +73,9 @@ const ManageCourseTags = () => {
             </Typography>
         );
     }
+
+    const { courseCategories } = data;
+    const courseTags = courseCategories;
 
     return (
         <>
@@ -97,14 +101,12 @@ const ManageCourseTags = () => {
                     open={modalOpen}
                     onClose={handleModalClose}
                 >
-                    <CreateSubjectModal closeModal={handleModalClose} />
+                    <CreateTagModal closeModal={handleModalClose} />
                 </Modal>
 
                 <Grid item style={{ marginRight: '3rem' }}>
                     <TextField
                         // className={classes.searchBar}
-                        // size='small'
-                        // type='text'
                         placeholder='Search course subject'
                         // value={}
                         variant='outlined'
@@ -137,27 +139,31 @@ const ManageCourseTags = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {courseTags.map(({ name, description }) => {
+                            {courseTags.map(({ id, name, description }) => {
                                 return (
-                                    <TableRow key={name}>
+                                    <TableRow key={id}>
                                         <TableCell className={classes.tagName}>
                                             {name}
                                         </TableCell>
                                         <TableCell>
-                                            {description}
+                                            <Grid
+                                                container
+                                                direction='row'
+                                                justify='space-between'
+                                                alignItems='center'
+                                            >
+                                                <Grid item>{description}</Grid>
+
+                                                <Grid item>
+                                                    <IconButton aria-label='edit'>
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                </Grid>
+                                            </Grid>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
-                            {/* <TableRow>
-                                <TableCell className={classes.tagName}>
-                                    Geometry
-                                </TableCell>
-                                <TableCell>
-                                    tag description Lorem ipsum dolor sit amet,
-                                    consectetur adipiscing elit, sed do
-                                </TableCell>
-                            </TableRow> */}
                         </TableBody>
                     </Table>
                 </TableContainer>
