@@ -399,6 +399,13 @@ const AllSessionsEdit = () => {
         };
     };
 
+    // const confirmationData = {
+    //     instrcutorId: instructorValue,
+    // };
+
+    console.log(newState);
+    console.log(formatStates());
+
     return (<>
             <Divider className={classes.divider}/>
             <Grid container direction='column' style={{marginTop: '2em'}} alignItems='flex-start' spacing={2}>
@@ -531,7 +538,7 @@ const AllSessionsEdit = () => {
                         ]}
                     >
                         <SaveSessionEditsButton
-                            studentName="Jimmy"
+                            courseConfirmationData="Jimmy"
                             updateSession={handleSubmitEdits}
                             isAll
                         >

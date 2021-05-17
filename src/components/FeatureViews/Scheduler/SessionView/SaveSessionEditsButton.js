@@ -6,12 +6,12 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from "prop-types";
-import {Typography} from '@material-ui/core';
+import {Box, Typography} from '@material-ui/core';
 import {useHistory, useParams} from 'react-router-dom';
 // import {darkBlue, darkGrey} from "../../../theme/muiTheme";
 import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
 
-const SaveSessionEditsButton = ({children, studentName, updateSession, isAll}) => {
+const SaveSessionEditsButton = ({children, courseConfirmationData, updateSession, isAll}) => {
 	let history = useHistory();
 	const {session_id} = useParams();
 
@@ -66,11 +66,13 @@ const SaveSessionEditsButton = ({children, studentName, updateSession, isAll}) =
 				</DialogTitle>
 				<DialogContent>
 					<Typography align='left'>
-						{`Summary of our updated session(s) for ${studentName}:`}
+						{`Summary of our updated session(s) for`} <Box component='span' fontWeight='fontWeightMedium'>{courseConfirmationData}</Box>{':'}
 					</Typography>
 				</DialogContent>
 				<DialogTitle>
+					<Typography variant='h4'>
 					{"Schedule update:"}
+					</Typography>
 				</DialogTitle>
 				<DialogContent>
 					{children}
@@ -90,7 +92,7 @@ const SaveSessionEditsButton = ({children, studentName, updateSession, isAll}) =
 
 SaveSessionEditsButton.propTypes = {
 	children: PropTypes.any,
-	studentName: PropTypes.string,
+	courseConfirmationData: PropTypes.string,
 	updateSession: PropTypes.func,
 	isAll: PropTypes.bool,
 };

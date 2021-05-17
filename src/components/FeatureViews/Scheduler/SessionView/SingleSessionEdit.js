@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Grid from '@material-ui/core/Grid';
 import {Prompt, useParams} from 'react-router-dom';
 
@@ -6,19 +6,21 @@ import gql from 'graphql-tag';
 // import LeavePageModal from '../../OmouComponents/LeavePageModal';
 import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
 import {Divider, makeStyles, Typography,} from '@material-ui/core';
-import Loading from '../../OmouComponents/Loading';
-import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
+import Loading from '../../../OmouComponents/Loading';
+import {darkBlue, darkGrey, statusRed} from '../../../../theme/muiTheme';
 import {QueryBuilder} from '@material-ui/icons';
-import {fullName, USER_TYPES} from '../../../utils';
+import {fullName, USER_TYPES} from '../../../../utils';
 import moment from 'moment';
-import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './SessionView/EditSessionUtilComponents';
-import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
+import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
+import {EditSessionDropDown} from './EditSessionUtilComponents';
+import {SnackBarComponent} from '../../../OmouComponents/SnackBarComponent';
 import 'date-fns';
 import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
-import SaveSessionEditsButton from './SessionView/SaveSessionEditsButton';
-import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
+import SaveSessionEditsButton from './SaveSessionEditsButton';
+import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
+import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
+import SessionEditReceipt from "./SessionEditReceipt";
+// import {renderCourseAvailabilitiesString} from "../../../OmouComponents/CourseAvailabilities";
 
 
 const UPDATE_SESSION_MUTATION = gql`
@@ -189,6 +191,7 @@ const SingleSessionEdit = () => {
     const [sessionEndTime, setSessionsEndTime] = useState('');
     const [sessionDate, setSessionsDate] = useState('');
     const [snackBarState, setSnackBarState] = useState(false);
+    const [newState, setNewState] = useState({});
 
     const [timeValidationError, setTimeValidationError] = useState(false);
 
@@ -212,8 +215,43 @@ const SingleSessionEdit = () => {
             setSessionsEndTime(moment(endDatetime)._d);
             setInstructorValue(instructor.user.id);
             setSubjectValue(courseCategory.id);
+            setNewState(true);
         },
     });
+
+    useEffect(() => {
+        console.log('cool');
+    }, []);
+    useEffect(() => {
+        if (
+            instructorValue &&
+            subjectValue &&
+            sessionStartTime &&
+            sessionEndTime
+        ) {
+            const instructorStateName = fullName(
+                instructors.find(instructor => (instructor.user.id === instructorValue))?.user
+            );
+            const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
+            const courseStartTimeState = moment(sessionStartTime).format("YYYY-MM-DD[T]HH:mm");
+            const courseEndTimeState = moment(sessionEndTime).format("YYYY-MM-DD[T]HH:mm");
+            if (
+                courseStartTimeState !== newState.startDateTime ||
+                courseEndTimeState !== newState.endDateTime ||
+                instructorStateName !== newState.instructor ||
+                courseCategoryStateName !== newState.courseCategory
+            ) {
+                setNewState(JSON.stringify({
+                    startDateTime: courseStartTimeState,
+                    endDateTime: courseEndTimeState,
+                    instructor: instructorStateName,
+                    courseCategory: courseCategoryStateName,
+                }));
+            }
+
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [subjectValue, sessionStartTime, sessionEndTime, instructorValue]);
 
     const [
         checkScheduleConflicts,
@@ -248,9 +286,9 @@ const SingleSessionEdit = () => {
         instructors
     } = data;
 
-    const subjectName = subjects.find(subject => subject.id == subjectValue).name;
+    // const subjectName = subjects.find(subject => subject.id == subjectValue).name;
 
-    const instructorName = fullName(instructors.find(instructor => instructor.user.id == instructorValue).user);
+    // const instructorName = fullName(instructors.find(instructor => instructor.user.id == instructorValue).user);
 
     const studentName = 'Timmeh';
     //const studentName = fullName(enrollmentSet[0].student.user);
@@ -331,6 +369,21 @@ const SingleSessionEdit = () => {
         vertical: 'bottom',
         horizontal: 'left',
     };
+
+    
+    const formatStates = () => {
+        const {session: {startDatetime, endDatetime, course}} = data;
+        return {
+            startDateTime: moment(startDatetime).format("YYYY-MM-DD[T]HH:mm"),
+            endDateTime: moment(endDatetime).format("YYYY-MM-DD[T]HH:mm"),
+            instructor: fullName(course.instructor.user),
+            courseCategory: course.courseCategory.name,
+        };
+    };
+
+    console.log(newState);
+    console.log(formatStates());
+
     return (
         <>
             <Prompt message={`Are you sure you want to leave? Any unsaved changes will be lost.`}/>
@@ -456,10 +509,10 @@ const SingleSessionEdit = () => {
                             studentName={studentName}
                             updateSession={handleUpdateSession}
                         >
-                            <Grid container direction='row'>
-                                <Grid item>{subjectName}</Grid>
-                                <Grid item>{instructorName}</Grid>
-                            </Grid>
+                            <SessionEditReceipt
+                                databaseState={formatStates()}
+                                newState={newState}
+                            />
                         </SaveSessionEditsButton>
                     </AccessControlComponent>
                 </Grid>
