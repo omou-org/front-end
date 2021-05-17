@@ -58,6 +58,26 @@ const CREATE_COURSE_TAG = gql`
     }
 `;
 
+// const UPDATE_COURSE_TAG = gql`
+//     mutation createCourseTag(
+//         $id: ID,
+//         $name: String, 
+//         $description: String
+//         ) {
+//             createCourseCategory(
+//                 id: $id,
+//                 name: $name, 
+//                 description: $description
+//             ) {
+//                 courseCategory {
+//                     id
+//                     description
+//                     name
+//                 }
+//             }
+//     }
+// `;
+
 // const GET_COURSE_TAGS = gql`
 //     query MyQuery {
 //         courseCategories {
@@ -75,11 +95,13 @@ const CreateTagModal = ({ closeModal }) => {
     });
 
     const [submitData] = useMutation(CREATE_COURSE_TAG, {
-        onCompleted: (data) => {
-            console.log(data.createCourseCategory.courseCategory);
+        onCompleted: () => {
+            // console.log(data.createCourseCategory.courseCategory);
             closeModal();
         },
-        // update: (cache, data) => {
+        // update: (data) => {
+        //     console.log(data);
+        //     console.log(data.data.data);
         //     const createdCourseTag = data.createCourseCategory.courseCategory;
         //     cache.writeQuery(
         //         { 

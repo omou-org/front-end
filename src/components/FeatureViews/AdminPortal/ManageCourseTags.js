@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
+// import CheckIcon from '@material-ui/icons/Check';
 import { gql, useQuery } from '@apollo/client';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
@@ -11,7 +12,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
+// import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
         height: '2.5rem',
         width: '16rem',
         background: white,
-        border: `2px solid ${omouBlue}`,
+        border: `1px solid ${omouBlue}`,
         borderRadius: '5px',
     },
     tableHead: {
@@ -43,10 +44,26 @@ const useStyles = makeStyles({
     tagName: {
         ...body2,
     },
+    editTagDescription: {
+        ...body1,
+        height: '2rem',
+        width: '34.675rem',
+        background: white,
+        border: `1px solid ${omouBlue}`,
+        borderRadius: '5px',
+    },
+    editTagName: {
+        ...body1,
+        height: '2rem',
+        width: '13.2125rem',
+        background: white,
+        border: `1px solid ${omouBlue}`,
+        borderRadius: '5px',
+    },
 });
 
 const GET_COURSE_TAGS = gql`
-    query MyQuery {
+    query getCourseTags {
         courseCategories {
             name
             description
@@ -55,10 +72,24 @@ const GET_COURSE_TAGS = gql`
     }
 `;
 
+// const GET_COURSE_TAG = gql`
+//     query getCourseTag($categoryId: ID) {
+//         courseCategory(categoryId: $categoryId) {
+//             id
+//             name
+//             description
+//         }
+//     }
+// `;
+
 const ManageCourseTags = () => {
     const [modalOpen, setModalOpen] = useState(false);
+    const [editTagView, setEditTagView] = useState(false);
+
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
+    const handleEditTagView = () => setEditTagView(!editTagView);
+
     const classes = useStyles();
 
     const { loading, error, data } = useQuery(GET_COURSE_TAGS);
@@ -128,7 +159,7 @@ const ManageCourseTags = () => {
             <Grid container>
                 <TableContainer className={classes.verticalMargin}>
                     <Table size='small'>
-                        <TableHead>
+                        <TableBody>
                             <TableRow>
                                 <TableCell className={classes.headCells}>
                                     Subject
@@ -137,8 +168,49 @@ const ManageCourseTags = () => {
                                     Description
                                 </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
+
+                            {/* EDIT MODE
+                            <TableRow>
+                                <TableCell>
+                                    <TextField
+                                        variant='outlined'
+                                        InputProps={{
+                                            classes: {
+                                                root: classes.editTagName,
+                                            },
+                                        }}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <Grid
+                                        container
+                                        direction='row'
+                                        justify='space-between'
+                                        alignItems='center'
+                                    >
+                                        <Grid item>
+                                            <TableCell>
+                                                <TextField
+                                                    variant='outlined'
+                                                    InputProps={{
+                                                        classes: {
+                                                            root:
+                                                                classes.editTagDescription,
+                                                        },
+                                                    }}
+                                                />
+                                            </TableCell>
+                                        </Grid>
+
+                                        <Grid item>
+                                            <IconButton aria-label='edit'>
+                                                <CheckIcon />
+                                            </IconButton>
+                                        </Grid>
+                                    </Grid>
+                                </TableCell>
+                            </TableRow> */}
+
                             {courseTags.map(({ id, name, description }) => {
                                 return (
                                     <TableRow key={id}>
@@ -156,7 +228,12 @@ const ManageCourseTags = () => {
 
                                                 <Grid item>
                                                     <IconButton aria-label='edit'>
-                                                        <EditIcon />
+                                                        <EditIcon
+                                                            // value={id}
+                                                            onClick={
+                                                                handleEditTagView
+                                                            }
+                                                        />
                                                     </IconButton>
                                                 </Grid>
                                             </Grid>
