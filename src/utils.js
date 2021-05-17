@@ -750,4 +750,4 @@ export const AdminPropTypes = {
 export const isEmail = (str) => {
     const regex = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
     return regex.test(str);
-}
+};
