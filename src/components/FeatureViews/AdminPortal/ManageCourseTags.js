@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
-// import CheckIcon from '@material-ui/icons/Check';
+import CheckIcon from '@material-ui/icons/Check';
 import { gql, useQuery } from '@apollo/client';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
@@ -169,7 +169,6 @@ const ManageCourseTags = () => {
                                 </TableCell>
                             </TableRow>
 
-                            {/* EDIT MODE
                             <TableRow>
                                 <TableCell>
                                     <TextField
@@ -209,7 +208,7 @@ const ManageCourseTags = () => {
                                         </Grid>
                                     </Grid>
                                 </TableCell>
-                            </TableRow> */}
+                            </TableRow>
 
                             {courseTags.map(({ id, name, description }) => {
                                 return (
