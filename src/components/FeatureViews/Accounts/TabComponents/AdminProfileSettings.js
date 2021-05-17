@@ -22,7 +22,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
-import { AdminPropTypes } from '../../../../utils';
+import { AdminPropTypes, isEmail } from '../../../../utils';
 
 const useStyles = makeStyles({
     table: {
@@ -128,12 +128,12 @@ function AdminProfileSettings({ user }) {
     useEffect(() => {
         if (adminGCEnabledResponse.loading === false) {
             setGClassSetting(
-                adminGCEnabledResponse.data.admin.googleAuthEnabled
+                adminGCEnabledResponse.data?.admin.googleAuthEnabled
             );
         }
     }, [
         adminGCEnabledResponse.loading,
-        adminGCEnabledResponse.data.admin.googleAuthEnabled,
+        adminGCEnabledResponse.data?.admin.googleAuthEnabled,
     ]);
 
     function refreshTokenSetup(res) {
@@ -187,24 +187,34 @@ function AdminProfileSettings({ user }) {
     const onSuccess = (response) => {
         setGoogleLoginPromptOpen(false);
 
-        setGClassSetting(!gClassSetting);
-        setAdminGCEnabled({
-            variables: {
-                userID: userInfo.user.id,
-                adminType: userInfo.adminType,
-                googleAuthEnabled: !gClassSetting,
-            },
-        });
-        refreshTokenSetup(response).then(() => {
-            getCourses();
-        });
-        setGoogleAuthEmail({
-            variables: {
-                userID: userInfo.user.id,
-                adminType: userInfo.adminType,
-                googleAuthEmail: response.profileObj.email,
-            },
-        });
+        // TODO Put both GCEnabled and AuthEmail into the same mutation
+
+        // Check that Google responded with a valid email
+        if (isEmail(response.profileObj.emaila)) {
+            setGClassSetting(true);
+            setAdminGCEnabled({
+                variables: {
+                    userID: userInfo.user.id,
+                    adminType: userInfo.adminType,
+                    googleAuthEnabled: true,
+                },
+            });
+            refreshTokenSetup(response).then(() => {
+                getCourses();
+            });
+            setGoogleAuthEmail({
+                variables: {
+                    userID: userInfo.user.id,
+                    adminType: userInfo.adminType,
+                    googleAuthEmail: response.profileObj.email,
+                },
+            });
+        }
+        // There has been a problem retrieving Google email
+        else {
+            alert("There has been a problem!")
+            // TODO create and display modal here
+        }
     };
 
     const handleGClassSettingChange = () => {
