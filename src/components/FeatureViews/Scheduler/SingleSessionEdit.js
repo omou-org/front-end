@@ -1,54 +1,57 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {Prompt, useParams} from 'react-router-dom';
+import { Prompt, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 // import LeavePageModal from '../../OmouComponents/LeavePageModal';
-import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
-import {Divider, makeStyles, Typography,} from '@material-ui/core';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../OmouComponents/Loading';
-import {darkBlue, darkGrey, statusRed} from '../../../theme/muiTheme';
-import {QueryBuilder} from '@material-ui/icons';
-import {fullName, USER_TYPES} from '../../../utils';
+import { darkBlue, darkGrey, statusRed } from '../../../theme/muiTheme';
+import { QueryBuilder } from '@material-ui/icons';
+import { fullName, USER_TYPES } from '../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './SessionView/EditSessionUtilComponents';
-import {SnackBarComponent} from '../../OmouComponents/SnackBarComponent';
+import { EditSessionDropDown } from './SessionView/EditSessionUtilComponents';
+import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
 import 'date-fns';
-import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
+import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import SaveSessionEditsButton from './SessionView/SaveSessionEditsButton';
-import {ResponsiveButton} from "../../../theme/ThemedComponents/Button/ResponsiveButton";
-import NavLinkNoDup from "../../Routes/NavLinkNoDup";
-
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import NavLinkNoDup from '../../Routes/NavLinkNoDup';
 
 const UPDATE_SESSION_MUTATION = gql`
-mutation updateSessionMutation($endDateTime: DateTime, $sessionId: ID!, $instructorId: ID, $startDateTime: DateTime)
-{
-    createSession(
-      endDatetime: $endDateTime
-      id: $sessionId
-      instructor: $instructorId
-      startDatetime: $startDateTime
+    mutation updateSessionMutation(
+        $endDateTime: DateTime
+        $sessionId: ID!
+        $instructorId: ID
+        $startDateTime: DateTime
     ) {
-      created
-      session {
-        endDatetime
-        id
-        instructor {
-          user {
-            lastName
-            id
-            firstName
-          }
+        createSession(
+            endDatetime: $endDateTime
+            id: $sessionId
+            instructor: $instructorId
+            startDatetime: $startDateTime
+        ) {
+            created
+            session {
+                endDatetime
+                id
+                instructor {
+                    user {
+                        lastName
+                        id
+                        firstName
+                    }
+                }
+                isConfirmed
+                startDatetime
+                title
+                details
+            }
         }
-        isConfirmed
-        startDatetime
-        title
-        details
-      }
     }
-  }
-  `;
+`;
 
 const useStyles = makeStyles(() => ({
     current_session: {
@@ -200,11 +203,8 @@ const SingleSessionEdit = () => {
                 session: {
                     startDatetime,
                     endDatetime,
-                    course: {
-                        instructor,
-                        courseCategory,
-                    },
-                }
+                    course: { instructor, courseCategory },
+                },
             } = data;
 
             setSessionsDate(moment(startDatetime)._d);
@@ -217,10 +217,10 @@ const SingleSessionEdit = () => {
 
     const [
         checkScheduleConflicts,
-        {loading: conflictLoading, data: conflictData},
+        { loading: conflictLoading, data: conflictData },
     ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
-        onCompleted: ({validateSessionSchedule}) => {
-            const {status} = validateSessionSchedule;
+        onCompleted: ({ validateSessionSchedule }) => {
+            const { status } = validateSessionSchedule;
             if (!status) {
                 setSnackBarState(true);
             }
@@ -232,7 +232,8 @@ const SingleSessionEdit = () => {
         onError: (err) => console.error(err),
     });
 
-    if (loading || conflictLoading || !subjectValue || !instructorValue) return <Loading/>;
+    if (loading || conflictLoading || !subjectValue || !instructorValue)
+        return <Loading />;
 
     if (error) return <Typography>{"There's been an error!"}</Typography>;
 
@@ -245,16 +246,19 @@ const SingleSessionEdit = () => {
             // }
         },
         courseCategories: subjects,
-        instructors
+        instructors,
     } = data;
 
-    const subjectName = subjects.find(subject => subject.id == subjectValue).name;
+    const subjectName = subjects.find((subject) => subject.id == subjectValue)
+        .name;
 
-    const instructorName = fullName(instructors.find(instructor => instructor.user.id == instructorValue).user);
+    const instructorName = fullName(
+        instructors.find((instructor) => instructor.user.id == instructorValue)
+            .user
+    );
 
     const studentName = 'Timmeh';
     //const studentName = fullName(enrollmentSet[0].student.user);
-
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const monthAndDate = moment(sessionDate).format('MMMM DD');
@@ -265,8 +269,12 @@ const SingleSessionEdit = () => {
         const startSessionTime = moment(sessionStartTime).format('HH:mm');
         const endSessionTime = moment(sessionEndTime).format('HH:mm');
         const sessionISODate = moment(sessionDate).format('YYYY-MM-DD');
-        const startDateTime = moment(sessionISODate + ' ' + startSessionTime).format('YYYY-MM-DD[T]HH:mm');
-        const endDateTime = moment(sessionISODate + ' ' + endSessionTime).format('YYYY-MM-DD[T]HH:mm');
+        const startDateTime = moment(
+            sessionISODate + ' ' + startSessionTime
+        ).format('YYYY-MM-DD[T]HH:mm');
+        const endDateTime = moment(
+            sessionISODate + ' ' + endSessionTime
+        ).format('YYYY-MM-DD[T]HH:mm');
         // console.log(moment(startSessionTime).isBefore(moment(endSessionTime)));
         updateSession({
             variables: {
@@ -279,10 +287,10 @@ const SingleSessionEdit = () => {
     };
 
     const handleTimeDateChange = (setState, isEndTime) => async (date) => {
-        
-        const timeIsValid = isEndTime ? moment( sessionStartTime).isBefore(moment(date)) 
-            : moment( date).isBefore(moment(sessionEndTime));
-        
+        const timeIsValid = isEndTime
+            ? moment(sessionStartTime).isBefore(moment(date))
+            : moment(date).isBefore(moment(sessionEndTime));
+
         !timeIsValid && setTimeValidationError(true);
         timeIsValid && setTimeValidationError(false);
 
@@ -333,23 +341,25 @@ const SingleSessionEdit = () => {
     };
     return (
         <>
-            <Prompt message={`Are you sure you want to leave? Any unsaved changes will be lost.`}/>
-            <Divider className={classes.divider}/>
+            <Prompt
+                message={`Are you sure you want to leave? Any unsaved changes will be lost.`}
+            />
+            <Divider className={classes.divider} />
             <Grid container direction='row' style={{ marginTop: '2em' }}>
                 <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.new_sessions_typography}>
                         Update Session:
                     </Typography>
                 </Grid>
-                <Grid item xs={12} style={{marginBottom: '1.5em'}}>
+                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.subtitle}>
                         DATE & TIME
                     </Typography>
                 </Grid>
-                <Grid item container style={{marginBottom: '2.8125em'}}>
+                <Grid item container style={{ marginBottom: '2.8125em' }}>
                     <Grid item xs={2} lg={3} xl={2}>
                         <KeyboardDatePicker
-                            style={{float: 'left', width: '11em'}}
+                            style={{ float: 'left', width: '11em' }}
                             value={sessionDate}
                             onChange={handleTimeDateChange(setSessionsDate)}
                         />
@@ -361,7 +371,8 @@ const SingleSessionEdit = () => {
                             style={{ float: 'left', width: '11em' }}
                             value={sessionStartTime}
                             onChange={handleTimeDateChange(
-                                setSessionsStartTime, false
+                                setSessionsStartTime,
+                                false
                             )}
                             error={timeValidationError}
                             helperText={timeValidationError && 'Invalid Time'}
@@ -374,45 +385,70 @@ const SingleSessionEdit = () => {
                             style={{ float: 'left' }}
                             value={sessionEndTime}
                             onChange={handleTimeDateChange(
-                                setSessionsEndTime, true
-                                )}
+                                setSessionsEndTime,
+                                true
+                            )}
                             error={timeValidationError}
                             helperText={timeValidationError && 'Invalid Time'}
                         />
                     </Grid>
                 </Grid>
                 <Grid container>
-                    <Grid item xs={2} lg={3} xl={2}>
-                        <Typography
-                            className={classes.subtitle}
-                            style={{marginBottom: '.5em'}}
-                        >
-                            SUBJECT
-                        </Typography>
-                        <EditSessionDropDown
-                            noValueLabel='All Subjects'
-                            itemLabel={(item) => item.name}
-                            itemId={(item) => (item.id)}
-                            setState={setSubjectValue}
-                            queryList={subjects}
-                            value={subjectValue}
-                        />
+                    <Grid
+                        item
+                        container
+                        direction='column'
+                        xs={2}
+                        lg={3}
+                        xl={2}
+                        alignItems='flex-start'
+                    >
+                        <Grid item>
+                            <Typography
+                                className={classes.subtitle}
+                                style={{ marginBottom: '1.5em' }}
+                            >
+                                SUBJECT
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <EditSessionDropDown
+                                noValueLabel='All Subjects'
+                                itemLabel={(item) => item.name}
+                                itemId={(item) => item.id}
+                                setState={setSubjectValue}
+                                queryList={subjects}
+                                value={subjectValue}
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={2}>
-                        <Typography
-                            className={classes.subtitle}
-                            style={{marginBottom: '.5em'}}
-                        >
-                            INSTRUCTOR
-                        </Typography>
-                        <EditSessionDropDown
-                            noValueLabel='All Instructors'
-                            itemLabel={(item) => fullName(item.user)}
-                            itemId={(item) => (item.user.id)}
-                            setState={setInstructorValue}
-                            queryList={instructors}
-                            value={instructorValue}
-                        />
+                    <Grid
+                        item
+                        container
+                        direction='column'
+                        xs={2}
+                        lg={3}
+                        xl={2}
+                        alignItems='flex-start'
+                    >
+                        <Grid>
+                            <Typography
+                                className={classes.subtitle}
+                                style={{ marginBottom: '1.5em' }}
+                            >
+                                INSTRUCTOR
+                            </Typography>
+                        </Grid>
+                        <Grid>
+                            <EditSessionDropDown
+                                noValueLabel='All Instructors'
+                                itemLabel={(item) => fullName(item.user)}
+                                itemId={(item) => item.user.id}
+                                setState={setInstructorValue}
+                                queryList={instructors}
+                                value={instructorValue}
+                            />
+                        </Grid>
                     </Grid>
                     {/* This section is for when we have a getRoom query */}
                     {/* <Grid item xs={2}>
