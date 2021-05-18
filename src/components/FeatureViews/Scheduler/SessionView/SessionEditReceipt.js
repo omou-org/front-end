@@ -46,22 +46,26 @@ function SessionEditReceipt({
 		return true;
 	}
 
-	console.log(newState);
-	console.log(Object.keys(databaseState), Object.keys(newState));
-	const statesDoNotHaveSameKeys = !arrayCompare(Object.keys(databaseState), Object.keys(newState));
+	const actualNewState = JSON.parse(newState);
+
+	const statesDoNotHaveSameKeys = !arrayCompare(Object.keys(databaseState), Object.keys(actualNewState));
 
 	if (statesDoNotHaveSameKeys) return `The developer messed up! Check the Database and New States!`;
 
-	const receiptFieldData = Object.entries(newState)
+	const compareValue = (oldVal, newVal) => {
+		return oldVal !== newVal;
+	};
+
+	const receiptFieldData = Object.entries(actualNewState)
 		.map(([key, value]) => {
 				return {
 					key,
 					value,
-					isUpdated: newState[key] !== value,
+					isUpdated: compareValue(value, databaseState[key]),
 				};
 			}
 		);
-	console.log(receiptFieldData);
+
 	return (<Grid container direction='row' spacing={1}>
 		{
 			receiptFieldData.map(({key, value, isUpdated}) =>

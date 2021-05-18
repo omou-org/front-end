@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import gql from 'graphql-tag';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { Button, Divider, makeStyles, Typography } from '@material-ui/core';
+import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
+import {Divider, makeStyles, Typography} from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
 import { darkBlue, darkGrey } from '../../../../theme/muiTheme';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
@@ -238,58 +238,45 @@ const AllSessionsEdit = () => {
 
     useEffect(() => {
         if (
-            // courseAvailabilities.length > 0 &&
+            courseAvailabilities.length > 0 &&
+            instructorValue &&
             subjectValue &&
             courseStartDate &&
-            courseEndDate &&
-            instructorValue
+            courseEndDate
         ) {
-            console.log('setting new state', courseAvailabilities);
-            const deepCopyCourseAvailabilities = JSON.parse(
-                JSON.stringify(courseAvailabilities)
-            );
-            // /*eslint no-debugger: "warn"*/
-            // debugger;
-            const availabilitiesStateString = renderCourseAvailabilitiesString(
-                deepCopyCourseAvailabilities
-            );
+            const newCourseAvailabilities = renderCourseAvailabilitiesString(JSON.parse(JSON.stringify(courseAvailabilities)));
             const instructorStateName = fullName(
                 instructors.find(
                     (instructor) => instructor.user.id === instructorValue
                 )?.user
             );
-            const courseCategoryStateName = subjects.find(
-                (subject) => subject.id === subjectValue
-            )?.name;
-            console.log({
-                availabilities: availabilitiesStateString,
-                startDate: courseStartDate.format('YYYY-MM-DD[T]HH:mm'),
-                endDate: courseEndDate.format('YYYY-MM-DD[T]HH:mm'),
-                instructor: instructorStateName,
-                courseCategory: courseCategoryStateName,
-            });
-            setNewState({
-                availabilities: availabilitiesStateString,
-                startDate: courseStartDate.format('YYYY-MM-DD[T]HH:mm'),
-                endDate: courseEndDate.format('YYYY-MM-DD[T]HH:mm'),
-                instructor: instructorStateName,
-                courseCategory: courseCategoryStateName,
-            });
+            const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
+            const courseStartDateState = courseStartDate.format("YYYY-MM-DD[T]HH:mm");
+            const courseEndDateState = courseEndDate.format("YYYY-MM-DD[T]HH:mm");
+            if (
+                newCourseAvailabilities !== newState.availabilities ||
+                courseStartDateState !== newState.startDate ||
+                courseEndDateState !== newState.endDate ||
+                instructorStateName !== newState.instructor ||
+                courseCategoryStateName !== newState.courseCategory
+            ) {
+                setNewState(JSON.stringify({
+                    availabilities: newCourseAvailabilities,
+                    startDate: courseStartDateState,
+                    endDate: courseEndDateState,
+                    instructor: instructorStateName,
+                    courseCategory: courseCategoryStateName,
+                }));
+            }
+
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        courseAvailabilities.length,
-        subjectValue,
-        courseStartDate,
-        courseEndDate,
-        instructorValue,
-    ]);
+    }, [JSON.stringify(courseAvailabilities), subjectValue, courseStartDate, courseEndDate, instructorValue]);
 
     if (loading || conflictLoading) return <Loading />;
 
-    if (error) {
-        return <Typography>{`There's been an error!`}</Typography>;
-    }
+    if (error) return <Typography>{`There's been an error!`}</Typography>;
+
     const {
         courseCategories: subjects,
         instructors,
@@ -339,15 +326,25 @@ const AllSessionsEdit = () => {
         });
     };
 
-    const handleDateChange = (setDate) => (e) => {
+    const removeCourseAvailability = (availabilityId) => {
+        setCourseAvailabilities(prevState => {
+            const newCourseAvailabilities = prevState.filter((availability) =>
+                (availability.id !== availabilityId));
+            return newCourseAvailabilities;
+        });
+    };
+
+    const handleDateChange = (setDate) => e => {
         setDate(e);
     };
 
-    const formatAvailabilities = (courseAvailabilities) =>
-        courseAvailabilities.map(({ day, startTime, endTime }) => ({
-            dayOfWeek: day,
-            startTime: moment(startTime).format('HH:mm'),
-            endTime: moment(endTime).format('HH:mm'),
+    const formatTime = (time) => time.length < 11 ? `2021-01-01T${time}` : time;
+
+    const formatAvailabilities = (courseAvailabilities) => courseAvailabilities
+        .map(({dayOfWeek, startTime, endTime}) => ({
+            dayOfWeek,
+            startTime: moment(formatTime(startTime)).format("HH:mm"),
+            endTime: moment(formatTime(endTime)).format("HH:mm"),
         }));
 
     const handleSubmitEdits = () => {
@@ -395,10 +392,7 @@ const AllSessionsEdit = () => {
     // };
 
     const formatStates = () => {
-        // console.log({data, courseAvailabilities, instructorValue, instructors});
-        const {
-            session: { course },
-        } = data;
+        const {session: {course}} = data;
         return {
             availabilities: renderCourseAvailabilitiesString(
                 course.activeAvailabilityList
@@ -409,18 +403,11 @@ const AllSessionsEdit = () => {
             courseCategory: course.courseCategory.name,
         };
     };
-    console.log(courseAvailabilities[0]?.dayOfWeek);
-    return (
-        <>
-            <Divider className={classes.divider} />
-            <Grid
-                container
-                direction='column'
-                style={{ marginTop: '2em' }}
-                alignItems='flex-start'
-                spacing={2}
-            >
-                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
+
+    return (<>
+            <Divider className={classes.divider}/>
+            <Grid container direction='column' style={{marginTop: '2em'}} alignItems='flex-start' spacing={2}>
+                <Grid item xs={12} style={{marginBottom: '1.5em'}}>
                     <Typography className={classes.new_sessions_typography}>
                         Update Sessions:
                     </Typography>
@@ -457,26 +444,25 @@ const AllSessionsEdit = () => {
                     </Grid>
                 </Grid>
                 <Grid item container>
-                    {courseAvailabilities.map((availability) => (
-                        <EditMultiSessionFields
-                            getCourseAvailability={handleCourseAvailabilities}
-                            availability={availability}
-                            key={availability.id}
-                        />
-                    ))}
+                    {
+                        courseAvailabilities.map(availability => (
+                            <EditMultiSessionFields
+                                getCourseAvailability={handleCourseAvailabilities}
+                                removeCourseAvailability={removeCourseAvailability}
+                                availability={availability}
+                                key={availability.id}
+                            />
+                        ))
+                    }
                 </Grid>
                 <Box paddingBottom='25px'>
                     <Grid item container direction='row' alignItems='center'>
-                        <Button onClick={handleAddCourseAvailability}>
-                            <Grid item>
-                                <AddCircleIcon />
-                            </Grid>
-                            <Grid>
-                                <Typography>
-                                    Add Additional Day & Time
-                                </Typography>
-                            </Grid>
-                        </Button>
+                        <ResponsiveButton
+                            onClick={handleAddCourseAvailability}
+                            startIcon={<AddCircleIcon/>}
+                        >
+                            Add Day & Time
+                        </ResponsiveButton>
                     </Grid>
                 </Box>
                 <Grid container>
