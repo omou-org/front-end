@@ -249,8 +249,9 @@ const SingleSessionEdit = () => {
         instructors,
     } = data;
 
-    const subjectName = subjects.find((subject) => subject.id == subjectValue)
-        .name;
+    const subjectName = subjects.find(
+        (subject) => subject.id == subjectValue
+    ).name;
 
     const instructorName = fullName(
         instructors.find((instructor) => instructor.user.id == instructorValue)

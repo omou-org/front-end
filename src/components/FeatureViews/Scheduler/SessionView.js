@@ -202,14 +202,8 @@ const SessionView = () => {
         return <Typography>There's been an error!</Typography>;
     }
 
-    const {
-        course,
-        endDatetime,
-        id,
-        title,
-        instructor,
-        startDatetime,
-    } = data.session;
+    const { course, endDatetime, id, title, instructor, startDatetime } =
+        data.session;
 
     var { courseCategory, enrollmentSet, courseId, room } = course;
 
@@ -230,7 +224,13 @@ const SessionView = () => {
                 spacing={1}
                 style={{ marginBottom: '2em' }}
             >
-                <Grid item sm={12} container direction='row' alignItems='center'>
+                <Grid
+                    item
+                    sm={12}
+                    container
+                    direction='row'
+                    alignItems='center'
+                >
                     <Grid item xs={6}>
                         <Typography
                             align='left'
@@ -240,9 +240,14 @@ const SessionView = () => {
                             {title}
                         </Typography>
                     </Grid>
-                    <Grid container item direction='row' sm={4} alignItems='center'>
+                    <Grid
+                        container
+                        item
+                        direction='row'
+                        sm={4}
+                        alignItems='center'
+                    >
                         <Grid item xs={2}>
-
                             <AutorenewIcon />
                         </Grid>
                         <Grid>
@@ -250,7 +255,6 @@ const SessionView = () => {
                                 Weekly recurrence
                             </Typography>
                         </Grid>
-
                     </Grid>
                 </Grid>
                 {/* TODO: for tutoring */}
@@ -292,7 +296,12 @@ const SessionView = () => {
                     xs={12}
                     direction='column'
                 >
-                    <Grid container item direction='row' justify='space-between'>
+                    <Grid
+                        container
+                        item
+                        direction='row'
+                        justify='space-between'
+                    >
                         <Grid item xs={6}>
                             <Typography variant='h5'>Date Time</Typography>
                             <Typography>
@@ -304,57 +313,49 @@ const SessionView = () => {
                             </Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <Link underline='always'>
-                                View Course Page
-                            </Link>
+                            <Link underline='always'>View Course Page</Link>
                         </Grid>
                     </Grid>
 
-                <Grid item container direction='row' justify='flex-start'>
-                    <Grid item xs={2}>
-                        <Typography variant='h5'>Subject</Typography>
-                        <Typography>{courseCategory.name}</Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Typography variant='h5'>
-                            Instructor
-                        </Typography>
-                        {course && (
-                            // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
-                            <Typography>{fullName(instructor.user)}</Typography>
-                            // </NavLink>
-                        )}
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Typography align='left' variant='h5'>
-                            Student
-                        </Typography>
-                        <Grid container direction='row'>
-                            {enrollmentSet.length > 0 ? (
-                                enrollmentSet.map((student) => (
-                                    <NavLink
-                                        key={student.student.user.id}
-                                        style={{ textDecoration: 'none' }}
-                                        to={`/accounts/student/${student.student.user.id}/${course_id}`}
-                                    >
-
-                                    </NavLink>
-                                ))
-                            ) : (
-                                <Typography variant='body'>
-                                    {}
+                    <Grid item container direction='row' justify='flex-start'>
+                        <Grid item xs={2}>
+                            <Typography variant='h5'>Subject</Typography>
+                            <Typography>{courseCategory.name}</Typography>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Typography variant='h5'>Instructor</Typography>
+                            {course && (
+                                // <NavLink style={{ textDecoration: 'none' }} to={`/accounts/instructor/${instructor.user.id}`}>
+                                <Typography>
+                                    {fullName(instructor.user)}
                                 </Typography>
+                                // </NavLink>
                             )}
                         </Grid>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Typography variant='h5'>Room</Typography>
-                        <Typography>{room || 'TBA'}</Typography>
+                        <Grid item xs={2}>
+                            <Typography align='left' variant='h5'>
+                                Student
+                            </Typography>
+                            <Grid container direction='row'>
+                                {enrollmentSet.length > 0 ? (
+                                    enrollmentSet.map((student) => (
+                                        <NavLink
+                                            key={student.student.user.id}
+                                            style={{ textDecoration: 'none' }}
+                                            to={`/accounts/student/${student.student.user.id}/${course_id}`}
+                                        ></NavLink>
+                                    ))
+                                ) : (
+                                    <Typography variant='body'>{}</Typography>
+                                )}
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Typography variant='h5'>Room</Typography>
+                            <Typography>{room || 'TBA'}</Typography>
+                        </Grid>
                     </Grid>
                 </Grid>
-
-                    </Grid>
-
             </Grid>
 
             <Grid container direction='row' justify='flex-end' spacing={1}>

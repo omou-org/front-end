@@ -1,7 +1,7 @@
-import React, {useContext} from 'react';
-import {SchedulerContext} from '../SchedulerContext';
+import React, { useContext } from 'react';
+import { SchedulerContext } from '../SchedulerContext';
 import IconButton from '@material-ui/core/IconButton';
-import {FilterList} from '@material-ui/icons';
+import { FilterList } from '@material-ui/icons';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Select from 'react-select';

@@ -69,83 +69,84 @@ export const patchSession = (id, data) =>
         }
     );
 
-export const fetchAllSessions = ({ config }) => (dispatch) =>
-    new Promise((resolve) => {
-        dispatch({
-            type: types.GET_SESSIONS_STARTED,
-            payload: 1,
-        });
-        resolve();
-    }).then(() => {
-        // fetch courses
-        instance
-            .request({
-                method: 'get',
-                url: '/course/catalog/',
-            })
-            .then(
-                (courseResponse) => {
-                    dispatch({
-                        type: types.FETCH_COURSE_SUCCESSFUL,
-                        payload: {
-                            id: REQUEST_ALL,
-                            response: courseResponse,
-                        },
-                    });
-
-                    instance
-                        .request({
-                            method: 'get',
-                            url: '/account/instructor/',
-                        })
-                        .then(
-                            (instructorResponse) => {
-                                dispatch({
-                                    type: types.FETCH_INSTRUCTOR_SUCCESSFUL,
-                                    payload: {
-                                        id: REQUEST_ALL,
-                                        response: instructorResponse,
-                                    },
-                                });
-                                instance
-                                    .request({
-                                        method: 'get',
-                                        url: '/scheduler/session/',
-                                        ...config,
-                                    })
-                                    .then((sessionResponse) => {
-                                        dispatch(
-                                            {
-                                                type:
-                                                    types.GET_SESSIONS_SUCCESS,
-                                                payload: {
-                                                    id: REQUEST_ALL,
-                                                    response: sessionResponse,
-                                                },
-                                            },
-                                            (error) => {
-                                                dispatch({
-                                                    type:
-                                                        types.GET_SESSIONS_FAILED,
-                                                    payload: error,
-                                                });
-                                            }
-                                        );
-                                    });
+export const fetchAllSessions =
+    ({ config }) =>
+    (dispatch) =>
+        new Promise((resolve) => {
+            dispatch({
+                type: types.GET_SESSIONS_STARTED,
+                payload: 1,
+            });
+            resolve();
+        }).then(() => {
+            // fetch courses
+            instance
+                .request({
+                    method: 'get',
+                    url: '/course/catalog/',
+                })
+                .then(
+                    (courseResponse) => {
+                        dispatch({
+                            type: types.FETCH_COURSE_SUCCESSFUL,
+                            payload: {
+                                id: REQUEST_ALL,
+                                response: courseResponse,
                             },
-                            (error) => {
-                                dispatch({
-                                    type: types.FETCH_INSTRUCTOR_FAILED,
-                                    payload: error,
-                                });
-                            }
-                        );
-                },
-                (error) => {
-                    dispatch({
-                        type: types.FETCH_COURSE_FAILED,
-                        payload: error,
-                    });
-                }
-            );
-    });
+                        });
+
+                        instance
+                            .request({
+                                method: 'get',
+                                url: '/account/instructor/',
+                            })
+                            .then(
+                                (instructorResponse) => {
+                                    dispatch({
+                                        type: types.FETCH_INSTRUCTOR_SUCCESSFUL,
+                                        payload: {
+                                            id: REQUEST_ALL,
+                                            response: instructorResponse,
+                                        },
+                                    });
+                                    instance
+                                        .request({
+                                            method: 'get',
+                                            url: '/scheduler/session/',
+                                            ...config,
+                                        })
+                                        .then((sessionResponse) => {
+                                            dispatch(
+                                                {
+                                                    type: types.GET_SESSIONS_SUCCESS,
+                                                    payload: {
+                                                        id: REQUEST_ALL,
+                                                        response:
+                                                            sessionResponse,
+                                                    },
+                                                },
+                                                (error) => {
+                                                    dispatch({
+                                                        type: types.GET_SESSIONS_FAILED,
+                                                        payload: error,
+                                                    });
+                                                }
+                                            );
+                                        });
+                                },
+                                (error) => {
+                                    dispatch({
+                                        type: types.FETCH_INSTRUCTOR_FAILED,
+                                        payload: error,
+                                    });
+                                }
+                            );
+                    },
+                    (error) => {
+                        dispatch({
+                            type: types.FETCH_COURSE_FAILED,
+                            payload: error,
+                        });
+                    }
+                );
+        });

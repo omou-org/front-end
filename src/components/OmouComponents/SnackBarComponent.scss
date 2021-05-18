@@ -1,18 +1,17 @@
 .omou-snackbar-enter {
     opacity: 0;
     transform: scale(0.9);
-  }
-  .omou-snackbar-enter-active {
+}
+.omou-snackbar-enter-active {
     opacity: 1;
     transform: translateX(0);
     transition: opacity 300ms, transform 300ms;
-  }
-  .omou-snackbar-exit {
+}
+.omou-snackbar-exit {
     opacity: 1;
-  }
-  .omou-snackbar-exit-active {
+}
+.omou-snackbar-exit-active {
     opacity: 0;
     transform: scale(0.9);
     transition: opacity 300ms, transform 300ms;
-  }
-  
+}

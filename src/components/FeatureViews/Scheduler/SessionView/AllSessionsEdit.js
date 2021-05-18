@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import gql from 'graphql-tag';
-import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
-import {Divider, makeStyles, Typography} from '@material-ui/core';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
 import { darkBlue, darkGrey } from '../../../../theme/muiTheme';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
@@ -244,15 +244,21 @@ const AllSessionsEdit = () => {
             courseStartDate &&
             courseEndDate
         ) {
-            const newCourseAvailabilities = renderCourseAvailabilitiesString(JSON.parse(JSON.stringify(courseAvailabilities)));
+            const newCourseAvailabilities = renderCourseAvailabilitiesString(
+                JSON.parse(JSON.stringify(courseAvailabilities))
+            );
             const instructorStateName = fullName(
                 instructors.find(
                     (instructor) => instructor.user.id === instructorValue
                 )?.user
             );
-            const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
-            const courseStartDateState = courseStartDate.format("YYYY-MM-DD[T]HH:mm");
-            const courseEndDateState = courseEndDate.format("YYYY-MM-DD[T]HH:mm");
+            const courseCategoryStateName = subjects.find(
+                (subject) => subject.id === subjectValue
+            )?.name;
+            const courseStartDateState =
+                courseStartDate.format('YYYY-MM-DD[T]HH:mm');
+            const courseEndDateState =
+                courseEndDate.format('YYYY-MM-DD[T]HH:mm');
             if (
                 newCourseAvailabilities !== newState.availabilities ||
                 courseStartDateState !== newState.startDate ||
@@ -260,18 +266,25 @@ const AllSessionsEdit = () => {
                 instructorStateName !== newState.instructor ||
                 courseCategoryStateName !== newState.courseCategory
             ) {
-                setNewState(JSON.stringify({
-                    availabilities: newCourseAvailabilities,
-                    startDate: courseStartDateState,
-                    endDate: courseEndDateState,
-                    instructor: instructorStateName,
-                    courseCategory: courseCategoryStateName,
-                }));
+                setNewState(
+                    JSON.stringify({
+                        availabilities: newCourseAvailabilities,
+                        startDate: courseStartDateState,
+                        endDate: courseEndDateState,
+                        instructor: instructorStateName,
+                        courseCategory: courseCategoryStateName,
+                    })
+                );
             }
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(courseAvailabilities), subjectValue, courseStartDate, courseEndDate, instructorValue]);
+    }, [
+        JSON.stringify(courseAvailabilities),
+        subjectValue,
+        courseStartDate,
+        courseEndDate,
+        instructorValue,
+    ]);
 
     if (loading || conflictLoading) return <Loading />;
 
@@ -327,24 +340,26 @@ const AllSessionsEdit = () => {
     };
 
     const removeCourseAvailability = (availabilityId) => {
-        setCourseAvailabilities(prevState => {
-            const newCourseAvailabilities = prevState.filter((availability) =>
-                (availability.id !== availabilityId));
+        setCourseAvailabilities((prevState) => {
+            const newCourseAvailabilities = prevState.filter(
+                (availability) => availability.id !== availabilityId
+            );
             return newCourseAvailabilities;
         });
     };
 
-    const handleDateChange = (setDate) => e => {
+    const handleDateChange = (setDate) => (e) => {
         setDate(e);
     };
 
-    const formatTime = (time) => time.length < 11 ? `2021-01-01T${time}` : time;
+    const formatTime = (time) =>
+        time.length < 11 ? `2021-01-01T${time}` : time;
 
-    const formatAvailabilities = (courseAvailabilities) => courseAvailabilities
-        .map(({dayOfWeek, startTime, endTime}) => ({
+    const formatAvailabilities = (courseAvailabilities) =>
+        courseAvailabilities.map(({ dayOfWeek, startTime, endTime }) => ({
             dayOfWeek,
-            startTime: moment(formatTime(startTime)).format("HH:mm"),
-            endTime: moment(formatTime(endTime)).format("HH:mm"),
+            startTime: moment(formatTime(startTime)).format('HH:mm'),
+            endTime: moment(formatTime(endTime)).format('HH:mm'),
         }));
 
     const handleSubmitEdits = () => {
@@ -392,7 +407,9 @@ const AllSessionsEdit = () => {
     // };
 
     const formatStates = () => {
-        const {session: {course}} = data;
+        const {
+            session: { course },
+        } = data;
         return {
             availabilities: renderCourseAvailabilitiesString(
                 course.activeAvailabilityList
@@ -404,10 +421,17 @@ const AllSessionsEdit = () => {
         };
     };
 
-    return (<>
-            <Divider className={classes.divider}/>
-            <Grid container direction='column' style={{marginTop: '2em'}} alignItems='flex-start' spacing={2}>
-                <Grid item xs={12} style={{marginBottom: '1.5em'}}>
+    return (
+        <>
+            <Divider className={classes.divider} />
+            <Grid
+                container
+                direction='column'
+                style={{ marginTop: '2em' }}
+                alignItems='flex-start'
+                spacing={2}
+            >
+                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.new_sessions_typography}>
                         Update Sessions:
                     </Typography>
@@ -444,22 +468,20 @@ const AllSessionsEdit = () => {
                     </Grid>
                 </Grid>
                 <Grid item container>
-                    {
-                        courseAvailabilities.map(availability => (
-                            <EditMultiSessionFields
-                                getCourseAvailability={handleCourseAvailabilities}
-                                removeCourseAvailability={removeCourseAvailability}
-                                availability={availability}
-                                key={availability.id}
-                            />
-                        ))
-                    }
+                    {courseAvailabilities.map((availability) => (
+                        <EditMultiSessionFields
+                            getCourseAvailability={handleCourseAvailabilities}
+                            removeCourseAvailability={removeCourseAvailability}
+                            availability={availability}
+                            key={availability.id}
+                        />
+                    ))}
                 </Grid>
                 <Box paddingBottom='25px'>
                     <Grid item container direction='row' alignItems='center'>
                         <ResponsiveButton
                             onClick={handleAddCourseAvailability}
-                            startIcon={<AddCircleIcon/>}
+                            startIcon={<AddCircleIcon />}
                         >
                             Add Day & Time
                         </ResponsiveButton>

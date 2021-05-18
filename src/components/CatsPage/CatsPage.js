@@ -11,9 +11,10 @@ const getWindowSize = () => [window.innerWidth, window.innerHeight];
 const CatsPage = () => {
     const dispatch = useDispatch();
     const auth = useSelector((store) => store.auth);
-    const api = useMemo(() => bindActionCreators(catActions, dispatch), [
-        dispatch,
-    ]);
+    const api = useMemo(
+        () => bindActionCreators(catActions, dispatch),
+        [dispatch]
+    );
     const apiImage = useSelector(({ Cat }) => Cat.catGif);
 
     useEffect(() => {
@@ -31,12 +32,14 @@ const CatsPage = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, [handleResize]);
 
-    const imgWidth = useMemo(() => Number(apiImage.width || 0), [
-        apiImage.width,
-    ]);
-    const imgHeight = useMemo(() => Number(apiImage.height || 0), [
-        apiImage.height,
-    ]);
+    const imgWidth = useMemo(
+        () => Number(apiImage.width || 0),
+        [apiImage.width]
+    );
+    const imgHeight = useMemo(
+        () => Number(apiImage.height || 0),
+        [apiImage.height]
+    );
 
     const [{ x, y }, setPosition] = useState({
         x: Math.floor(Math.random() * (windowWidth - imgWidth)),

@@ -8,40 +8,42 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 const LeavePageModal = ({ openState, setOpenState }) => {
+    const handleClose = () => {
+        setOpenState({ ...openState, leaveState: false });
+    };
 
-  const handleClose = () => {
-    setOpenState({ ...openState, leaveState: false });
-  };
-
-  return (
-      <Dialog
-        open={openState.leaveState}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous location data to
-            Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Disagree
-          </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-  );
+    return (
+        <Dialog
+            open={openState.leaveState}
+            onClose={handleClose}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+        >
+            <DialogTitle id='alert-dialog-title'>
+                {"Use Google's location service?"}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id='alert-dialog-description'>
+                    Let Google help apps determine location. This means sending
+                    anonymous location data to Google, even when no apps are
+                    running.
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleClose} color='primary'>
+                    Disagree
+                </Button>
+                <Button onClick={handleClose} color='primary' autoFocus>
+                    Agree
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 };
 
 LeavePageModal.propTypes = {
     openState: PropTypes.object,
     setOpenState: PropTypes.func.isRequired,
-  };
+};
 
 export default LeavePageModal;

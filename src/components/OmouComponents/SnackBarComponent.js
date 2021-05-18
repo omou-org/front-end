@@ -9,7 +9,6 @@ export const SnackBarComponent = ({
     snackBarState,
     setSnackBarState,
 }) => {
-
     return (
         <CSSTransition
             in={snackBarState}
@@ -20,7 +19,11 @@ export const SnackBarComponent = ({
         >
             <Grid
                 item
-                style={{ border: '2px solid rgba(153, 153, 153, 0.15)', float: 'left', marginTop: '2.125em' }}
+                style={{
+                    border: '2px solid rgba(153, 153, 153, 0.15)',
+                    float: 'left',
+                    marginTop: '2.125em',
+                }}
                 xs={4}
             >
                 <Grid
@@ -85,5 +88,5 @@ export const SnackBarComponent = ({
 SnackBarComponent.propTypes = {
     snackBarData: PropTypes.object,
     snackBarState: PropTypes.object,
-    setSnackBarState: PropTypes.func.isRequired
-  };
+    setSnackBarState: PropTypes.func.isRequired,
+};

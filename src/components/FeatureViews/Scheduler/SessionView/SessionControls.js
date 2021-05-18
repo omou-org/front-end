@@ -8,14 +8,7 @@ import 'date-fns';
 const SessionControls = () => {
     const { editType } = useParams();
 
-    return(
-        <>
-        {editType
-            ? <SessionEditForm />
-            : <SessionOptions />
-        }
-        </>
-    );
+    return <>{editType ? <SessionEditForm /> : <SessionOptions />}</>;
 };
 
 export default SessionControls;
