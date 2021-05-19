@@ -1,14 +1,14 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {FormControl, makeStyles, MenuItem, Select} from '@material-ui/core';
-import {highlightColor, omouBlue} from '../../../../theme/muiTheme';
-import {BootstrapInput} from '../../Courses/CourseManagementContainer';
+import React, { useCallback, useEffect, useState } from 'react';
+import { FormControl, makeStyles, MenuItem, Select } from '@material-ui/core';
+import { highlightColor, omouBlue } from '../../../../theme/muiTheme';
+import { BootstrapInput } from '../../Courses/CourseManagementContainer';
 import Loading from '../../../OmouComponents/Loading';
-import PropTypes from "prop-types";
-import Grid from "@material-ui/core/Grid";
-import {KeyboardTimePicker} from "@material-ui/pickers";
-import {CancelOutlined, QueryBuilder} from "@material-ui/icons";
-import moment from "moment";
-import IconButton from "@material-ui/core/IconButton";
+import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
+import { KeyboardTimePicker } from '@material-ui/pickers';
+import { CancelOutlined, QueryBuilder } from '@material-ui/icons';
+import moment from 'moment';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
     margin: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     menuSelect: {
-        '&:hover': {backgroundColor: highlightColor, color: '#28ABD5'},
+        '&:hover': { backgroundColor: highlightColor, color: '#28ABD5' },
         '&:focus': highlightColor,
         display: 'flex',
     },
@@ -38,48 +38,48 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const EditSessionDropDown = ({
-                                        noValueLabel,
-                                        itemLabel,
-                                        itemId,
-                                        queryList,
-                                        setState,
-                                        value,
-                                    }) => {
+    noValueLabel,
+    itemLabel,
+    itemId,
+    queryList,
+    setState,
+    value,
+}) => {
     const classes = useStyles();
     const handleChange = (event) => setState(event.target.value);
 
-    if (!queryList) return <Loading/>;
+    if (!queryList) return <Loading />;
 
-    return (<FormControl className={classes.margin}>
-        <Select
-            labelId='omou-dropdown'
-            id='omou-dropdown'
-            displayEmpty
-            value={value}
-            onChange={handleChange}
-            classes={{select: classes.menuSelect}}
-            input={<BootstrapInput/>}
-            MenuProps={{
-                classes: {list: classes.dropdown},
-                anchorOrigin: {
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                },
-                transformOrigin: {
-                    vertical: 'top',
-                    horizontal: 'left',
-                },
-                getContentAnchorEl: null,
-            }}
-        >
-            <MenuItem
-                ListItemClasses={{selected: classes.menuSelected}}
-                value=''
+    return (
+        <FormControl className={classes.margin}>
+            <Select
+                labelId='omou-dropdown'
+                id='omou-dropdown'
+                displayEmpty
+                value={value}
+                onChange={handleChange}
+                classes={{ select: classes.menuSelect }}
+                input={<BootstrapInput />}
+                MenuProps={{
+                    classes: { list: classes.dropdown },
+                    anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    },
+                    transformOrigin: {
+                        vertical: 'top',
+                        horizontal: 'left',
+                    },
+                    getContentAnchorEl: null,
+                }}
             >
-                {noValueLabel}
-            </MenuItem>
-            {
-                queryList.map((value, i) => (
+                <MenuItem
+                    ListItemClasses={{ selected: classes.menuSelected }}
+                    value=''
+                >
+                    {noValueLabel}
+                </MenuItem>
+                {queryList.map((value, i) => (
                     <MenuItem
                         key={i}
                         className={classes.menuSelect}
@@ -90,10 +90,10 @@ export const EditSessionDropDown = ({
                     >
                         {itemLabel(value)}
                     </MenuItem>
-                ))
-            }
-        </Select>
-    </FormControl>);
+                ))}
+            </Select>
+        </FormControl>
+    );
 };
 
 EditSessionDropDown.propTypes = {
@@ -106,19 +106,27 @@ EditSessionDropDown.propTypes = {
 };
 
 export const EditMultiSessionFields = ({
-                                           getCourseAvailability,
-                                           availability,
-                                           removeCourseAvailability,
-                                       }) => {
+    getCourseAvailability,
+    availability,
+    removeCourseAvailability,
+}) => {
     const classes = useStyles();
-    const [day, setDay] = useState("");
-    const [startTime, setStartTime] = useState("");
-    const [endTime, setEndTime] = useState("");
+    const [day, setDay] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
 
     useEffect(() => {
         setDay(availability.dayOfWeek);
-        setStartTime(moment("2021-01-01T" + availability.startTime).format("YYYY-MM-DD[T]HH:mm"));
-        setEndTime(moment("2021-01-01T" + availability.endTime).format("YYYY-MM-DD[T]HH:mm"));
+        setStartTime(
+            moment('2021-01-01T' + availability.startTime).format(
+                'YYYY-MM-DD[T]HH:mm'
+            )
+        );
+        setEndTime(
+            moment('2021-01-01T' + availability.endTime).format(
+                'YYYY-MM-DD[T]HH:mm'
+            )
+        );
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -141,70 +149,79 @@ export const EditMultiSessionFields = ({
 
     const handleTimeChange = (setValue, startOrEndTime) => (e) => {
         setValue(e);
-        setCourseAvailability({[startOrEndTime]: e.format("YYYY-MM-DD[T]HH:mm")});
+        setCourseAvailability({
+            [startOrEndTime]: e.format('YYYY-MM-DD[T]HH:mm'),
+        });
     };
 
     const handleDayChange = (e) => {
         setDay(e.target.value);
-        setCourseAvailability({day: e.target.value});
+        setCourseAvailability({ day: e.target.value });
     };
 
-    const handleRemoveCourseAvailability = useCallback((availabilityId) => {
-        removeCourseAvailability(availabilityId);
-    }, [removeCourseAvailability]);
+    const handleRemoveCourseAvailability = useCallback(
+        (availabilityId) => {
+            removeCourseAvailability(availabilityId);
+        },
+        [removeCourseAvailability]
+    );
 
-    return (<Grid container style={{marginBottom: '10px'}}>
-        <Grid item xs={2} lg={3} xl={2}>
-            <FormControl className={classes.dayPicker}>
-                <Select
-                    native
-                    inputProps={{
-                        name: 'age',
-                        id: 'age-native-simple',
+    return (
+        <Grid container style={{ marginBottom: '10px' }}>
+            <Grid item xs={2} lg={3} xl={2}>
+                <FormControl className={classes.dayPicker}>
+                    <Select
+                        native
+                        inputProps={{
+                            name: 'age',
+                            id: 'age-native-simple',
+                        }}
+                        displayEmpty='true'
+                        defaultValue='Day'
+                        value={day}
+                        onChange={handleDayChange}
+                    >
+                        <option value='none'>Day</option>
+                        <option value='SUNDAY'>Sunday</option>
+                        <option value='MONDAY'>Monday</option>
+                        <option value='TUESDAY'>Wednesday</option>
+                        <option value='WEDNESDAY'>Thursday</option>
+                        <option value='THURSDAY'>Friday</option>
+                        <option value='FRIDAY'>Saturday</option>
+                        <option value='SATURDAY'>Sunday</option>
+                    </Select>
+                </FormControl>
+                <span>at</span>
+            </Grid>
+            <Grid item xs={2} lg={3} xl={2}>
+                <KeyboardTimePicker
+                    keyboardIcon={<QueryBuilder />}
+                    style={{ float: 'left', width: '11em' }}
+                    value={startTime}
+                    onChange={handleTimeChange(setStartTime, 'startTime')}
+                />
+                <span>-</span>
+            </Grid>
+            <Grid item xs={2}>
+                <KeyboardTimePicker
+                    keyboardIcon={<QueryBuilder />}
+                    style={{ float: 'left' }}
+                    value={endTime}
+                    onChange={handleTimeChange(setEndTime, 'endTime')}
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <IconButton
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleRemoveCourseAvailability(availability.id);
                     }}
-                    displayEmpty='true'
-                    defaultValue='Day'
-                    value={day}
-                    onChange={handleDayChange}
                 >
-                    <option value='none'>Day</option>
-                    <option value='SUNDAY'>Sunday</option>
-                    <option value='MONDAY'>Monday</option>
-                    <option value='TUESDAY'>Wednesday</option>
-                    <option value='WEDNESDAY'>Thursday</option>
-                    <option value='THURSDAY'>Friday</option>
-                    <option value='FRIDAY'>Saturday</option>
-                    <option value='SATURDAY'>Sunday</option>
-                </Select>
-            </FormControl>
-            <span>at</span>
+                    <CancelOutlined />
+                </IconButton>
+            </Grid>
         </Grid>
-        <Grid item xs={2} lg={3} xl={2}>
-            <KeyboardTimePicker
-                keyboardIcon={<QueryBuilder/>}
-                style={{float: 'left', width: '11em'}}
-                value={startTime}
-                onChange={handleTimeChange(setStartTime, "startTime")}
-            />
-            <span>-</span>
-        </Grid>
-        <Grid item xs={2}>
-            <KeyboardTimePicker
-                keyboardIcon={<QueryBuilder/>}
-                style={{float: 'left'}}
-                value={endTime}
-                onChange={handleTimeChange(setEndTime, "endTime")}
-            />
-        </Grid>
-        <Grid item xs={2}>
-            <IconButton onClick={(e) => {
-                e.preventDefault();
-                handleRemoveCourseAvailability(availability.id);
-            }}>
-                <CancelOutlined/>
-            </IconButton>
-        </Grid>
-    </Grid>);
+    );
 };
 
 EditMultiSessionFields.propTypes = {

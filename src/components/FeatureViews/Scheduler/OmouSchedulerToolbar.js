@@ -1,20 +1,26 @@
-import React, {useContext} from 'react';
-import {SchedulerContext} from './SchedulerContext';
+import React, { useContext } from 'react';
+import { SchedulerContext } from './SchedulerContext';
 import moment from 'moment';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import {CalendarToday, List, NavigateBefore, NavigateNext, Today,} from '@material-ui/icons';
-import {omouBlue} from '../../../theme/muiTheme';
+import {
+    CalendarToday,
+    List,
+    NavigateBefore,
+    NavigateNext,
+    Today,
+} from '@material-ui/icons';
+import { omouBlue } from '../../../theme/muiTheme';
 import AdvancedSessionFilters from './SessionView/AdvancedSessionFilters';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import {BootstrapInput} from './SchedulerUtils';
+import { BootstrapInput } from './SchedulerUtils';
 import MenuItem from '@material-ui/core/MenuItem';
 
 export const OmouSchedulerToolbar = (toolbar) => {
     const {
-        schedulerState: {timeFrame},
+        schedulerState: { timeFrame },
         updateSchedulerState,
     } = useContext(SchedulerContext);
 

@@ -267,20 +267,14 @@ export const [DateRangeDiscountList, DateRangeDiscountShow] = discountDisplays([
     <DateField key='endDate' source='endDate' />,
 ]);
 
-export const [
-    DateRangeDiscountCreate,
-    DateRangeDiscountEdit,
-] = discountModifiers([
-    <DateInput key='startDate' source='startDate' />,
-    <DateInput key='endDate' source='endDate' />,
-]);
+export const [DateRangeDiscountCreate, DateRangeDiscountEdit] =
+    discountModifiers([
+        <DateInput key='startDate' source='startDate' />,
+        <DateInput key='endDate' source='endDate' />,
+    ]);
 
-export const [
-    PaymentMethodDiscountList,
-    PaymentMethodDiscountShow,
-] = discountDisplays(<TextField source='paymentMethod' />);
+export const [PaymentMethodDiscountList, PaymentMethodDiscountShow] =
+    discountDisplays(<TextField source='paymentMethod' />);
 
-export const [
-    PaymentMethodDiscountCreate,
-    PaymentMethodDiscountEdit,
-] = discountModifiers(<TextInput source='paymentMethod' />);
+export const [PaymentMethodDiscountCreate, PaymentMethodDiscountEdit] =
+    discountModifiers(<TextInput source='paymentMethod' />);

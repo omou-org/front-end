@@ -1,24 +1,27 @@
 /*eslint no-unused-vars: "warn"*/
-import React, {useEffect, useState} from 'react';
-import {NavLink, useParams} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
 import gql from 'graphql-tag';
-import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
-import {Divider, makeStyles, Typography} from '@material-ui/core';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
-import {darkBlue, darkGrey} from '../../../../theme/muiTheme';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { darkBlue, darkGrey } from '../../../../theme/muiTheme';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
-import {EditMultiSessionFields, EditSessionDropDown} from './EditSessionUtilComponents';
+import {
+    EditMultiSessionFields,
+    EditSessionDropDown,
+} from './EditSessionUtilComponents';
 // import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
-import Grid from "@material-ui/core/Grid";
-import {fullName, USER_TYPES} from "../../../../utils";
-import SaveSessionEditsButton from "./SaveSessionEditsButton";
-import Box from "@material-ui/core/Box";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import {KeyboardDatePicker} from "@material-ui/pickers";
-import moment from "moment";
-import SessionEditReceipt from "./SessionEditReceipt";
-import {renderCourseAvailabilitiesString} from "../../../OmouComponents/CourseAvailabilities";
+import Grid from '@material-ui/core/Grid';
+import { fullName, USER_TYPES } from '../../../../utils';
+import SaveSessionEditsButton from './SaveSessionEditsButton';
+import Box from '@material-ui/core/Box';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { KeyboardDatePicker } from '@material-ui/pickers';
+import moment from 'moment';
+import SessionEditReceipt from './SessionEditReceipt';
+import { renderCourseAvailabilitiesString } from '../../../OmouComponents/CourseAvailabilities';
 
 const useStyles = makeStyles(() => ({
     current_session: {
@@ -146,44 +149,44 @@ const CHECK_SCHEDULE_CONFLICTS = gql`
 `;
 
 const UPDATE_ALL_SESSIONS_MUTATION = gql`
-mutation updateAllSessionsMutation(
-   $courseId: ID!, 
-   $instructorId: ID, 
-   $startDate: DateTime, 
-   $endDate: DateTime,
-   $availabilities: [CourseAvailabilityInput]
-   ){
-      createCourse(
-        id: $courseId
-        instructor: $instructorId
-        startDate: $startDate
-        endDate: $endDate
-        availabilities: $availabilities
-      ) {
-        course {
-          id
-          startDate
-          endDate
-          instructor {
-            user {
+    mutation updateAllSessionsMutation(
+        $courseId: ID!
+        $instructorId: ID
+        $startDate: DateTime
+        $endDate: DateTime
+        $availabilities: [CourseAvailabilityInput]
+    ) {
+        createCourse(
+            id: $courseId
+            instructor: $instructorId
+            startDate: $startDate
+            endDate: $endDate
+            availabilities: $availabilities
+        ) {
+            course {
                 id
-                firstName
-                lastName
+                startDate
+                endDate
+                instructor {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+                availabilityList {
+                    endTime
+                    dayOfWeek
+                    startTime
+                    id
+                }
             }
-          }
-          availabilityList {
-            endTime
-            dayOfWeek
-            startTime
-            id
-          }
         }
-      }
-   }
+    }
 `;
 
 const AllSessionsEdit = () => {
-    const {session_id} = useParams();
+    const { session_id } = useParams();
     const classes = useStyles();
     const [subjectValue, setSubjectValue] = useState(null);
     const [instructorValue, setInstructorValue] = useState(null);
@@ -193,8 +196,8 @@ const AllSessionsEdit = () => {
     const [courseAvailabilities, setCourseAvailabilities] = useState([]);
     const [newState, setNewState] = useState({});
 
-    const {data, loading, error} = useQuery(GET_SESSION, {
-        variables: {sessionId: session_id},
+    const { data, loading, error } = useQuery(GET_SESSION, {
+        variables: { sessionId: session_id },
         onCompleted: (data) => {
             const {
                 session: {
@@ -223,8 +226,8 @@ const AllSessionsEdit = () => {
         checkScheduleConflicts,
         { loading: conflictLoading, data: conflictData },
     ] = useLazyQuery(CHECK_SCHEDULE_CONFLICTS, {
-        onCompleted: ({validateSessionSchedule}) => {
-            const {status} = validateSessionSchedule;
+        onCompleted: ({ validateSessionSchedule }) => {
+            const { status } = validateSessionSchedule;
             if (!status) {
                 setSnackBarState(true);
             }
@@ -241,13 +244,21 @@ const AllSessionsEdit = () => {
             courseStartDate &&
             courseEndDate
         ) {
-            const newCourseAvailabilities = renderCourseAvailabilitiesString(JSON.parse(JSON.stringify(courseAvailabilities)));
-            const instructorStateName = fullName(
-                instructors.find(instructor => (instructor.user.id === instructorValue))?.user
+            const newCourseAvailabilities = renderCourseAvailabilitiesString(
+                JSON.parse(JSON.stringify(courseAvailabilities))
             );
-            const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
-            const courseStartDateState = courseStartDate.format("YYYY-MM-DD[T]HH:mm");
-            const courseEndDateState = courseEndDate.format("YYYY-MM-DD[T]HH:mm");
+            const instructorStateName = fullName(
+                instructors.find(
+                    (instructor) => instructor.user.id === instructorValue
+                )?.user
+            );
+            const courseCategoryStateName = subjects.find(
+                (subject) => subject.id === subjectValue
+            )?.name;
+            const courseStartDateState =
+                courseStartDate.format('YYYY-MM-DD[T]HH:mm');
+            const courseEndDateState =
+                courseEndDate.format('YYYY-MM-DD[T]HH:mm');
             if (
                 newCourseAvailabilities !== newState.availabilities ||
                 courseStartDateState !== newState.startDate ||
@@ -255,29 +266,34 @@ const AllSessionsEdit = () => {
                 instructorStateName !== newState.instructor ||
                 courseCategoryStateName !== newState.courseCategory
             ) {
-                setNewState(JSON.stringify({
-                    availabilities: newCourseAvailabilities,
-                    startDate: courseStartDateState,
-                    endDate: courseEndDateState,
-                    instructor: instructorStateName,
-                    courseCategory: courseCategoryStateName,
-                }));
+                setNewState(
+                    JSON.stringify({
+                        availabilities: newCourseAvailabilities,
+                        startDate: courseStartDateState,
+                        endDate: courseEndDateState,
+                        instructor: instructorStateName,
+                        courseCategory: courseCategoryStateName,
+                    })
+                );
             }
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(courseAvailabilities), subjectValue, courseStartDate, courseEndDate, instructorValue]);
+    }, [
+        courseAvailabilities,
+        subjectValue,
+        courseStartDate,
+        courseEndDate,
+        instructorValue,
+    ]);
 
-    if (loading || conflictLoading) return <Loading/>;
+    if (loading || conflictLoading) return <Loading />;
 
     if (error) return <Typography>{`There's been an error!`}</Typography>;
 
     const {
         courseCategories: subjects,
         instructors,
-        session: {
-            course
-        }
+        session: { course },
     } = data;
     //
     // const { courseCategories: subjects, instructors } = data;
@@ -295,12 +311,15 @@ const AllSessionsEdit = () => {
     };
 
     const handleCourseAvailabilities = (courseAvailability) => {
-        setCourseAvailabilities(prevState => {
-            const courseAvailabilityIndex = prevState
-                .findIndex(availability => (availability.id == courseAvailability.id));
+        setCourseAvailabilities((prevState) => {
+            const courseAvailabilityIndex = prevState.findIndex(
+                (availability) => availability.id == courseAvailability.id
+            );
             let newAvailabilities = JSON.parse(JSON.stringify(prevState));
             if (courseAvailabilityIndex > -1) {
-                newAvailabilities[courseAvailabilityIndex] = JSON.parse(JSON.stringify(courseAvailability));
+                newAvailabilities[courseAvailabilityIndex] = JSON.parse(
+                    JSON.stringify(courseAvailability)
+                );
             } else {
                 newAvailabilities.push(courseAvailability);
             }
@@ -309,39 +328,38 @@ const AllSessionsEdit = () => {
     };
 
     const handleAddCourseAvailability = () => {
-        setCourseAvailabilities(prevState => {
+        setCourseAvailabilities((prevState) => {
             const newAvailability = {
                 id: `new-${prevState.length}`,
                 dayOfWeek: '',
                 startTime: null,
                 endTime: null,
             };
-            return [
-                ...prevState,
-                newAvailability,
-            ];
+            return [...prevState, newAvailability];
         });
     };
 
     const removeCourseAvailability = (availabilityId) => {
-        setCourseAvailabilities(prevState => {
-            const newCourseAvailabilities = prevState.filter((availability) =>
-                (availability.id !== availabilityId));
+        setCourseAvailabilities((prevState) => {
+            const newCourseAvailabilities = prevState.filter(
+                (availability) => availability.id !== availabilityId
+            );
             return newCourseAvailabilities;
         });
     };
 
-    const handleDateChange = (setDate) => e => {
+    const handleDateChange = (setDate) => (e) => {
         setDate(e);
     };
 
-    const formatTime = (time) => time.length < 11 ? `2021-01-01T${time}` : time;
+    const formatTime = (time) =>
+        time.length < 11 ? `2021-01-01T${time}` : time;
 
-    const formatAvailabilities = (courseAvailabilities) => courseAvailabilities
-        .map(({dayOfWeek, startTime, endTime}) => ({
+    const formatAvailabilities = (courseAvailabilities) =>
+        courseAvailabilities.map(({ dayOfWeek, startTime, endTime }) => ({
             dayOfWeek,
-            startTime: moment(formatTime(startTime)).format("HH:mm"),
-            endTime: moment(formatTime(endTime)).format("HH:mm"),
+            startTime: moment(formatTime(startTime)).format('HH:mm'),
+            endTime: moment(formatTime(endTime)).format('HH:mm'),
         }));
 
     const handleSubmitEdits = () => {
@@ -350,10 +368,10 @@ const AllSessionsEdit = () => {
         updateAllSessions({
             variables: {
                 courseId: course.id,
-                startDate: courseStartDate.format("YYYY-MM-DD[T]HH:mm"),
-                endDate: courseEndDate.format("YYYY-MM-DD[T]HH:mm"),
+                startDate: courseStartDate.format('YYYY-MM-DD[T]HH:mm'),
+                endDate: courseEndDate.format('YYYY-MM-DD[T]HH:mm'),
                 availabilities,
-            }
+            },
         });
     };
 
@@ -389,27 +407,31 @@ const AllSessionsEdit = () => {
     // };
 
     const formatStates = () => {
-        const {session: {course}} = data;
+        const {
+            session: { course },
+        } = data;
         return {
-            availabilities: renderCourseAvailabilitiesString(course.activeAvailabilityList),
-            startDate: moment(course.startDate).format("YYYY-MM-DD[T]HH:mm"),
-            endDate: moment(course.endDate).format("YYYY-MM-DD[T]HH:mm"),
+            availabilities: renderCourseAvailabilitiesString(
+                course.activeAvailabilityList
+            ),
+            startDate: moment(course.startDate).format('YYYY-MM-DD[T]HH:mm'),
+            endDate: moment(course.endDate).format('YYYY-MM-DD[T]HH:mm'),
             instructor: fullName(course.instructor.user),
             courseCategory: course.courseCategory.name,
         };
     };
 
-    // const confirmationData = {
-    //     instrcutorId: instructorValue,
-    // };
-
-    console.log(newState);
-    console.log(formatStates());
-
-    return (<>
-            <Divider className={classes.divider}/>
-            <Grid container direction='column' style={{marginTop: '2em'}} alignItems='flex-start' spacing={2}>
-                <Grid item xs={12} style={{marginBottom: '1.5em'}}>
+    return (
+        <>
+            <Divider className={classes.divider} />
+            <Grid
+                container
+                direction='column'
+                style={{ marginTop: '2em' }}
+                alignItems='flex-start'
+                spacing={2}
+            >
+                <Grid item xs={12} style={{ marginBottom: '1.5em' }}>
                     <Typography className={classes.new_sessions_typography}>
                         Update Sessions:
                     </Typography>
@@ -422,83 +444,105 @@ const AllSessionsEdit = () => {
                 <Grid item container direction='row' spacing={3}>
                     <Grid item>
                         <KeyboardDatePicker
-                            format="M/D/YYYY"
+                            format='M/D/YYYY'
                             id='course-start-date'
                             value={courseStartDate}
                             onChange={handleDateChange(setCourseStartDate)}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
                             }}
-                            label="Start Date"
+                            label='Start Date'
                         />
                     </Grid>
                     <Grid item>
                         <KeyboardDatePicker
-                            format="M/D/YYYY"
+                            format='M/D/YYYY'
                             id='course-end-date'
                             value={courseEndDate}
                             onChange={handleDateChange(setCourseEndDate)}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
                             }}
-                            label="End Date"
+                            label='End Date'
                         />
                     </Grid>
                 </Grid>
                 <Grid item container>
-                    {
-                        courseAvailabilities.map(availability => (
-                            <EditMultiSessionFields
-                                getCourseAvailability={handleCourseAvailabilities}
-                                removeCourseAvailability={removeCourseAvailability}
-                                availability={availability}
-                                key={availability.id}
-                            />
-                        ))
-                    }
+                    {courseAvailabilities.map((availability) => (
+                        <EditMultiSessionFields
+                            getCourseAvailability={handleCourseAvailabilities}
+                            removeCourseAvailability={removeCourseAvailability}
+                            availability={availability}
+                            key={availability.id}
+                        />
+                    ))}
                 </Grid>
                 <Box paddingBottom='25px'>
                     <Grid item container direction='row' alignItems='center'>
                         <ResponsiveButton
                             onClick={handleAddCourseAvailability}
-                            startIcon={<AddCircleIcon/>}
+                            startIcon={<AddCircleIcon />}
                         >
                             Add Day & Time
                         </ResponsiveButton>
                     </Grid>
                 </Box>
                 <Grid container>
-                    <Grid item xs={2} lg={3} xl={2}>
-                        <Typography
-                            className={classes.subtitle}
-                            style={{marginBottom: '.5em'}}
-                        >
-                            SUBJECT
-                        </Typography>
-                        <EditSessionDropDown
-                            noValueLabel='All Subjects'
-                            itemLabel={(item) => item.name}
-                            itemId={(item) => (item.id)}
-                            setState={setSubjectValue}
-                            queryList={subjects}
-                            value={subjectValue}
-                        />
+                    <Grid
+                        item
+                        container
+                        direction='column'
+                        xs={2}
+                        lg={3}
+                        xl={2}
+                        alignItems='flex-start'
+                    >
+                        <Grid>
+                            <Typography
+                                className={classes.subtitle}
+                                style={{ marginBottom: '1.5em' }}
+                            >
+                                SUBJECT
+                            </Typography>
+                        </Grid>
+                        <Grid>
+                            <EditSessionDropDown
+                                noValueLabel='All Subjects'
+                                itemLabel={(item) => item.name}
+                                itemId={(item) => item.id}
+                                setState={setSubjectValue}
+                                queryList={subjects}
+                                value={subjectValue}
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={2}>
-                        <Typography
-                            className={classes.subtitle}
-                            style={{marginBottom: '.5em'}}
-                        >
-                            INSTRUCTOR
-                        </Typography>
-                        <EditSessionDropDown
-                            noValueLabel='All Instructors'
-                            itemLabel={(item) => fullName(item.user)}
-                            itemId={(item) => (item.user.id)}
-                            setState={setInstructorValue}
-                            queryList={instructors}
-                            value={instructorValue}
-                        />
+                    <Grid
+                        item
+                        container
+                        direction='column'
+                        xs={2}
+                        lg={3}
+                        xl={2}
+                        alignItems='flex-start'
+                    >
+                        <Grid>
+                            <Typography
+                                className={classes.subtitle}
+                                style={{ marginBottom: '1.5em' }}
+                            >
+                                INSTRUCTOR
+                            </Typography>
+                        </Grid>
+                        <Grid>
+                            <EditSessionDropDown
+                                noValueLabel='All Instructors'
+                                itemLabel={(item) => fullName(item.user)}
+                                itemId={(item) => item.user.id}
+                                setState={setInstructorValue}
+                                queryList={instructors}
+                                value={instructorValue}
+                            />
+                        </Grid>
                     </Grid>
                     {/* This section is for when we have a getRoom query */}
                     {/* <Grid item xs={2}>

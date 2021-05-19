@@ -89,13 +89,11 @@ const RegistrationCartContainer = () => {
     const dispatch = useDispatch();
 
     const [registrationCart, setRegistrationCart] = useState({});
-    const [reviewConfirmationCheck, setReviewConfirmationCheck] = useState(
-        false
-    );
+    const [reviewConfirmationCheck, setReviewConfirmationCheck] =
+        useState(false);
     const [reviewError, setReviewError] = useState(false);
-    const [parentRegistrationConfirmation, setParentConfirmation] = useState(
-        false
-    );
+    const [parentRegistrationConfirmation, setParentConfirmation] =
+        useState(false);
     const { parentIsLoggedIn } = useValidateRegisteringParent();
     // create list of students to fetch
     // delete registrationCartState["submitStatus"];

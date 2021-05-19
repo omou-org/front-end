@@ -1,17 +1,17 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import {useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
-import {makeStyles, Typography,} from '@material-ui/core';
+import { useQuery } from '@apollo/client';
+import { makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
-import {darkBlue, darkGrey} from '../../../../theme/muiTheme';
+import { darkBlue, darkGrey } from '../../../../theme/muiTheme';
 import moment from 'moment';
 import Box from '@material-ui/core/Box';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 
-import {fullName} from 'utils';
+import { fullName } from 'utils';
 
 import 'date-fns';
 
@@ -144,8 +144,7 @@ const SessionDetails = () => {
         variables: { sessionId: session_id },
     });
 
-
-    if (loading ) {
+    if (loading) {
         return <Loading />;
     }
 
@@ -153,20 +152,10 @@ const SessionDetails = () => {
         return <Typography>{"There's been an error!"}</Typography>;
     }
 
-    const {
-        course,
-        endDatetime,
-        title,
-        instructor,
-        startDatetime,
-    } = data.session;
+    const { course, endDatetime, title, instructor, startDatetime } =
+        data.session;
 
-    var {
-        courseCategory,
-        room,
-        endDate,
-        startDate,
-    } = course;
+    var { courseCategory, room, endDate, startDate } = course;
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const startSessionTime = moment(startDatetime).format('h:mm A');
@@ -174,10 +163,9 @@ const SessionDetails = () => {
     const endDateFormat = moment(endDate).format('MMMM DD');
     const startDateFormat = moment(startDate).format('MMMM DD');
 
-
     const EditBadge = {
-        'single-session-edit':
-            (<Grid
+        'single-session-edit': (
+            <Grid
                 item
                 xl={1}
                 xs={5}
@@ -189,9 +177,10 @@ const SessionDetails = () => {
                 <Typography align='center' style={{ color: 'white' }}>
                     Editing This Session
                 </Typography>
-            </Grid>),
-        'all-sessions-edit':
-            (<Grid
+            </Grid>
+        ),
+        'all-sessions-edit': (
+            <Grid
                 item
                 xl={1}
                 xs={5}
@@ -200,11 +189,12 @@ const SessionDetails = () => {
                 lg={2}
                 className={classes.type_of_edit}
             >
-            <Typography align='center' style={{ color: 'white' }}>
-                Editing All Sessions
-            </Typography>
-        </Grid>),
-        'undefined': null,
+                <Typography align='center' style={{ color: 'white' }}>
+                    Editing All Sessions
+                </Typography>
+            </Grid>
+        ),
+        undefined: null,
     };
 
     return (

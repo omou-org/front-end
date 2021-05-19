@@ -7,14 +7,12 @@ import 'date-fns';
 import SessionControls from './SessionControls';
 
 const SessionContainer = () => {
-
-    return(
+    return (
         <>
-        <SessionDetails />
-        <SessionControls />
+            <SessionDetails />
+            <SessionControls />
         </>
     );
-
 };
 
 export default SessionContainer;
