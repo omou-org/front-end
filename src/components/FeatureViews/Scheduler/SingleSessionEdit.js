@@ -198,7 +198,6 @@ const SingleSessionEdit = () => {
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
         onCompleted: (data) => {
-            console.log(data);
             const {
                 session: {
                     startDatetime,
@@ -241,9 +240,9 @@ const SingleSessionEdit = () => {
         session: {
             id: sessionId,
             startDatetime,
-            // course: {
-            //     enrollmentSet
-            // }
+            course: {
+                enrollmentSet
+            }
         },
         courseCategories: subjects,
         instructors,
@@ -258,8 +257,7 @@ const SingleSessionEdit = () => {
             .user
     );
 
-    const studentName = 'Timmeh';
-    //const studentName = fullName(enrollmentSet[0].student.user);
+    const studentName = fullName(enrollmentSet[0].student.user);
 
     const dayOfWeek = moment(startDatetime).format('dddd');
     const monthAndDate = moment(sessionDate).format('MMMM DD');
@@ -276,7 +274,6 @@ const SingleSessionEdit = () => {
         const endDateTime = moment(
             sessionISODate + ' ' + endSessionTime
         ).format('YYYY-MM-DD[T]HH:mm');
-        // console.log(moment(startSessionTime).isBefore(moment(endSessionTime)));
         updateSession({
             variables: {
                 sessionId,

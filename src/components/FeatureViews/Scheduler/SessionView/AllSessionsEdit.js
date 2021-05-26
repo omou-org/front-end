@@ -12,7 +12,6 @@ import {
     EditMultiSessionFields,
     EditSessionDropDown,
 } from './EditSessionUtilComponents';
-// import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
 import Grid from '@material-ui/core/Grid';
 import { fullName, USER_TYPES } from '../../../../utils';
 import SaveSessionEditsButton from './SaveSessionEditsButton';
@@ -279,7 +278,7 @@ const AllSessionsEdit = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        JSON.stringify(courseAvailabilities),
+        courseAvailabilities,
         subjectValue,
         courseStartDate,
         courseEndDate,

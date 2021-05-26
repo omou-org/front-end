@@ -8,7 +8,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
-// import {darkBlue, darkGrey} from "../../../theme/muiTheme";
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 
 const SaveSessionEditsButton = ({
