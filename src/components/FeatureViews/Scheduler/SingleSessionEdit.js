@@ -240,9 +240,7 @@ const SingleSessionEdit = () => {
         session: {
             id: sessionId,
             startDatetime,
-            course: {
-                enrollmentSet
-            }
+            course: { enrollmentSet },
         },
         courseCategories: subjects,
         instructors,
