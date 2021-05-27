@@ -192,12 +192,10 @@ function NotificationSettings({ user }) {
             instructorSettingResponse.loading === false ||
             parentSettingResponse.loading === false
         ) {
-            const {
-                data: { instructorNotificationSettings } = {},
-            } = instructorSettingResponse;
-            const {
-                data: { parentNotificationSettings } = {},
-            } = parentSettingResponse;
+            const { data: { instructorNotificationSettings } = {} } =
+                instructorSettingResponse;
+            const { data: { parentNotificationSettings } = {} } =
+                parentSettingResponse;
 
             if (isParent) {
                 userSettings = parentNotificationSettings;
@@ -320,9 +318,8 @@ function NotificationSettings({ user }) {
                 notificationSettings[optIn.settingName] = optIn.checked;
             });
             const updatedSettingName = prevState[index][setting].settingName;
-            notificationSettings[updatedSettingName] = !!newState[index][
-                setting
-            ].checked;
+            notificationSettings[updatedSettingName] =
+                !!newState[index][setting].checked;
             return newState;
         });
         if (userInfo.accountType === 'PARENT') {

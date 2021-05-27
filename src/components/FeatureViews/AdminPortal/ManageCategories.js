@@ -17,9 +17,10 @@ import NoListAlert from 'components/OmouComponents/NoListAlert';
 
 const ManageCategories = () => {
     const dispatch = useDispatch();
-    const api = useMemo(() => bindActionCreators(adminActions, dispatch), [
-        dispatch,
-    ]);
+    const api = useMemo(
+        () => bindActionCreators(adminActions, dispatch),
+        [dispatch]
+    );
 
     const [categoryName, setCategoryName] = useState('');
     const [categoryDescription, setCategoryDescription] = useState('');
@@ -40,9 +41,11 @@ const ManageCategories = () => {
         }
     }, [categories, categoryList]);
 
-    const handleChange = (setter) => ({ target }) => {
-        setter(target.value);
-    };
+    const handleChange =
+        (setter) =>
+        ({ target }) => {
+            setter(target.value);
+        };
 
     const submitCategory = useCallback(() => {
         api.addCategory(categoryName, categoryDescription);
@@ -171,17 +174,19 @@ const ManageCategories = () => {
         </Paper>
     );
 
-    const handleEditCategory = (type, id) => ({ target }) => {
-        const editingCategory = categoryList.find(
-            (category) => category.id === id
-        );
-        editingCategory[type] = target.value;
-        setCategoryList(
-            categoryList.map((category) =>
-                category.id === id ? editingCategory : category
-            )
-        );
-    };
+    const handleEditCategory =
+        (type, id) =>
+        ({ target }) => {
+            const editingCategory = categoryList.find(
+                (category) => category.id === id
+            );
+            editingCategory[type] = target.value;
+            setCategoryList(
+                categoryList.map((category) =>
+                    category.id === id ? editingCategory : category
+                )
+            );
+        };
 
     const editCategoryRow = ({ name, id, description }) => (
         <Paper elevation={2} className='category-row' square>

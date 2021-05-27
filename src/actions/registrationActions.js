@@ -92,9 +92,10 @@ export const submitForm = (state, id) => {
                 phone_number:
                     state['Parent Information']['Phone Number'] || null,
                 zipcode: state['Parent Information']['Zip Code'],
-                relationship: state['Parent Information'][
-                    'Relationship to Student'
-                ].toLowerCase(),
+                relationship:
+                    state['Parent Information'][
+                        'Relationship to Student'
+                    ].toLowerCase(),
                 birth_date: parseDate(
                     state['Parent Information']['Parent Birthday']
                 ),
@@ -121,9 +122,10 @@ export const submitForm = (state, id) => {
                 phone_number:
                     state['Parent Information']['Phone Number'] || null,
                 zipcode: state['Parent Information']['Zip Code'],
-                relationship: state['Parent Information'][
-                    'Relationship to Student(s)'
-                ].toUpperCase(),
+                relationship:
+                    state['Parent Information'][
+                        'Relationship to Student(s)'
+                    ].toUpperCase(),
                 birth_date: parseDate(state['Parent Information'].Birthday),
             };
             if (id) {
@@ -163,15 +165,18 @@ export const submitForm = (state, id) => {
             const removeUndefinedCourseProperties = (courseFormData) => {
                 for (const key in courseFormData) {
                     if (
-                        Object.prototype.hasOwnProperty.call(courseFormData, key) &&
+                        Object.prototype.hasOwnProperty.call(
+                            courseFormData,
+                            key
+                        ) &&
                         !courseFormData[key]
                     ) {
                         delete courseFormData[key];
                     }
                 }
-            }
-            removeUndefinedCourseProperties(course); 
-            
+            };
+            removeUndefinedCourseProperties(course);
+
             if (id) {
                 return patchData('course', course, id);
             }
@@ -198,9 +203,8 @@ export const submitForm = (state, id) => {
         case 'admin': {
             const admin = {
                 address: state['User Information'].Address,
-                admin_type: state['User Information'][
-                    'Admin Type'
-                ].toLowerCase(),
+                admin_type:
+                    state['User Information']['Admin Type'].toLowerCase(),
                 birth_date: parseDate(
                     state['User Information']['Date of Birth']
                 ),
@@ -386,32 +390,30 @@ export const addCourse = (course) =>
         course
     );
 
-export const deleteEnrollment = ({
-    enrollment_id,
-    course_id,
-    student_id,
-}) => async (dispatch) => {
-    dispatch({
-        type: types.DELETE_ENROLLMENT_STARTED,
-        payload: {},
-    });
-    try {
-        const unenrollResponse = await instance.delete(
-            `${enrollmentEndpoint}${enrollment_id}/`
-        );
+export const deleteEnrollment =
+    ({ enrollment_id, course_id, student_id }) =>
+    async (dispatch) => {
         dispatch({
-            type: types.DELETE_ENROLLMENT_SUCCESS,
-            payload: {
-                courseID: course_id,
-                studentID: student_id,
-                response: unenrollResponse,
-            },
+            type: types.DELETE_ENROLLMENT_STARTED,
+            payload: {},
         });
-    } catch (error) {
-        console.error(error);
-        dispatch({
-            type: types.DELETE_ENROLLMENT_FAILED,
-            payload: error,
-        });
-    }
-};
+        try {
+            const unenrollResponse = await instance.delete(
+                `${enrollmentEndpoint}${enrollment_id}/`
+            );
+            dispatch({
+                type: types.DELETE_ENROLLMENT_SUCCESS,
+                payload: {
+                    courseID: course_id,
+                    studentID: student_id,
+                    response: unenrollResponse,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+            dispatch({
+                type: types.DELETE_ENROLLMENT_FAILED,
+                payload: error,
+            });
+        }
+    };

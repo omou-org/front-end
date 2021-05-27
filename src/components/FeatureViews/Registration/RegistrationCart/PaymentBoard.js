@@ -340,33 +340,33 @@ const PaymentBoard = () => {
                 {}
             );
             // organize enrollments by courses
-            const newCourseEnrollmentsMatrix = data.createEnrollments.enrollments.reduce(
-                (courseEnrollmentMatrix, enrollment) => {
-                    if (
-                        Object.keys(courseEnrollmentMatrix).includes(
-                            enrollment.course.id
-                        )
-                    ) {
-                        const prevNewCourseEnrollments =
-                            courseEnrollmentMatrix[enrollment.course.id];
-                        courseEnrollmentMatrix[enrollment.course.id] = [
-                            ...prevNewCourseEnrollments,
-                            enrollment,
-                        ];
-                    } else {
-                        courseEnrollmentMatrix[enrollment.course.id] = [
-                            enrollment,
-                        ];
-                    }
-                    return courseEnrollmentMatrix;
-                },
-                {}
-            );
+            const newCourseEnrollmentsMatrix =
+                data.createEnrollments.enrollments.reduce(
+                    (courseEnrollmentMatrix, enrollment) => {
+                        if (
+                            Object.keys(courseEnrollmentMatrix).includes(
+                                enrollment.course.id
+                            )
+                        ) {
+                            const prevNewCourseEnrollments =
+                                courseEnrollmentMatrix[enrollment.course.id];
+                            courseEnrollmentMatrix[enrollment.course.id] = [
+                                ...prevNewCourseEnrollments,
+                                enrollment,
+                            ];
+                        } else {
+                            courseEnrollmentMatrix[enrollment.course.id] = [
+                                enrollment,
+                            ];
+                        }
+                        return courseEnrollmentMatrix;
+                    },
+                    {}
+                );
             // write query for each course
             const createEnrollmentList = (enrollmentMatrix, courseId) => {
-                const anyCourseEnrollments = Object.keys(
-                    enrollmentMatrix
-                ).includes(courseId);
+                const anyCourseEnrollments =
+                    Object.keys(enrollmentMatrix).includes(courseId);
                 return anyCourseEnrollments ? enrollmentMatrix[courseId] : [];
             };
             enrolledCourseIds.forEach((courseId) => {

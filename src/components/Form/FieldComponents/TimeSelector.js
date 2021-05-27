@@ -144,9 +144,8 @@ class TimeSelector extends Component {
         // sort current courses by date + time in ascending order (oldest to newest)
         currentInstructorCourses.sort(date_sort_asc);
         // Get instructor's workStart and workEnd times
-        let currentInstructorWorkHours = this.props.instructorWorkHours[
-            this.props.instructorID
-        ];
+        let currentInstructorWorkHours =
+            this.props.instructorWorkHours[this.props.instructorID];
         // for each valid available date
         //  if there are courses on this date
         //  if courseStartTime - workStartTime > 0 (if there's a gap between when work starts and the first course)

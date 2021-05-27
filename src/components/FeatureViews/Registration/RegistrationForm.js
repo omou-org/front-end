@@ -10,10 +10,10 @@ export default function RegistrationForm() {
     const { type, id } = useParams();
     const { form, load, submit, title } = Forms[type];
     const [initialData, setInitialData] = useState();
-    const onSubmit = useCallback((formData) => submit(formData, id), [
-        id,
-        submit,
-    ]);
+    const onSubmit = useCallback(
+        (formData) => submit(formData, id),
+        [id, submit]
+    );
     useEffect(() => {
         if (id) {
             let abort = false;

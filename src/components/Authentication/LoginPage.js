@@ -77,12 +77,8 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const {
-        token,
-        attemptedLogin,
-        google_access_token,
-        google_courses,
-    } = useSelector(({ auth }) => auth);
+    const { token, attemptedLogin, google_access_token, google_courses } =
+        useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
     const [
@@ -158,10 +154,11 @@ const LoginPage = () => {
     }, [token, history]);
 
     const handleTextInput = useCallback(
-        (setter) => ({ target }) => {
-            setter(target.value);
-            setHasError(false);
-        },
+        (setter) =>
+            ({ target }) => {
+                setter(target.value);
+                setHasError(false);
+            },
         []
     );
 
