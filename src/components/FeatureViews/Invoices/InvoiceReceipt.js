@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react';
-import { Prompt, useHistory, useLocation, useParams } from 'react-router-dom';
+import { Prompt, useHistory, useLocation, useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useReactToPrint } from 'react-to-print';
 
@@ -620,6 +620,18 @@ const InvoiceReceipt = ({ invoiceId }) => {
                                 </Grid>
                             </Grid>
                         </Grid>
+                            {/* Will only show update invoice if payment status is unpaid */}
+                            <ResponsiveButton
+                                component={Link}
+                                to={`/invoices/update/${invoice.id}`}
+                                style={{
+                                    marginTop: '40px',
+                                    background: buttonThemeBlue,
+                                }}
+                                variant='contained'
+                            >
+                                update invoice
+                            </ResponsiveButton>
                     </Grid>
                 </Grid>
                 <Grid style={{ marginTop: '4.125em' }} item xs={12}>

@@ -39,6 +39,7 @@ import OnboardingRoutes from './OnboardingRoutes';
 import Scheduler from '../FeatureViews/Scheduler/Scheduler';
 
 import Invoices from '../FeatureViews/Invoices/Invoices';
+import UpdateInvoice from 'components/FeatureViews/Invoices/UpdateInvoice';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -136,6 +137,10 @@ export const RootRoutes = () => {
 
             <AuthenticatedRoute exact path='/invoices/:invoiceId'>
                 <InvoiceReceipt />
+            </AuthenticatedRoute>
+
+            <AuthenticatedRoute exact path='/invoices/update/:invoiceId'>
+                <UpdateInvoice />
             </AuthenticatedRoute>
 
             {/* Accounts */}
