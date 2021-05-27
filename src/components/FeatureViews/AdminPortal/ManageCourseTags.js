@@ -106,6 +106,8 @@ const ManageCourseTags = () => {
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
     const [previous, setPrevious] = useState({});
+
+
     const CustomTableCell = ({ row, name, onChange }) => {
         const classes = useStyles();
         const { isEditMode } = row;
@@ -126,6 +128,7 @@ const ManageCourseTags = () => {
         );
       };
 
+ 
 
 
     const classes = useStyles();
@@ -146,9 +149,11 @@ const ManageCourseTags = () => {
         onCompleted: () => {
             let tags = createCourseTagObject(data.courseCategories);
             setCourseTags(tags);
-        }
+        },
+        fetchPolicy: 'cache-and-network'
+  
     });
-
+    
     if (loading) {
         return <Loading />;
     }
@@ -160,6 +165,11 @@ const ManageCourseTags = () => {
         );
     }
 
+
+  
+
+  
+  
     const onToggleEditMode = id => {
         setCourseTags(() => {
           return courseTags.map(row => {
@@ -225,14 +235,11 @@ const ManageCourseTags = () => {
         };
     
         setSearchValue(query);
-       
-  // Returns a method that you can use to create your own reusable fuzzy search.
-    //    let filtered =  courseTags.filter((tag) => tag.name.toLowerCase().startsWith(e.target.value))
-    //    setCourseTags(filtered);
+    
 
     };
- 
-    console.log(courseTags);
+
+
     return (
         <>
             <Grid
