@@ -8,7 +8,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { InvoiceTablePagination } from './InvoiceTablePagination';
+
 
 import { fullName } from 'utils';
 import Loading from 'components/OmouComponents/Loading';
@@ -23,6 +23,7 @@ import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import StatusBadge from '../../OmouComponents/StatusBadge';
+import {TablePagination} from '../../OmouComponents/TablePagination';
 
 import './invoice.scss';
 
@@ -188,12 +189,13 @@ const InvoiceTable = ({
                 className={classes.tableFooter}
             >
                 {invoiceList.length > 15 && (
-                    <InvoiceTablePagination
+                    <TablePagination
                         page={page}
                         colSpan={3}
                         rowsPerPageOptions={10}
                         totalPages={totalPages}
                         onChangePage={handlePageChange}
+                        isGraphqlPage={true}
                     />
                 )}
             </Grid>

@@ -14,7 +14,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import PropTypes from 'prop-types';
-// import TableHead from '@material-ui/core/TableHead';
+import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -25,7 +25,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Loading from 'components/OmouComponents/Loading';
 import DoneIcon from '@material-ui/icons/Done';
 
-
+import {TablePagination} from '../../OmouComponents/TablePagination';
 
 const useStyles = makeStyles({
     verticalMargin: {
@@ -72,7 +72,10 @@ const useStyles = makeStyles({
         borderRadius: '5px',
         textAlign: 'center',
         padding: '5px'
-    }
+    },
+    tableFooter: {
+        paddingTop: '1vh',
+    },
 });
 
 
@@ -85,6 +88,26 @@ const GET_COURSE_TAGS = gql`
         }
     }
 `;
+
+
+// const CREATE_COURSE_TAG = gql`
+//     mutation createCourseTag(
+//         $name: String, 
+//         $description: String
+//         ) {
+//             createCourseCategory(
+//                 name: $name, 
+//                 description: $description
+//             ) {
+//                 courseCategory {
+//                     __typename
+//                     name
+//                     description
+//                     id
+//                 }
+//             }
+//     }
+// `;
 
 // const GET_COURSE_TAG = gql`
 //     query getCourseTag($categoryId: ID) {
@@ -106,7 +129,8 @@ const ManageCourseTags = () => {
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
     const [previous, setPrevious] = useState({});
-
+    const [page, setPage] = useState(0);
+    const classes = useStyles();
 
     const CustomTableCell = ({ row, name, onChange }) => {
         const classes = useStyles();
@@ -127,11 +151,6 @@ const ManageCourseTags = () => {
           </TableCell>
         );
       };
-
- 
-
-
-    const classes = useStyles();
 
     const createCourseTagObject = (courses) => {
      return courses.map(({name, description,id}) => (
@@ -165,11 +184,6 @@ const ManageCourseTags = () => {
         );
     }
 
-
-  
-
-  
-  
     const onToggleEditMode = id => {
         setCourseTags(() => {
           return courseTags.map(row => {
@@ -181,7 +195,7 @@ const ManageCourseTags = () => {
         });
       };
 
-    const onChange = (e, row) => {
+    const onEditTextFieldChange = (e, row) => {
         if (!previous[row.id]) {
           setPrevious(state => ({ ...state, [row.id]: row }));
         }
@@ -214,32 +228,34 @@ const ManageCourseTags = () => {
 
     // create a function that filters the courseTags by name
 
-    const filterCourseTag = (e) => {
-        let query = e.target.value;
-        if(!query){
-            setCourseTags(data.courseCategories);
-            return;
-        }
-        query = query.toLowerCase();
-
+    const searchCourseTopic = (e) => {
+        setSearchValue(e.target.value);
+        let inputValue = e.target.value;
+   
+        inputValue = inputValue.toLowerCase();
+       
         const finalResult = [];
 
         courseTags.forEach((item) => {
-            if(item.name.toLowerCase().indexOf(query) !== -1){
+            if(item.name.toLowerCase().indexOf(inputValue) !== -1){
                 finalResult.push(item);
             }
         });
-        setCourseTags(finalResult);
-        if(finalResult.length === 0){
+        
+        if(!inputValue){
             setCourseTags(data.courseCategories);
-        };
-    
-        setSearchValue(query);
-    
+        }else {
+            setCourseTags(finalResult);
+        }
 
     };
 
 
+    const handlePageChange = (newPage) =>{
+        setPage(newPage);
+    };
+    let totalPages = Math.ceil(courseTags.length / 15);
+    
     return (
         <>
             <Grid
@@ -283,7 +299,7 @@ const ManageCourseTags = () => {
                                 </InputAdornment>
                             ),
                         }}
-                        onChange={filterCourseTag}
+                        onChange={searchCourseTopic}
                     />
                 </Grid>
             </Grid>
@@ -291,7 +307,7 @@ const ManageCourseTags = () => {
             <Grid container>
                 <TableContainer className={classes.verticalMargin}>
                     <Table size='small'>
-                        <TableBody>
+                    <TableHead>
                             <TableRow>
                                 <TableCell
                                     className={classes.headCells}
@@ -309,115 +325,56 @@ const ManageCourseTags = () => {
 
                                 </TableCell>
                             </TableRow>
-
-                            {courseTags.map(row => (
+                        </TableHead>
+                        <TableBody>
+                            {
+                            
+                            courseTags.slice(page * 15, page * 15 + 15 ).map(row => (
             
-            <TableRow key={row.id}>
-              <CustomTableCell {...{ row, name: "name", onChange }} />
-              <CustomTableCell {...{ row, name: "description", onChange }} />
-
-
-
-              <TableCell className={classes.selectTableCell} style={{width: '40px'}}>
-                {row.isEditMode ? (
-                  <>
-                
-                    <IconButton
-                      aria-label="revert"
-                      onClick={() => onRevert(row.id)}
-                    >
-                    <DoneIcon/> 
-                    </IconButton>
-                  </>
-                ) : (
-                  <IconButton
-                    aria-label="delete"
-           
-                    onClick={() => onToggleEditMode(row.id)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-
-
-{/*              
-                            <TableRow>
-                                <TableCell>
-                                    <TextField
-                                        variant='outlined'
-                                        InputProps={{
-                                            classes: {
-                                                root: classes.editTagName,
-                                            },
-                                        }}
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <Grid
-                                        container
-                                        direction='row'
-                                        justify='space-between'
-                                        alignItems='center'
-                                    >
-                                        <Grid item>
-                                            <TableCell>
-                                                <TextField
-                                                    variant='outlined'
-                                                    InputProps={{
-                                                        classes: {
-                                                            root:
-                                                                classes.editTagDescription,
-                                                        },
-                                                    }}
-                                                />
-                                            </TableCell>
-                                        </Grid>
-
-                                        <Grid item>
-                                            <IconButton aria-label='edit'>
-                                             
-                                            </IconButton>
-                                        </Grid>
-                                    </Grid>
-                                </TableCell>
-                            </TableRow>  */}
-
-                         {/* {courseTags.map(({ id, name, description }) => {
-                                return (
-                                    <TableRow key={id}>
-                                        <TableCell className={classes.tagName}>
-                                            {name}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Grid
-                                                container
-                                                direction='row'
-                                                justify='space-between'
-                                                alignItems='center'
-                                            >
-                                                <Grid item>{description}</Grid>
-
-                                                <Grid item>
-                                                    <IconButton aria-label='edit'>
-                                                        <EditIcon
-                                                            onClick={
-                                                                handleEditTagView
-                                                            }
-                                                        />
-                                                    </IconButton>
-                                                </Grid>
-                                            </Grid>
-                                        </TableCell>
-                                    </TableRow>
+                                <TableRow key={row.id}>
+                                <CustomTableCell {...{ row, name: "name", onChange: onEditTextFieldChange }} />
+                                <CustomTableCell {...{ row, name: "description", onChange: onEditTextFieldChange }} />
+                                <TableCell className={classes.selectTableCell} style={{width: '40px'}}>
+                                    {row.isEditMode ? (
+                                    <>
                                     
-                                );
-                            })}  */}
+                                        <IconButton
+                                        aria-label="revert"
+                                        onClick={() => onRevert(row.id)}
+                                        >
+                                        <DoneIcon/> 
+                                        </IconButton>
+                                    </>
+                                    ) : (
+                                    <IconButton
+                                        aria-label="delete"
+                            
+                                        onClick={() => onToggleEditMode(row.id)}
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                    )}
+                                </TableCell>
+                                </TableRow>
+                                        ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Grid
+                    container
+                    direction='row'
+                    justify='center'
+                    alignItems='center'
+                    className={classes.tableFooter}
+                    >
+                <TablePagination
+                    page={page}
+                    colSpan={3}
+                    totalPages={totalPages}
+                    onChangePage={handlePageChange}
+                    isGraphqlPage={false}
+                />
+                </Grid>
             </Grid>
         </>
     );
