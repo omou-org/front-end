@@ -109,6 +109,7 @@ export const EditMultiSessionFields = ({
     getCourseAvailability,
     availability,
     removeCourseAvailability,
+    setGetCurrentTimeChange,
 }) => {
     const classes = useStyles();
     const [day, setDay] = useState('');
@@ -145,10 +146,15 @@ export const EditMultiSessionFields = ({
             id: availability.id,
             ...updatedState,
         });
+        setGetCurrentTimeChange({
+            day,
+            startTime,
+            endTime
+        });
     };
 
     const handleTimeChange = (setValue, startOrEndTime) => (e) => {
-        setValue(e);
+        setValue(e.format('YYYY-MM-DD[T]HH:mm'));
         setCourseAvailability({
             [startOrEndTime]: e.format('YYYY-MM-DD[T]HH:mm'),
         });
@@ -228,4 +234,5 @@ EditMultiSessionFields.propTypes = {
     getCourseAvailability: PropTypes.func,
     availability: PropTypes.any,
     removeCourseAvailability: PropTypes.func,
+    setGetCurrentTimeChange: PropTypes.func,
 };
