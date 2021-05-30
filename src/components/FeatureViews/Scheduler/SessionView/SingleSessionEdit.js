@@ -22,40 +22,6 @@ import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
 import SessionEditReceipt from "./SessionEditReceipt";
 // import {renderCourseAvailabilitiesString} from "../../../OmouComponents/CourseAvailabilities";
 
-
-const UPDATE_SESSION_MUTATION = gql`
-    mutation updateSessionMutation(
-        $endDateTime: DateTime
-        $sessionId: ID!
-        $instructorId: ID
-        $startDateTime: DateTime
-    ) {
-        createSession(
-            endDatetime: $endDateTime
-            id: $sessionId
-            instructor: $instructorId
-            startDatetime: $startDateTime
-        ) {
-            created
-            session {
-                endDatetime
-                id
-                instructor {
-                    user {
-                        lastName
-                        id
-                        firstName
-                    }
-                }
-                isConfirmed
-                startDatetime
-                title
-                details
-            }
-        }
-    }
-`;
-
 const useStyles = makeStyles(() => ({
     current_session: {
         fontFamily: 'Roboto',
@@ -119,6 +85,12 @@ const GET_SESSION = gql`
                 isConfirmed
                 room
                 courseType
+                activeAvailabilityList {
+                    dayOfWeek
+                    startTime
+                    endTime
+                    id
+                }
                 availabilityList {
                     dayOfWeek
                     startTime
@@ -167,6 +139,47 @@ const GET_SESSION = gql`
     }
 `;
 
+const UPDATE_SESSION_MUTATION = gql`
+    mutation updateSessionMutation(
+        $endDateTime: DateTime
+        $sessionId: ID!
+        $instructorId: ID
+        $startDateTime: DateTime
+        $availabilities: [CourseAvailabilityInput]
+        $courseId: ID!
+    ) {
+        createSession(
+            endDatetime: $endDateTime
+            id: $sessionId
+            instructor: $instructorId
+            startDatetime: $startDateTime
+        ) {
+            created
+            session {
+                endDatetime
+                id
+                instructor {
+                    user {
+                        lastName
+                        id
+                        firstName
+                    }
+                }
+                isConfirmed
+                startDatetime
+                title
+                details
+            }
+        }
+        createCourse(
+            id: $courseId
+            availabilities: $availabilities
+          ) { 
+            created
+          }
+    }
+`;
+
 const CHECK_SCHEDULE_CONFLICTS = gql`
     query checkScheduleConflicts(
         $date: String!
@@ -196,6 +209,7 @@ const SingleSessionEdit = () => {
     const [sessionDate, setSessionsDate] = useState('');
     const [snackBarState, setSnackBarState] = useState(false);
     const [newState, setNewState] = useState({});
+    const [courseAvailabilities, setCourseAvailabilities] = useState([]);
 
     const [timeValidationError, setTimeValidationError] = useState(false);
 
@@ -206,7 +220,7 @@ const SingleSessionEdit = () => {
                 session: {
                     startDatetime,
                     endDatetime,
-                    course: { instructor, courseCategory },
+                    course: { instructor, courseCategory, activeAvailabilityList },
                 },
             } = data;
 
@@ -215,6 +229,7 @@ const SingleSessionEdit = () => {
             setSessionsEndTime(moment(endDatetime)._d);
             setInstructorValue(instructor.user.id);
             setSubjectValue(courseCategory.id);
+            setCourseAvailabilities(activeAvailabilityList);
             setNewState(true);
         },
     });
@@ -271,14 +286,15 @@ const SingleSessionEdit = () => {
         return <Loading />;
 
     if (error) return <Typography>{"There's been an error!"}</Typography>;
+    console.log("$availabilities\" got invalid value [{\"__typename\": \"CourseAvailabilityType\", \"dayOfWeek\": \"TUESDAY\", \"endTime\": \"11:00:00\", \"id\": \"1\", \"startTime\": \"10:00:00\"}, {\"dayOfWeek\": \"THURSDAY\", \"endTime\": \"10:00\", \"id\": \"2\", \"startTime\": \"06:00\"}].\nIn element #0: In field \"__typename\": Unknown field.\nIn element #0: In field \"id\": Unknown field.\nIn element #1: In field \"id\": Unknown field.");
 
     const {
         session: {
             id: sessionId,
             startDatetime,
-            // course: {
-            //     enrollmentSet
-            // }
+            course: {
+                id: courseId
+            }
         },
         courseCategories: subjects,
         instructors,
@@ -301,10 +317,29 @@ const SingleSessionEdit = () => {
     const startSessionTime = moment(sessionStartTime).format('h:mm A');
     const endSessionTime = moment(sessionEndTime).format('h:mm A');
 
+    const formatTime = (time) =>
+    time.length < 11 ? `2021-01-01T${time}` : time;
+
+    const formatAvailabilities = (courseAvailabilities) => {
+        const tempArray = [...courseAvailabilities];
+        // console.log(tempArray);
+        const dayOfWeek = moment(sessionDate).format('dddd').toUpperCase();
+        const courseAvailabilityIndex = courseAvailabilities.findIndex((course) => course.dayOfWeek === dayOfWeek);
+        tempArray.splice(courseAvailabilityIndex, 1, { dayOfWeek, startTime: moment(formatTime(sessionStartTime)).format('HH:mm'), endTime: moment(formatTime(sessionEndTime)).format('HH:mm'), id: courseAvailabilities[courseAvailabilityIndex].id, __typename: courseAvailabilities[courseAvailabilityIndex].__typename });
+        return tempArray.map(({ dayOfWeek, startTime, endTime, id }) => ({
+            dayOfWeek,
+            startTime: moment(formatTime(startTime)).format('HH:mm'),
+            endTime: moment(formatTime(endTime)).format('HH:mm'),
+            id
+        }));
+    };
+
     const handleUpdateSession = () => {
         const startSessionTime = moment(sessionStartTime).format('HH:mm');
         const endSessionTime = moment(sessionEndTime).format('HH:mm');
         const sessionISODate = moment(sessionDate).format('YYYY-MM-DD');
+        const availabilities = formatAvailabilities(courseAvailabilities);
+        console.log(availabilities);
         const startDateTime = moment(
             sessionISODate + ' ' + startSessionTime
         ).format('YYYY-MM-DD[T]HH:mm');
@@ -318,6 +353,8 @@ const SingleSessionEdit = () => {
                 startDateTime,
                 endDateTime,
                 instructorId: instructorValue,
+                availabilities,
+                courseId
             },
         });
     };

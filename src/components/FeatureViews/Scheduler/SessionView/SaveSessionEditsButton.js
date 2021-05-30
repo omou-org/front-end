@@ -15,7 +15,7 @@ import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/Resp
 
 const useStyles = makeStyles({
     dialogDimensions: {
-        height: '28.125rem'
+        height: '27.125rem'
     },
     dialogContentDimensions: {
         margin: '1.25em'
