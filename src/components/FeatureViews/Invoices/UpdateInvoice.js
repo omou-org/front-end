@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { GET_PAYMENT } from './InvoiceReceipt';
 import Loading from 'components/OmouComponents/Loading';
 import { fullName } from 'utils';
+import Box from '@material-ui/core/Box';
 
 import PropTypes from 'prop-types';
 import UpdateInvoiceRow from './UpdateInvoiceRow';
@@ -85,14 +86,14 @@ const UpdateInvoice = () => {
             </Grid>
 
             
-
+            <Box width='100%'>
             {registrationsByStudent.map(student => {
                 const [name, registrations] = student;
                 console.log('Rerender List')
                 return (
                     <>
                         <Grid item>
-                            <Typography variant='h3'>
+                            <Typography variant='h3' align='left'>
                                 {name}
                             </Typography>
                         </Grid>
@@ -106,6 +107,7 @@ const UpdateInvoice = () => {
                     </>
                 )
             })}
+            </Box>
         </Grid>
     )
 }
