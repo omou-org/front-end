@@ -36,8 +36,9 @@ import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
 import Scheduler from '../FeatureViews/Scheduler/Scheduler';
-
 import Invoices from '../FeatureViews/Invoices/Invoices';
+import Request from '../FeatureViews/Request/Request';
+import RequestScheduler from '../FeatureViews/Request/RequestScheduler';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -167,6 +168,20 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/registration/receipt/:paymentID?'>
                 <InvoiceReceipt />
+            </AuthenticatedRoute>
+
+            {/* Request Routes */}
+            <AuthenticatedRoute 
+                path='/manage-tutoring-requests'
+                users={[USER_TYPES.parent, USER_TYPES.receptionist]}
+            >
+                <Request />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute 
+                path='/manage-tutoring-requests/schedule'
+                users={[USER_TYPES.parent, USER_TYPES.receptionist]}
+            >
+                <RequestScheduler />
             </AuthenticatedRoute>
 
             {/* Instructor Routes */}
