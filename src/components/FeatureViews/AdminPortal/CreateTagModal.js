@@ -51,8 +51,10 @@ const CREATE_COURSE_TAG = gql`
                 description: $description
             ) {
                 courseCategory {
-                    description
+                    __typename
                     name
+                    description
+                    id
                 }
             }
     }
@@ -78,15 +80,15 @@ const CREATE_COURSE_TAG = gql`
 //     }
 // `;
 
-// const GET_COURSE_TAGS = gql`
-//     query MyQuery {
-//         courseCategories {
-//             name
-//             description
-//             id
-//         }
-//     }
-// `;
+const GET_COURSE_TAGS = gql`
+    query getCourseTags {
+        courseCategories {
+            name
+            description
+            id
+        }
+    }
+`;
 
 const CreateTagModal = ({ closeModal }) => {
     const [courseTagData, setCourseTagData] = useState({
@@ -99,6 +101,19 @@ const CreateTagModal = ({ closeModal }) => {
             // console.log(data.createCourseCategory.courseCategory);
             closeModal();
         },
+        update: (cache, {data}) => {
+             const newCategory = data.createCourseCategory.courseCategory;
+             const cachedCategory = cache.readQuery({
+                 query: GET_COURSE_TAGS,
+             }).courseCategories;
+             const updatedCache = [...cachedCategory, newCategory];
+             cache.writeQuery({
+                 data: {
+                     courseCategories: updatedCache,
+                 },
+                 query: GET_COURSE_TAGS,
+             });
+        }
         // update: (data) => {
         //     console.log(data);
         //     console.log(data.data.data);
