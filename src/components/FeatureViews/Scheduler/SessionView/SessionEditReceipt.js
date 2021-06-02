@@ -7,9 +7,14 @@ import { capitalizeString } from '../../../../utils';
 const ReceiptFieldRow = ({ keyType, value, isUpdated }) => {
     return (
         <Grid item container direction='row'>
-            <Grid item>
+            <Grid item xs={6}>
                 <Typography color={isUpdated ? 'primary' : ''}>
-                    {`${capitalizeString(keyType)}: ${value}`}
+                    {`${capitalizeString(keyType)}`}
+                </Typography>
+            </Grid>
+            <Grid item xs={6}>
+            <Typography color={isUpdated ? 'primary' : ''}>
+                    {`${value}`}
                 </Typography>
             </Grid>
         </Grid>

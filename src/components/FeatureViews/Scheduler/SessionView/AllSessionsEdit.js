@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
-import { darkBlue, darkGrey } from '../../../../theme/muiTheme';
+import { darkBlue, darkGrey, statusRed } from '../../../../theme/muiTheme';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
 import {
@@ -13,6 +13,7 @@ import {
     EditSessionDropDown,
 } from './EditSessionUtilComponents';
 import { SnackBarComponent } from '../../../OmouComponents/SnackBarComponent';
+// import { SnackBarComponent } from '../../OmouComponents/SnackBarComponent';
 import Grid from '@material-ui/core/Grid';
 import { fullName, USER_TYPES } from '../../../../utils';
 import SaveSessionEditsButton from './SaveSessionEditsButton';

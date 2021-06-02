@@ -202,7 +202,6 @@ const SingleSessionEdit = () => {
     const { data, loading, error } = useQuery(GET_SESSION, {
         variables: { sessionId: session_id },
         onCompleted: (data) => {
-            console.log(data);
             const {
                 session: {
                     startDatetime,
@@ -221,9 +220,6 @@ const SingleSessionEdit = () => {
     });
 
     useEffect(() => {
-        console.log('cool');
-    }, []);
-    useEffect(() => {
         if (
             instructorValue &&
             subjectValue &&
@@ -236,6 +232,7 @@ const SingleSessionEdit = () => {
             const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
             const courseStartTimeState = moment(sessionStartTime).format("YYYY-MM-DD[T]HH:mm");
             const courseEndTimeState = moment(sessionEndTime).format("YYYY-MM-DD[T]HH:mm");
+            const courseTimeAndDateState = `${moment(sessionStartTime).format('dddd, MMMM DD')} at ${moment(sessionStartTime).format('h:mm A')} - ${moment(sessionEndTime).format('h:mm A')}`;
             if (
                 courseStartTimeState !== newState.startDateTime ||
                 courseEndTimeState !== newState.endDateTime ||
@@ -243,10 +240,9 @@ const SingleSessionEdit = () => {
                 courseCategoryStateName !== newState.courseCategory
             ) {
                 setNewState(JSON.stringify({
-                    startDateTime: courseStartTimeState,
-                    endDateTime: courseEndTimeState,
+                    subject: courseCategoryStateName,
                     instructor: instructorStateName,
-                    courseCategory: courseCategoryStateName,
+                    'date & Time': courseTimeAndDateState,
                 }));
             }
 
@@ -288,14 +284,14 @@ const SingleSessionEdit = () => {
         instructors,
     } = data;
 
-    const subjectName = subjects.find(
-        (subject) => subject.id == subjectValue
-    ).name;
+    // const subjectName = subjects.find(
+    //     (subject) => subject.id == subjectValue
+    // ).name;
 
-    const instructorName = fullName(
-        instructors.find((instructor) => instructor.user.id == instructorValue)
-            .user
-    );
+    // const instructorName = fullName(
+    //     instructors.find((instructor) => instructor.user.id == instructorValue)
+    //         .user
+    // );
 
     const studentName = 'Timmeh';
     //const studentName = fullName(enrollmentSet[0].student.user);
@@ -383,16 +379,13 @@ const SingleSessionEdit = () => {
     
     const formatStates = () => {
         const {session: {startDatetime, endDatetime, course}} = data;
+        const courseTimeAndDateState = `${moment(startDatetime).format('dddd, MMMM DD')} at ${moment(startDatetime).format('h:mm A')} - ${moment(endDatetime).format('h:mm A')}`;
         return {
-            startDateTime: moment(startDatetime).format("YYYY-MM-DD[T]HH:mm"),
-            endDateTime: moment(endDatetime).format("YYYY-MM-DD[T]HH:mm"),
+            subject: course.courseCategory.name,
             instructor: fullName(course.instructor.user),
-            courseCategory: course.courseCategory.name,
+            'date & Time': courseTimeAndDateState
         };
     };
-
-    console.log(newState);
-    console.log(formatStates());
 
     return (
         <>
