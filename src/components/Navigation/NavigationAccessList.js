@@ -47,10 +47,16 @@ export const NavList = {
             icon: <AttachMoneyIcon />,
         },
         {
+            name: 'Request',
+            link: '/manage-tutoring-requests',
+            icon: <EventAvailableIcon />,
+        },
+        {
             name: 'Admin',
             link: '/adminportal',
             icon: <NewAdminIcon />,
         },
+
     ],
     RECEPTIONIST: [
         {
@@ -85,7 +91,7 @@ export const NavList = {
         },
         {
             name: 'Request',
-            link: '/request',
+            link: '/manage-tutoring-requests',
             icon: <EventAvailableIcon />,
         },
     ],
@@ -150,7 +156,7 @@ export const NavList = {
         },
         {
             name: 'Request',
-            link: '/request',
+            link: '/manage-tutoring-requests',
             icon: <EventAvailableIcon />,
         },
     ],

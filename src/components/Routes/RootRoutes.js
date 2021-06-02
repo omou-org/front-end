@@ -173,7 +173,7 @@ export const RootRoutes = () => {
             {/* Request Routes */}
             <AuthenticatedRoute 
                 path='/manage-tutoring-requests'
-                users={[USER_TYPES.parent, USER_TYPES.receptionist]}
+                users={[USER_TYPES.parent, USER_TYPES.receptionist, USER_TYPES.admin]}
             >
                 <Request />
             </AuthenticatedRoute>

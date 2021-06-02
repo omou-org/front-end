@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 
 const Request = () => {
     return(
