@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -30,7 +28,6 @@ const SaveSessionEditsButton = ({
 }) => {
     let history = useHistory();
     const { session_id } = useParams();
-    const classes = useStyles();
 
     const [modalState, setModalState] = useState({
         leaveState: false,
@@ -77,10 +74,7 @@ const SaveSessionEditsButton = ({
                 onClose={handleClose}
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
-                maxWidth='xs'
-                classes={{ paperWidthXs: classes.dialogDimensions }}
             >
-                <Grid item xs={12} className={classes.dialogContentDimensions}>
                 <DialogTitle id='alert-dialog-title'>
                     <Typography variant='h3' align='left'>
                         Are you sure?
@@ -88,23 +82,15 @@ const SaveSessionEditsButton = ({
                 </DialogTitle>
                 <DialogContent>
                     <Typography align='left'>
-                    {`Summary of our updated session(s)`} <Box component='span' fontWeight='fontWeightMedium'>{courseConfirmationData}</Box>{':'}
+                    {`Summary of our updated session(s) for`} <Box component='span' fontWeight='fontWeightMedium'>{courseConfirmationData}</Box>{':'}
                     </Typography>
                 </DialogContent>
-				<DialogTitle style={{ padding: '.25em 1.5em', marginTop: '1em' }}>
+				<DialogTitle>
 					<Typography variant='h4'>
 					{"Schedule update:"}
 					</Typography>
 				</DialogTitle>
                 <DialogContent>{children}</DialogContent>
-                <DialogContent>
-                    <Typography variant='h4' style={{ marginBottom: '.5em', marginTop: '1em'}}>
-                        {"Balance update:"}
-                    </Typography>
-                    <Typography variant='body1'>
-                        {"There will not be any balance adjustment to the student's account."}
-                    </Typography>
-                </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color='primary'>
                         {'CANCEL'}
@@ -113,7 +99,6 @@ const SaveSessionEditsButton = ({
                         {'CONTINUE'}
                     </Button>
                 </DialogActions>
-                </Grid>
             </Dialog>
         </>
     );
