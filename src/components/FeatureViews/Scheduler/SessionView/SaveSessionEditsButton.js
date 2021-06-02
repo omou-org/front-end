@@ -31,6 +31,7 @@ const SaveSessionEditsButton = ({
     let history = useHistory();
     const { session_id } = useParams();
     const classes = useStyles();
+    console.log('fix');
 
     const [modalState, setModalState] = useState({
         leaveState: false,
