@@ -22,40 +22,6 @@ import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
 import SessionEditReceipt from "./SessionEditReceipt";
 // import {renderCourseAvailabilitiesString} from "../../../OmouComponents/CourseAvailabilities";
 
-
-const UPDATE_SESSION_MUTATION = gql`
-    mutation updateSessionMutation(
-        $endDateTime: DateTime
-        $sessionId: ID!
-        $instructorId: ID
-        $startDateTime: DateTime
-    ) {
-        createSession(
-            endDatetime: $endDateTime
-            id: $sessionId
-            instructor: $instructorId
-            startDatetime: $startDateTime
-        ) {
-            created
-            session {
-                endDatetime
-                id
-                instructor {
-                    user {
-                        lastName
-                        id
-                        firstName
-                    }
-                }
-                isConfirmed
-                startDatetime
-                title
-                details
-            }
-        }
-    }
-`;
-
 const useStyles = makeStyles(() => ({
     current_session: {
         fontFamily: 'Roboto',
@@ -124,6 +90,12 @@ const GET_SESSION = gql`
                     startTime
                     endTime
                 }
+                activeAvailabilityList {
+                    dayOfWeek
+                    startTime
+                    endTime
+                    id
+                }
                 startDate
                 endDate
                 courseCategory {
@@ -162,6 +134,39 @@ const GET_SESSION = gql`
                 firstName
                 id
                 lastName
+            }
+        }
+    }
+`;
+
+const UPDATE_SESSION_MUTATION = gql`
+    mutation updateSessionMutation(
+        $endDateTime: DateTime
+        $sessionId: ID!
+        $instructorId: ID
+        $startDateTime: DateTime
+    ) {
+        createSession(
+            endDatetime: $endDateTime
+            id: $sessionId
+            instructor: $instructorId
+            startDatetime: $startDateTime
+        ) {
+            created
+            session {
+                endDatetime
+                id
+                instructor {
+                    user {
+                        lastName
+                        id
+                        firstName
+                    }
+                }
+                isConfirmed
+                startDatetime
+                title
+                details
             }
         }
     }
@@ -230,8 +235,8 @@ const SingleSessionEdit = () => {
                 instructors.find(instructor => (instructor.user.id === instructorValue))?.user
             );
             const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
-            const courseStartTimeState = moment(sessionStartTime).format("YYYY-MM-DD[T]HH:mm");
-            const courseEndTimeState = moment(sessionEndTime).format("YYYY-MM-DD[T]HH:mm");
+            const courseStartTimeState = moment(sessionStartTime).format();
+            const courseEndTimeState = moment(sessionEndTime).format();
             const courseTimeAndDateState = `${moment(sessionStartTime).format('dddd, MMMM DD')} at ${moment(sessionStartTime).format('h:mm A')} - ${moment(sessionEndTime).format('h:mm A')}`;
             if (
                 courseStartTimeState !== newState.startDateTime ||
@@ -242,7 +247,7 @@ const SingleSessionEdit = () => {
                 setNewState(JSON.stringify({
                     subject: courseCategoryStateName,
                     instructor: instructorStateName,
-                    'date & Time': courseTimeAndDateState,
+                    'date & time': courseTimeAndDateState,
                 }));
             }
 
@@ -307,11 +312,11 @@ const SingleSessionEdit = () => {
         const sessionISODate = moment(sessionDate).format('YYYY-MM-DD');
         const startDateTime = moment(
             sessionISODate + ' ' + startSessionTime
-        ).format('YYYY-MM-DD[T]HH:mm');
+        ).format();
         const endDateTime = moment(
             sessionISODate + ' ' + endSessionTime
-        ).format('YYYY-MM-DD[T]HH:mm');
-        // console.log(moment(startSessionTime).isBefore(moment(endSessionTime)));
+        ).format();
+        
         updateSession({
             variables: {
                 sessionId,
@@ -383,7 +388,7 @@ const SingleSessionEdit = () => {
         return {
             subject: course.courseCategory.name,
             instructor: fullName(course.instructor.user),
-            'date & Time': courseTimeAndDateState
+            'date & time': courseTimeAndDateState
         };
     };
 
