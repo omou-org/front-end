@@ -225,10 +225,8 @@ const AllSessionsEdit = () => {
             const courseCategoryStateName = subjects.find(
                 (subject) => subject.id === subjectValue
             )?.name;
-            const courseStartDateState =
-                courseStartDate.format();
-            const courseEndDateState =
-                courseEndDate.format();
+            const courseStartDateState = courseStartDate.format();
+            const courseEndDateState = courseEndDate.format();
             if (
                 newCourseAvailabilities !== newState.availabilities ||
                 courseStartDateState !== newState.startDate ||
@@ -481,11 +479,11 @@ const AllSessionsEdit = () => {
             />
             </Grid> */}
                 </Grid>
-                <SnackBarComponent 
-                        snackBarData={snackData}
+                <SnackBarComponent
+                    snackBarData={snackData}
                     snackBarState={snackData?.open}
                     setSnackBarState={setSnackData}
-                    />
+                />
             </Grid>
 
             <Grid container direction='row' justify='flex-end' spacing={1}>
@@ -507,7 +505,7 @@ const AllSessionsEdit = () => {
                         ]}
                     >
                         <SaveSessionEditsButton
-                            courseConfirmationData="Jimmy"
+                            courseConfirmationData='Jimmy'
                             updateSession={handleSubmitEdits}
                             isAll
                         >

@@ -13,7 +13,7 @@ const ReceiptFieldRow = ({ keyType, value, isUpdated }) => {
                 </Typography>
             </Grid>
             <Grid item xs={6}>
-            <Typography color={isUpdated ? 'primary' : ''}>
+                <Typography color={isUpdated ? 'primary' : ''}>
                     {`${value}`}
                 </Typography>
             </Grid>

@@ -27,7 +27,10 @@ export const renderCourseAvailabilitiesString = (availabilityList) => {
         return `${days}${startTime} - ${endTime}`;
     } else {
         return availabilityList.reduce((allAvailabilites, availability, i) => {
-            const day = availability.dayOfWeek === '' ? 'none' : capitalizeString(availability.dayOfWeek.toLowerCase());
+            const day =
+                availability.dayOfWeek === ''
+                    ? 'none'
+                    : capitalizeString(availability.dayOfWeek.toLowerCase());
             const startTime = moment(availability.startTime, [
                 'HH:mm:ss',
             ]).format('h:mma');

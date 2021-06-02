@@ -14,12 +14,12 @@ import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/Resp
 
 const useStyles = makeStyles({
     dialogDimensions: {
-        height: '28.125rem'
+        height: '28.125rem',
     },
     dialogContentDimensions: {
-        margin: '1.25em'
-    }
-  });
+        margin: '1.25em',
+    },
+});
 
 const SaveSessionEditsButton = ({
     children,
@@ -80,38 +80,49 @@ const SaveSessionEditsButton = ({
                 classes={{ paperWidthXs: classes.dialogDimensions }}
             >
                 <Grid item xs={12} className={classes.dialogContentDimensions}>
-                <DialogTitle id='alert-dialog-title'>
-                    <Typography variant='h3' align='left'>
-                        Are you sure?
-                    </Typography>
-                </DialogTitle>
-                <DialogContent>
-                    <Typography align='left'>
-                    {`Summary of our updated session(s)`} <Box component='span' fontWeight='fontWeightMedium'>{courseConfirmationData}</Box>{':'}
-                    </Typography>
-                </DialogContent>
-				<DialogTitle style={{ padding: '.25em 1.5em', marginTop: '1em' }}>
-					<Typography variant='h4'>
-					{"Schedule update:"}
-					</Typography>
-				</DialogTitle>
-                <DialogContent>{children}</DialogContent>
-                <DialogContent>
-                    <Typography variant='h4' style={{ marginBottom: '.5em', marginTop: '1em'}}>
-                        {"Balance update:"}
-                    </Typography>
-                    <Typography variant='body1'>
-                        {"There will not be any balance adjustment to the student's account."}
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color='primary'>
-                        {'CANCEL'}
-                    </Button>
-                    <Button onClick={handleSave} color='primary' autoFocus>
-                        {'CONTINUE'}
-                    </Button>
-                </DialogActions>
+                    <DialogTitle id='alert-dialog-title'>
+                        <Typography variant='h3' align='left'>
+                            Are you sure?
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent>
+                        <Typography align='left'>
+                            {`Summary of our updated session(s)`}{' '}
+                            <Box component='span' fontWeight='fontWeightMedium'>
+                                {courseConfirmationData}
+                            </Box>
+                            {':'}
+                        </Typography>
+                    </DialogContent>
+                    <DialogTitle
+                        style={{ padding: '.25em 1.5em', marginTop: '1em' }}
+                    >
+                        <Typography variant='h4'>
+                            {'Schedule update:'}
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent>{children}</DialogContent>
+                    <DialogContent>
+                        <Typography
+                            variant='h4'
+                            style={{ marginBottom: '.5em', marginTop: '1em' }}
+                        >
+                            {'Balance update:'}
+                        </Typography>
+                        <Typography variant='body1'>
+                            {
+                                "There will not be any balance adjustment to the student's account."
+                            }
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color='primary'>
+                            {'CANCEL'}
+                        </Button>
+                        <Button onClick={handleSave} color='primary' autoFocus>
+                            {'CONTINUE'}
+                        </Button>
+                    </DialogActions>
                 </Grid>
             </Dialog>
         </>

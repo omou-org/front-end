@@ -1,25 +1,25 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import { Prompt, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 // import LeavePageModal from '../../OmouComponents/LeavePageModal';
-import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
-import {Divider, makeStyles, Typography,} from '@material-ui/core';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
-import {darkBlue, darkGrey, statusRed} from '../../../../theme/muiTheme';
-import {QueryBuilder} from '@material-ui/icons';
-import {fullName, USER_TYPES} from '../../../../utils';
+import { darkBlue, darkGrey, statusRed } from '../../../../theme/muiTheme';
+import { QueryBuilder } from '@material-ui/icons';
+import { fullName, USER_TYPES } from '../../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './EditSessionUtilComponents';
-import {SnackBarComponent} from '../../../OmouComponents/SnackBarComponent';
+import { EditSessionDropDown } from './EditSessionUtilComponents';
+import { SnackBarComponent } from '../../../OmouComponents/SnackBarComponent';
 import 'date-fns';
-import {KeyboardDatePicker, KeyboardTimePicker,} from '@material-ui/pickers';
+import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import SaveSessionEditsButton from './SaveSessionEditsButton';
-import {ResponsiveButton} from "../../../../theme/ThemedComponents/Button/ResponsiveButton";
-import NavLinkNoDup from "../../../Routes/NavLinkNoDup";
-import SessionEditReceipt from "./SessionEditReceipt";
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import NavLinkNoDup from '../../../Routes/NavLinkNoDup';
+import SessionEditReceipt from './SessionEditReceipt';
 // import {renderCourseAvailabilitiesString} from "../../../OmouComponents/CourseAvailabilities";
 
 const useStyles = makeStyles(() => ({
@@ -232,25 +232,34 @@ const SingleSessionEdit = () => {
             sessionEndTime
         ) {
             const instructorStateName = fullName(
-                instructors.find(instructor => (instructor.user.id === instructorValue))?.user
+                instructors.find(
+                    (instructor) => instructor.user.id === instructorValue
+                )?.user
             );
-            const courseCategoryStateName = subjects.find(subject => subject.id === subjectValue)?.name;
+            const courseCategoryStateName = subjects.find(
+                (subject) => subject.id === subjectValue
+            )?.name;
             const courseStartTimeState = moment(sessionStartTime).format();
             const courseEndTimeState = moment(sessionEndTime).format();
-            const courseTimeAndDateState = `${moment(sessionStartTime).format('dddd, MMMM DD')} at ${moment(sessionStartTime).format('h:mm A')} - ${moment(sessionEndTime).format('h:mm A')}`;
+            const courseTimeAndDateState = `${moment(sessionStartTime).format(
+                'dddd, MMMM DD'
+            )} at ${moment(sessionStartTime).format('h:mm A')} - ${moment(
+                sessionEndTime
+            ).format('h:mm A')}`;
             if (
                 courseStartTimeState !== newState.startDateTime ||
                 courseEndTimeState !== newState.endDateTime ||
                 instructorStateName !== newState.instructor ||
                 courseCategoryStateName !== newState.courseCategory
             ) {
-                setNewState(JSON.stringify({
-                    subject: courseCategoryStateName,
-                    instructor: instructorStateName,
-                    'date & time': courseTimeAndDateState,
-                }));
+                setNewState(
+                    JSON.stringify({
+                        subject: courseCategoryStateName,
+                        instructor: instructorStateName,
+                        'date & time': courseTimeAndDateState,
+                    })
+                );
             }
-
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [subjectValue, sessionStartTime, sessionEndTime, instructorValue]);
@@ -313,7 +322,7 @@ const SingleSessionEdit = () => {
         const endDateTime = moment(
             sessionISODate + ' ' + endSessionTime
         ).format();
-        
+
         updateSession({
             variables: {
                 sessionId,
@@ -378,14 +387,19 @@ const SingleSessionEdit = () => {
         horizontal: 'left',
     };
 
-    
     const formatStates = () => {
-        const {session: {startDatetime, endDatetime, course}} = data;
-        const courseTimeAndDateState = `${moment(startDatetime).format('dddd, MMMM DD')} at ${moment(startDatetime).format('h:mm A')} - ${moment(endDatetime).format('h:mm A')}`;
+        const {
+            session: { startDatetime, endDatetime, course },
+        } = data;
+        const courseTimeAndDateState = `${moment(startDatetime).format(
+            'dddd, MMMM DD'
+        )} at ${moment(startDatetime).format('h:mm A')} - ${moment(
+            endDatetime
+        ).format('h:mm A')}`;
         return {
             subject: course.courseCategory.name,
             instructor: fullName(course.instructor.user),
-            'date & time': courseTimeAndDateState
+            'date & time': courseTimeAndDateState,
         };
     };
 
