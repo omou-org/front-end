@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { capitalizeString, sessionsAtSameTimeInMultiDayCourse } from 'utils';
+import { DayAbbreviation, sessionsAtSameTimeInMultiDayCourse } from 'utils';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,7 @@ export const renderCourseAvailabilitiesString = (availabilityList) => {
             (allDays, { dayOfWeek }, index) => {
                 return (
                     allDays +
-                    capitalizeString(dayOfWeek) +
+                    DayAbbreviation[dayOfWeek.toLowerCase()] +
                     (index !== availabilityList.length - 1 ? ' / ' : ', ')
                 );
             },
@@ -27,7 +27,7 @@ export const renderCourseAvailabilitiesString = (availabilityList) => {
         return `${days}${startTime} - ${endTime}`;
     } else {
         return availabilityList.reduce((allAvailabilites, availability, i) => {
-            const day = capitalizeString(availability.dayOfWeek);
+            const day = DayAbbreviation[availability.dayOfWeek.toLowerCase()];
             const startTime = moment(availability.startTime, [
                 'HH:mm:ss',
             ]).format('h:mma');
