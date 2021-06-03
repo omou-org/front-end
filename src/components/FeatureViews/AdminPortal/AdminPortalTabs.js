@@ -45,8 +45,8 @@ const AdminPortalTabs = () => {
                 value={tabIndex}
                 onChange={handleTabChange}
             >
-                {adminPortalTabs.map((currentTab) => (
-                    <Tab key={currentTab.tab_id} label={currentTab.label}></Tab>
+                {adminPortalTabs.map((currentTab, i ) => (
+                    <Tab key={i} label={currentTab.label}></Tab>
                 ))}
             </Tabs>
 

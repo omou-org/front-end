@@ -4,7 +4,6 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import DragAndDropUploadBtn from './DragAndDropUploadBtn';
-// import { useUploadOmouTemplate } from '../../../utils';
 import { OnboardingContext } from './OnboardingContext';
 import DownloadTemplateButton from './DownloadTemplateButton';
 import PropTypes from 'prop-types';
@@ -14,16 +13,17 @@ const ImportResults = ({ templateType, setActiveStep }) => {
     const [setUploadedFile] = useState(null);
     const { handleNext } = useOnboardingActions();
     const handleBack = () => setActiveStep(0);
-    // const { uploadTemplate } = useUploadOmouTemplate();
+    
 
     const handleNextImportFlowStep = () => {
         setActiveStep(0);
         handleNext();
     };
 
-    const isError =
-        state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
-
+    const isError      = state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
+    const totalSuccess = state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalSuccess;
+    const totalFailure = state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalFailure;
+    
     return (
         <Grid
             container
@@ -50,19 +50,11 @@ const ImportResults = ({ templateType, setActiveStep }) => {
                         <br />
                         <br />
                         <Typography align='left'>
-                            {`${
-                                state.UPLOAD_RESPONSE.data[
-                                    `upload${templateType}`
-                                ].totalSuccess
-                            } rows uploaded successfully.`}
+                            {`${totalSuccess} rows uploaded successfully.`}
                         </Typography>
                         <br />
                         <Typography align='left'>
-                            {`${
-                                state.UPLOAD_RESPONSE.data[
-                                    `upload${templateType}`
-                                ].totalFailure
-                            } rows failed to upload.`}
+                            {`${totalFailure} rows failed to upload.`}
                         </Typography>
                         <br />
                         <Typography align='left'>

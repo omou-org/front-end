@@ -9,11 +9,10 @@ import {
     goth,
     gloom,
 } from '../../../theme/muiTheme';
-
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import Select from '@material-ui/core/Select';
+
 import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
@@ -22,6 +21,9 @@ import gql from 'graphql-tag';
 import { downloadOmouTemplate, useUploadOmouTemplate } from '../../../utils';
 import PropTypes from 'prop-types';
 import Loading from '../../../components/OmouComponents/Loading';
+import { NavLink } from 'react-router-dom';
+import OmouSelect  from '../../../components/OmouComponents/OmouSelect';
+
 
 const useStyles = makeStyles({
     modalStyle: {
@@ -106,10 +108,10 @@ const GET_TEMPLATE = {
 };
 
 const BulkUploadModal = ({ closeModal }) => {
-    const [template, setTemplate] = useState('');
+    const [selectedItem, setSelectedItem] = useState('');
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
-    const [dropDown, setDropDown] = useState('rotate(0deg)');
+    
     const { uploadTemplate } = useUploadOmouTemplate();
     const [fileName, setFileName] = useState(null);
     const [disableUploadBtn, setDisableUploadBtn] = useState(false);
@@ -121,8 +123,8 @@ const BulkUploadModal = ({ closeModal }) => {
         responseMessage: null,
     });
 
-    const handleTemplateChange = (e) => {
-        setTemplate(e.target.value);
+    const handleSelectChange = (e) => {
+        setSelectedItem(e.target.value);
     };
 
     const handleStepChange = () => {
@@ -134,19 +136,14 @@ const BulkUploadModal = ({ closeModal }) => {
         setResponseError({ error: false, responseMessage: null });
     };
 
-    const handleDropDown = () =>
-        dropDown === 'rotate(0deg)'
-            ? setDropDown('rotate(180deg)')
-            : setDropDown('rotate(0deg)');
-
     const handleDownloadTemplate = () => {
         downloadOmouTemplate(
-            { query: GET_TEMPLATE[template] },
-            template.toLowerCase()
+            { query: GET_TEMPLATE[selectedItem] },
+            selectedItem.toLowerCase()
         );
     };
 
-    const upload = () => {
+    const uploadFileWrapper = () => {
         document.getElementById('xml-upload').click();
         setResponseError({
             ...responseError,
@@ -158,7 +155,7 @@ const BulkUploadModal = ({ closeModal }) => {
     // Show loading screen when user clicks upload
     const uploadFile = async () => {
         setLoading(true);
-        let response = await uploadTemplate(selectedFile, template);
+        let response = await uploadTemplate(selectedFile, selectedItem);
 
         setTimeout(() => {
             if (Object.prototype.hasOwnProperty.call(response, 'errors')) {
@@ -184,11 +181,11 @@ const BulkUploadModal = ({ closeModal }) => {
         setDisableUploadBtn(true);
         setSelectedFile(file);
     };
-    let lowerCaseType = template.toLowerCase();
+    let lowerCaseType = selectedItem.toLowerCase();
 
     const handleDownloadErrorFile = () => {
         downloadOmouTemplate(
-            { error: uploadResponse?.data[`upload${template}`].errorExcel },
+            { error: uploadResponse?.data[`upload${selectedItem}`].errorExcel },
             lowerCaseType
         );
     };
@@ -208,7 +205,6 @@ const BulkUploadModal = ({ closeModal }) => {
                                 className={classes.modalTypography}
                                 variant='h3'
                             >
-                                {' '}
                                 Bulk Upload
                             </Typography>
 
@@ -221,51 +217,16 @@ const BulkUploadModal = ({ closeModal }) => {
                                 data you want to upload, fill out the template
                                 and upload it back Omou.
                             </Typography>
-                            <a
+                            <NavLink
+                                to='/business-use-cases'
                                 className={`${classes.modalTypography} ${classes.useCaseLink}`}
-                                href='/business-use-cases'
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                type='button'
                             >
                                 Why am I entering this data?
-                            </a>
+                            </NavLink>
                             <div style={{ margin: '1em 0px' }}>
-                                <Select
-                                    onOpen={handleDropDown}
-                                    onClose={handleDropDown}
-                                    SelectDisplayProps={{
-                                        className: classes.selectDisplay,
-                                    }}
-                                    disableUnderline
-                                    MenuProps={{
-                                        anchorOrigin: {
-                                            vertical: 'bottom',
-                                            horizontal: 'left',
-                                        },
-                                        getContentAnchorEl: null,
-                                    }}
-                                    IconComponent={() => (
-                                        <SvgIcon
-                                            style={{
-                                                position: 'absolute',
-                                                top: '24%',
-                                                left: '84.25%',
-                                                pointerEvents: 'none',
-                                                transform: dropDown,
-                                            }}
-                                            fontSize='small'
-                                            viewBox='0 0 16 10'
-                                        >
-                                            <path
-                                                d='M1.90255 0.623718L0.57505 1.95122L8.00005 9.37622L15.425 1.95122L14.0975 0.623718L8.00005 6.72122L1.90255 0.623718V0.623718Z'
-                                                fill='#43B5D9'
-                                            />
-                                        </SvgIcon>
-                                    )}
-                                    value={template}
-                                    displayEmpty
-                                    onChange={handleTemplateChange}
+                                <OmouSelect 
+                                selectedItem={selectedItem} 
+                                handleSelectChange={handleSelectChange}
                                 >
                                     <MenuItem
                                         style={{ display: 'none' }}
@@ -305,15 +266,15 @@ const BulkUploadModal = ({ closeModal }) => {
                                     >
                                         Course Enrollments
                                     </MenuItem>
-                                </Select>
+                                </OmouSelect>
                                 <IconButton
-                                    disabled={!template && true}
+                                    disabled={!selectedItem && true}
                                     onClick={handleDownloadTemplate}
                                 >
                                     <SvgIcon>
                                         <path
                                             d='M17.5 13.75V17.5H2.5V13.75H0V17.5C0 18.875 1.125 20 2.5 20H17.5C18.875 20 20 18.875 20 17.5V13.75H17.5ZM16.25 8.75L14.4875 6.9875L11.25 10.2125V0H8.75V10.2125L5.5125 6.9875L3.75 8.75L10 15L16.25 8.75Z'
-                                            fill={template ? omouBlue : gloom}
+                                            fill={selectedItem ? omouBlue : gloom}
                                         />
                                     </SvgIcon>
                                 </IconButton>
@@ -332,11 +293,11 @@ const BulkUploadModal = ({ closeModal }) => {
                                         border: 'none',
                                         background: white,
                                     }}
-                                    disabled={!template && true}
+                                    disabled={!selectedItem && true}
                                     variant={
-                                        template ? 'outlined' : 'contained'
+                                        selectedItem ? 'outlined' : 'contained'
                                     }
-                                    template={template}
+                                    template={selectedItem}
                                     onClick={handleStepChange}
                                 >
                                     continue to upload
@@ -359,7 +320,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                         className={classes.modalTypography}
                                         variant='h3'
                                     >
-                                        Upload {template}
+                                        Upload {selectedItem}
                                     </Typography>
 
                                     <Typography
@@ -374,7 +335,7 @@ const BulkUploadModal = ({ closeModal }) => {
 
                                     <div>
                                         <ResponsiveButton
-                                            onClick={upload}
+                                            onClick={uploadFileWrapper}
                                             disabled={disableUploadBtn}
                                             variant='contained'
                                         >
@@ -424,7 +385,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                         <ResponsiveButton
                                             style={{ border: 'none' }}
                                             variant='outlined'
-                                            template={template}
+                                            template={selectedItem}
                                             onClick={uploadFile}
                                             disabled={!disableUploadBtn}
                                         >
@@ -454,7 +415,7 @@ const BulkUploadModal = ({ closeModal }) => {
                                 variant='body1'
                             >
                                 {`${
-                                    uploadResponse?.data[`upload${template}`]
+                                    uploadResponse?.data[`upload${selectedItem}`]
                                         .totalSuccess
                                 } rows uploaded successfully.`}
                             </Typography>
@@ -465,11 +426,11 @@ const BulkUploadModal = ({ closeModal }) => {
                                 variant='body1'
                             >
                                 {`${
-                                    uploadResponse?.data[`upload${template}`]
+                                    uploadResponse?.data[`upload${selectedItem}`]
                                         .totalFailure
                                 } rows failed.`}
                             </Typography>
-                            {uploadResponse?.data[`upload${template}`]
+                            {uploadResponse?.data[`upload${selectedItem}`]
                                 .errorExcel !== '' && (
                                 <div style={{ margin: '1em 0px' }}>
                                     <Link

@@ -13,11 +13,10 @@ import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
-    Text: {
+    title: {
         marginTop: '24px',
     },
-    Subtitle: {
-        fontFamily: 'Arial, Helvetica Neue, Helvetica, sans-serif',
+    subtitle: {
         textAlign: 'center',
         marginTop: '24px',
     },
@@ -151,9 +150,9 @@ const BusinessInfo = ({ step }) => {
             justify='center'
         >
             <Grid item>
-                <Box className={classes.Text}>
+                <Box className={classes.title}>
                     <Typography variant='h1'>Business Information</Typography>
-                    <Box fontSize='h5.fontSize' className={classes.Subtitle}>
+                    <Box fontSize='h5.fontSize' className={classes.subtitle}>
                         <Typography variant='p'>
                             Please input the following business info, these
                             would show up in payment receipt printouts:
@@ -172,7 +171,7 @@ const BusinessInfo = ({ step }) => {
                         onChange={handleFieldChange(setBizName, 'name')}
                         error={handleError(bizName, 'name')}
                         required
-                    />{' '}
+                    />
                     <br />
                     <TextField
                         style={{ marginTop: 25 }}

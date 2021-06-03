@@ -114,7 +114,6 @@ export default function BusinessHoursForm({ isOnboarding }) {
     ];
 
     const validate = useCallback((formData) => {
-        console.log(formData);
         const errors = {};
         const dayTimeKeys = Object.keys(formData);
         const getUnpairedTimes = (timesArr) => {
