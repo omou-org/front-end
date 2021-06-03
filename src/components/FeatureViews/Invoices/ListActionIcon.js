@@ -5,9 +5,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     icon: {
-        marginRight: '30px',
+        margin: '0px 30px',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        zIndex: 1,
+        // backgroundColor: 'white',
+        // borderRadius: '50%'
     },
 });
 
@@ -27,7 +30,6 @@ const ListActionIcon = ({type, onClick, registrationId}) => {
          
         }
         
-        console.log(icons.cancel)
     return (
         <Grid item onClick={() => onClick(registrationId)} className={classes.icon}>
             {icons[type]}

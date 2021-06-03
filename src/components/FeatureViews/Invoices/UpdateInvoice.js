@@ -14,6 +14,7 @@ import UpdateInvoiceRow from './UpdateInvoiceRow';
 const UpdateInvoice = () => { 
     const { invoiceId } = useParams();
     const [registrationsByStudent, setRegistrationsByStudent] = useState([]);
+    const [registrationsToBeCancelled, setRegistrationsToBeCancelled] = useState([]);
 
     const { data, loading, error } = useQuery(GET_PAYMENT, {
         variables: {
@@ -28,9 +29,9 @@ const UpdateInvoice = () => {
             studentName = fullName(registration.enrollment.student.user);
 
             if (formattedRegistrations[studentName]) {
-                formattedRegistrations[studentName].push({...registration, isCancelled: false});
+                formattedRegistrations[studentName].push(registration);
             } else {
-                formattedRegistrations[studentName] = [{...registration, isCancelled: false}];
+                formattedRegistrations[studentName] = [registration];
             }
         }
 
@@ -45,20 +46,33 @@ const UpdateInvoice = () => {
         setRegistrationsByStudent(registrationData);
     }, [ data ])    
 
-    const handleRowClick = (registrationId) => {
-        const newRegistrationState = registrationsByStudent;
+    const updateCancelledRegistrations = (registrationId) => {
 
-        newRegistrationState.forEach(student => {
-            const [_, registrations] = student;
+        const indexToDelete = registrationsToBeCancelled.indexOf(registrationId);
 
-            registrations.forEach(registration => {
-                if (registration.id === registrationId) {
-                    registration.isCancelled = !registration.isCancelled;
-                }
-            })
-        })
+        const newRegistrationsToBeCancelledState = registrationsToBeCancelled;
+
+        if (indexToDelete === -1) {
+            newRegistrationsToBeCancelledState.push(registrationId);
+        } else {
+            newRegistrationsToBeCancelledState.splice(indexToDelete, 1);
+        }
+
+        setRegistrationsToBeCancelled(newRegistrationsToBeCancelledState);
+
+        // const newRegistrationState = registrationsByStudent;
+
+        // newRegistrationState.forEach(student => {
+        //     const [_, registrations] = student;
+
+        //     registrations.forEach(registration => {
+        //         if (registration.id === registrationId) {
+        //             registration.isCancelled = !registration.isCancelled;
+        //         }
+        //     })
+        // })
         
-        setRegistrationsByStudent(newRegistrationState);
+        // setRegistrationsByStudent(newRegistrationState);
     }
 
     if (loading) {
@@ -71,7 +85,7 @@ const UpdateInvoice = () => {
             </Typography>
         );
 
-        console.log(registrationsByStudent)
+        console.log(registrationsToBeCancelled)
     return (
         <Grid
           container
@@ -89,7 +103,6 @@ const UpdateInvoice = () => {
             <Box width='100%'>
             {registrationsByStudent.map(student => {
                 const [name, registrations] = student;
-                console.log('Rerender List')
                 return (
                     <>
                         <Grid item>
@@ -98,11 +111,9 @@ const UpdateInvoice = () => {
                             </Typography>
                         </Grid>
 
-                        {console.log("Rerender Name ", registrations)}
 
                         {registrations.map(registration => {
-                            console.log('Rerender Registration ', registration)
-                            return <UpdateInvoiceRow key={registration.id} registration={registration} state={registrationsByStudent} handleRowClick={handleRowClick}/>
+                            return <UpdateInvoiceRow key={registration.id} registration={registration} updateCancelledRegistrations={updateCancelledRegistrations}/>
                         })}
                     </>
                 )
