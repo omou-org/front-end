@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {white,goth} from '../../../theme/muiTheme';
+import { white, goth } from '../../../theme/muiTheme';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
@@ -9,7 +9,6 @@ import Loading from '../../../components/OmouComponents/Loading';
 import SelectTemplateStep from './SelectTemplateStep';
 import UploadTemplateStep from './UploadTemplateStep';
 import UploadedResultsStep from './UploadedResultsStep';
-
 
 const useStyles = makeStyles({
     modalStyle: {
@@ -23,7 +22,7 @@ const useStyles = makeStyles({
         boxShadow: '0px 0px 8px rgba(153, 153, 153, 0.8);',
         borderRadius: '5px',
     },
-   
+
     menuSelect: {
         '&:hover': { backgroundColor: white, color: goth },
     },
@@ -51,7 +50,7 @@ const BulkUploadModal = ({ closeModal }) => {
     const [selectedItem, setSelectedItem] = useState('');
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
-    
+
     const { uploadTemplate } = useUploadOmouTemplate();
     const [, setFileName] = useState(null);
     const [disableUploadBtn, setDisableUploadBtn] = useState(false);
@@ -83,8 +82,6 @@ const BulkUploadModal = ({ closeModal }) => {
         );
     };
 
-
-
     // Show loading screen when user clicks upload
     const uploadFile = async () => {
         setLoading(true);
@@ -108,28 +105,28 @@ const BulkUploadModal = ({ closeModal }) => {
         }, 300);
     };
 
-
     let lowerCaseType = selectedItem.toLowerCase();
 
     const handleDownloadErrorFile = () => {
         downloadOmouTemplate(
-            { error: uploadedResponse?.data[`upload${selectedItem}`].errorExcel },
+            {
+                error: uploadedResponse?.data[`upload${selectedItem}`]
+                    .errorExcel,
+            },
             lowerCaseType
         );
     };
-
-   
 
     const getStepContent = (step) => {
         switch (step) {
             case 0:
                 return (
                     <SelectTemplateStep
-                    closeModal={closeModal}
-                    handleDownloadTemplate={handleDownloadTemplate}
-                    handleStepChange={handleStepChange}  
-                    handleSelectChange={handleSelectChange}
-                    selectedItem={selectedItem}
+                        closeModal={closeModal}
+                        handleDownloadTemplate={handleDownloadTemplate}
+                        handleStepChange={handleStepChange}
+                        handleSelectChange={handleSelectChange}
+                        selectedItem={selectedItem}
                     />
                 );
             case 1:
@@ -140,7 +137,6 @@ const BulkUploadModal = ({ closeModal }) => {
                                 <Loading small={true} />
                             </Grid>
                         ) : (
-
                             <UploadTemplateStep
                                 selectedItem={selectedItem}
                                 disableUploadBtn={disableUploadBtn}
@@ -149,7 +145,6 @@ const BulkUploadModal = ({ closeModal }) => {
                                 uploadFile={uploadFile}
                                 handleBackStep={handleBackStep}
                             />
-                           
                         )}
                     </>
                 );
@@ -161,7 +156,6 @@ const BulkUploadModal = ({ closeModal }) => {
                         closeModal={closeModal}
                         handleDownloadErrorFile={handleDownloadErrorFile}
                     />
-                   
                 );
             default:
                 return 'Unknown';

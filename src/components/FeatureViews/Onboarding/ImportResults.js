@@ -13,17 +13,19 @@ const ImportResults = ({ templateType, setActiveStep }) => {
     const [setUploadedFile] = useState(null);
     const { handleNext } = useOnboardingActions();
     const handleBack = () => setActiveStep(0);
-    
 
     const handleNextImportFlowStep = () => {
         setActiveStep(0);
         handleNext();
     };
 
-    const isError      = state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
-    const totalSuccess = state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalSuccess;
-    const totalFailure = state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalFailure;
-    
+    const isError =
+        state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
+    const totalSuccess =
+        state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalSuccess;
+    const totalFailure =
+        state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalFailure;
+
     return (
         <Grid
             container
