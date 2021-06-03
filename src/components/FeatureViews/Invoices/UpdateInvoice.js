@@ -7,14 +7,25 @@ import Loading from 'components/OmouComponents/Loading';
 import { fullName } from 'utils';
 import Box from '@material-ui/core/Box';
 
-import PropTypes from 'prop-types';
 import UpdateInvoiceRow from './UpdateInvoiceRow';
+import { makeStyles } from '@material-ui/core/styles';
 
+const useStyles = makeStyles({
+    heading: {
+        marginBottom: '32px',
+        
+    },
+    studentName: {
+        marginBottom: '24px'
+    }
+});
 
 const UpdateInvoice = () => { 
     const { invoiceId } = useParams();
     const [registrationsByStudent, setRegistrationsByStudent] = useState([]);
     const [registrationsToBeCancelled, setRegistrationsToBeCancelled] = useState([]);
+
+    const classes = useStyles();
 
     const { data, loading, error } = useQuery(GET_PAYMENT, {
         variables: {
@@ -59,20 +70,6 @@ const UpdateInvoice = () => {
         }
 
         setRegistrationsToBeCancelled(newRegistrationsToBeCancelledState);
-
-        // const newRegistrationState = registrationsByStudent;
-
-        // newRegistrationState.forEach(student => {
-        //     const [_, registrations] = student;
-
-        //     registrations.forEach(registration => {
-        //         if (registration.id === registrationId) {
-        //             registration.isCancelled = !registration.isCancelled;
-        //         }
-        //     })
-        // })
-        
-        // setRegistrationsByStudent(newRegistrationState);
     }
 
     if (loading) {
@@ -85,7 +82,6 @@ const UpdateInvoice = () => {
             </Typography>
         );
 
-        console.log(registrationsToBeCancelled)
     return (
         <Grid
           container
@@ -93,27 +89,27 @@ const UpdateInvoice = () => {
           justify='flex-start'
           alignItems='flex-start'
         >
-            <Grid item>
+            <Grid item className={classes.heading}>
                 <Typography variant='h1' >
                     Invoice #{invoiceId}
                 </Typography>
             </Grid>
-
             
             <Box width='100%'>
             {registrationsByStudent.map(student => {
                 const [name, registrations] = student;
                 return (
                     <>
-                        <Grid item>
+                        <Grid item className={classes.studentName}>
                             <Typography variant='h3' align='left'>
                                 {name}
                             </Typography>
                         </Grid>
 
+                        {registrations.map((registration, index, array) => {
+                            const isLastItem = index === array.length - 1;
 
-                        {registrations.map(registration => {
-                            return <UpdateInvoiceRow key={registration.id} registration={registration} updateCancelledRegistrations={updateCancelledRegistrations}/>
+                            return <UpdateInvoiceRow key={registration.id} registration={registration} updateCancelledRegistrations={updateCancelledRegistrations} isLastItem={isLastItem}/>
                         })}
                     </>
                 )

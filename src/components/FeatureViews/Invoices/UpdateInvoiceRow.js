@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import ListDetailedItem, {
+import  {
     ListActions,
     ListContent,
     ListDetail,
@@ -37,7 +37,8 @@ const useStyles = makeStyles({
         top: '0px'
     },
     cancelledSVG: {
-        zIndex: 5
+        zIndex: 5,
+        position: 'relative',
     },
     hide: {
         display: 'none'
@@ -46,11 +47,14 @@ const useStyles = makeStyles({
         position: 'relative',
         paddingRight: '0px',
         backgroundColor: 'red'
+    },
+    lastRow: {
+        borderBottom: '1px solid #C4C4C4'
     }
 });
 
 
-const UpdateInvoiceRow = ({registration, updateCancelledRegistrations, state}) => {
+const UpdateInvoiceRow = ({registration, updateCancelledRegistrations, isLastItem}) => {
 
     const [isCancelled, setIsCancelled] = useState(registration.isCancelled);
 
@@ -77,7 +81,7 @@ const UpdateInvoiceRow = ({registration, updateCancelledRegistrations, state}) =
 
 
     return (
-        <Box className={classes.root}>
+        <Box className={`${classes.root} ${isLastItem && classes.lastRow}`}>
             <Grid container justify='space-between'>
                 <ListContent>
                     <Grid container alignItems='center'>
@@ -171,7 +175,7 @@ const UpdateInvoiceRow = ({registration, updateCancelledRegistrations, state}) =
 UpdateInvoiceRow.propTypes = {
     registration: PropTypes.any,
     updateCancelledRegistrations: PropTypes.any,
-    state: PropTypes.any
+    isLastItem: PropTypes.bool
 }
 
 export default UpdateInvoiceRow;

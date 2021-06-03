@@ -8,9 +8,7 @@ const useStyles = makeStyles({
         margin: '0px 30px',
         display: 'flex',
         alignItems: 'center',
-        zIndex: 1,
-        // backgroundColor: 'white',
-        // borderRadius: '50%'
+        zIndex: 1
     },
 });
 
