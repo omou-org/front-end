@@ -15,8 +15,7 @@ const useStyles = makeStyles({
         transform: 'translate(-50%, -50%)',
         position: 'absolute',
         width: '31rem',
-        // height: '15.5rem',
-        height: '15rem',
+        height: '15.5rem',
         background: white,
         boxShadow: '0px 0px 8px rgba(153, 153, 153, 0.8);',
         borderRadius: '5px',
@@ -26,6 +25,7 @@ const useStyles = makeStyles({
         height: '2rem',
         width: '13rem',
         color: darkGrey,
+        marginBottom: '1rem'
     },
     descriptionInput: {
         ...body1,
@@ -33,12 +33,25 @@ const useStyles = makeStyles({
         width: '16.0625rem',
         color: darkGrey,
     },
-    borderStyles: {
+    topicNameBorderStyles: {
         borderTop: 'none',
         borderLeft: 'none',
         borderRight: 'none',
         borderBottom: '1px solid #404143',
+        borderRadius: '0px',
+        width: '14.25rem'
     },
+    topicDescriptionBorderStyles: {
+        borderTop: 'none',
+        borderLeft: 'none',
+        borderRight: 'none',
+        borderBottom: '1px solid #404143',
+        borderRadius: '0px',
+        width: '27rem'
+    },
+    topicNamePlaceholder: {
+
+    }
 });
 
 const CREATE_COURSE_TAG = gql`
@@ -172,7 +185,8 @@ const CreateTopicModal = ({ closeModal }) => {
                         InputProps={{
                             classes: {
                                 root: classes.subjectInput,
-                                notchedOutline: classes.borderStyles,
+                                notchedOutline: classes.topicNameBorderStyles,
+                                input: classes.topicNamePlaceholder
                             },
                         }}
                         onChange={handleOnChange}
@@ -187,14 +201,14 @@ const CreateTopicModal = ({ closeModal }) => {
                         InputProps={{
                             classes: {
                                 root: classes.descriptionInput,
-                                notchedOutline: classes.borderStyles,
+                                notchedOutline: classes.topicDescriptionBorderStyles,
                             },
                         }}
                         onChange={handleOnChange}
                     />
                 </Grid>
 
-                <Grid style={{ textAlign: 'right' }} item xs={12}>
+                <Grid style={{ textAlign: 'right', marginBottom: '2rem' }} item xs={12}>
                     <ResponsiveButton
                         style={{ border: 'none', color: darkGrey }}
                         variant='outlined'
