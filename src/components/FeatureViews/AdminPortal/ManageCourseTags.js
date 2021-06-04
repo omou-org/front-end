@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
-import CheckIcon from '@material-ui/icons/Check';
-import { gql, useQuery } from '@apollo/client';
+// import CheckIcon from '@material-ui/icons/Check';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
@@ -88,24 +88,26 @@ const GET_COURSE_TAGS = gql`
 `;
 
 
-// const CREATE_COURSE_TAG = gql`
-//     mutation createCourseTag(
-//         $name: String, 
-//         $description: String
-//         ) {
-//             createCourseCategory(
-//                 name: $name, 
-//                 description: $description
-//             ) {
-//                 courseCategory {
-//                     __typename
-//                     name
-//                     description
-//                     id
-//                 }
-//             }
-//     }
-// `;
+const UPDATE_COURSE_TOPIC = gql`
+    mutation createCourseTag(
+        $id: ID,
+        $name: String, 
+        $description: String
+        ) {
+            createCourseCategory(
+                id: $id,
+                name: $name, 
+                description: $description
+            ) {
+                courseCategory {
+                    __typename
+                    name
+                    description
+                    id
+                }
+            }
+    }
+`;
 
 // const GET_COURSE_TAG = gql`
 //     query getCourseTag($categoryId: ID) {
@@ -117,10 +119,7 @@ const GET_COURSE_TAGS = gql`
 //     }
 // `;
 
-
-
-
-const ManageCourseTags = () => {
+const ManageCourseTopics = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [courseTags, setCourseTags] = useState([]);
     const [searchValue, setSearchValue] = useState('');
@@ -161,8 +160,9 @@ const ManageCourseTags = () => {
             }
      ));
     };
-    
 
+    const [submitUpdatedCourseTopic] = useMutation(UPDATE_COURSE_TOPIC);
+    
     const { loading, error, data } = useQuery(GET_COURSE_TAGS, {
         onCompleted: () => {
             let tags = createCourseTagObject(data.courseCategories);
@@ -213,11 +213,17 @@ const ManageCourseTags = () => {
       const onSubmitEdit = id => {
         const newRows = courseTags.map(row => {
           if (row.id === id) {
+            submitUpdatedCourseTopic({
+                variables: {
+                    id: row.id,
+                    name: row.name,
+                    description: row.description
+                }
+            });
             return previous[id] ? previous[id] : row;
           }
           return row;
         });
-        // add lazy query to update the topic 
         setCourseTags(newRows);
         setPrevious(state => {
           delete state[id];
@@ -329,7 +335,7 @@ const ManageCourseTags = () => {
                         </TableHead>
                         <TableBody>
                             {
-                            courseTags.reverse().slice(page * amountOfRows, page * amountOfRows + amountOfRows ).map(row => (
+                            courseTags.slice(page * amountOfRows, page * amountOfRows + amountOfRows ).map(row => (
                                 <TableRow key={row.id}>
                                 <CustomTableCell {...{ row, name: "name", onChange: onEditTextFieldChange }} />
                                 <CustomTableCell {...{ row, name: "description", onChange: onEditTextFieldChange }} />
@@ -379,11 +385,11 @@ const ManageCourseTags = () => {
     );
 };
 
-ManageCourseTags.propTypes ={
+ManageCourseTopics.propTypes ={
     row: PropTypes.object,
     name: PropTypes.string,
     onChange: PropTypes.func
 };
 
 
-export default ManageCourseTags;
+export default ManageCourseTopics;
