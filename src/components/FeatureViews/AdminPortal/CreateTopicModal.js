@@ -90,10 +90,10 @@ const GET_COURSE_TAGS = gql`
     }
 `;
 
-const CreateTagModal = ({ closeModal }) => {
-    const [courseTagData, setCourseTagData] = useState({
-        tagName: '',
-        tagDescription: '',
+const CreateTopicModal = ({ closeModal }) => {
+    const [courseTopicData, setCourseTopicData] = useState({
+        topicName: '',
+        topicDescription: '',
     });
 
     const [submitData] = useMutation(CREATE_COURSE_TAG, {
@@ -130,7 +130,7 @@ const CreateTagModal = ({ closeModal }) => {
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
-        setCourseTagData((prevState) => ({
+        setCourseTopicData((prevState) => ({
 			...prevState,
 			[name]: value,
 		}));
@@ -139,8 +139,8 @@ const CreateTagModal = ({ closeModal }) => {
     const onSubmit = () => {
         submitData({
             variables: {
-                name: courseTagData.tagName,
-                description: courseTagData.tagDescription,
+                name: courseTopicData.topicName,
+                description: courseTopicData.topicDescription,
             },
         });
     };
@@ -149,7 +149,7 @@ const CreateTagModal = ({ closeModal }) => {
     return (
         <Grid container className={classes.modalStyle}>
             <Grid item style={{ padding: '2rem 1rem 0rem 2rem' }}>
-                <Typography variant='h3'>Create New Subject</Typography>
+                <Typography variant='h3'>Create New Topic</Typography>
 
                 <Grid
                     item
@@ -164,9 +164,9 @@ const CreateTagModal = ({ closeModal }) => {
                 >
                     <TextField
                         type='text'
-                        placeholder='* Subject (max 30 characters)'
-                        value={courseTagData.tagName}
-                        name='tagName'
+                        placeholder='* Topic (max 30 characters)'
+                        value={courseTopicData.topicName}
+                        name='topicName'
                         variant='outlined'
                         required
                         InputProps={{
@@ -181,8 +181,8 @@ const CreateTagModal = ({ closeModal }) => {
                     <TextField
                         type='text'
                         placeholder='Description (max 80 characters)'
-                        value={courseTagData.tagDescription}
-                        name='tagDescription'
+                        value={courseTopicData.topicDescription}
+                        name='topicDescription'
                         variant='outlined'
                         InputProps={{
                             classes: {
@@ -210,7 +210,7 @@ const CreateTagModal = ({ closeModal }) => {
                         variant='outlined'
                         onClick={onSubmit}
                     >
-                        create subject
+                        create topic
                     </ResponsiveButton>
                 </Grid>
             </Grid>
@@ -218,8 +218,8 @@ const CreateTagModal = ({ closeModal }) => {
     );
 };
 
-CreateTagModal.propTypes = {
+CreateTopicModal.propTypes = {
     closeModal: PropTypes.func,
 };
 
-export default CreateTagModal;
+export default CreateTopicModal;

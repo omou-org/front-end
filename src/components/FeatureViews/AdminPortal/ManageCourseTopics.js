@@ -17,7 +17,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import CreateTagModal from './CreateTagModal';
+import CreateTopicModal from './CreateTopicModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import { h4, omouBlue, white, body1, body2 } from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
@@ -250,7 +250,7 @@ const ManageCourseTopic = () => {
                         startIcon={<AddIcon />}
                         onClick={handleModalOpen}
                     >
-                        new subject
+                        new topic
                     </ResponsiveButton>
                 </Grid>
                 <Modal
@@ -258,7 +258,7 @@ const ManageCourseTopic = () => {
                     open={modalOpen}
                     onClose={handleModalClose}
                 >
-                    <CreateTagModal closeModal={handleModalClose} />
+                    <CreateTopicModal closeModal={handleModalClose} />
                 </Modal>
                 <Grid item style={{ marginRight: '3rem' }}>
                     <TextField
