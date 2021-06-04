@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
-// import CheckIcon from '@material-ui/icons/Check';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
@@ -62,11 +61,13 @@ const useStyles = makeStyles({
         border: `1px solid ${omouBlue}`,
         borderRadius: '5px',
     },
-    input: {
+    editInput: {
+        ...body1,
         border: `1px solid ${omouBlue}`,
         borderRadius: '5px',
-        textAlign: 'center',
-        padding: '5px',
+        alignItems: 'center',
+        paddingLeft: '1rem',
+        height: '2rem'
     },
     tableFooter: {
         paddingTop: '1vh',
@@ -105,15 +106,18 @@ const UPDATE_COURSE_TOPIC = gql`
 const CustomTableCell = ({ row, name, onChange }) => {
     const classes = useStyles();
     const { isEditMode } = row;
+    let cellWidth;
+    name === 'name' ? cellWidth = '13.2rem' : cellWidth = '34.7rem';
     return (
-        <TableCell align='left'>
+        <TableCell align='left' style={{ width: cellWidth}}
+        >
             {isEditMode ? (
                 <TextField
                     value={row[name]}
                     name={name}
                     fullWidth
                     onChange={(e) => onChange(e, row)}
-                    className={classes.input}
+                    className={classes.editInput}
                     InputProps={{ disableUnderline: true }}
                 />
             ) : (
@@ -315,6 +319,7 @@ const ManageCourseTopic = () => {
                                                 onChange: onEditTextFieldChange,
                                             }}
                                         />
+                                        
                                         <CustomTableCell
                                             {...{
                                                 row,
