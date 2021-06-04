@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 // import CheckIcon from '@material-ui/icons/Check';
@@ -24,9 +23,7 @@ import { h4, omouBlue, white, body1, body2 } from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
 import Loading from 'components/OmouComponents/Loading';
 import DoneIcon from '@material-ui/icons/Done';
-
-import {TablePagination} from '../../OmouComponents/TablePagination';
-
+import { TablePagination } from '../../OmouComponents/TablePagination';
 const useStyles = makeStyles({
     verticalMargin: {
         marginTop: '1rem',
@@ -69,14 +66,12 @@ const useStyles = makeStyles({
         border: `1px solid ${omouBlue}`,
         borderRadius: '5px',
         textAlign: 'center',
-        padding: '5px'
+        padding: '5px',
     },
     tableFooter: {
         paddingTop: '1vh',
     },
 });
-
-
 const GET_COURSE_TAGS = gql`
     query getCourseTags {
         courseCategories {
@@ -86,40 +81,48 @@ const GET_COURSE_TAGS = gql`
         }
     }
 `;
-
-
 const UPDATE_COURSE_TOPIC = gql`
-    mutation createCourseTag(
-        $id: ID,
-        $name: String, 
-        $description: String
-        ) {
-            createCourseCategory(
-                id: $id,
-                name: $name, 
-                description: $description
-            ) {
-                courseCategory {
-                    __typename
-                    name
-                    description
-                    id
-                }
+    mutation createCourseTag($id: ID, $name: String, $description: String) {
+        createCourseCategory(id: $id, name: $name, description: $description) {
+            courseCategory {
+                __typename
+                name
+                description
+                id
             }
+        }
     }
 `;
-
 // const GET_COURSE_TAG = gql`
-//     query getCourseTag($categoryId: ID) {
-//         courseCategory(categoryId: $categoryId) {
-//             id
-//             name
-//             description
-//         }
-//     }
+// query getCourseTag($categoryId: ID) {
+// courseCategory(categoryId: $categoryId) {
+// id
+// name
+// description
+// }
+// }
 // `;
-
-const ManageCourseTopics = () => {
+const CustomTableCell = ({ row, name, onChange }) => {
+    const classes = useStyles();
+    const { isEditMode } = row;
+    return (
+        <TableCell align='left'>
+            {isEditMode ? (
+                <TextField
+                    value={row[name]}
+                    name={name}
+                    fullWidth
+                    onChange={(e) => onChange(e, row)}
+                    className={classes.input}
+                    InputProps={{ disableUnderline: true }}
+                />
+            ) : (
+                row[name]
+            )}
+        </TableCell>
+    );
+};
+const ManageCourseTopic = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [courseTags, setCourseTags] = useState([]);
     const [searchValue, setSearchValue] = useState('');
@@ -129,49 +132,25 @@ const ManageCourseTopics = () => {
     const [page, setPage] = useState(0);
     const classes = useStyles();
 
-    const CustomTableCell = ({ row, name, onChange }) => {
-        const classes = useStyles();
-        const { isEditMode } = row;
-        return (
-          <TableCell align="left" >
-            {isEditMode ? (
-              <TextField
-                value={row[name]}
-                name={name}
-                fullWidth
-                onChange={e => onChange(e, row)}
-                className={classes.input}
-                InputProps={{disableUnderline: true}}
-              />
-            ) : (
-              row[name]
-            )}
-          </TableCell>
-        );
-      };
-
     const createCourseTagObject = (courses) => {
-     return courses.map(({name, description,id}) => (
-             {
-                id,
-                name,
-                description,
-                isEditMode : false
-            }
-     ));
+        return courses.map(({ name, description, id }) => ({
+            id,
+            name,
+            description,
+            isEditMode: false,
+        }));
     };
 
     const [submitUpdatedCourseTopic] = useMutation(UPDATE_COURSE_TOPIC);
-    
+
     const { loading, error, data } = useQuery(GET_COURSE_TAGS, {
         onCompleted: () => {
             let tags = createCourseTagObject(data.courseCategories);
-            setCourseTags(tags);
+            setCourseTags(tags.reverse());
         },
-        fetchPolicy: 'cache-and-network'
-  
+        fetchPolicy: 'cache-and-network',
     });
-    
+
     if (loading) {
         return <Loading />;
     }
@@ -183,86 +162,79 @@ const ManageCourseTopics = () => {
         );
     }
 
-    const onToggleEditMode = id => {
+    const onToggleEditMode = (id) => {
         setCourseTags(() => {
-          return courseTags.map(row => {
-            if (row.id === id) {
-              return { ...row, isEditMode: !row.isEditMode };
-            }
-            return row;
-          });
+            return courseTags.map((row) => {
+                if (row.id === id) {
+                    return { ...row, isEditMode: !row.isEditMode };
+                }
+                return row;
+            });
         });
-      };
-
+    };
     const onEditTextFieldChange = (e, row) => {
         if (!previous[row.id]) {
-          setPrevious(state => ({ ...state, [row.id]: row }));
+            setPrevious((state) => ({ ...state, [row.id]: row }));
         }
         const value = e.target.value;
         const name = e.target.name;
         const { id } = row;
-        const newRows = courseTags.map(row => {
-          if (row.id === id) {
-            return { ...row, [name]: value };
-          }
-          return row;
+        const newRows = courseTags.map((row) => {
+            if (row.id === id) {
+                return { ...row, [name]: value };
+            }
+            return row;
         });
         setCourseTags(newRows);
-      }; 
+    };
+    const onSubmitEdit = (id) => {
+        const newRows = courseTags.map((row) => {
+            if (row.id === id) {
+                submitUpdatedCourseTopic({
+                    variables: {
+                        id: row.id,
+                        name: row.name,
+                        description: row.description,
+                    },
+                });
+                return previous[id] ? previous[id] : row;
+            }
+            return row;
+        });
+        setCourseTags(newRows);
 
-      const onSubmitEdit = id => {
-        const newRows = courseTags.map(row => {
-          if (row.id === id) {
-            submitUpdatedCourseTopic({
-                variables: {
-                    id: row.id,
-                    name: row.name,
-                    description: row.description
-                }
-            });
-            return previous[id] ? previous[id] : row;
-          }
-          return row;
-        });
-        setCourseTags(newRows);
-        setPrevious(state => {
-          delete state[id];
-          return state;
+        setPrevious((state) => {
+            delete state[id];
+            return state;
         });
         onToggleEditMode(id);
-      };
-
+    };
     // create a function that filters the courseTags by name
-
     const searchCourseTopic = (e) => {
         setSearchValue(e.target.value);
         let inputValue = e.target.value;
-   
-        inputValue = inputValue.toLowerCase();
-       
-        const finalResult = [];
 
+        inputValue = inputValue.toLowerCase();
+
+        const finalResult = [];
         courseTags.forEach((item) => {
-            if(item.name.toLowerCase().indexOf(inputValue) !== -1){
+            if (item.name.toLowerCase().indexOf(inputValue) !== -1) {
                 finalResult.push(item);
             }
         });
-        
-        if(!inputValue){
+
+        if (!inputValue) {
             setCourseTags(data.courseCategories);
-        }else {
+        } else {
             setCourseTags(finalResult);
         }
-
     };
-
-
-    const handlePageChange = (newPage) =>{
+    const handlePageChange = (newPage) => {
         setPage(newPage);
     };
     let amountOfRows = 15;
     let totalPages = Math.ceil(courseTags.length / amountOfRows);
-    
+
     return (
         <>
             <Grid
@@ -281,7 +253,6 @@ const ManageCourseTopics = () => {
                         new subject
                     </ResponsiveButton>
                 </Grid>
-
                 <Modal
                     disableBackdropClick
                     open={modalOpen}
@@ -289,7 +260,6 @@ const ManageCourseTopics = () => {
                 >
                     <CreateTagModal closeModal={handleModalClose} />
                 </Modal>
-
                 <Grid item style={{ marginRight: '3rem' }}>
                     <TextField
                         // className={classes.searchBar}
@@ -310,58 +280,76 @@ const ManageCourseTopics = () => {
                     />
                 </Grid>
             </Grid>
-
             <Grid container>
                 <TableContainer className={classes.verticalMargin}>
                     <Table size='small'>
-                    <TableHead>
+                        <TableHead>
                             <TableRow>
                                 <TableCell
                                     className={classes.headCells}
-                                    style={{minWidth: 170}}
+                                    style={{ minWidth: 170 }}
                                 >
                                     Topic
                                 </TableCell>
                                 <TableCell
-                                className={classes.headCells}
-                                style={{minWidth: 170}}
+                                    className={classes.headCells}
+                                    style={{ minWidth: 170 }}
                                 >
                                     Description
                                 </TableCell>
-                            <TableCell>
-                                
-                            </TableCell>
+                                <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {
-                            courseTags.slice(page * amountOfRows, page * amountOfRows + amountOfRows ).map(row => (
-                                <TableRow key={row.id}>
-                                <CustomTableCell {...{ row, name: "name", onChange: onEditTextFieldChange }} />
-                                <CustomTableCell {...{ row, name: "description", onChange: onEditTextFieldChange }} />
-                                <TableCell className={classes.selectTableCell} style={{width: '40px'}}>
-                                    {row.isEditMode ? (
-                                    <>
-                                    
-                                        <IconButton
-                                        aria-label="revert"
-                                        onClick={() => onSubmitEdit(row.id)}
+                            {courseTags
+                                .slice(
+                                    page * amountOfRows,
+                                    page * amountOfRows + amountOfRows
+                                )
+                                .map((row) => (
+                                    <TableRow key={row.id}>
+                                        <CustomTableCell
+                                            {...{
+                                                row,
+                                                name: 'name',
+                                                onChange: onEditTextFieldChange,
+                                            }}
+                                        />
+                                        <CustomTableCell
+                                            {...{
+                                                row,
+                                                name: 'description',
+                                                onChange: onEditTextFieldChange,
+                                            }}
+                                        />
+                                        <TableCell
+                                            className={classes.selectTableCell}
+                                            style={{ width: '40px' }}
                                         >
-                                        <DoneIcon/> 
-                                        </IconButton>
-                                    </>
-                                    ) : (
-                                    <IconButton
-                                        aria-label="delete"
-                            
-                                        onClick={() => onToggleEditMode(row.id)}
-                                    >
-                                        <EditIcon />
-                                    </IconButton>
-                                    )}
-                                </TableCell>
-                                </TableRow>
-                                        ))}
+                                            {row.isEditMode ? (
+                                                <>
+                                                    <IconButton
+                                                        aria-label='revert'
+                                                        onClick={() =>
+                                                            onSubmitEdit(row.id)
+                                                        }
+                                                    >
+                                                        <DoneIcon />
+                                                    </IconButton>
+                                                </>
+                                            ) : (
+                                                <IconButton
+                                                    aria-label='delete'
+                                                    onClick={() =>
+                                                        onToggleEditMode(row.id)
+                                                    }
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -371,25 +359,22 @@ const ManageCourseTopics = () => {
                     justify='center'
                     alignItems='center'
                     className={classes.tableFooter}
-                    >
-                <TablePagination
-                    page={page}
-                    colSpan={3}
-                    totalPages={totalPages}
-                    onChangePage={handlePageChange}
-                    isGraphqlPage={false}
-                />
+                >
+                    <TablePagination
+                        page={page}
+                        colSpan={3}
+                        totalPages={totalPages}
+                        onChangePage={handlePageChange}
+                        isGraphqlPage={false}
+                    />
                 </Grid>
             </Grid>
         </>
     );
 };
-
-ManageCourseTopics.propTypes ={
+CustomTableCell.propTypes = {
     row: PropTypes.object,
     name: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
 };
-
-
-export default ManageCourseTopics;
+export default ManageCourseTopic;
