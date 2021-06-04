@@ -67,7 +67,7 @@ const useStyles = makeStyles({
         borderRadius: '5px',
         alignItems: 'center',
         paddingLeft: '1rem',
-        height: '2rem'
+        height: '2rem',
     },
     tableFooter: {
         paddingTop: '1vh',
@@ -107,10 +107,9 @@ const CustomTableCell = ({ row, name, onChange }) => {
     const classes = useStyles();
     const { isEditMode } = row;
     let cellWidth;
-    name === 'name' ? cellWidth = '13.2rem' : cellWidth = '34.7rem';
+    name === 'name' ? (cellWidth = '13.2rem') : (cellWidth = '34.7rem');
     return (
-        <TableCell align='left' style={{ width: cellWidth}}
-        >
+        <TableCell align='left' style={{ width: cellWidth }}>
             {isEditMode ? (
                 <TextField
                     value={row[name]}
@@ -319,7 +318,7 @@ const ManageCourseTopic = () => {
                                                 onChange: onEditTextFieldChange,
                                             }}
                                         />
-                                        
+
                                         <CustomTableCell
                                             {...{
                                                 row,

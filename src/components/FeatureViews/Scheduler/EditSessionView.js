@@ -415,14 +415,8 @@ const EditSessionView = () => {
     };
 
     const handleUpdateSession = () => {
-        const {
-            start_time,
-            room,
-            is_confirmed,
-            instructor,
-            duration,
-            title,
-        } = sessionFields;
+        const { start_time, room, is_confirmed, instructor, duration, title } =
+            sessionFields;
         let newUTCEndTime = calculateEndTime(duration, start_time);
         switch (location.state.allOrCurrent) {
             case 'current': {

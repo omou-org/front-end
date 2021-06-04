@@ -177,12 +177,10 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
                                         poster,
                                         subject,
                                     } = note;
-                                    const date = moment(updatedAt).format(
-                                        'MM/DD'
-                                    );
-                                    const time = moment(updatedAt).format(
-                                        'h:mma'
-                                    );
+                                    const date =
+                                        moment(updatedAt).format('MM/DD');
+                                    const time =
+                                        moment(updatedAt).format('h:mma');
 
                                     return (
                                         <>
@@ -222,8 +220,7 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
                                                     >
                                                         <Create
                                                             style={{
-                                                                color:
-                                                                    '#43B5D9',
+                                                                color: '#43B5D9',
                                                             }}
                                                         />
                                                     </Button>
@@ -255,9 +252,10 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
                                                         >
                                                             <span
                                                                 style={{
-                                                                    paddingRight: theme.spacing(
-                                                                        1
-                                                                    ),
+                                                                    paddingRight:
+                                                                        theme.spacing(
+                                                                            1
+                                                                        ),
                                                                 }}
                                                             >
                                                                 {!readMore
@@ -280,18 +278,20 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
                                                     Posted by:
                                                     <span
                                                         style={{
-                                                            paddingRight: theme.spacing(
-                                                                1
-                                                            ),
+                                                            paddingRight:
+                                                                theme.spacing(
+                                                                    1
+                                                                ),
                                                         }}
                                                     />
                                                     <span
                                                         style={{
                                                             color: '#43B5D9',
                                                             fontWeight: '550',
-                                                            padding: theme.spacing(
-                                                                1
-                                                            ),
+                                                            padding:
+                                                                theme.spacing(
+                                                                    1
+                                                                ),
                                                         }}
                                                     >
                                                         {fullName(poster)}
@@ -299,17 +299,19 @@ const ClassSessionView = ({ sessionId, loggedInUser }) => {
                                                     •
                                                     <span
                                                         style={{
-                                                            padding: theme.spacing(
-                                                                1
-                                                            ),
+                                                            padding:
+                                                                theme.spacing(
+                                                                    1
+                                                                ),
                                                         }}
                                                     >
                                                         {date}
                                                         <span
                                                             style={{
-                                                                padding: theme.spacing(
-                                                                    1
-                                                                ),
+                                                                padding:
+                                                                    theme.spacing(
+                                                                        1
+                                                                    ),
                                                             }}
                                                         >
                                                             •

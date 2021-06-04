@@ -52,9 +52,10 @@ const parseAmountType = {
 
 const DiscountRow = ({ discount, type, classes }) => {
     const dispatch = useDispatch();
-    const api = useMemo(() => bindActionCreators(adminActions, dispatch), [
-        dispatch,
-    ]);
+    const api = useMemo(
+        () => bindActionCreators(adminActions, dispatch),
+        [dispatch]
+    );
     const [anchorEl, setAnchorEl] = useState(null);
     const [open, setOpen] = useState(false);
     const [deleteWarning, setDeleteWarning] = useState(false);
@@ -167,25 +168,22 @@ const DiscountRow = ({ discount, type, classes }) => {
         [api]
     );
 
-    const handleDiscountToggleActive = (
-        discountID,
-        discountType,
-        active
-    ) => () => {
-        const toggledActive = { active: !active };
-        switch (discountType) {
-            case 'MultiCourse':
-                api.patchMultiCourseDiscount(discountID, toggledActive);
-                break;
-            case 'DateRange':
-                api.patchDateRangeDiscount(discountID, toggledActive);
-                break;
-            case 'PaymentMethod':
-                api.patchPaymentMethodDiscount(discountID, toggledActive);
-                break;
-            // no default
-        }
-    };
+    const handleDiscountToggleActive =
+        (discountID, discountType, active) => () => {
+            const toggledActive = { active: !active };
+            switch (discountType) {
+                case 'MultiCourse':
+                    api.patchMultiCourseDiscount(discountID, toggledActive);
+                    break;
+                case 'DateRange':
+                    api.patchDateRangeDiscount(discountID, toggledActive);
+                    break;
+                case 'PaymentMethod':
+                    api.patchPaymentMethodDiscount(discountID, toggledActive);
+                    break;
+                // no default
+            }
+        };
 
     const handleEdit = useCallback(
         (event) => {
@@ -243,15 +241,16 @@ const DiscountRow = ({ discount, type, classes }) => {
     );
 
     const handleTextChange = useCallback(
-        (field, fieldName) => ({ target }) => {
-            setDiscountFields((prevFields) => ({
-                ...prevFields,
-                [fieldName]: {
-                    ...field,
-                    value: target.value,
-                },
-            }));
-        },
+        (field, fieldName) =>
+            ({ target }) => {
+                setDiscountFields((prevFields) => ({
+                    ...prevFields,
+                    [fieldName]: {
+                        ...field,
+                        value: target.value,
+                    },
+                }));
+            },
         []
     );
 

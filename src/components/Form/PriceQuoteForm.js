@@ -111,8 +111,8 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                     );
                     const stateDiscounts = JSON.stringify(discounts);
                     if (responseDiscounts !== stateDiscounts) {
-                        let ResponseDiscounts = quoteResponse.data.discounts.map(
-                            (discount) => ({
+                        let ResponseDiscounts =
+                            quoteResponse.data.discounts.map((discount) => ({
                                 ...discount,
                                 enable: discounts.find(
                                     (sDiscount) => sDiscount.id === discount.id
@@ -122,15 +122,15 @@ const PriceQuoteForm = ({ courses, tutoring }) => {
                                               sDiscount.id === discount.id
                                       ).enable
                                     : true,
-                            })
-                        );
+                            }));
                         const ResponseDiscountIDs = ResponseDiscounts.map(
                             (discount) => discount.id
                         );
-                        const discountNotInResponseButInState = discounts.filter(
-                            (discount) =>
-                                !ResponseDiscountIDs.includes(discount.id)
-                        );
+                        const discountNotInResponseButInState =
+                            discounts.filter(
+                                (discount) =>
+                                    !ResponseDiscountIDs.includes(discount.id)
+                            );
                         ResponseDiscounts = ResponseDiscounts.concat(
                             discountNotInResponseButInState
                         );
