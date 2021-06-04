@@ -66,8 +66,6 @@ const useStyles = makeStyles({
         borderRadius: '5px',
     },
     input: {
-        width: 170,
-        height: 40,
         border: `1px solid ${omouBlue}`,
         borderRadius: '5px',
         textAlign: 'center',
@@ -141,6 +139,7 @@ const ManageCourseTags = () => {
               <TextField
                 value={row[name]}
                 name={name}
+                fullWidth
                 onChange={e => onChange(e, row)}
                 className={classes.input}
                 InputProps={{disableUnderline: true}}
@@ -211,13 +210,14 @@ const ManageCourseTags = () => {
         setCourseTags(newRows);
       }; 
 
-      const onRevert = id => {
+      const onSubmitEdit = id => {
         const newRows = courseTags.map(row => {
           if (row.id === id) {
             return previous[id] ? previous[id] : row;
           }
           return row;
         });
+        // add lazy query to update the topic 
         setCourseTags(newRows);
         setPrevious(state => {
           delete state[id];
@@ -254,7 +254,8 @@ const ManageCourseTags = () => {
     const handlePageChange = (newPage) =>{
         setPage(newPage);
     };
-    let totalPages = Math.ceil(courseTags.length / 15);
+    let amountOfRows = 15;
+    let totalPages = Math.ceil(courseTags.length / amountOfRows);
     
     return (
         <>
@@ -321,16 +322,14 @@ const ManageCourseTags = () => {
                                 >
                                     Description
                                 </TableCell>
-                                <TableCell>
-
-                                </TableCell>
+                            <TableCell>
+                                
+                            </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {
-                            
-                            courseTags.slice(page * 15, page * 15 + 15 ).map(row => (
-            
+                            courseTags.reverse().slice(page * amountOfRows, page * amountOfRows + amountOfRows ).map(row => (
                                 <TableRow key={row.id}>
                                 <CustomTableCell {...{ row, name: "name", onChange: onEditTextFieldChange }} />
                                 <CustomTableCell {...{ row, name: "description", onChange: onEditTextFieldChange }} />
@@ -340,7 +339,7 @@ const ManageCourseTags = () => {
                                     
                                         <IconButton
                                         aria-label="revert"
-                                        onClick={() => onRevert(row.id)}
+                                        onClick={() => onSubmitEdit(row.id)}
                                         >
                                         <DoneIcon/> 
                                         </IconButton>
