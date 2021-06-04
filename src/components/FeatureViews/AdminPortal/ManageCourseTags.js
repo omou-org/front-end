@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 // import CheckIcon from '@material-ui/icons/Check';
@@ -90,6 +91,7 @@ const GET_COURSE_TAGS = gql`
 
 // const CREATE_COURSE_TAG = gql`
 //     mutation createCourseTag(
+//          $id  :  ID,
 //         $name: String, 
 //         $description: String
 //         ) {
@@ -116,21 +118,7 @@ const GET_COURSE_TAGS = gql`
 //         }
 //     }
 // `;
-
-
-
-
-const ManageCourseTags = () => {
-    const [modalOpen, setModalOpen] = useState(false);
-    const [courseTags, setCourseTags] = useState([]);
-    const [searchValue, setSearchValue] = useState('');
-    const handleModalOpen = () => setModalOpen(true);
-    const handleModalClose = () => setModalOpen(false);
-    const [previous, setPrevious] = useState({});
-    const [page, setPage] = useState(0);
-    const classes = useStyles();
-
-    const CustomTableCell = ({ row, name, onChange }) => {
+  const CustomTableCell = ({ row, name, onChange }) => {
         const classes = useStyles();
         const { isEditMode } = row;
         return (
@@ -151,6 +139,21 @@ const ManageCourseTags = () => {
         );
       };
 
+
+
+
+const ManageCourseTopic = () => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [courseTags, setCourseTags] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
+    const handleModalOpen = () => setModalOpen(true);
+    const handleModalClose = () => setModalOpen(false);
+    const [previous, setPrevious] = useState({});
+    const [page, setPage] = useState(0);
+    const classes = useStyles();
+
+  
+    
     const createCourseTagObject = (courses) => {
      return courses.map(({name, description,id}) => (
              {
@@ -219,6 +222,7 @@ const ManageCourseTags = () => {
         });
         // add lazy query to update the topic 
         setCourseTags(newRows);
+        
         setPrevious(state => {
           delete state[id];
           return state;
@@ -329,7 +333,7 @@ const ManageCourseTags = () => {
                         </TableHead>
                         <TableBody>
                             {
-                            courseTags.reverse().slice(page * amountOfRows, page * amountOfRows + amountOfRows ).map(row => (
+                            courseTags.slice(page * amountOfRows, page * amountOfRows + amountOfRows ).map(row => (
                                 <TableRow key={row.id}>
                                 <CustomTableCell {...{ row, name: "name", onChange: onEditTextFieldChange }} />
                                 <CustomTableCell {...{ row, name: "description", onChange: onEditTextFieldChange }} />
@@ -379,11 +383,12 @@ const ManageCourseTags = () => {
     );
 };
 
-ManageCourseTags.propTypes ={
+
+CustomTableCell.propTypes ={
     row: PropTypes.object,
     name: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
 };
 
 
-export default ManageCourseTags;
+export default ManageCourseTopic;
