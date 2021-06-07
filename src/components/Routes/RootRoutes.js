@@ -172,14 +172,14 @@ export const RootRoutes = () => {
 
             {/* Request Routes */}
             <AuthenticatedRoute 
-                path='/manage-tutoring-requests'
+                exact path='/manage-tutoring-requests'
                 users={[USER_TYPES.parent, USER_TYPES.receptionist, USER_TYPES.admin]}
             >
                 <Request />
             </AuthenticatedRoute>
             <AuthenticatedRoute 
-                path='/manage-tutoring-requests/schedule'
-                users={[USER_TYPES.parent, USER_TYPES.receptionist]}
+                exact path='/manage-tutoring-requests/schedule'
+                users={[USER_TYPES.parent, USER_TYPES.receptionist, USER_TYPES.admin]}
             >
                 <RequestScheduler />
             </AuthenticatedRoute>
