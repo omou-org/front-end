@@ -18,7 +18,14 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import CreateTopicModal from './CreateTopicModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { h4, omouBlue, white, body1, body2, gloom } from '../../../theme/muiTheme';
+import {
+    h4,
+    omouBlue,
+    white,
+    body1,
+    body2,
+    gloom,
+} from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
 import Loading from 'components/OmouComponents/Loading';
 import DoneIcon from '@material-ui/icons/Done';
@@ -254,7 +261,7 @@ const ManageCourseTopic = () => {
                             },
                             endAdornment: (
                                 <InputAdornment position='end'>
-                                    <SearchIcon style={{color: gloom}} />
+                                    <SearchIcon style={{ color: gloom }} />
                                 </InputAdornment>
                             ),
                         }}
