@@ -18,7 +18,7 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import CreateTopicModal from './CreateTopicModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { h4, omouBlue, white, body1, body2 } from '../../../theme/muiTheme';
+import { h4, omouBlue, white, body1, body2, gloom } from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
 import Loading from 'components/OmouComponents/Loading';
 import DoneIcon from '@material-ui/icons/Done';
@@ -42,24 +42,8 @@ const useStyles = makeStyles({
         ...h4,
         color: omouBlue,
     },
-    tagName: {
+    topicName: {
         ...body2,
-    },
-    editTagDescription: {
-        ...body1,
-        height: '2rem',
-        width: '34.675rem',
-        background: white,
-        border: `1px solid ${omouBlue}`,
-        borderRadius: '5px',
-    },
-    editTagName: {
-        ...body1,
-        height: '2rem',
-        width: '13.2125rem',
-        background: white,
-        border: `1px solid ${omouBlue}`,
-        borderRadius: '5px',
     },
     editInput: {
         ...body1,
@@ -94,22 +78,16 @@ const UPDATE_COURSE_TOPIC = gql`
         }
     }
 `;
-// const GET_COURSE_TAG = gql`
-// query getCourseTag($categoryId: ID) {
-// courseCategory(categoryId: $categoryId) {
-// id
-// name
-// description
-// }
-// }
-// `;
+
 const CustomTableCell = ({ row, name, onChange }) => {
     const classes = useStyles();
     const { isEditMode } = row;
-    let cellWidth;
-    name === 'name' ? cellWidth = '13.2rem' : cellWidth = '34.7rem';
+
     return (
-        <TableCell align='left' style={{ width: cellWidth}}
+        <TableCell 
+            align='left' 
+            style={{ width: name === 'name' ? '14.2rem' : '34.7rem', marginRight: '2.5rem' }} 
+            className={(name === 'name' && !isEditMode) && classes.topicName}
         >
             {isEditMode ? (
                 <TextField
@@ -117,6 +95,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
                     name={name}
                     fullWidth
                     onChange={(e) => onChange(e, row)}
+                    style={{ ...body1 }}
                     className={classes.editInput}
                     InputProps={{ disableUnderline: true }}
                 />
@@ -266,8 +245,7 @@ const ManageCourseTopic = () => {
                 </Modal>
                 <Grid item style={{ marginRight: '3rem' }}>
                     <TextField
-                        // className={classes.searchBar}
-                        placeholder='Search course subject'
+                        placeholder='Search topic'
                         value={searchValue}
                         variant='outlined'
                         InputProps={{
@@ -276,7 +254,7 @@ const ManageCourseTopic = () => {
                             },
                             endAdornment: (
                                 <InputAdornment position='end'>
-                                    <SearchIcon />
+                                    <SearchIcon style={{color: gloom}} />
                                 </InputAdornment>
                             ),
                         }}
