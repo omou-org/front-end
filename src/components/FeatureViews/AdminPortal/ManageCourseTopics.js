@@ -107,9 +107,9 @@ const CustomTableCell = ({ row, name, onChange }) => {
                     onChange={(e) => onChange(e, row)}
                     InputProps={{
                         classes: {
-                            root: classes.editInput
+                            root: classes.editInput,
                         },
-                        disableUnderline: true
+                        disableUnderline: true,
                     }}
                 />
             ) : (
