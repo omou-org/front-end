@@ -74,7 +74,7 @@ export const setToken = async (token, shouldSave, usernameEmail = '') => {
             mutation: GET_EMAIL,
             variables: { token },
         });
-        let email = usernameEmail || verifyToken.payload.username;
+        const email = usernameEmail || verifyToken.payload.username;
 
         const {
             data: { userInfo },

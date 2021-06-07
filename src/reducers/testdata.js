@@ -8,8 +8,7 @@ export default [
         endTime: '14:00',
         editable: true,
         daysOfWeek: [2],
-        url:
-            'registration/course/1/6th%20Grade%20Math%20Placement%20Test%20Prep',
+        url: 'registration/course/1/6th%20Grade%20Math%20Placement%20Test%20Prep',
     },
 
     {

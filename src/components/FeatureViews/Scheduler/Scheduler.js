@@ -1,19 +1,19 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {Calendar, momentLocalizer} from 'react-big-calendar';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import gql from 'graphql-tag';
-import {useQuery} from '@apollo/client';
-import {SchedulerContext} from './SchedulerContext';
+import { useQuery } from '@apollo/client';
+import { SchedulerContext } from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {fullName} from '../../../utils';
-import {useHistory} from 'react-router-dom';
-import {instructorPalette} from '../../../theme/muiTheme';
-import {findCommonElement} from '../../Form/FormUtils';
-import {SessionPopover} from './SessionPopover';
-import {OmouSchedulerToolbar} from './OmouSchedulerToolbar';
-import {useSelector} from 'react-redux';
+import { fullName } from '../../../utils';
+import { useHistory } from 'react-router-dom';
+import { instructorPalette } from '../../../theme/muiTheme';
+import { findCommonElement } from '../../Form/FormUtils';
+import { SessionPopover } from './SessionPopover';
+import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
@@ -233,25 +233,27 @@ function Scheduler() {
         );
 
         const getCourseId = (session) => session.course.id;
-        const sessionsFilteredByInstructorsAndCourses = filterSessionsBySelectedOptions(
-            schedulerState.selectedCourses,
-            sessionsFilteredByInstructors,
-            getCourseId
-        );
+        const sessionsFilteredByInstructorsAndCourses =
+            filterSessionsBySelectedOptions(
+                schedulerState.selectedCourses,
+                sessionsFilteredByInstructors,
+                getCourseId
+            );
 
         const getStudentId = (session) =>
             session.students.map((student) => student.id);
-        const sessionsFilteredByInstructorsCoursesStudents = filterSessionsBySelectedOptions(
-            schedulerState.selectedStudents,
-            sessionsFilteredByInstructorsAndCourses,
-            getStudentId
-        );
+        const sessionsFilteredByInstructorsCoursesStudents =
+            filterSessionsBySelectedOptions(
+                schedulerState.selectedStudents,
+                sessionsFilteredByInstructorsAndCourses,
+                getStudentId
+            );
 
         setFilteredSessionsInView(sessionsFilteredByInstructorsCoursesStudents);
     };
 
     useEffect(() => {
-        const {timeFrame, timeShift, ...rest} = schedulerState;
+        const { timeFrame, timeShift, ...rest } = schedulerState;
         if (timeFrame && timeShift) {
             setSchedulerState({
                 ...rest,

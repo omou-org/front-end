@@ -105,100 +105,96 @@ export const fetchAdmins = (id) =>
         { id }
     );
 
-const wrapNoteGet = (
-    endpoint,
-    paramName,
-    [startType, successType, failType],
-    payloadInfo
-) => (ownerID, ownerType) => async (dispatch) => {
-    const newAction = (type, response) => {
-        dispatch({
-            payload: {
-                ...(payloadInfo || {}),
-                ownerID,
-                ownerType,
-                response,
-            },
-            type,
-        });
+const wrapNoteGet =
+    (endpoint, paramName, [startType, successType, failType], payloadInfo) =>
+    (ownerID, ownerType) =>
+    async (dispatch) => {
+        const newAction = (type, response) => {
+            dispatch({
+                payload: {
+                    ...(payloadInfo || {}),
+                    ownerID,
+                    ownerType,
+                    response,
+                },
+                type,
+            });
+        };
+
+        // request starting
+        newAction(startType, {});
+
+        try {
+            const response = await instance.get(endpoint, {
+                params: {
+                    [paramName]: ownerID,
+                },
+            });
+            // succesful request
+            newAction(successType, response);
+        } catch (error) {
+            // failed request
+            newAction(failType, error.response);
+        }
     };
 
-    // request starting
-    newAction(startType, {});
+const wrapNotePost =
+    (endpoint, [startType, successType, failType], payloadInfo) =>
+    (data, ownerType) =>
+    async (dispatch) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                payload: {
+                    ...(payloadInfo || {}),
+                    ownerType,
+                    response,
+                },
+                type,
+            });
+        };
 
-    try {
-        const response = await instance.get(endpoint, {
-            params: {
-                [paramName]: ownerID,
-            },
-        });
-        // succesful request
-        newAction(successType, response);
-    } catch (error) {
-        // failed request
-        newAction(failType, error.response);
-    }
-};
+        // request starting
+        newAction(startType, {});
 
-const wrapNotePost = (
-    endpoint,
-    [startType, successType, failType],
-    payloadInfo
-) => (data, ownerType) => async (dispatch) => {
-    // creates a new action based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            payload: {
-                ...(payloadInfo || {}),
-                ownerType,
-                response,
-            },
-            type,
-        });
+        try {
+            const response = await instance.post(endpoint, data);
+            // succesful request
+            newAction(successType, response);
+        } catch ({ response }) {
+            // failed request
+            newAction(failType, response);
+        }
     };
 
-    // request starting
-    newAction(startType, {});
+const wrapNotePatch =
+    (endpoint, [startType, successType, failType], payloadInfo) =>
+    (id, data, ownerType, ownerID) =>
+    async (dispatch) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                payload: {
+                    ...(payloadInfo || {}),
+                    ownerID,
+                    ownerType,
+                    response,
+                },
+                type,
+            });
+        };
+        // request starting
+        newAction(startType, {});
 
-    try {
-        const response = await instance.post(endpoint, data);
-        // succesful request
-        newAction(successType, response);
-    } catch ({ response }) {
-        // failed request
-        newAction(failType, response);
-    }
-};
-
-const wrapNotePatch = (
-    endpoint,
-    [startType, successType, failType],
-    payloadInfo
-) => (id, data, ownerType, ownerID) => async (dispatch) => {
-    // creates a new action based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            payload: {
-                ...(payloadInfo || {}),
-                ownerID,
-                ownerType,
-                response,
-            },
-            type,
-        });
+        try {
+            const response = await instance.patch(`${endpoint}${id}/`, data);
+            // succesful request
+            newAction(successType, response);
+        } catch (error) {
+            // failed request
+            newAction(failType, error.response);
+        }
     };
-    // request starting
-    newAction(startType, {});
-
-    try {
-        const response = await instance.patch(`${endpoint}${id}/`, data);
-        // succesful request
-        newAction(successType, response);
-    } catch (error) {
-        // failed request
-        newAction(failType, error.response);
-    }
-};
 
 export const fetchAccountNotes = wrapNoteGet('/account/note/', 'user_id', [
     types.FETCH_ACCOUNT_NOTE_STARTED,
