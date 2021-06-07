@@ -51,7 +51,7 @@ const useStyles = makeStyles({
         borderRadius: '5px',
         alignItems: 'center',
         paddingLeft: '1rem',
-        height: '2rem'
+        height: '2rem',
     },
     tableFooter: {
         paddingTop: '1vh',
@@ -297,7 +297,7 @@ const ManageCourseTopic = () => {
                                                 onChange: onEditTextFieldChange,
                                             }}
                                         />
-                                        
+
                                         <CustomTableCell
                                             {...{
                                                 row,

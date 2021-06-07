@@ -22,7 +22,7 @@ export function TablePagination(props) {
     const classes = useStyles();
     const theme = useTheme();
     const { totalPages, page, onChangePage, isGraphqlPage } = props;
-    
+
     const handleBackButtonClick = () => onChangePage(page - 1);
 
     const handleNextButtonClick = () => onChangePage(page + 1);
@@ -42,7 +42,9 @@ export function TablePagination(props) {
                 )}
             </IconButton>
             <div style={{ paddingTop: '3pt' }}>
-            {isGraphqlPage ? `${page} OF ${totalPages}` : `${page + 1} OF ${totalPages}`}
+                {isGraphqlPage
+                    ? `${page} OF ${totalPages}`
+                    : `${page + 1} OF ${totalPages}`}
             </div>
 
             <IconButton

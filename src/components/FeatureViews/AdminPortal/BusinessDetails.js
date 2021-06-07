@@ -102,14 +102,13 @@ const BusinessDetails = () => {
         },
         update: (cache, data) => {
             const updatedBusiness = data.data.updateBusiness.business;
-            cache.writeQuery(
-                { 
-                    query: GET_BUSINESS, 
-                    data: {
-                        business: updatedBusiness
-                    }
-                });
-        }
+            cache.writeQuery({
+                query: GET_BUSINESS,
+                data: {
+                    business: updatedBusiness,
+                },
+            });
+        },
     });
 
     const handleStepChange = () => setActiveStep((prevState) => prevState + 1);
@@ -140,7 +139,7 @@ const BusinessDetails = () => {
                 businessName: business.name,
                 businessPhone: business.phoneNumber,
                 businessEmail: business.email,
-                businessAddress: business.address
+                businessAddress: business.address,
             });
         },
     });
@@ -268,7 +267,11 @@ const BusinessDetails = () => {
                                 Business Hours
                             </Typography>
                             {business.availabilityList.map((avail, i) => (
-                                <Typography key={i} align='left' variant='body1'>
+                                <Typography
+                                    key={i}
+                                    align='left'
+                                    variant='body1'
+                                >
                                     {capitalizeString(avail.dayOfWeek)}:{' '}
                                     {moment(avail.startTime, [
                                         'HH:mm:ss',

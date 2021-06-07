@@ -25,7 +25,7 @@ const useStyles = makeStyles({
         height: '2rem',
         width: '13rem',
         color: darkGrey,
-        marginBottom: '1rem'
+        marginBottom: '1rem',
     },
     descriptionInput: {
         ...body1,
@@ -39,7 +39,7 @@ const useStyles = makeStyles({
         borderRight: 'none',
         borderBottom: '1px solid #404143',
         borderRadius: '0px',
-        width: '14.25rem'
+        width: '14.25rem',
     },
     topicDescriptionBorderStyles: {
         borderTop: 'none',
@@ -47,41 +47,33 @@ const useStyles = makeStyles({
         borderRight: 'none',
         borderBottom: '1px solid #404143',
         borderRadius: '0px',
-        width: '27rem'
+        width: '27rem',
     },
-    topicNamePlaceholder: {
-
-    }
+    topicNamePlaceholder: {},
 });
 
 const CREATE_COURSE_TAG = gql`
-    mutation createCourseTag(
-        $name: String, 
-        $description: String
-        ) {
-            createCourseCategory(
-                name: $name, 
-                description: $description
-            ) {
-                courseCategory {
-                    __typename
-                    name
-                    description
-                    id
-                }
+    mutation createCourseTag($name: String, $description: String) {
+        createCourseCategory(name: $name, description: $description) {
+            courseCategory {
+                __typename
+                name
+                description
+                id
             }
+        }
     }
 `;
 
 // const UPDATE_COURSE_TAG = gql`
 //     mutation createCourseTag(
 //         $id: ID,
-//         $name: String, 
+//         $name: String,
 //         $description: String
 //         ) {
 //             createCourseCategory(
 //                 id: $id,
-//                 name: $name, 
+//                 name: $name,
 //                 description: $description
 //             ) {
 //                 courseCategory {
@@ -114,26 +106,26 @@ const CreateTopicModal = ({ closeModal }) => {
             // console.log(data.createCourseCategory.courseCategory);
             closeModal();
         },
-        update: (cache, {data}) => {
-             const newCategory = data.createCourseCategory.courseCategory;
-             const cachedCategory = cache.readQuery({
-                 query: GET_COURSE_TAGS,
-             }).courseCategories;
-             const updatedCache = [...cachedCategory, newCategory];
-             cache.writeQuery({
-                 data: {
-                     courseCategories: updatedCache,
-                 },
-                 query: GET_COURSE_TAGS,
-             });
-        }
+        update: (cache, { data }) => {
+            const newCategory = data.createCourseCategory.courseCategory;
+            const cachedCategory = cache.readQuery({
+                query: GET_COURSE_TAGS,
+            }).courseCategories;
+            const updatedCache = [...cachedCategory, newCategory];
+            cache.writeQuery({
+                data: {
+                    courseCategories: updatedCache,
+                },
+                query: GET_COURSE_TAGS,
+            });
+        },
         // update: (data) => {
         //     console.log(data);
         //     console.log(data.data.data);
         //     const createdCourseTag = data.createCourseCategory.courseCategory;
         //     cache.writeQuery(
-        //         { 
-        //             query: GET_COURSE_TAGS, 
+        //         {
+        //             query: GET_COURSE_TAGS,
         //             data: {
         //                 courseCategory: createdCourseTag
         //             }
@@ -144,9 +136,9 @@ const CreateTopicModal = ({ closeModal }) => {
     const handleOnChange = (e) => {
         const { name, value } = e.target;
         setCourseTopicData((prevState) => ({
-			...prevState,
-			[name]: value,
-		}));
+            ...prevState,
+            [name]: value,
+        }));
     };
 
     const onSubmit = () => {
@@ -186,7 +178,7 @@ const CreateTopicModal = ({ closeModal }) => {
                             classes: {
                                 root: classes.subjectInput,
                                 notchedOutline: classes.topicNameBorderStyles,
-                                input: classes.topicNamePlaceholder
+                                input: classes.topicNamePlaceholder,
                             },
                         }}
                         onChange={handleOnChange}
@@ -201,14 +193,19 @@ const CreateTopicModal = ({ closeModal }) => {
                         InputProps={{
                             classes: {
                                 root: classes.descriptionInput,
-                                notchedOutline: classes.topicDescriptionBorderStyles,
+                                notchedOutline:
+                                    classes.topicDescriptionBorderStyles,
                             },
                         }}
                         onChange={handleOnChange}
                     />
                 </Grid>
 
-                <Grid style={{ textAlign: 'right', marginBottom: '2rem' }} item xs={12}>
+                <Grid
+                    style={{ textAlign: 'right', marginBottom: '2rem' }}
+                    item
+                    xs={12}
+                >
                     <ResponsiveButton
                         style={{ border: 'none', color: darkGrey }}
                         variant='outlined'

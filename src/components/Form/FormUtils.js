@@ -95,9 +95,8 @@ export const createDiscountPayload = (form) => {
         case 'Payment Method Discount': {
             return {
                 ...discountPayload,
-                payment_method: form['Discount Rules'][
-                    'Payment Method'
-                ].toLowerCase(),
+                payment_method:
+                    form['Discount Rules']['Payment Method'].toLowerCase(),
             };
         }
         // no default

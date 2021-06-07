@@ -285,8 +285,9 @@ const UserProfile = () => {
     if (error) return <Redirect to='/PageNotFound' />;
 
     const { accountNotes } = data;
-    const numImportantNotes = accountNotes.filter((note) => note.important)
-        .length;
+    const numImportantNotes = accountNotes.filter(
+        (note) => note.important
+    ).length;
     const importantNotesBadge =
         numImportantNotes > 0 ? numImportantNotes : null;
 

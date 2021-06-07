@@ -61,7 +61,7 @@ const useStyles = makeStyles({
         padding: '2rem',
         backgroundColor: white,
         overflowX: 'hidden',
-        overflowY: 'auto'
+        overflowY: 'auto',
     },
     selectDisplay: {
         background: white,
@@ -71,7 +71,7 @@ const useStyles = makeStyles({
         padding: '0.5em 3em 0.5em 1em',
     },
     verticalMargin: {
-        marginTop: '1rem'
+        marginTop: '1rem',
     },
     tableHead: {
         background: omouBlue,
@@ -220,7 +220,6 @@ const BulkUploadModal = ({ closeModal }) => {
                                         }}
                                         className={classes.menuSelect}
                                         disabled
-                                        
                                     >
                                         Select Template
                                     </MenuItem>
@@ -408,8 +407,7 @@ const BulkUploadModal = ({ closeModal }) => {
 };
 
 BulkUploadModal.propTypes = {
-    closeModal: PropTypes.func
+    closeModal: PropTypes.func,
 };
 
 export default BulkUploadModal;
-
