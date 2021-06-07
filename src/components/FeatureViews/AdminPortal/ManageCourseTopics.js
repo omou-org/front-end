@@ -86,7 +86,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
     return (
         <TableCell 
             align='left' 
-            style={{ width: name === 'name' ? '14.2rem' : '34.7rem', marginRight: '2.5rem' }} 
+            style={{ width: name === 'name' ? '14.2rem' : '35.2rem', marginRight: '2.5rem' }} 
             className={(name === 'name' && !isEditMode) && classes.topicName}
         >
             {isEditMode ? (
