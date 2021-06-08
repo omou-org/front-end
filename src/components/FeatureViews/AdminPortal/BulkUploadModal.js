@@ -92,8 +92,8 @@ const BulkUploadModal = ({ closeModal }) => {
     const handleDownloadErrorFile = () => {
         downloadOmouTemplate(
             {
-                error:
-                    uploadedResponse?.data[`upload${selectedItem}`].errorExcel,
+                error: uploadedResponse?.data[`upload${selectedItem}`]
+                    .errorExcel,
             },
             lowerCaseType
         );
