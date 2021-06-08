@@ -254,7 +254,6 @@ function Scheduler() {
 
     useEffect(() => {
         const { timeFrame, timeShift, ...rest } = schedulerState;
-
         if (timeFrame && timeShift) {
             setSchedulerState({
                 ...rest,
