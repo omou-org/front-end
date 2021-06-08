@@ -76,7 +76,7 @@ const OmouSelect = ({ selectedItem, handleSelectChange, children }) => {
 export default OmouSelect;
 
 OmouSelect.propTypes = {
-    selectedItem: PropTypes.string,
-    handleSelectChange: PropTypes.func,
-    children: PropTypes.object,
+    selectedItem: PropTypes.string.isRequired,
+    handleSelectChange: PropTypes.func.isRequired,
+    children: PropTypes.object.isRequired,
 };
