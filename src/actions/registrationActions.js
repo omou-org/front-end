@@ -162,21 +162,15 @@ export const submitForm = (state, id) => {
         }
         case 'course_details': {
             const course = formatCourse(state, 'class');
-            const removeUndefinedCourseProperties = (courseFormData) => {
-                for (const key in courseFormData) {
-                    if (
-                        Object.prototype.hasOwnProperty.call(
-                            courseFormData,
-                            key
-                        ) &&
-                        !courseFormData[key]
-                    ) {
-                        delete courseFormData[key];
-                    }
-                }
-            };
-            removeUndefinedCourseProperties(course);
 
+            for (const key in course) {
+                if (
+                    Object.prototype.hasOwnProperty.call(course, key) &&
+                    !course[key]
+                ) {
+                    delete course[key];
+                }
+            }
             if (id) {
                 return patchData('course', course, id);
             }
