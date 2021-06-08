@@ -19,12 +19,12 @@ const AdminPortalTabs = () => {
     const classes = useStyles();
 
     const adminPortalTabs = [
-        { label: 'overview', tab_id: 0 },
-        { label: 'course tags', tab_id: 1 },
-        { label: 'tuition rates', tab_id: 2 },
-        { label: 'access control', tab_id: 3 },
-        { label: 'admin log', tab_id: 4 },
-        { label: 'business details', tab_id: 5 },
+        { label: 'overview' },
+        { label: 'course tags' },
+        { label: 'tuition rates' },
+        { label: 'access control' },
+        { label: 'admin log' },
+        { label: 'business details' },
     ];
 
     // *** Components for each tab to be created and placed in respective tabContent property in adminPortalTabs array ***

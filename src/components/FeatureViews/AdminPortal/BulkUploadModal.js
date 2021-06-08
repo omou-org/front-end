@@ -1,32 +1,14 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { white, goth } from '../../../theme/muiTheme';
-import Grid from '@material-ui/core/Grid';
+// import { makeStyles } from '@material-ui/core/styles';
+// import { white, goth } from '../../../theme/muiTheme';
+
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import { downloadOmouTemplate, useUploadOmouTemplate } from '../../../utils';
-import Loading from '../../../components/OmouComponents/Loading';
+
 import SelectTemplateStep from './SelectTemplateStep';
 import UploadTemplateStep from './UploadTemplateStep';
 import UploadedResultsStep from './UploadedResultsStep';
-
-const useStyles = makeStyles({
-    modalStyle: {
-        top: '50%',
-        left: `50%`,
-        transform: 'translate(-50%, -50%)',
-        position: 'absolute',
-        width: '31.8em',
-        height: '21em',
-        background: white,
-        boxShadow: '0px 0px 8px rgba(153, 153, 153, 0.8);',
-        borderRadius: '5px',
-    },
-
-    menuSelect: {
-        '&:hover': { backgroundColor: white, color: goth },
-    },
-});
 
 const GET_TEMPLATE = {
     Accounts: gql`
@@ -48,7 +30,7 @@ const GET_TEMPLATE = {
 
 const BulkUploadModal = ({ closeModal }) => {
     const [selectedItem, setSelectedItem] = useState('');
-    const classes = useStyles();
+
     const [activeStep, setActiveStep] = useState(0);
 
     const { uploadTemplate } = useUploadOmouTemplate();
@@ -110,8 +92,8 @@ const BulkUploadModal = ({ closeModal }) => {
     const handleDownloadErrorFile = () => {
         downloadOmouTemplate(
             {
-                error: uploadedResponse?.data[`upload${selectedItem}`]
-                    .errorExcel,
+                error:
+                    uploadedResponse?.data[`upload${selectedItem}`].errorExcel,
             },
             lowerCaseType
         );
@@ -131,22 +113,15 @@ const BulkUploadModal = ({ closeModal }) => {
                 );
             case 1:
                 return (
-                    <>
-                        {loading ? (
-                            <Grid conatiner className={classes.modalStyle}>
-                                <Loading small={true} />
-                            </Grid>
-                        ) : (
-                            <UploadTemplateStep
-                                selectedItem={selectedItem}
-                                disableUploadBtn={disableUploadBtn}
-                                setDisableUploadBtn={setDisableUploadBtn}
-                                setSelectedFile={setSelectedFile}
-                                uploadFile={uploadFile}
-                                handleBackStep={handleBackStep}
-                            />
-                        )}
-                    </>
+                    <UploadTemplateStep
+                        selectedItem={selectedItem}
+                        disableUploadBtn={disableUploadBtn}
+                        setDisableUploadBtn={setDisableUploadBtn}
+                        setSelectedFile={setSelectedFile}
+                        uploadFile={uploadFile}
+                        handleBackStep={handleBackStep}
+                        loading={loading}
+                    />
                 );
             case 2:
                 return (
