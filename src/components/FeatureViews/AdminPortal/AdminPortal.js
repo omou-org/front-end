@@ -8,6 +8,7 @@ import AdminActionCenter from './AdminActionCenter';
 import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
 import Box from '@material-ui/core/Box';
 import StripeButton from 'components/OmouComponents/3rdPartyCustomComponents/StripeButton';
+import StripeResultPopup from 'components/OmouComponents/3rdPartyCustomComponents/StripeResultPopup';
 
 const AdminPortal = () => (
     <form>
@@ -29,6 +30,7 @@ const AdminPortal = () => (
                 <AdminViewsRoutes />
             </Grid>
         </Grid>
+        {/* <StripeResultPopup success={false}/> */}
     </form>
 );
 

@@ -4,6 +4,9 @@ import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton
 import StripeIcon from './StripeIcon'
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
+import StripeResultPopup from './StripeResultPopup';
+import { useParams } from 'react-router-dom';
+import { useURLQuery } from 'utils';
 
 const INITIATE_STRIPE_ONBOARDING = gql`
     mutation InitiateStripeOnboarding {
@@ -14,6 +17,11 @@ const INITIATE_STRIPE_ONBOARDING = gql`
 `
 
 const StripeButton = () => {
+    //omoulearning.com/stuff/?success=false
+
+    const urlParams = useURLQuery()
+    console.log(urlParams.get('success'));
+    // urlParams.get("success");
 
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
 
@@ -52,6 +60,8 @@ const StripeButton = () => {
             </Grid>
         </Grid>
     </ResponsiveButton>
+
+    <StripeResultPopup />
     </>)
 }
 

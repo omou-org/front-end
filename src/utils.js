@@ -1,6 +1,6 @@
 import { instance } from 'actions/apiActions';
 import { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
@@ -743,3 +743,9 @@ export const AdminPropTypes = {
         }),
     }).isRequired,
 };
+
+// A custom hook that builds on useLocation to parse 
+// the query string for you. 
+export function useURLQuery() { 
+    return new URLSearchParams(useLocation().search); 
+}
