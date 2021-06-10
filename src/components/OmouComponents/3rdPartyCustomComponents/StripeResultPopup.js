@@ -33,11 +33,11 @@ const StripeResultPopup = () => {
             onClose={handleClose}
         >
             <DialogTitle disableTypography id='dialog-title'>
-                Stripe Integration Successful!
+                Congratulations! 
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id='dialog-description'>
-                    You can now pay for sessions using Stripe on your account
+                    Your business is now accepting credit card payments through Omou powered by Stripe. Please contact support if there are any issues.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
@@ -53,11 +53,11 @@ const StripeResultPopup = () => {
             onClose={handleClose}
         >
             <DialogTitle disableTypography id='dialog-title'>
-                Stripe Integration Unsuccessful
+                Something went wrong when we were connecting to Stripe!
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id='dialog-description'>
-                    Connection to Stripe timed out or was cancelled. If you still wish to set up Stripe with your account please try again.
+                    Please try again without refreshing or taking too long to complete the connection.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
