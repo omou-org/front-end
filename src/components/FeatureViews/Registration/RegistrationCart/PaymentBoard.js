@@ -87,8 +87,8 @@ const CREATE_PAYMENT = gql`
         $disabledDiscounts: [ID]
         $priceAdjustment: Float
         $registrations: [EnrollmentQuote]!
-        $paymentStatus: PaymentChoiceEnum!
-    ) {
+        $payNow: Boolean!
+    ) { 
         __typename
         createInvoice(
             method: $method
@@ -97,7 +97,7 @@ const CREATE_PAYMENT = gql`
             disabledDiscounts: $disabledDiscounts
             priceAdjustment: $priceAdjustment
             registrations: $registrations
-            paymentStatus: $paymentStatus
+            payNow: $payNow
         ) {
             stripeCheckoutId
             stripeConnectedAccount
@@ -447,7 +447,7 @@ const PaymentBoard = () => {
         []
     );
 
-    function handleClose() {
+    const handleClose = () => {
         setPaymentLaterPromptOpen(false);
     }
 
@@ -474,8 +474,6 @@ const PaymentBoard = () => {
                 course,
                 student,
             }));
-        
-        console.log(enrollmentsToCreate)
 
         const existingEnrollments = classRegistrations
             .filter(({ course, student }) =>
@@ -526,7 +524,7 @@ const PaymentBoard = () => {
             })),
         ];
 
-        const payment = await createPayment({
+        const payment = paymentStatus ? await createPayment({
             variables: {
                 parent: currentParent.user.id,
                 method: paymentMethod,
@@ -534,11 +532,23 @@ const PaymentBoard = () => {
                 disabledDiscounts: [],
                 priceAdjustment: Number(priceAdjustment),
                 registrations,
-                paymentStatus: paymentStatus,
+                payNow: paymentStatus,
+            },
+        }) : await createPayment({
+            variables: {
+                parent: currentParent.user.id,
+                method: paymentMethod,
+                classes: classRegistrations,
+                disabledDiscounts: [],
+                priceAdjustment: Number(priceAdjustment),
+                registrations,
+                payNow: paymentStatus,
             },
         });
 
-        
+        if(!paymentStatus){
+            handleClose();
+        }
 
         // clean out parent registration cart
         await createRegistrationCart({
@@ -660,7 +670,7 @@ const PaymentBoard = () => {
                             priceQuote.total === '-' ||
                             priceQuote < 0
                         }
-                        onClick={()=>handlePayment('UNPAID')}
+                        onClick={() => setPaymentLaterPromptOpen(true)}
                         variant='outlined'
                     >
                         Pay Later
@@ -675,7 +685,8 @@ const PaymentBoard = () => {
                             priceQuote.total === '-' ||
                             priceQuote < 0
                         }
-                        onClick={()=>handlePayment('PAID')}
+                        // onClick={()=>handlePayment('PAID')}
+                        onClick={()=>handlePayment(true)}
                         variant='contained'
                     >
                         Pay Now
@@ -701,7 +712,7 @@ const PaymentBoard = () => {
                     <ResponsiveButton onClick={handleClose} color='secondary'>
                         Cancel
                     </ResponsiveButton>
-                    <ResponsiveButton onClick={handleClose} color='primary'>
+                    <ResponsiveButton onClick={()=>handlePayment(false)} color='primary'>
                         Confirm
                     </ResponsiveButton>
                 </DialogActions>
