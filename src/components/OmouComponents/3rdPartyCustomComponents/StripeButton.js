@@ -24,11 +24,11 @@ const StripeButton = () => {
     // urlParams.get("success");
 
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
-
+    // useLocation instead of hard coding adminportal
     const [InitiateStripeOnboarding] = useMutation(INITIATE_STRIPE_ONBOARDING, {
         variables: {
-            refreshUrlParam: '/admin-portal/?success=false',
-            returnUrlParam: '/admin-portal/?success=false'
+            refreshUrlParam: '/adminportal/?success=false',
+            returnUrlParam: '/adminportal/?success=false'
         },
         onCompleted: ( {stripeOnboarding: { onboardingUrl }} ) => {
             setStripeOnboardingLoading(false);

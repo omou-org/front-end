@@ -53,10 +53,11 @@ const StripeResultPopup = () => {
             onClose={handleClose}
         >
             <DialogTitle disableTypography id='dialog-title'>
-                Something went wrong when we were connecting to Stripe!
+                Whoops
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id='dialog-description'>
+                    Something went wrong when we were connecting to Stripe!
                     Please try again without refreshing or taking too long to complete the connection.
                 </DialogContentText>
             </DialogContent>
