@@ -1,7 +1,7 @@
+import React, { useEffect, useCallback, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
 import { GET_PAYMENT } from './InvoiceReceipt';
 import Loading from 'components/OmouComponents/Loading';
 import { fullName } from 'utils';
@@ -16,6 +16,12 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles({
     heading: {
@@ -38,6 +44,8 @@ const UpdateInvoice = () => {
     const [registrationsByStudent, setRegistrationsByStudent] = useState([]);
     const [registrationsToBeCancelled, setRegistrationsToBeCancelled] = useState([]);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
+    const [displayPopup, setDisplayPopup] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState(null);
 
     const classes = useStyles();
 
@@ -94,10 +102,28 @@ const UpdateInvoice = () => {
     }
 
     // TODO
-    // [] Display Save Popup
+    // [x] Display Save Popup
     const handleSaveClick = () => {
-
+        setDisplayPopup(true);
     }
+
+    const handlePopupClose = () => {
+        setDisplayPopup(false);
+    }
+
+    // TODO
+    // [] Make createInvoice mutation with new changes
+    //     [] Update cache
+    // [x] Hide the Save Button
+    // [x] Enable Pay Now Button
+    const handleSaveChanges = () => {
+        setUnsavedChanges(false);
+        handlePopupClose()
+    }
+
+    const handlePaymentMethodChange = useCallback((_, value) => {
+        setPaymentMethod(value);
+    }, []);
 
     
 const paymentOptions = [
@@ -174,8 +200,8 @@ const paymentOptions = [
                             aria-label='gender'
                             name='gender1'
                             row
-                            // onChange={handleMethodChange}
-                            // value={paymentMethod}
+                            onChange={handlePaymentMethodChange}
+                            value={paymentMethod}
                         >
                             {paymentOptions.map(({ label, value }) => (
                                 <FormControlLabel
@@ -203,15 +229,35 @@ const paymentOptions = [
             </Grid>
             <Grid container justify='flex-end' spacing='3'>
                 <Grid item>
-                    <ResponsiveButton variant='outlined'>Drop Invoice</ResponsiveButton>
+                    <ResponsiveButton variant={unsavedChanges ? 'outlined' : 'disabled'} onClick={handleSaveClick}>Save</ResponsiveButton>
                 </Grid>
                 <Grid item>
-                    <ResponsiveButton variant={unsavedChanges ? 'outlined' : 'disabled'}>Save</ResponsiveButton>
-                </Grid>
-                <Grid item>
-                    <ResponsiveButton variant={unsavedChanges ? 'disabled' : 'contained'}>Pay Now</ResponsiveButton>
+                    <ResponsiveButton variant={(unsavedChanges || paymentMethod === null) ? 'disabled' : 'contained'}>Pay Now</ResponsiveButton>
                 </Grid>
             </Grid>
+            <Dialog
+                open={displayPopup}
+                onClose={handlePopupClose}
+            >
+                <DialogTitle disableTypography id='dialog-title'>
+                    Dropping Courses
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id='dialog-description'>
+                        <Typography>- Name of Courses</Typography>
+                        <Typography>- New Total</Typography>
+                        <Typography>- How Many Days Left to Pay</Typography>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton onClick={handlePopupClose} color='primary'>
+                        nevermind
+                    </ResponsiveButton>
+                    <ResponsiveButton onClick={handleSaveChanges} color='primary'>
+                        confirm
+                    </ResponsiveButton>
+                </DialogActions>
+            </Dialog>
         </Grid>
     )
 }
