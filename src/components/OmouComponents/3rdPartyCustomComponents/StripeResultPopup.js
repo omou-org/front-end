@@ -18,7 +18,7 @@ const StripeResultPopup = () => {
 
     useEffect(() => {
         if (integrationSucceeded !== null) {
-            setIntegrationSucceeded(success);
+            setIntegrationSucceeded(success === 'true');
             setDisplayPopup(true);
         }
     }, [integrationSucceeded]);

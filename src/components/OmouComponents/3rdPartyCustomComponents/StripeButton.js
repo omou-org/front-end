@@ -9,8 +9,8 @@ import { useParams } from 'react-router-dom';
 import { useURLQuery } from 'utils';
 
 const INITIATE_STRIPE_ONBOARDING = gql`
-    mutation InitiateStripeOnboarding {
-        stripeOnboarding {
+    mutation InitiateStripeOnboarding($refreshUrlParam: String!, $returnUrlParam: String!){
+        stripeOnboarding(refreshUrlParam: $refreshUrlParam, returnUrlParam: $returnUrlParam) {
           onboardingUrl
         }
       }
@@ -26,11 +26,16 @@ const StripeButton = () => {
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
 
     const [InitiateStripeOnboarding] = useMutation(INITIATE_STRIPE_ONBOARDING, {
+        variables: {
+            refreshUrlParam: '/admin-portal/?success=false',
+            returnUrlParam: '/admin-portal/?success=false'
+        },
         onCompleted: ( {stripeOnboarding: { onboardingUrl }} ) => {
             setStripeOnboardingLoading(false);
             window.open(onboardingUrl, '_blank');
         },
         onError: () => {
+            setStripeOnboardingLoading(false);
             console.log('OOps, there has been an error connecting to stripe')
         },
     });
