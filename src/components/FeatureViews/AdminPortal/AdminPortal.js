@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
-
+import { useLocation } from 'react-router-dom';
 import './AdminPortal.scss';
 // import AdminActionCenter from './AdminActionCenter';
 // import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
@@ -15,6 +15,8 @@ const AdminPortal = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
+    const location = useLocation();
+    console.log(location);
 
     return (
         <form>

@@ -201,9 +201,10 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
 
             {/* Admin Routes */}
+
             <AuthenticatedRoute
                 exact
-                path='/adminportal/:view?/:type?/:id?/:edit?'
+                path='/adminportal'
                 users={[USER_TYPES.admin]}
             >
                 <AdminPortal />

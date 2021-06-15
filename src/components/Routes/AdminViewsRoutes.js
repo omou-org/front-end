@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Switch } from 'react-router-dom';
 
@@ -7,14 +8,26 @@ import FormPage from '../Form/FormPage';
 import ActionLog from '../FeatureViews/AdminPortal/ActionLog';
 import ManageCategories from '../FeatureViews/AdminPortal/ManageCategories';
 import ManageDiscounts from '../FeatureViews/AdminPortal/ManageDiscounts';
-import TuitionRules from '../FeatureViews/AdminPortal/TuitionRules';
-
+// import TuitionRules from '../FeatureViews/AdminPortal/TuitionRulesOld';
+import TuitionRules from '../FeatureViews/AdminPortal/TutitionRules';
 import { USER_TYPES } from 'utils';
 import AdminPanel from 'components/FeatureViews/AdminPortal/AdminPanel';
 
 const AdminViewsRoutes = () => (
     <Switch>
+        {/* <AuthenticatedRoute
+            path='adminportal/overview'
+            users={[USER_TYPES.admin]}
+        >
+            <h1>Overview</h1>
+        </AuthenticatedRoute>
         <AuthenticatedRoute
+            path='adminportal/overview'
+            users={[USER_TYPES.admin]}
+        >
+            <TuitionRules />
+        </AuthenticatedRoute> */}
+        {/* <AuthenticatedRoute
             path='/adminportal/management'
             users={[USER_TYPES.admin]}
         >
@@ -26,6 +39,7 @@ const AdminViewsRoutes = () => (
         >
             <TuitionRules />
         </AuthenticatedRoute>
+
         <AuthenticatedRoute
             path='/adminportal/manage-course-categories'
             users={[USER_TYPES.admin]}
@@ -53,7 +67,7 @@ const AdminViewsRoutes = () => (
         </AuthenticatedRoute>
         <AuthenticatedRoute path='/adminportal/' users={[USER_TYPES.admin]}>
             <AdminPortalHome />
-        </AuthenticatedRoute>
+        </AuthenticatedRoute> */}
     </Switch>
 );
 
