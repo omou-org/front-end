@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { h4, omouBlue, white, body1, body2 } from '../../../theme/muiTheme';
@@ -15,7 +16,7 @@ import {
     TableRow,
     TableBody,
 } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { Link, useRouteMatch } from 'react-router-dom';
 // import CheckIcon from '@material-ui/icons/Check';
 import { gql, useQuery } from '@apollo/client';
 // import SearchIcon from '@material-ui/icons/Search';
@@ -89,16 +90,6 @@ const useStyles = makeStyles({
     },
 });
 
-// const GET_COURSE_TAG = gql`
-// query getCourseTag($categoryId: ID) {
-// courseCategory(categoryId: $categoryId) {
-// id
-// name
-// description
-// }
-// }
-// `;
-
 const GET_TUITION_RULES = gql`
     query getTuitionRules {
         priceRules {
@@ -114,20 +105,11 @@ const GET_TUITION_RULES = gql`
 
 const TuitionRule = () => {
     const classes = useStyles();
-    const history = useHistory();
+
     const { data, loading, error } = useQuery(GET_TUITION_RULES);
 
     if (loading) return <Loading />;
     if (error) console.error(error);
-
-    const linkToSelectedRule = (id, name) => {
-        history.push({
-            pathname: `/adminportal/tuition-rules/${id}`,
-            state: {
-                title: name,
-            },
-        });
-    };
 
     // take data to create clickable row
     let { priceRules } = data;
@@ -177,7 +159,11 @@ const TuitionRule = () => {
                             {priceRules.map(({ category, name, id }) => (
                                 <TableRow
                                     key={id}
-                                    onClick={() => linkToSelectedRule(id, name)}
+                                    component={Link}
+                                    to={{
+                                        pathname: `${id}`,
+                                        state: { name },
+                                    }}
                                 >
                                     <TableCell>{name}</TableCell>
                                     <TableCell>

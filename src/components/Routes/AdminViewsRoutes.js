@@ -1,32 +1,27 @@
-/* eslint-disable no-unused-vars */
+/* 
+***
+***
+Should proaby delete this as all admin routing is done through tabs
+***
+***
+*/
+
 import React from 'react';
 import { Switch } from 'react-router-dom';
 
-import AdminPortalHome from '../FeatureViews/AdminPortal/AdminPortalHome';
-import AuthenticatedRoute from './AuthenticatedRoute';
-import FormPage from '../Form/FormPage';
-import ActionLog from '../FeatureViews/AdminPortal/ActionLog';
-import ManageCategories from '../FeatureViews/AdminPortal/ManageCategories';
-import ManageDiscounts from '../FeatureViews/AdminPortal/ManageDiscounts';
+// import AdminPortalHome from '../FeatureViews/AdminPortal/AdminPortalHome';
+// import AuthenticatedRoute from './AuthenticatedRoute';
+// import FormPage from '../Form/FormPage';
+// import ActionLog from '../FeatureViews/AdminPortal/ActionLog';
+// import ManageCategories from '../FeatureViews/AdminPortal/ManageCategories';
+// import ManageDiscounts from '../FeatureViews/AdminPortal/ManageDiscounts';
 // import TuitionRules from '../FeatureViews/AdminPortal/TuitionRulesOld';
-import TuitionRules from '../FeatureViews/AdminPortal/TutitionRules';
-import { USER_TYPES } from 'utils';
-import AdminPanel from 'components/FeatureViews/AdminPortal/AdminPanel';
+// import TuitionRules from '../FeatureViews/AdminPortal/TutitionRules';
+// import { USER_TYPES } from 'utils';
+// import AdminPanel from 'components/FeatureViews/AdminPortal/AdminPanel';
 
 const AdminViewsRoutes = () => (
     <Switch>
-        {/* <AuthenticatedRoute
-            path='adminportal/overview'
-            users={[USER_TYPES.admin]}
-        >
-            <h1>Overview</h1>
-        </AuthenticatedRoute>
-        <AuthenticatedRoute
-            path='adminportal/overview'
-            users={[USER_TYPES.admin]}
-        >
-            <TuitionRules />
-        </AuthenticatedRoute> */}
         {/* <AuthenticatedRoute
             path='/adminportal/management'
             users={[USER_TYPES.admin]}

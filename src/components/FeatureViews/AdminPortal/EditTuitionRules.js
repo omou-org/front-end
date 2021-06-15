@@ -1,20 +1,18 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import {
     Grid,
-    TextField,
-    TableContainer,
-    TableCell,
-    TableHead,
-    Table,
-    TableRow,
-    TableBody,
+    // TextField,
+    // TableContainer,
+    // TableCell,
+    // TableHead,
+    // Table,
+    // TableRow,
+    // TableBody,
     Breadcrumbs,
 } from '@material-ui/core';
-
-import { useHistory, withRouter, NavLink } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { NavLink, withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles({
     root: {
@@ -22,18 +20,21 @@ const useStyles = makeStyles({
     },
 });
 
-const EditTuitionRules = ({ location, match }) => {
+const EditTuitionRules = ({
+    location /*match  you can use this propety to get the id  */,
+}) => {
     const classes = useStyles();
-    let title = location.state?.title;
+    let title = location.state?.name;
+
     return (
         <Grid container className={classes.root}>
             <Grid item xs={12}>
                 <Breadcrumbs separator='>' aria-label='breadcrumb'>
-                    <NavLink color='inherit' to='/adminportal/tuition-rules'>
+                    <NavLink color='inherit' to='/adminportal/tuition-rules/'>
                         ALL TOPICS
                     </NavLink>
 
-                    <NavLink color='inherit' to='/adminportal/tuition-rules'>
+                    <NavLink color='inherit' to='/adminportal/tuition-rules/'>
                         {title}
                     </NavLink>
                 </Breadcrumbs>
@@ -46,3 +47,8 @@ const EditTuitionRules = ({ location, match }) => {
 };
 
 export default withRouter(EditTuitionRules);
+
+EditTuitionRules.propTypes = {
+    location: PropTypes.object,
+    // match: PropTypes.object,
+};

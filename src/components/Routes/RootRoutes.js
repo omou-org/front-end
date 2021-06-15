@@ -35,7 +35,8 @@ import TeachingLogContainer from '../FeatureViews/TeachingLog/TeachingLogContain
 import AvailabilityContainer from '../FeatureViews/Availability/AvailabilityContainer';
 import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
-import OnboardingRoutes from './OnboardingRoutes';
+// import OnboardingRoutes from './OnboardingRoutes';
+// import AdminViewsRoutes from './AdminViewsRoutes';
 import Scheduler from '../FeatureViews/Scheduler/Scheduler';
 import DataUseCaseTable from '../OmouComponents/DataUseCaseTable';
 
@@ -202,13 +203,17 @@ export const RootRoutes = () => {
 
             {/* Admin Routes */}
 
-            <AuthenticatedRoute
+            <Redirect exact from='/adminportal' to='/adminportal/overview' />
+            <Redirect
                 exact
-                path='/adminportal'
-                users={[USER_TYPES.admin]}
-            >
-                <AdminPortal />
-            </AuthenticatedRoute>
+                from='/adminportal/tuition-rules/:id'
+                to='/adminportal/tuition-rules/'
+            />
+            <Route
+                exact
+                path='/adminportal/:page'
+                render={(props) => <AdminPortal {...props} />}
+            />
             <AuthenticatedRoute
                 exact
                 path='/form/:type/:action/:id?/'
@@ -230,7 +235,7 @@ export const RootRoutes = () => {
                 <ErrorNotFoundPage />
             </AuthenticatedRoute>
 
-            <OnboardingRoutes />
+            {/* <OnboardingRoutes /> */}
 
             <Redirect to='/PageNotFound' />
         </Switch>
