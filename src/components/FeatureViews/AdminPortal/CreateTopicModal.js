@@ -103,7 +103,6 @@ const CreateTopicModal = ({ closeModal }) => {
 
     const [submitData] = useMutation(CREATE_COURSE_TAG, {
         onCompleted: () => {
-            // console.log(data.createCourseCategory.courseCategory);
             closeModal();
         },
         update: (cache, { data }) => {
@@ -119,18 +118,6 @@ const CreateTopicModal = ({ closeModal }) => {
                 query: GET_COURSE_TAGS,
             });
         },
-        // update: (data) => {
-        //     console.log(data);
-        //     console.log(data.data.data);
-        //     const createdCourseTag = data.createCourseCategory.courseCategory;
-        //     cache.writeQuery(
-        //         {
-        //             query: GET_COURSE_TAGS,
-        //             data: {
-        //                 courseCategory: createdCourseTag
-        //             }
-        //         });
-        // }
     });
 
     const handleOnChange = (e) => {
