@@ -145,7 +145,9 @@ const ManageCourseTopic = () => {
             }).courseCategories;
 
             let cacheCopy = [...cachedTopics];
-            const indexOfTopicToUpdate = cacheCopy.indexOf(cachedTopics.find(topic => topic.id === updatedTopic.id));
+            const indexOfTopicToUpdate = cacheCopy.indexOf(
+                cachedTopics.find((topic) => topic.id === updatedTopic.id)
+            );
             console.log(indexOfTopicToUpdate);
             cacheCopy[indexOfTopicToUpdate] = updatedTopic;
             const updatedCache = [...cacheCopy];
@@ -154,9 +156,9 @@ const ManageCourseTopic = () => {
                 data: {
                     courseCategories: updatedCache,
                 },
-                query: GET_COURSE_TAGS
+                query: GET_COURSE_TAGS,
             });
-        }
+        },
     });
 
     const { loading, error, data } = useQuery(GET_COURSE_TAGS, {
