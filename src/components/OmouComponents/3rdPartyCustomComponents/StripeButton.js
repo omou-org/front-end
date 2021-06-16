@@ -5,8 +5,7 @@ import StripeIcon from './StripeIcon'
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
 import StripeResultPopup from './StripeResultPopup';
-import { useParams } from 'react-router-dom';
-import { useURLQuery } from 'utils';
+import { useLocation } from 'react-router-dom';
 
 const INITIATE_STRIPE_ONBOARDING = gql`
     mutation InitiateStripeOnboarding($refreshUrlParam: String!, $returnUrlParam: String!){
@@ -17,22 +16,22 @@ const INITIATE_STRIPE_ONBOARDING = gql`
 `
 
 const StripeButton = () => {
-    //omoulearning.com/stuff/?success=false
 
-    const urlParams = useURLQuery()
-    console.log(urlParams.get('success'));
-    // urlParams.get("success");
+    const location = useLocation();
+    const pathname = location.pathname.substring(1)
+
+    // Check if successful using query that Jerry will make
 
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
     // useLocation instead of hard coding adminportal
     const [InitiateStripeOnboarding] = useMutation(INITIATE_STRIPE_ONBOARDING, {
         variables: {
-            refreshUrlParam: '/adminportal/?success=false',
-            returnUrlParam: '/adminportal/?success=false'
+            refreshUrlParam: `${pathname}/?refresh=true`,
+            returnUrlParam: `${pathname}/?refresh=false`
         },
         onCompleted: ( {stripeOnboarding: { onboardingUrl }} ) => {
             setStripeOnboardingLoading(false);
-            window.open(onboardingUrl, '_blank');
+            window.open(onboardingUrl, "_self");
         },
         onError: () => {
             setStripeOnboardingLoading(false);

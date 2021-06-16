@@ -11,14 +11,14 @@ import { useURLQuery } from 'utils';
 const StripeResultPopup = () => {
 
     const urlParams = useURLQuery(); 
-    const success = urlParams.get('success')
+    const refresh = urlParams.get('refresh')
 
     const [displayPopup, setDisplayPopup] = useState(false);
-    const [integrationSucceeded, setIntegrationSucceeded] = useState(success);
+    const [integrationSucceeded, setIntegrationSucceeded] = useState(refresh);
 
     useEffect(() => {
         if (integrationSucceeded !== null) {
-            setIntegrationSucceeded(success === 'true');
+            setIntegrationSucceeded(refresh === 'false');
             setDisplayPopup(true);
         }
     }, [integrationSucceeded]);
