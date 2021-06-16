@@ -21,30 +21,21 @@ const AdminPortal = (props) => {
     const { params } = match;
     const { page } = params;
 
-    const tabNameToIndex = {
-        overview: 0,
-        topics: 1,
-        'tuition-rules': 2,
-        'access-control': 3,
-        'admin-log': 4,
-        'business-details': 5,
-    };
-
-    const indexToTabName = {
-        0: 'overview',
-        1: 'topic',
-        2: 'tuition-rules',
-        3: 'access-control',
-        4: 'admin-log',
-        5: 'business-details',
-    };
+    const tabRoutes = [
+        'overview',
+        'topic',
+        'tuition-rules',
+        'access-control',
+        'admin-log',
+        'business-details',
+    ];
 
     const [selectedTabIndex, setSelectedTabIndex] = useState(
-        tabNameToIndex[page]
+        tabRoutes.indexOf(page)
     );
 
     const handleTabSelect = (event, index) => {
-        history.push(`/adminportal/${indexToTabName[index]}`);
+        history.push(`/adminportal/${tabRoutes[index]}`);
         setSelectedTabIndex(index);
     };
 
