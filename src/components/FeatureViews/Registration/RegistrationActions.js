@@ -81,7 +81,7 @@ const RegistrationActions = () => {
         loading,
         parentIsLoggedIn,
         registrationState,
-        data.parent,
+        data?.parent,
         dispatch,
     ]);
 

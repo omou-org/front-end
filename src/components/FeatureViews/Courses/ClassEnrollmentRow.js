@@ -119,10 +119,8 @@ const ClassEnrollmentRow = ({
     });
 
     const [inviteStatus, setInviteStatus] = useState('Unsent');
-    const [
-        googleClassroomStatusMessage,
-        setGoogleClassroomStatusMessage,
-    ] = useState('Send Invite');
+    const [googleClassroomStatusMessage, setGoogleClassroomStatusMessage] =
+        useState('Send Invite');
     const { courses, google_courses } = useSelector(({ auth }) => auth);
 
     const getGoogleClassCode = (courses, courseID) => {

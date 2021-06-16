@@ -42,10 +42,7 @@ const useStyles = makeStyles(() => ({
 const DownloadTemplateButton = ({ templateType, resultsError }) => {
     const { state } = useContext(OnboardingContext);
     const classes = useStyles();
-    let lowerCaseType =
-        templateType === 'Course enrollments'
-            ? 'Course_Enrollments'
-            : templateType.toLowerCase();
+    let lowerCaseType = templateType.toLowerCase();
 
     const GET_TEMPLATE = {
         Accounts: gql`
@@ -58,9 +55,9 @@ const DownloadTemplateButton = ({ templateType, resultsError }) => {
                 courseTemplates
             }
         `,
-        'Course enrollments': gql`
+        Enrollments: gql`
             query {
-                courseTemplates
+                enrollmentTemplates
             }
         `,
     };
@@ -90,7 +87,9 @@ const DownloadTemplateButton = ({ templateType, resultsError }) => {
             className={classes.rootNegativeMargin}
             onClick={handleOnChange}
         >
-            {`${templateType} Template`}
+            {resultsError
+                ? `${templateType} error Template`
+                : `${templateType} Template`}
         </Button>
     );
 };

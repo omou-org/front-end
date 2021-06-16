@@ -6,42 +6,60 @@ import { makeStyles } from '@material-ui/core/styles';
 import { OnboardingContext } from './OnboardingContext';
 import { useSessionStorage } from '../../../utils';
 import OnboardingControls from './OnboardingControls';
+import Loading from '../../OmouComponents/Loading';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles(() => ({
-    Text: {
+    title: {
         marginTop: '24px',
     },
-    Subtitle: {
-        fontFamily: 'Arial, Helvetica Neue, Helvetica, sans-serif',
+    subtitle: {
         textAlign: 'center',
         marginTop: '24px',
     },
 }));
 
-const CREAT_BIZ_INFO = gql`
-    mutation CreateBusiness(
-        $name: String
-        $phone: String
-        $email: String
+const GET_BUSINESS = gql`
+    query {
+        business {
+            id
+            name
+            phoneNumber
+            email
+            address
+            availabilityList {
+                dayOfWeek
+                startTime
+                endTime
+            }
+        }
+    }
+`;
+
+const UPDATE_BUSINESS = gql`
+    mutation MyMutation(
         $address: String
+        $email: String
+        $name: String
+        $phoneNumber: String
     ) {
-        createBusiness(
-            name: $name
-            phone: $phone
-            email: $email
+        updateBusiness(
             address: $address
+            email: $email
+            name: $name
+            phoneNumber: $phoneNumber
         ) {
             business {
                 id
                 name
-                phone
-                email
                 address
+                email
+                phoneNumber
             }
+            updated
         }
     }
 `;
@@ -49,10 +67,16 @@ const CREAT_BIZ_INFO = gql`
 const BusinessInfo = ({ step }) => {
     const classes = useStyles();
     const { setImportState } = useContext(OnboardingContext);
-    // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
-    const [createBusinessInfo] = useMutation(CREAT_BIZ_INFO, {
-        onCompleted: (data) => {
-            console.log(data);
+
+    const [updateData] = useMutation(UPDATE_BUSINESS, {
+        update: (cache, data) => {
+            const updatedBusiness = data.data.updateBusiness.business;
+            cache.writeQuery({
+                query: GET_BUSINESS,
+                data: {
+                    business: updatedBusiness,
+                },
+            });
         },
     });
 
@@ -60,6 +84,27 @@ const BusinessInfo = ({ step }) => {
     const [bizPhone, setBizPhone] = useSessionStorage('bizPhone', '');
     const [bizEmail, setBizEmail] = useSessionStorage('bizEmail', '');
     const [bizAddress, setBizAddress] = useSessionStorage('bizAddress', '');
+
+    const { loading, error } = useQuery(GET_BUSINESS, {
+        onCompleted: (data) => {
+            const { business } = data;
+            setBizName(business.name);
+            setBizPhone(business.phoneNumber);
+            setBizEmail(business.email);
+            setBizAddress(business.address);
+        },
+    });
+
+    if (loading) {
+        return <Loading />;
+    }
+    if (error) {
+        return (
+            <Typography>
+                There has been an error! Error: {error.message}
+            </Typography>
+        );
+    }
 
     const handleFieldChange = (setValue, key) => (e) => {
         const newValue = e.target.value;
@@ -86,10 +131,10 @@ const BusinessInfo = ({ step }) => {
     };
 
     const handleSubmit = () => {
-        createBusinessInfo({
+        updateData({
             variables: {
                 name: bizName,
-                phone: bizPhone,
+                phoneNumber: bizPhone,
                 email: bizEmail,
                 address: bizAddress,
             },
@@ -105,9 +150,9 @@ const BusinessInfo = ({ step }) => {
             justify='center'
         >
             <Grid item>
-                <Box className={classes.Text}>
+                <Box className={classes.title}>
                     <Typography variant='h1'>Business Information</Typography>
-                    <Box fontSize='h5.fontSize' className={classes.Subtitle}>
+                    <Box fontSize='h5.fontSize' className={classes.subtitle}>
                         <Typography variant='p'>
                             Please input the following business info, these
                             would show up in payment receipt printouts:
@@ -126,7 +171,7 @@ const BusinessInfo = ({ step }) => {
                         onChange={handleFieldChange(setBizName, 'name')}
                         error={handleError(bizName, 'name')}
                         required
-                    />{' '}
+                    />
                     <br />
                     <TextField
                         style={{ marginTop: 25 }}

@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import DownloadTemplateButton from './DownloadTemplateButton';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import Link from '@material-ui/core/Link';
+import { makeStyles } from '@material-ui/core/styles';
+import { h6 } from '../../../theme/muiTheme';
 import Typography from '@material-ui/core/Typography';
 import useOnboardingActions from './ImportStepperActions';
 
@@ -10,12 +11,23 @@ import DragAndDropUploadBtn from './DragAndDropUploadBtn';
 import { OnboardingContext } from './OnboardingContext';
 import PropTypes from 'prop-types';
 
+const useStyles = makeStyles({
+    modalTypography: {
+        marginBottom: '1em',
+    },
+    useCaseLink: {
+        ...h6,
+        lineHeight: '22px',
+        textDecoration: 'underline',
+    },
+});
+
 const TemplateImport = ({ templateType, setActiveStep }) => {
     const [disabled, setDisabled] = useState(true);
     const { state } = useContext(OnboardingContext);
-
+    const [uploadResponse, setUploadResponse] = useState(null);
     const { handleBack } = useOnboardingActions();
-
+    const classes = useStyles();
     useEffect(() => {
         if (state.UPLOAD_RESPONSE != null) {
             if (
@@ -25,9 +37,7 @@ const TemplateImport = ({ templateType, setActiveStep }) => {
                 )
             ) {
                 setDisabled(true);
-            }
-
-            if (state.UPLOAD_RESPONSE.data[`upload${templateType}`] != null) {
+            } else {
                 setDisabled(false);
             }
         }
@@ -38,6 +48,7 @@ const TemplateImport = ({ templateType, setActiveStep }) => {
         setActiveStep(1);
     };
 
+    const handleLocalBack = () => (handleBack(), setUploadResponse(null));
     return (
         <Grid
             container
@@ -55,13 +66,25 @@ const TemplateImport = ({ templateType, setActiveStep }) => {
                 </Typography>
             </Grid>
             <Grid item>
-                <Link>Why am I entering this data?</Link>
+                <a
+                    className={`${classes.modalTypography} ${classes.useCaseLink}`}
+                    href='/business-use-cases'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    type='button'
+                >
+                    Why am I entering this data?
+                </a>
             </Grid>
             <Grid item>
                 <DownloadTemplateButton templateType={templateType} />
             </Grid>
             <Grid item>
-                <DragAndDropUploadBtn templateType={templateType} />
+                <DragAndDropUploadBtn
+                    templateType={templateType}
+                    uploadResponse={uploadResponse}
+                    setUploadResponse={setUploadResponse}
+                />
             </Grid>
             <Grid
                 item
@@ -72,7 +95,10 @@ const TemplateImport = ({ templateType, setActiveStep }) => {
                 spacing={3}
             >
                 <Grid item>
-                    <ResponsiveButton variant='contained' onClick={handleBack}>
+                    <ResponsiveButton
+                        variant='outlined'
+                        onClick={handleLocalBack}
+                    >
                         Back
                     </ResponsiveButton>
                 </Grid>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useContext } from 'react';
+import React, { useMemo, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { omouBlue } from '../../../theme/muiTheme';
 import { useUploadOmouTemplate } from '../../../utils';
@@ -34,14 +34,19 @@ const acceptStyle = {
 const rejectStyle = {
     borderColor: '#ff1744',
 };
-const DragAndDropUploadBtn = (props) => {
+const DragAndDropUploadBtn = ({
+    templateType,
+    setUploadResponse,
+    uploadResponse,
+}) => {
     const { uploadTemplate } = useUploadOmouTemplate();
-    const [uploadResponse, setUploadResponse] = useState(null);
+
     const { dispatch } = useContext(OnboardingContext);
     const uploadFile = async (file) => {
-        let response = await uploadTemplate(file, props.templateType);
+        let response = await uploadTemplate(file, templateType);
 
         dispatch({ type: 'UPLOAD_RESPONSE', payload: response });
+
         if (Object.prototype.hasOwnProperty.call(response, 'errors')) {
             setUploadResponse(response.errors[0].message);
         } else {
@@ -90,6 +95,8 @@ const DragAndDropUploadBtn = (props) => {
 
 DragAndDropUploadBtn.propTypes = {
     templateType: PropTypes.string,
+    setUploadResponse: PropTypes.func,
+    uploadResponse: PropTypes.func,
 };
 
 export default DragAndDropUploadBtn;

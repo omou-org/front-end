@@ -42,158 +42,34 @@ const getURL = (endpoint, id, noURLID) =>
  * (Optimization).
  * @returns {Number} status of the request (null if not started/canceled)
  */
-export const wrapUseEndpoint = (endpoint, successType) => (
-    id,
-    config,
-    noURLID
-) => {
-    const [status, setStatus] = useState(null);
-    const dispatch = useDispatch();
+export const wrapUseEndpoint =
+    (endpoint, successType) => (id, config, noURLID) => {
+        const [status, setStatus] = useState(null);
+        const dispatch = useDispatch();
 
-    const handleError = useCallback((error) => {
-        if (error && error.response && error.response.status) {
-            setStatus(error.response.status);
-        } else {
-            setStatus(MISC_FAIL);
-            console.error(error);
-        }
-    }, []);
+        const handleError = useCallback((error) => {
+            if (error && error.response && error.response.status) {
+                setStatus(error.response.status);
+            } else {
+                setStatus(MISC_FAIL);
+                console.error(error);
+            }
+        }, []);
 
-    useEffect(() => {
-        let aborted = false;
-        // no id passed
-        if (typeof id === 'undefined' || id === null) {
-            (async () => {
-                try {
-                    setStatus(REQUEST_STARTED);
-                    const response = await instance.get(
-                        getURL(endpoint, id, noURLID),
-                        getConfig(config)
-                    );
-                    if (!aborted) {
-                        dispatch({
-                            payload: {
-                                id: REQUEST_ALL,
-                                response,
-                            },
-                            type: successType,
-                        });
-                        setStatus(response.status);
-                    }
-                } catch (error) {
-                    if (!aborted) {
-                        handleError(error);
-                    }
-                }
-            })();
-        } else if (!Array.isArray(id)) {
-            // standard single item request
-            (async () => {
-                try {
-                    setStatus(REQUEST_STARTED);
-                    const response = await instance.get(
-                        getURL(endpoint, id, noURLID),
-                        getConfig(config, id)
-                    );
-                    if (!aborted) {
-                        dispatch({
-                            payload: {
-                                id,
-                                response,
-                            },
-                            type: successType,
-                        });
-                        setStatus(response.status);
-                    }
-                } catch (error) {
-                    if (!aborted) {
-                        handleError(error);
-                    }
-                }
-            })();
-        } else if (id.length > 0) {
-            // array of IDs to request (list of results requested)
-            (async () => {
-                try {
-                    setStatus(REQUEST_STARTED);
-                    const response = await Promise.all(
-                        id.map((individual) =>
-                            instance.get(
-                                getURL(endpoint, individual, noURLID),
-                                getConfig(config, individual)
-                            )
-                        )
-                    );
-                    if (!aborted) {
-                        dispatch({
-                            payload: {
-                                id,
-                                response,
-                            },
-                            type: successType,
-                        });
-                        setStatus(
-                            response.reduce(
-                                (finalStatus, { status }) =>
-                                    isFail(status)
-                                        ? status
-                                        : isFail(finalStatus)
-                                        ? finalStatus
-                                        : isLoading(status)
-                                        ? status
-                                        : finalStatus,
-                                200
-                            )
-                        );
-                    }
-                } catch (error) {
-                    if (!aborted) {
-                        handleError(error);
-                    }
-                }
-            })();
-        }
-        // if something about request changed (item to request, settings, etc.)
-        // discard old results and make new request
-        return () => {
-            setStatus(null);
-            aborted = true;
-        };
-    }, [config, dispatch, id, handleError, noURLID]);
-    return status;
-};
-
-export const wrapUseNote = (endpoint, successType, payloadInfo) => (
-    id,
-    config,
-    noFetchOnUndef
-) => {
-    const [status, setStatus] = useState(null);
-    const dispatch = useDispatch();
-
-    const handleError = useCallback((error) => {
-        if (error && error.response && error.response.status) {
-            setStatus(error.response.status);
-        } else {
-            setStatus(MISC_FAIL);
-            console.error(error);
-        }
-    }, []);
-
-    useEffect(() => {
-        let aborted = false;
-        // no id passed
-        if (typeof id === 'undefined' || id === null) {
-            // if not to be optimized (i.e. a request_all is wanted)
-            if (!noFetchOnUndef) {
+        useEffect(() => {
+            let aborted = false;
+            // no id passed
+            if (typeof id === 'undefined' || id === null) {
                 (async () => {
                     try {
                         setStatus(REQUEST_STARTED);
-                        const response = await instance.get(endpoint, config);
+                        const response = await instance.get(
+                            getURL(endpoint, id, noURLID),
+                            getConfig(config)
+                        );
                         if (!aborted) {
                             dispatch({
                                 payload: {
-                                    ...payloadInfo,
                                     id: REQUEST_ALL,
                                     response,
                                 },
@@ -207,82 +83,206 @@ export const wrapUseNote = (endpoint, successType, payloadInfo) => (
                         }
                     }
                 })();
-            }
-        } else if (!Array.isArray(id)) {
-            // standard single item request
-            (async () => {
-                try {
-                    setStatus(REQUEST_STARTED);
-                    const response = await instance.get(
-                        `${endpoint}${id}/`,
-                        config
-                    );
-                    if (!aborted) {
-                        dispatch({
-                            payload: {
-                                ...payloadInfo,
-                                id,
-                                response,
-                            },
-                            type: successType,
-                        });
-                        setStatus(response.status);
+            } else if (!Array.isArray(id)) {
+                // standard single item request
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await instance.get(
+                            getURL(endpoint, id, noURLID),
+                            getConfig(config, id)
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                payload: {
+                                    id,
+                                    response,
+                                },
+                                type: successType,
+                            });
+                            setStatus(response.status);
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
                     }
-                } catch (error) {
-                    if (!aborted) {
-                        handleError(error);
-                    }
-                }
-            })();
-        } else if (id.length > 0) {
-            // array of IDs to request (list of results requested)
-            (async () => {
-                try {
-                    setStatus(REQUEST_STARTED);
-                    const response = await Promise.all(
-                        id.map((individual) =>
-                            instance.get(`${endpoint}${individual}/`, config)
-                        )
-                    );
-                    if (!aborted) {
-                        dispatch({
-                            payload: {
-                                ...payloadInfo,
-                                id,
-                                response,
-                            },
-                            type: successType,
-                        });
-                        setStatus(
-                            response.reduce(
-                                (finalStatus, { status }) =>
-                                    isFail(status)
-                                        ? status
-                                        : isFail(finalStatus)
-                                        ? finalStatus
-                                        : isLoading(status)
-                                        ? status
-                                        : finalStatus,
-                                200
+                })();
+            } else if (id.length > 0) {
+                // array of IDs to request (list of results requested)
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await Promise.all(
+                            id.map((individual) =>
+                                instance.get(
+                                    getURL(endpoint, individual, noURLID),
+                                    getConfig(config, individual)
+                                )
                             )
                         );
+                        if (!aborted) {
+                            dispatch({
+                                payload: {
+                                    id,
+                                    response,
+                                },
+                                type: successType,
+                            });
+                            setStatus(
+                                response.reduce(
+                                    (finalStatus, { status }) =>
+                                        isFail(status)
+                                            ? status
+                                            : isFail(finalStatus)
+                                            ? finalStatus
+                                            : isLoading(status)
+                                            ? status
+                                            : finalStatus,
+                                    200
+                                )
+                            );
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
                     }
-                } catch (error) {
-                    if (!aborted) {
-                        handleError(error);
-                    }
+                })();
+            }
+            // if something about request changed (item to request, settings, etc.)
+            // discard old results and make new request
+            return () => {
+                setStatus(null);
+                aborted = true;
+            };
+        }, [config, dispatch, id, handleError, noURLID]);
+        return status;
+    };
+
+export const wrapUseNote =
+    (endpoint, successType, payloadInfo) => (id, config, noFetchOnUndef) => {
+        const [status, setStatus] = useState(null);
+        const dispatch = useDispatch();
+
+        const handleError = useCallback((error) => {
+            if (error && error.response && error.response.status) {
+                setStatus(error.response.status);
+            } else {
+                setStatus(MISC_FAIL);
+                console.error(error);
+            }
+        }, []);
+
+        useEffect(() => {
+            let aborted = false;
+            // no id passed
+            if (typeof id === 'undefined' || id === null) {
+                // if not to be optimized (i.e. a request_all is wanted)
+                if (!noFetchOnUndef) {
+                    (async () => {
+                        try {
+                            setStatus(REQUEST_STARTED);
+                            const response = await instance.get(
+                                endpoint,
+                                config
+                            );
+                            if (!aborted) {
+                                dispatch({
+                                    payload: {
+                                        ...payloadInfo,
+                                        id: REQUEST_ALL,
+                                        response,
+                                    },
+                                    type: successType,
+                                });
+                                setStatus(response.status);
+                            }
+                        } catch (error) {
+                            if (!aborted) {
+                                handleError(error);
+                            }
+                        }
+                    })();
                 }
-            })();
-        }
-        // if something about request changed
-        // discard old results and make new request
-        return () => {
-            setStatus(null);
-            aborted = true;
-        };
-    }, [config, dispatch, id, noFetchOnUndef, handleError]);
-    return status;
-};
+            } else if (!Array.isArray(id)) {
+                // standard single item request
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await instance.get(
+                            `${endpoint}${id}/`,
+                            config
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                payload: {
+                                    ...payloadInfo,
+                                    id,
+                                    response,
+                                },
+                                type: successType,
+                            });
+                            setStatus(response.status);
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            } else if (id.length > 0) {
+                // array of IDs to request (list of results requested)
+                (async () => {
+                    try {
+                        setStatus(REQUEST_STARTED);
+                        const response = await Promise.all(
+                            id.map((individual) =>
+                                instance.get(
+                                    `${endpoint}${individual}/`,
+                                    config
+                                )
+                            )
+                        );
+                        if (!aborted) {
+                            dispatch({
+                                payload: {
+                                    ...payloadInfo,
+                                    id,
+                                    response,
+                                },
+                                type: successType,
+                            });
+                            setStatus(
+                                response.reduce(
+                                    (finalStatus, { status }) =>
+                                        isFail(status)
+                                            ? status
+                                            : isFail(finalStatus)
+                                            ? finalStatus
+                                            : isLoading(status)
+                                            ? status
+                                            : finalStatus,
+                                    200
+                                )
+                            );
+                        }
+                    } catch (error) {
+                        if (!aborted) {
+                            handleError(error);
+                        }
+                    }
+                })();
+            }
+            // if something about request changed
+            // discard old results and make new request
+            return () => {
+                setStatus(null);
+                aborted = true;
+            };
+        }, [config, dispatch, id, noFetchOnUndef, handleError]);
+        return status;
+    };
 
 export const useStudent = wrapUseEndpoint(
     '/account/student/',

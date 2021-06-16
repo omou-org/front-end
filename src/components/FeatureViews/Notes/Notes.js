@@ -337,10 +337,10 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
         variables: { ownerID },
     });
 
-    const notes = useMemo(() => query.data?.[QUERY_KEY[ownerType]] || [], [
-        ownerType,
-        query.data,
-    ]);
+    const notes = useMemo(
+        () => query.data?.[QUERY_KEY[ownerType]] || [],
+        [ownerType, query.data]
+    );
     const getNoteByID = useCallback(
         (noteID) => notes.find(({ id }) => noteID == id),
         [notes]

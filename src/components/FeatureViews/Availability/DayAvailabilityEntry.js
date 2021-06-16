@@ -143,9 +143,8 @@ export default function DayAvailabilityEntry({
 }) {
     const [displayNewAvailability, setDisplayNewAvailability] = useState(false);
     const [conflictErrorMessage, setConflictErrorMessage] = useState(false);
-    const [conflictErrorDialogOpen, setConflictErrorDialogOpen] = useState(
-        false
-    );
+    const [conflictErrorDialogOpen, setConflictErrorDialogOpen] =
+        useState(false);
     const [notAvailable, setNotAvailable] = useState(false);
     const { updateAvailability } = useContext(TimeAvailabilityContext);
     const classes = useStyles();

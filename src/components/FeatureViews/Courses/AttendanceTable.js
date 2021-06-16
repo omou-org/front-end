@@ -148,9 +148,8 @@ const AttendanceTable = ({ setIsEditing }) => {
         if (courseAttendanceMatrix.length > 0) {
             let sessionsDoneEditing = {};
             courseAttendanceMatrix.forEach((studentAttendanceRow) => {
-                const {
-                    attendanceList: studentAttendanceList,
-                } = studentAttendanceRow;
+                const { attendanceList: studentAttendanceList } =
+                    studentAttendanceRow;
                 studentAttendanceList.forEach((attendanceStatus) => {
                     const { sessionId } = attendanceStatus;
                     if (attendanceStatus[sessionId] !== 'UNSET') {
@@ -466,6 +465,7 @@ const AttendanceTable = ({ setIsEditing }) => {
                             />
                         </TableCell>
                         {sessions
+                            .slice()
                             .sort(sortByRecentSession)
                             .map(({ startDatetime, id: sessionId }, index) => (
                                 <TableCell

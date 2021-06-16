@@ -33,9 +33,11 @@ const StyledMenu = withStyles({
     />
 ));
 
-const handleClick = (setter) => ({ currentTarget }) => {
-    setter(currentTarget);
-};
+const handleClick =
+    (setter) =>
+    ({ currentTarget }) => {
+        setter(currentTarget);
+    };
 
 const handleClose = (setter) => () => {
     setter(null);

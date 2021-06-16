@@ -12,135 +12,127 @@ export const MISC_FAIL = 600;
 export const REQUEST_ALL = -1;
 export const REQUEST_STARTED = 1;
 
-export const wrapGet = (
-    endpoint,
-    [startType, successType, failType],
-    { id, config }
-) => async (dispatch) => {
-    // creates a new action based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            type,
-            payload: {
-                id: id || REQUEST_ALL,
-                response,
-            },
-        });
-    };
+export const wrapGet =
+    (endpoint, [startType, successType, failType], { id, config }) =>
+    async (dispatch) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                payload: {
+                    id: id || REQUEST_ALL,
+                    response,
+                },
+            });
+        };
 
-    // request starting
-    newAction(startType, {});
+        // request starting
+        newAction(startType, {});
 
-    const requestURL = id ? `${endpoint}${id}/` : endpoint;
-    try {
-        const response = await instance.get(requestURL, config || {});
-        // successful request
-        newAction(successType, response);
-    } catch (error) {
-        if (error.response) {
-            // failed request
-            newAction(failType, error.response);
-        } else {
-            // coding error
-            console.error(error);
+        const requestURL = id ? `${endpoint}${id}/` : endpoint;
+        try {
+            const response = await instance.get(requestURL, config || {});
+            // successful request
+            newAction(successType, response);
+        } catch (error) {
+            if (error.response) {
+                // failed request
+                newAction(failType, error.response);
+            } else {
+                // coding error
+                console.error(error);
+            }
         }
-    }
-};
-export const wrapPost = (
-    endpoint,
-    [startType, successType, failType],
-    data
-) => async (dispatch) => {
-    // creates a new action based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            type,
-            payload: {
-                response,
-            },
-        });
     };
-    // request starting
-    newAction(startType, {});
+export const wrapPost =
+    (endpoint, [startType, successType, failType], data) =>
+    async (dispatch) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                payload: {
+                    response,
+                },
+            });
+        };
+        // request starting
+        newAction(startType, {});
 
-    try {
-        const response = await instance.post(endpoint, data);
-        // successful request
-        newAction(successType, response);
-    } catch (error) {
-        if (error.response) {
-            // failed request
-            newAction(failType, error.response);
-        } else {
-            // coding error
-            console.error(error);
+        try {
+            const response = await instance.post(endpoint, data);
+            // successful request
+            newAction(successType, response);
+        } catch (error) {
+            if (error.response) {
+                // failed request
+                newAction(failType, error.response);
+            } else {
+                // coding error
+                console.error(error);
+            }
         }
-    }
-};
-
-export const wrapPatch = (
-    endpoint,
-    [startType, successType, failType],
-    { id, data, config }
-) => async (dispatch) => {
-    // creates a new action based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            type,
-            payload: {
-                id,
-                response,
-            },
-        });
     };
 
-    // request starting
-    newAction(startType, {});
+export const wrapPatch =
+    (endpoint, [startType, successType, failType], { id, data, config }) =>
+    async (dispatch) => {
+        // creates a new action based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                payload: {
+                    id,
+                    response,
+                },
+            });
+        };
 
-    try {
-        const response = await instance.patch(
-            `${endpoint}${id}/`,
-            data,
-            config || {}
-        );
-        // successful request
-        newAction(successType, response);
-    } catch ({ response }) {
-        // failed request
-        newAction(failType, response);
-    }
-};
+        // request starting
+        newAction(startType, {});
 
-export const wrapDelete = (
-    endpoint,
-    [startType, successType, failType],
-    { id, config }
-) => async (dispatch) => {
-    // creates a new actions based on the response given
-    const newAction = (type, response) => {
-        dispatch({
-            type,
-            payload: {
-                id,
-                response,
-            },
-        });
+        try {
+            const response = await instance.patch(
+                `${endpoint}${id}/`,
+                data,
+                config || {}
+            );
+            // successful request
+            newAction(successType, response);
+        } catch ({ response }) {
+            // failed request
+            newAction(failType, response);
+        }
     };
 
-    // request starting
-    newAction(startType, {});
+export const wrapDelete =
+    (endpoint, [startType, successType, failType], { id, config }) =>
+    async (dispatch) => {
+        // creates a new actions based on the response given
+        const newAction = (type, response) => {
+            dispatch({
+                type,
+                payload: {
+                    id,
+                    response,
+                },
+            });
+        };
 
-    try {
-        const response = await instance.delete(
-            `${endpoint}${id}/`,
-            config || {}
-        );
-        // successful response
-        newAction(successType, response);
-    } catch ({ response }) {
-        newAction(failType, response);
-    }
-};
+        // request starting
+        newAction(startType, {});
+
+        try {
+            const response = await instance.delete(
+                `${endpoint}${id}/`,
+                config || {}
+            );
+            // successful response
+            newAction(successType, response);
+        } catch ({ response }) {
+            newAction(failType, response);
+        }
+    };
 
 const courseEndpoint = '/course/catalog/';
 

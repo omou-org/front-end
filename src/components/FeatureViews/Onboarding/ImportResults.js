@@ -4,7 +4,6 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import DragAndDropUploadBtn from './DragAndDropUploadBtn';
-// import { useUploadOmouTemplate } from '../../../utils';
 import { OnboardingContext } from './OnboardingContext';
 import DownloadTemplateButton from './DownloadTemplateButton';
 import PropTypes from 'prop-types';
@@ -14,24 +13,18 @@ const ImportResults = ({ templateType, setActiveStep }) => {
     const [setUploadedFile] = useState(null);
     const { handleNext } = useOnboardingActions();
     const handleBack = () => setActiveStep(0);
-    // const { uploadTemplate } = useUploadOmouTemplate();
-
-    // TODO:
-    // Figure out re-upload logic to stay on the same screen if user uploads
-    // needs to update number of error files
-
-    const uploadFile = async () => {
-        // let response = await uploadTemplate(uploadedFile, templateType)
-    };
 
     const handleNextImportFlowStep = () => {
         setActiveStep(0);
         handleNext();
-        uploadFile();
     };
 
     const isError =
         state.UPLOAD_RESPONSE.data[`upload${templateType}`].errorExcel != '';
+    const totalSuccess =
+        state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalSuccess;
+    const totalFailure =
+        state.UPLOAD_RESPONSE.data[`upload${templateType}`].totalFailure;
 
     return (
         <Grid
@@ -59,19 +52,11 @@ const ImportResults = ({ templateType, setActiveStep }) => {
                         <br />
                         <br />
                         <Typography align='left'>
-                            {`${
-                                state.UPLOAD_RESPONSE.data[
-                                    `upload${templateType}`
-                                ].totalSuccess
-                            } rows uploaded successfully.`}
+                            {`${totalSuccess} rows uploaded successfully.`}
                         </Typography>
                         <br />
                         <Typography align='left'>
-                            {`${
-                                state.UPLOAD_RESPONSE.data[
-                                    `upload${templateType}`
-                                ].totalFailure
-                            } rows failed to upload.`}
+                            {`${totalFailure} rows failed to upload.`}
                         </Typography>
                         <br />
                         <Typography align='left'>
@@ -102,7 +87,11 @@ const ImportResults = ({ templateType, setActiveStep }) => {
                 spacing={3}
             >
                 <Grid item>
-                    <ResponsiveButton variant='contained' onClick={handleBack}>
+                    <ResponsiveButton
+                        variant='contained'
+                        color='secondary'
+                        onClick={handleBack}
+                    >
                         Back
                     </ResponsiveButton>
                 </Grid>

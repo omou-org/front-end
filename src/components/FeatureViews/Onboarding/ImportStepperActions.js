@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
 import { OnboardingContext } from './OnboardingContext';
 import { useURLQuery } from '../../../utils';
@@ -13,10 +14,10 @@ export default function useOnboardingActions() {
     const currentStep = Number(urlQuery.get('step'));
 
     useEffect(() => {
-        if (currentStep - 1 !== activeStep) {
+        if (currentStep - 1 !== activeStep && setActiveStep) {
             setActiveStep(currentStep);
         }
-    }, [currentStep, activeStep, setActiveStep]);
+    }, []);
 
     const isStepOptional = () => {
         return false;
@@ -78,5 +79,6 @@ export default function useOnboardingActions() {
         handleBack,
         handleSkip,
         handleNext,
+        activeStep,
     };
 }
