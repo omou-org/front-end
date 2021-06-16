@@ -142,9 +142,8 @@ export default function BusinessHoursForm({ isOnboarding }) {
                 pairedDayTimes: [...matchingTimesSet],
             };
         };
-        const { unpairedDayTimes, pairedDayTimes } = getUnpairedTimes(
-            dayTimeKeys
-        );
+        const { unpairedDayTimes, pairedDayTimes } =
+            getUnpairedTimes(dayTimeKeys);
         const startTimeKey = (day) => `${day}-startTime`;
         const endTimeKey = (day) => `${day}-endTime`;
         // Set errors for unpaired day times
@@ -168,9 +167,8 @@ export default function BusinessHoursForm({ isOnboarding }) {
         async (formData) => {
             const bizHours = Object.entries(formData)
                 .reduce((bizHoursValues, [dayTimeTitle, time]) => {
-                    const { dayOfWeek, valueKey } = parseDayTimeTitle(
-                        dayTimeTitle
-                    );
+                    const { dayOfWeek, valueKey } =
+                        parseDayTimeTitle(dayTimeTitle);
                     const isMatchingDay = (day) =>
                         day === dayOfWeek || day.includes(dayOfWeek);
                     const indexOfDay = bizHoursValues.findIndex((item) =>
