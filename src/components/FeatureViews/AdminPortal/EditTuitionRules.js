@@ -9,7 +9,6 @@ import {
     // Table,
     // TableRow,
     // TableBody,
-    Breadcrumbs,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { NavLink, withRouter } from 'react-router-dom';
@@ -28,16 +27,10 @@ const EditTuitionRules = ({
 
     return (
         <Grid container className={classes.root}>
-            <Grid item xs={12}>
-                <Breadcrumbs separator='>' aria-label='breadcrumb'>
-                    <NavLink color='inherit' to='/adminportal/tuition-rules/'>
-                        ALL TOPICS
-                    </NavLink>
-
-                    <NavLink color='inherit' to='/adminportal/tuition-rules/'>
-                        {title}
-                    </NavLink>
-                </Breadcrumbs>
+            <Grid item xs={1}>
+                <NavLink color='inherit' to='/adminportal/tuition-rules/'>
+                    {'< ALL TOPICS'}
+                </NavLink>
             </Grid>
             <Grid item xs={2}>
                 <h1>{title}</h1>

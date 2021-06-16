@@ -1,6 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
+import { Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import BusinessDetails from './BusinessDetails';
 import TuitionRule from './TutitionRules';
@@ -14,6 +14,32 @@ const useStyles = makeStyles({
         marginTop: '2rem',
     },
 });
+/**
+ * @description per material-ui TabPanel is an the component used to render tab content
+ * @param {node} props
+ * @returns JSX of selected tab
+ */
+const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role='tabpanel'
+            hidden={value !== index}
+            id={`omou-tabpanel-${index}`}
+            aria-labelledby={`omou-tab-${index}`}
+            {...other}
+        >
+            {value === index && <div>{children} </div>}
+        </div>
+    );
+};
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+};
 
 const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
     const classes = useStyles();
@@ -44,18 +70,17 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                     />
                 ))}
             </Tabs>
-
-            {selectedTabIndex === 0 && (
+            <TabPanel value={selectedTabIndex} index={0}>
                 <div>
                     <h1>Overview</h1>
                 </div>
-            )}
-            {selectedTabIndex === 1 && (
+            </TabPanel>
+            <TabPanel value={selectedTabIndex} index={1}>
                 <div>
                     <h1>Topics</h1>
                 </div>
-            )}
-            {selectedTabIndex === 2 && (
+            </TabPanel>
+            <TabPanel value={selectedTabIndex} index={2}>
                 <Router>
                     <Switch>
                         <Route
@@ -69,18 +94,20 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                         </Route>
                     </Switch>
                 </Router>
-            )}
-            {selectedTabIndex === 3 && (
+            </TabPanel>
+            <TabPanel value={selectedTabIndex} index={3}>
                 <div>
                     <h1>Access control</h1>
                 </div>
-            )}
-            {selectedTabIndex === 4 && (
+            </TabPanel>
+            <TabPanel value={selectedTabIndex} index={4}>
                 <div>
                     <h1>Admin log</h1>
                 </div>
-            )}
-            {selectedTabIndex === 5 && <BusinessDetails />}
+            </TabPanel>
+            <TabPanel value={selectedTabIndex} index={5}>
+                <BusinessDetails />
+            </TabPanel>
         </>
     );
 };
