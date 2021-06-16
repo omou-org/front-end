@@ -57,10 +57,8 @@ const LoginPage = () => {
     const { token, google_courses } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
-    const [
-        verifyGoogleOauthTokenStatus,
-        setVerifyGoogleOauthTokenStatus,
-    ] = useState(false);
+    const [verifyGoogleOauthTokenStatus, setVerifyGoogleOauthTokenStatus] =
+        useState(false);
     const [googleAuthEmail, setGoogleAuthEmail] = useState(null);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
@@ -123,10 +121,11 @@ const LoginPage = () => {
         }
     }, [token, history]);
     const handleTextInput = useCallback(
-        (setter) => ({ target }) => {
-            setter(target.value);
-            setHasError(false);
-        },
+        (setter) =>
+            ({ target }) => {
+                setter(target.value);
+                setHasError(false);
+            },
         []
     );
     const handleLogin = useCallback(
