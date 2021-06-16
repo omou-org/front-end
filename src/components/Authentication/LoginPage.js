@@ -12,12 +12,9 @@ import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import EmailOutlinedIcon from '@material-ui/icons/EmailOutlined';
 import GoogleLoginButton from '../OmouComponents/GoogleLoginButton.js';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
-import { useQuery } from '@apollo/client';
-import { getGoogleClassroomCourses } from '../../utils.js';
-
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { setToken } from 'actions/authActions.js';
 import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
@@ -29,8 +26,6 @@ import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
 import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
 import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
 import './LoginPage.scss';
-import { LocalConvenienceStoreOutlined } from '@material-ui/icons';
-
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
         tokenAuth(password: $password, username: $username) {
@@ -39,24 +34,6 @@ const LOGIN = gql`
         }
     }
 `;
-
-const GOOGLE_LOGIN = gql`
-    mutation GoogleLogin($accessToken: String!) {
-        __typename
-        socialAuth(accessToken: $accessToken, provider: "google-oauth2") {
-            token
-            social {
-                created
-                id
-                extraData
-                uid
-                provider
-                modified
-            }
-        }
-    }
-`;
-
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
         userType(userName: $username) {
@@ -65,10 +42,10 @@ const GET_USER_TYPE = gql`
         }
     }
 `;
-
-const VERIFY_GOOGLE_OAUTH_TOKEN = gql`
-    query verifyGoogleOauthToken($loginEmail: String!) {
-        verifyGoogleOauthToken(loginEmail: $loginEmail) {
+const VERIFY_GOOGLE_OAUTH = gql`
+    query verifyGoogleOauth($loginEmail: String!, $oauthEmail: String!) {
+        verifyGoogleOauth(loginEmail: $loginEmail, oauthEmail: $oauthEmail) {
+            token
             verified
         }
     }
@@ -77,20 +54,18 @@ const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
     const dispatch = useDispatch();
-    const { token, attemptedLogin, google_access_token, google_courses } =
-        useSelector(({ auth }) => auth);
+    const { token, google_courses } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
     const [
-        isGoogleOauthTokenStatusVerified,
-        setIsGoogleOauthTokenStatusVerified,
+        verifyGoogleOauthTokenStatus,
+        setVerifyGoogleOauthTokenStatus,
     ] = useState(false);
     const [googleAuthEmail, setGoogleAuthEmail] = useState(null);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
     const [hasError, setHasError] = useState(false);
-
     const [getUserType] = useLazyQuery(GET_USER_TYPE, {
         variables: { username: email },
         onCompleted: (data) => {
@@ -101,21 +76,30 @@ const LoginPage = () => {
             }
         },
     });
-    const [getIsGoogleOauthTokenStatusVerified] = useLazyQuery(
-        VERIFY_GOOGLE_OAUTH_TOKEN,
+    const [getVerifyGoogleOauthTokenStatus] = useLazyQuery(
+        VERIFY_GOOGLE_OAUTH,
         {
             variables: { loginEmail: email, oauthEmail: googleAuthEmail },
-            onCompleted: (data) => {
-                setIsGoogleOauthTokenStatusVerified(
-                    data.verifyGoogleOauthToken?.verified
+            onCompleted: async (data) => {
+                setVerifyGoogleOauthTokenStatus(
+                    data?.verifyGoogleOauth?.verified
                 );
-                if (isGoogleOauthTokenStatusVerified === null) {
+                if (data?.verifyGoogleOauth?.verified) {
+                    dispatch(
+                        await setToken(
+                            data.verifyGoogleOauth.token,
+                            true,
+                            email
+                        )
+                    );
+                    history.push('/');
+                }
+                if (verifyGoogleOauthTokenStatus === null) {
                     setHasError(true);
                 }
             },
         }
     );
-
     const [login] = useMutation(LOGIN, {
         errorPolicy: 'ignore',
         ignoreResults: true,
@@ -127,20 +111,6 @@ const LoginPage = () => {
             setHasError(true);
         },
     });
-    const [googleLogin] = useMutation(GOOGLE_LOGIN, {
-        errorPolicy: 'ignore',
-        ignoreResults: true,
-        onCompleted: async ({ socialAuth }) => {
-            // is email same as googleAuthEmail
-            // kick em out if not
-            dispatch(await setToken(socialAuth.token, true, email));
-        },
-        // for whatever reason, this function prevents an unhandled rejection
-        onError: () => {
-            setHasError(true);
-        },
-    });
-
     // must wait for token to update in redux before redirecting
     // otherwise ProtectedRoute's check will trigger and redirect us back here
     useEffect(() => {
@@ -152,16 +122,13 @@ const LoginPage = () => {
             }
         }
     }, [token, history]);
-
     const handleTextInput = useCallback(
-        (setter) =>
-            ({ target }) => {
-                setter(target.value);
-                setHasError(false);
-            },
+        (setter) => ({ target }) => {
+            setter(target.value);
+            setHasError(false);
+        },
         []
     );
-
     const handleLogin = useCallback(
         async (event) => {
             event.preventDefault();
@@ -175,23 +142,18 @@ const LoginPage = () => {
                 history.push('/');
             }
         },
-        [login, email, password]
+        [login, email, password, history]
     );
-
     const toggleSavePassword = useCallback(({ target }) => {
         setShouldSave(target.checked);
     }, []);
-
     const handleCheck = () => {
         if (email !== '') {
             getUserType();
         }
     };
-
-    function refreshGoogleOAuthToken(res) {
-        return new Promise((resolve, reject) => {
-            let refreshTiming = 10000;
-
+    function refreshTokenSetup(res) {
+        return new Promise((resolve) => {
             const refreshToken = async () => {
                 const newAuthRes = await res.reloadAuthResponse();
                 sessionStorage.setItem(
@@ -199,41 +161,43 @@ const LoginPage = () => {
                     newAuthRes.access_token
                 );
                 resolve();
-                // setTimeout(refreshToken, refreshTiming);
             };
             refreshToken();
-            // setTimeout(refreshToken, refreshTiming);
         });
     }
-
-    const dispatchGoogleCourses = (google_courses) => {
-        dispatch({
-            type: actions.SET_GOOGLE_COURSES,
-            payload: { google_courses },
-        });
-    };
-
-    const onSuccess = async (response) => {
-        // setGoogleAuthEmail(response.profileObj.email);
-        // getIsGoogleOauthTokenStatusVerified();
-        const socialAuthResponse = await googleLogin({
-            variables: {
-                accessToken: response.accessToken,
-            },
-        });
-        refreshGoogleOAuthToken(response).then(() => {
-            // getCourses();
-            getGoogleClassroomCourses(google_courses, dispatchGoogleCourses);
-        });
-        if (socialAuthResponse?.data?.socialAuth) {
-            history.push('/');
+    const noGoogleCoursesFoundOnInitialGoogleLogin =
+        (google_courses === null || google_courses === undefined) &&
+        sessionStorage.getItem('google_access_token');
+    async function getCourses() {
+        if (noGoogleCoursesFoundOnInitialGoogleLogin) {
+            try {
+                const response = await axios.get(
+                    'https://classroom.googleapis.com/v1/courses',
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem(
+                                'google_access_token'
+                            )}`,
+                        },
+                    }
+                );
+                dispatch({
+                    type: actions.SET_GOOGLE_COURSES,
+                    payload: { google_courses: response?.data.courses },
+                });
+            } catch (error) {
+                console.log(error);
+            }
         }
+    }
+    const onSuccess = (response) => {
+        setGoogleAuthEmail(response.profileObj.email);
+        getVerifyGoogleOauthTokenStatus();
+        refreshTokenSetup(response).then(() => {
+            getCourses();
+        });
     };
-
-    const onFailure = (response) => {
-        console.error(response);
-    };
-
+    const onFailure = () => {};
     const renderEmailLogin = () => (
         <>
             <Ellipse1 className='picture var1' />
@@ -321,7 +285,6 @@ const LoginPage = () => {
             </form>
         </>
     );
-
     const renderUserDifferences = () => {
         switch (userType) {
             case 'Parent':
@@ -346,7 +309,6 @@ const LoginPage = () => {
                 };
         }
     };
-
     const renderOtherLogins = () => (
         <>
             <Ellipse3 className='picture var3' />
@@ -404,11 +366,11 @@ const LoginPage = () => {
                                             />
                                         )}
                                         buttonText='Login'
-                                        clientId='${process.env.REACT_APP_GOOGLE_CLIENT_ID}'
+                                        clientId='45819877801-3smjria646g9fgb9hrbb14hivbgskiue.apps.googleusercontent.com'
                                         onSuccess={onSuccess}
                                         onFailure={onFailure}
                                         cookiePolicy={'single_host_origin'}
-                                        scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters'
+                                        scope='https://www.googleapis.com/auth/classroom.courses https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.profile.emails https://www.googleapis.com/auth/classroom.profile.photos https://www.googleapis.com/auth/classroom.rosters '
                                     />
                                 </Grid>
                             </Grid>
@@ -483,8 +445,6 @@ const LoginPage = () => {
             </form>
         </>
     );
-
     return userType ? renderOtherLogins() : renderEmailLogin();
 };
-
 export default LoginPage;
