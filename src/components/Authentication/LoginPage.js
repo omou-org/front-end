@@ -102,7 +102,7 @@ const LoginPage = () => {
         errorPolicy: 'ignore',
         ignoreResults: true,
         onCompleted: async ({ tokenAuth }) => {
-            dispatch(await setToken(tokenAuth.token, shouldSave, email));
+            dispatch(await setToken(tokenAuth?.token, shouldSave, email));
         },
         // for whatever reason, this function prevents an unhandled rejection
         onError: () => {
