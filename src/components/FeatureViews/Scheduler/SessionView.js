@@ -94,13 +94,8 @@ const SessionView = () => {
         return <Typography>{`There's been an error!`}</Typography>;
     }
 
-    const {
-        course,
-        endDatetime,
-        title,
-        instructor,
-        startDatetime,
-    } = data.session;
+    const { course, endDatetime, title, instructor, startDatetime } =
+        data.session;
 
     var { courseCategory, enrollmentSet, room } = course;
 

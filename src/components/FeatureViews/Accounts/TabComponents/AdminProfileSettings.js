@@ -33,7 +33,6 @@ const useStyles = makeStyles({
         width: '80%',
     },
 });
-
 const ADMIN_GC_ENABLED = gql`
     query AdminGCEnabled($userID: ID!) {
         admin(userId: $userID) {
@@ -58,7 +57,6 @@ const UNINTEGRATE_WITH_GOOGLE = gql`
         }
     }
 `;
-
 const GOOGLE_AUTH_EMAIL = gql`
     query GoogleAuthEmail($userID: ID!) {
         admin(userId: $userID) {
@@ -85,7 +83,6 @@ const INTEGRATE_WITH_GOOGLE = gql`
         }
     }
 `;
-
 function AdminProfileSettings({ user }) {
     const { userInfo } = user;
     const classes = useStyles();
@@ -123,9 +120,7 @@ function AdminProfileSettings({ user }) {
             // add google classroom icons
         },
     });
-
     const { google_courses } = useSelector(({ auth }) => auth) || [];
-
     useEffect(() => {
         if (adminGCEnabledResponse.loading === false) {
             setGClassSetting(
@@ -136,7 +131,6 @@ function AdminProfileSettings({ user }) {
         adminGCEnabledResponse.loading,
         adminGCEnabledResponse.data?.admin.googleAuthEnabled,
     ]);
-
     function refreshTokenSetup(res) {
         return new Promise((resolve) => {
             const refreshToken = async () => {
@@ -150,7 +144,6 @@ function AdminProfileSettings({ user }) {
             refreshToken();
         });
     }
-
     const noGoogleCoursesFoundOnInitialGoogleLogin =
         (google_courses === null || google_courses === undefined) &&
         sessionStorage.getItem('google_access_token');
@@ -178,7 +171,6 @@ function AdminProfileSettings({ user }) {
             }
         }
     }
-
     function handleClose() {
         setGoogleLoginPromptOpen(false);
     }
@@ -226,9 +218,7 @@ function AdminProfileSettings({ user }) {
             });
         }
     };
-
     if (adminGCEnabledResponse.loading) return <Loading />;
-
     return (
         <>
             <Grid
@@ -336,7 +326,5 @@ function AdminProfileSettings({ user }) {
         </>
     );
 }
-
 AdminProfileSettings.propTypes = AdminPropTypes;
-
 export default AdminProfileSettings;

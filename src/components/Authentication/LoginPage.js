@@ -15,7 +15,6 @@ import GoogleLoginButton from '../OmouComponents/GoogleLoginButton.js';
 import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
-
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { setToken } from 'actions/authActions.js';
 import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
@@ -27,7 +26,6 @@ import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
 import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
 import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
 import './LoginPage.scss';
-
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
         tokenAuth(password: $password, username: $username) {
@@ -36,7 +34,6 @@ const LOGIN = gql`
         }
     }
 `;
-
 const GET_USER_TYPE = gql`
     query GetUserType($username: String!) {
         userType(userName: $username) {
@@ -45,7 +42,6 @@ const GET_USER_TYPE = gql`
         }
     }
 `;
-
 const VERIFY_GOOGLE_OAUTH = gql`
     query verifyGoogleOauth($loginEmail: String!, $oauthEmail: String!) {
         verifyGoogleOauth(loginEmail: $loginEmail, oauthEmail: $oauthEmail) {
@@ -54,7 +50,6 @@ const VERIFY_GOOGLE_OAUTH = gql`
         }
     }
 `;
-
 const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
@@ -62,16 +57,13 @@ const LoginPage = () => {
     const { token, google_courses } = useSelector(({ auth }) => auth);
     const [userType, setUserType] = useState('');
     const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
-    const [
-        verifyGoogleOauthTokenStatus,
-        setVerifyGoogleOauthTokenStatus,
-    ] = useState(false);
+    const [verifyGoogleOauthTokenStatus, setVerifyGoogleOauthTokenStatus] =
+        useState(false);
     const [googleAuthEmail, setGoogleAuthEmail] = useState(null);
     const [email, setEmail] = useState(state?.email);
     const [password, setPassword] = useState(null);
     const [shouldSave, setShouldSave] = useState(false);
     const [hasError, setHasError] = useState(false);
-
     const [getUserType] = useLazyQuery(GET_USER_TYPE, {
         variables: { username: email },
         onCompleted: (data) => {
@@ -90,7 +82,6 @@ const LoginPage = () => {
                 setVerifyGoogleOauthTokenStatus(
                     data?.verifyGoogleOauth?.verified
                 );
-
                 if (data?.verifyGoogleOauth?.verified) {
                     dispatch(
                         await setToken(
@@ -107,7 +98,6 @@ const LoginPage = () => {
             },
         }
     );
-
     const [login] = useMutation(LOGIN, {
         errorPolicy: 'ignore',
         ignoreResults: true,
@@ -119,7 +109,6 @@ const LoginPage = () => {
             setHasError(true);
         },
     });
-
     // must wait for token to update in redux before redirecting
     // otherwise ProtectedRoute's check will trigger and redirect us back here
     useEffect(() => {
@@ -131,15 +120,14 @@ const LoginPage = () => {
             }
         }
     }, [token, history]);
-
     const handleTextInput = useCallback(
-        (setter) => ({ target }) => {
-            setter(target.value);
-            setHasError(false);
-        },
+        (setter) =>
+            ({ target }) => {
+                setter(target.value);
+                setHasError(false);
+            },
         []
     );
-
     const handleLogin = useCallback(
         async (event) => {
             event.preventDefault();
@@ -155,17 +143,14 @@ const LoginPage = () => {
         },
         [login, email, password, history]
     );
-
     const toggleSavePassword = useCallback(({ target }) => {
         setShouldSave(target.checked);
     }, []);
-
     const handleCheck = () => {
         if (email !== '') {
             getUserType();
         }
     };
-
     function refreshTokenSetup(res) {
         return new Promise((resolve) => {
             const refreshToken = async () => {
@@ -204,19 +189,14 @@ const LoginPage = () => {
             }
         }
     }
-
     const onSuccess = (response) => {
         setGoogleAuthEmail(response.profileObj.email);
-
         getVerifyGoogleOauthTokenStatus();
-
         refreshTokenSetup(response).then(() => {
             getCourses();
         });
     };
-
     const onFailure = () => {};
-
     const renderEmailLogin = () => (
         <>
             <Ellipse1 className='picture var1' />
@@ -304,7 +284,6 @@ const LoginPage = () => {
             </form>
         </>
     );
-
     const renderUserDifferences = () => {
         switch (userType) {
             case 'Parent':
@@ -329,7 +308,6 @@ const LoginPage = () => {
                 };
         }
     };
-
     const renderOtherLogins = () => (
         <>
             <Ellipse3 className='picture var3' />
@@ -466,8 +444,6 @@ const LoginPage = () => {
             </form>
         </>
     );
-
     return userType ? renderOtherLogins() : renderEmailLogin();
 };
-
 export default LoginPage;
