@@ -23,7 +23,6 @@ import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
 import { AdminPropTypes } from '../../../../utils';
-
 const useStyles = makeStyles({
     table: {
         minWidth: 650,
@@ -33,7 +32,6 @@ const useStyles = makeStyles({
         width: '80%',
     },
 });
-
 const ADMIN_GC_ENABLED = gql`
     query AdminGCEnabled($userID: ID!) {
         admin(userId: $userID) {
@@ -41,7 +39,6 @@ const ADMIN_GC_ENABLED = gql`
         }
     }
 `;
-
 const SET_ADMIN_GC_ENABLED = gql`
     mutation SetAdminGCEnabled(
         $adminType: AdminTypeEnum!
@@ -59,7 +56,6 @@ const SET_ADMIN_GC_ENABLED = gql`
         }
     }
 `;
-
 const GOOGLE_AUTH_EMAIL = gql`
     query GoogleAuthEmail($userID: ID!) {
         admin(userId: $userID) {
@@ -67,7 +63,6 @@ const GOOGLE_AUTH_EMAIL = gql`
         }
     }
 `;
-
 const SET_GOOGLE_AUTH_EMAIL = gql`
     mutation SetGoogleAuthEmail(
         $adminType: AdminTypeEnum!
@@ -85,7 +80,6 @@ const SET_GOOGLE_AUTH_EMAIL = gql`
         }
     }
 `;
-
 function AdminProfileSettings({ user }) {
     const { userInfo } = user;
     const classes = useStyles();
@@ -95,7 +89,6 @@ function AdminProfileSettings({ user }) {
     const adminGCEnabledResponse = useQuery(ADMIN_GC_ENABLED, {
         variables: { userID: userInfo.user.id },
     });
-
     const [setAdminGCEnabled] = useMutation(SET_ADMIN_GC_ENABLED, {
         update: (cache, { data }) => {
             cache.writeQuery({
@@ -107,7 +100,6 @@ function AdminProfileSettings({ user }) {
             });
         },
     });
-
     const [setGoogleAuthEmail] = useMutation(SET_GOOGLE_AUTH_EMAIL, {
         update: (cache, { data }) => {
             cache.writeQuery({
@@ -122,9 +114,7 @@ function AdminProfileSettings({ user }) {
             // add google classroom icons
         },
     });
-
     const { google_courses } = useSelector(({ auth }) => auth) || [];
-
     useEffect(() => {
         if (adminGCEnabledResponse.loading === false) {
             setGClassSetting(
@@ -135,7 +125,6 @@ function AdminProfileSettings({ user }) {
         adminGCEnabledResponse.loading,
         adminGCEnabledResponse.data.admin.googleAuthEnabled,
     ]);
-
     function refreshTokenSetup(res) {
         return new Promise((resolve) => {
             const refreshToken = async () => {
@@ -149,7 +138,6 @@ function AdminProfileSettings({ user }) {
             refreshToken();
         });
     }
-
     const noGoogleCoursesFoundOnInitialGoogleLogin =
         (google_courses === null || google_courses === undefined) &&
         sessionStorage.getItem('google_access_token');
@@ -177,16 +165,12 @@ function AdminProfileSettings({ user }) {
             }
         }
     }
-
     function handleClose() {
         setGoogleLoginPromptOpen(false);
     }
-
     const onFailure = () => {};
-
     const onSuccess = (response) => {
         setGoogleLoginPromptOpen(false);
-
         setGClassSetting(!gClassSetting);
         setAdminGCEnabled({
             variables: {
@@ -206,7 +190,6 @@ function AdminProfileSettings({ user }) {
             },
         });
     };
-
     const handleGClassSettingChange = () => {
         if (!gClassSetting) {
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
@@ -221,9 +204,7 @@ function AdminProfileSettings({ user }) {
             });
         }
     };
-
     if (adminGCEnabledResponse.loading) return <Loading />;
-
     return (
         <>
             <Grid
@@ -312,7 +293,5 @@ function AdminProfileSettings({ user }) {
         </>
     );
 }
-
 AdminProfileSettings.propTypes = AdminPropTypes;
-
 export default AdminProfileSettings;
