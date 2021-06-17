@@ -42,10 +42,7 @@ const ADMIN_GC_ENABLED = gql`
 `;
 
 const UNINTEGRATE_WITH_GOOGLE = gql`
-    mutation SetAdminGCEnabled(
-        $adminType: AdminTypeEnum!
-        $userID: ID!
-    ) {
+    mutation SetAdminGCEnabled($adminType: AdminTypeEnum!, $userID: ID!) {
         createAdmin(
             user: { id: $userID }
             adminType: $adminType
@@ -94,17 +91,20 @@ function AdminProfileSettings({ user }) {
         variables: { userID: userInfo.user.id },
     });
 
-    const [unintegrateWithGoogleMutation] = useMutation(UNINTEGRATE_WITH_GOOGLE, {
-        update: (cache, { data }) => {
-            cache.writeQuery({
-                data: {
-                    admin: data.createAdmin.admin.googleAuthEnabled,
-                },
-                query: ADMIN_GC_ENABLED,
-                variables: { userID: userInfo.user.id },
-            });
-        },
-    });
+    const [unintegrateWithGoogleMutation] = useMutation(
+        UNINTEGRATE_WITH_GOOGLE,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        admin: data.createAdmin.admin.googleAuthEnabled,
+                    },
+                    query: ADMIN_GC_ENABLED,
+                    variables: { userID: userInfo.user.id },
+                });
+            },
+        }
+    );
 
     const [integrateWithGoogleMutation] = useMutation(INTEGRATE_WITH_GOOGLE, {
         update: (cache, { data }) => {
@@ -314,11 +314,15 @@ function AdminProfileSettings({ user }) {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        We are having trouble connecting with Google right now, please try again later.
+                        We are having trouble connecting with Google right now,
+                        please try again later.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <ResponsiveButton onClick={handleCloseGoogleErrorPopup} color='primary'>
+                    <ResponsiveButton
+                        onClick={handleCloseGoogleErrorPopup}
+                        color='primary'
+                    >
                         Continue
                     </ResponsiveButton>
                 </DialogActions>
