@@ -15,6 +15,7 @@ import GoogleLoginButton from '../OmouComponents/GoogleLoginButton.js';
 import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
+
 import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import { setToken } from 'actions/authActions.js';
 import { ReactComponent as Ellipse1 } from './loginImages/ellipse1.svg';
@@ -26,6 +27,7 @@ import { ReactComponent as Picture2 } from './loginImages/picture2.svg';
 import { ReactComponent as Picture3 } from './loginImages/picture3.svg';
 import { ReactComponent as Picture4 } from './loginImages/picture4.svg';
 import './LoginPage.scss';
+
 const LOGIN = gql`
     mutation Login($password: String!, $username: String!) {
         tokenAuth(password: $password, username: $username) {
@@ -50,6 +52,7 @@ const VERIFY_GOOGLE_OAUTH = gql`
         }
     }
 `;
+
 const LoginPage = () => {
     const history = useHistory();
     const { state } = useLocation();
@@ -196,7 +199,11 @@ const LoginPage = () => {
             getCourses();
         });
     };
-    const onFailure = () => {};
+
+    const onFailure = (response) => {
+        console.error(response);
+    };
+
     const renderEmailLogin = () => (
         <>
             <Ellipse1 className='picture var1' />
