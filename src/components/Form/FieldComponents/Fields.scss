@@ -1,0 +1,42 @@
+// Checkbox button styles
+.check-btn {
+    margin-top: 2em;
+    background-color: #efefef;
+    overflow: auto;
+    float: left;
+}
+
+.check-btn input:not(:checked) + span {
+    border: 2px solid #c4c4c4;
+    border-radius: 5px;
+}
+
+.check-btn input:checked + span {
+    color: #43b5d9;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 2px solid #43b5d9;
+    outline: unset;
+}
+
+.check-btn label {
+    float: left;
+    width: 7em;
+}
+
+.check-btn label span {
+    text-align: center;
+    padding: 10px 0px;
+    display: block;
+}
+
+.check-btn label input {
+    position: absolute;
+    top: -20px;
+}
+
+.btn {
+    line-height: 1.2;
+    margin-bottom: '15px';
+    margin-left: '10px';
+}

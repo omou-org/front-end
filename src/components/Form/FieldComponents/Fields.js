@@ -8,7 +8,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
+// import Button from '@material-ui/core/Button';
 import * as Fields from 'mui-rff';
+import { Field } from 'react-final-form';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
@@ -17,7 +19,7 @@ import MomentUtils from '@date-io/moment';
 import MaskedInput from 'react-text-mask';
 import { Schedule } from '@material-ui/icons';
 import PropTypes from 'prop-types';
-
+import './Fields.scss';
 const getLabel = ({ label }) => label || '';
 
 const useSelectStyles = makeStyles({
@@ -34,6 +36,10 @@ export const fieldsMargins = {
     marginBottom: '10px',
 };
 
+export const tutoringMargins = {
+    marginTop: '14px',
+    marginBottom: '10px',
+};
 export const { TextField, Checkboxes } = Fields;
 
 export const Select = (props) => {
@@ -52,11 +58,15 @@ export const KeyboardTimePicker = (props) => (
 
 export const DatePicker = (props) => (
     <Fields.KeyboardDatePicker
-        style={fieldsMargins}
+        style={props.tutoring ? tutoringMargins : fieldsMargins}
         dateFunsUtils={MomentUtils}
         {...props}
     />
 );
+
+DatePicker.propTypes = {
+    tutoring: PropTypes.bool,
+};
 
 export const TimePicker = (props) => (
     <Fields.KeyboardTimePicker
@@ -184,9 +194,13 @@ const GET_STUDENTS = gql`
 `;
 
 export const StudentSelect = (props) => {
-    const { studentIdList } = JSON.parse(
-        sessionStorage.getItem('registrations')
-    ).currentParent;
+    let studentIdList;
+    if (props.studentIdList) {
+        studentIdList = props.studentIdList;
+    } else {
+        studentIdList = JSON.parse(sessionStorage.getItem('registrations'))
+            .currentParent;
+    }
     const { data } = useQuery(GET_STUDENTS, {
         variables: { userIds: studentIdList },
     });
@@ -195,6 +209,7 @@ export const StudentSelect = (props) => {
             label: fullName(student.user),
             value: student.user.id,
         })) || [];
+
     return (
         <Select
             data={studentOptions}
@@ -203,6 +218,10 @@ export const StudentSelect = (props) => {
             {...props}
         />
     );
+};
+
+StudentSelect.propTypes = {
+    studentIdList: PropTypes.array,
 };
 
 export const PasswordInput = ({ isField = true, ...props }) => {
@@ -240,4 +259,60 @@ export const PasswordInput = ({ isField = true, ...props }) => {
 
 PasswordInput.propTypes = {
     isField: PropTypes.bool,
+};
+
+const GET_COURSE_TOPICS = gql`
+    query GetCourseTopics {
+        courseCategories {
+            name
+            id
+        }
+    }
+`;
+
+export const CourseTopicSelect = (props) => {
+    const { data, loading, error } = useQuery(GET_COURSE_TOPICS);
+    if (loading) return '';
+    if (error) console.error(error);
+    let topicOptions = data.courseCategories.map(({ name, id }) => {
+        return { label: name, value: id };
+    });
+
+    return (
+        <Select
+            data={topicOptions}
+            label='Select Subject'
+            name='selectSubject'
+            {...props}
+        />
+    );
+};
+
+export const ToggleButton = (toggleProps) => {
+    return (
+        <Field
+            name={toggleProps.name}
+            type='checkbox'
+            render={(props) => (
+                <div className='check-btn'>
+                    <label className='btn '>
+                        <input
+                            type='checkbox'
+                            value={props.input.value}
+                            checked={props.input.checked}
+                            name={props.input.name}
+                            onChange={props.input.onChange}
+                            {...props}
+                        />
+                        <span>{props.input.name}</span>
+                    </label>
+                </div>
+            )}
+        ></Field>
+    );
+};
+ToggleButton.propTypes = {
+    name: PropTypes.string,
+    input: PropTypes.object,
+    onChange: PropTypes.func,
 };
