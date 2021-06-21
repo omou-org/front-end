@@ -139,14 +139,12 @@ const ManageCourseTopic = () => {
     const [submitUpdatedCourseTopic] = useMutation(UPDATE_COURSE_TOPIC, {
         update: (cache, data) => {
             const updatedTopic = data.data.createCourseCategory.courseCategory;
-            console.log(updatedTopic);
             const cachedTopics = cache.readQuery({
                 query: GET_COURSE_TAGS,
             }).courseCategories;
 
             let cacheCopy = [...cachedTopics];
             const indexOfTopicToUpdate = cacheCopy.indexOf(cachedTopics.find(topic => topic.id === updatedTopic.id));
-            console.log(indexOfTopicToUpdate);
             cacheCopy[indexOfTopicToUpdate] = updatedTopic;
             const updatedCache = [...cacheCopy];
 

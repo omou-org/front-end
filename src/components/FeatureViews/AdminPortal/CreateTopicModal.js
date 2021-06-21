@@ -96,7 +96,7 @@ const GET_COURSE_TAGS = gql`
 `;
 
 const CreateTopicModal = ({ closeModal }) => {
-    const [courseTopicData, setCourseTopicData] = useState({
+    const [courseTopicValue, setCourseTopicValue] = useState({
         topicName: '',
         topicDescription: '',
     });
@@ -106,11 +106,11 @@ const CreateTopicModal = ({ closeModal }) => {
             closeModal();
         },
         update: (cache, { data }) => {
-            const newCategory = data.createCourseCategory.courseCategory;
-            const cachedCategory = cache.readQuery({
+            const updatedCourseTopic = data.createCourseCategory.courseCategory;
+            const cachedCourseTopics = cache.readQuery({
                 query: GET_COURSE_TAGS,
             }).courseCategories;
-            const updatedCache = [...cachedCategory, newCategory];
+            const updatedCache = [...cachedCourseTopics, updatedCourseTopic];
             cache.writeQuery({
                 data: {
                     courseCategories: updatedCache,
@@ -122,7 +122,7 @@ const CreateTopicModal = ({ closeModal }) => {
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
-        setCourseTopicData((prevState) => ({
+        setCourseTopicValue((prevState) => ({
             ...prevState,
             [name]: value,
         }));
@@ -131,8 +131,8 @@ const CreateTopicModal = ({ closeModal }) => {
     const onSubmit = () => {
         submitData({
             variables: {
-                name: courseTopicData.topicName,
-                description: courseTopicData.topicDescription,
+                name: courseTopicValue.topicName,
+                description: courseTopicValue.topicDescription,
             },
         });
     };
@@ -157,7 +157,7 @@ const CreateTopicModal = ({ closeModal }) => {
                     <TextField
                         type='text'
                         placeholder='* Topic (max 30 characters)'
-                        value={courseTopicData.topicName}
+                        value={courseTopicValue.topicName}
                         name='topicName'
                         variant='outlined'
                         required
@@ -174,7 +174,7 @@ const CreateTopicModal = ({ closeModal }) => {
                     <TextField
                         type='text'
                         placeholder='Description (max 80 characters)'
-                        value={courseTopicData.topicDescription}
+                        value={courseTopicValue.topicDescription}
                         name='topicDescription'
                         variant='outlined'
                         InputProps={{
