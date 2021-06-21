@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
-import {Box, Typography} from '@material-ui/core';
-import {useHistory, useParams} from 'react-router-dom';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
-import {initializeSessionEditReceiptState} from "./SessionEditReceipt";
+import { Box, Typography } from '@material-ui/core';
+import { useHistory, useParams } from 'react-router-dom';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { initializeSessionEditReceiptState } from './SessionEditReceipt';
 
 const useStyles = makeStyles({
     dialogDimensions: {
@@ -29,7 +29,7 @@ const SaveSessionEditsButton = ({
     isAll,
 }) => {
     let history = useHistory();
-    const {session_id} = useParams();
+    const { session_id } = useParams();
     const classes = useStyles();
 
     const [modalState, setModalState] = useState({
@@ -39,20 +39,26 @@ const SaveSessionEditsButton = ({
     const [balanceUpdateCopy, setBalanceUpdateCopy] = useState(
         "There will not be any balance adjustment to the student's account."
     );
-    const receiptFieldData = initializeSessionEditReceiptState(children.props.databaseState, children.props.newState);
+    const receiptFieldData = initializeSessionEditReceiptState(
+        children.props.databaseState,
+        children.props.newState
+    );
 
     useEffect(() => {
-        const dateTimeIndex = receiptFieldData?.findIndex(({key}) => key === "date & time" ||
-            key === "availabilities");
+        const dateTimeIndex = receiptFieldData?.findIndex(
+            ({ key }) => key === 'date & time' || key === 'availabilities'
+        );
         console.log(dateTimeIndex, receiptFieldData);
         if (dateTimeIndex && receiptFieldData[dateTimeIndex]?.isUpdated) {
-            setBalanceUpdateCopy("There may be balance adjustment to the student's enrollment. " +
-                "A confirmation email will send an invoice reflecting any balance adjustments");
+            setBalanceUpdateCopy(
+                "There may be balance adjustment to the student's enrollment. " +
+                    'A confirmation email will send an invoice reflecting any balance adjustments'
+            );
         }
     }, [receiptFieldData]);
 
     const handleClose = () => {
-        setModalState({...modalState, confirmationState: false});
+        setModalState({ ...modalState, confirmationState: false });
         if (isAll) {
             history.push(`/scheduler`);
         } else {

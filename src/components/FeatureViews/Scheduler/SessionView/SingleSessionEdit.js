@@ -1,23 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-import {Prompt, useParams} from 'react-router-dom';
+import { Prompt, useParams } from 'react-router-dom';
 
 import gql from 'graphql-tag';
 // import LeavePageModal from '../../OmouComponents/LeavePageModal';
-import {useLazyQuery, useMutation, useQuery} from '@apollo/client';
-import {Divider, makeStyles, Typography} from '@material-ui/core';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
-import {darkBlue, darkGrey, statusRed} from '../../../../theme/muiTheme';
-import {QueryBuilder} from '@material-ui/icons';
-import {fullName, USER_TYPES} from '../../../../utils';
+import { darkBlue, darkGrey, statusRed } from '../../../../theme/muiTheme';
+import { QueryBuilder } from '@material-ui/icons';
+import { fullName, USER_TYPES } from '../../../../utils';
 import moment from 'moment';
 import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
-import {EditSessionDropDown} from './EditSessionUtilComponents';
-import {SnackBarComponent} from '../../../OmouComponents/SnackBarComponent';
+import { EditSessionDropDown } from './EditSessionUtilComponents';
+import { SnackBarComponent } from '../../../OmouComponents/SnackBarComponent';
 import 'date-fns';
-import {KeyboardDatePicker, KeyboardTimePicker} from '@material-ui/pickers';
+import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import SaveSessionEditsButton from './SaveSessionEditsButton';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import NavLinkNoDup from '../../../Routes/NavLinkNoDup';
 import SessionEditReceipt from './SessionEditReceipt';
 // import {renderCourseAvailabilitiesString} from "../../../OmouComponents/CourseAvailabilities";
@@ -287,10 +287,7 @@ const SingleSessionEdit = () => {
     if (error) return <Typography>{"There's been an error!"}</Typography>;
 
     const {
-        session: {
-            id: sessionId,
-            startDatetime,
-        },
+        session: { id: sessionId, startDatetime },
         courseCategories: subjects,
         instructors,
     } = data;

@@ -1,24 +1,27 @@
 /*eslint no-unused-vars: "warn"*/
-import React, {useEffect, useState} from 'react';
-import {NavLink, useParams} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
 import gql from 'graphql-tag';
-import {useMutation, useQuery} from '@apollo/client';
-import {Divider, makeStyles, Typography} from '@material-ui/core';
+import { useMutation, useQuery } from '@apollo/client';
+import { Divider, makeStyles, Typography } from '@material-ui/core';
 import Loading from '../../../OmouComponents/Loading';
-import {darkBlue, darkGrey} from '../../../../theme/muiTheme';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { darkBlue, darkGrey } from '../../../../theme/muiTheme';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import AccessControlComponent from '../../../OmouComponents/AccessControlComponent';
-import {EditMultiSessionFields, EditSessionDropDown,} from './EditSessionUtilComponents';
-import {SnackBarComponent} from '../../../OmouComponents/SnackBarComponent';
+import {
+    EditMultiSessionFields,
+    EditSessionDropDown,
+} from './EditSessionUtilComponents';
+import { SnackBarComponent } from '../../../OmouComponents/SnackBarComponent';
 import Grid from '@material-ui/core/Grid';
-import {fullName, USER_TYPES} from '../../../../utils';
+import { fullName, USER_TYPES } from '../../../../utils';
 import SaveSessionEditsButton from './SaveSessionEditsButton';
 import Box from '@material-ui/core/Box';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import {KeyboardDatePicker} from '@material-ui/pickers';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 import moment from 'moment';
 import SessionEditReceipt from './SessionEditReceipt';
-import {renderCourseAvailabilitiesString} from '../../../OmouComponents/CourseAvailabilities';
+import { renderCourseAvailabilitiesString } from '../../../OmouComponents/CourseAvailabilities';
 
 const useStyles = makeStyles(() => ({
     current_session: {
