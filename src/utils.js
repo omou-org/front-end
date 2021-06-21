@@ -865,3 +865,11 @@ export const AdminPropTypes = {
         }),
     }).isRequired,
 };
+
+// Uses Regex to determine if given string
+// matches an email
+// Returns true if string matches an email
+export const isEmail = (str) => {
+    const regex = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
+    return regex.test(str);
+};
