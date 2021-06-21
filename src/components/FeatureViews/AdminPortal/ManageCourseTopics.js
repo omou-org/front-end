@@ -152,9 +152,9 @@ const ManageCourseTopic = () => {
                 data: {
                     courseCategories: updatedCache,
                 },
-                query: GET_COURSE_TAGS
+                query: GET_COURSE_TAGS,
             });
-        }
+        },
     });
 
     const { loading, error, data } = useQuery(GET_COURSE_TAGS, {
