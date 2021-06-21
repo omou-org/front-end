@@ -23,13 +23,14 @@ const REFRESH_TOKEN = gql`
 `;
 
 export default function IdleTimerPrompt() {
-    const savedToken = useSelector(({ auth }) => auth.token);
+    const { token: savedToken, user } = useSelector(({ auth }) => auth);
     const [openIdlePrompt, setIdlePrompt] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
+
     const [refreshToken] = useMutation(REFRESH_TOKEN, {
         onCompleted: async (data) => {
-            dispatch(await setToken(data.refreshToken.token, true));
+            dispatch(await setToken(data.refreshToken.token, true, user.email));
         },
     });
 

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { SchedulerContext } from './SchedulerContext';
+import { SchedulerContext } from '../SchedulerContext';
 import IconButton from '@material-ui/core/IconButton';
 import { FilterList } from '@material-ui/icons';
 import Popover from '@material-ui/core/Popover';

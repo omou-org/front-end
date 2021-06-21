@@ -6,41 +6,17 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/client';
 import { SchedulerContext } from './SchedulerContext';
 import Popover from '@material-ui/core/Popover';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { fullName } from '../../../utils';
-import { useHistory } from 'react-router-dom';
 import { instructorPalette } from '../../../theme/muiTheme';
 import { findCommonElement } from '../../Form/FormUtils';
-import { SessionPopover } from './SessionPopover';
+import { SessionPopover } from './SessionView/SessionPopover';
 import { OmouSchedulerToolbar } from './OmouSchedulerToolbar';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-
-const useStyles = makeStyles((theme) => ({
-    sessionPopover: {
-        padding: theme.spacing(3),
-        height: '100%',
-        cursor: 'pointer',
-    },
-    popover: {
-        pointerEvents: 'none',
-    },
-    sessionInfo: {
-        display: 'flex',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        marginTop: theme.spacing(1),
-    },
-}));
+import './scheduler.scss';
 
 const EventPopoverWrapper = ({ children, popover }) => {
-    const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
-    const history = useHistory();
-
-    const handleClick = () => {
-        history.push(`/scheduler/session/${popover.props.session.id}`);
-    };
 
     const handlePopoverOpen = (event) => {
         setAnchorEl(event.target);
@@ -58,8 +34,6 @@ const EventPopoverWrapper = ({ children, popover }) => {
                 aria-owns={open ? 'mouse-over-popover' : undefined}
                 aria-haspopup='true'
                 onMouseEnter={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}
-                onClick={handleClick}
             >
                 {children}
             </div>
@@ -76,8 +50,6 @@ const EventPopoverWrapper = ({ children, popover }) => {
                     vertical: 'center',
                     horizontal: 'left',
                 }}
-                className={classes.popover}
-                disableRestoreFocus
             >
                 {popover}
             </Popover>
@@ -124,7 +96,9 @@ const BigCalendar = (props) => {
                 eventWrapper: (props) => (
                     <EventPopoverWrapper
                         {...props}
-                        popover={<SessionPopover session={props.event} />}
+                        popover={
+                            <SessionPopover session={props.event} {...props} />
+                        }
                     />
                 ),
             }}
@@ -136,7 +110,6 @@ const BigCalendar = (props) => {
         />
     );
 };
-
 BigCalendar.propTypes = {
     eventList: PropTypes.array,
     event: PropTypes.any,
@@ -179,7 +152,7 @@ const GET_SESSIONS = gql`
     }
 `;
 
-function Scheduler() {
+export default function Scheduler() {
     const defaultSchedulerState = useMemo(
         () => ({
             timeFrame: 'month',
@@ -254,7 +227,6 @@ function Scheduler() {
 
     useEffect(() => {
         const { timeFrame, timeShift, ...rest } = schedulerState;
-
         if (timeFrame && timeShift) {
             setSchedulerState({
                 ...rest,
@@ -380,9 +352,3 @@ function Scheduler() {
         </SchedulerContext.Provider>
     );
 }
-
-Scheduler.propTypes = {
-    eventList: PropTypes.array,
-};
-
-export default Scheduler;

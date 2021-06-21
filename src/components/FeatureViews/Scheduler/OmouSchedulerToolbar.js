@@ -11,7 +11,7 @@ import {
     Today,
 } from '@material-ui/icons';
 import { omouBlue } from '../../../theme/muiTheme';
-import AdvancedSessionFilters from './AdvancedSessionFilters';
+import AdvancedSessionFilters from './SessionView/AdvancedSessionFilters';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';

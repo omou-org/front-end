@@ -399,6 +399,11 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
     }
 };
 
+export const camelCaseToSentenceCase = (string) => {
+    const result = string.replace(/([A-Z])/g, ' $1');
+    return result.charAt(0).toUpperCase() + result.slice(1);
+};
+
 export const capitalizeString = (string) =>
     string[0].toUpperCase() + string.slice(1).toLowerCase();
 

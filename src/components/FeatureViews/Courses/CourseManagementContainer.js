@@ -23,7 +23,7 @@ import {
     highlightColor,
     pastColor,
 } from '../../../theme/muiTheme';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import { CourseAvailabilites } from '../../OmouComponents/CourseAvailabilities';
 import PropTypes from 'prop-types';
 
 export const BootstrapInput = withStyles((theme) => ({
