@@ -1,12 +1,13 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { GET_PAYMENT } from './InvoiceReceipt';
 import Loading from 'components/OmouComponents/Loading';
 import { fullName } from 'utils';
 import Box from '@material-ui/core/Box';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
+import gql from 'graphql-tag';
 
 import UpdateInvoiceRow from './UpdateInvoiceRow';
 import { makeStyles } from '@material-ui/core/styles';
@@ -22,6 +23,37 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
+const GET_PRICE_QUOTE = gql`
+    query GetPriceQuote(
+        $method: String!
+        $disabledDiscounts: [ID]
+        $priceAdjustment: Float
+        $classes: [ClassQuote]
+        $tutoring: [TutoringQuote]
+        $parent: ID!
+    ) {
+        priceQuote(
+            method: $method
+            disabledDiscounts: $disabledDiscounts
+            priceAdjustment: $priceAdjustment
+            classes: $classes
+            tutoring: $tutoring
+            parent: $parent
+        ) {
+            subTotal
+            priceAdjustment
+            accountBalance
+            total
+            discounts {
+                id
+                name
+                amount
+            }
+        }
+    }
+`;
+
 
 const useStyles = makeStyles({
     heading: {
@@ -44,16 +76,69 @@ const UpdateInvoice = () => {
     const [registrationsByStudent, setRegistrationsByStudent] = useState([]);
     const [registrationsToBeCancelled, setRegistrationsToBeCancelled] = useState([]);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
+    const [numberOfUnsavedChanges, setNumberOfUnsavedChanges] = useState(0);
     const [displayPopup, setDisplayPopup] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState('credit_card');
+    const [displayedPrice, setDisplayedPrice] = useState({
+        total: 0,
+        subTotal: 0
+    })
 
     const classes = useStyles();
 
-    const { data, loading, error } = useQuery(GET_PAYMENT, {
+    const { data: paymentInfoData, loading: paymentInfoLoading, error: paymentInfoError } = useQuery(GET_PAYMENT, {
         variables: {
             invoiceId: invoiceId,
         },
     });
+
+    // classRegistraitons to be 
+    /**
+     * {
+     *      course: courseId
+     *      sessions: numSessions
+     *      student: studentId
+     * }
+     */
+    const [classRegistrations, setClassRegistrations] = useState([]);
+
+    const formatRegistrationsForPriceAdjustmentQuery = (arrOfRegistrations) => {
+        const filteredClassRegistrations = [];
+
+        for (const registration of arrOfRegistrations) {
+            if (!registrationsToBeCancelled.includes(registration.id)) {
+                filteredClassRegistrations.push({
+                    course: registration.enrollment.course.id,
+                    sessions: registration.numSessions,
+                    student: registration.enrollment.student.user.id
+                })
+            }
+        }
+        console.log({filteredClassRegistrations})
+        setClassRegistrations(filteredClassRegistrations);
+    }
+
+    const [priceAdjustment, setPriceAdjustment] = useState(0);
+    const [getPriceQuote, { loading: priceQuoteLoading, data: priceQuoteData }] = useLazyQuery(
+        GET_PRICE_QUOTE,
+        {
+            variables: {
+                method: paymentMethod,
+                classes: classRegistrations,
+                parent: paymentInfoData?.invoice.parent.user.id,
+                disabledDiscounts: [],
+                priceAdjustment,
+            },
+            onCompleted: (data) => {
+                console.log({data})
+                setDisplayedPrice({
+                    total: data.priceQuote.total,
+                    subTotal: data.priceQuote.subTotal
+                })
+            },
+            skip: !paymentInfoData,
+        }
+    );
 
     const formatRegistrationsByStudent = (registrations) => {
         const formattedRegistrations = {};
@@ -73,17 +158,23 @@ const UpdateInvoice = () => {
 
     useEffect(() => {
         let registrationData = [];
-        if (data) {
-            registrationData = formatRegistrationsByStudent(data.invoice.registrationSet);
+        let invoicePrice = displayedPrice;
+
+        if (paymentInfoData) {
+            registrationData = formatRegistrationsByStudent(paymentInfoData.invoice.registrationSet);
+            invoicePrice.subTotal = paymentInfoData.invoice.subTotal;
+            invoicePrice.total = paymentInfoData.invoice.total;
+            formatRegistrationsForPriceAdjustmentQuery(paymentInfoData.invoice.registrationSet);
         }
         setRegistrationsByStudent(registrationData);
-    }, [ data ])    
+        setDisplayedPrice(invoicePrice);
+    }, [ paymentInfoData ])    
 
     // TODO 
     // [x] Grey out enrollment 
-    // [] Update invoice total using priceQuote query
+    // [x] Update invoice total using priceQuote query
     // [x] change x to +
-    // [x] Disable/ grey out Pay Now button
+    // [x] Disable/ grey out Pay Now button if number of unsaved changes is not 0
     // [x] display save button
     const updateCancelledRegistrations = (registrationId) => {
 
@@ -91,14 +182,20 @@ const UpdateInvoice = () => {
 
         const newRegistrationsToBeCancelledState = registrationsToBeCancelled;
 
+        let updatedCountOfUnsavedChanges = numberOfUnsavedChanges;
+
         if (indexToDelete === -1) {
             newRegistrationsToBeCancelledState.push(registrationId);
+            updatedCountOfUnsavedChanges++;
         } else {
             newRegistrationsToBeCancelledState.splice(indexToDelete, 1);
+            updatedCountOfUnsavedChanges--;
         }
-
+        setNumberOfUnsavedChanges(updatedCountOfUnsavedChanges);
         setRegistrationsToBeCancelled(newRegistrationsToBeCancelledState);
-        setUnsavedChanges(true);
+        setUnsavedChanges(updatedCountOfUnsavedChanges !== 0);
+        formatRegistrationsForPriceAdjustmentQuery(paymentInfoData.invoice.registrationSet);
+        getPriceQuote();
     }
 
     // TODO
@@ -141,15 +238,16 @@ const paymentOptions = [
     },
 ];
 
-    if (loading) {
+    if (paymentInfoLoading) {
         return <Loading />;
     }
-    if (error)
+    if (paymentInfoError)
         return (
             <Typography>
-                {`There's been an error! Error: ${error.message}`}
+                {`There's been an error! Error: ${paymentInfoError.message}`}
             </Typography>
         );
+    console.log({paymentInfoData})
 
     return (
         <Grid
@@ -219,11 +317,11 @@ const paymentOptions = [
                 <Grid item>
                     <Grid item container direction='row' alignItems='center'>
                         <Typography variant='body'>Subtotal</Typography>
-                        <Typography variant='body2'>$ the monies</Typography>
+                        <Typography variant='body2'>$ {displayedPrice.subTotal}</Typography>
                     </Grid>
                     <Grid item container direction='row' alignItems='center'>
                         <Typography variant='body'>Total</Typography>
-                        <Typography variant='body2'>$ the monies</Typography>
+                        <Typography variant='body2'>$ {displayedPrice.total}</Typography>
                     </Grid>
                 </Grid>    
             </Grid>
