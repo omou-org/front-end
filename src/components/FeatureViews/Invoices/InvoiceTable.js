@@ -9,7 +9,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-
 import { fullName } from 'utils';
 import Loading from 'components/OmouComponents/Loading';
 import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
@@ -23,7 +22,7 @@ import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import StatusBadge from '../../OmouComponents/StatusBadge';
-import {TablePagination} from '../../OmouComponents/TablePagination';
+import { TablePagination } from '../../OmouComponents/TablePagination';
 
 import './invoice.scss';
 

@@ -1,13 +1,13 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
-import {OnboardingContext} from './OnboardingContext';
-import {useSessionStorage} from '../../../utils';
+import { makeStyles } from '@material-ui/core/styles';
+import { OnboardingContext } from './OnboardingContext';
+import { useSessionStorage } from '../../../utils';
 import OnboardingControls from './OnboardingControls';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Grid from '@material-ui/core/Grid';
 import PropTypes from 'prop-types';
 
@@ -50,14 +50,11 @@ const BusinessInfo = ({ step }) => {
     const classes = useStyles();
     const { setImportState } = useContext(OnboardingContext);
     // TODO: handle updating biz info if the user goes back a page. Need to fetch the biz id then add to mutation var
-    const [createBusinessInfo] = useMutation(
-        CREATE_BIZ_INFO,
-        {
-            onCompleted: (data) => {
-                console.log(data);
-            },
-        }
-    );
+    const [createBusinessInfo] = useMutation(CREATE_BIZ_INFO, {
+        onCompleted: (data) => {
+            console.log(data);
+        },
+    });
 
     const [bizName, setBizName] = useSessionStorage('bizName', '');
     const [bizPhone, setBizPhone] = useSessionStorage('bizPhone', '');
@@ -173,7 +170,7 @@ const BusinessInfo = ({ step }) => {
 };
 
 BusinessInfo.propTypes = {
-    step: PropTypes.number
+    step: PropTypes.number,
 };
 
 export default BusinessInfo;

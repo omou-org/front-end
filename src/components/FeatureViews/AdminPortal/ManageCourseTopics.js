@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
-// import CheckIcon from '@material-ui/icons/Check';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import SearchIcon from '@material-ui/icons/Search';
 import Typography from '@material-ui/core/Typography';
@@ -17,9 +16,16 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import CreateTagModal from './CreateTagModal';
+import CreateTopicModal from './CreateTopicModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
-import { h4, omouBlue, white, body1, body2 } from '../../../theme/muiTheme';
+import {
+    h4,
+    omouBlue,
+    white,
+    body1,
+    body2,
+    gloom,
+} from '../../../theme/muiTheme';
 import { makeStyles } from '@material-ui/core/styles';
 import Loading from 'components/OmouComponents/Loading';
 import DoneIcon from '@material-ui/icons/Done';
@@ -43,30 +49,16 @@ const useStyles = makeStyles({
         ...h4,
         color: omouBlue,
     },
-    tagName: {
+    topicName: {
         ...body2,
     },
-    editTagDescription: {
+    editInput: {
         ...body1,
+        border: `1px solid ${omouBlue}`,
+        borderRadius: '5px',
+        alignItems: 'center',
+        paddingLeft: '1rem',
         height: '2rem',
-        width: '34.675rem',
-        background: white,
-        border: `1px solid ${omouBlue}`,
-        borderRadius: '5px',
-    },
-    editTagName: {
-        ...body1,
-        height: '2rem',
-        width: '13.2125rem',
-        background: white,
-        border: `1px solid ${omouBlue}`,
-        borderRadius: '5px',
-    },
-    input: {
-        border: `1px solid ${omouBlue}`,
-        borderRadius: '5px',
-        textAlign: 'center',
-        padding: '5px',
     },
     tableFooter: {
         paddingTop: '1vh',
@@ -93,28 +85,32 @@ const UPDATE_COURSE_TOPIC = gql`
         }
     }
 `;
-// const GET_COURSE_TAG = gql`
-// query getCourseTag($categoryId: ID) {
-// courseCategory(categoryId: $categoryId) {
-// id
-// name
-// description
-// }
-// }
-// `;
+
 const CustomTableCell = ({ row, name, onChange }) => {
     const classes = useStyles();
     const { isEditMode } = row;
+
     return (
-        <TableCell align='left'>
+        <TableCell
+            align='left'
+            style={{
+                width: name === 'name' ? '14.2rem' : '35.2rem',
+                marginRight: '2.5rem',
+            }}
+            className={name === 'name' && !isEditMode && classes.topicName}
+        >
             {isEditMode ? (
                 <TextField
                     value={row[name]}
                     name={name}
                     fullWidth
                     onChange={(e) => onChange(e, row)}
-                    className={classes.input}
-                    InputProps={{ disableUnderline: true }}
+                    InputProps={{
+                        classes: {
+                            root: classes.editInput,
+                        },
+                        disableUnderline: true,
+                    }}
                 />
             ) : (
                 row[name]
@@ -140,8 +136,28 @@ const ManageCourseTopic = () => {
             isEditMode: false,
         }));
     };
+    const [submitUpdatedCourseTopic] = useMutation(UPDATE_COURSE_TOPIC, {
+        update: (cache, data) => {
+            const updatedTopic = data.data.createCourseCategory.courseCategory;
+            const cachedTopics = cache.readQuery({
+                query: GET_COURSE_TAGS,
+            }).courseCategories;
 
-    const [submitUpdatedCourseTopic] = useMutation(UPDATE_COURSE_TOPIC);
+            let cacheCopy = [...cachedTopics];
+            const indexOfTopicToUpdate = cacheCopy.indexOf(
+                cachedTopics.find((topic) => topic.id === updatedTopic.id)
+            );
+            cacheCopy[indexOfTopicToUpdate] = updatedTopic;
+            const updatedCache = [...cacheCopy];
+
+            cache.writeQuery({
+                data: {
+                    courseCategories: updatedCache,
+                },
+                query: GET_COURSE_TAGS,
+            });
+        },
+    });
 
     const { loading, error, data } = useQuery(GET_COURSE_TAGS, {
         onCompleted: () => {
@@ -250,7 +266,7 @@ const ManageCourseTopic = () => {
                         startIcon={<AddIcon />}
                         onClick={handleModalOpen}
                     >
-                        new subject
+                        new topic
                     </ResponsiveButton>
                 </Grid>
                 <Modal
@@ -258,12 +274,11 @@ const ManageCourseTopic = () => {
                     open={modalOpen}
                     onClose={handleModalClose}
                 >
-                    <CreateTagModal closeModal={handleModalClose} />
+                    <CreateTopicModal closeModal={handleModalClose} />
                 </Modal>
                 <Grid item style={{ marginRight: '3rem' }}>
                     <TextField
-                        // className={classes.searchBar}
-                        placeholder='Search course subject'
+                        placeholder='Search topic'
                         value={searchValue}
                         variant='outlined'
                         InputProps={{
@@ -272,7 +287,7 @@ const ManageCourseTopic = () => {
                             },
                             endAdornment: (
                                 <InputAdornment position='end'>
-                                    <SearchIcon />
+                                    <SearchIcon style={{ color: gloom }} />
                                 </InputAdornment>
                             ),
                         }}
@@ -315,6 +330,7 @@ const ManageCourseTopic = () => {
                                                 onChange: onEditTextFieldChange,
                                             }}
                                         />
+
                                         <CustomTableCell
                                             {...{
                                                 row,

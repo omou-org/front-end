@@ -15,8 +15,7 @@ const useStyles = makeStyles({
         transform: 'translate(-50%, -50%)',
         position: 'absolute',
         width: '31rem',
-        // height: '15.5rem',
-        height: '15rem',
+        height: '15.5rem',
         background: white,
         boxShadow: '0px 0px 8px rgba(153, 153, 153, 0.8);',
         borderRadius: '5px',
@@ -26,6 +25,7 @@ const useStyles = makeStyles({
         height: '2rem',
         width: '13rem',
         color: darkGrey,
+        marginBottom: '1rem',
     },
     descriptionInput: {
         ...body1,
@@ -33,42 +33,47 @@ const useStyles = makeStyles({
         width: '16.0625rem',
         color: darkGrey,
     },
-    borderStyles: {
+    topicNameBorderStyles: {
         borderTop: 'none',
         borderLeft: 'none',
         borderRight: 'none',
         borderBottom: '1px solid #404143',
+        borderRadius: '0px',
+        width: '14.25rem',
     },
+    topicDescriptionBorderStyles: {
+        borderTop: 'none',
+        borderLeft: 'none',
+        borderRight: 'none',
+        borderBottom: '1px solid #404143',
+        borderRadius: '0px',
+        width: '27rem',
+    },
+    topicNamePlaceholder: {},
 });
 
 const CREATE_COURSE_TAG = gql`
-    mutation createCourseTag(
-        $name: String, 
-        $description: String
-        ) {
-            createCourseCategory(
-                name: $name, 
-                description: $description
-            ) {
-                courseCategory {
-                    __typename
-                    name
-                    description
-                    id
-                }
+    mutation createCourseTag($name: String, $description: String) {
+        createCourseCategory(name: $name, description: $description) {
+            courseCategory {
+                __typename
+                name
+                description
+                id
             }
+        }
     }
 `;
 
 // const UPDATE_COURSE_TAG = gql`
 //     mutation createCourseTag(
 //         $id: ID,
-//         $name: String, 
+//         $name: String,
 //         $description: String
 //         ) {
 //             createCourseCategory(
 //                 id: $id,
-//                 name: $name, 
+//                 name: $name,
 //                 description: $description
 //             ) {
 //                 courseCategory {
@@ -90,57 +95,44 @@ const GET_COURSE_TAGS = gql`
     }
 `;
 
-const CreateTagModal = ({ closeModal }) => {
-    const [courseTagData, setCourseTagData] = useState({
-        tagName: '',
-        tagDescription: '',
+const CreateTopicModal = ({ closeModal }) => {
+    const [courseTopicValue, setCourseTopicValue] = useState({
+        topicName: '',
+        topicDescription: '',
     });
 
     const [submitData] = useMutation(CREATE_COURSE_TAG, {
         onCompleted: () => {
-            // console.log(data.createCourseCategory.courseCategory);
             closeModal();
         },
-        update: (cache, {data}) => {
-             const newCategory = data.createCourseCategory.courseCategory;
-             const cachedCategory = cache.readQuery({
-                 query: GET_COURSE_TAGS,
-             }).courseCategories;
-             const updatedCache = [...cachedCategory, newCategory];
-             cache.writeQuery({
-                 data: {
-                     courseCategories: updatedCache,
-                 },
-                 query: GET_COURSE_TAGS,
-             });
-        }
-        // update: (data) => {
-        //     console.log(data);
-        //     console.log(data.data.data);
-        //     const createdCourseTag = data.createCourseCategory.courseCategory;
-        //     cache.writeQuery(
-        //         { 
-        //             query: GET_COURSE_TAGS, 
-        //             data: {
-        //                 courseCategory: createdCourseTag
-        //             }
-        //         });
-        // }
+        update: (cache, { data }) => {
+            const updatedCourseTopic = data.createCourseCategory.courseCategory;
+            const cachedCourseTopics = cache.readQuery({
+                query: GET_COURSE_TAGS,
+            }).courseCategories;
+            const updatedCache = [...cachedCourseTopics, updatedCourseTopic];
+            cache.writeQuery({
+                data: {
+                    courseCategories: updatedCache,
+                },
+                query: GET_COURSE_TAGS,
+            });
+        },
     });
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
-        setCourseTagData((prevState) => ({
-			...prevState,
-			[name]: value,
-		}));
+        setCourseTopicValue((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
     };
 
     const onSubmit = () => {
         submitData({
             variables: {
-                name: courseTagData.tagName,
-                description: courseTagData.tagDescription,
+                name: courseTopicValue.topicName,
+                description: courseTopicValue.topicDescription,
             },
         });
     };
@@ -149,7 +141,7 @@ const CreateTagModal = ({ closeModal }) => {
     return (
         <Grid container className={classes.modalStyle}>
             <Grid item style={{ padding: '2rem 1rem 0rem 2rem' }}>
-                <Typography variant='h3'>Create New Subject</Typography>
+                <Typography variant='h3'>Create New Topic</Typography>
 
                 <Grid
                     item
@@ -164,15 +156,16 @@ const CreateTagModal = ({ closeModal }) => {
                 >
                     <TextField
                         type='text'
-                        placeholder='* Subject (max 30 characters)'
-                        value={courseTagData.tagName}
-                        name='tagName'
+                        placeholder='* Topic (max 30 characters)'
+                        value={courseTopicValue.topicName}
+                        name='topicName'
                         variant='outlined'
                         required
                         InputProps={{
                             classes: {
                                 root: classes.subjectInput,
-                                notchedOutline: classes.borderStyles,
+                                notchedOutline: classes.topicNameBorderStyles,
+                                input: classes.topicNamePlaceholder,
                             },
                         }}
                         onChange={handleOnChange}
@@ -181,20 +174,25 @@ const CreateTagModal = ({ closeModal }) => {
                     <TextField
                         type='text'
                         placeholder='Description (max 80 characters)'
-                        value={courseTagData.tagDescription}
-                        name='tagDescription'
+                        value={courseTopicValue.topicDescription}
+                        name='topicDescription'
                         variant='outlined'
                         InputProps={{
                             classes: {
                                 root: classes.descriptionInput,
-                                notchedOutline: classes.borderStyles,
+                                notchedOutline:
+                                    classes.topicDescriptionBorderStyles,
                             },
                         }}
                         onChange={handleOnChange}
                     />
                 </Grid>
 
-                <Grid style={{ textAlign: 'right' }} item xs={12}>
+                <Grid
+                    style={{ textAlign: 'right', marginBottom: '2rem' }}
+                    item
+                    xs={12}
+                >
                     <ResponsiveButton
                         style={{ border: 'none', color: darkGrey }}
                         variant='outlined'
@@ -210,7 +208,7 @@ const CreateTagModal = ({ closeModal }) => {
                         variant='outlined'
                         onClick={onSubmit}
                     >
-                        create subject
+                        create topic
                     </ResponsiveButton>
                 </Grid>
             </Grid>
@@ -218,8 +216,8 @@ const CreateTagModal = ({ closeModal }) => {
     );
 };
 
-CreateTagModal.propTypes = {
+CreateTopicModal.propTypes = {
     closeModal: PropTypes.func,
 };
 
-export default CreateTagModal;
+export default CreateTopicModal;
