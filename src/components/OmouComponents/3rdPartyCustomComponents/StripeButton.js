@@ -20,14 +20,12 @@ const StripeButton = () => {
     const location = useLocation();
     const pathname = location.pathname.substring(1)
 
-    // Check if successful using query that Jerry will make
-
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
-    // useLocation instead of hard coding adminportal
+    
     const [InitiateStripeOnboarding] = useMutation(INITIATE_STRIPE_ONBOARDING, {
         variables: {
-            refreshUrlParam: `${pathname}/?refresh=true`,
-            returnUrlParam: `${pathname}/?refresh=false`
+            refreshUrlParam: `${pathname}/?stripe-timeout=true`,
+            returnUrlParam: `${pathname}/?stripe-timeout=false`
         },
         onCompleted: ( {stripeOnboarding: { onboardingUrl }} ) => {
             setStripeOnboardingLoading(false);

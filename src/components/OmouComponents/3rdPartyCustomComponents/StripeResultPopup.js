@@ -8,17 +8,24 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { useURLQuery } from 'utils';
 
+const IS_CONNECTED_TO_STRIPE = ''; // will add query here when ready 
+
 const StripeResultPopup = () => {
 
     const urlParams = useURLQuery(); 
-    const refresh = urlParams.get('refresh')
+    const didStripeOnboardingFlowTimeout = urlParams.get('stripe-timeout')
+    console.log({didStripeOnboardingFlowTimeout})
+
+    // Check if successful using query that Jerry will make
+    const isConnectedToStripe = true;
 
     const [displayPopup, setDisplayPopup] = useState(false);
-    const [integrationSucceeded, setIntegrationSucceeded] = useState(refresh);
+    const [integrationSucceeded, setIntegrationSucceeded] = useState(didStripeOnboardingFlowTimeout);
 
     useEffect(() => {
         if (integrationSucceeded !== null) {
-            setIntegrationSucceeded(refresh === 'false');
+
+            setIntegrationSucceeded(didStripeOnboardingFlowTimeout === 'false' && isConnectedToStripe);
             setDisplayPopup(true);
         }
     }, [integrationSucceeded]);
@@ -68,7 +75,6 @@ const StripeResultPopup = () => {
             </DialogActions>
         </Dialog>);
 
-    console.log(integrationSucceeded)
     return integrationSucceeded ? successfulPopup : unsuccessfulPopup;
 }
 export default StripeResultPopup;
