@@ -44,10 +44,13 @@ const NavigationContainer = () => {
     }
 
     const classes = useStyles();
-    // const { token } = useSelector(({ auth }) => auth);
 
     const ACCOUNT_TYPE = useSelector(({ auth }) => auth.accountType);
     const NavigationList = NavList[ACCOUNT_TYPE];
+
+    if ((!NavigationList || !ACCOUNT_TYPE) && token) {
+        return <Loading />;
+    }
 
     const isAccountFormActive = (location, NavItem) => {
         let active = false;

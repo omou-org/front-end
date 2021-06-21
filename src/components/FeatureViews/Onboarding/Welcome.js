@@ -53,7 +53,7 @@ const Welcome = () => {
                     variant='contained'
                     color='primary'
                     component={NavLinkNoDup}
-                    to='/onboarding/import'
+                    to='/onboarding/import?step=1'
                 >
                     {`Let's do it!`}
                 </ResponsiveButton>

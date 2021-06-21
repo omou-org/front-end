@@ -36,6 +36,7 @@ import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
 import Scheduler from '../FeatureViews/Scheduler/Scheduler';
+import DataUseCaseTable from '../OmouComponents/DataUseCaseTable';
 
 import Invoices from '../FeatureViews/Invoices/Invoices';
 
@@ -71,6 +72,10 @@ export const RootRoutes = () => {
             {/* Route for Testing AddItemButton */}
             <Route path='/demos/AddItemButton'>
                 <AddItemButtonTestDemo />
+            </Route>
+
+            <Route path='/business-use-cases'>
+                <DataUseCaseTable />
             </Route>
 
             {/* Main Feature Views */}
