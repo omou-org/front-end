@@ -144,7 +144,9 @@ const ManageCourseTopic = () => {
             }).courseCategories;
 
             let cacheCopy = [...cachedTopics];
-            const indexOfTopicToUpdate = cacheCopy.indexOf(cachedTopics.find(topic => topic.id === updatedTopic.id));
+            const indexOfTopicToUpdate = cacheCopy.indexOf(
+                cachedTopics.find((topic) => topic.id === updatedTopic.id)
+            );
             cacheCopy[indexOfTopicToUpdate] = updatedTopic;
             const updatedCache = [...cacheCopy];
 
