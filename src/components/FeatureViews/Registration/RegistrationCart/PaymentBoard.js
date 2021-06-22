@@ -411,14 +411,16 @@ const PaymentBoard = () => {
             });
         },
         update: (cache, { data }) => {
-            cache.writeQuery({
-                data: {
-                    __typename: 'InvoiceType',
-                    invoice: data.createInvoice.invoice,
-                },
-                query: GET_PAYMENT,
-                variables: { paymentId: data.createInvoice.invoice.id },
-            });
+            if(cache.data.data.CREATE_PAYMENT){
+                cache.writeQuery({
+                    data: {
+                        __typename: 'InvoiceType',
+                        invoice: data.createInvoice.invoice,
+                    },
+                    query: GET_PAYMENT,
+                    variables: { paymentId: data.createInvoice.invoice.id },
+                });
+            }
         },
     });
     const [createRegistrationCart] = useMutation(CREATE_REGISTRATION_CART, {
@@ -449,7 +451,7 @@ const PaymentBoard = () => {
 
     const handleClose = () => {
         setPaymentLaterPromptOpen(false);
-    }
+    };
 
     const handlePayment = async (paymentStatus) => {
         const {
