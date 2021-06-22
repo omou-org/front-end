@@ -106,7 +106,13 @@ const UpdateInvoice = () => {
         const filteredClassRegistrations = [];
 
         for (const registration of arrOfRegistrations) {
-            if (!registrationsToBeCancelled.includes(registration.id)) {
+
+            const courseIsPlannedToBeCancelled = registrationsToBeCancelled
+                .some((cancelledRegistration) => {
+                    return cancelledRegistration.registrationId === registration.id
+            })
+
+            if (!courseIsPlannedToBeCancelled) {
                 filteredClassRegistrations.push({
                     course: registration.enrollment.course.id,
                     sessions: registration.numSessions,
@@ -176,16 +182,24 @@ const UpdateInvoice = () => {
     // [x] change x to +
     // [x] Disable/ grey out Pay Now button if number of unsaved changes is not 0
     // [x] display save button
-    const updateCancelledRegistrations = (registrationId) => {
+    const updateCancelledRegistrations = (registrationId, registrationTitle) => {
 
-        const indexToDelete = registrationsToBeCancelled.indexOf(registrationId);
+        
+
+        //let indexToDelete = registrationsToBeCancelled.indexOf(registrationId);
+        let indexToDelete = -1;
+        registrationsToBeCancelled.forEach((cancelledRegistration, index) => {
+            if (cancelledRegistration.registrationId === registrationId) {
+                indexToDelete = index;
+            }
+        })
 
         const newRegistrationsToBeCancelledState = registrationsToBeCancelled;
 
         let updatedCountOfUnsavedChanges = numberOfUnsavedChanges;
 
         if (indexToDelete === -1) {
-            newRegistrationsToBeCancelledState.push(registrationId);
+            newRegistrationsToBeCancelledState.push({registrationId, registrationTitle});
             updatedCountOfUnsavedChanges++;
         } else {
             newRegistrationsToBeCancelledState.splice(indexToDelete, 1);
@@ -341,11 +355,19 @@ const paymentOptions = [
                     Dropping Courses
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id='dialog-description'>
-                        <Typography>- Name of Courses</Typography>
-                        <Typography>- New Total</Typography>
-                        <Typography>- How Many Days Left to Pay</Typography>
-                    </DialogContentText>
+                    <Typography>Courses to be dropped</Typography>
+                    <ul>
+                        {registrationsToBeCancelled.map(registration => {
+                            return (<li>
+                                <Typography>{registration.registrationTitle}</Typography>
+                            </li>)
+                        })}
+                    </ul>
+
+                    <Typography>New Total: ${displayedPrice.total}</Typography>
+
+                    {/** Ask about how to determine days left */}
+                    <Typography>Days remaining to pay: 5</Typography>
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton onClick={handlePopupClose} color='primary'>

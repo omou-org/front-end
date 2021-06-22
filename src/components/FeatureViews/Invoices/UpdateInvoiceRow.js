@@ -62,7 +62,7 @@ const UpdateInvoiceRow = ({registration, updateCancelledRegistrations, isLastIte
 
     const handleClick = () => {
         setIsCancelled(!isCancelled);
-        updateCancelledRegistrations(registration.id)
+        updateCancelledRegistrations(registration.id, registration.enrollment.course.title)
 
     }
 
