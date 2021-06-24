@@ -20,7 +20,7 @@ import AccessControlComponent from '../../OmouComponents/AccessControlComponent'
 import AttendanceContainer from './AttendanceContainer';
 import { StudentCourseLabel } from './StudentBadge';
 import { GET_STUDENTS } from './CourseManagementContainer';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import { CourseAvailabilites } from '../../OmouComponents/CourseAvailabilities';
 import Notes from '../Notes/Notes';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';

@@ -8,7 +8,6 @@ import AdminPortal from '../FeatureViews/AdminPortal/AdminPortal';
 import AuthenticatedRoute from './AuthenticatedRoute';
 import CatsPage from '../CatsPage/CatsPage';
 import EnrollmentView from '../FeatureViews/Enrollment/EnrollmentView';
-import EditSessionView from '../FeatureViews/Scheduler/EditSessionView';
 import ErrorNotFoundPage from '../ErrorNotFoundPage/ErrorNotFoundPage';
 import ForgotPassword from '../Authentication/ForgotPassword';
 import LoginPage from '../Authentication/LoginPage.js';
@@ -20,7 +19,7 @@ import FormPage from '../Form/FormPage';
 import RegistrationCourse from '../FeatureViews/Registration/RegistrationCourse';
 import ResetPassword from '../Authentication/ResetPassword';
 import SearchResults from '../FeatureViews/Search/SearchResults';
-import SessionView from '../FeatureViews/Scheduler/SessionView';
+import SessionContainer from '../FeatureViews/Scheduler/SessionView/SessionContainer';
 import UserProfile from '../FeatureViews/Accounts/UserProfile';
 import CourseManagementContainer from '../FeatureViews/Courses/CourseManagementContainer';
 import CourseClass from '../FeatureViews/Courses/CourseClass';
@@ -37,6 +36,7 @@ import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
 import Scheduler from '../FeatureViews/Scheduler/Scheduler';
+import DataUseCaseTable from '../OmouComponents/DataUseCaseTable';
 
 import Invoices from '../FeatureViews/Invoices/Invoices';
 import UpdateInvoice from 'components/FeatureViews/Invoices/UpdateInvoice';
@@ -75,6 +75,10 @@ export const RootRoutes = () => {
                 <AddItemButtonTestDemo />
             </Route>
 
+            <Route path='/business-use-cases'>
+                <DataUseCaseTable />
+            </Route>
+
             {/* Main Feature Views */}
             <AuthenticatedRoute exact path='/'>
                 {
@@ -102,14 +106,11 @@ export const RootRoutes = () => {
             <AuthenticatedRoute exact path='/scheduler'>
                 <Scheduler />
             </AuthenticatedRoute>
-            <AuthenticatedRoute exact path='/scheduler/session/:session_id'>
-                <SessionView />
-            </AuthenticatedRoute>
             <AuthenticatedRoute
                 exact
-                path='/scheduler/session/:session_id/edit'
+                path='/scheduler/session/:session_id/:editType?'
             >
-                <EditSessionView />
+                <SessionContainer />
             </AuthenticatedRoute>
 
             <AuthenticatedRoute exact path='/search'>

@@ -27,7 +27,7 @@ const GET_INSTRUCTOR_SESSIONS = gql`
     }
 `;
 
-export default function ConflictsDisplay() {
+function ConflictsDisplay() {
     const { OOOFormState } = useContext(OOOContext);
     const AuthUser = useSelector(({ auth }) => auth);
     const { loading } = useQuery(GET_INSTRUCTOR_SESSIONS, {
@@ -54,3 +54,5 @@ export default function ConflictsDisplay() {
         </Grid>
     );
 }
+
+export default ConflictsDisplay;

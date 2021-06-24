@@ -12,7 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { stringToColor } from '../Accounts/accountUtils';
 import Divider from '@material-ui/core/Divider';
 import NavLinkNoDup from '../../Routes/NavLinkNoDup';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import { CourseAvailabilites } from '../../OmouComponents/CourseAvailabilities';
 
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import PropTypes from 'prop-types';

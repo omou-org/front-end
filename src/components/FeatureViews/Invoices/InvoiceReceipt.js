@@ -25,7 +25,7 @@ import {
     darkGrey,
     skyBlue,
 } from 'theme/muiTheme';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import { CourseAvailabilites } from '../../OmouComponents/CourseAvailabilities';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 

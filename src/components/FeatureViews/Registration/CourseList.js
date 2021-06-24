@@ -11,7 +11,7 @@ import moment from 'moment';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import { CourseAvailabilites } from '../../OmouComponents/CourseAvailabilities';
 import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/client';
 import Loading from '../../OmouComponents/Loading';

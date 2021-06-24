@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 
-import DownloadTemplate from './DownloadTemplates';
-import CourseUpload from './CourseUpload';
 import BusinessInfo from './BusinessInfo';
-import CategorySelect from './CategorySelect';
-import AccountsUpload from './AccountsUpload';
-import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import BusinessHours from './BusinessHours';
+import { OnboardingContext, initalState, reducer } from './OnboardingContext';
+import { useURLQuery } from '../../../utils';
+import BulkImportStep from './BulkImportStep';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,40 +22,54 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
     },
+    stepper: {
+        margin: '0 2em',
+    },
 }));
 
-function getSteps() {
-    return [
-        'Business info',
-        'Templates',
-        'Course Categories',
-        'Accounts',
-        'Courses',
-    ];
-}
-
-function getStepContent(step) {
-    switch (step) {
-        case 0:
-            return <BusinessInfo />;
-        case 1:
-            return <DownloadTemplate />;
-        case 2:
-            return <CategorySelect />;
-        case 3:
-            return <AccountsUpload />;
-        case 4:
-            return <CourseUpload />;
-        default:
-            return 'Error: Invalid step. No content to display';
-    }
-}
+export const onboardingSteps = [
+    'Business Info',
+    'Business Hours',
+    'Accounts',
+    'Courses',
+    'Enrollments',
+];
 
 const ImportFlow = () => {
     const classes = useStyles();
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [skipped, setSkipped] = React.useState(new Set());
-    const steps = getSteps();
+    const [activeStep, setActiveStep] = useState(1);
+    const [skipped] = useState(new Set());
+    const [importState, setImportState] = useState({ uploadedResponse: null });
+    const urlQuery = useURLQuery();
+    const steps = onboardingSteps;
+    // This is where BulkImportStep lives
+
+    const [state, dispatch] = useReducer(reducer, initalState);
+
+    useEffect(() => {
+        const currentStep = Number(urlQuery.get('step'));
+        if (currentStep !== activeStep) {
+            setActiveStep(currentStep);
+        }
+    }, [urlQuery, activeStep]);
+
+    const getStepContent = (step) => {
+        switch (step) {
+            case 1:
+                return <BusinessInfo step={1} />;
+            case 2:
+                return <BusinessHours step={2} />;
+            case 3:
+                return <BulkImportStep templateType='Accounts' step={3} />;
+            case 4:
+                return <BulkImportStep templateType='Courses' step={4} />;
+            case 5:
+                return <BulkImportStep templateType='Enrollments' step={5} />;
+
+            default:
+                return 'Error: Invalid step. No content to display';
+        }
+    };
 
     const isStepOptional = () => {
         return false;
@@ -66,115 +79,48 @@ const ImportFlow = () => {
         return skipped.has(step);
     };
 
-    const handleNext = () => {
-        let newSkipped = skipped;
-        if (isStepSkipped(activeStep)) {
-            newSkipped = new Set(newSkipped.values());
-            newSkipped.delete(activeStep);
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped(newSkipped);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const handleSkip = () => {
-        if (!isStepOptional(activeStep)) {
-            // You probably want to guard against something like this,
-            // it should never occur unless someone's actively trying to break something.
-            throw new Error("You can't skip a step that isn't optional.");
-        }
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        setSkipped((prevSkipped) => {
-            const newSkipped = new Set(prevSkipped.values());
-            newSkipped.add(activeStep);
-            return newSkipped;
-        });
-    };
-
-    const handleReset = () => {
-        setActiveStep(0);
-    };
-
     return (
-        <div className={classes.root}>
-            <Stepper alternativeLabel activeStep={activeStep}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = (
-                            <Typography variant='caption'>Optional</Typography>
-                        );
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
-            <div>
-                {activeStep === steps.length ? (
-                    <div>
-                        <Typography className={classes.instructions}>
-                            {`All steps completed - you're finished`}
-                        </Typography>
-                        <ResponsiveButton
-                            onClick={handleReset}
-                            className={classes.button}
-                        >
-                            Reset
-                        </ResponsiveButton>
-                    </div>
-                ) : (
-                    <div>
-                        <div className={classes.instructions}>
-                            {getStepContent(activeStep)}
-                        </div>
-                        <div>
-                            {activeStep !== 0 && (
-                                <ResponsiveButton
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    className={classes.button}
-                                >
-                                    Back
-                                </ResponsiveButton>
-                            )}
-                            {isStepOptional(activeStep) && (
-                                <ResponsiveButton
-                                    variant='contained'
-                                    color='primary'
-                                    onClick={handleSkip}
-                                    className={classes.button}
-                                >
-                                    Skip
-                                </ResponsiveButton>
-                            )}
-
-                            <ResponsiveButton
-                                variant='contained'
-                                color='primary'
-                                onClick={handleNext}
-                                className={classes.button}
-                            >
-                                {activeStep === steps.length - 1
-                                    ? 'Finish'
-                                    : 'Submit & Continue'}
-                            </ResponsiveButton>
-                        </div>
-                    </div>
-                )}
+        <OnboardingContext.Provider
+            value={{
+                importState,
+                setImportState,
+                activeStep,
+                setActiveStep,
+                state,
+                dispatch,
+            }}
+        >
+            <div className={classes.root}>
+                <div className={classes.stepper}>
+                    <Stepper alternativeLabel activeStep={activeStep}>
+                        {steps.map((label, index) => {
+                            const stepProps = {};
+                            const labelProps = {};
+                            if (isStepOptional(index)) {
+                                labelProps.optional = (
+                                    <Typography variant='caption'>
+                                        Optional
+                                    </Typography>
+                                );
+                            }
+                            if (isStepSkipped(index)) {
+                                stepProps.completed = false;
+                            }
+                            return (
+                                <Step key={label} {...stepProps}>
+                                    <StepLabel {...labelProps}>
+                                        {label}
+                                    </StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
+                </div>
+                <div className={classes.instructions}>
+                    {getStepContent(activeStep)}
+                </div>
             </div>
-        </div>
+        </OnboardingContext.Provider>
     );
 };
 
