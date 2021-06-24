@@ -15,10 +15,16 @@ const INITIATE_STRIPE_ONBOARDING = gql`
       }
 `
 
+const IS_CONNECTED_TO_STRIPE = ''; // will add query here when ready 
+
+
 const StripeButton = () => {
 
     const location = useLocation();
     const pathname = location.pathname.substring(1)
+
+    // Check if successful using query that Jerry will make
+    const isConnectedToStripe = false;
 
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
     
@@ -36,6 +42,10 @@ const StripeButton = () => {
             console.log('OOps, there has been an error connecting to stripe')
         },
     });
+
+    if (isConnectedToStripe) {
+        return <StripeResultPopup isConnectedToStripe={isConnectedToStripe} />
+    }
 
     return (
     <>
@@ -63,7 +73,7 @@ const StripeButton = () => {
         </Grid>
     </ResponsiveButton>
 
-    <StripeResultPopup />
+    <StripeResultPopup isConnectedToStripe={isConnectedToStripe} />
     </>)
 }
 

@@ -8,16 +8,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { useURLQuery } from 'utils';
 
-const IS_CONNECTED_TO_STRIPE = ''; // will add query here when ready 
-
-const StripeResultPopup = () => {
+const StripeResultPopup = ({isConnectedToStripe}) => {
 
     const urlParams = useURLQuery(); 
     const didStripeOnboardingFlowTimeout = urlParams.get('stripe-timeout')
-    console.log({didStripeOnboardingFlowTimeout})
-
-    // Check if successful using query that Jerry will make
-    const isConnectedToStripe = true;
 
     const [displayPopup, setDisplayPopup] = useState(false);
     const [integrationSucceeded, setIntegrationSucceeded] = useState(didStripeOnboardingFlowTimeout);
