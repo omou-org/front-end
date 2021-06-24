@@ -1,28 +1,61 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
-import { Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { initializeSessionEditReceiptState } from './SessionEditReceipt';
+
+const useStyles = makeStyles({
+    dialogDimensions: {
+        height: '28.125rem',
+    },
+    dialogContentDimensions: {
+        margin: '1.25em',
+    },
+});
 
 const SaveSessionEditsButton = ({
     children,
-    studentName,
+    courseConfirmationData,
     updateSession,
     isAll,
 }) => {
     let history = useHistory();
     const { session_id } = useParams();
+    const classes = useStyles();
 
     const [modalState, setModalState] = useState({
         leaveState: false,
         confirmationState: false,
     });
+    const [balanceUpdateCopy, setBalanceUpdateCopy] = useState(
+        "There will not be any balance adjustment to the student's account."
+    );
+    const receiptFieldData = initializeSessionEditReceiptState(
+        children.props.databaseState,
+        children.props.newState
+    );
+
+    useEffect(() => {
+        const dateTimeIndex = receiptFieldData?.findIndex(
+            ({ key }) => key === 'date & time' || key === 'availabilities'
+        );
+        console.log(dateTimeIndex, receiptFieldData);
+        if (dateTimeIndex && receiptFieldData[dateTimeIndex]?.isUpdated) {
+            setBalanceUpdateCopy(
+                "There may be balance adjustment to the student's enrollment. " +
+                    'A confirmation email will send an invoice reflecting any balance adjustments'
+            );
+        }
+    }, [receiptFieldData]);
 
     const handleClose = () => {
         setModalState({ ...modalState, confirmationState: false });
@@ -64,27 +97,52 @@ const SaveSessionEditsButton = ({
                 onClose={handleClose}
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
+                maxWidth='xs'
+                classes={{ paperWidthXs: classes.dialogDimensions }}
             >
-                <DialogTitle id='alert-dialog-title'>
-                    <Typography variant='h3' align='left'>
-                        Are you sure?
-                    </Typography>
-                </DialogTitle>
-                <DialogContent>
-                    <Typography align='left'>
-                        {`Summary of our updated session(s) for ${studentName}:`}
-                    </Typography>
-                </DialogContent>
-                <DialogTitle>{'Schedule update:'}</DialogTitle>
-                <DialogContent>{children}</DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color='primary'>
-                        {'CANCEL'}
-                    </Button>
-                    <Button onClick={handleSave} color='primary' autoFocus>
-                        {'CONTINUE'}
-                    </Button>
-                </DialogActions>
+                <Grid item xs={12} className={classes.dialogContentDimensions}>
+                    <DialogTitle id='alert-dialog-title'>
+                        <Typography variant='h3' align='left'>
+                            Are you sure?
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent>
+                        <Typography align='left'>
+                            {`Summary of our updated session(s)`}{' '}
+                            <Box component='span' fontWeight='fontWeightMedium'>
+                                {courseConfirmationData}
+                            </Box>
+                            {':'}
+                        </Typography>
+                    </DialogContent>
+                    <DialogTitle
+                        style={{ padding: '.25em 1.5em', marginTop: '1em' }}
+                    >
+                        <Typography variant='h4'>
+                            {'Schedule update:'}
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent>{children}</DialogContent>
+                    <DialogContent>
+                        <Typography
+                            variant='h4'
+                            style={{ marginBottom: '.5em', marginTop: '1em' }}
+                        >
+                            {'Balance update:'}
+                        </Typography>
+                        <Typography variant='body1'>
+                            {balanceUpdateCopy}
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color='primary'>
+                            {'CANCEL'}
+                        </Button>
+                        <Button onClick={handleSave} color='primary' autoFocus>
+                            {'CONTINUE'}
+                        </Button>
+                    </DialogActions>
+                </Grid>
             </Dialog>
         </>
     );
@@ -92,7 +150,7 @@ const SaveSessionEditsButton = ({
 
 SaveSessionEditsButton.propTypes = {
     children: PropTypes.any,
-    studentName: PropTypes.string,
+    courseConfirmationData: PropTypes.string,
     updateSession: PropTypes.func,
     isAll: PropTypes.bool,
 };

@@ -22,7 +22,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { GoogleLogin } from 'react-google-login';
 import axios from 'axios';
 import * as actions from 'actions/actionTypes';
-import { AdminPropTypes } from '../../../../utils';
+import { AdminPropTypes, isEmail } from '../../../../utils';
 
 const useStyles = makeStyles({
     table: {
@@ -33,7 +33,6 @@ const useStyles = makeStyles({
         width: '80%',
     },
 });
-
 const ADMIN_GC_ENABLED = gql`
     query AdminGCEnabled($userID: ID!) {
         admin(userId: $userID) {
@@ -42,16 +41,12 @@ const ADMIN_GC_ENABLED = gql`
     }
 `;
 
-const SET_ADMIN_GC_ENABLED = gql`
-    mutation SetAdminGCEnabled(
-        $adminType: AdminTypeEnum!
-        $userID: ID!
-        $googleAuthEnabled: Boolean!
-    ) {
+const UNINTEGRATE_WITH_GOOGLE = gql`
+    mutation SetAdminGCEnabled($adminType: AdminTypeEnum!, $userID: ID!) {
         createAdmin(
             user: { id: $userID }
             adminType: $adminType
-            googleAuthEnabled: $googleAuthEnabled
+            googleAuthEnabled: false
         ) {
             admin {
                 googleAuthEnabled
@@ -59,7 +54,6 @@ const SET_ADMIN_GC_ENABLED = gql`
         }
     }
 `;
-
 const GOOGLE_AUTH_EMAIL = gql`
     query GoogleAuthEmail($userID: ID!) {
         admin(userId: $userID) {
@@ -68,7 +62,7 @@ const GOOGLE_AUTH_EMAIL = gql`
     }
 `;
 
-const SET_GOOGLE_AUTH_EMAIL = gql`
+const INTEGRATE_WITH_GOOGLE = gql`
     mutation SetGoogleAuthEmail(
         $adminType: AdminTypeEnum!
         $userID: ID!
@@ -78,6 +72,7 @@ const SET_GOOGLE_AUTH_EMAIL = gql`
             user: { id: $userID }
             adminType: $adminType
             googleAuthEmail: $googleAuthEmail
+            googleAuthEnabled: true
         ) {
             admin {
                 googleAuthEmail
@@ -85,30 +80,33 @@ const SET_GOOGLE_AUTH_EMAIL = gql`
         }
     }
 `;
-
 function AdminProfileSettings({ user }) {
     const { userInfo } = user;
     const classes = useStyles();
     const [googleLoginPromptOpen, setGoogleLoginPromptOpen] = useState(false);
+    const [googleErrorPromptOpen, setGoogleErrorPromptOpen] = useState(false);
     const [gClassSetting, setGClassSetting] = useState(false);
     const dispatch = useDispatch();
     const adminGCEnabledResponse = useQuery(ADMIN_GC_ENABLED, {
         variables: { userID: userInfo.user.id },
     });
 
-    const [setAdminGCEnabled] = useMutation(SET_ADMIN_GC_ENABLED, {
-        update: (cache, { data }) => {
-            cache.writeQuery({
-                data: {
-                    admin: data.createAdmin.admin.googleAuthEnabled,
-                },
-                query: ADMIN_GC_ENABLED,
-                variables: { userID: userInfo.user.id },
-            });
-        },
-    });
+    const [unintegrateWithGoogleMutation] = useMutation(
+        UNINTEGRATE_WITH_GOOGLE,
+        {
+            update: (cache, { data }) => {
+                cache.writeQuery({
+                    data: {
+                        admin: data.createAdmin.admin.googleAuthEnabled,
+                    },
+                    query: ADMIN_GC_ENABLED,
+                    variables: { userID: userInfo.user.id },
+                });
+            },
+        }
+    );
 
-    const [setGoogleAuthEmail] = useMutation(SET_GOOGLE_AUTH_EMAIL, {
+    const [integrateWithGoogleMutation] = useMutation(INTEGRATE_WITH_GOOGLE, {
         update: (cache, { data }) => {
             cache.writeQuery({
                 data: {
@@ -122,20 +120,17 @@ function AdminProfileSettings({ user }) {
             // add google classroom icons
         },
     });
-
     const { google_courses } = useSelector(({ auth }) => auth) || [];
-
     useEffect(() => {
         if (adminGCEnabledResponse.loading === false) {
             setGClassSetting(
-                adminGCEnabledResponse.data.admin.googleAuthEnabled
+                adminGCEnabledResponse.data?.admin.googleAuthEnabled
             );
         }
     }, [
         adminGCEnabledResponse.loading,
-        adminGCEnabledResponse.data.admin.googleAuthEnabled,
+        adminGCEnabledResponse.data?.admin.googleAuthEnabled,
     ]);
-
     function refreshTokenSetup(res) {
         return new Promise((resolve) => {
             const refreshToken = async () => {
@@ -149,7 +144,6 @@ function AdminProfileSettings({ user }) {
             refreshToken();
         });
     }
-
     const noGoogleCoursesFoundOnInitialGoogleLogin =
         (google_courses === null || google_courses === undefined) &&
         sessionStorage.getItem('google_access_token');
@@ -177,53 +171,54 @@ function AdminProfileSettings({ user }) {
             }
         }
     }
-
     function handleClose() {
         setGoogleLoginPromptOpen(false);
     }
 
-    const onFailure = () => {};
+    const onFailure = () => {
+        setGoogleErrorPromptOpen(true);
+    };
 
     const onSuccess = (response) => {
         setGoogleLoginPromptOpen(false);
-
-        setGClassSetting(!gClassSetting);
-        setAdminGCEnabled({
-            variables: {
-                userID: userInfo.user.id,
-                adminType: userInfo.adminType,
-                googleAuthEnabled: !gClassSetting,
-            },
-        });
-        refreshTokenSetup(response).then(() => {
-            getCourses();
-        });
-        setGoogleAuthEmail({
-            variables: {
-                userID: userInfo.user.id,
-                adminType: userInfo.adminType,
-                googleAuthEmail: response.profileObj.email,
-            },
-        });
+        // Check that Google responded with a valid email
+        if (isEmail(response.profileObj.email)) {
+            setGClassSetting(true);
+            refreshTokenSetup(response).then(() => {
+                getCourses();
+            });
+            integrateWithGoogleMutation({
+                variables: {
+                    userID: userInfo.user.id,
+                    adminType: userInfo.adminType,
+                    googleAuthEmail: response.profileObj.email,
+                },
+            });
+        }
+        // There has been a problem retrieving Google email
+        else {
+            setGoogleErrorPromptOpen(true);
+        }
     };
+
+    function handleCloseGoogleErrorPopup() {
+        setGoogleErrorPromptOpen(false);
+    }
 
     const handleGClassSettingChange = () => {
         if (!gClassSetting) {
             setGoogleLoginPromptOpen(!googleLoginPromptOpen);
         } else {
             setGClassSetting(false);
-            setAdminGCEnabled({
+            unintegrateWithGoogleMutation({
                 variables: {
                     userID: userInfo.user.id,
                     adminType: userInfo.adminType,
-                    googleAuthEnabled: !gClassSetting,
                 },
             });
         }
     };
-
     if (adminGCEnabledResponse.loading) return <Loading />;
-
     return (
         <>
             <Grid
@@ -286,6 +281,7 @@ function AdminProfileSettings({ user }) {
                 onClose={handleClose}
                 aria-labelledby='dialog-title'
                 aria-describedby='dialog-description'
+                id='google-login-prompt'
             >
                 <DialogTitle disableTypography id='dialog-title'>
                     {'Sign in with Google'}
@@ -309,10 +305,30 @@ function AdminProfileSettings({ user }) {
                     />
                 </DialogActions>
             </Dialog>
+            <Dialog
+                open={googleErrorPromptOpen}
+                onClose={handleCloseGoogleErrorPopup}
+            >
+                <DialogTitle disableTypography>
+                    Whoops! Something went wrong.
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        We are having trouble connecting with Google right now,
+                        please try again later.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton
+                        onClick={handleCloseGoogleErrorPopup}
+                        color='primary'
+                    >
+                        Continue
+                    </ResponsiveButton>
+                </DialogActions>
+            </Dialog>
         </>
     );
 }
-
 AdminProfileSettings.propTypes = AdminPropTypes;
-
 export default AdminProfileSettings;

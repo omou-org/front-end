@@ -36,6 +36,8 @@ import ManagePayments from '../FeatureViews/ManagePayments/ManagePayments';
 import AddItemButtonTestDemo from '../OmouComponents/AddItemButtonTestDemo';
 import OnboardingRoutes from './OnboardingRoutes';
 import Scheduler from '../FeatureViews/Scheduler/Scheduler';
+import DataUseCaseTable from '../OmouComponents/DataUseCaseTable';
+
 import Invoices from '../FeatureViews/Invoices/Invoices';
 import Request from '../FeatureViews/Request/Request';
 import RequestScheduler from '../FeatureViews/Request/RequestScheduler';
@@ -72,6 +74,10 @@ export const RootRoutes = () => {
             {/* Route for Testing AddItemButton */}
             <Route path='/demos/AddItemButton'>
                 <AddItemButtonTestDemo />
+            </Route>
+
+            <Route path='/business-use-cases'>
+                <DataUseCaseTable />
             </Route>
 
             {/* Main Feature Views */}
@@ -171,15 +177,25 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
 
             {/* Request Routes */}
-            <AuthenticatedRoute 
-                exact path='/manage-tutoring-requests'
-                users={[USER_TYPES.parent, USER_TYPES.receptionist, USER_TYPES.admin]}
+            <AuthenticatedRoute
+                exact
+                path='/manage-tutoring-requests'
+                users={[
+                    USER_TYPES.parent,
+                    USER_TYPES.receptionist,
+                    USER_TYPES.admin,
+                ]}
             >
                 <Request />
             </AuthenticatedRoute>
-            <AuthenticatedRoute 
-                exact path='/manage-tutoring-requests/schedule'
-                users={[USER_TYPES.parent, USER_TYPES.receptionist, USER_TYPES.admin]}
+            <AuthenticatedRoute
+                exact
+                path='/manage-tutoring-requests/schedule'
+                users={[
+                    USER_TYPES.parent,
+                    USER_TYPES.receptionist,
+                    USER_TYPES.admin,
+                ]}
             >
                 <RequestScheduler />
             </AuthenticatedRoute>
