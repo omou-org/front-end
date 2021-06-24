@@ -11,6 +11,7 @@ export default (state = Authentication, { payload, type }) => {
                 ...payload,
             };
         case actions.LOGOUT:
+            console.log("logging out");
             return Authentication;
         case actions.SET_GOOGLE_COURSES:
             return {

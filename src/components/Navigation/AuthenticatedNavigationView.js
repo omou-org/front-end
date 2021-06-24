@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import Hidden from '@material-ui/core/Hidden';
 import Drawer from '@material-ui/core/Drawer';
 import AuthenticatedNavBar from './AuthenticatedNavBar';
-import { makeStyles } from '@material-ui/core/styles';
-import { AuthenticatedComponent } from './NavigationContainer';
+import {makeStyles} from '@material-ui/core/styles';
+import {AuthenticatedComponent} from './NavigationContainer';
 import MomentUtils from '@date-io/moment';
-import { RootRoutes } from '../Routes/RootRoutes';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import {RootRoutes} from '../Routes/RootRoutes';
+import {MuiPickersUtilsProvider} from '@material-ui/pickers';
 import OnboardingRoutes from '../Routes/OnboardingRoutes';
-import IdleTimerPrompt from '../OmouComponents/IdleTimerPrompt';
+// import IdleTimerPrompt from '../OmouComponents/IdleTimerPrompt';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
@@ -71,14 +71,14 @@ function AuthenticatedNavigationView({ UserNavigationOptions }) {
                     </nav>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
                         <main className='OmouMain'>
-                            <RootRoutes />
+                            <RootRoutes/>
                         </main>
                     </MuiPickersUtilsProvider>
                 </div>
             ) : (
-                <OnboardingRoutes />
+                <OnboardingRoutes/>
             )}
-            <IdleTimerPrompt />
+            {/*<IdleTimerPrompt />*/}
         </AuthenticatedComponent>
     );
 }
