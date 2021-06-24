@@ -213,7 +213,7 @@ export const StudentSelect = (props) => {
     return (
         <Select
             data={studentOptions}
-            label='Select Student'
+            // label='Select Student'
             name='selectStudent'
             {...props}
         />
@@ -278,14 +278,7 @@ export const CourseTopicSelect = (props) => {
         return { label: name, value: id };
     });
 
-    return (
-        <Select
-            data={topicOptions}
-            label='Select Subject'
-            name='selectSubject'
-            {...props}
-        />
-    );
+    return <Select data={topicOptions} name='selectSubject' {...props} />;
 };
 
 export const ToggleButton = (toggleProps) => {
