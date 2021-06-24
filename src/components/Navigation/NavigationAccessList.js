@@ -56,7 +56,6 @@ export const NavList = {
             link: '/adminportal',
             icon: <NewAdminIcon />,
         },
-
     ],
     RECEPTIONIST: [
         {

@@ -198,8 +198,9 @@ export const StudentSelect = (props) => {
     if (props.studentIdList) {
         studentIdList = props.studentIdList;
     } else {
-        studentIdList = JSON.parse(sessionStorage.getItem('registrations'))
-            .currentParent;
+        studentIdList = JSON.parse(
+            sessionStorage.getItem('registrations')
+        ).currentParent;
     }
     const { data } = useQuery(GET_STUDENTS, {
         variables: { userIds: studentIdList },
