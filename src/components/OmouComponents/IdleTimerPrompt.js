@@ -59,35 +59,37 @@ export default function IdleTimerPrompt() {
                 token: savedToken,
             },
         });
+
     };
 
     const handleLogout = useCallback(() => {
-        if (openIdlePrompt) {
-            closeRegistrationCart();
-            dispatch(logout());
-            history.push('/login');
-        }
-    }, [
-        dispatch, history,
-        openIdlePrompt]);
+        console.log("handling logout logic");
+        closeRegistrationCart();
+        dispatch(logout());
+        history.push('/login');
 
-    useEffect(() => {
-        console.log({openIdlePrompt});
-        if (openIdlePrompt) {
-            setInterval(() => {
-                setIdlePrompt(false);
-                console.log("logging out now");
-                handleLogout();
-            }, 1000 * 60 * 2);
-        }
-    }, [openIdlePrompt, handleLogout]);
+    }, [dispatch, history]);
 
-    const { getRemainingTime } = useIdleTimer({
-        timeout: 1000 * 60 * 1,
+    const {getRemainingTime} = useIdleTimer({
+        timeout: 1000 * 60 * 18,
         onIdle: handleOnIdle,
         onActive: handleOnActive,
         debounce: 500,
     });
+
+    useEffect(() => {
+        const remainingTimeBeforeLogout = getRemainingTime();
+
+        if (openIdlePrompt && remainingTimeBeforeLogout === 0) {
+            setInterval(() => {
+                    setIdlePrompt(false);
+                },
+                1000 * 60 * 2
+            );
+        } else if (!openIdlePrompt && remainingTimeBeforeLogout === 0) {
+            handleLogout();
+        }
+    }, [openIdlePrompt, handleLogout, getRemainingTime]);
 
     return (
         <Dialog open={openIdlePrompt}>

@@ -8,7 +8,7 @@ import MomentUtils from '@date-io/moment';
 import {RootRoutes} from '../Routes/RootRoutes';
 import {MuiPickersUtilsProvider} from '@material-ui/pickers';
 import OnboardingRoutes from '../Routes/OnboardingRoutes';
-// import IdleTimerPrompt from '../OmouComponents/IdleTimerPrompt';
+import IdleTimerPrompt from '../OmouComponents/IdleTimerPrompt';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
@@ -78,7 +78,7 @@ function AuthenticatedNavigationView({ UserNavigationOptions }) {
             ) : (
                 <OnboardingRoutes/>
             )}
-            {/*<IdleTimerPrompt />*/}
+            <IdleTimerPrompt/>
         </AuthenticatedComponent>
     );
 }
