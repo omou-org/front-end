@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     },
 });
 
-const EditTuitionRules = ({
+const SetTuitionRules = ({
     location /*match  you can use this propety to get the id  */,
 }) => {
     const classes = useStyles();
@@ -39,9 +39,9 @@ const EditTuitionRules = ({
     );
 };
 
-export default withRouter(EditTuitionRules);
+export default withRouter(SetTuitionRules);
 
-EditTuitionRules.propTypes = {
+SetTuitionRules.propTypes = {
     location: PropTypes.object,
     // match: PropTypes.object,
 };

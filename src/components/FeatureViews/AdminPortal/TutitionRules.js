@@ -40,7 +40,7 @@ import { gql, useQuery } from '@apollo/client';
 import Loading from 'components/OmouComponents/Loading';
 import { CategoryOutlined } from '@material-ui/icons';
 // import DoneIcon from '@material-ui/icons/Done';
-// import { TablePagination } from '../../OmouComponents/TablePagination';
+
 const useStyles = makeStyles({
     verticalMargin: {
         marginTop: '1rem',
@@ -90,29 +90,68 @@ const useStyles = makeStyles({
     },
 });
 
-const GET_TUITION_RULES = gql`
-    query getTuitionRules {
-        priceRules {
+// const GET_TUITION_RULES = gql`
+//     query getTuitionRules {
+//         priceRules {
+//             id
+//             name
+//             courseType
+//             category {
+//                 description
+//             }
+//         }
+//     }
+// `;
+
+const GET_COURSE_TOPICS = gql`
+    query getCourseTopics {
+        courseCategories {
             id
             name
-            courseType
-            category {
-                description
-            }
+            activeTuitionRuleCount
         }
     }
 `;
 
 const TuitionRule = () => {
     const classes = useStyles();
+    // const [courseTopics, setCourseTopics] = useState([]);
+    // const [searchValue, setSearchValue] = useState('');
+    // const [page, setPage] = useState(0);
 
-    const { data, loading, error } = useQuery(GET_TUITION_RULES);
+    const { data, loading, error } = useQuery(GET_COURSE_TOPICS);
 
     if (loading) return <Loading />;
     if (error) console.error(error);
 
     // take data to create clickable row
-    let { priceRules } = data;
+    const { courseCategories } = data;
+    
+    // create a function that filters the courseTopics by name
+    // const searchCourseTopic = (e) => {
+    //     setSearchValue(e.target.value);
+    //     let inputValue = e.target.value;
+
+    //     inputValue = inputValue.toLowerCase();
+
+    //     const finalResult = [];
+    //     courseTopics.forEach((item) => {
+    //         if (item.name.toLowerCase().indexOf(inputValue) !== -1) {
+    //             finalResult.push(item);
+    //         }
+    //     });
+
+    //     if (!inputValue) {
+    //         setCourseTopics(data.courseCategories);
+    //     } else {
+    //         setCourseTopics(finalResult);
+    //     }
+    // };
+    // const handlePageChange = (newPage) => {
+    //     setPage(newPage);
+    // };
+    // let amountOfRows = 15;
+    // let totalPages = Math.ceil(courseTopics.length / amountOfRows);
 
     return (
         <>
@@ -146,17 +185,23 @@ const TuitionRule = () => {
                 </Grid>
             </Grid>
 
-            <Grid container>
+            <Grid className={classes.verticalMargin} container>
                 <TableContainer>
                     <Table size='small'>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Topic</TableCell>
-                                <TableCell>Topic Description</TableCell>
+                                <TableCell
+                                    className={classes.headCells}
+                                    style={{ minWidth: 170 }}
+                                >Topic</TableCell>
+                                <TableCell
+                                    className={classes.headCells}
+                                    style={{ minWidth: 170 }}
+                                >Active Rules</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {priceRules.map(({ category, name, id }) => (
+                            {courseCategories.map(({ name, id, activeTuitionRuleCount }) => (
                                 <TableRow
                                     key={id}
                                     component={Link}
@@ -167,13 +212,29 @@ const TuitionRule = () => {
                                 >
                                     <TableCell>{name}</TableCell>
                                     <TableCell>
-                                        {category.description}
+                                        {activeTuitionRuleCount}
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
+
+                {/* <Grid
+                    container
+                    direction='row'
+                    justify='center'
+                    alignItems='center'
+                    className={classes.tableFooter}
+                >
+                    <TablePagination
+                        page={page}
+                        colSpan={3}
+                        totalPages={totalPages}
+                        onChangePage={handlePageChange}
+                        isGraphqlPage={false}
+                    />
+                </Grid> */}
             </Grid>
         </>
     );
