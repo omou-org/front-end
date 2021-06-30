@@ -8,7 +8,6 @@ import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton
 import { withRouter } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
 
-
 const useStyles = makeStyles({
     editBtn: {
         marginTop: '1rem',
@@ -98,7 +97,7 @@ const MainTuitionRulePage = ({ location }) => {
         },
     });
 
-    const handleOnChange = e => {
+    const handleOnChange = (e) => {
         const hourlyTuition = e.target.value;
         setCatchAllTuition(hourlyTuition);
     };
@@ -119,7 +118,7 @@ const MainTuitionRulePage = ({ location }) => {
     };
 
     const toggleShowEdit = () => setShowEdit(!showEdit);
-    
+
     return (
         <Grid
             container
@@ -264,7 +263,10 @@ const MainTuitionRulePage = ({ location }) => {
                             </ResponsiveButton>
                         </Grid>
                         <Grid item>
-                            <ResponsiveButton onClick={onSubmit} variant='contained'>
+                            <ResponsiveButton
+                                onClick={onSubmit}
+                                variant='contained'
+                            >
                                 update
                             </ResponsiveButton>
                         </Grid>
