@@ -52,12 +52,12 @@ const useStyles = makeStyles({
     catchAllRule: {
         marginTop: '1rem',
         width: '33.4375rem',
-        height: '1.375rem'
+        height: '1.375rem',
     },
     catchAllRuleText: {
         ...body1,
-        fontStyle: 'italic'
-    }
+        fontStyle: 'italic',
+    },
 });
 
 const SetTuitionRules = ({
@@ -180,8 +180,14 @@ const SetTuitionRules = ({
                 </TableContainer>
             </Grid>
 
-            <Grid item style={{ marginTop: '1rem'}}>
-                <ResponsiveButton variant='outlined' startIcon={<AddIcon />} disabled={privateRules.length === 0 ? true : false} >New Rule</ResponsiveButton>
+            <Grid item style={{ marginTop: '1rem' }}>
+                <ResponsiveButton
+                    variant='outlined'
+                    startIcon={<AddIcon />}
+                    disabled={privateRules.length === 0 ? true : false}
+                >
+                    New Rule
+                </ResponsiveButton>
             </Grid>
 
             <Grid className={classes.courseType} item>
@@ -263,12 +269,24 @@ const SetTuitionRules = ({
                 </TableContainer>
             </Grid>
 
-            <Grid item style={{ marginTop: '1rem'}}>
-                <ResponsiveButton variant='outlined' startIcon={<AddIcon />} disabled={smallGroupRules.length === 0 ? true : false}>New Rule</ResponsiveButton>
+            <Grid item style={{ marginTop: '1rem' }}>
+                <ResponsiveButton
+                    variant='outlined'
+                    startIcon={<AddIcon />}
+                    disabled={smallGroupRules.length === 0 ? true : false}
+                >
+                    New Rule
+                </ResponsiveButton>
             </Grid>
 
             <Grid item className={classes.catchAllRule}>
-                <Typography className={classes.catchAllRuleText} variant='body1'>Instructor-specific rules cannot be added until a general catch-all tuition rule is set.</Typography>
+                <Typography
+                    className={classes.catchAllRuleText}
+                    variant='body1'
+                >
+                    Instructor-specific rules cannot be added until a general
+                    catch-all tuition rule is set.
+                </Typography>
             </Grid>
         </Grid>
     );
