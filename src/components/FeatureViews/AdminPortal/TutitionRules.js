@@ -109,6 +109,29 @@ const GET_COURSE_TOPICS = gql`
             id
             name
             activeTuitionRuleCount
+            tuitionruleSet {
+                tuitionPriceList {
+                    allInstructorsApply
+                    id
+                    hourlyTuition
+                    tuitionRule {
+                        courseType
+                        instructors {
+                            user {
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+                instructors {
+                    user {
+                        id
+                        lastName
+                        firstName
+                    }
+                }
+            }
         }
     }
 `;
@@ -126,7 +149,7 @@ const TuitionRule = () => {
 
     // take data to create clickable row
     const { courseCategories } = data;
-    
+
     // create a function that filters the courseTopics by name
     // const searchCourseTopic = (e) => {
     //     setSearchValue(e.target.value);
@@ -193,29 +216,35 @@ const TuitionRule = () => {
                                 <TableCell
                                     className={classes.headCells}
                                     style={{ minWidth: 170 }}
-                                >Topic</TableCell>
+                                >
+                                    Topic
+                                </TableCell>
                                 <TableCell
                                     className={classes.headCells}
                                     style={{ minWidth: 170 }}
-                                >Active Rules</TableCell>
+                                >
+                                    Active Rules
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {courseCategories.map(({ name, id, activeTuitionRuleCount }) => (
-                                <TableRow
-                                    key={id}
-                                    component={Link}
-                                    to={{
-                                        pathname: `${id}`,
-                                        state: { name },
-                                    }}
-                                >
-                                    <TableCell>{name}</TableCell>
-                                    <TableCell>
-                                        {activeTuitionRuleCount}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                            {courseCategories.map(
+                                ({ name, id, activeTuitionRuleCount, tuitionruleSet }) => (
+                                    <TableRow
+                                        key={id}
+                                        component={Link}
+                                        to={{
+                                            pathname: `${id}`,
+                                            state: { name, id, tuitionruleSet },
+                                        }}
+                                    >
+                                        <TableCell>{name}</TableCell>
+                                        <TableCell>
+                                            {activeTuitionRuleCount}
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            )}
                         </TableBody>
                     </Table>
                 </TableContainer>
