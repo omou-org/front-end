@@ -229,7 +229,12 @@ const TuitionRule = () => {
                         </TableHead>
                         <TableBody>
                             {courseCategories.map(
-                                ({ name, id, activeTuitionRuleCount, tuitionruleSet }) => (
+                                ({
+                                    name,
+                                    id,
+                                    activeTuitionRuleCount,
+                                    tuitionruleSet,
+                                }) => (
                                     <TableRow
                                         key={id}
                                         component={Link}
