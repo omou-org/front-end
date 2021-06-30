@@ -19,7 +19,7 @@ const useStyles = makeStyles({
         marginBottom: '2rem',
     },
     marginVertSm: {
-        marginBottom: '0.5rem'
+        marginBottom: '0.5rem',
     },
     tuitionRateField: {
         ...body1,
@@ -188,7 +188,10 @@ const MainTuitionRulePage = ({ location }) => {
                         alignItems='center'
                     >
                         <Grid item>
-                            <ResponsiveButton onClick={toggleShowEdit} variant='outlined'>
+                            <ResponsiveButton
+                                onClick={toggleShowEdit}
+                                variant='outlined'
+                            >
                                 cancel
                             </ResponsiveButton>
                         </Grid>
