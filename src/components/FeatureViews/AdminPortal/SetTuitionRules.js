@@ -11,6 +11,7 @@ import {
     TableRow,
     TableBody,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { h4, h5, slateGrey, omouBlue, body1, body2 } from '../../../theme/muiTheme';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
@@ -66,9 +67,9 @@ const SetTuitionRules = ({
     const {
         state: { id, name, tuitionruleSet },
     } = location;
-    const topicId = id;
+    // const topicId = id;
     const topicName = name;
-    console.log(topicId);
+    // console.log(topicId);
 
     const tuitionPrices = tuitionruleSet
         .map((rule) => rule.tuitionPriceList[0])
@@ -76,6 +77,8 @@ const SetTuitionRules = ({
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
     );
+    console.log(privateRules);
+    console.log(tuitionruleSet);
     const smallGroupRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'SMALL_GROUP'
     );
@@ -131,12 +134,11 @@ const SetTuitionRules = ({
                         <TableBody>
                             {privateRules.length < 1 ? (
                                 <TableRow
-                                // key={id}
-                                // component={Link}
-                                // to={{
-                                //     pathname: `${id}`,
-                                //     state: { name, id, tuitionruleSet },
-                                // }}
+                                component={Link}
+                                to={{
+                                    pathname: `${id}/edit`,
+                                    state: { name, id, tuitionruleSet, privateRules },
+                                }}
                                 >
                                     <TableCell>All</TableCell>
                                     <TableCell>
@@ -215,12 +217,11 @@ const SetTuitionRules = ({
                         <TableBody>
                             {smallGroupRules.length < 1 ? (
                                 <TableRow
-                                // key={id}
-                                // component={Link}
-                                // to={{
-                                //     pathname: `${id}`,
-                                //     state: { name, id, tuitionruleSet },
-                                // }}
+                                component={Link}
+                                to={{
+                                    pathname: `${id}/edit`,
+                                    state: { name, id, tuitionruleSet, smallGroupRules },
+                                }}
                                 >
                                     <TableCell>All</TableCell>
                                     <TableCell>

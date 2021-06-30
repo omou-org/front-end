@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import BusinessDetails from './BusinessDetails';
 import TuitionRule from './TutitionRules';
 import SetTuitionRules from './SetTuitionRules';
-
+import MainTuitionRulePage from './MainTuitionRulePage';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -91,6 +91,9 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
 
                         <Route exact path='/adminportal/tuition-rules/:id'>
                             <SetTuitionRules />
+                        </Route>
+                        <Route exact path='/adminportal/tuition-rules/:id/edit'>
+                            <MainTuitionRulePage />
                         </Route>
                     </Switch>
                 </Router>
