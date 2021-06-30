@@ -6,6 +6,8 @@ import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { withRouter } from 'react-router-dom';
+import { useMutation, gql } from '@apollo/client';
+
 
 const useStyles = makeStyles({
     editBtn: {
@@ -19,7 +21,7 @@ const useStyles = makeStyles({
         marginBottom: '2rem',
     },
     marginVertSm: {
-        marginBottom: '0.5rem'
+        marginBottom: '0.5rem',
     },
     tuitionRateField: {
         ...body1,
@@ -31,17 +33,50 @@ const useStyles = makeStyles({
     },
 });
 
+const CREATE_CATCH_ALL_TUITION_RULE = gql`
+    mutation createCatchAllTuitionRule(
+        $hourlyTuition: Float = 1.5
+        $category: Int = 10
+        $courseType: CourseTypeEnum = SMALL_GROUP
+    ) {
+        createTuitionRule(
+            hourlyTuition: $hourlyTuition
+            category: $category
+            courseType: $courseType
+            allInstructorsApply: true
+        ) {
+            tuitionRule {
+                id
+                name
+                category {
+                    name
+                }
+                courseType
+                instructors {
+                    user {
+                        id
+                        firstName
+                    }
+                }
+                tuitionPriceList {
+                    hourlyTuition
+                    createdAt
+                    allInstructorsApply
+                }
+                business {
+                    id
+                }
+            }
+        }
+    }
+`;
+
 const MainTuitionRulePage = ({ location }) => {
     const classes = useStyles();
-
-    const [showEdit, setShowEdit] = useState(false);
-    const toggleShowEdit = () => setShowEdit(!showEdit);
 
     const {
         state: { id, name, privateRules, smallGroupRules },
     } = location;
-
-    console.log(id);
 
     const tutoringType = privateRules
         ? 'Private'
@@ -54,6 +89,37 @@ const MainTuitionRulePage = ({ location }) => {
             (smallGroupRules && smallGroupRules.length === 0)) &&
         'All';
 
+    const [showEdit, setShowEdit] = useState(false);
+    const [catchAllTuition, setCatchAllTuition] = useState();
+
+    const [submitData] = useMutation(CREATE_CATCH_ALL_TUITION_RULE, {
+        onCompleted: (data) => {
+            console.log(data);
+        },
+    });
+
+    const handleOnChange = e => {
+        const hourlyTuition = e.target.value;
+        setCatchAllTuition(hourlyTuition);
+    };
+
+    const onSubmit = () => {
+        submitData({
+            variables: {
+                hourlyTuition: catchAllTuition,
+                category: id,
+                courseType:
+                    tutoringType === 'Private'
+                        ? 'TUTORING'
+                        : tutoringType === 'Small Group'
+                        ? 'SMALL_GROUP'
+                        : 'CLASS',
+            },
+        });
+    };
+
+    const toggleShowEdit = () => setShowEdit(!showEdit);
+    
     return (
         <Grid
             container
@@ -146,6 +212,8 @@ const MainTuitionRulePage = ({ location }) => {
                     {showEdit ? (
                         <TextField
                             variant='outlined'
+                            value={catchAllTuition}
+                            onChange={handleOnChange}
                             InputProps={{
                                 classes: {
                                     root: classes.tuitionRateField,
@@ -188,12 +256,15 @@ const MainTuitionRulePage = ({ location }) => {
                         alignItems='center'
                     >
                         <Grid item>
-                            <ResponsiveButton onClick={toggleShowEdit} variant='outlined'>
+                            <ResponsiveButton
+                                onClick={toggleShowEdit}
+                                variant='outlined'
+                            >
                                 cancel
                             </ResponsiveButton>
                         </Grid>
                         <Grid item>
-                            <ResponsiveButton variant='contained'>
+                            <ResponsiveButton onClick={onSubmit} variant='contained'>
                                 update
                             </ResponsiveButton>
                         </Grid>

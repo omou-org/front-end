@@ -73,7 +73,7 @@ const SetTuitionRules = ({
 
     const tuitionPrices = tuitionruleSet
         .map((rule) => rule.tuitionPriceList[0])
-        .filter((rule) => rule !== undefined);
+        .filter((rule) => rule);
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
     );
