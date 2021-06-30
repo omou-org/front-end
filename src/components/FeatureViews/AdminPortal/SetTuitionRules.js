@@ -12,7 +12,14 @@ import {
     TableBody,
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { h4, h5, slateGrey, omouBlue, body1, body2 } from '../../../theme/muiTheme';
+import {
+    h4,
+    h5,
+    slateGrey,
+    omouBlue,
+    body1,
+    body2,
+} from '../../../theme/muiTheme';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import AddIcon from '@material-ui/icons/Add';
@@ -134,11 +141,16 @@ const SetTuitionRules = ({
                         <TableBody>
                             {privateRules.length < 1 ? (
                                 <TableRow
-                                component={Link}
-                                to={{
-                                    pathname: `${id}/edit`,
-                                    state: { name, id, tuitionruleSet, privateRules },
-                                }}
+                                    component={Link}
+                                    to={{
+                                        pathname: `${id}/edit`,
+                                        state: {
+                                            name,
+                                            id,
+                                            tuitionruleSet,
+                                            privateRules,
+                                        },
+                                    }}
                                 >
                                     <TableCell>All</TableCell>
                                     <TableCell>
@@ -223,11 +235,16 @@ const SetTuitionRules = ({
                         <TableBody>
                             {smallGroupRules.length < 1 ? (
                                 <TableRow
-                                component={Link}
-                                to={{
-                                    pathname: `${id}/edit`,
-                                    state: { name, id, tuitionruleSet, smallGroupRules },
-                                }}
+                                    component={Link}
+                                    to={{
+                                        pathname: `${id}/edit`,
+                                        state: {
+                                            name,
+                                            id,
+                                            tuitionruleSet,
+                                            smallGroupRules,
+                                        },
+                                    }}
                                 >
                                     <TableCell>All</TableCell>
                                     <TableCell>
