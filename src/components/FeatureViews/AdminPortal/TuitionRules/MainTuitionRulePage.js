@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Typography, TextField } from '@material-ui/core';
-import { slateGrey, omouBlue, white, body1 } from '../../../theme/muiTheme';
+import { slateGrey, omouBlue, white, body1 } from '../../../../theme/muiTheme';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';

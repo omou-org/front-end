@@ -19,7 +19,7 @@ import {
     omouBlue,
     body1,
     body2,
-} from '../../../theme/muiTheme';
+} from '../../../../theme/muiTheme';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import AddIcon from '@material-ui/icons/Add';
