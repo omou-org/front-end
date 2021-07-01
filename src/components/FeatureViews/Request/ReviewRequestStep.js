@@ -68,11 +68,27 @@ const ReviewRequestStep = () => {
         subHeader: PropTypes.string,
     };
 
+    const days = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+    ];
+
+    const sortDays = (day1, day2) => {
+        day1 = days.indexOf(day1);
+        day2 = days.indexOf(day2);
+        return day1 - day2;
+    };
     const recurringDays = () => {
-        let formValueKeys = Object.keys(values);
+        let formValueKeys = Object.keys(values).sort(sortDays);
         let recurringDaysArray = formValueKeys.filter((key) => {
             if (values[key] === true) return key;
         });
+
         return recurringDaysArray.join(', ');
     };
 
@@ -115,7 +131,6 @@ const ReviewRequestStep = () => {
                         subHeader={`${recurringDays()} at time`}
                     />
                 </Grid>
-                {/* <Grid item xs={1}></Grid> */}
 
                 <Grid item xs={2}>
                     <ReciptLabels

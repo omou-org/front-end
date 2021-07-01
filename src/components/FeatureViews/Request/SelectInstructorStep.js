@@ -27,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
         '&:focus': highlightColor,
         display: 'flex',
     },
+    instructorSelectContainer: {
+        border: '3px solid #EEEEEE',
+        borderRadius: '10px',
+        padding: '2em',
+    },
 }));
 
 const SelectInstructorStep = () => {
@@ -43,7 +48,7 @@ const SelectInstructorStep = () => {
     ];
 
     return (
-        <Grid container direction='row' justify='flex-start'>
+        <Grid container justify='flex-start'>
             <Grid
                 item
                 xs={2}
@@ -123,6 +128,38 @@ const SelectInstructorStep = () => {
                     <MenuItem value='1.5'>1.5 hours</MenuItem>
                     <MenuItem value='2'>2 hours</MenuItem>
                 </Select>
+            </Grid>
+
+            <Grid
+                item
+                container
+                direction='row'
+                justify='center'
+                alignItems='center'
+                className={classes.instructorSelectContainer}
+            >
+                <Grid item xs={6}>
+                    <Eyebrow
+                        title='Available instructors'
+                        subText='Select 1 instructor who is available from the list'
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <Eyebrow
+                        title='Available times'
+                        subText='Select duration of session and pick each available time '
+                    />
+                </Grid>
+                <Grid container direction='column'>
+                    {/* Pass query of available instructors.
+
+                        Props passed in should be
+                        - Instructor Name
+                        - Bio
+                             
+                    
+                    */}
+                </Grid>
             </Grid>
         </Grid>
     );
