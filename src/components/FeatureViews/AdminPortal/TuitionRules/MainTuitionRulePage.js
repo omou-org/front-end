@@ -99,10 +99,7 @@ const CREATE_DEFAULT_TUITION_RULE = gql`
 `;
 
 const UPDATE_DEFAULT_RULE = gql`
-    mutation updateDefaultRule(
-        $id: ID, 
-        $hourlyTuition: Float = 1.5
-    ) {
+    mutation updateDefaultRule($id: ID, $hourlyTuition: Float = 1.5) {
         createTuitionRule(
             id: $id
             hourlyTuition: $hourlyTuition
@@ -141,7 +138,9 @@ const MainTuitionRulePage = ({ location }) => {
         state: { id, name, tuitionruleSet, privateRules, smallGroupRules },
     } = location;
 
-    const tuitionRuleId = tuitionruleSet.length ? tuitionruleSet[0].id : undefined;
+    const tuitionRuleId = tuitionruleSet.length
+        ? tuitionruleSet[0].id
+        : undefined;
 
     const tutoringType = privateRules
         ? 'Private'
@@ -174,7 +173,7 @@ const MainTuitionRulePage = ({ location }) => {
     const [submitUpdatedData] = useMutation(UPDATE_DEFAULT_RULE, {
         onCompleted: (data) => {
             console.log(data);
-        }
+        },
     });
 
     const handleOnChange = (e) => {
@@ -398,7 +397,11 @@ const MainTuitionRulePage = ({ location }) => {
                             </Grid>
                             <Grid item>
                                 <ResponsiveButton
-                                    onClick={tuitionRuleId ? onSubmitUpdate : onSubmit}
+                                    onClick={
+                                        tuitionRuleId
+                                            ? onSubmitUpdate
+                                            : onSubmit
+                                    }
                                     variant='contained'
                                 >
                                     update
