@@ -110,11 +110,13 @@ const GET_COURSE_TOPICS = gql`
             name
             activeTuitionRuleCount
             tuitionruleSet {
+                id
                 tuitionPriceList {
                     allInstructorsApply
                     id
                     hourlyTuition
                     tuitionRule {
+                        id
                         courseType
                         instructors {
                             user {

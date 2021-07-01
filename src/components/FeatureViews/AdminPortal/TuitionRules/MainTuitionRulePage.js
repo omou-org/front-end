@@ -1,7 +1,27 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, TextField } from '@material-ui/core';
-import { slateGrey, omouBlue, white, body1 } from '../../../../theme/muiTheme';
+import {
+    FormControl,
+    FormControlLabel,
+    Grid,
+    Typography,
+    TextField,
+    TableContainer,
+    TableCell,
+    TableHead,
+    Table,
+    TableRow,
+    // TableBody,
+    Radio,
+    RadioGroup,
+} from '@material-ui/core';
+import {
+    h4,
+    slateGrey,
+    omouBlue,
+    white,
+    body1,
+} from '../../../../theme/muiTheme';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
@@ -30,10 +50,18 @@ const useStyles = makeStyles({
         border: `1px solid ${omouBlue}`,
         borderRadius: '5px',
     },
+    headCells: {
+        ...h4,
+        color: omouBlue,
+    },
+    header: {
+        ...h4,
+        color: slateGrey,
+    },
 });
 
-const CREATE_CATCH_ALL_TUITION_RULE = gql`
-    mutation createCatchAllTuitionRule(
+const CREATE_DEFAULT_TUITION_RULE = gql`
+    mutation createDefaultTuitionRule(
         $hourlyTuition: Float = 1.5
         $category: Int = 10
         $courseType: CourseTypeEnum = SMALL_GROUP
@@ -70,12 +98,50 @@ const CREATE_CATCH_ALL_TUITION_RULE = gql`
     }
 `;
 
+const UPDATE_DEFAULT_RULE = gql`
+    mutation updateDefaultRule(
+        $id: ID, 
+        $hourlyTuition: Float = 1.5
+    ) {
+        createTuitionRule(
+            id: $id
+            hourlyTuition: $hourlyTuition
+            allInstructorsApply: true
+        ) {
+            tuitionRule {
+                id
+                name
+                category {
+                    name
+                }
+                courseType
+                instructors {
+                    user {
+                        id
+                        firstName
+                    }
+                }
+                business {
+                    id
+                }
+                tuitionPriceList {
+                    hourlyTuition
+                    createdAt
+                    allInstructorsApply
+                }
+            }
+        }
+    }
+`;
+
 const MainTuitionRulePage = ({ location }) => {
     const classes = useStyles();
 
     const {
-        state: { id, name, privateRules, smallGroupRules },
+        state: { id, name, tuitionruleSet, privateRules, smallGroupRules },
     } = location;
+
+    const tuitionRuleId = tuitionruleSet.length ? tuitionruleSet[0].id : undefined;
 
     const tutoringType = privateRules
         ? 'Private'
@@ -84,28 +150,42 @@ const MainTuitionRulePage = ({ location }) => {
         : 'Class';
 
     const instructor =
-        ((privateRules && privateRules.length === 0) ||
-            (smallGroupRules && smallGroupRules.length === 0)) &&
+        ((privateRules &&
+            (privateRules.length === 0 ||
+                privateRules[0].allInstructorsApply)) ||
+            (smallGroupRules &&
+                (smallGroupRules.length === 0 ||
+                    smallGroupRules[0].allInstructorsApply))) &&
         'All';
 
     const [showEdit, setShowEdit] = useState(false);
-    const [catchAllTuition, setCatchAllTuition] = useState();
+    const [hourlyTuition, setHourlyTuition] = useState();
 
-    const [submitData] = useMutation(CREATE_CATCH_ALL_TUITION_RULE, {
+    const [submitData] = useMutation(CREATE_DEFAULT_TUITION_RULE, {
         onCompleted: (data) => {
             console.log(data);
         },
+        // update: (data, cache) => {
+        //     console.log(data);
+        //     console.log(cache);
+        // }
+    });
+
+    const [submitUpdatedData] = useMutation(UPDATE_DEFAULT_RULE, {
+        onCompleted: (data) => {
+            console.log(data);
+        }
     });
 
     const handleOnChange = (e) => {
         const hourlyTuition = e.target.value;
-        setCatchAllTuition(hourlyTuition);
+        setHourlyTuition(hourlyTuition);
     };
 
     const onSubmit = () => {
         submitData({
             variables: {
-                hourlyTuition: catchAllTuition,
+                hourlyTuition: hourlyTuition,
                 category: id,
                 courseType:
                     tutoringType === 'Private'
@@ -115,6 +195,17 @@ const MainTuitionRulePage = ({ location }) => {
                         : 'CLASS',
             },
         });
+        // toggleShowEdit();
+    };
+
+    const onSubmitUpdate = () => {
+        submitUpdatedData({
+            variables: {
+                hourlyTuition: hourlyTuition,
+                id: tuitionRuleId,
+            },
+        });
+        // toggleShowEdit();
     };
 
     const toggleShowEdit = () => setShowEdit(!showEdit);
@@ -126,12 +217,16 @@ const MainTuitionRulePage = ({ location }) => {
             justify='center'
             alignItems='flex-start'
         >
-            <Grid className={classes.editBtn} item>
-                <ResponsiveButton variant='outlined' onClick={toggleShowEdit}>
-                    Edit
-                </ResponsiveButton>
-            </Grid>
-
+            {!showEdit && (
+                <Grid className={classes.editBtn} item>
+                    <ResponsiveButton
+                        variant='outlined'
+                        onClick={toggleShowEdit}
+                    >
+                        Edit
+                    </ResponsiveButton>
+                </Grid>
+            )}
             <Grid
                 item
                 container
@@ -140,6 +235,7 @@ const MainTuitionRulePage = ({ location }) => {
                 alignItems='flex-start'
                 xs={12}
                 className={classes.marginVertLarge}
+                style={{ marginTop: showEdit && '2rem' }}
             >
                 <Grid className={classes.marginVertSm} item>
                     <Typography className={classes.label} variant='h5'>
@@ -151,7 +247,6 @@ const MainTuitionRulePage = ({ location }) => {
                     <Typography variant='body1'>{name}</Typography>
                 </Grid>
             </Grid>
-
             <Grid
                 item
                 container
@@ -171,7 +266,6 @@ const MainTuitionRulePage = ({ location }) => {
                     <Typography variant='body1'>{tutoringType}</Typography>
                 </Grid>
             </Grid>
-
             <Grid
                 item
                 container
@@ -191,7 +285,6 @@ const MainTuitionRulePage = ({ location }) => {
                     <Typography variant='body1'>{instructor}</Typography>
                 </Grid>
             </Grid>
-
             <Grid
                 item
                 container
@@ -211,7 +304,7 @@ const MainTuitionRulePage = ({ location }) => {
                     {showEdit ? (
                         <TextField
                             variant='outlined'
-                            value={catchAllTuition}
+                            value={hourlyTuition}
                             onChange={handleOnChange}
                             InputProps={{
                                 classes: {
@@ -219,6 +312,14 @@ const MainTuitionRulePage = ({ location }) => {
                                 },
                             }}
                         />
+                    ) : privateRules && privateRules[0] ? (
+                        <Typography variant='body1'>
+                            ${privateRules[0].hourlyTuition}.00
+                        </Typography>
+                    ) : smallGroupRules && smallGroupRules[0] ? (
+                        <Typography variant='body1'>
+                            ${smallGroupRules[0].hourlyTuition}.00
+                        </Typography>
                     ) : (
                         <Typography variant='body1'>
                             <LabelBadge
@@ -235,51 +336,127 @@ const MainTuitionRulePage = ({ location }) => {
                     )}
                 </Grid>
             </Grid>
-
             {showEdit && (
-                <Grid
-                    item
-                    container
-                    direction='column'
-                    justify='center'
-                    alignItems='flex-start'
-                    xs={12}
-                    style={{ marginTop: '3rem' }}
-                >
+                <>
+                    {((privateRules && privateRules[0]) ||
+                        (smallGroupRules && smallGroupRules[0])) && (
+                        <Grid
+                            item
+                            container
+                            direction='column'
+                            justify='center'
+                            alignItems='flex-start'
+                            xs={12}
+                        >
+                            <Grid item>
+                                <FormControl component='fieldset'>
+                                    <RadioGroup
+                                    // name='gender1'
+                                    // value={value}
+                                    // onChange={handleChange}
+                                    >
+                                        <FormControlLabel
+                                            value='newStudents'
+                                            control={<Radio />}
+                                            label='Apply update only to new students enrolled to this tuition rule for new invoices'
+                                        />
+                                        <FormControlLabel
+                                            value='allStudents'
+                                            control={<Radio />}
+                                            label='Apply update to new invoices for both existing and new students enrolled with this tuition rule for new invoices'
+                                        />
+                                    </RadioGroup>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    )}
+
                     <Grid
                         item
-                        xs={2}
                         container
-                        direction='row'
-                        justify='space-between'
-                        alignItems='center'
+                        direction='column'
+                        justify='center'
+                        alignItems='flex-start'
+                        xs={12}
+                        style={{ marginTop: '3rem' }}
                     >
-                        <Grid item>
-                            <ResponsiveButton
-                                onClick={toggleShowEdit}
-                                variant='outlined'
-                            >
-                                cancel
-                            </ResponsiveButton>
-                        </Grid>
-                        <Grid item>
-                            <ResponsiveButton
-                                onClick={onSubmit}
-                                variant='contained'
-                            >
-                                update
-                            </ResponsiveButton>
+                        <Grid
+                            item
+                            xs={2}
+                            container
+                            direction='row'
+                            justify='space-between'
+                            alignItems='center'
+                        >
+                            <Grid item>
+                                <ResponsiveButton
+                                    onClick={toggleShowEdit}
+                                    variant='outlined'
+                                >
+                                    cancel
+                                </ResponsiveButton>
+                            </Grid>
+                            <Grid item>
+                                <ResponsiveButton
+                                    onClick={tuitionRuleId ? onSubmitUpdate : onSubmit}
+                                    variant='contained'
+                                >
+                                    update
+                                </ResponsiveButton>
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
+                </>
             )}
+            {((privateRules && privateRules[0]) ||
+                (smallGroupRules && smallGroupRules[0])) &&
+                !showEdit && (
+                    <>
+                        <Grid item xs={12}>
+                            <Typography variant='h4'>
+                                Rule Edit History
+                            </Typography>
+                        </Grid>
+                        <TableContainer>
+                            <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell
+                                            className={classes.headCells}
+                                            style={{ minWidth: 170 }}
+                                        >
+                                            Change Date
+                                        </TableCell>
+                                        <TableCell
+                                            className={classes.headCells}
+                                            style={{ minWidth: 170 }}
+                                        >
+                                            Tuition Rate
+                                        </TableCell>
+                                        <TableCell
+                                            className={classes.headCells}
+                                            style={{ minWidth: 170 }}
+                                        >
+                                            Rule ID
+                                        </TableCell>
+                                        <TableCell
+                                            className={classes.headCells}
+                                            style={{ minWidth: 170 }}
+                                        >
+                                            Rule Setting
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                            </Table>
+                        </TableContainer>
+                    </>
+                )}
         </Grid>
     );
 };
 
 MainTuitionRulePage.propTypes = {
     location: PropTypes.object,
-    // match: PropTypes.object,
 };
 
 export default withRouter(MainTuitionRulePage);

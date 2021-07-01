@@ -74,9 +74,7 @@ const SetTuitionRules = ({
     const {
         state: { id, name, tuitionruleSet },
     } = location;
-    // const topicId = id;
     const topicName = name;
-    // console.log(topicId);
 
     const tuitionPrices = tuitionruleSet
         .map((rule) => rule.tuitionPriceList[0])
@@ -84,8 +82,7 @@ const SetTuitionRules = ({
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
     );
-    console.log(privateRules);
-    console.log(tuitionruleSet);
+    
     const smallGroupRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'SMALL_GROUP'
     );
@@ -174,7 +171,19 @@ const SetTuitionRules = ({
                                         id,
                                         tuitionRule,
                                     }) => (
-                                        <TableRow key={id}>
+                                        <TableRow
+                                            key={id}
+                                            component={Link}
+                                            to={{
+                                                pathname: `${id}/edit`,
+                                                state: {
+                                                    name,
+                                                    id,
+                                                    tuitionruleSet,
+                                                    privateRules,
+                                                },
+                                            }}
+                                        >
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
@@ -268,7 +277,19 @@ const SetTuitionRules = ({
                                         id,
                                         tuitionRule,
                                     }) => (
-                                        <TableRow key={id}>
+                                        <TableRow
+                                            key={id}
+                                            component={Link}
+                                            to={{
+                                                pathname: `${id}/edit`,
+                                                state: {
+                                                    name,
+                                                    id,
+                                                    tuitionruleSet,
+                                                    smallGroupRules,
+                                                },
+                                            }}
+                                        >
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
