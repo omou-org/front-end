@@ -6,7 +6,13 @@ import BusinessDetails from './BusinessDetails';
 import TuitionRules from './TuitionRules/TutitionRules';
 import SetTuitionRules from './TuitionRules/SetTuitionRules';
 import MainTuitionRulePage from './TuitionRules/MainTuitionRulePage';
-import { BrowserRouter as Router, Switch, Route, Link, useLocation } from 'react-router-dom';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    useLocation,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
@@ -91,16 +97,15 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                             render={(props) => <TuitionRules {...props} />}
                         />
 
-                        <Route 
-                            exact 
+                        <Route
+                            exact
                             path='/adminportal/tuition-rules/:id'
-                            render={(props) => <SetTuitionRules {...props} />} 
+                            render={(props) => <SetTuitionRules {...props} />}
                         />
 
                         <Route exact path='/adminportal/tuition-rules/:id/edit'>
                             <MainTuitionRulePage />
                         </Route>
-
                     </Switch>
                 </Router>
             </TabPanel>

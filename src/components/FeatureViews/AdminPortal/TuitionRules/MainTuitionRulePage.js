@@ -101,7 +101,7 @@ const CREATE_DEFAULT_TUITION_RULE = gql`
 
 const UPDATE_DEFAULT_RULE = gql`
     mutation updateDefaultRule(
-        $id: ID, 
+        $id: ID
         $hourlyTuition: Float = 1.5
         $courseType: CourseTypeEnum = SMALL_GROUP
     ) {
@@ -148,8 +148,10 @@ const MainTuitionRulePage = ({ location }) => {
         ? tuitionruleSet[0].id
         : undefined;
 
-    const firstTimePrivate = (privateRules && privateRules.length === 0) && !smallGroupRules;
-    const firstTimeSmallGroup = (smallGroupRules && smallGroupRules.length ===  0) && !privateRules;
+    const firstTimePrivate =
+        privateRules && privateRules.length === 0 && !smallGroupRules;
+    const firstTimeSmallGroup =
+        smallGroupRules && smallGroupRules.length === 0 && !privateRules;
 
     const tutoringType = privateRules
         ? 'Private'
@@ -158,16 +160,24 @@ const MainTuitionRulePage = ({ location }) => {
         : 'Class';
 
     const getRuleEditHistory = (tuitionruleSet) => {
-        let priceLists = tuitionruleSet.map(rule => rule.tuitionPriceList);
+        let priceLists = tuitionruleSet.map((rule) => rule.tuitionPriceList);
         // return priceLists;
         let ruleEditHistory;
 
         if (tutoringType === 'Private') {
-            ruleEditHistory = priceLists.filter((priceList) => priceList[0].tuitionRule.courseType === 'TUTORING');
+            ruleEditHistory = priceLists.filter(
+                (priceList) =>
+                    priceList[0].tuitionRule.courseType === 'TUTORING'
+            );
         } else if (tutoringType === 'Small Group') {
-            ruleEditHistory = priceLists.filter((priceList) => priceList[0].tuitionRule.courseType === 'SMALL_GROUP');  
+            ruleEditHistory = priceLists.filter(
+                (priceList) =>
+                    priceList[0].tuitionRule.courseType === 'SMALL_GROUP'
+            );
         } else {
-            ruleEditHistory = priceLists.filter((priceList) => priceList[0].tuitionRule.courseType === 'CLASS');
+            ruleEditHistory = priceLists.filter(
+                (priceList) => priceList[0].tuitionRule.courseType === 'CLASS'
+            );
         }
         // tuitionPriceList[0].tuitionRule.courseType
         return ruleEditHistory.flat(1);
@@ -430,7 +440,11 @@ const MainTuitionRulePage = ({ location }) => {
                             </Grid>
                             <Grid item>
                                 <ResponsiveButton
-                                    onClick={(firstTimeSmallGroup || firstTimePrivate) ? onSubmit : onSubmitUpdate}
+                                    onClick={
+                                        firstTimeSmallGroup || firstTimePrivate
+                                            ? onSubmit
+                                            : onSubmitUpdate
+                                    }
                                     variant='contained'
                                 >
                                     update
@@ -480,24 +494,29 @@ const MainTuitionRulePage = ({ location }) => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {ruleEditHistory && 
-                                     ruleEditHistory.map(({ id, hourlyTuition, tuitionRule }) => (
-                                         <TableRow key={id}>
-                                             <TableCell>
-                                                 {dateTimeToDate(tuitionRule.updatedAt)}
-                                             </TableCell>
-                                             <TableCell>
-                                                 ${hourlyTuition}.00
-                                             </TableCell>
-                                             <TableCell>
-                                                 #{id}
-                                            </TableCell>
-                                            <TableCell>
-                                                setting
-                                            </TableCell>
-                                         </TableRow>
-                                     ))
-                                    }
+                                    {ruleEditHistory &&
+                                        ruleEditHistory.map(
+                                            ({
+                                                id,
+                                                hourlyTuition,
+                                                tuitionRule,
+                                            }) => (
+                                                <TableRow key={id}>
+                                                    <TableCell>
+                                                        {dateTimeToDate(
+                                                            tuitionRule.updatedAt
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        ${hourlyTuition}.00
+                                                    </TableCell>
+                                                    <TableCell>#{id}</TableCell>
+                                                    <TableCell>
+                                                        setting
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        )}
                                 </TableBody>
                             </Table>
                         </TableContainer>
