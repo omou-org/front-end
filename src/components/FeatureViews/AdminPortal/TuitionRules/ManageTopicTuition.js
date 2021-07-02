@@ -67,7 +67,7 @@ const useStyles = makeStyles({
     },
 });
 
-const SetTuitionRules = ({
+const ManageTopicTuition = ({
     location /*match  you can use this propety to get the id  */,
 }) => {
     const classes = useStyles();
@@ -332,9 +332,9 @@ const SetTuitionRules = ({
     );
 };
 
-export default withRouter(SetTuitionRules);
+export default withRouter(ManageTopicTuition);
 
-SetTuitionRules.propTypes = {
+ManageTopicTuition.propTypes = {
     location: PropTypes.object,
     // match: PropTypes.object,
 };

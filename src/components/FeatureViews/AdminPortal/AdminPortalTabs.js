@@ -4,8 +4,8 @@ import { Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import BusinessDetails from './BusinessDetails';
 import TuitionRules from './TuitionRules/TutitionRules';
-import SetTuitionRules from './TuitionRules/SetTuitionRules';
-import MainTuitionRulePage from './TuitionRules/MainTuitionRulePage';
+import SetTuitionRules from './TuitionRules/ManageTopicTuition';
+import MainTuitionRulePage from './TuitionRules/ManageTuitionRule';
 import { BrowserRouter as Router, Switch, Route, Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 

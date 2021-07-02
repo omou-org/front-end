@@ -137,7 +137,7 @@ const UPDATE_DEFAULT_RULE = gql`
     }
 `;
 
-const MainTuitionRulePage = ({ location }) => {
+const ManageTuitionRule = ({ location }) => {
     const classes = useStyles();
 
     const {
@@ -507,8 +507,8 @@ const MainTuitionRulePage = ({ location }) => {
     );
 };
 
-MainTuitionRulePage.propTypes = {
+ManageTuitionRule.propTypes = {
     location: PropTypes.object,
 };
 
-export default withRouter(MainTuitionRulePage);
+export default withRouter(ManageTuitionRule);
