@@ -144,7 +144,9 @@ const MainTuitionRulePage = ({ location }) => {
         state: { id, name, tuitionruleSet, privateRules, smallGroupRules },
     } = location;
 
-    const tuitionRuleId = tuitionruleSet.length ? tuitionruleSet[0].id : undefined;
+    const tuitionRuleId = tuitionruleSet.length
+        ? tuitionruleSet[0].id
+        : undefined;
 
     const firstTimePrivate = (privateRules && privateRules.length === 0) && !smallGroupRules;
     const firstTimeSmallGroup = (smallGroupRules && smallGroupRules.length ===  0) && !privateRules;
@@ -198,7 +200,7 @@ const MainTuitionRulePage = ({ location }) => {
     const [submitUpdatedData] = useMutation(UPDATE_DEFAULT_RULE, {
         onCompleted: (data) => {
             console.log(data);
-        }
+        },
     });
 
     const handleOnChange = (e) => {

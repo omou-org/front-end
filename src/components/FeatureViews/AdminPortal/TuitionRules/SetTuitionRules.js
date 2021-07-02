@@ -84,7 +84,7 @@ const SetTuitionRules = ({
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
     );
-    
+
     const smallGroupRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'SMALL_GROUP'
     );
