@@ -4,8 +4,8 @@ import { Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import BusinessDetails from './BusinessDetails';
 import TuitionRules from './TuitionRules/TutitionRules';
-import SetTuitionRules from './TuitionRules/ManageTopicTuition';
-import MainTuitionRulePage from './TuitionRules/ManageTuitionRule';
+import ManageTopicTuition from './TuitionRules/ManageTopicTuition';
+import ManageTuitionRule from './TuitionRules/ManageTuitionRule';
 import { BrowserRouter as Router, Switch, Route, Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -91,16 +91,15 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                             render={(props) => <TuitionRules {...props} />}
                         />
 
-                        <Route 
-                            exact 
+                        <Route
+                            exact
                             path='/adminportal/tuition-rules/:id'
-                            render={(props) => <SetTuitionRules {...props} />} 
+                            render={(props) => <ManageTopicTuition {...props} />}
                         />
 
                         <Route exact path='/adminportal/tuition-rules/:id/edit'>
-                            <MainTuitionRulePage />
+                            <ManageTuitionRule />
                         </Route>
-
                     </Switch>
                 </Router>
             </TabPanel>
