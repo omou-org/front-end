@@ -23,6 +23,7 @@ import {
     body1,
 } from '../../../../theme/muiTheme';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import NoListAlert from 'components/OmouComponents/NoListAlert';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { withRouter } from 'react-router-dom';
@@ -249,7 +250,6 @@ const ManageTuitionRule = ({ location }) => {
         });
         // toggleShowEdit();
     };
-
     const toggleShowEdit = () => setShowEdit(!showEdit);
 
     return (
@@ -457,52 +457,70 @@ const ManageTuitionRule = ({ location }) => {
             {((privateRules && privateRules[0]) ||
                 (smallGroupRules && smallGroupRules[0])) &&
                 !showEdit && (
-                    <>
-                        <Grid item xs={12}>
-                            <Typography variant='h4'>
+                    <Grid
+                            item
+                            xs={12}
+                            container
+                            direction='column'
+                            justify='space-between'
+                            alignItems='flex=start'
+                        >
+                        <Grid item xs={2}>
+                            <Typography align='left' variant='h4'>
                                 Rule Edit History
                             </Typography>
                         </Grid>
-                        <TableContainer>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell
-                                            className={classes.headCells}
-                                            style={{ minWidth: 170 }}
-                                        >
-                                            Change Date
-                                        </TableCell>
-                                        <TableCell
-                                            className={classes.headCells}
-                                            style={{ minWidth: 170 }}
-                                        >
-                                            Tuition Rate
-                                        </TableCell>
-                                        <TableCell
-                                            className={classes.headCells}
-                                            style={{ minWidth: 170 }}
-                                        >
-                                            Rule ID
-                                        </TableCell>
-                                        <TableCell
-                                            className={classes.headCells}
-                                            style={{ minWidth: 170 }}
-                                        >
-                                            Rule Setting
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {ruleEditHistory &&
-                                        ruleEditHistory.map(
-                                            ({
-                                                id,
-                                                hourlyTuition,
-                                                tuitionRule,
-                                            }) => (
+                        {ruleEditHistory.length <= 1 ? (
+                            <Grid item xs={12} style={{ border: '1px solid black'}}>
+                                <NoListAlert list='Rule Edits' />
+                            </Grid>
+                        ) : (
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell
+                                                className={classes.headCells}
+                                                style={{ minWidth: 170 }}
+                                            >
+                                                Change Date
+                                            </TableCell>
+                                            <TableCell
+                                                className={classes.headCells}
+                                                style={{ minWidth: 170 }}
+                                            >
+                                                Tuition Rate
+                                            </TableCell>
+                                            <TableCell
+                                                className={classes.headCells}
+                                                style={{ minWidth: 170 }}
+                                            >
+                                                Rule ID
+                                            </TableCell>
+                                            <TableCell
+                                                className={classes.headCells}
+                                                style={{ minWidth: 170 }}
+                                            >
+                                                Rule Setting
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {ruleEditHistory.map(
+                                            (
+                                                {
+                                                    id,
+                                                    tuitionRule,
+                                                    hourlyTuition,
+                                                },
+                                                index
+                                            ) => (
                                                 <TableRow key={id}>
                                                     <TableCell>
+                                                        {index ===
+                                                            ruleEditHistory.length -
+                                                                1 &&
+                                                            'Created on: '}
                                                         {dateTimeToDate(
                                                             tuitionRule.updatedAt
                                                         )}
@@ -517,10 +535,11 @@ const ManageTuitionRule = ({ location }) => {
                                                 </TableRow>
                                             )
                                         )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        )}
+                    </Grid>
                 )}
         </Grid>
     );
