@@ -458,20 +458,24 @@ const ManageTuitionRule = ({ location }) => {
                 (smallGroupRules && smallGroupRules[0])) &&
                 !showEdit && (
                     <Grid
-                            item
-                            xs={12}
-                            container
-                            direction='column'
-                            justify='space-between'
-                            alignItems='flex=start'
-                        >
+                        item
+                        xs={12}
+                        container
+                        direction='column'
+                        justify='space-between'
+                        alignItems='flex=start'
+                    >
                         <Grid item xs={2}>
                             <Typography align='left' variant='h4'>
                                 Rule Edit History
                             </Typography>
                         </Grid>
                         {ruleEditHistory.length <= 1 ? (
-                            <Grid item xs={12} style={{ border: '1px solid black'}}>
+                            <Grid
+                                item
+                                xs={12}
+                                style={{ border: '1px solid black' }}
+                            >
                                 <NoListAlert list='Rule Edits' />
                             </Grid>
                         ) : (
