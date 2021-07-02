@@ -3,10 +3,10 @@ import React from 'react';
 import { Tab, Tabs } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import BusinessDetails from './BusinessDetails';
-import TuitionRule from './TuitionRules/TutitionRules';
+import TuitionRules from './TuitionRules/TutitionRules';
 import SetTuitionRules from './TuitionRules/SetTuitionRules';
 import MainTuitionRulePage from './TuitionRules/MainTuitionRulePage';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
@@ -43,6 +43,8 @@ TabPanel.propTypes = {
 
 const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
     const classes = useStyles();
+
+    const location = useLocation();
 
     const adminPortalTabs = [
         { label: 'overview', route: 'overview' },
@@ -86,15 +88,19 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                         <Route
                             exact
                             path='/adminportal/tuition-rules/'
-                            render={(props) => <TuitionRule {...props} />}
+                            render={(props) => <TuitionRules {...props} />}
                         />
 
-                        <Route exact path='/adminportal/tuition-rules/:id'>
-                            <SetTuitionRules />
-                        </Route>
+                        <Route 
+                            exact 
+                            path='/adminportal/tuition-rules/:id'
+                            render={(props) => <SetTuitionRules {...props} />} 
+                        />
+
                         <Route exact path='/adminportal/tuition-rules/:id/edit'>
                             <MainTuitionRulePage />
                         </Route>
+
                     </Switch>
                 </Router>
             </TabPanel>

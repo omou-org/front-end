@@ -204,16 +204,13 @@ export const RootRoutes = () => {
             {/* Admin Routes */}
 
             <Redirect exact from='/adminportal' to='/adminportal/overview' />
-            <Redirect
-                exact
-                from='/adminportal/tuition-rules/:id'
-                to='/adminportal/tuition-rules/'
-            />
+
             <Route
                 exact
-                path='/adminportal/:page'
+                path='/adminportal/:page?/:id?/:edit?'
                 render={(props) => <AdminPortal {...props} />}
             />
+
             <AuthenticatedRoute
                 exact
                 path='/form/:type/:action/:id?/'

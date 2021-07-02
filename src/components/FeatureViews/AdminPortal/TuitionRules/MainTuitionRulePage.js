@@ -11,7 +11,7 @@ import {
     TableHead,
     Table,
     TableRow,
-    // TableBody,
+    TableBody,
     Radio,
     RadioGroup,
 } from '@material-ui/core';
@@ -26,6 +26,7 @@ import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { withRouter } from 'react-router-dom';
+import { dateTimeToDate } from '../../../../utils';
 import { useMutation, gql } from '@apollo/client';
 
 const useStyles = makeStyles({
@@ -102,10 +103,12 @@ const UPDATE_DEFAULT_RULE = gql`
     mutation updateDefaultRule(
         $id: ID, 
         $hourlyTuition: Float = 1.5
+        $courseType: CourseTypeEnum = SMALL_GROUP
     ) {
         createTuitionRule(
             id: $id
             hourlyTuition: $hourlyTuition
+            courseType: $courseType
             allInstructorsApply: true
         ) {
             tuitionRule {
@@ -143,11 +146,32 @@ const MainTuitionRulePage = ({ location }) => {
 
     const tuitionRuleId = tuitionruleSet.length ? tuitionruleSet[0].id : undefined;
 
+    const firstTimePrivate = (privateRules && privateRules.length === 0) && !smallGroupRules;
+    const firstTimeSmallGroup = (smallGroupRules && smallGroupRules.length ===  0) && !privateRules;
+
     const tutoringType = privateRules
         ? 'Private'
         : smallGroupRules
         ? 'Small Group'
         : 'Class';
+
+    const getRuleEditHistory = (tuitionruleSet) => {
+        let priceLists = tuitionruleSet.map(rule => rule.tuitionPriceList);
+        // return priceLists;
+        let ruleEditHistory;
+
+        if (tutoringType === 'Private') {
+            ruleEditHistory = priceLists.filter((priceList) => priceList[0].tuitionRule.courseType === 'TUTORING');
+        } else if (tutoringType === 'Small Group') {
+            ruleEditHistory = priceLists.filter((priceList) => priceList[0].tuitionRule.courseType === 'SMALL_GROUP');  
+        } else {
+            ruleEditHistory = priceLists.filter((priceList) => priceList[0].tuitionRule.courseType === 'CLASS');
+        }
+        // tuitionPriceList[0].tuitionRule.courseType
+        return ruleEditHistory.flat(1);
+    };
+
+    const ruleEditHistory = getRuleEditHistory(tuitionruleSet);
 
     const instructor =
         ((privateRules &&
@@ -203,6 +227,12 @@ const MainTuitionRulePage = ({ location }) => {
             variables: {
                 hourlyTuition: hourlyTuition,
                 id: tuitionRuleId,
+                courseType:
+                    tutoringType === 'Private'
+                        ? 'TUTORING'
+                        : tutoringType === 'Small Group'
+                        ? 'SMALL_GROUP'
+                        : 'CLASS',
             },
         });
         // toggleShowEdit();
@@ -398,7 +428,7 @@ const MainTuitionRulePage = ({ location }) => {
                             </Grid>
                             <Grid item>
                                 <ResponsiveButton
-                                    onClick={tuitionRuleId ? onSubmitUpdate : onSubmit}
+                                    onClick={(firstTimeSmallGroup || firstTimePrivate) ? onSubmit : onSubmitUpdate}
                                     variant='contained'
                                 >
                                     update
@@ -447,6 +477,26 @@ const MainTuitionRulePage = ({ location }) => {
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
+                                <TableBody>
+                                    {ruleEditHistory && 
+                                     ruleEditHistory.map(({ id, hourlyTuition, tuitionRule }) => (
+                                         <TableRow key={id}>
+                                             <TableCell>
+                                                 {dateTimeToDate(tuitionRule.updatedAt)}
+                                             </TableCell>
+                                             <TableCell>
+                                                 ${hourlyTuition}.00
+                                             </TableCell>
+                                             <TableCell>
+                                                 #{id}
+                                            </TableCell>
+                                            <TableCell>
+                                                setting
+                                            </TableCell>
+                                         </TableRow>
+                                     ))
+                                    }
+                                </TableBody>
                             </Table>
                         </TableContainer>
                     </>

@@ -74,11 +74,13 @@ const SetTuitionRules = ({
     const {
         state: { id, name, tuitionruleSet },
     } = location;
+
     const topicName = name;
 
     const tuitionPrices = tuitionruleSet
         .map((rule) => rule.tuitionPriceList[0])
         .filter((rule) => rule);
+
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
     );
@@ -101,7 +103,7 @@ const SetTuitionRules = ({
                     color='inherit'
                     to='/adminportal/tuition-rules/'
                 >
-                    {'ALL TOPICS >'}
+                    {'< ALL TOPICS'}
                 </NavLink>
             </Grid>
             <Grid className={classes.topicName} item>

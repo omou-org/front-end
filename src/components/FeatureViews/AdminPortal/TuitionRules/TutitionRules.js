@@ -118,6 +118,8 @@ const GET_COURSE_TOPICS = gql`
                     tuitionRule {
                         id
                         courseType
+                        createdAt
+                        updatedAt
                         instructors {
                             user {
                                 firstName
