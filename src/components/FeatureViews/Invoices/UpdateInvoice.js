@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import { GET_PAYMENT } from './InvoiceReceipt';
 import Loading from 'components/OmouComponents/Loading';
@@ -54,6 +54,22 @@ const GET_PRICE_QUOTE = gql`
     }
 `;
 
+const REMOVE_ENROLLMENT_FROM_INVOICE = gql`
+    mutation updateInvoice(
+        $method: String!,
+        $invoiceId: ID,
+        $registrations: [EnrollmentQuote],
+        $classes: [ClassQuote]
+    ) {
+        createInvoice(method: $method, registrations: $registrations, invoiceId: $invoiceId, classes: $classes) {
+          invoice {
+            id
+          }
+        }
+      }
+  
+`
+
 
 const useStyles = makeStyles({
     heading: {
@@ -79,6 +95,8 @@ const UpdateInvoice = () => {
     const [numberOfUnsavedChanges, setNumberOfUnsavedChanges] = useState(0);
     const [displayPopup, setDisplayPopup] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('credit_card');
+    const [classRegistrations, setClassRegistrations] = useState([]);
+    const [ invoiceEnrollments, setInvoiceEnrollments] = useState([]);
     const [displayedPrice, setDisplayedPrice] = useState({
         total: 0,
         subTotal: 0
@@ -92,18 +110,48 @@ const UpdateInvoice = () => {
         },
     });
 
+    const [updateInvoiceWithNewChanges] = useMutation(REMOVE_ENROLLMENT_FROM_INVOICE, {
+        variables: { 
+            method: paymentMethod, 
+            invoiceId: paymentInfoData?.invoice.id, 
+            registrations: invoiceEnrollments, 
+            classes: classRegistrations 
+        },
+        onCompleted: () => {
+            console.log("Check updated invoice")
+            // setParentConfirmation(true);
+        },
+        // update: (cache, { data }) => {
+        //     cache.writeQuery({
+        //         query: GET_REGISTRATION_CART,
+        //         variables: { parent: currentParent.user.id },
+        //         data: {
+        //             registrationCart:
+        //                 data.createRegistrationCart.registrationCart,
+        //         },
+        //     });
+        // },
+        onError: (error) => console.error(error.message),
+        skip: !paymentInfoData
+    });
+
     // classRegistraitons to be 
     /**
-     * {
+     * classes {
      *      course: courseId
      *      sessions: numSessions
      *      student: studentId
      * }
+     * enrollments {
+     *  enrollment
+     *  numSessions
+     * }
      */
-    const [classRegistrations, setClassRegistrations] = useState([]);
+    
 
-    const formatRegistrationsForPriceAdjustmentQuery = (arrOfRegistrations) => {
+    const formatRegistrationsForQueries = (arrOfRegistrations) => {
         const filteredClassRegistrations = [];
+        const filteredEnrollments = []
 
         for (const registration of arrOfRegistrations) {
 
@@ -118,10 +166,15 @@ const UpdateInvoice = () => {
                     sessions: registration.numSessions,
                     student: registration.enrollment.student.user.id
                 })
+                filteredEnrollments.push({
+                    enrollment: registration.enrollment.id,
+                    numSessions: registration.numSessions
+                })
             }
         }
-        console.log({filteredClassRegistrations})
+
         setClassRegistrations(filteredClassRegistrations);
+        setInvoiceEnrollments(filteredEnrollments);
     }
 
     const [priceAdjustment, setPriceAdjustment] = useState(0);
@@ -136,7 +189,6 @@ const UpdateInvoice = () => {
                 priceAdjustment,
             },
             onCompleted: (data) => {
-                console.log({data})
                 setDisplayedPrice({
                     total: data.priceQuote.total,
                     subTotal: data.priceQuote.subTotal
@@ -162,15 +214,19 @@ const UpdateInvoice = () => {
         return Object.entries(formattedRegistrations)
     }
 
+    const formatCurrentRegistrations = (registrations) => {
+        
+    }
+
     useEffect(() => {
         let registrationData = [];
         let invoicePrice = displayedPrice;
-
+        
         if (paymentInfoData) {
             registrationData = formatRegistrationsByStudent(paymentInfoData.invoice.registrationSet);
             invoicePrice.subTotal = paymentInfoData.invoice.subTotal;
             invoicePrice.total = paymentInfoData.invoice.total;
-            formatRegistrationsForPriceAdjustmentQuery(paymentInfoData.invoice.registrationSet);
+            formatRegistrationsForQueries(paymentInfoData.invoice.registrationSet);
         }
         setRegistrationsByStudent(registrationData);
         setDisplayedPrice(invoicePrice);
@@ -208,7 +264,7 @@ const UpdateInvoice = () => {
         setNumberOfUnsavedChanges(updatedCountOfUnsavedChanges);
         setRegistrationsToBeCancelled(newRegistrationsToBeCancelledState);
         setUnsavedChanges(updatedCountOfUnsavedChanges !== 0);
-        formatRegistrationsForPriceAdjustmentQuery(paymentInfoData.invoice.registrationSet);
+        formatRegistrationsForQueries(paymentInfoData.invoice.registrationSet);
         getPriceQuote();
     }
 
@@ -230,6 +286,7 @@ const UpdateInvoice = () => {
     const handleSaveChanges = () => {
         setUnsavedChanges(false);
         handlePopupClose()
+        updateInvoiceWithNewChanges()
     }
 
     const handlePaymentMethodChange = useCallback((_, value) => {
@@ -261,7 +318,6 @@ const paymentOptions = [
                 {`There's been an error! Error: ${paymentInfoError.message}`}
             </Typography>
         );
-    console.log({paymentInfoData})
 
     return (
         <Grid

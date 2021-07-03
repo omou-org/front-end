@@ -82,7 +82,6 @@ const CREATE_PAYMENT = gql`
         $disabledDiscounts: [ID]
         $priceAdjustment: Float
         $registrations: [EnrollmentQuote]!
-        $paymentStatus: PaymentChoiceEnum!
     ) {
         __typename
         createInvoice(
@@ -92,7 +91,6 @@ const CREATE_PAYMENT = gql`
             disabledDiscounts: $disabledDiscounts
             priceAdjustment: $priceAdjustment
             registrations: $registrations
-            paymentStatus: $paymentStatus
         ) {
             stripeCheckoutId
             stripeConnectedAccount
@@ -519,8 +517,7 @@ const PaymentBoard = () => {
                 classes: classRegistrations,
                 disabledDiscounts: [],
                 priceAdjustment: Number(priceAdjustment),
-                registrations,
-                paymentStatus: 'PAID',
+                registrations
             },
         });
 

@@ -12,7 +12,7 @@ import  {
     ListTitle,
     ListStatus
 } from '../../OmouComponents/ListComponent/ListDetailedItem';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import { CourseAvailabilites } from '../../OmouComponents/CourseAvailabilities';
 import { fullName } from 'utils';
 import moment from 'moment';
 import ListActionIcon from './ListActionIcon';
