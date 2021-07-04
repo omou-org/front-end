@@ -7,21 +7,14 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import { fullName } from 'utils';
-import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
 import Moment from 'react-moment';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-
-import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import StatusBadge from '../../OmouComponents/StatusBadge';
 
 import DashboardSummary from './DashboardSummary'
+import SmallStatusIndicator from './SmallStatusIndicator'
 
 const testRequestData = [
     {
@@ -37,7 +30,7 @@ const testRequestData = [
     {
         ID: "12346",
         createdAt: "May 26, 2021",
-        status: "submitted",
+        status: "instructorApproved",
         dates: "July 15 - August 15",
         times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
         subject: "Math",
@@ -47,7 +40,7 @@ const testRequestData = [
     {
         ID: "12347",
         createdAt: "May 27, 2021",
-        status: "submitted",
+        status: "verified",
         dates: "July 15 - August 15",
         times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
         subject: "Math",
@@ -122,7 +115,7 @@ const RequestTable = ({
                                 className={`${classes.tableRow} ${isExpanded[index] && classes.tableRowSelected}`}
                                 onClick={() => {handleExpandRow(index)}}
                             >
-                                <TableCell>{request.ID}</TableCell>
+                                <TableCell>#{request.ID}</TableCell>
                                 <TableCell>
                                     {request.createdAt}
                                     {/* <Moment
@@ -130,7 +123,9 @@ const RequestTable = ({
                                         format='MMM D YYYY'
                                     /> */}
                                 </TableCell>
-                                <TableCell>Status</TableCell>
+                                <TableCell>
+                                    <SmallStatusIndicator status={request.status}/>
+                                </TableCell>
                                 <TableCell>
                                     {isExpanded[index] ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
                                 </TableCell>

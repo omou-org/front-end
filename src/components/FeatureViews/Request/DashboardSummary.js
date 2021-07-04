@@ -2,6 +2,7 @@ import React from "react";
 import {Grid, Typography } from '@material-ui/core';
 import UserAvatar from 'components/FeatureViews/Accounts/UserAvatar';
 import { makeStyles } from '@material-ui/core/styles';
+import LargeStatusIndicator from './LargeStatusIndicator';
 
 const useStyles = makeStyles({
     infoRow: {
@@ -18,7 +19,7 @@ const DashboardSummary = ({request: {status, dates, times, subject, instructor, 
         <Grid>
             <Grid>
                 {/* Status Bar */}
-                <Typography>{status}</Typography>
+                <LargeStatusIndicator status={status}/>
             </Grid>
             {/* Info Section */}
             <Grid>
