@@ -25,6 +25,8 @@ import DashboardSummary from './DashboardSummary'
 
 const testRequestData = [
     {
+        ID: "12345",
+        createdAt: "May 25, 2021",
         status: "submitted",
         dates: "July 15 - August 15",
         times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
@@ -33,6 +35,8 @@ const testRequestData = [
         student: "Ben Miller"
     },
     {
+        ID: "12346",
+        createdAt: "May 26, 2021",
         status: "submitted",
         dates: "July 15 - August 15",
         times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
@@ -41,6 +45,8 @@ const testRequestData = [
         student: "Ben Miller"
     },
     {
+        ID: "12347",
+        createdAt: "May 27, 2021",
         status: "submitted",
         dates: "July 15 - August 15",
         times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
@@ -63,15 +69,12 @@ const useStyles = makeStyles({
         paddingTop: '7px',
         paddingLeft: '12px',
     },
-    // tableHeader: {
-    //     paddingRight: '40px',
-    // },
     tableFooter: {
         paddingTop: '1vh',
     },
-    tableRow: {
-        borderBottomColor: 'red'
-    }
+    tableRowSelected: {
+        backgroundColor: '#EBFAFF'
+    },
 });
 
 const RequestTable = ({
@@ -114,27 +117,31 @@ const RequestTable = ({
                 <TableBody>
                     {requests.map((request, index) => (
                         <>
-                        <TableRow
-                            hover
-                            className={classes.tableRow}
-                            onClick={() => {handleExpandRow(index)}}
-                        >
-                            <TableCell>ID</TableCell>
-                            <TableCell>
-                                Date
-                                {/* <Moment
-                                    date={invoice.createdAt}
-                                    format='MMM D YYYY'
-                                /> */}
-                            </TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>
-                                {isExpanded[index] ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
-                            </TableCell>
-                        </TableRow>
-                        {isExpanded[index] && (
-                            <DashboardSummary request={request}/>
-                        )}
+                            <TableRow
+                                hover={!isExpanded[index]}
+                                className={`${classes.tableRow} ${isExpanded[index] && classes.tableRowSelected}`}
+                                onClick={() => {handleExpandRow(index)}}
+                            >
+                                <TableCell>{request.ID}</TableCell>
+                                <TableCell>
+                                    {request.createdAt}
+                                    {/* <Moment
+                                        date={invoice.createdAt}
+                                        format='MMM D YYYY'
+                                    /> */}
+                                </TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>
+                                    {isExpanded[index] ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
+                                </TableCell>
+                            </TableRow>
+                            {isExpanded[index] && (
+                                <TableRow>
+                                    <TableCell colSpan={4}>
+                                        <DashboardSummary request={request}/>
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </>
                     ))}
                 </TableBody>
