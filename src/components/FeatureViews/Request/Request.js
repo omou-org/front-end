@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import Grid from '@material-ui/core/Grid';
+import RequestTable from './RequestTable'
 // import Tabs from '@material-ui/core/Tabs';
 // import Tab from '@material-ui/core/Tab';
 // import AppBar from '@material-ui/core/AppBar';
@@ -27,8 +28,8 @@ const Request = () => {
                     </ResponsiveButton>
                 </Grid>
             </Grid>
-            {/*
-            <AppBar>
+            
+            {/* <AppBar>
                 <Tabs value={value}>
                     <Tab label='Request Status' />
                     <Tab label='Request History' />
@@ -39,8 +40,10 @@ const Request = () => {
             </TabPanel>
             <TabPanel value={value} index={1}>
                 Request History
-            </TabPanel>
-*/}
+            </TabPanel> */}
+
+            <RequestTable/>
+
         </>
     );
 };
