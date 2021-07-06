@@ -26,7 +26,9 @@ import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import { withRouter } from 'react-router-dom';
+import { withRouter, 
+    useHistory
+ } from 'react-router-dom';
 import { dateTimeToDate } from '../../../../utils';
 import { useMutation, gql } from '@apollo/client';
 
@@ -62,11 +64,39 @@ const useStyles = makeStyles({
     },
 });
 
+// const GET_TUITION_RULE = gql`
+//     query MyQuery($tuitionRuleId: ID) {
+//         tuitionRule(tuitionRuleId: $tuitionRuleId) {
+//             name
+//             courseType
+//             tuitionPriceList {
+//                 allInstructorsApply
+//                 hourlyTuition
+//                 id
+//                 tuitionRule {
+//                     id
+//                     courseType
+//                     name
+//                 }
+//             }
+//         }
+//     }
+// `;
+
+// const GET_TUITION_RULE = gql`
+//     query getTuitionRule($tuitionRuleId: ID) {
+//         tuitionRule(tuitionRuleId: $tuitionRuleId) {
+//             courseType
+//             id
+//         }
+//     }
+// `;
+
 const CREATE_DEFAULT_TUITION_RULE = gql`
     mutation createDefaultTuitionRule(
-        $hourlyTuition: Float = 1.5
-        $category: Int = 10
-        $courseType: CourseTypeEnum = SMALL_GROUP
+        $hourlyTuition: Float
+        $category: Int
+        $courseType: CourseTypeEnum
     ) {
         createTuitionRule(
             hourlyTuition: $hourlyTuition
@@ -85,6 +115,7 @@ const CREATE_DEFAULT_TUITION_RULE = gql`
                     user {
                         id
                         firstName
+                        lastName
                     }
                 }
                 tuitionPriceList {
@@ -103,8 +134,8 @@ const CREATE_DEFAULT_TUITION_RULE = gql`
 const UPDATE_DEFAULT_RULE = gql`
     mutation updateDefaultRule(
         $id: ID
-        $hourlyTuition: Float = 1.5
-        $courseType: CourseTypeEnum = SMALL_GROUP
+        $hourlyTuition: Float
+        $courseType: CourseTypeEnum
     ) {
         createTuitionRule(
             id: $id
@@ -123,6 +154,7 @@ const UPDATE_DEFAULT_RULE = gql`
                     user {
                         id
                         firstName
+                        lastName
                     }
                 }
                 business {
@@ -140,14 +172,15 @@ const UPDATE_DEFAULT_RULE = gql`
 
 const ManageTuitionRule = ({ location }) => {
     const classes = useStyles();
+    const history = useHistory();
 
     const {
-        state: { id, name, tuitionruleSet, privateRules, smallGroupRules },
+        state: { id, name, tuitionRuleSet, privateRules, smallGroupRules },
     } = location;
 
-    const tuitionRuleId = tuitionruleSet.length
-        ? tuitionruleSet[0].id
-        : undefined;
+    // const tuitionRuleId = tuitionruleSet.length
+    // ? tuitionruleSet[0].id
+    // : undefined;
 
     const firstTimePrivate =
         privateRules && privateRules.length === 0 && !smallGroupRules;
@@ -160,8 +193,21 @@ const ManageTuitionRule = ({ location }) => {
         ? 'Small Group'
         : 'Class';
 
-    const getRuleEditHistory = (tuitionruleSet) => {
-        let priceLists = tuitionruleSet.map((rule) => rule.tuitionPriceList);
+    const privateRule = tuitionRuleSet.find(rule => rule.tuitionPriceList[0].tuitionRule.courseType === 'TUTORING');
+    const smallGroupRule = tuitionRuleSet.find(rule => rule.tuitionPriceList[0].tuitionRule.courseType === 'SMALL_GROUP');
+    // const classRule = tuitionRuleSet.find(rule => rule.tuitionPriceList[0].tuitionRule.courseType === 'CLASS');
+
+
+    const tuitionRuleId = 
+    tuitionRuleSet.length && tutoringType === 'Private' && !firstTimePrivate? 
+        privateRule.id
+    : tuitionRuleSet.length && tutoringType === 'Small Group' && !firstTimeSmallGroup ?
+        smallGroupRule.id
+        : undefined;
+
+
+    const getRuleEditHistory = (tuitionRuleSet) => {
+        let priceLists = tuitionRuleSet.map((rule) => rule.tuitionPriceList);
         // return priceLists;
         let ruleEditHistory;
 
@@ -180,11 +226,10 @@ const ManageTuitionRule = ({ location }) => {
                 (priceList) => priceList[0].tuitionRule.courseType === 'CLASS'
             );
         }
-        // tuitionPriceList[0].tuitionRule.courseType
         return ruleEditHistory.flat(1);
     };
 
-    const ruleEditHistory = getRuleEditHistory(tuitionruleSet);
+    const ruleEditHistory = getRuleEditHistory(tuitionRuleSet);
 
     const instructor =
         ((privateRules &&
@@ -199,18 +244,16 @@ const ManageTuitionRule = ({ location }) => {
     const [hourlyTuition, setHourlyTuition] = useState();
 
     const [submitData] = useMutation(CREATE_DEFAULT_TUITION_RULE, {
-        onCompleted: (data) => {
-            console.log(data);
+        onCompleted: () => {
+            console.log('created default rule');
+            history.goBack();
         },
-        // update: (data, cache) => {
-        //     console.log(data);
-        //     console.log(cache);
-        // }
     });
 
     const [submitUpdatedData] = useMutation(UPDATE_DEFAULT_RULE, {
-        onCompleted: (data) => {
-            console.log(data);
+        onCompleted: () => {
+            console.log('updated default rule');
+            history.goBack();
         },
     });
 
@@ -458,20 +501,20 @@ const ManageTuitionRule = ({ location }) => {
                 (smallGroupRules && smallGroupRules[0])) &&
                 !showEdit && (
                     <Grid
-                            item
-                            xs={12}
-                            container
-                            direction='column'
-                            justify='space-between'
-                            alignItems='flex=start'
-                        >
+                        item
+                        xs={12}
+                        container
+                        direction='column'
+                        justify='space-between'
+                        alignItems='flex=start'
+                    >
                         <Grid item xs={2}>
                             <Typography align='left' variant='h4'>
                                 Rule Edit History
                             </Typography>
                         </Grid>
                         {ruleEditHistory.length <= 1 ? (
-                            <Grid item xs={12} style={{ border: '1px solid black'}}>
+                            <Grid style={{ marginTop: '1rem' }} item xs={12}>
                                 <NoListAlert list='Rule Edits' />
                             </Grid>
                         ) : (

@@ -25,6 +25,7 @@ import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
 import { NavLink, withRouter } from 'react-router-dom';
+import { useQuery, gql } from '@apollo/client';
 
 const useStyles = makeStyles({
     root: {
@@ -67,17 +68,65 @@ const useStyles = makeStyles({
     },
 });
 
+const GET_COURSE_TOPIC = gql`
+    query MyQuery($categoryId: ID) {
+        courseCategory(categoryId: $categoryId) {
+            id
+            name
+            activeTuitionRuleCount
+            tuitionruleSet {
+                id
+                tuitionPriceList {
+                    allInstructorsApply
+                    id
+                    hourlyTuition
+                    tuitionRule {
+                        id
+                        courseType
+                        createdAt
+                        updatedAt
+                        instructors {
+                            user {
+                                id
+                                firstName
+                                lastName
+                            }
+                        }
+                    }
+                }
+                instructors {
+                    user {
+                        id
+                        firstName
+                        lastName
+                    }
+                }
+            }
+        }
+    }
+`;
+
 const ManageTopicTuition = ({
     location /*match  you can use this propety to get the id  */,
 }) => {
     const classes = useStyles();
     const {
-        state: { id, name, tuitionruleSet },
+        state: { id, name },
     } = location;
-
     const topicName = name;
 
-    const tuitionPrices = tuitionruleSet
+    const { loading, error, data } = useQuery(GET_COURSE_TOPIC, {
+        variables: {
+            categoryId: id,
+        },
+        fetchPolicy: 'cache-and-network',
+    });
+    if (loading) return null;
+    if (error) return `Error! ${error}`;
+    const { courseCategory } = data;
+    const tuitionRuleSet = courseCategory.tuitionruleSet;
+
+    const tuitionPrices = tuitionRuleSet
         .map((rule) => rule.tuitionPriceList[0])
         .filter((rule) => rule);
 
@@ -146,7 +195,7 @@ const ManageTopicTuition = ({
                                         state: {
                                             name,
                                             id,
-                                            tuitionruleSet,
+                                            tuitionRuleSet,
                                             privateRules,
                                         },
                                     }}
@@ -181,7 +230,7 @@ const ManageTopicTuition = ({
                                                 state: {
                                                     name,
                                                     id,
-                                                    tuitionruleSet,
+                                                    tuitionRuleSet,
                                                     privateRules,
                                                 },
                                             }}
@@ -252,7 +301,7 @@ const ManageTopicTuition = ({
                                         state: {
                                             name,
                                             id,
-                                            tuitionruleSet,
+                                            tuitionRuleSet,
                                             smallGroupRules,
                                         },
                                     }}
@@ -287,7 +336,7 @@ const ManageTopicTuition = ({
                                                 state: {
                                                     name,
                                                     id,
-                                                    tuitionruleSet,
+                                                    tuitionRuleSet,
                                                     smallGroupRules,
                                                 },
                                             }}

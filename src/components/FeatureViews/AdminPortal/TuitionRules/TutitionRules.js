@@ -146,7 +146,9 @@ const TuitionRule = () => {
     // const [searchValue, setSearchValue] = useState('');
     // const [page, setPage] = useState(0);
 
-    const { data, loading, error } = useQuery(GET_COURSE_TOPICS);
+    const { data, loading, error } = useQuery(GET_COURSE_TOPICS, {
+        fetchPolicy: "cache-and-network"
+    });
 
     if (loading) return <Loading />;
     if (error) console.error(error);
