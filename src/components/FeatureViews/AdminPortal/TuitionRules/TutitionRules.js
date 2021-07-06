@@ -147,7 +147,7 @@ const TuitionRule = () => {
     // const [page, setPage] = useState(0);
 
     const { data, loading, error } = useQuery(GET_COURSE_TOPICS, {
-        fetchPolicy: "cache-and-network"
+        fetchPolicy: 'cache-and-network',
     });
 
     if (loading) return <Loading />;
