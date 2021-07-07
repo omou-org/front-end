@@ -29,7 +29,6 @@ const RequestTable = ({ requests }) => {
     const handleExpandRow = (rowNumber) => {
         const updatedIsExpanded = [...isExpanded];
         updatedIsExpanded[rowNumber] = !updatedIsExpanded[rowNumber];
-        console.log(updatedIsExpanded)
         setIsExpanded(updatedIsExpanded);
     }
 
