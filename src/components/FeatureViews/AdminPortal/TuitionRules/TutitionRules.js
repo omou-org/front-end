@@ -74,7 +74,7 @@ const useStyles = makeStyles({
     topicCell: {
         height: '2rem',
         width: '18.2125rem',
-    }
+    },
 });
 
 const GET_COURSE_TOPICS = gql`
@@ -129,12 +129,14 @@ const TuitionRule = () => {
     });
 
     const createCourseTopicObject = (courses) => {
-        return courses.map(({ name, id, activeTuitionRuleCount, tuitionruleSet }) => ({
-            id,
-            name,
-            activeTuitionRuleCount,
-            tuitionruleSet,
-        }));
+        return courses.map(
+            ({ name, id, activeTuitionRuleCount, tuitionruleSet }) => ({
+                id,
+                name,
+                activeTuitionRuleCount,
+                tuitionruleSet,
+            })
+        );
     };
 
     if (loading) return <Loading />;
@@ -219,28 +221,41 @@ const TuitionRule = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {courseTopics.slice( page * amountOfRows, page * amountOfRows + amountOfRows).map(
-                                ({
-                                    name,
-                                    id,
-                                    activeTuitionRuleCount,
-                                    tuitionruleSet,
-                                }) => (
-                                    <TableRow
-                                        key={id}
-                                        component={Link}
-                                        to={{
-                                            pathname: `${id}`,
-                                            state: { name, id, tuitionruleSet },
-                                        }}
-                                    >
-                                        <TableCell className={classes.topicCell}>{name}</TableCell>
-                                        <TableCell>
-                                            {activeTuitionRuleCount}
-                                        </TableCell>
-                                    </TableRow>
+                            {courseTopics
+                                .slice(
+                                    page * amountOfRows,
+                                    page * amountOfRows + amountOfRows
                                 )
-                            )}
+                                .map(
+                                    ({
+                                        name,
+                                        id,
+                                        activeTuitionRuleCount,
+                                        tuitionruleSet,
+                                    }) => (
+                                        <TableRow
+                                            key={id}
+                                            component={Link}
+                                            to={{
+                                                pathname: `${id}`,
+                                                state: {
+                                                    name,
+                                                    id,
+                                                    tuitionruleSet,
+                                                },
+                                            }}
+                                        >
+                                            <TableCell
+                                                className={classes.topicCell}
+                                            >
+                                                {name}
+                                            </TableCell>
+                                            <TableCell>
+                                                {activeTuitionRuleCount}
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                )}
                         </TableBody>
                     </Table>
                 </TableContainer>
