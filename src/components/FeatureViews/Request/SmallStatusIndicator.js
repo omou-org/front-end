@@ -43,10 +43,6 @@ const Line = ({isActive}) => {
     )
 }
 
-// Status choices
-// submitted
-// instructorApproved
-// verified
 const SmallStatusIndicator = ({status}) => {
 
     const classes = useStyles();
