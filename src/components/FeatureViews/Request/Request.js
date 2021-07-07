@@ -51,7 +51,7 @@ const Request = () => {
                 </Grid>
                 <Grid item>
                     <ResponsiveButton
-                        variant='outlined'
+                        variant='contained'
                         value='cancel'
                         component={NavLinkNoDup}
                         to={`/manage-tutoring-requests/schedule`}

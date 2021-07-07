@@ -6,7 +6,7 @@ import RequestTable from './RequestTable';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge'
 
 const useStyles = makeStyles({
-    adminPortalTabsStyle: {
+    requestTabsStyle: {
         marginTop: '2rem',
     },
     requestStatusNum: {
@@ -52,7 +52,7 @@ const RequestTabs = ({requests}) => {
     return (
         <>
             <Tabs
-                className={classes.adminPortalTabsStyle}
+                className={classes.requestTabsStyle}
                 value={tabIndex}
                 onChange={handleTabChange}
             >
