@@ -1,21 +1,22 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { cloudy, green2 } from 'theme/muiTheme'
 
 const useStyles = makeStyles({
     circle: {
         height: '16px',
         width: '16px',
         margin: '0px',
-        backgroundColor: '#C4C4C4',
+        backgroundColor: cloudy,
         borderRadius: '50%'
     },
     line: {
         height: '2px',
         width: '23px',
-        backgroundColor: '#C4C4C4',
+        backgroundColor: cloudy,
     },
     active: {
-        backgroundColor: '#27AE60'
+        backgroundColor: green2
     },
     indicatorContainer: {
         width: '94px',

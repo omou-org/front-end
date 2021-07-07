@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
 import { Typography } from '@material-ui/core';
+import { cloudy, green2 } from 'theme/muiTheme';
 
 
 const useStyles = makeStyles({
@@ -9,16 +10,16 @@ const useStyles = makeStyles({
         height: '26px',
         width: '26px',
         margin: '0px',
-        backgroundColor: '#C4C4C4',
+        backgroundColor: cloudy,
         borderRadius: '50%'
     },
     line: {
         height: '2px',
         width: '30vw',
-        backgroundColor: '#C4C4C4',
+        backgroundColor: cloudy,
     },
     active: {
-        backgroundColor: '#27AE60'
+        backgroundColor: green2
     },
     indicatorDisplay: {
         display: 'flex',
@@ -51,7 +52,7 @@ const useStyles = makeStyles({
         width: '80px'
     },
     inactiveText: {
-        color: '#C4C4C4'
+        color: cloudy
     },
     labelContainer: {
         position: 'relative',

@@ -11,14 +11,14 @@ import NoListAlert from 'components/OmouComponents/NoListAlert';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { makeStyles } from '@material-ui/core/styles';
+import { skyBlue } from 'theme/muiTheme'; 
 
 import DashboardSummary from './DashboardSummary'
 import SmallStatusIndicator from './SmallStatusIndicator'
 
 const useStyles = makeStyles({
-
     tableRowSelected: {
-        backgroundColor: '#EBFAFF'
+        backgroundColor: skyBlue
     },
 });
 
