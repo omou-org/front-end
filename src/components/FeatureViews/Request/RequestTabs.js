@@ -30,7 +30,7 @@ const RequestTabs = ({requests}) => {
         return (
             <span>
                 {'  '}
-                <LabelBadge variant='round-count' className={classes.requestStatusNum}>
+                <LabelBadge variant='round-tab' className={classes.requestStatusNum}>
                     {numRequests}
                 </LabelBadge>
             </span>
