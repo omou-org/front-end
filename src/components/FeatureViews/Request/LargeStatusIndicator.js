@@ -25,17 +25,36 @@ const useStyles = makeStyles({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-
     },
-    indicatorLabels: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0px 5vw 0px 5vw'
+    indicatorContainer: {
+        marginBottom: '40px',
     },
     iconStyle: {
         color: 'white'
+    },
+    submitText: {
+        position: 'absolute',
+        marginTop: '5px',
+        marginLeft: '-29px',
+        width: '100px'
+    },
+    instructorText: {
+        position: 'absolute',
+        marginTop: '5px',
+        marginLeft: '-43px',
+        width: '125px'
+    },
+    verifiedText: {
+        position: 'absolute',
+        marginTop: '5px',
+        marginLeft: '-20px',
+        width: '80px'
+    },
+    inactiveText: {
+        color: '#C4C4C4'
+    },
+    labelContainer: {
+        position: 'relative',
     }
 })
 
@@ -58,10 +77,6 @@ const Line = ({isActive}) => {
     )
 }
 
-// Status choices
-// submitted
-// instructorApproved
-// verified
 const LargeStatusIndicator = ({status}) => {
 
     const classes = useStyles();
@@ -83,16 +98,20 @@ const LargeStatusIndicator = ({status}) => {
     return (
         <div className={classes.indicatorContainer}>
             <div className={classes.indicatorDisplay}>
-                <Circle isActive={statusArr[0]}/>
+                <div className={classes.labelContainer}>
+                    <Circle isActive={statusArr[0]}/>
+                    <Typography variant='h5' className={`${classes.submitText} ${!statusArr[0] && classes.inactiveText}`}>Submit Request</Typography>
+                </div>
                 <Line isActive={statusArr[1]}/>
-                <Circle isActive={statusArr[2]}/>
+                <div className={classes.labelContainer}>
+                    <Circle isActive={statusArr[2]}/>
+                    <Typography variant='h5' className={`${classes.instructorText} ${!statusArr[2] && classes.inactiveText}`}>Instructor's Response</Typography>
+                </div>
                 <Line isActive={statusArr[3]}/>
-                <Circle isActive={statusArr[4]}/>
-            </div>
-            <div className={classes.indicatorLabels}>
-                <Typography variant='h5'>Submit Request</Typography>
-                <Typography variant='h5'>Instructor's Response</Typography>
-                <Typography variant='h5'>Verification</Typography>
+                <div className={classes.labelContainer}>
+                    <Circle isActive={statusArr[4]}/>
+                    <Typography variant='h5' className={`${classes.verifiedText} ${!statusArr[4] && classes.inactiveText}`}>Verification</Typography>
+                </div>
             </div>
         </div>
         

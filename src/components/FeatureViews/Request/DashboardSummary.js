@@ -7,6 +7,12 @@ import LargeStatusIndicator from './LargeStatusIndicator';
 const useStyles = makeStyles({
     infoRow: {
         marginBottom: '40px'
+    },
+    infoLabel: {
+        marginBottom: '11px'
+    },
+    userAvatar: {
+        marginLeft: '10px'
     }
 })
 
@@ -18,55 +24,48 @@ const DashboardSummary = ({request: {status, dates, times, subject, instructor, 
     return (
         <Grid>
             <Grid>
-                {/* Status Bar */}
                 <LargeStatusIndicator status={status}/>
             </Grid>
-            {/* Info Section */}
             <Grid>
-                {/* Row 1 */}
                 <Grid 
                     container
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
+                    className={classes.infoRow}
                 >
-                    {/* Date */}
                     <Grid sm={4}>
-                        <Typography variant='h5'>DATE</Typography>
+                        <Typography className={classes.infoLabel} variant='h5'>DATE</Typography>
                         <Typography variant='body'>{dates}</Typography>
                     </Grid>
-                    {/* Times */}
                     <Grid>
-                        <Typography variant='h5'>DAY & TIME</Typography>
+                        <Typography className={classes.infoLabel} variant='h5'>DAY & TIME</Typography>
                         <Typography variant='body'>{times}</Typography>
                     </Grid>
                 </Grid>
-                {/* Row 2 */}
                 <Grid 
                     container
                     direction="row"
                     justify="flex-start"
                     alignItems="center"
+                    className={classes.infoRow}
                 >
-                    {/* Subject */}
                     <Grid sm={2}>
-                        <Typography variant='h5'>SUBJECT</Typography>
+                        <Typography className={classes.infoLabel} variant='h5'>SUBJECT</Typography>
                         <Typography variant='body'>{subject}</Typography>
                     </Grid>
-                    {/* Instructor */}
                     <Grid sm={2}>
-                        <Typography variant='h5'>INSTRUCTOR</Typography>
+                        <Typography className={classes.infoLabel} variant='h5'>INSTRUCTOR</Typography>
                         <Grid container direction='row' alignItems='center'>
                             <UserAvatar name={instructor} size={24} fontSize={12}/>
-                            <Typography variant='body'>{instructor}</Typography>
+                            <Typography variant='body' className={classes.userAvatar}>{instructor}</Typography>
                         </Grid>
                     </Grid>
-                    {/* Student */}
                     <Grid>
-                        <Typography variant='h5'>STUDENT</Typography>
+                        <Typography className={classes.infoLabel} variant='h5'>STUDENT</Typography>
                         <Grid container direction='row' alignItems='center'>
                             <UserAvatar name={student} size={24} fontSize={12}/>
-                            <Typography variant='body'>{student}</Typography>
+                            <Typography variant='body' className={classes.userAvatar}>{student}</Typography>
                         </Grid>
                     </Grid>
                 </Grid>
