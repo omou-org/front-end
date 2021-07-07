@@ -20,26 +20,9 @@ import { Link, useRouteMatch } from 'react-router-dom';
 // import CheckIcon from '@material-ui/icons/Check';
 import { gql, useQuery } from '@apollo/client';
 // import SearchIcon from '@material-ui/icons/Search';
-// import Typography from '@material-ui/core/Typography';
-// import EditIcon from '@material-ui/icons/Edit';
-// import IconButton from '@material-ui/core/IconButton';
-
-// import Modal from '@material-ui/core/Modal';
-// import Table from '@material-ui/core/Table';
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableContainer from '@material-ui/core/TableContainer';
-// import PropTypes from 'prop-types';
-// import TableHead from '@material-ui/core/TableHead';
-// import TableRow from '@material-ui/core/TableRow';
-// import TextField from '@material-ui/core/TextField';
-
-// import CreateTagModal from './CreateTagModal';
-// import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { TablePagination } from '../../../OmouComponents/TablePagination';
 
 import Loading from 'components/OmouComponents/Loading';
-import { CategoryOutlined } from '@material-ui/icons';
-// import DoneIcon from '@material-ui/icons/Done';
 
 const useStyles = makeStyles({
     verticalMargin: {
@@ -88,20 +71,11 @@ const useStyles = makeStyles({
     tableFooter: {
         paddingTop: '1vh',
     },
+    topicCell: {
+        height: '2rem',
+        width: '18.2125rem',
+    }
 });
-
-// const GET_TUITION_RULES = gql`
-//     query getTuitionRules {
-//         priceRules {
-//             id
-//             name
-//             courseType
-//             category {
-//                 description
-//             }
-//         }
-//     }
-// `;
 
 const GET_COURSE_TOPICS = gql`
     query getCourseTopics {
@@ -142,45 +116,57 @@ const GET_COURSE_TOPICS = gql`
 
 const TuitionRule = () => {
     const classes = useStyles();
-    // const [courseTopics, setCourseTopics] = useState([]);
-    // const [searchValue, setSearchValue] = useState('');
-    // const [page, setPage] = useState(0);
+    const [courseTopics, setCourseTopics] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
+    const [page, setPage] = useState(0);
 
     const { data, loading, error } = useQuery(GET_COURSE_TOPICS, {
-        fetchPolicy: "cache-and-network"
+        onCompleted: () => {
+            let topics = createCourseTopicObject(data.courseCategories);
+            setCourseTopics(topics.reverse());
+        },
+        fetchPolicy: 'cache-and-network',
     });
+
+    const createCourseTopicObject = (courses) => {
+        return courses.map(({ name, id, activeTuitionRuleCount, tuitionruleSet }) => ({
+            id,
+            name,
+            activeTuitionRuleCount,
+            tuitionruleSet,
+        }));
+    };
 
     if (loading) return <Loading />;
     if (error) console.error(error);
 
-    // take data to create clickable row
     const { courseCategories } = data;
 
-    // create a function that filters the courseTopics by name
-    // const searchCourseTopic = (e) => {
-    //     setSearchValue(e.target.value);
-    //     let inputValue = e.target.value;
+    const searchCourseTopic = (e) => {
+        setSearchValue(e.target.value);
+        let inputValue = e.target.value;
 
-    //     inputValue = inputValue.toLowerCase();
+        inputValue = inputValue.toLowerCase();
 
-    //     const finalResult = [];
-    //     courseTopics.forEach((item) => {
-    //         if (item.name.toLowerCase().indexOf(inputValue) !== -1) {
-    //             finalResult.push(item);
-    //         }
-    //     });
+        const finalResult = [];
+        courseTopics.forEach((item) => {
+            if (item.name.toLowerCase().indexOf(inputValue) !== -1) {
+                finalResult.push(item);
+            }
+        });
 
-    //     if (!inputValue) {
-    //         setCourseTopics(data.courseCategories);
-    //     } else {
-    //         setCourseTopics(finalResult);
-    //     }
-    // };
-    // const handlePageChange = (newPage) => {
-    //     setPage(newPage);
-    // };
-    // let amountOfRows = 15;
-    // let totalPages = Math.ceil(courseTopics.length / amountOfRows);
+        if (!inputValue) {
+            setCourseTopics(data.courseCategories);
+        } else {
+            setCourseTopics(finalResult);
+        }
+    };
+
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    };
+    let amountOfRows = 15;
+    let totalPages = Math.ceil(courseCategories.length / amountOfRows);
 
     return (
         <>
@@ -195,9 +181,8 @@ const TuitionRule = () => {
 
                 <Grid item style={{ marginRight: '3rem' }}>
                     <TextField
-                        // className={classes.searchBar}
-                        placeholder='Search tuition rule'
-                        // value={searchValue}
+                        placeholder='Search topic'
+                        value={searchValue}
                         variant='outlined'
                         InputProps={{
                             classes: {
@@ -209,7 +194,7 @@ const TuitionRule = () => {
                                 </InputAdornment>
                             ),
                         }}
-                        // onChange={searchCourseTopic}
+                        onChange={searchCourseTopic}
                     />
                 </Grid>
             </Grid>
@@ -234,7 +219,7 @@ const TuitionRule = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {courseCategories.map(
+                            {courseTopics.slice( page * amountOfRows, page * amountOfRows + amountOfRows).map(
                                 ({
                                     name,
                                     id,
@@ -249,7 +234,7 @@ const TuitionRule = () => {
                                             state: { name, id, tuitionruleSet },
                                         }}
                                     >
-                                        <TableCell>{name}</TableCell>
+                                        <TableCell className={classes.topicCell}>{name}</TableCell>
                                         <TableCell>
                                             {activeTuitionRuleCount}
                                         </TableCell>
@@ -260,7 +245,7 @@ const TuitionRule = () => {
                     </Table>
                 </TableContainer>
 
-                {/* <Grid
+                <Grid
                     container
                     direction='row'
                     justify='center'
@@ -274,7 +259,7 @@ const TuitionRule = () => {
                         onChangePage={handlePageChange}
                         isGraphqlPage={false}
                     />
-                </Grid> */}
+                </Grid>
             </Grid>
         </>
     );
