@@ -110,8 +110,8 @@ export const LabelBadge = ({
             ...badgeCategory.statusRound,
             chipMinWidth: '16px',
             chipFontSize: '16px',
-            margin: '-3px 0px 0px 0px'
-        }
+            margin: '-3px 0px 0px 0px',
+        },
     };
 
     const badgeStyle = badgeType[variant];
@@ -131,7 +131,7 @@ export const LabelBadge = ({
                     style={{
                         color: badgeStyle.labelColor,
                         fontSize: badgeStyle.chipFontSize,
-                        margin: badgeStyle.margin
+                        margin: badgeStyle.margin,
                     }}
                 >
                     {children}
@@ -157,7 +157,7 @@ LabelBadge.propTypes = {
         'round-warning',
         'round-negative',
         'round-count',
-        'rount-tab'
+        'rount-tab',
     ]).isRequired,
     children: PropTypes.any,
     style: PropTypes.any,

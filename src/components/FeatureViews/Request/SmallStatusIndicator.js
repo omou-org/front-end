@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { cloudy, green2 } from 'theme/muiTheme'
+import { cloudy, green2 } from 'theme/muiTheme';
 
 const useStyles = makeStyles({
     circle: {
@@ -8,7 +8,7 @@ const useStyles = makeStyles({
         width: '16px',
         margin: '0px',
         backgroundColor: cloudy,
-        borderRadius: '50%'
+        borderRadius: '50%',
     },
     line: {
         height: '2px',
@@ -16,36 +16,36 @@ const useStyles = makeStyles({
         backgroundColor: cloudy,
     },
     active: {
-        backgroundColor: green2
+        backgroundColor: green2,
     },
     indicatorContainer: {
         width: '94px',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center'
-    }
-})
+        alignItems: 'center',
+    },
+});
 
-const Circle = ({isActive}) => {
-
+const Circle = ({ isActive }) => {
     const classes = useStyles();
 
     return (
-        <div className={`${classes.circle} ${isActive && classes.active}`}></div>
-    )
-}
+        <div
+            className={`${classes.circle} ${isActive && classes.active}`}
+        ></div>
+    );
+};
 
-const Line = ({isActive}) => {
+const Line = ({ isActive }) => {
     const classes = useStyles();
 
     return (
         <div className={`${classes.line} ${isActive && classes.active}`}></div>
-    )
-}
+    );
+};
 
-const SmallStatusIndicator = ({status}) => {
-
+const SmallStatusIndicator = ({ status }) => {
     const classes = useStyles();
 
     let statusArr = Array(5).fill(false);
@@ -64,13 +64,13 @@ const SmallStatusIndicator = ({status}) => {
 
     return (
         <div className={classes.indicatorContainer}>
-            <Circle isActive={statusArr[0]}/>
-            <Line isActive={statusArr[1]}/>
-            <Circle isActive={statusArr[2]}/>
-            <Line isActive={statusArr[3]}/>
-            <Circle isActive={statusArr[4]}/>
+            <Circle isActive={statusArr[0]} />
+            <Line isActive={statusArr[1]} />
+            <Circle isActive={statusArr[2]} />
+            <Line isActive={statusArr[3]} />
+            <Circle isActive={statusArr[4]} />
         </div>
-    )
-}
+    );
+};
 
 export default SmallStatusIndicator;

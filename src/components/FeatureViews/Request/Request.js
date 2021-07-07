@@ -6,40 +6,39 @@ import Grid from '@material-ui/core/Grid';
 import RequestTabs from './RequestTabs';
 
 const Request = () => {
-
     // Make query for requests here
     const testRequestData = [
         {
-            ID: "12345",
-            createdAt: "May 25, 2021",
-            status: "submitted",
-            dates: "July 15 - August 15",
-            times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
-            subject: "Math",
-            instructor: "Tim Yang",
-            student: "Ben Miller"
+            ID: '12345',
+            createdAt: 'May 25, 2021',
+            status: 'submitted',
+            dates: 'July 15 - August 15',
+            times: 'Wednesdays, Saturdays at 2:00 pm - 3:00 pm',
+            subject: 'Math',
+            instructor: 'Tim Yang',
+            student: 'Ben Miller',
         },
         {
-            ID: "12346",
-            createdAt: "May 26, 2021",
-            status: "instructorApproved",
-            dates: "July 15 - August 15",
-            times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
-            subject: "Math",
-            instructor: "Tim Yang",
-            student: "Ben Miller"
+            ID: '12346',
+            createdAt: 'May 26, 2021',
+            status: 'instructorApproved',
+            dates: 'July 15 - August 15',
+            times: 'Wednesdays, Saturdays at 2:00 pm - 3:00 pm',
+            subject: 'Math',
+            instructor: 'Tim Yang',
+            student: 'Ben Miller',
         },
         {
-            ID: "12347",
-            createdAt: "May 27, 2021",
-            status: "verified",
-            dates: "July 15 - August 15",
-            times: "Wednesdays, Saturdays at 2:00 pm - 3:00 pm",
-            subject: "Math",
-            instructor: "Tim Yang",
-            student: "Ben Miller"
-        }
-    ]
+            ID: '12347',
+            createdAt: 'May 27, 2021',
+            status: 'verified',
+            dates: 'July 15 - August 15',
+            times: 'Wednesdays, Saturdays at 2:00 pm - 3:00 pm',
+            subject: 'Math',
+            instructor: 'Tim Yang',
+            student: 'Ben Miller',
+        },
+    ];
 
     return (
         <>
@@ -61,7 +60,7 @@ const Request = () => {
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-                <RequestTabs requests={testRequestData}/>
+                <RequestTabs requests={testRequestData} />
             </Grid>
         </>
     );

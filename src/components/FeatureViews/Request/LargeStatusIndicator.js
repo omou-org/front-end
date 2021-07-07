@@ -4,14 +4,13 @@ import CheckIcon from '@material-ui/icons/Check';
 import { Typography } from '@material-ui/core';
 import { cloudy, green2 } from 'theme/muiTheme';
 
-
 const useStyles = makeStyles({
     circle: {
         height: '26px',
         width: '26px',
         margin: '0px',
         backgroundColor: cloudy,
-        borderRadius: '50%'
+        borderRadius: '50%',
     },
     line: {
         height: '2px',
@@ -19,7 +18,7 @@ const useStyles = makeStyles({
         backgroundColor: cloudy,
     },
     active: {
-        backgroundColor: green2
+        backgroundColor: green2,
     },
     indicatorDisplay: {
         display: 'flex',
@@ -31,55 +30,53 @@ const useStyles = makeStyles({
         marginBottom: '40px',
     },
     iconStyle: {
-        color: 'white'
+        color: 'white',
     },
     submitText: {
         position: 'absolute',
         marginTop: '5px',
         marginLeft: '-29px',
-        width: '100px'
+        width: '100px',
     },
     instructorText: {
         position: 'absolute',
         marginTop: '5px',
         marginLeft: '-43px',
-        width: '125px'
+        width: '125px',
     },
     verifiedText: {
         position: 'absolute',
         marginTop: '5px',
         marginLeft: '-20px',
-        width: '80px'
+        width: '80px',
     },
     inactiveText: {
-        color: cloudy
+        color: cloudy,
     },
     labelContainer: {
         position: 'relative',
-    }
-})
+    },
+});
 
-const Circle = ({isActive}) => {
-
+const Circle = ({ isActive }) => {
     const classes = useStyles();
 
     return (
         <div className={`${classes.circle} ${isActive && classes.active}`}>
-            <CheckIcon className={classes.iconStyle}/>
+            <CheckIcon className={classes.iconStyle} />
         </div>
-    )
-}
+    );
+};
 
-const Line = ({isActive}) => {
+const Line = ({ isActive }) => {
     const classes = useStyles();
 
     return (
         <div className={`${classes.line} ${isActive && classes.active}`}></div>
-    )
-}
+    );
+};
 
-const LargeStatusIndicator = ({status}) => {
-
+const LargeStatusIndicator = ({ status }) => {
     const classes = useStyles();
 
     let statusArr = Array(5).fill(false);
@@ -100,23 +97,43 @@ const LargeStatusIndicator = ({status}) => {
         <div className={classes.indicatorContainer}>
             <div className={classes.indicatorDisplay}>
                 <div className={classes.labelContainer}>
-                    <Circle isActive={statusArr[0]}/>
-                    <Typography variant='h5' className={`${classes.submitText} ${!statusArr[0] && classes.inactiveText}`}>Submit Request</Typography>
+                    <Circle isActive={statusArr[0]} />
+                    <Typography
+                        variant='h5'
+                        className={`${classes.submitText} ${
+                            !statusArr[0] && classes.inactiveText
+                        }`}
+                    >
+                        Submit Request
+                    </Typography>
                 </div>
-                <Line isActive={statusArr[1]}/>
+                <Line isActive={statusArr[1]} />
                 <div className={classes.labelContainer}>
-                    <Circle isActive={statusArr[2]}/>
-                    <Typography variant='h5' className={`${classes.instructorText} ${!statusArr[2] && classes.inactiveText}`}>Instructor's Response</Typography>
+                    <Circle isActive={statusArr[2]} />
+                    <Typography
+                        variant='h5'
+                        className={`${classes.instructorText} ${
+                            !statusArr[2] && classes.inactiveText
+                        }`}
+                    >
+                        Instructor's Response
+                    </Typography>
                 </div>
-                <Line isActive={statusArr[3]}/>
+                <Line isActive={statusArr[3]} />
                 <div className={classes.labelContainer}>
-                    <Circle isActive={statusArr[4]}/>
-                    <Typography variant='h5' className={`${classes.verifiedText} ${!statusArr[4] && classes.inactiveText}`}>Verification</Typography>
+                    <Circle isActive={statusArr[4]} />
+                    <Typography
+                        variant='h5'
+                        className={`${classes.verifiedText} ${
+                            !statusArr[4] && classes.inactiveText
+                        }`}
+                    >
+                        Verification
+                    </Typography>
                 </div>
             </div>
         </div>
-        
-    )
-}
+    );
+};
 
 export default LargeStatusIndicator;

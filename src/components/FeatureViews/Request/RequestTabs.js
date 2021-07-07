@@ -3,7 +3,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { makeStyles } from '@material-ui/core/styles';
 import RequestTable from './RequestTable';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge'
+import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 
 const useStyles = makeStyles({
     requestTabsStyle: {
@@ -11,10 +11,10 @@ const useStyles = makeStyles({
     },
     requestStatusNum: {
         fontSize: '16px',
-    }
+    },
 });
 
-const RequestTabs = ({requests}) => {
+const RequestTabs = ({ requests }) => {
     const [tabIndex, setTabIndex] = useState(0);
     const handleTabChange = (event, currentTabIndex) => {
         setTabIndex(currentTabIndex);
@@ -30,12 +30,15 @@ const RequestTabs = ({requests}) => {
         return (
             <span>
                 {'  '}
-                <LabelBadge variant='round-tab' className={classes.requestStatusNum}>
+                <LabelBadge
+                    variant='round-tab'
+                    className={classes.requestStatusNum}
+                >
                     {numRequests}
                 </LabelBadge>
             </span>
-        )
-    }
+        );
+    };
 
     const adminPortalTabs = [
         { label: 'Request Status' },
@@ -45,7 +48,7 @@ const RequestTabs = ({requests}) => {
     // *** Components for each tab to be created and placed in respective tabContent property in adminPortalTabs array ***
 
     const tabContent = {
-        0: { content: <RequestTable requests={requests}/> },
+        0: { content: <RequestTable requests={requests} /> },
         1: { content: 'Request History In Progress' },
     };
 
@@ -57,7 +60,15 @@ const RequestTabs = ({requests}) => {
                 onChange={handleTabChange}
             >
                 {adminPortalTabs.map((currentTab, i) => (
-                    <Tab key={i} label={<span>{currentTab.label}{ (i === 0) ? requestNumIcon(requests.length) : ''}</span>}></Tab>
+                    <Tab
+                        key={i}
+                        label={
+                            <span>
+                                {currentTab.label}
+                                {i === 0 ? requestNumIcon(requests.length) : ''}
+                            </span>
+                        }
+                    ></Tab>
                 ))}
             </Tabs>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -11,26 +11,27 @@ import NoListAlert from 'components/OmouComponents/NoListAlert';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { makeStyles } from '@material-ui/core/styles';
-import { skyBlue } from 'theme/muiTheme'; 
+import { skyBlue } from 'theme/muiTheme';
 
-import DashboardSummary from './DashboardSummary'
-import SmallStatusIndicator from './SmallStatusIndicator'
+import DashboardSummary from './DashboardSummary';
+import SmallStatusIndicator from './SmallStatusIndicator';
 
 const useStyles = makeStyles({
     tableRowSelected: {
-        backgroundColor: skyBlue
+        backgroundColor: skyBlue,
     },
 });
 
 const RequestTable = ({ requests }) => {
-
-    const [isExpanded, setIsExpanded] = useState(Array(requests.length).fill(false));
+    const [isExpanded, setIsExpanded] = useState(
+        Array(requests.length).fill(false)
+    );
 
     const handleExpandRow = (rowNumber) => {
         const updatedIsExpanded = [...isExpanded];
         updatedIsExpanded[rowNumber] = !updatedIsExpanded[rowNumber];
         setIsExpanded(updatedIsExpanded);
-    }
+    };
 
     const classes = useStyles();
 
@@ -57,24 +58,33 @@ const RequestTable = ({ requests }) => {
                         <>
                             <TableRow
                                 hover={!isExpanded[index]}
-                                className={`${classes.tableRow} ${isExpanded[index] && classes.tableRowSelected}`}
-                                onClick={() => {handleExpandRow(index)}}
+                                className={`${classes.tableRow} ${
+                                    isExpanded[index] &&
+                                    classes.tableRowSelected
+                                }`}
+                                onClick={() => {
+                                    handleExpandRow(index);
+                                }}
                             >
                                 <TableCell>#{request.ID}</TableCell>
+                                <TableCell>{request.createdAt}</TableCell>
                                 <TableCell>
-                                    {request.createdAt}
+                                    <SmallStatusIndicator
+                                        status={request.status}
+                                    />
                                 </TableCell>
                                 <TableCell>
-                                    <SmallStatusIndicator status={request.status}/>
-                                </TableCell>
-                                <TableCell>
-                                    {isExpanded[index] ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
+                                    {isExpanded[index] ? (
+                                        <ExpandLessIcon />
+                                    ) : (
+                                        <ExpandMoreIcon />
+                                    )}
                                 </TableCell>
                             </TableRow>
                             {isExpanded[index] && (
                                 <TableRow>
                                     <TableCell colSpan={4}>
-                                        <DashboardSummary request={request}/>
+                                        <DashboardSummary request={request} />
                                     </TableCell>
                                 </TableRow>
                             )}
@@ -85,6 +95,6 @@ const RequestTable = ({ requests }) => {
             {requests.length === 0 && <NoListAlert list='Requests' />}
         </Grid>
     );
-}
+};
 
 export default RequestTable;
