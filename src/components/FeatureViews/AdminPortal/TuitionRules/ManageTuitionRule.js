@@ -26,9 +26,7 @@ import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
-import { withRouter, 
-    useHistory
- } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import { dateTimeToDate } from '../../../../utils';
 import { useMutation, gql } from '@apollo/client';
 
@@ -193,18 +191,23 @@ const ManageTuitionRule = ({ location }) => {
         ? 'Small Group'
         : 'Class';
 
-    const privateRule = tuitionRuleSet.find(rule => rule.tuitionPriceList[0].tuitionRule.courseType === 'TUTORING');
-    const smallGroupRule = tuitionRuleSet.find(rule => rule.tuitionPriceList[0].tuitionRule.courseType === 'SMALL_GROUP');
+    const privateRule = tuitionRuleSet.find(
+        (rule) => rule.tuitionPriceList[0].tuitionRule.courseType === 'TUTORING'
+    );
+    const smallGroupRule = tuitionRuleSet.find(
+        (rule) =>
+            rule.tuitionPriceList[0].tuitionRule.courseType === 'SMALL_GROUP'
+    );
     // const classRule = tuitionRuleSet.find(rule => rule.tuitionPriceList[0].tuitionRule.courseType === 'CLASS');
 
-
-    const tuitionRuleId = 
-    tuitionRuleSet.length && tutoringType === 'Private' && !firstTimePrivate? 
-        privateRule.id
-    : tuitionRuleSet.length && tutoringType === 'Small Group' && !firstTimeSmallGroup ?
-        smallGroupRule.id
-        : undefined;
-
+    const tuitionRuleId =
+        tuitionRuleSet.length && tutoringType === 'Private' && !firstTimePrivate
+            ? privateRule.id
+            : tuitionRuleSet.length &&
+              tutoringType === 'Small Group' &&
+              !firstTimeSmallGroup
+            ? smallGroupRule.id
+            : undefined;
 
     const getRuleEditHistory = (tuitionRuleSet) => {
         let priceLists = tuitionRuleSet.map((rule) => rule.tuitionPriceList);
