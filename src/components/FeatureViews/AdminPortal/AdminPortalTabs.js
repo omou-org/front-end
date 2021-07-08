@@ -6,6 +6,8 @@ import BusinessDetails from './BusinessDetails';
 import TuitionRules from './TuitionRules/TutitionRules';
 import ManageTopicTuition from './TuitionRules/ManageTopicTuition';
 import ManageTuitionRule from './TuitionRules/ManageTuitionRule';
+import ManageInstructorRule from './TuitionRules/ManageInstructorRule';
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -108,6 +110,11 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                         <Route exact path='/adminportal/tuition-rules/:id/edit'>
                             <ManageTuitionRule />
                         </Route>
+
+                        <Route exact path='/adminportal/tuition-rules/:id/edit-instructor' render={(props) => (
+                                <ManageInstructorRule {...props} />
+                            )}/>
+
                     </Switch>
                 </Router>
             </TabPanel>

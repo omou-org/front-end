@@ -123,7 +123,7 @@ const TuitionRule = () => {
     const { data, loading, error } = useQuery(GET_COURSE_TOPICS, {
         onCompleted: () => {
             let topics = createCourseTopicObject(data.courseCategories);
-            setCourseTopics(topics.reverse());
+            setCourseTopics(topics);
         },
         fetchPolicy: 'cache-and-network',
     });

@@ -123,8 +123,10 @@ const ManageTopicTuition = ({
     });
     if (loading) return null;
     if (error) return `Error! ${error}`;
+    
     const { courseCategory } = data;
     const tuitionRuleSet = courseCategory.tuitionruleSet;
+    console.log(tuitionRuleSet);
 
     const tuitionPrices = tuitionRuleSet
         .map((rule) => rule.tuitionPriceList[0])
@@ -238,7 +240,8 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
-                                                    : `${tuitionRule.instructors[0].user.firstName} ${tuitionRule.instructors[0].user.lastName}`}
+                                                    : tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
+                                                    }
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
@@ -256,6 +259,15 @@ const ManageTopicTuition = ({
                 <ResponsiveButton
                     variant='outlined'
                     startIcon={<AddIcon />}
+                    component={Link}
+                    to={{
+                        pathname: `${id}/edit-instructor`,
+                        state: {
+                            name,
+                            id,
+                            privateRule: true
+                        },
+                    }}
                     disabled={privateRules.length === 0 ? true : false}
                 >
                     New Rule
@@ -342,9 +354,10 @@ const ManageTopicTuition = ({
                                             }}
                                         >
                                             <TableCell>
-                                                {allInstructorsApply
+                                            {allInstructorsApply
                                                     ? 'All'
-                                                    : `${tuitionRule.instructors[0].user.firstName} ${tuitionRule.instructors[0].user.lastName}`}
+                                                    : tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
+                                                    }
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
@@ -362,6 +375,15 @@ const ManageTopicTuition = ({
                 <ResponsiveButton
                     variant='outlined'
                     startIcon={<AddIcon />}
+                    component={Link}
+                    to={{
+                        pathname: `${id}/edit-instructor`,
+                        state: {
+                            name,
+                            id,
+                            smallGroupRule: true
+                        },
+                    }}
                     disabled={smallGroupRules.length === 0 ? true : false}
                 >
                     New Rule
