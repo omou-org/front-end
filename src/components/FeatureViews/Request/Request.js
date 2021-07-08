@@ -3,11 +3,43 @@ import Typography from '@material-ui/core/Typography';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
 import NavLinkNoDup from 'components/Routes/NavLinkNoDup';
 import Grid from '@material-ui/core/Grid';
-// import Tabs from '@material-ui/core/Tabs';
-// import Tab from '@material-ui/core/Tab';
-// import AppBar from '@material-ui/core/AppBar';
+import RequestTabs from './RequestTabs';
 
 const Request = () => {
+    // Make query for requests here
+    const testRequestData = [
+        {
+            ID: '12345',
+            createdAt: 'May 25, 2021',
+            status: 'submitted',
+            dates: 'July 15 - August 15',
+            times: 'Wednesdays, Saturdays at 2:00 pm - 3:00 pm',
+            subject: 'Math',
+            instructor: 'Tim Yang',
+            student: 'Ben Miller',
+        },
+        {
+            ID: '12346',
+            createdAt: 'May 26, 2021',
+            status: 'instructorApproved',
+            dates: 'July 15 - August 15',
+            times: 'Wednesdays, Saturdays at 2:00 pm - 3:00 pm',
+            subject: 'Math',
+            instructor: 'Tim Yang',
+            student: 'Ben Miller',
+        },
+        {
+            ID: '12347',
+            createdAt: 'May 27, 2021',
+            status: 'verified',
+            dates: 'July 15 - August 15',
+            times: 'Wednesdays, Saturdays at 2:00 pm - 3:00 pm',
+            subject: 'Math',
+            instructor: 'Tim Yang',
+            student: 'Ben Miller',
+        },
+    ];
+
     return (
         <>
             <Grid container justify='space-between'>
@@ -18,7 +50,7 @@ const Request = () => {
                 </Grid>
                 <Grid item>
                     <ResponsiveButton
-                        variant='outlined'
+                        variant='contained'
                         value='cancel'
                         component={NavLinkNoDup}
                         to={`/manage-tutoring-requests/schedule`}
@@ -27,20 +59,9 @@ const Request = () => {
                     </ResponsiveButton>
                 </Grid>
             </Grid>
-            {/*
-            <AppBar>
-                <Tabs value={value}>
-                    <Tab label='Request Status' />
-                    <Tab label='Request History' />
-                </Tabs>
-            </AppBar>
-            <TabPanel value={value} index={0}>
-                Request Status
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Request History
-            </TabPanel>
-*/}
+            <Grid item xs={12}>
+                <RequestTabs requests={testRequestData} />
+            </Grid>
         </>
     );
 };
