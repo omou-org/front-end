@@ -111,10 +111,13 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                             <ManageTuitionRule />
                         </Route>
 
-                        <Route exact path='/adminportal/tuition-rules/:id/edit-instructor' render={(props) => (
+                        <Route
+                            exact
+                            path='/adminportal/tuition-rules/:id/edit-instructor'
+                            render={(props) => (
                                 <ManageInstructorRule {...props} />
-                            )}/>
-
+                            )}
+                        />
                     </Switch>
                 </Router>
             </TabPanel>

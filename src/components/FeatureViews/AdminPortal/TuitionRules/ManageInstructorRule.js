@@ -177,7 +177,7 @@ const ManageInstructorRule = ({ location }) => {
         onCompleted: (data) => {
             console.log('created');
             console.log(data);
-        }
+        },
     });
 
     const onSubmit = () => {
@@ -186,13 +186,13 @@ const ManageInstructorRule = ({ location }) => {
                 id: tuitionRuleId,
                 hourlyTuition: hourlyTuition,
                 category: id,
-                instructors: selectedInstructors.map(item => item.value),
+                instructors: selectedInstructors.map((item) => item.value),
                 courseType: privateRule
-                ? 'TUTORING'
-                : smallGroupRule
-                ? 'SMALL_GROUP'
-                : 'CLASS'
-            }
+                    ? 'TUTORING'
+                    : smallGroupRule
+                    ? 'SMALL_GROUP'
+                    : 'CLASS',
+            },
         });
     };
 
@@ -205,8 +205,6 @@ const ManageInstructorRule = ({ location }) => {
     if (topicLoading || instructorLoading) return null;
     if (topicError || instructorError)
         return `Error! ${topicError || instructorError}`;
-
-    
 
     const formatInstructorInfo = (instructorsArr) => {
         let instructors = [];

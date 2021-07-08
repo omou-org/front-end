@@ -123,7 +123,7 @@ const ManageTopicTuition = ({
     });
     if (loading) return null;
     if (error) return `Error! ${error}`;
-    
+
     const { courseCategory } = data;
     const tuitionRuleSet = courseCategory.tuitionruleSet;
     console.log(tuitionRuleSet);
@@ -240,8 +240,21 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
-                                                    }
+                                                    : tuitionRule.instructors.map(
+                                                          ({ user }) => (
+                                                              <span
+                                                                  key={user.id}
+                                                              >
+                                                                  {
+                                                                      user.firstName
+                                                                  }{' '}
+                                                                  {
+                                                                      user.lastName
+                                                                  }
+                                                                  ,{' '}
+                                                              </span>
+                                                          )
+                                                      )}
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
@@ -265,7 +278,7 @@ const ManageTopicTuition = ({
                         state: {
                             name,
                             id,
-                            privateRule: true
+                            privateRule: true,
                         },
                     }}
                     disabled={privateRules.length === 0 ? true : false}
@@ -354,10 +367,23 @@ const ManageTopicTuition = ({
                                             }}
                                         >
                                             <TableCell>
-                                            {allInstructorsApply
+                                                {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
-                                                    }
+                                                    : tuitionRule.instructors.map(
+                                                          ({ user }) => (
+                                                              <span
+                                                                  key={user.id}
+                                                              >
+                                                                  {
+                                                                      user.firstName
+                                                                  }{' '}
+                                                                  {
+                                                                      user.lastName
+                                                                  }
+                                                                  ,{' '}
+                                                              </span>
+                                                          )
+                                                      )}
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
@@ -381,7 +407,7 @@ const ManageTopicTuition = ({
                         state: {
                             name,
                             id,
-                            smallGroupRule: true
+                            smallGroupRule: true,
                         },
                     }}
                     disabled={smallGroupRules.length === 0 ? true : false}
