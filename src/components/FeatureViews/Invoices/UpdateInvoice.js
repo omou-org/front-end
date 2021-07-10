@@ -26,6 +26,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import {paymentToString} from 'utils'
 
+import {useSelector} from 'react-redux'
+
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote(
         $method: String!
@@ -119,6 +121,8 @@ const UpdateInvoice = () => {
         total: 0,
         subTotal: 0
     })
+
+    const accountType = useSelector(({ auth }) => auth.accountType)
 
     const classes = useStyles();
 
@@ -307,11 +311,7 @@ const UpdateInvoice = () => {
         // markInvoiceAsPaid()
     }
 
-    // TODO
-    // [] Make createInvoice mutation with new changes
-    //     [] Update cache
-    // [x] Hide the Save Button
-    // [x] Enable Pay Now Button
+    // TODO Ask Jerry to fix createInvoice mutation
     const handleSaveChanges = () => {
         setUnsavedChanges(false);
         handleSavePopupClose()
@@ -323,20 +323,31 @@ const UpdateInvoice = () => {
     }, []);
 
     
-    const paymentOptions = [
-        {
-            label: 'Credit Card',
-            value: 'credit_card',
-        },
-        {
-            label: 'Cash',
-            value: 'cash',
-        },
-        {
-            label: 'Check',
-            value: 'check',
-        },
-    ];
+    let paymentOptions;
+
+    if (accountType === 'ADMIN') {
+        paymentOptions = [
+            {
+                label: 'Credit Card',
+                value: 'credit_card',
+            },
+            {
+                label: 'Cash',
+                value: 'cash',
+            },
+            {
+                label: 'Check',
+                value: 'check',
+            },
+        ];
+    } else {
+        paymentOptions = [
+            {
+                label: 'Credit Card',
+                value: 'credit_card',
+            },
+        ]
+    }
 
     if (paymentInfoLoading) {
         return <Loading />;
