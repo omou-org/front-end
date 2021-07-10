@@ -171,16 +171,12 @@ const ManageInstructorRule = ({ location }) => {
         fetchPolicy: 'cache-and-network',
     });
 
-    console.log(topicData);
-    // const tuitionRuleId = topicData.courseCategory.tuitionruleSet[0].id;
-    // console.log(tuitionRuleId);
-
     const [submitData] = useMutation(CREATE_INSTRUCTOR_RULE, {
         onCompleted: (data) => {
             console.log('created');
             console.log(data);
             history.goBack();
-        }
+        },
     });
 
     const onSubmit = () => {
@@ -198,6 +194,11 @@ const ManageInstructorRule = ({ location }) => {
             },
         });
     };
+    const tutoringType = privateRule
+        ? 'Private'
+        : smallGroupRule
+        ? 'Small Group'
+        : 'Class';
 
     const {
         loading: instructorLoading,
@@ -223,7 +224,61 @@ const ManageInstructorRule = ({ location }) => {
     };
 
     const instructorInfo = formatInstructorInfo(instructorData.instructors);
-    // console.log(instructorInfo);
+
+    const {
+        courseCategory: { tuitionruleSet },
+    } = topicData;
+    // console.log(tuitionruleSet);
+    const tuitionPrices = tuitionruleSet.map((rule) => rule.tuitionPriceList);
+    const instructorRules = tuitionPrices.filter((price) =>
+        price.every((edit) => !edit.allInstructorsApply)
+    );
+
+    let existingInstructorRules;
+
+    if (tutoringType === 'Private') {
+        existingInstructorRules = instructorRules.filter((rule) =>
+            rule.every((item) => item.tuitionRule.courseType === 'TUTORING')
+        );
+    } else if (tutoringType === 'Small Group') {
+        existingInstructorRules = instructorRules.filter((rule) =>
+            rule.every((item) => item.tuitionRule.courseType === 'SMALL_GROUP')
+        );
+    } else {
+        existingInstructorRules = instructorRules.filter((rule) =>
+            rule.every((item) => item.tuitionRule.courseType === 'CLASS')
+        );
+    }
+
+    const existingInstructors = formatInstructorInfo(
+        existingInstructorRules[0][0].tuitionRule.instructors
+    );
+
+    const checkForSameInstructors = (selected, instructors) => {
+        if (selected) {
+            return selected.every((instructor) =>
+                instructors.includes(instructor)
+            );
+        }
+    };
+
+    const existingIds = existingInstructors.map(
+        (instructor) => instructor.value
+    );
+    const selectedIds =
+        selectedInstructors &&
+        selectedInstructors.map((instructor) => instructor.value);
+
+    const customStyles = {
+        control: (base) => {
+            return {
+                ...base,
+                border: `1px solid ${omouBlue}`,
+                width: '28rem',
+                height: '2rem',
+            };
+        },
+    };
 
     return (
         <Grid
@@ -269,13 +324,7 @@ const ManageInstructorRule = ({ location }) => {
                 </Grid>
 
                 <Grid item>
-                    <Typography variant='body1'>
-                        {privateRule
-                            ? 'Private'
-                            : smallGroupRule
-                            ? 'Small Group'
-                            : 'Class'}
-                    </Typography>
+                    <Typography variant='body1'>{tutoringType}</Typography>
                 </Grid>
             </Grid>
 
@@ -294,15 +343,27 @@ const ManageInstructorRule = ({ location }) => {
                     </Typography>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} className={checkForSameInstructors(selectedIds, existingIds) && classes.marginVertSm}>
                     <Select
                         isMulti
                         options={instructorInfo}
+                        styles={customStyles}
                         placeholder='Select Instructors'
                         value={selectedInstructors}
                         onChange={handleInstructorChange}
                     />
                 </Grid>
+
+                {checkForSameInstructors(selectedIds, existingIds) && 
+                    <Grid item xs={12}>
+                        <Typography
+                        variant='body1'
+                    >
+                        * A tuition rule with that instructor or those instructors already exists.
+                    </Typography>
+                    </Grid>
+                }
+                
             </Grid>
 
             <Grid
@@ -353,7 +414,7 @@ const ManageInstructorRule = ({ location }) => {
                 >
                     <Grid item>
                         <ResponsiveButton
-                            // onClick={}
+                            onClick={() => history.goBack()}
                             variant='outlined'
                         >
                             cancel
@@ -363,6 +424,18 @@ const ManageInstructorRule = ({ location }) => {
                         <ResponsiveButton
                             onClick={onSubmit}
                             variant='contained'
+                            disabled={
+                                checkForSameInstructors(
+                                    selectedIds,
+                                    existingIds
+                                ) ||
+                                !(
+                                    Array.isArray(selectedInstructors) &&
+                                    selectedInstructors.length
+                                )
+                                    ? true
+                                    : false
+                            }
                         >
                             create
                         </ResponsiveButton>

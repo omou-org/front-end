@@ -36,6 +36,9 @@ const useStyles = makeStyles({
         height: '1rem',
         ...h5,
     },
+    // verticalMargin: {
+    //     marginBottom: '2rem'
+    // },
     topicName: {
         width: '16rem',
         height: '2rem',
@@ -127,9 +130,10 @@ const ManageTopicTuition = ({
     const { courseCategory } = data;
     const tuitionRuleSet = courseCategory.tuitionruleSet;
 
-    const tuitionPrices = tuitionRuleSet
-        .map((rule) => rule.tuitionPriceList[0]);
-        // .filter((rule) => rule);
+    const tuitionPrices = tuitionRuleSet.map(
+        (rule) => rule.tuitionPriceList[0]
+    );
+    // .filter((rule) => rule);
 
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
@@ -194,16 +198,16 @@ const ManageTopicTuition = ({
                         <TableBody>
                             {privateRules.length < 1 ? (
                                 <TableRow
-                                    component={Link}
-                                    to={{
-                                        pathname: `${id}/edit`,
-                                        state: {
-                                            name,
-                                            id,
-                                            tuitionRuleSet,
-                                            privateRules,
-                                        },
-                                    }}
+                                // component={Link}
+                                // to={{
+                                //     pathname: `${id}/edit`,
+                                //     state: {
+                                //         name,
+                                //         id,
+                                //         tuitionRuleSet,
+                                //         privateRules,
+                                //     },
+                                // }}
                                 >
                                     <TableCell>All</TableCell>
                                     <TableCell>
@@ -217,6 +221,20 @@ const ManageTopicTuition = ({
                                             !
                                         </LabelBadge>
                                         &nbsp; Not Set
+                                        <ResponsiveButton
+                                            variant='contained'
+                                            component={Link}
+                                            style={{ marginLeft: '2.5rem'}}
+                                            to={{
+                                                pathname: `${id}/edit`,
+                                                state: {
+                                                    name,
+                                                    id,
+                                                    tuitionRuleSet,
+                                                    privateRules,
+                                                },
+                                            }}
+                                        >set tuition</ResponsiveButton>
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -231,7 +249,9 @@ const ManageTopicTuition = ({
                                             key={id}
                                             component={Link}
                                             to={{
-                                                pathname: allInstructorsApply ? `${id}/edit` : `${id}/edit-instructor-tuition`,
+                                                pathname: allInstructorsApply
+                                                    ? `${id}/edit`
+                                                    : `${id}/edit-instructor-tuition`,
                                                 state: {
                                                     name,
                                                     id,
@@ -243,8 +263,26 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }, i) => (<span key={user.id}>{user.firstName} {user.lastName}{i !== tuitionRule.instructors.length - 1 && ','} </span>))
-                                                    }
+                                                    : tuitionRule.instructors.map(
+                                                          ({ user }, i) => (
+                                                              <span
+                                                                  key={user.id}
+                                                              >
+                                                                  {
+                                                                      user.firstName
+                                                                  }{' '}
+                                                                  {
+                                                                      user.lastName
+                                                                  }
+                                                                  {i !==
+                                                                      tuitionRule
+                                                                          .instructors
+                                                                          .length -
+                                                                          1 &&
+                                                                      ','}{' '}
+                                                              </span>
+                                                          )
+                                                      )}
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
@@ -258,7 +296,7 @@ const ManageTopicTuition = ({
                 </TableContainer>
             </Grid>
 
-            <Grid item style={{ marginTop: '1rem' }}>
+            <Grid item style={{ marginTop: '1rem', marginBottom: '2rem' }}>
                 <ResponsiveButton
                     variant='outlined'
                     startIcon={<AddIcon />}
@@ -310,16 +348,16 @@ const ManageTopicTuition = ({
                         <TableBody>
                             {smallGroupRules.length < 1 ? (
                                 <TableRow
-                                    component={Link}
-                                    to={{
-                                        pathname: `${id}/edit`,
-                                        state: {
-                                            name,
-                                            id,
-                                            tuitionRuleSet,
-                                            smallGroupRules,
-                                        },
-                                    }}
+                                    // component={Link}
+                                    // to={{
+                                    //     pathname: `${id}/edit`,
+                                    //     state: {
+                                    //         name,
+                                    //         id,
+                                    //         tuitionRuleSet,
+                                    //         smallGroupRules,
+                                    //     },
+                                    // }}
                                 >
                                     <TableCell>All</TableCell>
                                     <TableCell>
@@ -333,6 +371,21 @@ const ManageTopicTuition = ({
                                             !
                                         </LabelBadge>
                                         &nbsp; Not Set
+
+                                        <ResponsiveButton
+                                            variant='contained'
+                                            component={Link}
+                                            style={{ marginLeft: '2.5rem'}}
+                                            to={{
+                                                pathname: `${id}/edit`,
+                                                state: {
+                                                    name,
+                                                    id,
+                                                    tuitionRuleSet,
+                                                    smallGroupRules,
+                                                },
+                                            }}
+                                        >set tuition</ResponsiveButton>
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -347,7 +400,9 @@ const ManageTopicTuition = ({
                                             key={id}
                                             component={Link}
                                             to={{
-                                                pathname: allInstructorsApply ? `${id}/edit` : `${id}/edit-instructor-tuition`,
+                                                pathname: allInstructorsApply
+                                                    ? `${id}/edit`
+                                                    : `${id}/edit-instructor-tuition`,
                                                 state: {
                                                     name,
                                                     id,
@@ -359,8 +414,26 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }, i) => (<span key={user.id}>{user.firstName} {user.lastName}{i !== tuitionRule.instructors.length - 1 && ','} </span>))
-                                                    }
+                                                    : tuitionRule.instructors.map(
+                                                          ({ user }, i) => (
+                                                              <span
+                                                                  key={user.id}
+                                                              >
+                                                                  {
+                                                                      user.firstName
+                                                                  }{' '}
+                                                                  {
+                                                                      user.lastName
+                                                                  }
+                                                                  {i !==
+                                                                      tuitionRule
+                                                                          .instructors
+                                                                          .length -
+                                                                          1 &&
+                                                                      ','}{' '}
+                                                              </span>
+                                                          )
+                                                      )}
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
@@ -393,15 +466,17 @@ const ManageTopicTuition = ({
                 </ResponsiveButton>
             </Grid>
 
-            <Grid item className={classes.catchAllRule}>
-                <Typography
-                    className={classes.catchAllRuleText}
-                    variant='body1'
-                >
-                    Instructor-specific rules cannot be added until a general
-                    catch-all tuition rule is set.
-                </Typography>
-            </Grid>
+            {privateRules.length === 0 || smallGroupRules.length === 0 && (
+                <Grid item className={classes.catchAllRule}>
+                    <Typography
+                        className={classes.catchAllRuleText}
+                        variant='body1'
+                    >
+                        Instructor-specific rules cannot be added until a
+                        general catch-all tuition rule is set.
+                    </Typography>
+                </Grid>
+            )}
         </Grid>
     );
 };
