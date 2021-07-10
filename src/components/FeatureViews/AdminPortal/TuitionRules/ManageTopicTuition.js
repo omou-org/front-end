@@ -126,11 +126,10 @@ const ManageTopicTuition = ({
     
     const { courseCategory } = data;
     const tuitionRuleSet = courseCategory.tuitionruleSet;
-    console.log(tuitionRuleSet);
 
     const tuitionPrices = tuitionRuleSet
-        .map((rule) => rule.tuitionPriceList[0])
-        .filter((rule) => rule);
+        .map((rule) => rule.tuitionPriceList[0]);
+        // .filter((rule) => rule);
 
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
@@ -139,6 +138,10 @@ const ManageTopicTuition = ({
     const smallGroupRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'SMALL_GROUP'
     );
+
+    console.log(privateRules);
+    console.log(smallGroupRules);
+    console.log(tuitionRuleSet);
 
     return (
         <Grid
@@ -228,7 +231,7 @@ const ManageTopicTuition = ({
                                             key={id}
                                             component={Link}
                                             to={{
-                                                pathname: `${id}/edit`,
+                                                pathname: allInstructorsApply ? `${id}/edit` : `${id}/edit-instructor-tuition`,
                                                 state: {
                                                     name,
                                                     id,
@@ -240,7 +243,7 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
+                                                    : tuitionRule.instructors.map(({ user }, i) => (<span key={user.id}>{user.firstName} {user.lastName}{i !== tuitionRule.instructors.length - 1 && ','} </span>))
                                                     }
                                             </TableCell>
                                             <TableCell>
@@ -344,7 +347,7 @@ const ManageTopicTuition = ({
                                             key={id}
                                             component={Link}
                                             to={{
-                                                pathname: `${id}/edit`,
+                                                pathname: allInstructorsApply ? `${id}/edit` : `${id}/edit-instructor-tuition`,
                                                 state: {
                                                     name,
                                                     id,
@@ -356,7 +359,7 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                             {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
+                                                    : tuitionRule.instructors.map(({ user }, i) => (<span key={user.id}>{user.firstName} {user.lastName}{i !== tuitionRule.instructors.length - 1 && ','} </span>))
                                                     }
                                             </TableCell>
                                             <TableCell>

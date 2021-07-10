@@ -8,7 +8,7 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import Select from 'react-select';
 
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 
 const GET_COURSE_TOPIC = gql`
     query getCourseTopic($categoryId: ID) {
@@ -62,7 +62,7 @@ const GET_INSTRUCTORS = gql`
 
 const CREATE_INSTRUCTOR_RULE = gql`
     mutation MyMutation(
-        $id: ID
+        # $id: ID
         $hourlyTuition: Float
         $category: Int
         $instructors: [ID]
@@ -70,14 +70,14 @@ const CREATE_INSTRUCTOR_RULE = gql`
     ) {
         createTuitionRule(
             allInstructorsApply: false
-            id: $id
+            # id: $id
             hourlyTuition: $hourlyTuition
             category: $category
             instructors: $instructors
             courseType: $courseType
         ) {
             tuitionRule {
-                id
+                # id
                 name
                 category {
                     id
@@ -143,6 +143,7 @@ const ManageInstructorRule = ({ location }) => {
         state: { id, name, privateRule, smallGroupRule },
     } = location;
     // console.log(id);
+    const history = useHistory();
 
     const classes = useStyles();
     const [hourlyTuition, setHourlyTuition] = useState();
@@ -170,20 +171,22 @@ const ManageInstructorRule = ({ location }) => {
         fetchPolicy: 'cache-and-network',
     });
 
-    const tuitionRuleId = topicData.courseCategory.tuitionruleSet[0].id;
+    console.log(topicData);
+    // const tuitionRuleId = topicData.courseCategory.tuitionruleSet[0].id;
     // console.log(tuitionRuleId);
 
     const [submitData] = useMutation(CREATE_INSTRUCTOR_RULE, {
         onCompleted: (data) => {
             console.log('created');
             console.log(data);
+            history.goBack();
         }
     });
 
     const onSubmit = () => {
         submitData({
             variables: {
-                id: tuitionRuleId,
+                // id: tuitionRuleId,
                 hourlyTuition: hourlyTuition,
                 category: id,
                 instructors: selectedInstructors.map(item => item.value),
