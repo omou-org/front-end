@@ -24,6 +24,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import {paymentToString} from 'utils'
+
 const GET_PRICE_QUOTE = gql`
     query GetPriceQuote(
         $method: String!
@@ -70,6 +72,19 @@ const REMOVE_ENROLLMENT_FROM_INVOICE = gql`
   
 `
 
+const MARK_INVOICE_AS_PAID = gql`
+    mutation markInvoiceAsPaid(
+        $method: String!,
+        $invoiceId: ID,
+    ) {
+        createInvoice(invoiceId: $invoiceId, method: $method, payNow: true) {
+            invoice {
+              id
+            }
+        }
+    }
+`
+
 
 const useStyles = makeStyles({
     heading: {
@@ -93,7 +108,10 @@ const UpdateInvoice = () => {
     const [registrationsToBeCancelled, setRegistrationsToBeCancelled] = useState([]);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [numberOfUnsavedChanges, setNumberOfUnsavedChanges] = useState(0);
-    const [displayPopup, setDisplayPopup] = useState(false);
+    
+    const [displaySavePopup, setSaveDisplayPopup] = useState(false);
+    const [displayPayPopup, setDisplayPayPopup] = useState(false);
+    
     const [paymentMethod, setPaymentMethod] = useState('credit_card');
     const [classRegistrations, setClassRegistrations] = useState([]);
     const [ invoiceEnrollments, setInvoiceEnrollments] = useState([]);
@@ -135,20 +153,29 @@ const UpdateInvoice = () => {
         skip: !paymentInfoData
     });
 
-    // classRegistraitons to be 
-    /**
-     * classes {
-     *      course: courseId
-     *      sessions: numSessions
-     *      student: studentId
-     * }
-     * enrollments {
-     *  enrollment
-     *  numSessions
-     * }
-     */
+    const [markInvoiceAsPaid] = useMutation(MARK_INVOICE_AS_PAID, {
+        variables: { 
+            method: paymentMethod, 
+            invoiceId: paymentInfoData?.invoice.id
+        },
+        onCompleted: () => {
+            console.log("Check updated invoice")
+            // setParentConfirmation(true);
+        },
+        // update: (cache, { data }) => {
+        //     cache.writeQuery({
+        //         query: GET_REGISTRATION_CART,
+        //         variables: { parent: currentParent.user.id },
+        //         data: {
+        //             registrationCart:
+        //                 data.createRegistrationCart.registrationCart,
+        //         },
+        //     });
+        // },
+        onError: (error) => console.error(error.message),
+        skip: !paymentInfoData
+    });
     
-
     const formatRegistrationsForQueries = (arrOfRegistrations) => {
         const filteredClassRegistrations = [];
         const filteredEnrollments = []
@@ -214,10 +241,6 @@ const UpdateInvoice = () => {
         return Object.entries(formattedRegistrations)
     }
 
-    const formatCurrentRegistrations = (registrations) => {
-        
-    }
-
     useEffect(() => {
         let registrationData = [];
         let invoicePrice = displayedPrice;
@@ -232,17 +255,7 @@ const UpdateInvoice = () => {
         setDisplayedPrice(invoicePrice);
     }, [ paymentInfoData ])    
 
-    // TODO 
-    // [x] Grey out enrollment 
-    // [x] Update invoice total using priceQuote query
-    // [x] change x to +
-    // [x] Disable/ grey out Pay Now button if number of unsaved changes is not 0
-    // [x] display save button
     const updateCancelledRegistrations = (registrationId, registrationTitle) => {
-
-        
-
-        //let indexToDelete = registrationsToBeCancelled.indexOf(registrationId);
         let indexToDelete = -1;
         registrationsToBeCancelled.forEach((cancelledRegistration, index) => {
             if (cancelledRegistration.registrationId === registrationId) {
@@ -268,14 +281,30 @@ const UpdateInvoice = () => {
         getPriceQuote();
     }
 
-    // TODO
-    // [x] Display Save Popup
     const handleSaveClick = () => {
-        setDisplayPopup(true);
+        setSaveDisplayPopup(true);
     }
 
-    const handlePopupClose = () => {
-        setDisplayPopup(false);
+    const handleSavePopupClose = () => {
+        setSaveDisplayPopup(false);
+    }
+
+    const handlePayClick = () => {
+        if (paymentMethod != 'credit_card') {
+            setDisplayPayPopup(true)
+        } else {
+            // TODO pay now with stripe
+            // Pay now with stripe
+        }
+    }
+
+    const handlePayPopupClose = () => {
+        setDisplayPayPopup(false);
+    }
+
+    const handlePayNow = () => {
+        // TODO Ask Jerry how to mark invoice as paid
+        // markInvoiceAsPaid()
     }
 
     // TODO
@@ -285,7 +314,7 @@ const UpdateInvoice = () => {
     // [x] Enable Pay Now Button
     const handleSaveChanges = () => {
         setUnsavedChanges(false);
-        handlePopupClose()
+        handleSavePopupClose()
         updateInvoiceWithNewChanges()
     }
 
@@ -294,20 +323,20 @@ const UpdateInvoice = () => {
     }, []);
 
     
-const paymentOptions = [
-    {
-        label: 'Credit Card',
-        value: 'credit_card',
-    },
-    {
-        label: 'Cash',
-        value: 'cash',
-    },
-    {
-        label: 'Check',
-        value: 'check',
-    },
-];
+    const paymentOptions = [
+        {
+            label: 'Credit Card',
+            value: 'credit_card',
+        },
+        {
+            label: 'Cash',
+            value: 'cash',
+        },
+        {
+            label: 'Check',
+            value: 'check',
+        },
+    ];
 
     if (paymentInfoLoading) {
         return <Loading />;
@@ -400,12 +429,12 @@ const paymentOptions = [
                     <ResponsiveButton variant={unsavedChanges ? 'outlined' : 'disabled'} onClick={handleSaveClick}>Save</ResponsiveButton>
                 </Grid>
                 <Grid item>
-                    <ResponsiveButton variant={(unsavedChanges || paymentMethod === null) ? 'disabled' : 'contained'}>Pay Now</ResponsiveButton>
+                    <ResponsiveButton variant={(unsavedChanges || paymentMethod === null) ? 'disabled' : 'contained'} onClick={handlePayClick}>Pay Now</ResponsiveButton>
                 </Grid>
             </Grid>
             <Dialog
-                open={displayPopup}
-                onClose={handlePopupClose}
+                open={displaySavePopup}
+                onClose={handleSavePopupClose}
             >
                 <DialogTitle disableTypography id='dialog-title'>
                     Dropping Courses
@@ -426,10 +455,31 @@ const paymentOptions = [
                     <Typography>Days remaining to pay: 5</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <ResponsiveButton onClick={handlePopupClose} color='primary'>
+                    <ResponsiveButton onClick={handleSavePopupClose} color='primary'>
                         nevermind
                     </ResponsiveButton>
                     <ResponsiveButton onClick={handleSaveChanges} color='primary'>
+                        confirm
+                    </ResponsiveButton>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={displayPayPopup}
+                onClose={handlePayPopupClose}
+            >
+                <DialogTitle disableTypography id='dialog-title'>
+                    Pay now with {paymentToString(paymentMethod)}
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>- Amount: ${displayedPrice.total}</Typography>
+                    <Typography>- Payment Method: {paymentToString(paymentMethod)}</Typography>
+                    <Typography>- The status will change</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <ResponsiveButton onClick={handlePayPopupClose} color='primary'>
+                        nevermind
+                    </ResponsiveButton>
+                    <ResponsiveButton onClick={handlePayNow} color='primary'>
                         confirm
                     </ResponsiveButton>
                 </DialogActions>
