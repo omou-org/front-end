@@ -243,12 +243,11 @@ const ManageTuitionRule = ({ location }) => {
             (smallGroupRules &&
                 (smallGroupRules.length === 0 ||
                     smallGroupRules[0].allInstructorsApply))) &&
-        'All' ;
-            // (privateRules && !privateRules[0].allInstructorsApply) ?
-            // privateRules[0].tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
-            // :
-            // smallGroupRules[0].tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>));
-            
+        'All';
+    // (privateRules && !privateRules[0].allInstructorsApply) ?
+    // privateRules[0].tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
+    // :
+    // smallGroupRules[0].tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>));
 
     const [showEdit, setShowEdit] = useState(false);
     const [hourlyTuition, setHourlyTuition] = useState();

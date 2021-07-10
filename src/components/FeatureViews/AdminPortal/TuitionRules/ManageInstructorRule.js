@@ -180,7 +180,7 @@ const ManageInstructorRule = ({ location }) => {
             console.log('created');
             console.log(data);
             history.goBack();
-        }
+        },
     });
 
     const onSubmit = () => {

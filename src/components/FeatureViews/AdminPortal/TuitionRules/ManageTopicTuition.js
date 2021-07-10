@@ -127,9 +127,10 @@ const ManageTopicTuition = ({
     const { courseCategory } = data;
     const tuitionRuleSet = courseCategory.tuitionruleSet;
 
-    const tuitionPrices = tuitionRuleSet
-        .map((rule) => rule.tuitionPriceList[0]);
-        // .filter((rule) => rule);
+    const tuitionPrices = tuitionRuleSet.map(
+        (rule) => rule.tuitionPriceList[0]
+    );
+    // .filter((rule) => rule);
 
     const privateRules = tuitionPrices.filter(
         (price) => price.tuitionRule.courseType === 'TUTORING'
@@ -231,7 +232,9 @@ const ManageTopicTuition = ({
                                             key={id}
                                             component={Link}
                                             to={{
-                                                pathname: allInstructorsApply ? `${id}/edit` : `${id}/edit-instructor-tuition`,
+                                                pathname: allInstructorsApply
+                                                    ? `${id}/edit`
+                                                    : `${id}/edit-instructor-tuition`,
                                                 state: {
                                                     name,
                                                     id,
@@ -243,8 +246,26 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }, i) => (<span key={user.id}>{user.firstName} {user.lastName}{i !== tuitionRule.instructors.length - 1 && ','} </span>))
-                                                    }
+                                                    : tuitionRule.instructors.map(
+                                                          ({ user }, i) => (
+                                                              <span
+                                                                  key={user.id}
+                                                              >
+                                                                  {
+                                                                      user.firstName
+                                                                  }{' '}
+                                                                  {
+                                                                      user.lastName
+                                                                  }
+                                                                  {i !==
+                                                                      tuitionRule
+                                                                          .instructors
+                                                                          .length -
+                                                                          1 &&
+                                                                      ','}{' '}
+                                                              </span>
+                                                          )
+                                                      )}
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
@@ -347,7 +368,9 @@ const ManageTopicTuition = ({
                                             key={id}
                                             component={Link}
                                             to={{
-                                                pathname: allInstructorsApply ? `${id}/edit` : `${id}/edit-instructor-tuition`,
+                                                pathname: allInstructorsApply
+                                                    ? `${id}/edit`
+                                                    : `${id}/edit-instructor-tuition`,
                                                 state: {
                                                     name,
                                                     id,
@@ -359,8 +382,26 @@ const ManageTopicTuition = ({
                                             <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
-                                                    : tuitionRule.instructors.map(({ user }, i) => (<span key={user.id}>{user.firstName} {user.lastName}{i !== tuitionRule.instructors.length - 1 && ','} </span>))
-                                                    }
+                                                    : tuitionRule.instructors.map(
+                                                          ({ user }, i) => (
+                                                              <span
+                                                                  key={user.id}
+                                                              >
+                                                                  {
+                                                                      user.firstName
+                                                                  }{' '}
+                                                                  {
+                                                                      user.lastName
+                                                                  }
+                                                                  {i !==
+                                                                      tuitionRule
+                                                                          .instructors
+                                                                          .length -
+                                                                          1 &&
+                                                                      ','}{' '}
+                                                              </span>
+                                                          )
+                                                      )}
                                             </TableCell>
                                             <TableCell>
                                                 ${hourlyTuition}
