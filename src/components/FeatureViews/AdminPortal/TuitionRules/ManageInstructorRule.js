@@ -343,7 +343,14 @@ const ManageInstructorRule = ({ location }) => {
                     </Typography>
                 </Grid>
 
-                <Grid item xs={12} className={checkForSameInstructors(selectedIds, existingIds) && classes.marginVertSm}>
+                <Grid
+                    item
+                    xs={12}
+                    className={
+                        checkForSameInstructors(selectedIds, existingIds) &&
+                        classes.marginVertSm
+                    }
+                >
                     <Select
                         isMulti
                         options={instructorInfo}
@@ -354,16 +361,14 @@ const ManageInstructorRule = ({ location }) => {
                     />
                 </Grid>
 
-                {checkForSameInstructors(selectedIds, existingIds) && 
+                {checkForSameInstructors(selectedIds, existingIds) && (
                     <Grid item xs={12}>
-                        <Typography
-                        variant='body1'
-                    >
-                        * A tuition rule with that instructor or those instructors already exists.
-                    </Typography>
+                        <Typography variant='body1'>
+                            * A tuition rule with that instructor or those
+                            instructors already exists.
+                        </Typography>
                     </Grid>
-                }
-                
+                )}
             </Grid>
 
             <Grid
