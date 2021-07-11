@@ -400,15 +400,18 @@ const PaymentBoard = () => {
     });
     const [createPayment] = useMutation(CREATE_PAYMENT, {
         onCompleted: ({ createInvoice }) => {
-            console.log(STRIPE_API_KEY, process.env['REACT_APP_STRIPE_KEY ']);
+            if (createInvoice.stripeCheckoutId !== null) {
+                console.log(STRIPE_API_KEY, process.env['REACT_APP_STRIPE_KEY ']);
 
-            // eslint-disable-next-line no-undef
-            const stripe = Stripe(STRIPE_API_KEY, {
-                stripeAccount: createInvoice.stripeConnectedAccount,
-            });
-            stripe.redirectToCheckout({
-                sessionId: createInvoice.stripeCheckoutId,
-            });
+                // eslint-disable-next-line no-undef
+                const stripe = Stripe(STRIPE_API_KEY, {
+                    stripeAccount: createInvoice.stripeConnectedAccount,
+                });
+                stripe.redirectToCheckout({
+                    sessionId: createInvoice.stripeCheckoutId,
+                });
+                console.log("createInvoice");
+            }
         },
         update: (cache, { data }) => {
             if(cache.data.data.CREATE_PAYMENT){
@@ -421,6 +424,7 @@ const PaymentBoard = () => {
                     variables: { paymentId: data.createInvoice.invoice.id },
                 });
             }
+            console.log("update");
         },
     });
     const [createRegistrationCart] = useMutation(CREATE_REGISTRATION_CART, {
@@ -526,17 +530,8 @@ const PaymentBoard = () => {
             })),
         ];
 
-        const payment = paymentStatus ? await createPayment({
-            variables: {
-                parent: currentParent.user.id,
-                method: paymentMethod,
-                classes: classRegistrations,
-                disabledDiscounts: [],
-                priceAdjustment: Number(priceAdjustment),
-                registrations,
-                payNow: paymentStatus,
-            },
-        }) : await createPayment({
+        console.log("Payment about to be made");
+        const payment = await createPayment({
             variables: {
                 parent: currentParent.user.id,
                 method: paymentMethod,
@@ -548,9 +543,8 @@ const PaymentBoard = () => {
             },
         });
 
-        if(!paymentStatus){
-            handleClose();
-        }
+        handleClose();
+        console.log("Tab closed!");
 
         // clean out parent registration cart
         await createRegistrationCart({
