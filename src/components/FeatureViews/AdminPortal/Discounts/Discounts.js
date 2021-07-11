@@ -24,7 +24,7 @@ import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import { useQuery, gql } from '@apollo/client';
 import Loading from 'components/OmouComponents/Loading';
-import { capitalizeString } from 'utils';
+// import { capitalizeString } from 'utils';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
 import { withRouter, 
     // useHistory 
@@ -113,9 +113,18 @@ const Discounts = () => {
                 alignItems='center'
                 style={{ marginTop: '1.5rem' }}
             >
-                <Grid item>
+                <Grid item xs={10}></Grid>
+                <Grid item xs={2}>
                     <ResponsiveButton
                         variant='outlined'
+                        component={Link}
+                        style={{ marginLeft: '2.5rem'}}
+                        to={{
+                            pathname: 'create-discount',
+                            state: {
+                                create: 'create'
+                            },
+                        }}
                         startIcon={<AddIcon />}
                     >
                         new discount
@@ -137,7 +146,7 @@ const Discounts = () => {
                                     className={classes.headCells}
                                     // style={{ minWidth: 170 }}
                                 >
-                                    Discount Type
+                                    Valid Pay Period
                                 </TableCell>
 
                                 <TableCell
@@ -157,7 +166,7 @@ const Discounts = () => {
                         </TableHead>
                         <TableBody>
                             {discounts.map(
-                                ({ id, code, amount, active, amountType }) => (
+                                ({ id, code, amount, active, amountType, startDate, endDate }) => (
                                     <TableRow
                                         key={id}
                                         component={Link}
@@ -182,7 +191,7 @@ const Discounts = () => {
                                         <TableCell
                                             className={classes.discountCell}
                                         >
-                                            {capitalizeString(amountType)}
+                                            {startDate} - {endDate}
                                         </TableCell>
 
                                         <TableCell

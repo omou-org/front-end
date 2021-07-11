@@ -11,6 +11,7 @@ import ManageInstructorTuition from './TuitionRules/ManageInstructorTuition';
 
 import Discounts from './Discounts/Discounts';
 import DiscountView from './Discounts/DiscountView';
+import CreateDiscount from './Discounts/CreateDiscount';
 
 import {
     BrowserRouter as Router,
@@ -154,6 +155,15 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                                 <DiscountView {...props} />
                             )}
                         />
+
+                        <Route
+                            exact
+                            path='/adminportal/discounts/create-discount'
+                            render={(props) => (
+                                <CreateDiscount {...props} />
+                            )}
+                        />
+
                     </Switch>
                 </Router>
             </TabPanel>
