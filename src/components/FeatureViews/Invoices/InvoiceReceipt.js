@@ -352,18 +352,6 @@ const InvoiceReceipt = ({ invoiceId }) => {
                         </Typography>
                     </Grid>
                     <Grid style={{ whiteSpace: 'nowrap' }} item xs={3}>
-                        {paymentStatus === 'UNPAID' && (
-                            <ResponsiveButton
-                                style={{
-                                    marginLeft: '5.5em',
-                                    marginRight: '0.75em',
-                                    background: buttonThemeBlue,
-                                }}
-                                variant='contained'
-                            >
-                                update invoice
-                            </ResponsiveButton>
-                        )}
 
                         <ResponsiveButton
                             style={{
@@ -621,6 +609,7 @@ const InvoiceReceipt = ({ invoiceId }) => {
                             </Grid>
                         </Grid>
                             {/* Will only show update invoice if payment status is unpaid */}
+                            { (true || paymentStatus === 'UNPAID') && (
                             <ResponsiveButton
                                 component={Link}
                                 to={`/invoices/update/${invoice.id}`}
@@ -632,6 +621,7 @@ const InvoiceReceipt = ({ invoiceId }) => {
                             >
                                 update invoice
                             </ResponsiveButton>
+                            )}
                     </Grid>
                 </Grid>
                 <Grid style={{ marginTop: '4.125em' }} item xs={12}>

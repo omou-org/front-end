@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { GET_PAYMENT } from './InvoiceReceipt';
 import Loading from 'components/OmouComponents/Loading';
 import { fullName } from 'utils';
@@ -101,6 +101,9 @@ const useStyles = makeStyles({
     },
     paymentForm: {
         marginTop: '20px'
+    },
+    popupText: {
+        margin: '10px'
     }
 });
 
@@ -131,6 +134,8 @@ const UpdateInvoice = () => {
             invoiceId: invoiceId,
         },
     });
+
+    const history = useHistory();
 
     const [updateInvoiceWithNewChanges] = useMutation(REMOVE_ENROLLMENT_FROM_INVOICE, {
         variables: { 
@@ -163,8 +168,9 @@ const UpdateInvoice = () => {
             invoiceId: paymentInfoData?.invoice.id
         },
         onCompleted: () => {
-            console.log("Check updated invoice")
-            // setParentConfirmation(true);
+            console.log("Check updated invoice");
+            setDisplayPayPopup(false);
+            history.push(`/invoices/${paymentInfoData?.invoice.id}`)
         },
         // update: (cache, { data }) => {
         //     cache.writeQuery({
@@ -308,7 +314,7 @@ const UpdateInvoice = () => {
 
     const handlePayNow = () => {
         // TODO Ask Jerry how to mark invoice as paid
-        // markInvoiceAsPaid()
+        markInvoiceAsPaid()
     }
 
     // TODO Ask Jerry to fix createInvoice mutation
@@ -451,7 +457,7 @@ const UpdateInvoice = () => {
                     Dropping Courses
                 </DialogTitle>
                 <DialogContent>
-                    <Typography>Courses to be dropped</Typography>
+                    <Typography className={classes.popupText}>Courses to be dropped</Typography>
                     <ul>
                         {registrationsToBeCancelled.map(registration => {
                             return (<li>
@@ -460,10 +466,10 @@ const UpdateInvoice = () => {
                         })}
                     </ul>
 
-                    <Typography>New Total: ${displayedPrice.total}</Typography>
+                    <Typography className={classes.popupText}>New Total: ${displayedPrice.total}</Typography>
 
                     {/** Ask about how to determine days left */}
-                    <Typography>Days remaining to pay: 5</Typography>
+                    <Typography className={classes.popupText}>Days remaining to pay: 5</Typography>
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton onClick={handleSavePopupClose} color='primary'>
@@ -482,9 +488,9 @@ const UpdateInvoice = () => {
                     Pay now with {paymentToString(paymentMethod)}
                 </DialogTitle>
                 <DialogContent>
-                    <Typography>- Amount: ${displayedPrice.total}</Typography>
-                    <Typography>- Payment Method: {paymentToString(paymentMethod)}</Typography>
-                    <Typography>- The status will change</Typography>
+                    <Typography className={classes.popupText}>Amount to be paid <b>${displayedPrice.total}</b></Typography>
+                    <Typography className={classes.popupText}>The payment method for this transaction is <b>{paymentToString(paymentMethod)}</b></Typography>
+                    <Typography className={classes.popupText}>This action will change the status of this invoice from unpaid to paid</Typography>
                 </DialogContent>
                 <DialogActions>
                     <ResponsiveButton onClick={handlePayPopupClose} color='primary'>
