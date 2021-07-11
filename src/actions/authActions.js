@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-import { client } from 'index';
+import {client} from 'index';
 import gql from 'graphql-tag';
 
 const GET_EMAIL = gql`
@@ -75,7 +75,7 @@ export const setToken = async (token, shouldSave, usernameEmail = '') => {
             variables: { token },
         });
         let email = usernameEmail || verifyToken.payload.username;
-
+        console.log({verifyToken});
         const {
             data: { userInfo },
         } = await client.query({
@@ -88,7 +88,7 @@ export const setToken = async (token, shouldSave, usernameEmail = '') => {
             variables: { username: email },
         });
         const { accountType, user, phoneNumber } = userInfo;
-
+        console.log({userInfo});
         sessionStorage.setItem('token', token);
 
         if (shouldSave) {
