@@ -9,6 +9,8 @@ import ManageTuitionRule from './TuitionRules/ManageTuitionRule';
 import ManageInstructorRule from './TuitionRules/ManageInstructorRule';
 import ManageInstructorTuition from './TuitionRules/ManageInstructorTuition';
 
+import Discounts from './Discounts/Discounts';
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -60,7 +62,7 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
         { label: 'course tags', route: 'topics' },
         { label: 'tuition rules', route: 'tuition-rules' },
         { label: 'access control', route: 'access-control' },
-        { label: 'admin log', route: 'admin-log' },
+        { label: 'discounts', route: 'discounts' },
         { label: 'business details', route: 'business-details' },
     ];
 
@@ -136,9 +138,15 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                 </div>
             </TabPanel>
             <TabPanel value={selectedTabIndex} index={4}>
-                <div>
-                    <h1>Admin log</h1>
-                </div>
+            <Router>
+                    <Switch>
+                        <Route
+                            exact
+                            path='/adminportal/discounts'
+                            render={(props) => <Discounts {...props} />}
+                        />
+                    </Switch>
+                </Router>
             </TabPanel>
             <TabPanel value={selectedTabIndex} index={5}>
                 <BusinessDetails />
