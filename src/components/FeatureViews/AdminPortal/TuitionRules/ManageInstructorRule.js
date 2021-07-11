@@ -249,10 +249,12 @@ const ManageInstructorRule = ({ location }) => {
             rule.every((item) => item.tuitionRule.courseType === 'CLASS')
         );
     }
+    console.log(existingInstructorRules);
+    
 
-    const existingInstructors = formatInstructorInfo(
+    const existingInstructors = existingInstructorRules.length > 0 ? formatInstructorInfo(
         existingInstructorRules[0][0].tuitionRule.instructors
-    );
+    ) : [];
 
     const checkForSameInstructors = (selected, instructors) => {
         if (selected) {
@@ -268,6 +270,9 @@ const ManageInstructorRule = ({ location }) => {
     const selectedIds =
         selectedInstructors &&
         selectedInstructors.map((instructor) => instructor.value);
+
+        console.log(existingIds);
+    console.log(selectedIds);
 
     const customStyles = {
         control: (base) => {
@@ -361,7 +366,9 @@ const ManageInstructorRule = ({ location }) => {
                     />
                 </Grid>
 
-                {checkForSameInstructors(selectedIds, existingIds) && (
+                {(checkForSameInstructors(selectedIds, existingIds) &&
+                    selectedIds.length !== 0 && existingIds.length !== 0) &&
+                (
                     <Grid item xs={12}>
                         <Typography variant='body1'>
                             * A tuition rule with that instructor or those
