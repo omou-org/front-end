@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { 
+    useState 
+} from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { NavLink, withRouter, useHistory } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import RetireModal from './RetireModal';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import {
     // h4,
     h3,
     h5,
     slateGrey,
+    white,
     // omouBlue,
     // body1,
     // body2,
 } from '../../../../theme/muiTheme';
+import Modal from '@material-ui/core/Modal';
+
 import PropTypes from 'prop-types';
 import { useQuery, gql } from '@apollo/client';
 import { capitalizeString, dateTimeToDate } from 'utils';
@@ -37,6 +43,20 @@ const useStyles = makeStyles({
     },
     marginVertSm: {
         marginBottom: '0.5rem',
+    },
+    modalStyle: {
+        top: '50%',
+        left: `50%`,
+        transform: 'translate(-50%, -50%)',
+        position: 'absolute',
+        width: '31.8em',
+        height: '21em',
+        background: white,
+        boxShadow: '0px 0px 8px rgba(153, 153, 153, 0.8);',
+        borderRadius: '5px',
+    },
+    modalTypography: {
+        marginBottom: '1em',
     },
 });
 
@@ -68,6 +88,11 @@ const GET_DISCOUNT = gql`
 const DiscountView = ({ location }) => {
     const classes = useStyles();
     const history = useHistory();
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const handleModalOpen = () => setModalOpen(true);
+    const handleModalClose = () => setModalOpen(false);
+
     const {
         state: { id },
     } = location;
@@ -97,6 +122,7 @@ const DiscountView = ({ location }) => {
         createdAt
     } = discount;
     console.log(discount);
+    console.log(id);
 
     return (
         <Grid
@@ -177,10 +203,17 @@ const DiscountView = ({ location }) => {
                     >
                         <Grid item xs={5}></Grid>
                         <Grid item>
-                            <ResponsiveButton variant='outlined'>
+                            <ResponsiveButton onClick={handleModalOpen} variant='outlined'>
                                 Retire
                             </ResponsiveButton>
                         </Grid>
+                        <Modal
+                            disableBackdropClick
+                            open={modalOpen}
+                            onClose={handleModalClose}
+                    >
+                        <RetireModal discountId={id} closeModal={handleModalClose} />
+                    </Modal>
                     </Grid>
                 </Grid>
             </Grid>
