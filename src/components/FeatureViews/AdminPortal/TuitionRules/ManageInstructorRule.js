@@ -250,11 +250,13 @@ const ManageInstructorRule = ({ location }) => {
         );
     }
     console.log(existingInstructorRules);
-    
 
-    const existingInstructors = existingInstructorRules.length > 0 ? formatInstructorInfo(
-        existingInstructorRules[0][0].tuitionRule.instructors
-    ) : [];
+    const existingInstructors =
+        existingInstructorRules.length > 0
+            ? formatInstructorInfo(
+                  existingInstructorRules[0][0].tuitionRule.instructors
+              )
+            : [];
 
     const checkForSameInstructors = (selected, instructors) => {
         if (selected) {
@@ -271,7 +273,7 @@ const ManageInstructorRule = ({ location }) => {
         selectedInstructors &&
         selectedInstructors.map((instructor) => instructor.value);
 
-        console.log(existingIds);
+    console.log(existingIds);
     console.log(selectedIds);
 
     const customStyles = {
@@ -366,16 +368,16 @@ const ManageInstructorRule = ({ location }) => {
                     />
                 </Grid>
 
-                {(checkForSameInstructors(selectedIds, existingIds) &&
-                    selectedIds.length !== 0 && existingIds.length !== 0) &&
-                (
-                    <Grid item xs={12}>
-                        <Typography variant='body1'>
-                            * A tuition rule with that instructor or those
-                            instructors already exists.
-                        </Typography>
-                    </Grid>
-                )}
+                {checkForSameInstructors(selectedIds, existingIds) &&
+                    selectedIds.length !== 0 &&
+                    existingIds.length !== 0 && (
+                        <Grid item xs={12}>
+                            <Typography variant='body1'>
+                                * A tuition rule with that instructor or those
+                                instructors already exists.
+                            </Typography>
+                        </Grid>
+                    )}
             </Grid>
 
             <Grid
