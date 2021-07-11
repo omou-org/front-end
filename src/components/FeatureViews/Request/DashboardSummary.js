@@ -1,8 +1,9 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 import UserAvatar from 'components/FeatureViews/Accounts/UserAvatar';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import LargeStatusIndicator from './LargeStatusIndicator';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
     infoRow: {
@@ -100,6 +101,17 @@ const DashboardSummary = ({
             </Grid>
         </Grid>
     );
+};
+
+DashboardSummary.propTypes = {
+    request: PropTypes.shape({
+        status: PropTypes.string,
+        dates: PropTypes.any,
+        times: PropTypes.any,
+        subject: PropTypes.string,
+        instructor: PropTypes.string,
+        student: PropTypes.string,
+    }),
 };
 
 export default DashboardSummary;

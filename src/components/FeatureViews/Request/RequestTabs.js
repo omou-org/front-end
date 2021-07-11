@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import RequestTable from './RequestTable';
-import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import {LabelBadge} from 'theme/ThemedComponents/Badge/LabelBadge';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles({
     requestTabsStyle: {
@@ -75,6 +76,10 @@ const RequestTabs = ({ requests }) => {
             {tabContent[tabIndex].content}
         </>
     );
+};
+
+RequestTabs.propTypes = {
+    requests: PropTypes.any,
 };
 
 export default RequestTabs;
