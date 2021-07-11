@@ -10,6 +10,7 @@ import {
     TableRow,
     TableBody,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import {
     h4,
@@ -25,6 +26,9 @@ import { useQuery, gql } from '@apollo/client';
 import Loading from 'components/OmouComponents/Loading';
 import { capitalizeString } from 'utils';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
+import { withRouter, 
+    // useHistory 
+} from 'react-router-dom';
 
 const useStyles = makeStyles({
     verticalMargin: {
@@ -99,7 +103,6 @@ const Discounts = () => {
     if (error) console.error(error);
 
     const { discounts } = data;
-    console.log(discounts);
 
     return (
         <>
@@ -155,7 +158,16 @@ const Discounts = () => {
                         <TableBody>
                             {discounts.map(
                                 ({ id, code, amount, active, amountType }) => (
-                                    <TableRow key={id}>
+                                    <TableRow
+                                        key={id}
+                                        component={Link}
+                                        to={{
+                                            pathname: `${id}`,
+                                            state: {
+                                                id,
+                                            },
+                                        }}
+                                    >
                                         <TableCell
                                             className={classes.discountCell}
                                         >
@@ -205,4 +217,4 @@ const Discounts = () => {
     );
 };
 
-export default Discounts;
+export default withRouter(Discounts);
