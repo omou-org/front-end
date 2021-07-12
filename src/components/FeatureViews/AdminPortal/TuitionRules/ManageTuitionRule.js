@@ -172,6 +172,8 @@ const ManageTuitionRule = ({ location }) => {
     const classes = useStyles();
     const history = useHistory();
 
+    const [updateStatus, setUpdateStatus] = useState();
+
     const {
         state: { id, name, tuitionRuleSet, privateRules, smallGroupRules },
     } = location;
@@ -233,16 +235,14 @@ const ManageTuitionRule = ({ location }) => {
     };
 
     const ruleEditHistory = getRuleEditHistory(tuitionRuleSet);
-    console.log(privateRules);
-    console.log(smallGroupRules);
 
     const instructor =
         ((privateRules &&
             (privateRules.length === 0 ||
-                privateRules[0].allInstructorsApply)) ||
+                privateRules[privateRules.length - 1].allInstructorsApply)) ||
             (smallGroupRules &&
                 (smallGroupRules.length === 0 ||
-                    smallGroupRules[0].allInstructorsApply))) &&
+                    smallGroupRules[smallGroupRules.length - 1].allInstructorsApply))) &&
         'All';
     // (privateRules && !privateRules[0].allInstructorsApply) ?
     // privateRules[0].tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
@@ -269,6 +269,11 @@ const ManageTuitionRule = ({ location }) => {
     const handleOnChange = (e) => {
         const hourlyTuition = e.target.value;
         setHourlyTuition(hourlyTuition);
+    };
+
+    const handleUpdateChange = e => {
+        const updateStatus = e.target.value;
+        setUpdateStatus(updateStatus);
     };
 
     const onSubmit = () => {
@@ -445,18 +450,17 @@ const ManageTuitionRule = ({ location }) => {
                             <Grid item>
                                 <FormControl component='fieldset'>
                                     <RadioGroup
-                                    // name='gender1'
-                                    // value={value}
-                                    // onChange={handleChange}
+                                    value={updateStatus}
+                                    onChange={handleUpdateChange}
                                     >
                                         <FormControlLabel
                                             value='newStudents'
-                                            control={<Radio />}
+                                            control={<Radio color='primary' />}
                                             label='Apply update only to new students enrolled to this tuition rule for new invoices'
                                         />
                                         <FormControlLabel
                                             value='allStudents'
-                                            control={<Radio />}
+                                            control={<Radio color='primary' />}
                                             label='Apply update to new invoices for both existing and new students enrolled with this tuition rule for new invoices'
                                         />
                                     </RadioGroup>
@@ -498,6 +502,7 @@ const ManageTuitionRule = ({ location }) => {
                                             : onSubmitUpdate
                                     }
                                     variant='contained'
+                                    disabled={updateStatus ? false : true}
                                 >
                                     update
                                 </ResponsiveButton>

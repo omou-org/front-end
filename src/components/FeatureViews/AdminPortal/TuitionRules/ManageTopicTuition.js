@@ -143,9 +143,9 @@ const ManageTopicTuition = ({
         (price) => price.tuitionRule.courseType === 'SMALL_GROUP'
     );
 
-    console.log(privateRules);
-    console.log(smallGroupRules);
-    console.log(tuitionRuleSet);
+    // console.log(privateRules);
+    // console.log(smallGroupRules);
+    // console.log(tuitionRuleSet);
 
     return (
         <Grid
