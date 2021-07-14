@@ -31,12 +31,59 @@
 }
 
 .check-btn label input {
-    position: absolute;
-    top: -20px;
+  position: absolute;
+  top: -20px;
 }
 
 .btn {
-    line-height: 1.2;
-    margin-bottom: '15px';
-    margin-left: '10px';
+  line-height: 1.2;
+  margin-bottom: '15px';
+  margin-left: '10px';
+}
+
+.instructor-select {
+  list-style-type: none;
+  margin: 25px 0 0 0;
+  padding: 0;
+}
+
+.instructor-select li {
+  float: left;
+  margin: 0 5px 0 0;
+  width: 100px;
+  height: 40px;
+  position: relative;
+}
+
+.instructor-select-btn, .dayOfWeek-time-select-btn {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  z-index: 100;
+  display: none;
+  width: 100%;
+}
+
+.instructor-select-label, .dayOfWeek-time-select-label {
+  cursor: pointer;
+  z-index: 90;
+  padding: 10px;
+
+}
+
+.instructor-select-label.selected {
+  background-color: #EBFAFF;
+}
+
+.instructor-select-label:hover {
+  background: lightgray;
+}
+
+.dayOfWeek-time-select-label {
+  margin: 10px;
+  width: 88px;
+  border: #43B5D9 1px solid;
+  border-radius: 5px;
+  color: #43B5D9;
+  //text-align:left;
 }

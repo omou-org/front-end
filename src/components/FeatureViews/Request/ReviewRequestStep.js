@@ -1,14 +1,14 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import {Grid, Typography} from '@material-ui/core';
 
 // import { highlightColor, slateGrey } from '../../../theme/muiTheme';
 import gql from 'graphql-tag';
-import { useQuery } from '@apollo/client';
-import { makeStyles } from '@material-ui/core/styles';
+import {useQuery} from '@apollo/client';
+import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import Eyebrow from '../../OmouComponents/Eyebrow';
-import { useFormState } from 'react-final-form';
-import { fullName } from 'utils';
+import {useFormState} from 'react-final-form';
+import {fullName} from 'utils';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -128,7 +128,7 @@ const ReviewRequestStep = () => {
                 <Grid item xs={7}>
                     <ReciptLabels
                         header='Day & time'
-                        subHeader={`${recurringDays()} at time`}
+                        subHeader={`${recurringDays()} at 9:00am`}
                     />
                 </Grid>
 
@@ -141,7 +141,7 @@ const ReviewRequestStep = () => {
                 <Grid item xs={3}>
                     <ReciptLabels
                         header='INSTRUCTOR'
-                        subHeader={'instructor'}
+                        subHeader={'Tim Yang'}
                     />
                 </Grid>
 

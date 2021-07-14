@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Typography,
-    Grid,
-    Stepper,
-    Step,
-    StepLabel,
-    Button,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {Button, Grid, Step, StepLabel, Stepper, Typography,} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 
 import gql from 'graphql-tag';
-import { Form as ReactForm } from 'react-final-form';
+import {Form as ReactForm} from 'react-final-form';
 
-import { useQuery } from '@apollo/client';
-import { useSelector } from 'react-redux';
+import {useQuery} from '@apollo/client';
+import {useSelector} from 'react-redux';
 
 import SelectStudentStep from './SelectStudentStep';
 import SelectInstructorStep from './SelectInstructorStep';
 import ReviewRequestStep from './ReviewRequestStep';
 import RequestSubmittedModal from './RequestSubmittedModal';
+import {useHistory} from "react-router-dom";
 
 const GET_STUDENT_LIST = gql`
     query getStudentList($parentID: ID) {
@@ -59,6 +53,7 @@ function getSteps() {
 
 const RequestScheduler = () => {
     const classes = useStyles();
+    const history = useHistory();
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
     const loggedInParentID = useSelector(({ auth }) => auth.user.id);
@@ -107,6 +102,9 @@ const RequestScheduler = () => {
             setActiveStep(2);
             handleModalOpen();
         }
+        if (activeStep + 1 === 3) {
+            history.push('/manage-tutoring-requests');
+        }
     };
 
     const handleBack = () => {
@@ -136,7 +134,7 @@ const RequestScheduler = () => {
     return (
         <>
             <Grid container direction='row'>
-                <Grid item xs={5}>
+                <Grid item>
                     <Typography align='left' variant='h1'>
                         Submit Tutoring Request
                     </Typography>
@@ -193,7 +191,7 @@ const RequestScheduler = () => {
                                                     />
                                                 )}
                                                 {!modalOpen && (
-                                                    <div>
+                                                    <div style={{marginTop: '16px'}}>
                                                         <Button
                                                             disabled={
                                                                 activeStep === 0
