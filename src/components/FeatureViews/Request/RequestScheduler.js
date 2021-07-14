@@ -1,18 +1,25 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Grid, Step, StepLabel, Stepper, Typography,} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import React, { useEffect, useState } from 'react';
+import {
+    Button,
+    Grid,
+    Step,
+    StepLabel,
+    Stepper,
+    Typography,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 import gql from 'graphql-tag';
-import {Form as ReactForm} from 'react-final-form';
+import { Form as ReactForm } from 'react-final-form';
 
-import {useQuery} from '@apollo/client';
-import {useSelector} from 'react-redux';
+import { useQuery } from '@apollo/client';
+import { useSelector } from 'react-redux';
 
 import SelectStudentStep from './SelectStudentStep';
 import SelectInstructorStep from './SelectInstructorStep';
 import ReviewRequestStep from './ReviewRequestStep';
 import RequestSubmittedModal from './RequestSubmittedModal';
-import {useHistory} from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 const GET_STUDENT_LIST = gql`
     query getStudentList($parentID: ID) {
@@ -191,7 +198,11 @@ const RequestScheduler = () => {
                                                     />
                                                 )}
                                                 {!modalOpen && (
-                                                    <div style={{marginTop: '16px'}}>
+                                                    <div
+                                                        style={{
+                                                            marginTop: '16px',
+                                                        }}
+                                                    >
                                                         <Button
                                                             disabled={
                                                                 activeStep === 0

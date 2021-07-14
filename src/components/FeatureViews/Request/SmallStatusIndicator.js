@@ -1,7 +1,7 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
-import {cloudy, green2} from 'theme/muiTheme';
-import PropTypes from "prop-types";
+import { makeStyles } from '@material-ui/core/styles';
+import { cloudy, green2 } from 'theme/muiTheme';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     circle: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     },
 });
 
-const Circle = ({isActive}) => {
+const Circle = ({ isActive }) => {
     const classes = useStyles();
 
     return (
@@ -42,7 +42,7 @@ Circle.propTypes = {
     isActive: PropTypes.bool,
 };
 
-const Line = ({isActive}) => {
+const Line = ({ isActive }) => {
     const classes = useStyles();
 
     return (
@@ -54,7 +54,7 @@ Line.propTypes = {
     isActive: PropTypes.bool,
 };
 
-const SmallStatusIndicator = ({status}) => {
+const SmallStatusIndicator = ({ status }) => {
     const classes = useStyles();
 
     let statusArr = Array(5).fill(false);
@@ -73,11 +73,11 @@ const SmallStatusIndicator = ({status}) => {
 
     return (
         <div className={classes.indicatorContainer}>
-            <Circle isActive={statusArr[0]}/>
-            <Line isActive={statusArr[1]}/>
-            <Circle isActive={statusArr[2]}/>
-            <Line isActive={statusArr[3]}/>
-            <Circle isActive={statusArr[4]}/>
+            <Circle isActive={statusArr[0]} />
+            <Line isActive={statusArr[1]} />
+            <Circle isActive={statusArr[2]} />
+            <Line isActive={statusArr[3]} />
+            <Circle isActive={statusArr[4]} />
         </div>
     );
 };

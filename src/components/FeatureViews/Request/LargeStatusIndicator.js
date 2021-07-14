@@ -1,9 +1,9 @@
 import React from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
-import {Typography} from '@material-ui/core';
-import {cloudy, green2} from 'theme/muiTheme';
-import PropTypes from "prop-types";
+import { Typography } from '@material-ui/core';
+import { cloudy, green2 } from 'theme/muiTheme';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     circle: {
@@ -59,12 +59,12 @@ const useStyles = makeStyles({
     },
 });
 
-const Circle = ({isActive}) => {
+const Circle = ({ isActive }) => {
     const classes = useStyles();
 
     return (
         <div className={`${classes.circle} ${isActive && classes.active}`}>
-            <CheckIcon className={classes.iconStyle}/>
+            <CheckIcon className={classes.iconStyle} />
         </div>
     );
 };
@@ -73,7 +73,7 @@ Circle.propTypes = {
     isActive: PropTypes.bool,
 };
 
-const Line = ({isActive}) => {
+const Line = ({ isActive }) => {
     const classes = useStyles();
 
     return (
@@ -85,7 +85,7 @@ Line.propTypes = {
     isActive: PropTypes.bool,
 };
 
-const LargeStatusIndicator = ({status}) => {
+const LargeStatusIndicator = ({ status }) => {
     const classes = useStyles();
 
     let statusArr = Array(5).fill(false);
@@ -146,7 +146,7 @@ const LargeStatusIndicator = ({status}) => {
 };
 
 LargeStatusIndicator.propTypes = {
-    status: PropTypes.string
+    status: PropTypes.string,
 };
 
 export default LargeStatusIndicator;

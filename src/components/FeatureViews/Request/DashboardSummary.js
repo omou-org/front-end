@@ -1,9 +1,9 @@
 import React from 'react';
-import {Grid, Typography} from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import UserAvatar from 'components/FeatureViews/Accounts/UserAvatar';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import LargeStatusIndicator from './LargeStatusIndicator';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     infoRow: {

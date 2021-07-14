@@ -1,15 +1,15 @@
 import React from 'react';
-import {Grid, MenuItem} from '@material-ui/core';
-import {makeStyles} from '@material-ui/core/styles';
+import { Grid, MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-import {Select} from 'mui-rff';
+import { Select } from 'mui-rff';
 
-import {BootstrapInput} from '../Courses/CourseManagementContainer';
-import {DatePicker, ToggleButton} from '../../Form/FieldComponents/Fields';
+import { BootstrapInput } from '../Courses/CourseManagementContainer';
+import { DatePicker, ToggleButton } from '../../Form/FieldComponents/Fields';
 
-import {highlightColor} from '../../../theme/muiTheme';
+import { highlightColor } from '../../../theme/muiTheme';
 import Eyebrow from '../../OmouComponents/Eyebrow';
-import TutoringInstructorAndDateTimeSelector from "./TutoringInstructorAndDateTimeSelector";
+import TutoringInstructorAndDateTimeSelector from './TutoringInstructorAndDateTimeSelector';
 
 const useStyles = makeStyles((theme) => ({
     contentSpacing: {
@@ -48,20 +48,15 @@ const SelectInstructorStep = () => {
     ];
 
     return (
-        <Grid
-            container
-            direction='column'
-            justify='flex-start'
-            spacing={1}
-        >
+        <Grid container direction='column' justify='flex-start' spacing={1}>
             <Grid item container spacing={2}>
                 <Grid
                     item
                     className={classes.contentSpacing}
-                    style={{textAlign: 'left'}}
+                    style={{ textAlign: 'left' }}
                 >
                     <DatePicker
-                        style={{width: '200px'}}
+                        style={{ width: '200px' }}
                         tutoring={true}
                         name='startDate'
                         label='Start Date'
@@ -71,10 +66,10 @@ const SelectInstructorStep = () => {
                 <Grid
                     item
                     className={classes.contentSpacing}
-                    style={{textAlign: 'left'}}
+                    style={{ textAlign: 'left' }}
                 >
                     <DatePicker
-                        style={{width: '200px'}}
+                        style={{ width: '200px' }}
                         tutoring={true}
                         name='endDate'
                         label='End Date'
@@ -107,17 +102,14 @@ const SelectInstructorStep = () => {
                 </Grid>
             </Grid>
             <Grid item container xs={2} className={classes.contentSpacing}>
-                <Eyebrow
-                    title={'Duration of Meeting'}
-                    subText={'.'}
-                />
+                <Eyebrow title={'Duration of Meeting'} subText={'.'} />
                 <Select
                     name='duration'
-                    input={<BootstrapInput/>}
+                    input={<BootstrapInput />}
                     className={classes.selectDuration}
-                    classes={{select: classes.menuSelect}}
+                    classes={{ select: classes.menuSelect }}
                     MenuProps={{
-                        classes: {list: classes.dropdown},
+                        classes: { list: classes.dropdown },
                         anchorOrigin: {
                             vertical: 'bottom',
                             horizontal: 'left',
@@ -144,13 +136,21 @@ const SelectInstructorStep = () => {
                 alignItems='center'
                 className={classes.instructorSelectContainer}
             >
-                <Grid item xs={4} style={{marginBottom: '5px', padding: "10px"}}>
+                <Grid
+                    item
+                    xs={4}
+                    style={{ marginBottom: '5px', padding: '10px' }}
+                >
                     <Eyebrow
                         title='Available instructors'
                         subText='Select 1 instructor who is available'
                     />
                 </Grid>
-                <Grid item xs={8} style={{marginBottom: '5px', padding: "10px"}}>
+                <Grid
+                    item
+                    xs={8}
+                    style={{ marginBottom: '5px', padding: '10px' }}
+                >
                     <Eyebrow
                         title='Available times'
                         subText='Select duration of session and pick each available time '
@@ -164,7 +164,7 @@ const SelectInstructorStep = () => {
                         - Bio
 
                     */}
-                    <TutoringInstructorAndDateTimeSelector/>
+                    <TutoringInstructorAndDateTimeSelector />
                 </Grid>
             </Grid>
         </Grid>

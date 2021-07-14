@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -10,12 +10,12 @@ import TableRow from '@material-ui/core/TableRow';
 import NoListAlert from 'components/OmouComponents/NoListAlert';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import {makeStyles} from '@material-ui/core/styles';
-import {skyBlue} from 'theme/muiTheme';
+import { makeStyles } from '@material-ui/core/styles';
+import { skyBlue } from 'theme/muiTheme';
 
 import DashboardSummary from './DashboardSummary';
 import SmallStatusIndicator from './SmallStatusIndicator';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles({
     tableRowSelected: {
@@ -93,7 +93,7 @@ const RequestTable = ({ requests }) => {
                     ))}
                 </TableBody>
             </Table>
-            {requests.length === 0 && <NoListAlert list='Requests'/>}
+            {requests.length === 0 && <NoListAlert list='Requests' />}
         </Grid>
     );
 };
