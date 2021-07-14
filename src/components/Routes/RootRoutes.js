@@ -39,6 +39,8 @@ import Scheduler from '../FeatureViews/Scheduler/Scheduler';
 import DataUseCaseTable from '../OmouComponents/DataUseCaseTable';
 
 import Invoices from '../FeatureViews/Invoices/Invoices';
+import Request from '../FeatureViews/Request/Request';
+import RequestScheduler from '../FeatureViews/Request/RequestScheduler';
 
 export const RootRoutes = () => {
     const dispatch = useDispatch();
@@ -172,6 +174,30 @@ export const RootRoutes = () => {
             </AuthenticatedRoute>
             <AuthenticatedRoute path='/registration/receipt/:paymentID?'>
                 <InvoiceReceipt />
+            </AuthenticatedRoute>
+
+            {/* Request Routes */}
+            <AuthenticatedRoute
+                exact
+                path='/manage-tutoring-requests'
+                users={[
+                    USER_TYPES.parent,
+                    USER_TYPES.receptionist,
+                    USER_TYPES.admin,
+                ]}
+            >
+                <Request />
+            </AuthenticatedRoute>
+            <AuthenticatedRoute
+                exact
+                path='/manage-tutoring-requests/schedule'
+                users={[
+                    USER_TYPES.parent,
+                    USER_TYPES.receptionist,
+                    USER_TYPES.admin,
+                ]}
+            >
+                <RequestScheduler />
             </AuthenticatedRoute>
 
             {/* Instructor Routes */}

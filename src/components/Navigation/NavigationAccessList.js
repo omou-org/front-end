@@ -8,6 +8,7 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import ListAltOutlinedIcon from '@material-ui/icons/ListAltOutlined';
 import { ReactComponent as NewAdminIcon } from './newadminicon.svg';
+import EventAvailableIcon from '@material-ui/icons/EventAvailable';
 
 /**
  * @description Various pages accessible by different users
@@ -46,6 +47,11 @@ export const NavList = {
             icon: <AttachMoneyIcon />,
         },
         {
+            name: 'Request',
+            link: '/manage-tutoring-requests',
+            icon: <EventAvailableIcon />,
+        },
+        {
             name: 'Admin',
             link: '/adminportal',
             icon: <NewAdminIcon />,
@@ -81,6 +87,11 @@ export const NavList = {
             name: 'Invoices',
             link: '/invoices',
             icon: <AttachMoneyIcon />,
+        },
+        {
+            name: 'Request',
+            link: '/manage-tutoring-requests',
+            icon: <EventAvailableIcon />,
         },
     ],
     INSTRUCTOR: [
@@ -141,6 +152,11 @@ export const NavList = {
             name: 'Invoices',
             link: '/invoices',
             icon: <AttachMoneyIcon />,
+        },
+        {
+            name: 'Request',
+            link: '/manage-tutoring-requests',
+            icon: <EventAvailableIcon />,
         },
     ],
     STUDENT: [],
