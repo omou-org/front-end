@@ -3,9 +3,11 @@ import { Grid } from '@material-ui/core';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
 import StripeIcon from './StripeIcon'
 import gql from 'graphql-tag';
+import { useQuery } from '@apollo/client';
 import { useMutation } from '@apollo/client';
 import StripeResultPopup from './StripeResultPopup';
 import { useLocation } from 'react-router-dom';
+import Loading from 'components/OmouComponents/Loading';
 
 const INITIATE_STRIPE_ONBOARDING = gql`
     mutation InitiateStripeOnboarding($refreshUrlParam: String!, $returnUrlParam: String!){
@@ -15,16 +17,21 @@ const INITIATE_STRIPE_ONBOARDING = gql`
       }
 `
 
-const IS_CONNECTED_TO_STRIPE = ''; // will add query here when ready 
+const IS_INTEGRATED_WITH_STRIPE = gql`
+  query stripeOnboardingStatus {
+    stripeOnboardingStatus
+  }
+`
 
 
 const StripeButton = () => {
 
+    const { data, loading } = useQuery(IS_INTEGRATED_WITH_STRIPE);
+
     const location = useLocation();
     const pathname = location.pathname.substring(1)
 
-    // Check if successful using query that Jerry will make
-    const isConnectedToStripe = false;
+    const isConnectedToStripe = data.stripeOnboardingStatus;
 
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
     
@@ -42,6 +49,8 @@ const StripeButton = () => {
             console.log('OOps, there has been an error connecting to stripe')
         },
     });
+
+    if (loading) return <Loading />
 
     if (isConnectedToStripe) {
         return <StripeResultPopup isConnectedToStripe={isConnectedToStripe} />
