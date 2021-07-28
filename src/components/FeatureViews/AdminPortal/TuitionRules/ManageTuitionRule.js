@@ -200,6 +200,9 @@ const ManageTuitionRule = ({ location }) => {
         (rule) =>
             rule.tuitionPriceList[0].tuitionRule.courseType === 'SMALL_GROUP'
     );
+
+    // const privateRule = tuitionRuleSet.filter(rule => rule.tuitionPriceList[0].allInstructorsApply && rule.tuitionPriceList[0].tuitionRule.courseType === 'TUTORING');
+    // const smallGroupRule = tuitionRuleSet.filter(rule => rule.tuitionPriceList[0].allInstructorsApply && rule.tuitionPriceList[0].tuitionRule.courseType === 'SMALL_GROUP');
     // const classRule = tuitionRuleSet.find(rule => rule.tuitionPriceList[0].tuitionRule.courseType === 'CLASS');
 
     const tuitionRuleId =
@@ -277,6 +280,7 @@ const ManageTuitionRule = ({ location }) => {
     };
 
     const onSubmit = () => {
+        console.log('create attempt');
         submitData({
             variables: {
                 hourlyTuition: hourlyTuition,
@@ -293,6 +297,7 @@ const ManageTuitionRule = ({ location }) => {
     };
 
     const onSubmitUpdate = () => {
+        console.log('update attempt');
         submitUpdatedData({
             variables: {
                 hourlyTuition: hourlyTuition,
@@ -502,7 +507,7 @@ const ManageTuitionRule = ({ location }) => {
                                             : onSubmitUpdate
                                     }
                                     variant='contained'
-                                    disabled={updateStatus ? false : true}
+                                    disabled={(firstTimeSmallGroup || firstTimePrivate) || updateStatus ? false : true}
                                 >
                                     update
                                 </ResponsiveButton>
