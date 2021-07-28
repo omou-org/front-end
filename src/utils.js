@@ -2,6 +2,8 @@ import { instance } from 'actions/apiActions';
 import { useCallback, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import moment from 'moment';
+import { client } from 'index';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 export const USER_TYPES = {
@@ -397,6 +399,11 @@ export const instructorConflictCheck = async (instructorID, start, end) => {
     }
 };
 
+export const camelCaseToSentenceCase = (string) => {
+    const result = string.replace(/([A-Z])/g, ' $1');
+    return result.charAt(0).toUpperCase() + result.slice(1);
+};
+
 export const capitalizeString = (string) =>
     string[0].toUpperCase() + string.slice(1).toLowerCase();
 
@@ -719,6 +726,121 @@ export function useSessionStorage(key, initialValue) {
     return [storedValue, setValue];
 }
 
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+export function useURLQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
+// Hooks for templates
+/**
+ * @description - Hook to upload template 
+ * @param {xlsx} - excel file
+ * @param {string} - templateType
+ 
+ * @returns {obj} - 
+ *  data : {
+ *     successUploads : int
+ *     failedUploads   : int
+ *     errorFile  : base64 
+ *  }
+ * error: [error ]
+ * 
+ */
+
+export function useUploadOmouTemplate() {
+    const { token } = useSelector(({ auth }) => auth);
+
+    const uploadTemplate = async (uploadedFile, templateName) => {
+        let bodyFormData = new FormData();
+
+        let lowerCaseTemplateName = templateName.toLowerCase();
+        let opsString = `{"query" : "mutation ($file: Upload!) { upload${templateName}(${lowerCaseTemplateName}: $file) { totalSuccess totalFailure errorExcel}}", "variables": { "file": null }}`;
+        let mapsString = `{"${lowerCaseTemplateName}_excel":  ["variables.file"]}`;
+
+        if (uploadedFile) {
+            bodyFormData.append('operations', opsString);
+            bodyFormData.append('map', mapsString);
+            bodyFormData.append(`${lowerCaseTemplateName}_excel`, uploadedFile);
+        }
+
+        const response = await fetch(
+            process.env.REACT_APP_DOMAIN + '/graphql',
+            {
+                method: 'POST',
+                body: bodyFormData,
+                headers: {
+                    Authorization: `JWT ${token}`,
+                },
+            }
+        );
+
+        let resp = await response.json();
+
+        return resp;
+    };
+
+    return { uploadTemplate };
+}
+
+/**
+ *  @description
+ *  @param {Object} - gql query of
+ *  @param {String} -
+ * Input : graphql query
+ * Input: template name
+ * Output : downloaded file
+ *
+ */
+const queryTemplate = async (query) => {
+    if (query) {
+        let { data } = await client.query({ query });
+        return Object.values(data)[0];
+    } else {
+        return null;
+    }
+};
+
+export async function downloadOmouTemplate(file, name) {
+    const { query, error } = file;
+    const fileString = error || (await queryTemplate(query));
+
+    function b64toBlob(base64Data, contentType) {
+        contentType = contentType || '';
+        let sliceSize = 1024;
+        let byteCharacters = atob(base64Data);
+        let bytesLength = byteCharacters.length;
+        let slicesCount = Math.ceil(bytesLength / sliceSize);
+        let byteArrays = new Array(slicesCount);
+
+        for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+            let begin = sliceIndex * sliceSize;
+            let end = Math.min(begin + sliceSize, bytesLength);
+
+            let bytes = new Array(end - begin);
+            for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+                bytes[i] = byteCharacters[offset].charCodeAt(0);
+            }
+            byteArrays[sliceIndex] = new Uint8Array(bytes);
+        }
+        return new Blob(byteArrays, { type: contentType });
+    }
+
+    let contentType =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    let blob1 = b64toBlob(fileString, contentType);
+    let blobUrl1 = URL.createObjectURL(blob1);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = blobUrl1;
+    document.body.appendChild(downloadLink);
+    downloadLink.setAttribute(
+        'download',
+        `${capitalizeString(name)}_Omou_Template.xlsx`
+    );
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
 export const AdminPropTypes = {
     user: PropTypes.shape({
         accountType: PropTypes.oneOf([
@@ -749,3 +871,10 @@ export const AdminPropTypes = {
 export function useURLQuery() { 
     return new URLSearchParams(useLocation().search); 
 }
+// Uses Regex to determine if given string
+// matches an email
+// Returns true if string matches an email
+export const isEmail = (str) => {
+    const regex = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
+    return regex.test(str);
+};

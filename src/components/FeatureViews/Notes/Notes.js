@@ -337,10 +337,10 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
         variables: { ownerID },
     });
 
-    const notes = useMemo(() => query.data?.[QUERY_KEY[ownerType]] || [], [
-        ownerType,
-        query.data,
-    ]);
+    const notes = useMemo(
+        () => query.data?.[QUERY_KEY[ownerType]] || [],
+        [ownerType, query.data]
+    );
     const getNoteByID = useCallback(
         (noteID) => notes.find(({ id }) => noteID == id),
         [notes]
@@ -575,9 +575,10 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                         onChange={handleBodyUpdate}
                         placeholder='Body (required)'
                         required
-                        rows={15}
+                        rows={100}
                         value={noteBody}
                         variant='filled'
+                        fullWidth={true}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -704,14 +705,12 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                             >
                                 {note.title}
                             </Typography>
-                            <Typography align='left' className='body'>
-                                <ReadMoreText
-                                    textLimit={30}
-                                    handleDisplay={openExistingNote(note)}
-                                >
-                                    {note.body}
-                                </ReadMoreText>
-                            </Typography>
+                            <ReadMoreText
+                                textLimit={30}
+                                handleDisplay={openExistingNote(note)}
+                            >
+                                {note.body}
+                            </ReadMoreText>
                             <Grid item xs={12}>
                                 <Typography
                                     className={`date ${classes.dateDisplay}`}
@@ -781,9 +780,12 @@ const Notes = ({ ownerType, ownerID, isDashboard }) => {
                                     }
                                 />
                             </Typography>
-                            <Typography align='left' className='body'>
+                            <ReadMoreText
+                                textLimit={200}
+                                handleDisplay={openExistingNote(note)}
+                            >
                                 {note.body}
-                            </Typography>
+                            </ReadMoreText>
                             <Typography
                                 className='date'
                                 style={{ fontWeight: '500' }}

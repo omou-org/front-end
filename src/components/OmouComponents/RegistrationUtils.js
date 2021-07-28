@@ -51,15 +51,14 @@ export const submitRegistration = (student, course) => {
     const registrationState = JSON.parse(
         sessionStorage.getItem('registrations')
     );
-    const existingEnrollmentsByStudents = Object.entries(
-        registrationState
-    ).map(([studentID, studentRegistrations]) =>
-        Array.isArray(studentRegistrations)
-            ? studentRegistrations.map((registration) => [
-                  studentID,
-                  registration.course.id,
-              ])
-            : []
+    const existingEnrollmentsByStudents = Object.entries(registrationState).map(
+        ([studentID, studentRegistrations]) =>
+            Array.isArray(studentRegistrations)
+                ? studentRegistrations.map((registration) => [
+                      studentID,
+                      registration.course.id,
+                  ])
+                : []
     );
     const isEnrolled = existingEnrollmentsByStudents
         .map((studentEnrollments) =>

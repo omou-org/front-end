@@ -31,11 +31,8 @@ export const useSubmitRegistration = (registrationDependencies) => {
                 registrationDependencies &&
                 registrationDependencies.complete !== true
             ) {
-                let {
-                    tutoringRegistrations,
-                    classRegistrations,
-                    payment,
-                } = registrationDependencies;
+                let { tutoringRegistrations, classRegistrations, payment } =
+                    registrationDependencies;
                 tutoringRegistrations = tutoringRegistrations.map(
                     ({ newTutoringCourse, ...rest }) => ({
                         ...rest,

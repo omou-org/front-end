@@ -1443,28 +1443,28 @@ export default {
                     maxLength >= length;
                 const maxCourseAvailabilities =
                     course.activeAvailabilityList.length;
-                const loadedCourseAvailabilityFieldValues = course.activeAvailabilityList.reduce(
-                    (acc, courseAvailability, index) => ({
-                        ...acc,
-                        ...(isValidCourseAvailability(
-                            index + 1,
-                            maxCourseAvailabilities
-                        ) && {
-                            [`dayOfWeek-${
-                                index + 1
-                            }`]: courseAvailability.dayOfWeek,
-                            [`endTime-${index + 1}`]: moment(
-                                courseAvailability.endTime,
-                                'HH:mm'
-                            ),
-                            [`startTime-${index + 1}`]: moment(
-                                courseAvailability.startTime,
-                                'HH:mm'
-                            ),
+                const loadedCourseAvailabilityFieldValues =
+                    course.activeAvailabilityList.reduce(
+                        (acc, courseAvailability, index) => ({
+                            ...acc,
+                            ...(isValidCourseAvailability(
+                                index + 1,
+                                maxCourseAvailabilities
+                            ) && {
+                                [`dayOfWeek-${index + 1}`]:
+                                    courseAvailability.dayOfWeek,
+                                [`endTime-${index + 1}`]: moment(
+                                    courseAvailability.endTime,
+                                    'HH:mm'
+                                ),
+                                [`startTime-${index + 1}`]: moment(
+                                    courseAvailability.startTime,
+                                    'HH:mm'
+                                ),
+                            }),
                         }),
-                    }),
-                    {}
-                );
+                        {}
+                    );
 
                 return {
                     courseDescription: {
@@ -1667,14 +1667,13 @@ export default {
                             }
 
                             // Update cache for Course Management Courses
-                            const cachedCourseManagementCourses = cache.readQuery(
-                                {
+                            const cachedCourseManagementCourses =
+                                cache.readQuery({
                                     query: GET_COURSES_BY_ACCOUNT_ID,
                                     variables: {
                                         accountId: '',
                                     },
-                                }
-                            );
+                                });
 
                             if (cachedCourseManagementCourses !== null) {
                                 cache.writeQuery({

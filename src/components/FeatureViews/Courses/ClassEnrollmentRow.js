@@ -119,10 +119,8 @@ const ClassEnrollmentRow = ({
     });
 
     const [inviteStatus, setInviteStatus] = useState('Unsent');
-    const [
-        googleClassroomStatusMessage,
-        setGoogleClassroomStatusMessage,
-    ] = useState('Send Invite');
+    const [googleClassroomStatusMessage, setGoogleClassroomStatusMessage] =
+        useState('Send Invite');
     const { courses, google_courses } = useSelector(({ auth }) => auth);
 
     const getGoogleClassCode = (courses, courseID) => {
@@ -189,10 +187,9 @@ const ClassEnrollmentRow = ({
         if (isInviteUnsent) {
             setGoogleClassroomStatusMessage('Resend Invite');
             sendGoogleClassroomInvite(omouGoogleIntegratedCourseID);
+        } else if (googleClassroomStatusMessage == 'Invite Accepted') {
+            console.log('Invite accepted');
         }
-        // else if (googleClassroomStatusMessage == 'Invite Accepted') {
-        //
-        // }
     };
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);

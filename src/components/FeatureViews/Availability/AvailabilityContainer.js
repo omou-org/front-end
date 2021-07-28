@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from 'react';
-import BackgroundPaper from '../../OmouComponents/BackgroundPaper';
+import React, {useCallback, useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
@@ -7,7 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import TimeAvailabilityContainer from './TimeAvailabilityContainer';
 import RequestOutOfOfficeContainer from './RequestOutOfOfficeContainer';
 import Box from '@material-ui/core/Box';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
 function TabPanel({ children, value, index, ...other }) {
@@ -50,7 +49,7 @@ export default function AvailabilityContainer() {
     const classes = useStyles();
 
     return (
-        <BackgroundPaper>
+        <>
             <Grid container direction='row' spacing={4}>
                 <Grid item>
                     <Typography variant='h5' align='left'>
@@ -93,6 +92,6 @@ export default function AvailabilityContainer() {
                     </Grid>
                 </Grid>
             </Grid>
-        </BackgroundPaper>
+        </>
     );
 }

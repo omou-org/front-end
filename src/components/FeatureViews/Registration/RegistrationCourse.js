@@ -26,7 +26,7 @@ import gql from 'graphql-tag';
 import { SIMPLE_COURSE_DATA } from 'queryFragments';
 import AccessControlComponent from '../../OmouComponents/AccessControlComponent.js';
 import { fullName, gradeLvl, USER_TYPES } from 'utils';
-import CourseAvailabilites from '../../OmouComponents/CourseAvailabilities';
+import { CourseAvailabilites } from '../../OmouComponents/CourseAvailabilities';
 
 export const GET_COURSE_DETAILS = gql`
     query CourseDetails($courseId: ID!) {

@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import Dialog from '@material-ui/core/Dialog';
-import { closeRegistrationCart } from './RegistrationUtils';
-import { logout, setToken } from '../../actions/authActions';
-import { useIdleTimer } from 'react-idle-timer';
-import { useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import {closeRegistrationCart} from './RegistrationUtils';
+import {logout, setToken} from '../../actions/authActions';
+import {useIdleTimer} from 'react-idle-timer';
+import {useHistory} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/client';
+import {useMutation} from '@apollo/client';
 
 const REFRESH_TOKEN = gql`
     mutation RefreshToken($token: String!) {
@@ -23,17 +23,20 @@ const REFRESH_TOKEN = gql`
 `;
 
 export default function IdleTimerPrompt() {
-    const savedToken = useSelector(({ auth }) => auth.token);
+    const { token: savedToken, user } = useSelector(({ auth }) => auth);
     const [openIdlePrompt, setIdlePrompt] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
+
     const [refreshToken] = useMutation(REFRESH_TOKEN, {
         onCompleted: async (data) => {
-            dispatch(await setToken(data.refreshToken.token, true));
+            console.log({data, user});
+            dispatch(await setToken(data.refreshToken.token, true, user.email));
         },
     });
 
     const handleOnIdle = () => {
+        console.log("it's idle!");
         setIdlePrompt(true);
     };
 
@@ -56,31 +59,37 @@ export default function IdleTimerPrompt() {
                 token: savedToken,
             },
         });
+
     };
 
     const handleLogout = useCallback(() => {
-        if (openIdlePrompt) {
-            closeRegistrationCart();
-            dispatch(logout());
-            history.push('/login');
-        }
-    }, [dispatch, history, openIdlePrompt]);
+        console.log("handling logout logic");
+        closeRegistrationCart();
+        dispatch(logout());
+        history.push('/login');
 
-    useEffect(() => {
-        if (openIdlePrompt) {
-            setInterval(() => {
-                setIdlePrompt(false);
-                handleLogout();
-            }, 1000 * 60 * 2);
-        }
-    }, [openIdlePrompt, handleLogout]);
+    }, [dispatch, history]);
 
-    const { getRemainingTime } = useIdleTimer({
+    const {getRemainingTime} = useIdleTimer({
         timeout: 1000 * 60 * 18,
         onIdle: handleOnIdle,
         onActive: handleOnActive,
         debounce: 500,
     });
+
+    useEffect(() => {
+        const remainingTimeBeforeLogout = getRemainingTime();
+
+        if (openIdlePrompt && remainingTimeBeforeLogout === 0) {
+            setInterval(() => {
+                    setIdlePrompt(false);
+                },
+                1000 * 60 * 2
+            );
+        } else if (!openIdlePrompt && remainingTimeBeforeLogout === 0) {
+            handleLogout();
+        }
+    }, [openIdlePrompt, handleLogout, getRemainingTime]);
 
     return (
         <Dialog open={openIdlePrompt}>

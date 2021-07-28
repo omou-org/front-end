@@ -91,13 +91,9 @@ const AccountTab = withStyles({
     selected: {},
 })((props) => <Tab {...props}></Tab>);
 
-const TABS = [
-    'All',
-    'Instructors',
-    'Students',
-    'Receptionist',
-    'Parents',
-].map((label) => <AccountTab key={label} label={label} />);
+const TABS = ['All', 'Instructors', 'Students', 'Receptionist', 'Parents'].map(
+    (label) => <AccountTab key={label} label={label} />
+);
 
 const useStyles = makeStyles({});
 

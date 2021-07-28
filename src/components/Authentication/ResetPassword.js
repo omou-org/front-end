@@ -217,7 +217,7 @@ const ResetPassword = ({ isSet }) => {
 };
 
 ResetPassword.propTypes = {
-    isSet: PropTypes.bool.isRequired,
+    isSet: PropTypes.bool,
 };
 
 export default ResetPassword;

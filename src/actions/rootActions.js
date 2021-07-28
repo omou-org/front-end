@@ -134,9 +134,8 @@ export const submitParentAndStudent = (
 ) => {
     const studentEndpoint = typeToEndpoint['student'];
     const parentEndpoint = typeToEndpoint['parent'];
-    const [studentSuccessAction, studentFailAction] = typeToPostActions[
-        'student'
-    ];
+    const [studentSuccessAction, studentFailAction] =
+        typeToPostActions['student'];
     const [parentSuccessAction, parentFailAction] = typeToPostActions['parent'];
     return (dispatch) =>
         new Promise((resolve) => {

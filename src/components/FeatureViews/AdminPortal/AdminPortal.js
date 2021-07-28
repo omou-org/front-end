@@ -1,36 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Modal from '@material-ui/core/Modal';
 
 import './AdminPortal.scss';
-import AdminActionCenter from './AdminActionCenter';
-import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
-import Box from '@material-ui/core/Box';
-import StripeButton from 'components/OmouComponents/3rdPartyCustomComponents/StripeButton';
+// import AdminActionCenter from './AdminActionCenter';
+// import AdminViewsRoutes from 'components/Routes/AdminViewsRoutes';
+import AdminPortalTabs from './AdminPortalTabs';
+import BulkUploadModal from './BulkUploadModal';
+import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import StripeButton from 'components/OmouComponents/3rdPartyCustomComponents/StripeButton'
 
-const AdminPortal = () => (
-    <form>
-        <Grid container layout='row'>
-            <Grid item xs={12} container justify="space-between" alignItems="center">
-                <Box paddingTop='16px'>
-                    <Typography align='left' variant='h1'>
-                        Admin Portal
-                    </Typography>
-                </Box>
-                <Grid item>
-                    <StripeButton/>
+const AdminPortal = () => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const handleModalOpen = () => setModalOpen(true);
+    const handleModalClose = () => setModalOpen(false);
+
+    return (
+        <form>
+            <Grid container direction='row'>
+                <Grid container direction='row'>
+                    <Grid item xs={6}>
+                        <Typography align='left' variant='h1'>
+                            Admin Portal
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6} style={{ textAlign: 'right' }}>
+                        <ResponsiveButton
+                            variant='outlined'
+                            onClick={handleModalOpen}
+                        >
+                            Bulk Upload
+                        </ResponsiveButton>
+                        <StripeButton/>
+                    </Grid>
+                    <Modal
+                        disableBackdropClick
+                        open={modalOpen}
+                        onClose={handleModalClose}
+                    >
+                        <BulkUploadModal closeModal={handleModalClose} />
+                    </Modal>
                 </Grid>
+                <Grid item xs={12}>
+                    <AdminPortalTabs />
+                </Grid>
+                {/* <Grid item xs={12}>
+                    <AdminActionCenter />
+                </Grid>
+                <Grid item xs={12}>
+                    <AdminViewsRoutes />
+                </Grid> */}
             </Grid>
-            <Grid item xs={12}>
-                <AdminActionCenter />
-            </Grid>
-            <Grid item xs={12}>
-                <AdminViewsRoutes />
-            </Grid>
-        </Grid>
-    </form>
-);
+        </form>
+    );
+};
 
 AdminPortal.propTypes = {};
 
