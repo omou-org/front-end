@@ -245,7 +245,8 @@ const ManageTuitionRule = ({ location }) => {
                 privateRules[privateRules.length - 1].allInstructorsApply)) ||
             (smallGroupRules &&
                 (smallGroupRules.length === 0 ||
-                    smallGroupRules[smallGroupRules.length - 1].allInstructorsApply))) &&
+                    smallGroupRules[smallGroupRules.length - 1]
+                        .allInstructorsApply))) &&
         'All';
     // (privateRules && !privateRules[0].allInstructorsApply) ?
     // privateRules[0].tuitionRule.instructors.map(({ user }) => (<span key={user.id}>{user.firstName} {user.lastName}, </span>))
@@ -274,7 +275,7 @@ const ManageTuitionRule = ({ location }) => {
         setHourlyTuition(hourlyTuition);
     };
 
-    const handleUpdateChange = e => {
+    const handleUpdateChange = (e) => {
         const updateStatus = e.target.value;
         setUpdateStatus(updateStatus);
     };
@@ -455,8 +456,8 @@ const ManageTuitionRule = ({ location }) => {
                             <Grid item>
                                 <FormControl component='fieldset'>
                                     <RadioGroup
-                                    value={updateStatus}
-                                    onChange={handleUpdateChange}
+                                        value={updateStatus}
+                                        onChange={handleUpdateChange}
                                     >
                                         <FormControlLabel
                                             value='newStudents'
