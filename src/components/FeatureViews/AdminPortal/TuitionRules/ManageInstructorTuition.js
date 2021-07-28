@@ -168,22 +168,23 @@ const ManageInstructorTuition = ({ location }) => {
 
     const toggleShowEdit = () => setShowEdit(!showEdit);
 
-    const { loading: ruleLoading, error: ruleError, data: ruleData } = useQuery(
-        GET_TUITION_RULE,
-        {
-            variables: {
-                tuitionRuleId: id,
-            },
-            fetchPolicy: 'cache-and-network',
-        }
-    );
+    const {
+        loading: ruleLoading,
+        error: ruleError,
+        data: ruleData,
+    } = useQuery(GET_TUITION_RULE, {
+        variables: {
+            tuitionRuleId: id,
+        },
+        fetchPolicy: 'cache-and-network',
+    });
 
     console.log(ruleData);
 
     const [submitData] = useMutation(UPDATE_INSTRUCTOR_RULE, {
         onCompleted: (data) => {
             console.log(data);
-        }
+        },
     });
 
     const onSubmit = () => {
@@ -436,7 +437,7 @@ const ManageInstructorTuition = ({ location }) => {
                             <ResponsiveButton
                                 onClick={onSubmit}
                                 variant='contained'
-                                disabled={ updateStatus ? false : true }
+                                disabled={updateStatus ? false : true}
                             >
                                 update
                             </ResponsiveButton>
