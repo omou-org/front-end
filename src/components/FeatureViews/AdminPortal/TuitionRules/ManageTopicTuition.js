@@ -259,12 +259,11 @@ const ManageTopicTuition = ({
                                                     id,
                                                     tuitionRuleSet,
                                                     privateRules,
-                                                    tuitionRule
+                                                    tuitionRule,
                                                 },
                                             }}
                                         >
-                                            <TableCell
-                                            >
+                                            <TableCell>
                                                 {allInstructorsApply
                                                     ? 'All'
                                                     : tuitionRule.instructors.map(

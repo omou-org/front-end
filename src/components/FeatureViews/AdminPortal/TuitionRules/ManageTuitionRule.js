@@ -508,7 +508,13 @@ const ManageTuitionRule = ({ location }) => {
                                             : onSubmitUpdate
                                     }
                                     variant='contained'
-                                    disabled={(firstTimeSmallGroup || firstTimePrivate) || updateStatus ? false : true}
+                                    disabled={
+                                        firstTimeSmallGroup ||
+                                        firstTimePrivate ||
+                                        updateStatus
+                                            ? false
+                                            : true
+                                    }
                                 >
                                     update
                                 </ResponsiveButton>
