@@ -22,6 +22,8 @@ import {
     white,
     body1,
 } from '../../../../theme/muiTheme';
+import Modal from '@material-ui/core/Modal';
+import RetireModal from './RetireModal';
 import Select from 'react-select';
 import { makeStyles } from '@material-ui/styles';
 import { ResponsiveButton } from 'theme/ThemedComponents/Button/ResponsiveButton';
@@ -149,6 +151,9 @@ const ManageInstructorTuition = ({ location }) => {
     const [selectedInstructors, setSelectedInstructors] = useState([]);
     const [hourlyTuition, setHourlyTuition] = useState();
     const [updateStatus, setUpdateStatus] = useState();
+    const [modalOpen, setModalOpen] = useState(false);
+    const handleModalOpen = () => setModalOpen(true);
+    const handleModalClose = () => setModalOpen(false);
 
     const handleUpdateChange = (e) => {
         const updateStatus = e.target.value;
@@ -263,11 +268,18 @@ const ManageInstructorTuition = ({ location }) => {
                     <Grid item style={{ marginLeft: '1rem' }}>
                         <ResponsiveButton
                             variant='outlined'
-                            // onClick={toggleShowEdit}
+                            onClick={handleModalOpen}
                         >
-                            Delete
+                            Retire
                         </ResponsiveButton>
                     </Grid>
+                    <Modal
+                        disableBackdropClick
+                        open={modalOpen}
+                        onClose={handleModalClose}
+                    >
+                        <RetireModal closeModal={handleModalClose} />
+                    </Modal>
                 </Grid>
             )}
             <Grid
