@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Typography, } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import {
     white,
@@ -47,7 +47,6 @@ const useStyles = makeStyles({
 });
 
 const RetireModal = ({ closeModal }) => {
-
     const classes = useStyles();
     return (
         <Grid container className={classes.modalStyle}>
@@ -58,11 +57,18 @@ const RetireModal = ({ closeModal }) => {
 
                 <Typography
                     align='left'
-                    style={{ marginBottom: '1.5rem'}}
+                    style={{ marginBottom: '1.5rem' }}
                     variant='h6'
                 >
-                    When you retire this rule, instructors assigned to this rule will be assigned to the default All Instructor rule at $___ per hour. 
-                    <strong> This update will be applied to new invoices for both existing and new students enrolled with this tuition rule.</strong>
+                    When you retire this rule, instructors assigned to this rule
+                    will be assigned to the default All Instructor rule at $___
+                    per hour.
+                    <strong>
+                        {' '}
+                        This update will be applied to new invoices for both
+                        existing and new students enrolled with this tuition
+                        rule.
+                    </strong>
                 </Typography>
 
                 <Grid style={{ textAlign: 'right' }} item xs={12}>
