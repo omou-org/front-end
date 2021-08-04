@@ -10,11 +10,34 @@ import './AdminPortal.scss';
 import AdminPortalTabs from './AdminPortalTabs';
 import BulkUploadModal from './BulkUploadModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import PropTypes from 'prop-types';
 
-const AdminPortal = () => {
+const AdminPortal = (props) => {
     const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
+
+    const { match, history } = props;
+    const { params } = match;
+    const { page } = params;
+
+    const tabRoutes = [
+        'overview',
+        'topic',
+        'tuition-rules',
+        'access-control',
+        'admin-log',
+        'business-details',
+    ];
+
+    const [selectedTabIndex, setSelectedTabIndex] = useState(
+        tabRoutes.indexOf(page)
+    );
+
+    const handleTabSelect = (event, index) => {
+        history.push(`/adminportal/${tabRoutes[index]}`);
+        setSelectedTabIndex(index);
+    };
 
     return (
         <form>
@@ -42,7 +65,10 @@ const AdminPortal = () => {
                     </Modal>
                 </Grid>
                 <Grid item xs={12}>
-                    <AdminPortalTabs />
+                    <AdminPortalTabs
+                        selectedTabIndex={selectedTabIndex}
+                        handleTabSelect={handleTabSelect}
+                    />
                 </Grid>
                 {/* <Grid item xs={12}>
                     <AdminActionCenter />
@@ -55,6 +81,9 @@ const AdminPortal = () => {
     );
 };
 
-AdminPortal.propTypes = {};
+AdminPortal.propTypes = {
+    match: PropTypes.object,
+    history: PropTypes.object,
+};
 
 export default AdminPortal;
