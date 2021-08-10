@@ -10,6 +10,7 @@ import './AdminPortal.scss';
 import AdminPortalTabs from './AdminPortalTabs';
 import BulkUploadModal from './BulkUploadModal';
 import { ResponsiveButton } from '../../../theme/ThemedComponents/Button/ResponsiveButton';
+import StripeButton from 'components/OmouComponents/3rdPartyCustomComponents/StripeButton';
 
 const AdminPortal = () => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -32,6 +33,7 @@ const AdminPortal = () => {
                         >
                             Bulk Upload
                         </ResponsiveButton>
+                        <StripeButton style={{ marginLeft: '10px' }} />
                     </Grid>
                     <Modal
                         disableBackdropClick
