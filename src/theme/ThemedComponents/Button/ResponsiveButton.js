@@ -45,7 +45,7 @@ export const ResponsiveButton = ({
                         : setButtonWidth(buttonText),
                 border: disabled ? '2px solid #DBD7D7' : '',
                 height: '36px',
-                ...styles
+                ...styles,
             }}
             disabled={disabled}
             startIcon={startIcon}
@@ -70,5 +70,5 @@ ResponsiveButton.propTypes = {
     label: PropTypes.string,
     children: PropTypes.any,
     disabled: PropTypes.bool,
-    styles: PropTypes.object
+    styles: PropTypes.object,
 };

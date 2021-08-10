@@ -1,7 +1,7 @@
-import React, {useCallback, useContext, useState} from 'react';
-import {useHistory} from 'react-router-dom';
-import {RegistrationContext} from './RegistrationContext';
-import {useMutation, useQuery} from '@apollo/client';
+import React, { useCallback, useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { RegistrationContext } from './RegistrationContext';
+import { useMutation, useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Grid from '@material-ui/core/Grid';
 import Table from '@material-ui/core/Table';
@@ -10,19 +10,19 @@ import TableCell from '@material-ui/core/TableCell';
 import TextField from '@material-ui/core/TextField/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import {ResponsiveButton} from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
 import Loading from '../../../OmouComponents/Loading';
-import {GET_PAYMENT} from '../../Invoices/InvoiceReceipt';
-import {GET_STUDENTS_AND_ENROLLMENTS} from '../CourseList';
-import {GET_REGISTRATION_CART} from '../SelectParentDialog';
-import {CREATE_REGISTRATION_CART} from './RegistrationCartContainer';
+import { GET_PAYMENT } from '../../Invoices/InvoiceReceipt';
+import { GET_STUDENTS_AND_ENROLLMENTS } from '../CourseList';
+import { GET_REGISTRATION_CART } from '../SelectParentDialog';
+import { CREATE_REGISTRATION_CART } from './RegistrationCartContainer';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
-import {GET_ENROLLMENT_DETAILS} from '../RegistrationCourseEnrollments';
-import {GET_ALL_COURSES} from '../RegistrationLanding';
+import { GET_ENROLLMENT_DETAILS } from '../RegistrationCourseEnrollments';
+import { GET_ALL_COURSES } from '../RegistrationLanding';
 import TableBody from '@material-ui/core/TableBody';
 
 const GET_PRICE_QUOTE = gql`
@@ -492,8 +492,9 @@ const PaymentBoard = () => {
               })
             : [];
 
-        const actualNewEnrollments = Array.isArray(newEnrollments) ? newEnrollments :
-            newEnrollments.data.createEnrollments.enrollments;
+        const actualNewEnrollments = Array.isArray(newEnrollments)
+            ? newEnrollments
+            : newEnrollments.data.createEnrollments.enrollments;
 
         const registrations = [
             ...actualNewEnrollments.map((enrollment) => ({
