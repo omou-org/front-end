@@ -31,8 +31,6 @@ const StripeButton = () => {
     const location = useLocation();
     const pathname = location.pathname.substring(1)
 
-    const isConnectedToStripe = data.stripeOnboardingStatus;
-
     const [stripeOnboardingLoading, setStripeOnboardingLoading] = useState(false);
     
     const [InitiateStripeOnboarding] = useMutation(INITIATE_STRIPE_ONBOARDING, {
@@ -51,6 +49,9 @@ const StripeButton = () => {
     });
 
     if (loading) return <Loading />
+
+
+    const isConnectedToStripe = data.stripeOnboardingStatus;
 
     if (isConnectedToStripe) {
         return <StripeResultPopup isConnectedToStripe={isConnectedToStripe} />

@@ -866,11 +866,6 @@ export const AdminPropTypes = {
     }).isRequired,
 };
 
-// A custom hook that builds on useLocation to parse 
-// the query string for you. 
-export function useURLQuery() { 
-    return new URLSearchParams(useLocation().search); 
-}
 // Uses Regex to determine if given string
 // matches an email
 // Returns true if string matches an email
