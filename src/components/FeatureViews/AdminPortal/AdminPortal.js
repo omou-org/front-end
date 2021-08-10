@@ -33,7 +33,7 @@ const AdminPortal = () => {
                         >
                             Bulk Upload
                         </ResponsiveButton>
-                        <StripeButton/>
+                        <StripeButton style={{marginLeft: "10px"}}/>
                     </Grid>
                     <Modal
                         disableBackdropClick

@@ -24,7 +24,7 @@ const IS_INTEGRATED_WITH_STRIPE = gql`
 `
 
 
-const StripeButton = () => {
+const StripeButton = ({style}) => {
 
     const { data, loading } = useQuery(IS_INTEGRATED_WITH_STRIPE);
 
@@ -64,7 +64,8 @@ const StripeButton = () => {
                 styles={{
                     color: '#666666',
                     paddingLeft: '2px',
-                    paddingRight: '5px'
+                    paddingRight: '5px',
+                    ...style
                 }}
                 startIcon={StripeIcon}
                 onClick={() => {
