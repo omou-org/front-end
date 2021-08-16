@@ -11,6 +11,7 @@ import {
     // body1,
     // body2,
 } from '../../../../theme/muiTheme';
+import { useHistory } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
 import { Grid, Typography } from '@material-ui/core';
 import { ResponsiveButton } from '../../../../theme/ThemedComponents/Button/ResponsiveButton';
@@ -63,12 +64,14 @@ const RETIRE_DISCOUNT = gql`
 
 const RetireModal = ({ closeModal, discountId }) => {
     const classes = useStyles();
+    const history = useHistory();
     console.log(discountId);
 
     const [submitData] = useMutation(RETIRE_DISCOUNT, {
         onCompleted: () => {
             console.log('retired');
-            closeModal();
+            // closeModal();
+            history.goBack();
         },
     });
 

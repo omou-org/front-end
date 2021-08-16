@@ -421,7 +421,7 @@ const DiscountView = ({ location }) => {
             </Grid>
 
             <Grid item style={{marginTop: '7rem'}}>
-            <Typography variant='h6'>Created {dateTimeToDate(createdAt)}</Typography>
+            <Typography variant='h6'>Created on {dateTimeToDate(createdAt)}</Typography>
             </Grid>
         </Grid>
     );

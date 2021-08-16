@@ -70,7 +70,7 @@ const useStyles = makeStyles({
 const GET_DISCOUNTS = gql`
     query {
         discounts(
-            isActive: true
+            # isActive: true
             startDate: "2021-07-10"
             endDate: "2021-09-10"
         ) {
