@@ -131,7 +131,6 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                                 <ManageInstructorTuition {...props} />
                             )}
                         />
-
                     </Switch>
                 </Router>
             </TabPanel>
@@ -151,19 +150,14 @@ const AdminPortalTabs = ({ selectedTabIndex, handleTabSelect }) => {
                         <Route
                             exact
                             path='/adminportal/discounts/:id'
-                            render={(props) => (
-                                <DiscountView {...props} />
-                            )}
+                            render={(props) => <DiscountView {...props} />}
                         />
 
                         <Route
                             exact
                             path='/adminportal/discounts/create-discount'
-                            render={(props) => (
-                                <CreateDiscount {...props} />
-                            )}
+                            render={(props) => <CreateDiscount {...props} />}
                         />
-
                     </Switch>
                 </Router>
             </TabPanel>

@@ -26,8 +26,9 @@ import { useQuery, gql } from '@apollo/client';
 import Loading from 'components/OmouComponents/Loading';
 // import { capitalizeString } from 'utils';
 import { LabelBadge } from 'theme/ThemedComponents/Badge/LabelBadge';
-import { withRouter, 
-    // useHistory 
+import {
+    withRouter,
+    // useHistory
 } from 'react-router-dom';
 
 const useStyles = makeStyles({
@@ -118,11 +119,11 @@ const Discounts = () => {
                     <ResponsiveButton
                         variant='outlined'
                         component={Link}
-                        style={{ marginLeft: '2.5rem'}}
+                        style={{ marginLeft: '2.5rem' }}
                         to={{
                             pathname: 'create-discount',
                             state: {
-                                create: 'create'
+                                create: 'create',
                             },
                         }}
                         startIcon={<AddIcon />}
@@ -166,7 +167,15 @@ const Discounts = () => {
                         </TableHead>
                         <TableBody>
                             {discounts.map(
-                                ({ id, code, amount, active, amountType, startDate, endDate }) => (
+                                ({
+                                    id,
+                                    code,
+                                    amount,
+                                    active,
+                                    amountType,
+                                    startDate,
+                                    endDate,
+                                }) => (
                                     <TableRow
                                         key={id}
                                         component={Link}

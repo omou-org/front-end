@@ -1,6 +1,4 @@
-import React, { 
-    useState 
-} from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { NavLink, withRouter, useHistory } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
@@ -119,7 +117,7 @@ const DiscountView = ({ location }) => {
         paymentMethod,
         allCoursesApply,
         courses,
-        createdAt
+        createdAt,
     } = discount;
     console.log(discount);
     console.log(id);
@@ -203,7 +201,10 @@ const DiscountView = ({ location }) => {
                     >
                         <Grid item xs={5}></Grid>
                         <Grid item>
-                            <ResponsiveButton onClick={handleModalOpen} variant='outlined'>
+                            <ResponsiveButton
+                                onClick={handleModalOpen}
+                                variant='outlined'
+                            >
                                 Retire
                             </ResponsiveButton>
                         </Grid>
@@ -211,9 +212,12 @@ const DiscountView = ({ location }) => {
                             disableBackdropClick
                             open={modalOpen}
                             onClose={handleModalClose}
-                    >
-                        <RetireModal discountId={id} closeModal={handleModalClose} />
-                    </Modal>
+                        >
+                            <RetireModal
+                                discountId={id}
+                                closeModal={handleModalClose}
+                            />
+                        </Modal>
                     </Grid>
                 </Grid>
             </Grid>
@@ -228,7 +232,13 @@ const DiscountView = ({ location }) => {
                 xs={12}
                 className={classes.vertMargin}
             >
-                <Grid xs={3} item container direction='column' className={classes.marginVertSm}>
+                <Grid
+                    xs={3}
+                    item
+                    container
+                    direction='column'
+                    className={classes.marginVertSm}
+                >
                     <Grid
                         // style={{ border: '1px solid black' }}
                         className={classes.marginVertSm}
@@ -257,7 +267,13 @@ const DiscountView = ({ location }) => {
                     </Grid>
                 </Grid>
 
-                <Grid xs={3} item container direction='column' className={classes.marginVertSm}>
+                <Grid
+                    xs={3}
+                    item
+                    container
+                    direction='column'
+                    className={classes.marginVertSm}
+                >
                     <Grid
                         // style={{ border: '1px solid black' }}
                         className={classes.marginVertSm}
@@ -294,7 +310,13 @@ const DiscountView = ({ location }) => {
                 xs={12}
                 className={classes.vertMargin}
             >
-                <Grid xs={3} item container direction='column' className={classes.marginVertSm}>
+                <Grid
+                    xs={3}
+                    item
+                    container
+                    direction='column'
+                    className={classes.marginVertSm}
+                >
                     <Grid
                         // style={{ border: '1px solid black' }}
                         className={classes.marginVertSm}
@@ -420,8 +442,10 @@ const DiscountView = ({ location }) => {
                 </Grid>
             </Grid>
 
-            <Grid item style={{marginTop: '7rem'}}>
-            <Typography variant='h6'>Created on {dateTimeToDate(createdAt)}</Typography>
+            <Grid item style={{ marginTop: '7rem' }}>
+                <Typography variant='h6'>
+                    Created on {dateTimeToDate(createdAt)}
+                </Typography>
             </Grid>
         </Grid>
     );

@@ -55,7 +55,7 @@ const useStyles = makeStyles({
 });
 
 const RETIRE_DISCOUNT = gql`
-    mutation($id: ID) {
+    mutation ($id: ID) {
         retireDiscount(id: $id) {
             retired
         }
@@ -78,7 +78,7 @@ const RetireModal = ({ closeModal, discountId }) => {
     const onSubmit = () => {
         submitData({
             variables: {
-                id: discountId
+                id: discountId,
             },
         });
         // toggleShowEdit();
@@ -144,7 +144,7 @@ const RetireModal = ({ closeModal, discountId }) => {
 
 RetireModal.propTypes = {
     closeModal: PropTypes.func,
-    discountId: PropTypes.string
+    discountId: PropTypes.string,
 };
 
 export default RetireModal;

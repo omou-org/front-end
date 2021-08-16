@@ -224,7 +224,7 @@ const ManageTopicTuition = ({
                                         <ResponsiveButton
                                             variant='contained'
                                             component={Link}
-                                            style={{ marginLeft: '2.5rem'}}
+                                            style={{ marginLeft: '2.5rem' }}
                                             to={{
                                                 pathname: `${id}/edit`,
                                                 state: {
@@ -234,7 +234,9 @@ const ManageTopicTuition = ({
                                                     privateRules,
                                                 },
                                             }}
-                                        >set tuition</ResponsiveButton>
+                                        >
+                                            set tuition
+                                        </ResponsiveButton>
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -348,16 +350,16 @@ const ManageTopicTuition = ({
                         <TableBody>
                             {smallGroupRules.length < 1 ? (
                                 <TableRow
-                                    // component={Link}
-                                    // to={{
-                                    //     pathname: `${id}/edit`,
-                                    //     state: {
-                                    //         name,
-                                    //         id,
-                                    //         tuitionRuleSet,
-                                    //         smallGroupRules,
-                                    //     },
-                                    // }}
+                                // component={Link}
+                                // to={{
+                                //     pathname: `${id}/edit`,
+                                //     state: {
+                                //         name,
+                                //         id,
+                                //         tuitionRuleSet,
+                                //         smallGroupRules,
+                                //     },
+                                // }}
                                 >
                                     <TableCell>All</TableCell>
                                     <TableCell>
@@ -371,11 +373,10 @@ const ManageTopicTuition = ({
                                             !
                                         </LabelBadge>
                                         &nbsp; Not Set
-
                                         <ResponsiveButton
                                             variant='contained'
                                             component={Link}
-                                            style={{ marginLeft: '2.5rem'}}
+                                            style={{ marginLeft: '2.5rem' }}
                                             to={{
                                                 pathname: `${id}/edit`,
                                                 state: {
@@ -385,7 +386,9 @@ const ManageTopicTuition = ({
                                                     smallGroupRules,
                                                 },
                                             }}
-                                        >set tuition</ResponsiveButton>
+                                        >
+                                            set tuition
+                                        </ResponsiveButton>
                                     </TableCell>
                                 </TableRow>
                             ) : (
@@ -466,17 +469,18 @@ const ManageTopicTuition = ({
                 </ResponsiveButton>
             </Grid>
 
-            {privateRules.length === 0 || smallGroupRules.length === 0 && (
-                <Grid item className={classes.catchAllRule}>
-                    <Typography
-                        className={classes.catchAllRuleText}
-                        variant='body1'
-                    >
-                        Instructor-specific rules cannot be added until a
-                        general catch-all tuition rule is set.
-                    </Typography>
-                </Grid>
-            )}
+            {privateRules.length === 0 ||
+                (smallGroupRules.length === 0 && (
+                    <Grid item className={classes.catchAllRule}>
+                        <Typography
+                            className={classes.catchAllRuleText}
+                            variant='body1'
+                        >
+                            Instructor-specific rules cannot be added until a
+                            general catch-all tuition rule is set.
+                        </Typography>
+                    </Grid>
+                ))}
         </Grid>
     );
 };
