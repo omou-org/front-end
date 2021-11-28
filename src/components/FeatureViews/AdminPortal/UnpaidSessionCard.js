@@ -64,15 +64,17 @@ const UnpaidSessionCard = ({ unpaidStudent }) => {
     const {
         id: courseId,
         courseTitle,
-        startTime,
-        endTime,
+        courseavailabilitySet,
         hourlyTuition,
     } = unpaidStudent.course;
     const sessionsLeft = unpaidStudent.sessionsLeft;
     const amtDue = adminUtils.amountDue(
         hourlyTuition,
         sessionsLeft,
-        adminUtils.calculateSessionLength(startTime, endTime)
+        adminUtils.calculateSessionLength(
+            courseavailabilitySet.startTime,
+            courseavailabilitySet.endTime
+        )
     );
 
     return (
