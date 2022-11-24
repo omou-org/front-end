@@ -1,17 +1,17 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import {ResponsiveButton} from '../../theme/ThemedComponents/Button/ResponsiveButton';
+import { ResponsiveButton } from '../../theme/ThemedComponents/Button/ResponsiveButton';
 import Dialog from '@material-ui/core/Dialog';
-import {closeRegistrationCart} from './RegistrationUtils';
-import {logout, setToken} from '../../actions/authActions';
-import {useIdleTimer} from 'react-idle-timer';
-import {useHistory} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
+import { closeRegistrationCart } from './RegistrationUtils';
+import { logout, setToken } from '../../actions/authActions';
+import { useIdleTimer } from 'react-idle-timer';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import gql from 'graphql-tag';
-import {useMutation} from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 const REFRESH_TOKEN = gql`
     mutation RefreshToken($token: String!) {
@@ -30,7 +30,7 @@ export default function IdleTimerPrompt() {
 
     const [refreshToken] = useMutation(REFRESH_TOKEN, {
         onCompleted: async (data) => {
-            console.log({data, user});
+            console.log({ data, user });
             dispatch(await setToken(data.refreshToken.token, true, user.email));
         },
     });
@@ -59,18 +59,16 @@ export default function IdleTimerPrompt() {
                 token: savedToken,
             },
         });
-
     };
 
     const handleLogout = useCallback(() => {
-        console.log("handling logout logic");
+        console.log('handling logout logic');
         closeRegistrationCart();
         dispatch(logout());
         history.push('/login');
-
     }, [dispatch, history]);
 
-    const {getRemainingTime} = useIdleTimer({
+    const { getRemainingTime } = useIdleTimer({
         timeout: 1000 * 60 * 18,
         onIdle: handleOnIdle,
         onActive: handleOnActive,
@@ -82,10 +80,8 @@ export default function IdleTimerPrompt() {
 
         if (openIdlePrompt && remainingTimeBeforeLogout === 0) {
             setInterval(() => {
-                    setIdlePrompt(false);
-                },
-                1000 * 60 * 2
-            );
+                setIdlePrompt(false);
+            }, 1000 * 60 * 2);
         } else if (!openIdlePrompt && remainingTimeBeforeLogout === 0) {
             handleLogout();
         }

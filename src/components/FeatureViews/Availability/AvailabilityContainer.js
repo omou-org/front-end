@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
@@ -6,7 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import TimeAvailabilityContainer from './TimeAvailabilityContainer';
 import RequestOutOfOfficeContainer from './RequestOutOfOfficeContainer';
 import Box from '@material-ui/core/Box';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
 function TabPanel({ children, value, index, ...other }) {
