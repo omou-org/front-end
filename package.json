@@ -43,7 +43,7 @@
         "prettier": "^2.2.1",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
-        "react-admin": "^3.7.2",
+        "react-admin": "^3.19.12",
         "react-big-calendar": "^0.31.0",
         "react-csv": "^2.0.3",
         "react-date-range": "^1.0.3",
